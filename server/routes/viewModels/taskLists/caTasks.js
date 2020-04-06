@@ -33,7 +33,7 @@ const informOffenderTask = {
 }
 
 module.exports = {
-  getTasksForBlocked: errorCode => [
+  getTasksForBlocked: (errorCode) => [
     eligibilityTask,
     informOffenderTask,
     {
@@ -91,7 +91,7 @@ module.exports = {
         action: caSubmitAddressReview.getCaAction({ decisions, tasks }),
         visible: optOutRefused && !bassReferralNeeded && allowedTransition !== 'caToDmRefusal',
       },
-    ].filter(task => task.visible)
+    ].filter((task) => task.visible)
   },
 
   getCaTasksFinalChecks: ({ decisions, tasks, allowedTransition }) => {
@@ -142,7 +142,7 @@ module.exports = {
     }
 
     if (optedOut) {
-      return [proposedAddressTask, curfewAddressTask, bassTask, refusalTask].filter(task => task.visible)
+      return [proposedAddressTask, curfewAddressTask, bassTask, refusalTask].filter((task) => task.visible)
     }
 
     if (!eligible) {
@@ -244,10 +244,10 @@ module.exports = {
         action: caSubmitBassReview.getCaAction({ decisions, tasks }),
         visible: bassReferralNeeded && allowedTransition === 'caToRo',
       },
-    ].filter(task => task.visible)
+    ].filter((task) => task.visible)
   },
 
-  getCaTasksPostApproval: stage => ({ decisions, tasks, allowedTransition }) => {
+  getCaTasksPostApproval: (stage) => ({ decisions, tasks, allowedTransition }) => {
     const {
       curfewAddressApproved,
       approvedPremisesRequired,
@@ -277,7 +277,7 @@ module.exports = {
     }
 
     if (!eligible) {
-      return [eligibilitySummaryTask, invisibleInformOffenderTask].filter(task => task.visible)
+      return [eligibilitySummaryTask, invisibleInformOffenderTask].filter((task) => task.visible)
     }
 
     return [
@@ -397,6 +397,6 @@ module.exports = {
         action: createLicence.getCaAction({ decisions, tasks, stage }),
         visible: validAddress && !['caToDm', 'caToDmRefusal', 'caToRo'].includes(allowedTransition),
       },
-    ].filter(task => task.visible)
+    ].filter((task) => task.visible)
   },
 }

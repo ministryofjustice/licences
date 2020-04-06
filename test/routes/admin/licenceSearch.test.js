@@ -27,16 +27,14 @@ describe('/licenceSearch/', () => {
         .get('/admin/licenceSearch')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('Search for licence')
         })
     })
 
     test('should throw if submitted by non-authorised user', () => {
       const app = createApp('roUser')
-      return request(app)
-        .get('/admin/licenceSearch')
-        .expect(403)
+      return request(app).get('/admin/licenceSearch').expect(403)
     })
   })
 
@@ -69,9 +67,7 @@ describe('/licenceSearch/', () => {
 
     test('should throw if submitted by non-authorised user', () => {
       const app = createApp('roUser')
-      return request(app)
-        .get('/admin/licenceSearch')
-        .expect(403)
+      return request(app).get('/admin/licenceSearch').expect(403)
     })
   })
 

@@ -14,7 +14,7 @@ module.exports = function createCaAndDmNotificationSender(
   configClient,
   notificationSender,
   nomisClientBuilder,
-  { notifications: { activeNotificationTypes, clearingOfficeEmail, clearingOfficeEmailEnabled }, domain }
+  { notifications: { activeNotificationTypes, clearingOfficeEmail, clearingOfficeEmailEnabled, ..._ }, domain, ...rest }
 ) {
   async function getNotificationData({
     prisoner,
@@ -46,10 +46,10 @@ module.exports = function createCaAndDmNotificationSender(
   }
 
   // object -> string -> string
-  const replaceName = replacements => name => R.propOr(name, name, replacements)
+  const replaceName = (replacements) => (name) => R.propOr(name, name, replacements)
 
   // object -> [notification] -> [notification]
-  const replaceTemplateNames = replacements => R.map(R.over(R.lensProp('templateName'), replaceName(replacements)))
+  const replaceTemplateNames = (replacements) => R.map(R.over(R.lensProp('templateName'), replaceName(replacements)))
 
   const clearingOfficeEmailDisabled = clearingOfficeEmailEnabled.toUpperCase().trim() !== 'YES'
 
@@ -60,12 +60,12 @@ module.exports = function createCaAndDmNotificationSender(
       : [{ ...notifications[0], email: orgEmail, templateName: 'COPY' }]
   }
 
-  const clearingOfficeNotification = notifications =>
+  const clearingOfficeNotification = (notifications) =>
     clearingOfficeEmailDisabled || isEmpty(notifications)
       ? []
       : [{ ...notifications[0], email: clearingOfficeEmail, templateName: 'COPY' }]
 
-  const getCaAndClearingOfficeAndRoOrganisationNotifications = async args => {
+  const getCaAndClearingOfficeAndRoOrganisationNotifications = async (args) => {
     const notifications = await getCaNotifications(args)
     return [
       ...notifications,
@@ -93,7 +93,7 @@ module.exports = function createCaAndDmNotificationSender(
     }
     const personalisation = { ...common, sender_name: sendingUserName, prison }
 
-    return mailboxes.map(mailbox => {
+    return mailboxes.map((mailbox) => {
       return {
         personalisation: { ...personalisation, ca_name: mailbox.name },
         email: mailbox.email,
@@ -112,28 +112,19 @@ module.exports = function createCaAndDmNotificationSender(
       return []
     }
 
-    return mailboxes.map(mailbox => {
+    return mailboxes.map((mailbox) => {
       return { personalisation: { ...common, dm_name: mailbox.name }, email: mailbox.email, templateName: 'STANDARD' }
     })
   }
 
   const notificationDataMethod = {
     CA_RETURN: R.compose(
-      R.then(replaceTemplateNames({ STANDARD: 'CA_RETURN', COPY: 'CA_RETURN_COPY' })),
+      R.andThen(replaceTemplateNames({ STANDARD: 'CA_RETURN', COPY: 'CA_RETURN_COPY' })),
       getCaAndClearingOfficeAndRoOrganisationNotifications
     ),
-    DM_TO_CA_RETURN: R.compose(
-      R.then(replaceTemplateNames({ STANDARD: 'CA_RETURN' })),
-      getCaNotifications
-    ),
-    CA_DECISION: R.compose(
-      R.then(replaceTemplateNames({ STANDARD: 'CA_DECISION' })),
-      getCaNotifications
-    ),
-    DM_NEW: R.compose(
-      R.then(replaceTemplateNames({ STANDARD: 'DM_NEW' })),
-      getDmNotifications
-    ),
+    DM_TO_CA_RETURN: R.compose(R.andThen(replaceTemplateNames({ STANDARD: 'CA_RETURN' })), getCaNotifications),
+    CA_DECISION: R.compose(R.andThen(replaceTemplateNames({ STANDARD: 'CA_DECISION' })), getCaNotifications),
+    DM_NEW: R.compose(R.andThen(replaceTemplateNames({ STANDARD: 'DM_NEW' })), getDmNotifications),
   }
 
   async function sendNotifications({

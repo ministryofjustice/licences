@@ -67,7 +67,7 @@ function canSendRoToCa(licenceStatus) {
     tasks.reportingInstructions,
   ]
 
-  return required.every(it => it === taskStates.DONE)
+  return required.every((it) => it === taskStates.DONE)
 }
 
 function canSendDmToCa(licenceStatus) {
@@ -98,7 +98,7 @@ function canSendCaToRo(licenceStatus) {
 
   const required = [tasks.exclusion, tasks.crdTime, tasks.suitability, tasks.optOut, tasks.curfewAddress]
 
-  const allTaskComplete = required.every(it => it === taskStates.DONE)
+  const allTaskComplete = required.every((it) => it === taskStates.DONE)
 
   if (bassReferralNeeded) {
     return allTaskComplete && tasks.bassReferral === taskStates.DONE
@@ -158,7 +158,7 @@ function canSendCaToDm(licenceStatus) {
   }
 
   const required = getRequiredTasks(decisions, tasks)
-  const tasksComplete = required.every(it => it === taskStates.DONE)
+  const tasksComplete = required.every((it) => it === taskStates.DONE)
 
   const addressOk =
     decisions.bassReferralNeeded || decisions.curfewAddressApproved || decisions.approvedPremisesRequired

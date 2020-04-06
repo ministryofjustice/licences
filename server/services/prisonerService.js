@@ -79,7 +79,7 @@ function createPrisonerService(nomisClientBuilder, roService) {
 
         const getReleaseEstablishment = async () => {
           const movements = await nomisClient.getRecentMovements(offenderNo)
-          const release = movements.find(movement => movement.movementType === 'REL')
+          const release = movements.find((movement) => movement.movementType === 'REL')
           return getIn(release, ['fromAgency'])
         }
 
@@ -148,7 +148,7 @@ function createPrisonerService(nomisClientBuilder, roService) {
       if (role.toUpperCase() === 'RO') {
         const responsibleOfficer = unwrapResultOrThrow(
           await roService.findResponsibleOfficer(bookingId, token),
-          error => `${error.code}: ${error.message}`
+          (error) => `${error.code}: ${error.message}`
         )
 
         return {

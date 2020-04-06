@@ -25,7 +25,7 @@ describe('validation', () => {
           { formResponse: { decision: 'No', reason: [] }, outcome: {} },
         ]
 
-        options.forEach(option => {
+        options.forEach((option) => {
           test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
             const { outcome, formResponse } = option
             expect(service.validateForm({ formResponse, pageConfig })).toEqual(outcome)
@@ -45,7 +45,7 @@ describe('validation', () => {
           { formResponse: { decision: 'No', reason: [] }, outcome: {} },
         ]
 
-        options.forEach(option => {
+        options.forEach((option) => {
           test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
             const { outcome, formResponse } = option
             expect(service.validateForm({ formResponse, pageConfig })).toEqual(outcome)
@@ -60,7 +60,7 @@ describe('validation', () => {
           { formResponse: { decision: '' }, outcome: { decision: 'Select yes or no' } },
         ]
 
-        options.forEach(option => {
+        options.forEach((option) => {
           test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
             const { outcome, formResponse } = option
             expect(service.validateForm({ formResponse, pageConfig })).toEqual(outcome)
@@ -77,7 +77,7 @@ describe('validation', () => {
           { formResponse: { decision: 'No' }, outcome: {} },
         ]
 
-        options.forEach(option => {
+        options.forEach((option) => {
           test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
             const { outcome, formResponse } = option
             expect(service.validateForm({ formResponse, pageConfig })).toEqual(outcome)
@@ -166,7 +166,10 @@ describe('validation', () => {
                 postCode: 'S105NW',
                 cautionedAgainstResident: 'No',
                 telephone: '07700000000',
-                residents: [{ name: 'n', relationship: 'n' }, { name: '', relationship: 'n' }],
+                residents: [
+                  { name: 'n', relationship: 'n' },
+                  { name: '', relationship: 'n' },
+                ],
               },
               outcome: { residents: { 1: { name: 'Enter a name' } } },
             },
@@ -177,7 +180,10 @@ describe('validation', () => {
                 postCode: 'S105NW',
                 cautionedAgainstResident: 'No',
                 telephone: '07700000000',
-                residents: [{ name: 'n', relationship: 'n' }, { name: 'name', relationship: 'n', age: 'sss' }],
+                residents: [
+                  { name: 'n', relationship: 'n' },
+                  { name: 'name', relationship: 'n', age: 'sss' },
+                ],
               },
               outcome: { residents: { 1: { age: 'Invalid Age - Enter Number' } } },
             },
@@ -245,7 +251,7 @@ describe('validation', () => {
             },
           ]
 
-          options.forEach(option => {
+          options.forEach((option) => {
             test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
               const { outcome, formResponse } = option
               expect(
@@ -367,7 +373,7 @@ describe('validation', () => {
           },
         ]
 
-        options.forEach(option => {
+        options.forEach((option) => {
           test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
             const { outcome, formResponse } = option
             expect(service.validateForm({ formResponse, pageConfig })).toEqual(outcome)
@@ -391,7 +397,7 @@ describe('validation', () => {
           },
         ]
 
-        options.forEach(option => {
+        options.forEach((option) => {
           test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
             const { outcome, formResponse } = option
             expect(service.validateForm({ formResponse, pageConfig })).toEqual(outcome)
@@ -440,7 +446,7 @@ describe('validation', () => {
           },
         ]
 
-        options.forEach(option => {
+        options.forEach((option) => {
           test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
             const { outcome, formResponse } = option
             expect(service.validateForm({ formResponse, pageConfig })).toEqual(outcome)
@@ -474,7 +480,7 @@ describe('validation', () => {
           },
         ]
 
-        options.forEach(option => {
+        options.forEach((option) => {
           test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
             const { outcome, formResponse } = option
             expect(
@@ -510,7 +516,7 @@ describe('validation', () => {
           },
         ]
 
-        options.forEach(option => {
+        options.forEach((option) => {
           test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
             const { outcome, formResponse } = option
             expect(
@@ -589,7 +595,7 @@ describe('validation', () => {
           },
         ]
 
-        options.forEach(option => {
+        options.forEach((option) => {
           test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
             const { outcome, formResponse } = option
             expect(service.validateForm({ formResponse, pageConfig })).toEqual(outcome)
@@ -611,7 +617,7 @@ describe('validation', () => {
           },
         ]
 
-        options.forEach(option => {
+        options.forEach((option) => {
           test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
             const { outcome, formResponse } = option
             expect(service.validateForm({ formResponse, pageConfig })).toEqual(outcome)
@@ -837,9 +843,7 @@ describe('validation', () => {
           {
             formResponse: {
               ATTENDDEPENDENCY: {
-                appointmentDate: moment()
-                  .add(1, 'day')
-                  .format('DD/MM/YYYY'),
+                appointmentDate: moment().add(1, 'day').format('DD/MM/YYYY'),
                 appointmentTime: 'a',
                 appointmentAddress: 'b',
               },
@@ -1326,7 +1330,7 @@ describe('validation', () => {
           },
         ]
 
-        options.forEach(option => {
+        options.forEach((option) => {
           test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
             const { outcome, formResponse } = option
             expect(
@@ -1350,7 +1354,7 @@ describe('validation', () => {
           { formResponse: { decision: '' }, outcome: { decision: 'Select yes or no' } },
         ]
 
-        options.forEach(option => {
+        options.forEach((option) => {
           test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
             const { outcome, formResponse } = option
             expect(service.validateForm({ formResponse, pageConfig })).toEqual(outcome)
@@ -1365,7 +1369,7 @@ describe('validation', () => {
           { formResponse: { decision: '' }, outcome: { decision: 'Select yes or no' } },
         ]
 
-        options.forEach(option => {
+        options.forEach((option) => {
           test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
             const { outcome, formResponse } = option
             expect(service.validateForm({ formResponse, pageConfig })).toEqual(outcome)
@@ -1392,7 +1396,7 @@ describe('validation', () => {
           },
         ]
 
-        options.forEach(option => {
+        options.forEach((option) => {
           test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
             const { outcome, formResponse } = option
             expect(service.validateForm({ formResponse, pageConfig })).toEqual(outcome)
@@ -1425,7 +1429,7 @@ describe('validation', () => {
           },
         ]
 
-        options.forEach(option => {
+        options.forEach((option) => {
           test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
             const { outcome, formResponse } = option
             expect(service.validateForm({ formResponse, pageConfig })).toEqual(outcome)
@@ -1448,7 +1452,7 @@ describe('validation', () => {
           },
         ]
 
-        options.forEach(option => {
+        options.forEach((option) => {
           test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
             const { outcome, formResponse } = option
             expect(service.validateForm({ formResponse, pageConfig: approvedPremisesAddress })).toEqual(outcome)
@@ -1483,7 +1487,7 @@ describe('validation', () => {
           },
         ]
 
-        options.forEach(option => {
+        options.forEach((option) => {
           test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
             const { outcome, formResponse } = option
             expect(service.validateForm({ formResponse, pageConfig })).toEqual(outcome)
@@ -1511,7 +1515,7 @@ describe('validation', () => {
           },
         ]
 
-        options.forEach(option => {
+        options.forEach((option) => {
           test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
             const { outcome, formResponse } = option
             expect(service.validateForm({ formResponse, pageConfig })).toEqual(outcome)
@@ -1535,7 +1539,7 @@ describe('validation', () => {
             },
           ]
 
-          options.forEach(option => {
+          options.forEach((option) => {
             test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
               const { outcome, formResponse } = option
               expect(
@@ -1609,7 +1613,7 @@ describe('validation', () => {
             },
           ]
 
-          options.forEach(option => {
+          options.forEach((option) => {
             test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
               const { outcome, formResponse } = option
               expect(
@@ -1643,7 +1647,7 @@ describe('validation', () => {
             { formResponse: { decision: 'No', reason: [] }, outcome: { reason: 'Select a reason' } },
           ]
 
-          options.forEach(option => {
+          options.forEach((option) => {
             test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
               const { outcome, formResponse } = option
               expect(
@@ -1666,7 +1670,7 @@ describe('validation', () => {
             { formResponse: { decision: 'No', reason: [] }, outcome: { reason: 'Select a reason' } },
           ]
 
-          options.forEach(option => {
+          options.forEach((option) => {
             test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
               const { outcome, formResponse } = option
               expect(service.validateForm({ formResponse, pageConfig })).toEqual(outcome)
@@ -1705,7 +1709,7 @@ describe('validation', () => {
           },
         ]
 
-        options.forEach(option => {
+        options.forEach((option) => {
           test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
             const { outcome, formResponse } = option
             expect(service.validateForm({ formResponse, pageConfig })).toEqual(outcome)
@@ -1813,7 +1817,7 @@ describe('validation', () => {
           },
         ]
 
-        options.forEach(option => {
+        options.forEach((option) => {
           test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
             const { outcome, formResponse } = option
             expect(service.validateForm({ formResponse, pageConfig })).toEqual(outcome)
@@ -1852,7 +1856,7 @@ describe('validation', () => {
         { licence: {}, outcome: { proposedAddress: { curfewAddress: 'Please provide a curfew address' } } },
       ]
 
-      options.forEach(option => {
+      options.forEach((option) => {
         test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.licence)}`, () => {
           const { outcome, licence } = option
           expect(service.validateFormGroup({ licence, stage })).toEqual(outcome)
@@ -1893,7 +1897,7 @@ describe('validation', () => {
           },
         ]
 
-        bassOptions.forEach(option => {
+        bassOptions.forEach((option) => {
           test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.licence)}`, () => {
             const { outcome, licence } = option
             expect(service.validateFormGroup({ licence, stage, decisions: { bassReferralNeeded: true } })).toEqual(
@@ -2094,7 +2098,7 @@ describe('validation', () => {
       ]
 
       describe('address not rejected', () => {
-        options.forEach(option => {
+        options.forEach((option) => {
           test(`should return ${JSON.stringify(option.standardOutcome)} for ${JSON.stringify(option.licence)}`, () => {
             const { standardOutcome, licence, decisions } = option
             expect(service.validateFormGroup({ licence, stage, decisions: decisions || {} })).toEqual(standardOutcome)
@@ -2103,7 +2107,7 @@ describe('validation', () => {
       })
 
       describe('address review failed', () => {
-        options.forEach(option => {
+        options.forEach((option) => {
           test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.licence)}`, () => {
             const { addressReviewFailedOutcome, licence, decisions } = option
             const decs = {
@@ -2117,7 +2121,7 @@ describe('validation', () => {
       })
 
       describe('risk failed', () => {
-        options.forEach(option => {
+        options.forEach((option) => {
           test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.licence)}`, () => {
             const { addressRiskFailedOutcome, licence, decisions } = option
             const decs = {
@@ -2158,7 +2162,7 @@ describe('validation', () => {
           { licence: { ...validBassLicence, proposedAddress: {} }, outcome: {} },
         ]
 
-        bassOptions.forEach(option => {
+        bassOptions.forEach((option) => {
           test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.licence)}`, () => {
             const { outcome, licence } = option
             expect(
@@ -2213,7 +2217,7 @@ describe('validation', () => {
           },
         ]
 
-        bassOptions.forEach(option => {
+        bassOptions.forEach((option) => {
           test(`should return ${JSON.stringify(option.bassOutcome)} for ${JSON.stringify(option.licence)}`, () => {
             const { bassOutcome, licence } = option
             expect(service.validateFormGroup({ licence, stage, decisions: { bassAreaNotSuitable: true } })).toEqual(

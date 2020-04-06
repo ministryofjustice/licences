@@ -46,7 +46,7 @@ describe('/licences/', () => {
         .get('/admin/licences/1')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('Licence details')
           expect(res.text).toContain(`3 notifications sent of type: 'RO_NEW'`)
           expect(res.text).toContain(`Provided details for 'aSection'`)
@@ -61,16 +61,14 @@ describe('/licences/', () => {
         .get('/admin/licences/1')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('Notify RO of case handover')
         })
     })
 
     test('should throw if submitted by non-authorised user', () => {
       const app = createApp('roUser')
-      return request(app)
-        .get('/admin/licences/1')
-        .expect(403)
+      return request(app).get('/admin/licences/1').expect(403)
     })
   })
 
@@ -81,7 +79,7 @@ describe('/licences/', () => {
         .get('/admin/licences/1/raw')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('Status:')
           expect(res.text).toContain(`"exclusion": "UNSTARTED"`)
           expect(res.text).toContain('Record:')
@@ -90,9 +88,7 @@ describe('/licences/', () => {
 
     test('should throw if submitted by non-authorised user', () => {
       const app = createApp('roUser')
-      return request(app)
-        .get('/admin/licences/1/raw')
-        .expect(403)
+      return request(app).get('/admin/licences/1/raw').expect(403)
     })
   })
 
@@ -103,7 +99,7 @@ describe('/licences/', () => {
         .get('/admin/licences/events/1/raw')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('Event details')
           expect(res.text).toContain(`BOB`)
           expect(res.text).toContain(`Notify`)
@@ -112,9 +108,7 @@ describe('/licences/', () => {
 
     test('should throw if submitted by non-authorised user', () => {
       const app = createApp('roUser')
-      return request(app)
-        .get('/admin/licences/events/1/raw')
-        .expect(403)
+      return request(app).get('/admin/licences/events/1/raw').expect(403)
     })
   })
 
@@ -126,16 +120,14 @@ describe('/licences/', () => {
         .get('/admin/licences/1/notifyRo')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('Notify Responsible officer')
         })
     })
 
     test('should throw if submitted by non-authorised user', () => {
       const app = createApp('roUser')
-      return request(app)
-        .get('/admin/licences/1/notifyRo')
-        .expect(403)
+      return request(app).get('/admin/licences/1/notifyRo').expect(403)
     })
   })
 
@@ -147,7 +139,7 @@ describe('/licences/', () => {
         .post('/admin/licences/1/notifyRo')
         .expect(302)
         .expect('Location', '/admin/licences/1')
-        .expect(res => {
+        .expect((res) => {
           expect(roNotificationHandler.sendRoEmail).toHaveBeenCalledWith({
             bookingId: '1',
             token: 'system-token',
@@ -159,9 +151,7 @@ describe('/licences/', () => {
 
     test('should throw if submitted by non-authorised user', () => {
       const app = createApp('roUser')
-      return request(app)
-        .post('/admin/licences/1/notifyRo')
-        .expect(403)
+      return request(app).post('/admin/licences/1/notifyRo').expect(403)
     })
   })
 

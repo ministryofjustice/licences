@@ -10,7 +10,7 @@ const combineSocialServicesAnswers = (servicesChosen, servicesName) => {
 
 module.exports = {
   unsupervisedContactInput: (userInput, errors) => {
-    const combineFields = object => {
+    const combineFields = (object) => {
       if (isEmpty(object)) return {}
 
       const {
@@ -35,7 +35,7 @@ module.exports = {
   },
 
   victimContactInput: (userInput, errors) => {
-    const combineFields = object => {
+    const combineFields = (object) => {
       if (isEmpty(object)) return {}
 
       const {

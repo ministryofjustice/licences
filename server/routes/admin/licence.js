@@ -6,10 +6,10 @@ const { getLicenceStatus } = require('../../utils/licenceStatus')
 
 const { asyncMiddleware, authorisationMiddleware } = require('../../utils/middleware')
 
-module.exports = (licenceService, signInService, prisonerService, audit, roNotificationHandler) => router => {
+module.exports = (licenceService, signInService, prisonerService, audit, roNotificationHandler) => (router) => {
   router.use(authorisationMiddleware)
 
-  const formatEvent = event => ({
+  const formatEvent = (event) => ({
     id: event.id,
     user: event.user,
     action: setCase.sentence(event.action),

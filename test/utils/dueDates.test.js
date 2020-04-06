@@ -30,7 +30,7 @@ describe('Due dates calcuations', () => {
   describe('current time basis', () => {
     let realDateNow
 
-    const nowIs = val => {
+    const nowIs = (val) => {
       const time = new Date(val)
       realDateNow = Date.now.bind(global.Date)
       Date.now = jest.fn(() => time)

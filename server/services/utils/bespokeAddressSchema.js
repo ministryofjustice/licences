@@ -9,10 +9,7 @@ module.exports = {
     .object()
     .keys({
       addressLine1: joi.string().required(),
-      addressLine2: joi
-        .string()
-        .allow('')
-        .optional(),
+      addressLine2: joi.string().allow('').optional(),
       addressTown: joi.string().required(),
       postCode: joi.postcode().required(),
       telephone: joi.when('occupier.isOffender', {
@@ -27,20 +24,12 @@ module.exports = {
           .allow('')
           .optional(),
       }),
-      additionalInformation: joi
-        .string()
-        .allow('')
-        .optional(),
+      additionalInformation: joi.string().allow('').optional(),
       residents: joi.array().items(
         joi.object().keys({
           name: joi.string().required(),
           relationship: joi.string().required(),
-          age: joi
-            .number()
-            .min(0)
-            .max(110)
-            .allow('')
-            .optional(),
+          age: joi.number().min(0).max(110).allow('').optional(),
         })
       ),
       occupier: joi.object().keys({
@@ -85,10 +74,7 @@ module.exports = {
       otherwise: joi.any().optional(),
     }),
 
-    addressReviewComments: joi
-      .string()
-      .allow('')
-      .optional(),
+    addressReviewComments: joi.string().allow('').optional(),
   }),
 
   addressReviewSchemaOffenderIsOccupier: joi.object().keys({
@@ -102,9 +88,6 @@ module.exports = {
       otherwise: joi.any().optional(),
     }),
 
-    addressReviewComments: joi
-      .string()
-      .allow('')
-      .optional(),
+    addressReviewComments: joi.string().allow('').optional(),
   }),
 }

@@ -28,7 +28,7 @@ function parseSearchTerms(input) {
 }
 
 function formatNomisMatches(nomisIdMatches) {
-  return querystring.stringify({ nomisId: nomisIdMatches.map(id => id.toUpperCase()) })
+  return querystring.stringify({ nomisId: nomisIdMatches.map((id) => id.toUpperCase()) })
 }
 
 module.exports = {

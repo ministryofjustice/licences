@@ -2,7 +2,7 @@
  * @template S, E
  * @returns {import("./ResultTypes").Result<S, E>}
  */
-const Success = value => ({
+const Success = (value) => ({
   success() {
     return value
   },
@@ -42,7 +42,7 @@ const Success = value => ({
  * @template S, E
  * @returns {import("./ResultTypes").Result<S, E>}
  */
-const Fail = error => ({
+const Fail = (error) => ({
   success() {
     throw new Error('cannot call success() on a Fail')
   },

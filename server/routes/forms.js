@@ -10,7 +10,7 @@ const {
 const { curfewAddressCheckFormFileName } = require('./utils/pdfUtils')
 const { isEmpty, getIn } = require('../utils/functionalHelpers')
 
-module.exports = ({ formService }) => router => {
+module.exports = ({ formService }) => (router) => {
   router.get(
     '/curfewAddress/:bookingId',
     asyncMiddleware(async (req, res) => {

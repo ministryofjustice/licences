@@ -21,7 +21,7 @@ const getBookingIds = async () => {
   }
 
   const { rows } = await db.query(query)
-  return rows.map(row => row.booking_id)
+  return rows.map((row) => row.booking_id)
 }
 
 module.exports = async () => {

@@ -11,7 +11,7 @@ const { unwrapResult } = require('../utils/functionalHelpers')
  * @param {RoService} roService
  * @returns {function(*): *}
  */
-module.exports = (userAdminService, roService, signInService) => router => {
+module.exports = (userAdminService, roService, signInService) => (router) => {
   router.get(
     '/:theBookingId',
     asyncMiddleware(async (req, res) => {

@@ -6,12 +6,12 @@
  * @return {LicenceSearchService} LicenceSearchService
  */
 module.exports = function createLicenceSearchService(licenceClient, signInService, nomisClientBuilder) {
-  const bookingIdForExistingLicence = async bookingId => {
+  const bookingIdForExistingLicence = async (bookingId) => {
     const licence = await licenceClient.getLicence(bookingId)
     return licence ? licence.booking_id : null
   }
 
-  const findByBookingId = async offenderIdentifier => {
+  const findByBookingId = async (offenderIdentifier) => {
     const parsedBookingId = parseInt(offenderIdentifier.trim(), 10)
     return parsedBookingId && bookingIdForExistingLicence(parsedBookingId)
   }

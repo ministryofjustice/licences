@@ -26,7 +26,7 @@ describe('/hdc/finalChecks', () => {
       { url: '/hdc/finalChecks/postpone/1', content: 'Postpone' },
     ]
 
-    routes.forEach(route => {
+    routes.forEach((route) => {
       test(`renders the ${route.url} page`, () => {
         const licenceService = createLicenceServiceStub()
         const app = createApp({ licenceServiceStub: licenceService })
@@ -35,7 +35,7 @@ describe('/hdc/finalChecks', () => {
           .get(route.url)
           .expect(200)
           .expect('Content-Type', /html/)
-          .expect(res => {
+          .expect((res) => {
             expect(res.text).toContain(route.content)
           })
       })
@@ -92,7 +92,7 @@ describe('/hdc/finalChecks', () => {
       },
     ]
 
-    routes.forEach(route => {
+    routes.forEach((route) => {
       test(`renders the correct path '${route.nextPath}' page`, () => {
         const licenceService = createLicenceServiceStub()
         licenceService.update.mockResolvedValue({ finalChecks: { [route.formName]: {} } })
@@ -102,7 +102,7 @@ describe('/hdc/finalChecks', () => {
           .post(route.url)
           .send(route.body)
           .expect(302)
-          .expect(res => {
+          .expect((res) => {
             expect(licenceService.update).toHaveBeenCalled()
             expect(licenceService.update).toHaveBeenCalledWith({
               bookingId: '1',
@@ -122,10 +122,7 @@ describe('/hdc/finalChecks', () => {
         const licenceService = createLicenceServiceStub()
         const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
 
-        return request(app)
-          .post(route.url)
-          .send(route.body)
-          .expect(403)
+        return request(app).post(route.url).send(route.body).expect(403)
       })
     })
 
@@ -184,7 +181,7 @@ describe('/hdc/finalChecks', () => {
         },
       ]
 
-      specs.forEach(spec => {
+      specs.forEach((spec) => {
         test(`should push ${spec.type} status to nomis`, () => {
           const licenceService = createLicenceServiceStub()
           licenceService.update.mockResolvedValue(spec.data)

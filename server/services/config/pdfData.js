@@ -20,7 +20,10 @@ const APPROVER = {
 }
 
 const VARY_APPROVER = {
-  paths: [['licence', 'vary', 'approval', 'name'], ['licence', 'vary', 'approval', 'jobTitle']],
+  paths: [
+    ['licence', 'vary', 'approval', 'name'],
+    ['licence', 'vary', 'approval', 'jobTitle'],
+  ],
   separator: ', ',
   displayName: 'Name of approver',
   group: 'varyApproval',
@@ -42,7 +45,11 @@ const EST_PHONE = {
 }
 
 const OFF_NAME = {
-  paths: [['prisonerInfo', 'firstName'], ['prisonerInfo', 'middleName'], ['prisonerInfo', 'lastName']],
+  paths: [
+    ['prisonerInfo', 'firstName'],
+    ['prisonerInfo', 'middleName'],
+    ['prisonerInfo', 'lastName'],
+  ],
   separator: ' ',
   displayName: 'Offender name',
   group: 'sentence',
@@ -346,7 +353,7 @@ module.exports = {
       divider: '\n\n',
       terminator: ';',
       filtered: ['ATTENDSAMPLE', 'ATTENDDEPENDENCY'],
-      filter: filtered => condition => !filtered.includes(condition.id),
+      filter: (filtered) => (condition) => !filtered.includes(condition.id),
       group: 'conditions',
       required: 'optional',
     },
@@ -358,7 +365,7 @@ module.exports = {
       divider: '\n\n',
       terminator: ';',
       filtered: ['ATTENDSAMPLE', 'ATTENDDEPENDENCY'],
-      filter: filtered => condition => filtered.includes(condition.id),
+      filter: (filtered) => (condition) => filtered.includes(condition.id),
       group: 'conditions',
       required: 'optional',
     },

@@ -18,10 +18,7 @@ function getIn(object, pathArray) {
 // Curried version of 'getIn' above
 const selectPathsFrom = R.flip(R.path)
 
-const allValuesEmpty = R.pipe(
-  R.values,
-  R.all(isEmpty)
-)
+const allValuesEmpty = R.pipe(R.values, R.all(isEmpty))
 
 function notAllValuesEmpty(object) {
   return !allValuesEmpty(object)
@@ -55,31 +52,15 @@ function getWhereKeyLike(string, object) {
     return lowerCaseString.includes(key.toLowerCase())
   }
 
-  return R.pipe(
-    R.pickBy(stringIncludesKey),
-    R.values,
-    R.head
-  )(object)
+  return R.pipe(R.pickBy(stringIncludesKey), R.values, R.head)(object)
 }
 
-const pickKey = predicate =>
-  R.pipe(
-    R.pickBy(predicate),
-    R.keys,
-    R.head
-  )
+const pickKey = (predicate) => R.pipe(R.pickBy(predicate), R.keys, R.head)
 
-const firstKey = R.pipe(
-  R.keys,
-  R.head
-)
+const firstKey = R.pipe(R.keys, R.head)
 
 function getFieldDetail(fieldPath, fieldConfig) {
-  return R.pipe(
-    R.values,
-    R.head,
-    R.path(fieldPath)
-  )(fieldConfig)
+  return R.pipe(R.values, R.head, R.path(fieldPath))(fieldConfig)
 }
 
 const getFieldName = firstKey

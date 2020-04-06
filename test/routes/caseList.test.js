@@ -24,16 +24,11 @@ describe('GET /caseList', () => {
 
   test('returns forbidden status if logged in as admin user role', () => {
     app = createApp('batchUser')
-    return request(app)
-      .get('/caselist/')
-      .expect(403)
+    return request(app).get('/caselist/').expect(403)
   })
 
   test('redirects if accesss /', () => {
-    return request(app)
-      .get('/caselist/')
-      .expect(302)
-      .expect('Location', '/caseList/active')
+    return request(app).get('/caselist/').expect(302).expect('Location', '/caseList/active')
   })
 
   test('renders the hdc eligible prisoners page', () => {
@@ -41,7 +36,7 @@ describe('GET /caseList', () => {
       .get('/caselist/active')
       .expect(200)
       .expect('Content-Type', /html/)
-      .expect(res => {
+      .expect((res) => {
         expect(res.text).toContain('id="hdcEligiblePrisoners">')
       })
   })

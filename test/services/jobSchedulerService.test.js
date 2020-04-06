@@ -75,20 +75,20 @@ describe('jobSchedulerService', () => {
 
     test('should cancel all jobs', async () => {
       const jobList = await service.listJobs()
-      expect(jobList.some(job => job.next === null)).toBe(false)
+      expect(jobList.some((job) => job.next === null)).toBe(false)
       service.cancelAllJobs()
       const endJobList = await service.listJobs()
-      expect(endJobList.some(job => job.next !== null)).toBe(false)
+      expect(endJobList.some((job) => job.next !== null)).toBe(false)
     })
 
     test('should restart all jobs', async () => {
       await service.listJobs()
       service.cancelAllJobs()
       const jobList = await service.listJobs()
-      expect(jobList.some(job => job.next !== null)).toBe(false)
+      expect(jobList.some((job) => job.next !== null)).toBe(false)
       service.startAllJobs()
       const endJobList = await service.listJobs()
-      expect(endJobList.some(job => job.next === null)).toBe(false)
+      expect(endJobList.some((job) => job.next === null)).toBe(false)
     })
   })
 

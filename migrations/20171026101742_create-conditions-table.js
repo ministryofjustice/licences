@@ -1,14 +1,8 @@
-exports.up = knex =>
+exports.up = (knex) =>
   Promise.all([
-    knex.schema.createTable('conditions', table => {
-      table
-        .string('id', 50)
-        .unique()
-        .primary('pk_conditions')
-      table
-        .date('timestamp')
-        .notNullable()
-        .defaultTo(knex.fn.now())
+    knex.schema.createTable('conditions', (table) => {
+      table.string('id', 50).unique().primary('pk_conditions')
+      table.date('timestamp').notNullable().defaultTo(knex.fn.now())
       table.string('type', 50).notNullable()
       table.text('text').notNullable()
       table.text('user_input')
@@ -19,4 +13,4 @@ exports.up = knex =>
     }),
   ])
 
-exports.down = knex => knex.schema.dropTable('conditions')
+exports.down = (knex) => knex.schema.dropTable('conditions')

@@ -7,7 +7,7 @@ const { asyncMiddleware, authorisationMiddleware } = require('../../utils/middle
 /**
  * @param {RoService} roService
  */
-module.exports = roService => router => {
+module.exports = (roService) => (router) => {
   router.use(authorisationMiddleware)
 
   router.get(

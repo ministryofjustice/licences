@@ -29,13 +29,13 @@ const activeLduClient = {
   },
 
   async updateActiveLdu(probationAreaCode, activeLduCodes) {
-    await db.inTransaction(async client => {
+    await db.inTransaction(async (client) => {
       await client.query({
         text: `DELETE FROM active_local_delivery_units WHERE probation_area_code = $1`,
         values: [probationAreaCode],
       })
 
-      const rows = activeLduCodes.map(code => [probationAreaCode, code])
+      const rows = activeLduCodes.map((code) => [probationAreaCode, code])
 
       if (rows.length > 0) {
         await client.query({

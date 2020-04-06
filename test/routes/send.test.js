@@ -41,7 +41,7 @@ describe('send', () => {
         .get('/hdc/send/addressReview/123')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('<input type="hidden" name="transitionType" value="caToRo">')
         })
     })
@@ -52,7 +52,7 @@ describe('send', () => {
         .get('/hdc/send/bassReview/123')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('<input type="hidden" name="transitionType" value="caToRo">')
         })
     })
@@ -63,7 +63,7 @@ describe('send', () => {
         .get('/hdc/send/finalChecks/123')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('<input type="hidden" name="transitionType" value="roToCa">')
         })
     })
@@ -74,7 +74,7 @@ describe('send', () => {
         .get('/hdc/send/approval/123')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('<input type="hidden" name="transitionType" value="caToDm">')
         })
     })
@@ -85,7 +85,7 @@ describe('send', () => {
         .get('/hdc/send/decided/123')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('<input type="hidden" name="transitionType" value="dmToCa">')
         })
     })
@@ -96,7 +96,7 @@ describe('send', () => {
         .get('/hdc/send/refusal/123')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('<input type="hidden" name="transitionType" value="caToDmRefusal">')
         })
     })
@@ -107,7 +107,7 @@ describe('send', () => {
         .get('/hdc/send/return/123')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('<input type="hidden" name="transitionType" value="dmToCaReturn">')
         })
     })
@@ -118,7 +118,7 @@ describe('send', () => {
         .get('/hdc/send/addressReview/123')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('name="submissionTarget" value="Something"')
         })
     })
@@ -129,16 +129,14 @@ describe('send', () => {
         .get('/hdc/send/finalChecks/123')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('name="submissionTarget" value="HMP Blah"')
         })
     })
 
     test('should throw if get requested by wrong user', () => {
       const app = createApp({ prisonerServiceStub: prisonerService }, 'roUser')
-      return request(app)
-        .get('/hdc/send/refusal/123')
-        .expect(403)
+      return request(app).get('/hdc/send/refusal/123').expect(403)
     })
   })
 
@@ -193,7 +191,7 @@ describe('send', () => {
         return request(app)
           .post('/hdc/send/return/123')
           .expect(302)
-          .expect(res => {
+          .expect((res) => {
             expect(res.header.location).toBe('/hdc/sent/CA/dmToCaReturn/123')
             expect(notificationService.send).toHaveBeenCalledWith({
               bookingId: '123',

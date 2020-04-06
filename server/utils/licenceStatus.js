@@ -1,7 +1,7 @@
 const { taskStates } = require('../services/config/taskStates')
 const { licenceStages } = require('../services/config/licenceStages')
 const { getIn, isEmpty, lastItem, flatten } = require('./functionalHelpers')
-const { isAcceptedAddress } = require('../utils/addressHelpers')
+const { isAcceptedAddress } = require('./addressHelpers')
 
 module.exports = { getLicenceStatus }
 
@@ -60,7 +60,7 @@ function getRequiredState(stage, licence) {
     [licenceStages.VARY]: [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState],
   }
 
-  return config[stage].map(getStateMethod => getStateMethod(licence))
+  return config[stage].map((getStateMethod) => getStateMethod(licence))
 }
 
 const combiner = (acc, data) => {
@@ -391,7 +391,7 @@ function getDmApproval(licence) {
 
   const decision = getIn(licence, ['approval', 'release', 'decision'])
   const reasons = flatten([getIn(licence, ['approval', 'release', 'reason'])])
-    .map(reason => refusalReasons[reason])
+    .map((reason) => refusalReasons[reason])
     .join(', ')
 
   return {
@@ -440,7 +440,7 @@ function getCurfewAddressState(licence, optedOut, bassReferralNeeded, curfewAddr
 
     const required = ['cautionedAgainstResident', 'addressLine1', 'addressTown', 'postCode']
 
-    if (required.some(field => !address[field])) {
+    if (required.some((field) => !address[field])) {
       return taskStates.STARTED
     }
 
@@ -454,7 +454,7 @@ function getCurfewAddressState(licence, optedOut, bassReferralNeeded, curfewAddr
   }
 }
 
-const approvedPremisesAddressState = licence => {
+const approvedPremisesAddressState = (licence) => {
   const approvedPremisesAddressAnswer =
     getIn(licence, ['curfew', 'approvedPremisesAddress']) ||
     getIn(licence, ['bassReferral', 'approvedPremisesAddress']) ||
@@ -474,7 +474,7 @@ const approvedPremisesAddressState = licence => {
   return taskStates.STARTED
 }
 
-const taskCompletion = licence => {
+const taskCompletion = (licence) => {
   const { consent, electricity } = getIn(licence, ['curfew', 'curfewAddressReview']) || {}
   const curfewAddress = getIn(licence, ['proposedAddress', 'curfewAddress']) || {}
   const offenderIsOccupier = getIn(curfewAddress, ['occupier', 'isOffender']) === 'Yes'
@@ -553,7 +553,7 @@ function getReportingInstructionsState(licence) {
       'reportingDate',
       'reportingTime',
     ]
-    if (required.some(field => isEmpty(getIn(reportingInstructions, [field])))) {
+    if (required.some((field) => isEmpty(getIn(reportingInstructions, [field])))) {
       return taskStates.STARTED
     }
 
@@ -584,10 +584,10 @@ function getLicenceConditionsState(licence) {
 
   const totalCount = additional + bespoke
 
-  const rejected = bespokes ? bespokes.filter(b => b.approved === 'No') : 0
+  const rejected = bespokes ? bespokes.filter((b) => b.approved === 'No') : 0
   const bespokeRejected = rejected ? rejected.length : 0
 
-  const notAnswered = bespokes ? bespokes.filter(b => isEmpty(b.approved)) : 0
+  const notAnswered = bespokes ? bespokes.filter((b) => isEmpty(b.approved)) : 0
   const bespokePending = notAnswered ? notAnswered.length : 0
 
   return {
@@ -642,11 +642,11 @@ function getFinalChecksState(licence, seriousOffence, onRemand) {
 }
 
 function getOverallState(tasks) {
-  if (tasks.every(it => it === taskStates.UNSTARTED)) {
+  if (tasks.every((it) => it === taskStates.UNSTARTED)) {
     return taskStates.UNSTARTED
   }
 
-  if (tasks.every(it => it === taskStates.DONE)) {
+  if (tasks.every((it) => it === taskStates.DONE)) {
     return taskStates.DONE
   }
 
@@ -778,7 +778,7 @@ function getBassAddressState(licence) {
 
   if (bassOffer.bassAccepted === 'Yes') {
     const required = ['addressTown', 'addressLine1', 'postCode']
-    if (required.some(field => !bassOffer[field])) {
+    if (required.some((field) => !bassOffer[field])) {
       return taskStates.STARTED
     }
   }

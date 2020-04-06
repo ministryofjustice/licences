@@ -16,7 +16,7 @@ const apiUrl = `${config.probationTeams.apiUrl}`
 /**
  * @return { ProbationTeamsClient }
  */
-module.exports = signInService => {
+module.exports = (signInService) => {
   return {
     async getFunctionalMailbox(probationAreaCode, lduCode, teamCode) {
       const ldu = await get(`${apiUrl}/probation-areas/${probationAreaCode}/local-delivery-units/${lduCode}`)
@@ -39,10 +39,7 @@ module.exports = signInService => {
 
     try {
       logger.debug(`GET ${path}`)
-      const result = await superagent
-        .get(path)
-        .set('Authorization', `Bearer ${token.token}`)
-        .timeout(timeoutSpec)
+      const result = await superagent.get(path).set('Authorization', `Bearer ${token.token}`).timeout(timeoutSpec)
       logger.debug(`GET ${path} -> ${result.status}`)
 
       return result.body

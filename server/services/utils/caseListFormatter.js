@@ -16,11 +16,11 @@ module.exports = function createCaseListFormatter(logger, licenceClient) {
 }
 
 function getBookingIds(releases) {
-  return releases.map(offender => offender.bookingId)
+  return releases.map((offender) => offender.bookingId)
 }
 
 function decoratePrisonerDetails(licences, role) {
-  return prisoner => {
+  return (prisoner) => {
     const formattedPrisoner = formatObjectForView(prisoner)
     const decoratedPrisoner = addRoleSpecificDecoration(formattedPrisoner, role, licences)
     const { stage, status, activeCase } = getStatus(prisoner, licences, role)
@@ -29,7 +29,7 @@ function decoratePrisonerDetails(licences, role) {
 }
 
 function getStatus(prisoner, licences, role) {
-  const licenceForPrisoner = licences.find(rawLicence => {
+  const licenceForPrisoner = licences.find((rawLicence) => {
     return prisoner.bookingId === rawLicence.booking_id
   })
 
@@ -129,7 +129,7 @@ function getDueText(dueDate) {
 }
 
 function addReceivedTime(prisoner, licences) {
-  const licence = licences.find(record => record.booking_id === prisoner.bookingId)
+  const licence = licences.find((record) => record.booking_id === prisoner.bookingId)
 
   if (!licence || licence.stage !== 'PROCESSING_RO') {
     return prisoner

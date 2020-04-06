@@ -3,7 +3,7 @@ const allowedRoles = require('../authentication/roles')
 const logger = require('../../log')
 const { getIn } = require('../utils/functionalHelpers')
 
-module.exports = nomisClientBuilder => {
+module.exports = (nomisClientBuilder) => {
   async function getUserProfile(token, refreshToken, username) {
     const nomisClient = nomisClientBuilder(token)
 
@@ -12,7 +12,7 @@ module.exports = nomisClientBuilder => {
     logger.info(`User profile success - username: ${username}`)
 
     const activeCaseLoads = await nomisClient.getUserCaseLoads()
-    const activeCaseLoad = activeCaseLoads.find(cl => cl.currentlyActive)
+    const activeCaseLoad = activeCaseLoads.find((cl) => cl.currentlyActive)
     const activeCaseLoadId = getIn(activeCaseLoad, ['caseLoadId'])
 
     return {
@@ -39,8 +39,8 @@ module.exports = nomisClientBuilder => {
     const allRoles = await nomisClient.getUserRoles()
 
     return allRoles
-      .map(role => role.roleCode.substring(role.roleCode.lastIndexOf('_') + 1))
-      .filter(roleCode => allowedRoles.includes(roleCode))
+      .map((role) => role.roleCode.substring(role.roleCode.lastIndexOf('_') + 1))
+      .filter((roleCode) => allowedRoles.includes(roleCode))
   }
 
   async function setRole(newRole, user) {
@@ -68,7 +68,7 @@ module.exports = nomisClientBuilder => {
     // find active caseload
     const caseLoads = await nomisClient.getUserCaseLoads()
 
-    user.activeCaseLoad = caseLoads.find(cl => cl.currentlyActive)
+    user.activeCaseLoad = caseLoads.find((cl) => cl.currentlyActive)
     user.activeCaseLoadId = getIn(user.activeCaseLoad, ['caseLoadId'])
     return user
   }

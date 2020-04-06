@@ -19,12 +19,10 @@ describe('reminderService', () => {
 
     deadlineService = {
       getDueInDays: jest.fn().mockReturnValue([{ booking_id: 1, transition_date: transitionDate }]),
-      getOverdue: jest
-        .fn()
-        .mockResolvedValue([
-          { booking_id: 2, transition_date: transitionDate },
-          { booking_id: 3, transition_date: transitionDate },
-        ]),
+      getOverdue: jest.fn().mockResolvedValue([
+        { booking_id: 2, transition_date: transitionDate },
+        { booking_id: 3, transition_date: transitionDate },
+      ]),
     }
 
     roNotificationSender = {

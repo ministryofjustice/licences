@@ -7,7 +7,7 @@ module.exports = function createConditionsService({ use2019Conditions }) {
   const additionalConditions = getAdditionalConditionsConfig(use2019Conditions)
 
   function getFullTextForApprovedConditions(licence) {
-    const standardConditionsText = standardConditions.map(it => it.text.replace(/\.+$/, ''))
+    const standardConditionsText = standardConditions.map((it) => it.text.replace(/\.+$/, ''))
 
     // could be undefined, 'No' or 'Yes'
     const standardOnly = getIn(licence, ['licenceConditions', 'standard', 'additionalConditionsRequired']) !== 'Yes'
@@ -27,7 +27,9 @@ module.exports = function createConditionsService({ use2019Conditions }) {
 
     const additionalConditionsText = isEmpty(conditions)
       ? []
-      : conditions.filter(it => it.group !== 'Bespoke' || it.approved === 'Yes').map(it => getConditionText(it.content))
+      : conditions
+          .filter((it) => it.group !== 'Bespoke' || it.approved === 'Yes')
+          .map((it) => getConditionText(it.content))
 
     return {
       standardConditions: standardConditionsText,
@@ -58,7 +60,7 @@ module.exports = function createConditionsService({ use2019Conditions }) {
   }
 
   function formatConditionInputs(requestBody) {
-    const selectedConditionsConfig = additionalConditions.filter(condition =>
+    const selectedConditionsConfig = additionalConditions.filter((condition) =>
       requestBody.additionalConditions.includes(condition.id)
     )
 
@@ -84,7 +86,7 @@ module.exports = function createConditionsService({ use2019Conditions }) {
     }
 
     const conditionIdsSelected = Object.keys(licenceAdditionalConditions)
-    const selectedConditionsConfig = additionalConditions.filter(condition =>
+    const selectedConditionsConfig = additionalConditions.filter((condition) =>
       conditionIdsSelected.includes(condition.id)
     )
 
@@ -111,7 +113,7 @@ module.exports = function createConditionsService({ use2019Conditions }) {
     }
 
     const conditionIds = additional.additionalConditions
-    const selectedConditionsConfig = additionalConditions.filter(condition => conditionIds.includes(condition.id))
+    const selectedConditionsConfig = additionalConditions.filter((condition) => conditionIds.includes(condition.id))
     const additionalConditionsObject = createAdditionalConditionsObject(selectedConditionsConfig, additional)
 
     return { additional: { ...additionalConditionsObject }, bespoke }
@@ -147,12 +149,12 @@ module.exports = function createConditionsService({ use2019Conditions }) {
     const getObjectForAdditional = createAdditionalMethod(rawLicence, selectedConditionsConfig, inputErrors)
 
     const populatedAdditional = Object.keys(additional)
-      .sort(orderForView(additionalConditions.map(condition => condition.id)))
+      .sort(orderForView(additionalConditions.map((condition) => condition.id)))
       .map(getObjectForAdditional)
 
     const populatedBespoke = bespoke ? bespoke.map(getObjectForBespoke) : []
     const selectedBespoke = approvedOnly
-      ? populatedBespoke.filter(condition => condition.approved === 'Yes')
+      ? populatedBespoke.filter((condition) => condition.approved === 'Yes')
       : populatedBespoke
 
     return {
@@ -163,8 +165,8 @@ module.exports = function createConditionsService({ use2019Conditions }) {
   }
 
   function createAdditionalMethod(rawLicence, selectedConditions, inputErrors) {
-    return condition => {
-      const selectedCondition = selectedConditions.find(selected => String(selected.id) === String(condition))
+    return (condition) => {
+      const selectedCondition = selectedConditions.find((selected) => String(selected.id) === String(condition))
       const userInput = getIn(rawLicence, ['licenceConditions', 'additional', condition])
       const userErrors = getIn(inputErrors, [condition])
       const content = getContentForCondition(selectedCondition, userInput, userErrors)
@@ -214,14 +216,14 @@ module.exports = function createConditionsService({ use2019Conditions }) {
 
   function injectUserInputStandardAsObject(userInput, conditionText, fieldPositionObject, userErrors) {
     const fieldNames = Object.keys(fieldPositionObject)
-    const splitConditionText = conditionText.split(betweenBrackets).filter(text => text)
+    const splitConditionText = conditionText.split(betweenBrackets).filter((text) => text)
     const reducer = injectVariablesIntoViewObject(fieldNames, fieldPositionObject, userInput, userErrors)
     return splitConditionText.reduce(reducer, [])
   }
 
   function injectVariablesIntoViewObject(fieldNames, fieldPositionObject, userInput, userErrors) {
     return (conditionArray, textSegment, index) => {
-      const fieldNameForPlaceholder = fieldNames.find(field => String(fieldPositionObject[field]) === String(index))
+      const fieldNameForPlaceholder = fieldNames.find((field) => String(fieldPositionObject[field]) === String(index))
       if (!fieldNameForPlaceholder) {
         return [...conditionArray, { text: textSegment }]
       }
@@ -239,17 +241,17 @@ module.exports = function createConditionsService({ use2019Conditions }) {
   function injectMultiFieldsAsObject(userInput, conditionText, userErrors, config) {
     const variableString = (variable, error) => (error ? `[${error}]` : variable)
 
-    const strings = config.fields.map(fieldName => {
+    const strings = config.fields.map((fieldName) => {
       return variableString(getIn(userInput, [fieldName]), getIn(userErrors, [fieldName]))
     })
 
-    const fieldErrors = config.fields.map(fieldName => getIn(userErrors, [fieldName])).filter(e => e)
+    const fieldErrors = config.fields.map((fieldName) => getIn(userErrors, [fieldName])).filter((e) => e)
 
     const string = interleave(strings, config.joining)
 
     const variableKey = fieldErrors.length > 0 ? 'error' : 'variable'
 
-    const splitConditionText = conditionText.split(betweenBrackets).filter(text => text)
+    const splitConditionText = conditionText.split(betweenBrackets).filter((text) => text)
     return [{ text: splitConditionText[0] }, { [variableKey]: string }, { text: splitConditionText[1] }]
   }
 
@@ -266,7 +268,7 @@ module.exports = function createConditionsService({ use2019Conditions }) {
     }, {})
   }
 
-  const orderForView = requiredOrder => (a, b) => requiredOrder.indexOf(a) - requiredOrder.indexOf(b)
+  const orderForView = (requiredOrder) => (a, b) => requiredOrder.indexOf(a) - requiredOrder.indexOf(b)
 
   return {
     getStandardConditions,
@@ -296,7 +298,7 @@ function splitIntoGroupedObject(conditionObject, condition) {
 function populateFromSavedLicence(inputtedConditions) {
   const populatedConditionIds = Object.keys(inputtedConditions)
 
-  return condition => {
+  return (condition) => {
     const submission = getSubmissionForCondition(condition.id, inputtedConditions)
     const selected = populatedConditionIds.includes(String(condition.id))
 

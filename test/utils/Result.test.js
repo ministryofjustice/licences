@@ -28,7 +28,7 @@ describe('Result', () => {
   test('mapping Success yields Success', () => {
     expect(
       Result.Success('a')
-        .map(v => v + v)
+        .map((v) => v + v)
         .isSuccess()
     ).toBe(true)
   })
@@ -36,18 +36,18 @@ describe('Result', () => {
   test('mapping a Success', () => {
     expect(
       Result.Success('a')
-        .map(v => v + v)
+        .map((v) => v + v)
         .success()
     ).toBe('aa')
   })
 
   test('async mapping a Success', async () => {
-    const result = await Result.Success('a').mapAsync(async v => v + v)
+    const result = await Result.Success('a').mapAsync(async (v) => v + v)
     expect(result.success()).toBe('aa')
   })
 
   test('async mapping a Failure', async () => {
-    const result = await Result.Fail('a').mapAsync(async v => v + v)
+    const result = await Result.Fail('a').mapAsync(async (v) => v + v)
     expect(result.fail()).toBe('a')
   })
 
@@ -76,13 +76,13 @@ describe('Result', () => {
   })
 
   test('flatMap Success -> Success', () => {
-    const result = Result.Success('a').flatMap(value => Result.Success(value + value))
+    const result = Result.Success('a').flatMap((value) => Result.Success(value + value))
     expect(result.success()).toBe('aa')
     expect(result.isSuccess()).toBe(true)
   })
 
   test('flatMap Success -> Fail', () => {
-    const result = Result.Success('a').flatMap(value => Result.Fail(`error: ${value}`))
+    const result = Result.Success('a').flatMap((value) => Result.Fail(`error: ${value}`))
     expect(result.fail()).toBe('error: a')
     expect(result.isSuccess()).toBe(false)
   })
@@ -90,7 +90,7 @@ describe('Result', () => {
   test('mapping a Fail yields Fail', () => {
     expect(
       Result.Fail('a')
-        .map(v => v + v)
+        .map((v) => v + v)
         .isSuccess()
     ).toBe(false)
   })
@@ -98,23 +98,33 @@ describe('Result', () => {
   test('mapping a Fail', () => {
     expect(
       Result.Fail('error')
-        .map(x => x + x)
+        .map((x) => x + x)
         .fail()
     ).toBe('error')
   })
 
   test('flatMap Fail', () => {
-    const result = Result.Fail('error').flatMap(value => Result.Success(value + value))
+    const result = Result.Fail('error').flatMap((value) => Result.Success(value + value))
 
     expect(result.fail()).toBe('error')
     expect(result.isSuccess()).toBe(false)
   })
 
   test('match Success', () => {
-    expect(Result.Success('a').match(v => v + v, () => 'fail')).toBe('aa')
+    expect(
+      Result.Success('a').match(
+        (v) => v + v,
+        () => 'fail'
+      )
+    ).toBe('aa')
   })
 
   test('match Fail', () => {
-    expect(Result.Fail('a').match(v => v + v, e => `fail: ${e}`)).toBe('fail: a')
+    expect(
+      Result.Fail('a').match(
+        (v) => v + v,
+        (e) => `fail: ${e}`
+      )
+    ).toBe('fail: a')
   })
 })

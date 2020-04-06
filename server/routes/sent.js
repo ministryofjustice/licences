@@ -7,7 +7,7 @@ const { asyncMiddleware } = require('../utils/middleware')
  * @param {object} args
  * @param {PrisonerService} args.prisonerService
  */
-module.exports = ({ prisonerService }) => router => {
+module.exports = ({ prisonerService }) => (router) => {
   router.get(
     '/:receiver/:type/:bookingId',
     asyncMiddleware(async (req, res) => {

@@ -22,14 +22,14 @@ module.exports = function createLduService(deliusClient, activeLduClient) {
 
     async getProbationArea(probationAreaCode) {
       const { content: probationAreas } = await deliusClient.getAllProbationAreas()
-      const probationAreaDescription = probationAreas.find(area => probationAreaCode === area.code).description
+      const probationAreaDescription = probationAreas.find((area) => probationAreaCode === area.code).description
 
       const activeLdus = await activeLduClient.allActiveLdusInArea(probationAreaCode)
-      const activeLdusCodes = activeLdus.map(ldu => ldu.code)
+      const activeLdusCodes = activeLdus.map((ldu) => ldu.code)
 
       const { content: ldus = [] } = await deliusClient.getAllLdusForProbationArea(probationAreaCode)
 
-      const allLdus = ldus.map(ldu => ({
+      const allLdus = ldus.map((ldu) => ({
         code: ldu.code,
         description: ldu.description,
         active: activeLdusCodes.includes(ldu.code),

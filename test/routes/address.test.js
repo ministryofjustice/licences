@@ -28,7 +28,7 @@ describe('/hdc/proposedAddress/', () => {
         .get('/hdc/proposedAddress/rejected/1')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('Curfew address rejected')
         })
     })
@@ -37,7 +37,7 @@ describe('/hdc/proposedAddress/', () => {
         .get('/hdc/proposedAddress/curfewAddress/1')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('Proposed curfew address')
         })
     })
@@ -46,7 +46,7 @@ describe('/hdc/proposedAddress/', () => {
         .get('/hdc/proposedAddress/curfewAddress/1')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('Additional information')
           expect(res.text).toContain('additionalInformation')
           expect(res.text).toContain('textarea')
@@ -67,7 +67,7 @@ describe('/hdc/proposedAddress/', () => {
         .get('/hdc/proposedAddress/curfewAddress/1')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('info about address')
         })
     })
@@ -77,7 +77,7 @@ describe('/hdc/proposedAddress/', () => {
         .get('/hdc/proposedAddress/curfewAddressChoice/1')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('Has the offender provided a curfew address?')
         })
     })

@@ -26,7 +26,7 @@ function getSelectedFieldNamesReducer(array, condition) {
   if (!condition.field_position) {
     return array
   }
-  const inputItems = Object.keys(condition.field_position).map(key => key)
+  const inputItems = Object.keys(condition.field_position).map((key) => key)
   return [...array, ...inputItems]
 }
 
@@ -49,8 +49,6 @@ function combineDatesIn(conditionsFieldsRequired, inputObject) {
   ]
   return merge(inputObject, {
     [DATE_FIELD]: `${inputObject[day]}/${inputObject[month]}/${inputObject[year]}`,
-    [DATE_FIELD_IN_DRUGS_SECTION]: `${inputObject[dayInDrugsSection]}/${inputObject[monthInDrugsSection]}/${
-      inputObject[yearInDrugsSection]
-    }`,
+    [DATE_FIELD_IN_DRUGS_SECTION]: `${inputObject[dayInDrugsSection]}/${inputObject[monthInDrugsSection]}/${inputObject[yearInDrugsSection]}`,
   })
 }

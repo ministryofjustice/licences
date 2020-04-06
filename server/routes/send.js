@@ -9,7 +9,7 @@ const transitionsForDestinations = require('../services/notifications/transition
  * @param {PrisonerService} args.prisonerService
  * @param {any} args.notificationService
  */
-module.exports = ({ prisonerService, notificationService }) => router => {
+module.exports = ({ prisonerService, notificationService }) => (router) => {
   router.get('/:destination/:bookingId', async (req, res) => {
     const { destination, bookingId } = req.params
     const transition = transitionsForDestinations[destination]

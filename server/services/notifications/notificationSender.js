@@ -2,7 +2,7 @@ const templates = require('../config/notificationTemplates')
 const logger = require('../../../log.js')
 const { isEmpty } = require('../../utils/functionalHelpers')
 
-module.exports = function createNotificationSender(notifyClient, audit, { notifications: { notifyKey } }) {
+module.exports = function createNotificationSender(notifyClient, audit, notifyKey) {
   async function notify({ sendingUserName, notificationType, bookingId, notifications }) {
     if (isEmpty(notifyKey) || notifyKey === 'NOTIFY_OFF') {
       logger.warn('No notification API key - notifications disabled')
@@ -14,7 +14,7 @@ module.exports = function createNotificationSender(notifyClient, audit, { notifi
       return
     }
 
-    notifications.forEach(notification => {
+    notifications.forEach((notification) => {
       if (isEmpty(templates[notification.templateName])) {
         logger.warn(`Unmapped notification template name: ${notification.templateName}`)
         return
@@ -30,7 +30,7 @@ module.exports = function createNotificationSender(notifyClient, audit, { notifi
           .then(() => {
             logger.info(`Successful notify for email: ${notification.email}`)
           })
-          .catch(error => {
+          .catch((error) => {
             logger.error('Error sending notification email ', notification.email)
             logger.error(error.stack)
           })

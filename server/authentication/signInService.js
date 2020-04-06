@@ -44,7 +44,7 @@ const signInService = () => {
   }
 }
 
-const parseOauthTokens = oauthResult => {
+const parseOauthTokens = (oauthResult) => {
   const token = oauthResult.body.access_token
   const refreshToken = oauthResult.body.refresh_token
   const expiresIn = oauthResult.body.expires_in

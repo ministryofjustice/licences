@@ -6,7 +6,7 @@ const { asyncMiddleware, authorisationMiddleware } = require('../../utils/middle
 /**
  *  @param {LduService} lduService
  */
-module.exports = lduService => (router, audited) => {
+module.exports = (lduService) => (router, audited) => {
   router.use(authorisationMiddleware)
 
   router.get(

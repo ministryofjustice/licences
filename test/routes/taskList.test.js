@@ -142,7 +142,7 @@ describe('GET /taskList/:prisonNumber', () => {
         .get('/taskList/123')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('This is because there is no offender number recorded in Delius')
         })
     })
@@ -161,7 +161,7 @@ describe('GET /taskList/:prisonNumber', () => {
         .get('/taskList/123')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain(
             'This is because the assigned Responsible officer is in an area not covered by the HDC roll out'
           )
@@ -182,7 +182,7 @@ describe('GET /taskList/:prisonNumber', () => {
         .get('/taskList/123')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('This is because there is no Community Offender Manager showing in Delius')
         })
     })
@@ -201,7 +201,7 @@ describe('GET /taskList/:prisonNumber', () => {
         .get('/taskList/123')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).not.toContain('button-disabled')
         })
     })
@@ -234,7 +234,7 @@ describe('GET /taskList/:prisonNumber', () => {
         .get('/taskList/123')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toEqual(expect.not.arrayContaining(['id="prisonerCrd"']))
           expect(res.text).toContain('id="prisonerArd"> 01/01/2001')
         })
@@ -267,7 +267,7 @@ describe('GET /taskList/:prisonNumber', () => {
       return request(app)
         .get('/taskList/1233456')
         .expect(200)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toEqual(expect.not.arrayContaining(['id="eligibilityCheckStart"']))
         })
     })
@@ -284,7 +284,7 @@ describe('GET /taskList/:prisonNumber', () => {
       return request(app)
         .get('/taskList/1233456')
         .expect(200)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('id="eligibilityCheckStart"')
         })
     })
@@ -301,7 +301,7 @@ describe('GET /taskList/:prisonNumber', () => {
           .get('/taskList/123')
           .expect(200)
           .expect('Content-Type', /html/)
-          .expect(res => {
+          .expect((res) => {
             expect(res.text).toContain('id="prisonerArd"> 01/01/2001')
           })
       })
@@ -325,7 +325,7 @@ describe('GET /taskList/:prisonNumber', () => {
         .post('/taskList/eligibilityStart')
         .send({ bookingId: '123' })
         .expect(302)
-        .expect(res => {
+        .expect((res) => {
           expect(res.header.location).toContain('/hdc/eligibility/excluded/123')
         })
     })
@@ -467,10 +467,7 @@ describe('GET /taskList/:prisonNumber', () => {
         caServiceStub: caService,
       })
 
-      return request(app)
-        .get('/taskList/image/123')
-        .expect(200)
-        .expect('Content-Type', /image/)
+      return request(app).get('/taskList/image/123').expect(200).expect('Content-Type', /image/)
     })
 
     test('should return placeholder if no image returned from nomis', () => {
@@ -482,10 +479,7 @@ describe('GET /taskList/:prisonNumber', () => {
         caServiceStub: caService,
       })
 
-      return request(app)
-        .get('/taskList/image/123')
-        .expect(302)
-        .expect('Content-Type', /image/)
+      return request(app).get('/taskList/image/123').expect(302).expect('Content-Type', /image/)
     })
   })
 
@@ -520,7 +514,7 @@ describe('GET /taskList/:prisonNumber', () => {
           .get('/taskList/123')
           .expect(200)
           .expect('Content-Type', /html/)
-          .expect(res => {
+          .expect((res) => {
             expect(res.text).toContain('action="/hdc/taskList/varyStart/"')
           })
       })
@@ -538,7 +532,7 @@ describe('GET /taskList/:prisonNumber', () => {
           .get('/taskList/123')
           .expect(200)
           .expect('Content-Type', /html/)
-          .expect(res => {
+          .expect((res) => {
             expect(res.text).toContain('/hdc/vary/evidence/')
           })
       })
@@ -555,7 +549,7 @@ describe('GET /taskList/:prisonNumber', () => {
           .get('/taskList/123')
           .expect(200)
           .expect('Content-Type', /html/)
-          .expect(res => {
+          .expect((res) => {
             expect(res.text).not.toContain('Home detention curfew refused')
           })
       })
@@ -571,7 +565,7 @@ describe('GET /taskList/:prisonNumber', () => {
           .get('/taskList/123')
           .expect(200)
           .expect('Content-Type', /html/)
-          .expect(res => {
+          .expect((res) => {
             expect(res.text).not.toContain('Address unsuitable')
           })
       })
@@ -586,7 +580,7 @@ describe('GET /taskList/:prisonNumber', () => {
           .get('/taskList/123')
           .expect(200)
           .expect('Content-Type', /html/)
-          .expect(res => {
+          .expect((res) => {
             expect(res.text).toContain('Forms')
           })
       })

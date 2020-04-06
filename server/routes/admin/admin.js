@@ -1,6 +1,6 @@
 const { authorisationMiddleware } = require('../../utils/middleware')
 
-module.exports = () => router => {
+module.exports = () => (router) => {
   router.use(authorisationMiddleware)
 
   router.get('/', (req, res) => {

@@ -57,11 +57,8 @@ const reportingInstructionFields = [
   },
 ]
 
-const fieldName = R.compose(
-  R.head,
-  R.keys
-)
-const replacementFactory = field => ({ [fieldName(field)]: { responseType: 'optionalString' } })
+const fieldName = R.compose(R.head, R.keys)
+const replacementFactory = (field) => ({ [fieldName(field)]: { responseType: 'optionalString' } })
 const replaceResponseType = R.chain(R.mergeDeepLeft, replacementFactory)
 const replaceResponseTypes = R.map(replaceResponseType)
 

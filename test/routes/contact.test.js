@@ -77,7 +77,7 @@ describe('/contact', () => {
       return request(app)
         .get('/contact/123456')
         .expect(200)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('ABC123')
           expect(res.text).toContain('LDU Description')
           expect(res.text).toContain('Ro Name')
@@ -103,7 +103,7 @@ describe('/contact', () => {
       return request(app)
         .get('/contact/123456')
         .expect(200)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('first last')
           expect(res.text).toContain('JR')
           expect(res.text).toContain('ro@email.com')
@@ -118,7 +118,7 @@ describe('/contact', () => {
       return request(app)
         .get('/contact/123456')
         .expect(200)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('No contact details found')
         })
     })

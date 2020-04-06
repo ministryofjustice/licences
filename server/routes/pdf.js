@@ -57,7 +57,7 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
 
       if (
         (offenceBeforeCutoff === 'No' && !templatesForNewOffence.includes(licenceTypeRadio)) ||
-        (offenceBeforeCutoff === 'Yes' && !templates.map(t => t.id).includes(licenceTypeRadio))
+        (offenceBeforeCutoff === 'Yes' && !templates.map((t) => t.id).includes(licenceTypeRadio))
       ) {
         req.flash('errors', { licenceTypeRadioList: 'Select a licence type' })
         return res.redirect(`/hdc/pdf/selectLicenceType/${bookingId}`)
@@ -90,12 +90,12 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
       const postRelease = prisoner.agencyLocationId ? prisoner.agencyLocationId.toUpperCase() === 'OUT' : false
 
       const incompleteGroupsFilter = postRelease
-        ? group => missing[group].mandatory || missing[group].mandatoryPostRelease
-        : group => missing[group].mandatory || missing[group].mandatoryPreRelease
+        ? (group) => missing[group].mandatory || missing[group].mandatoryPostRelease
+        : (group) => missing[group].mandatory || missing[group].mandatoryPreRelease
 
       const incompleteGroups = Object.keys(missing).filter(incompleteGroupsFilter)
 
-      const incompletePreferredGroups = Object.keys(missing).filter(group => missing[group].preferred)
+      const incompletePreferredGroups = Object.keys(missing).filter((group) => missing[group].preferred)
 
       const canPrint = !incompleteGroups || isEmpty(incompleteGroups)
 
@@ -195,11 +195,11 @@ function getFooter(pdfData, templateName) {
 }
 
 function getTemplateLabel(templateName) {
-  const templateConfig = templates.find(template => template.id === templateName)
+  const templateConfig = templates.find((template) => template.id === templateName)
   return getIn(templateConfig, ['label'])
 }
 
 function getTemplateVersionLabel(templateName) {
-  const { label, version } = templates.find(template => template.id === templateName)
+  const { label, version } = templates.find((template) => template.id === templateName)
   return [label, version].join(' v')
 }

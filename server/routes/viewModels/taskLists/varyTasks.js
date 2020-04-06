@@ -53,5 +53,5 @@ module.exports = ({ version, versionDetails, approvedVersion, approvedVersionDet
       action: { type: 'btn', text: 'Continue', href: '/hdc/pdf/selectLicenceType/' },
       visible: !licenceUnstarted && isNewVersion,
     },
-  ].filter(task => task.visible)
+  ].filter((task) => task.visible)
 }
