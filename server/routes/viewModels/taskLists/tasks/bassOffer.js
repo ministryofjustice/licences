@@ -66,11 +66,11 @@ module.exports = {
       return standardAction(bassOffer, '/hdc/bassReferral/bassOffer/', dataQa)
     }
 
-    if ([optOut, curfewAddress, bassRequest].every(task => task === 'UNSTARTED')) {
+    if ([optOut, curfewAddress, bassRequest].every((task) => task === 'UNSTARTED')) {
       return { text: 'Start now', href: '/hdc/proposedAddress/curfewAddressChoice/', type: 'btn', dataQa }
     }
 
-    if ([optOut, curfewAddress, bassRequest].every(task => task === 'DONE')) {
+    if ([optOut, curfewAddress, bassRequest].every((task) => task === 'DONE')) {
       return change('/hdc/proposedAddress/curfewAddressChoice/', dataQa)
     }
 

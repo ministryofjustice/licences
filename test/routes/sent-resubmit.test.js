@@ -35,7 +35,7 @@ describe('sent', () => {
         .get('/hdc/sent/DM/caToDmResubmit/123')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('Submitted for reconsideration')
         })
     })

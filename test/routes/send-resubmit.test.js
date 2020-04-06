@@ -35,7 +35,7 @@ describe('send', () => {
         .get('/hdc/send/resubmit/123')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('Submit for reconsideration')
           expect(res.text).toContain('The case is ready to be submitted for reconsideration by the decision maker.')
         })
@@ -61,7 +61,7 @@ describe('send', () => {
         .get('/hdc/send/resubmit/123')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('Submit for reconsideration')
           expect(res.text).toContain('The case is ready to be submitted for reconsideration by the decision maker.')
         })
@@ -83,7 +83,7 @@ describe('send', () => {
         .get('/hdc/send/approval/123')
         .expect(200)
         .expect('Content-Type', /html/)
-        .expect(res => {
+        .expect((res) => {
           expect(res.text).toContain('Submit for approval')
         })
     })
