@@ -149,9 +149,6 @@ jobs:
           name: Wait for node app to start
           command: sleep 5
       - run:
-          name: Initialise db
-          command: npm run db:knex-migrate up
-      - run:
           name: Seed db
           command: npm run db:seed
       - restore_cache:
