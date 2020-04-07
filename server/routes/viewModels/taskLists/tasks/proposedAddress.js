@@ -30,16 +30,16 @@ module.exports = {
     return 'Not completed'
   },
 
-  getCaAction: ({ decisions, tasks }, dataQa) => {
+  getCaAction: ({ decisions, tasks }) => {
     const { curfewAddressRejected, bassAreaNotSuitable } = decisions
     const { curfewAddress, optOut, bassRequest } = tasks
 
     if (curfewAddressRejected) {
-      return standardAction(curfewAddress, '/hdc/proposedAddress/rejected/', dataQa)
+      return standardAction(curfewAddress, '/hdc/proposedAddress/rejected/', 'curfew-address')
     }
 
     if (bassAreaNotSuitable) {
-      return standardAction(curfewAddress, '/hdc/bassReferral/rejected/', dataQa)
+      return standardAction(curfewAddress, '/hdc/bassReferral/rejected/', 'curfew-address')
     }
 
     return standardActionMulti([curfewAddress, optOut, bassRequest], '/hdc/proposedAddress/curfewAddressChoice/')

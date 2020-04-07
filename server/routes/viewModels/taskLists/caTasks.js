@@ -118,21 +118,21 @@ module.exports = {
     const proposedAddressTask = {
       title: 'Proposed curfew address',
       label: curfewAddress.getLabel({ decisions, tasks }),
-      action: curfewAddress.getCaProcessingAction({ decisions, tasks }, 'proposed-curfew-address'),
+      action: curfewAddress.getCaProcessingAction({ decisions, tasks }),
       visible: !bassReferralNeeded && allowedTransition !== 'caToRo',
     }
 
     const curfewAddressTask = {
       title: 'Curfew address',
       label: proposedAddress.getLabel({ decisions, tasks }),
-      action: proposedAddress.getCaAction({ decisions, tasks }, 'curfew-address'),
+      action: proposedAddress.getCaAction({ decisions, tasks }),
       visible: !bassReferralNeeded && allowedTransition === 'caToRo',
     }
 
     const bassTask = {
       title: 'BASS address',
       label: bassOfferTask.getLabel({ decisions, tasks }),
-      action: bassOfferTask.getAction({ decisions, tasks }, 'bass-address'),
+      action: bassOfferTask.getAction({ decisions, tasks }),
       visible: bassReferralNeeded,
     }
 
@@ -223,7 +223,7 @@ module.exports = {
       {
         title: 'Postpone or refuse',
         label: postponement.getLabel({ decisions }),
-        action: postponement.getAction({ decisions }, 'postpone'),
+        action: postponement.getAction({ decisions }),
         visible: validAddress,
       },
       refusalTask,
@@ -292,7 +292,7 @@ module.exports = {
       {
         title: 'Curfew address',
         label: proposedAddress.getLabel({ decisions, tasks }),
-        action: proposedAddress.getCaAction({ decisions, tasks }, 'curfew-address'),
+        action: proposedAddress.getCaAction({ decisions, tasks }),
         visible: allowedTransition === 'caToRo',
       },
       {
@@ -304,7 +304,7 @@ module.exports = {
       {
         title: 'Proposed curfew address',
         label: curfewAddress.getLabel({ decisions, tasks }),
-        action: curfewAddress.getCaPostApprovalAction({ decisions }, 'proposed-curfew-address'),
+        action: curfewAddress.getCaPostApprovalAction({ decisions }),
         visible: !bassReferralNeeded && allowedTransition !== 'caToRo',
       },
       {
@@ -365,13 +365,13 @@ module.exports = {
       {
         title: 'Review case',
         label: finalChecks.getLabel({ decisions, tasks }),
-        action: finalChecks.getCaProcessingAction({ tasks }, 'review-case'),
+        action: finalChecks.getCaProcessingAction({ tasks }),
         visible: validAddress,
       },
       {
         title: 'Postpone or refuse',
         label: postponement.getLabel({ decisions }),
-        action: postponement.getAction({ decisions }, 'postpone'),
+        action: postponement.getAction({ decisions }),
         visible: validAddress && !dmRefused,
       },
       {

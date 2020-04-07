@@ -10,14 +10,22 @@ module.exports = {
     return "Postpone the case if you're waiting for information on risk management"
   },
 
-  getAction: ({ decisions }, dataQa) => {
+  getAction: ({ decisions }) => {
     const { postponed } = decisions
 
+    if (postponed) {
+      return {
+        text: 'Resume',
+        href: '/hdc/finalChecks/postpone/',
+        type: 'btn',
+        dataQa: 'postpone',
+      }
+    }
     return {
-      text: postponed ? 'Resume' : 'Postpone',
+      text: 'Postpone',
       href: '/hdc/finalChecks/postpone/',
       type: 'btn',
-      dataQa,
+      dataQa: 'postpone',
     }
   },
 }

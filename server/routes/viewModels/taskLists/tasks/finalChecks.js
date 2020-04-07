@@ -26,9 +26,9 @@ module.exports = {
     return finalChecks === 'DONE' ? 'Confirmed' : 'Not completed'
   },
 
-  getCaProcessingAction: ({ tasks }, dataQa) => {
+  getCaProcessingAction: ({ tasks }) => {
     const { finalChecks } = tasks
 
-    return standardAction(finalChecks, '/hdc/finalChecks/seriousOffence/', dataQa)
+    return standardAction(finalChecks, '/hdc/finalChecks/seriousOffence/', 'review-case')
   },
 }

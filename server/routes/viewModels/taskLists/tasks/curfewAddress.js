@@ -38,40 +38,40 @@ module.exports = {
     return standardAction(curfewAddressReview, '/hdc/curfew/approvedPremises/')
   },
 
-  getCaPostApprovalAction: ({ decisions }, dataQa) => {
+  getCaPostApprovalAction: ({ decisions }) => {
     const { optedOut, addressWithdrawn, approvedPremisesRequired } = decisions
 
     if (optedOut) {
-      return change('/hdc/proposedAddress/curfewAddressChoice/', dataQa)
+      return change('/hdc/proposedAddress/curfewAddressChoice/', 'proposed-curfew-address')
     }
 
     if (approvedPremisesRequired) {
-      return viewEdit('/hdc/curfew/approvedPremisesChoice/', dataQa)
+      return viewEdit('/hdc/curfew/approvedPremisesChoice/', 'proposed-curfew-address')
     }
 
     if (addressWithdrawn) {
-      return viewEdit('/hdc/curfew/consentWithdrawn/', dataQa)
+      return viewEdit('/hdc/curfew/consentWithdrawn/', 'proposed-curfew-address')
     }
-    return viewEdit('/hdc/review/address/', dataQa)
+    return viewEdit('/hdc/review/address/', 'proposed-curfew-address')
   },
 
-  getCaProcessingAction: ({ decisions, tasks }, dataQa) => {
+  getCaProcessingAction: ({ decisions, tasks }) => {
     const { optedOut, approvedPremisesRequired } = decisions
     const { curfewAddress } = tasks
 
     if (optedOut) {
-      return change('/hdc/proposedAddress/curfewAddressChoice/', dataQa)
+      return change('/hdc/proposedAddress/curfewAddressChoice/', 'proposed-curfew-address')
     }
 
     if (approvedPremisesRequired) {
-      return viewEdit('/hdc/curfew/approvedPremisesChoice/', dataQa)
+      return viewEdit('/hdc/curfew/approvedPremisesChoice/', 'proposed-curfew-address')
     }
 
     if (curfewAddress === 'UNSTARTED') {
-      return standardAction(curfewAddress, '/hdc/proposedAddress/curfewAddressChoice/', dataQa)
+      return standardAction(curfewAddress, '/hdc/proposedAddress/curfewAddressChoice/', 'proposed-curfew-address')
     }
 
-    return change('/hdc/review/address/', dataQa)
+    return change('/hdc/review/address/', 'proposed-curfew-address')
   },
 
   getDmAction: ({ decisions }) => {
