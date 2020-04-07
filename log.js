@@ -1,6 +1,5 @@
-// eslint-disable-next-line import/order
 const appInsights = require('./azure-appinsights')
-const { AzureApplicationInsightsLogger } = require('winston-azure-application-insights')
+// eslint-disable-next-line import/order
 const winston = require('winston')
 
 const { combine, colorize, simple, timestamp, json, prettyPrint } = winston.format
@@ -34,15 +33,7 @@ const logger = winston.createLogger({
 })
 
 if (appInsights) {
-  logger.info('Activating application insights logger')
-
-  logger.add(
-    new AzureApplicationInsightsLogger({
-      insights: appInsights,
-      level: 'info',
-      sendErrorsAsExceptions: true,
-    })
-  )
+  logger.info('Application insights logger is active')
 }
 
 module.exports = logger

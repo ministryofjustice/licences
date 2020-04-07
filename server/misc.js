@@ -11,14 +11,20 @@ function flattenObject(source, target, prefix) {
   })
 }
 
-exports.flattenMeta = function flattenMeta(meta) {
+exports.flattenMeta = function flattenMeta(...meta) {
   const flat = {}
-  Object.keys(meta || {}).forEach((key) => {
-    const val = meta[key]
-    if (val && typeof val === 'object') {
-      flattenObject(val, flat, key)
+  meta.forEach((item, i) => {
+    if (typeof item === 'object') {
+      Object.entries(item || {}).forEach(([prop, val]) => {
+        const key = meta.length === 1 ? prop : `${i}_${prop}`
+        if (val && typeof val === 'object') {
+          flattenObject(val, flat, key)
+        } else {
+          flat[key] = val
+        }
+      })
     } else {
-      flat[key] = val
+      flat[i] = item
     }
   })
   return flat
