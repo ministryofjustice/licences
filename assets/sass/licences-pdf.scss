@@ -183,7 +183,40 @@ img {
   padding-bottom: 50px;
 }
 
+.extra-large-padding-bottom {
+  padding-bottom: 150px;
+}
+
 .box {
   border: 1px solid grey;
   padding: 10px;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 20% auto;
+}
+
+.grid-item {
+  border: 1px solid grey;
+  padding: 20px;
+}
+
+.checkbox {
+  height: 25px;
+  width: 25px;
+  border: solid black 1px;
+  margin: auto
+}
+
+.checkbox-margin-top {
+  margin-top: 60px
+}
+
+.border-left-none {
+	border-left: none;
+}
+
+.border-top-none {
+	border-top: none
 }
