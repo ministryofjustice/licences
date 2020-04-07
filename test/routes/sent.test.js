@@ -91,6 +91,34 @@ describe('GET sent', () => {
   test('errors when an invalid transition type is provided', () => {
     return request(app).get('/hdc/sent/CA/foobar/123').expect(500)
   })
+
+  describe('Get sent/DM/caToDmResubmit/:bookingId', () => {
+    let notificationService
+    test('Displays correct page title', () => {
+      const licence = {
+        approval: {
+          release: { decision: 'No' },
+        },
+      }
+      const appForResubmission = createAppForResubmission(
+        {
+          prisonerServiceStub: prisonerService,
+          notificationServiceStub: notificationService,
+        },
+        'caUser',
+        'DECIDED',
+        licence
+      )
+
+      return request(appForResubmission)
+        .get('/hdc/sent/DM/caToDmResubmit/123')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect((res) => {
+          expect(res.text).toContain('Submitted for reconsideration')
+        })
+    })
+  })
 })
 
 function createApp({ licenceServiceStub, prisonerServiceStub }, user) {
@@ -101,5 +129,30 @@ function createApp({ licenceServiceStub, prisonerServiceStub }, user) {
   const baseRouter = standardRouter({ licenceService, prisonerService, audit: auditStub, signInService })
   const route = baseRouter(createRoute({ licenceService, prisonerService }), 'USER_MANAGEMENT')
 
+  return appSetup(route, user, '/hdc/sent/')
+}
+
+function createAppForResubmission({ prisonerServiceStub, notificationServiceStub }, user, stage, licence) {
+  const prisonerService = prisonerServiceStub || createPrisonerServiceStub()
+  const licenceService = createLicenceServiceStub()
+  const signInService = createSignInServiceStub()
+
+  licenceService.getLicence.mockResolvedValue({
+    versionDetails: { version: 1 },
+    approvedVersionDetails: { template: 'hdc_ap' },
+    stage,
+    licence,
+  })
+
+  const baseRouter = standardRouter({ licenceService, prisonerService, audit: auditStub, signInService })
+  const route = baseRouter(
+    createRoute({
+      licenceService,
+      prisonerService,
+      notificationService: notificationServiceStub,
+      audit: auditStub,
+    }),
+    'USER_MANAGEMENT'
+  )
   return appSetup(route, user, '/hdc/sent/')
 }

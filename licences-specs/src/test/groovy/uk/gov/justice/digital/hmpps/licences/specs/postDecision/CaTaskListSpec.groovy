@@ -87,7 +87,7 @@ class CaTaskListSpec extends GebReportingSpec {
   }
 
   @Unroll
-  def '#task button links to page'() {
+  def '#task button links to page - HDC approved'() {
 
     given: 'Viewing task list'
     to TaskListPage, testData.markAndrewsBookingId
@@ -109,6 +109,8 @@ class CaTaskListSpec extends GebReportingSpec {
     tasks.reporting   | ReportingInstructionsPage
     tasks.finalChecks | FinalChecksSeriousOffencePage
     tasks.create      | LicenceTemplatePage
+    tasks.resubmit    | SendResubmitPage
+
   }
 
   def 'When address is withdrawn, can only send to DM for refusal'() {
@@ -202,7 +204,7 @@ class CaTaskListSpec extends GebReportingSpec {
   }
 
   @Unroll
-  def '#task button links to page'() {
+  def '#task button links to page HDC rejected'() {
 
     given: 'Viewing task list'
     to TaskListPage, testData.markAndrewsBookingId
