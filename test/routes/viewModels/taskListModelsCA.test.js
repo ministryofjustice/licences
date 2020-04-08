@@ -57,6 +57,7 @@ describe('TaskList models', () => {
       href: '/hdc/send/refusal/',
       text: 'Continue',
       type: 'btn',
+      dataQa: 'continue',
     },
     label: 'Ready to submit for refusal',
     title: 'Submit to decision maker',
@@ -75,7 +76,7 @@ describe('TaskList models', () => {
     visible: true,
   }
   const submitDmPreDecision = {
-    action: { text: 'Continue', type: 'btn', href: '/hdc/send/approval/', dataQa: undefined },
+    action: { text: 'Continue', type: 'btn', href: '/hdc/send/approval/', dataQa: 'continue' },
     label: 'Ready to submit',
     title: 'Submit to decision maker',
     visible: true,

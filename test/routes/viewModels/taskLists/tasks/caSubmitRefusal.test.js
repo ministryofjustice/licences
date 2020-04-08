@@ -32,6 +32,7 @@ describe('ca submit for address review task', () => {
         text: 'Continue',
         href: '/hdc/send/refusal/',
         type: 'btn',
+        dataQa: 'continue',
       })
     })
 

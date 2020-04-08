@@ -79,7 +79,7 @@ module.exports = {
       text: 'Continue',
       type: 'btn',
       href,
-      dataQa,
+      dataQa: 'continue',
     }
   },
 

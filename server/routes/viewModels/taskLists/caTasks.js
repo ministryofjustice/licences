@@ -298,7 +298,7 @@ module.exports = {
       {
         title: 'BASS address',
         label: bassAddress.getLabel({ decisions, tasks }),
-        action: bassAddress.getCaAction({ tasks }, 'bass-address'),
+        action: bassAddress.getCaAction({ tasks }),
         visible: bassReferralNeeded && allowedTransition !== 'caToRo',
       },
       {
