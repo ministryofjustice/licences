@@ -16,7 +16,6 @@ const noCache = require('nocache')
 
 const csurf = require('csurf')
 const compression = require('compression')
-const sassMiddleware = require('node-sass-middleware')
 const passport = require('passport')
 const ensureHttps = require('./utils/ensureHttps')
 
@@ -163,24 +162,6 @@ module.exports = function createApp({
       res.locals.version = moment.now().toString()
       return next()
     })
-  }
-
-  if (!production) {
-    app.use(
-      '/public',
-      sassMiddleware({
-        src: path.join(__dirname, '../assets/sass'),
-        dest: path.join(__dirname, '../assets/stylesheets'),
-        debug: false,
-        outputStyle: 'compressed',
-        prefix: '/stylesheets/',
-        includePaths: [
-          'node_modules/govuk_frontend_toolkit/stylesheets',
-          'node_modules/govuk_template_jinja/assets/stylesheets',
-          'node_modules/govuk-elements-sass/public/sass',
-        ],
-      })
-    )
   }
 
   //  Static Resources Configuration
