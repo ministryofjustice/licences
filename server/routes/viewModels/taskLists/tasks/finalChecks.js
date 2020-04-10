@@ -5,10 +5,16 @@ module.exports = {
     const { finalChecks } = tasks
     const { seriousOffence, onRemand, confiscationOrder } = decisions
 
+    const labels = {
+      seriousOffence: { true: 'The offender is under investigation or been charged for a serious offence in custody' },
+      onRemand: { true: 'The offender is on remand' },
+      confiscationOrder: { true: 'The offender is subject to a confiscation order' },
+    }
+
     const warningLabel = [
-      seriousOffence && 'The offender is under investigation or been charged for a serious offence in custody',
-      onRemand && 'The offender is on remand',
-      confiscationOrder && 'The offender is subject to a confiscation order',
+      labels.seriousOffence[seriousOffence],
+      labels.onRemand[onRemand],
+      labels.confiscationOrder[confiscationOrder],
     ]
       .filter(Boolean)
       .join('||')
