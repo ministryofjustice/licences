@@ -36,7 +36,7 @@ module.exports = {
   getCaAction: ({ tasks }) => {
     const { bassAddress, approvedPremisesAddress } = tasks
     if (approvedPremisesAddress === 'DONE') {
-      return viewEdit('/hdc/bassReferral/approvedPremisesChoice/')
+      return viewEdit('/hdc/bassReferral/approvedPremisesChoice/', 'bass-address')
     }
     return standardAction(bassAddress, '/hdc/bassReferral/bassOffer/')
   },

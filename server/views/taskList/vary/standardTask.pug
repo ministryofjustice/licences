@@ -20,16 +20,16 @@ mixin action(actionConfig)
   - var link = actionConfig.href.charAt(actionConfig.href.length - 1) === '/' ? actionConfig.href + prisonerInfo.bookingId : actionConfig.href
 
   if isLink
-    a.taskListAction(href=link, target=target) #{actionConfig.text}
+    a.taskListAction(href=link, target=target, data-qa=actionConfig.dataQa) #{actionConfig.text}
 
   else if isButton
-    a.taskListAction.center.button(href=link, target=target) #{actionConfig.text}
+    a.taskListAction.center.button(href=link, target=target, data-qa=actionConfig.dataQa) #{actionConfig.text}
 
   else if isSecondaryButton
-    a.taskListAction.center.button.button-secondary(href=link, target=target) #{actionConfig.text}
+    a.taskListAction.center.button.button-secondary(href=link, target=target, data-qa=actionConfig.dataQa) #{actionConfig.text}
   
   else if isDisabledButton
-    a.taskListAction.center.button.button-disabled(disabled) #{actionConfig.text}
+    a.taskListAction.center.button.button-disabled(disabled, data-qa=actionConfig.dataQa) #{actionConfig.text}
 
 mixin label(text)
   - var sections = text.split('||')

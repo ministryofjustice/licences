@@ -13,6 +13,7 @@ describe('create licence task', () => {
         text: 'Continue',
         href: '/hdc/pdf/selectLicenceType/',
         type: 'btn',
+        dataQa: 'continue',
       })
     })
 
@@ -27,6 +28,7 @@ describe('create licence task', () => {
         text: 'Continue',
         href: '/hdc/pdf/selectLicenceType/',
         type: 'btn',
+        dataQa: 'continue',
       })
     })
 

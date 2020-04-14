@@ -67,6 +67,7 @@ describe('final checks task', () => {
         text: 'Change',
         href: '/hdc/finalChecks/seriousOffence/',
         type: 'link',
+        dataQa: 'review-case',
       })
     })
     test('should show continue button to serious offence question when final checks STARTED', () => {

@@ -29,6 +29,6 @@ module.exports = {
   getCaProcessingAction: ({ tasks }) => {
     const { finalChecks } = tasks
 
-    return standardAction(finalChecks, '/hdc/finalChecks/seriousOffence/')
+    return standardAction(finalChecks, '/hdc/finalChecks/seriousOffence/', 'review-case')
   },
 }

@@ -153,6 +153,7 @@ describe('TaskList models', () => {
       href: '/hdc/review/licenceDetails/',
       text: 'Continue',
       type: 'btn',
+      dataQa: 'continue',
     },
     title: 'Submit to prison case admin',
     label: 'Ready to submit',

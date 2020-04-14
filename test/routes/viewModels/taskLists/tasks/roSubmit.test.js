@@ -22,6 +22,7 @@ describe('victim liaison task', () => {
         text: 'Continue',
         href: '/hdc/send/optedOut/',
         type: 'btn',
+        dataQa: 'continue',
       })
     })
 
@@ -35,6 +36,7 @@ describe('victim liaison task', () => {
         text: 'Continue',
         href: '/hdc/review/licenceDetails/',
         type: 'btn',
+        dataQa: 'continue',
       })
     })
   })

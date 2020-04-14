@@ -25,6 +25,7 @@ describe('postponement task', () => {
         text: 'Resume',
         href: '/hdc/finalChecks/postpone/',
         type: 'btn',
+        dataQa: 'postpone',
       })
     })
 
@@ -33,6 +34,7 @@ describe('postponement task', () => {
         text: 'Postpone',
         href: '/hdc/finalChecks/postpone/',
         type: 'btn',
+        dataQa: 'postpone',
       })
     })
   })

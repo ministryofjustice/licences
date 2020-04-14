@@ -1,125 +1,128 @@
 {
   "stage": "DECIDED",
   "licence": {
+    "risk": {
+      "riskManagement": {
+        "emsInformation": "No",
+        "planningActions": "No",
+        "unsuitableReason": "",
+        "awaitingInformation": "No",
+        "emsInformationDetails": "",
+        "riskManagementDetails": "",
+        "proposedAddressSuitable": "Yes",
+        "nonDisclosableInformation": "No",
+        "nonDisclosableInformationDetails": ""
+      }
+    },
+    "curfew": {
+      "curfewHours": {
+        "allFrom": "19:00",
+        "allUntil": "07:00",
+        "fridayFrom": "19:00",
+        "mondayFrom": "19:00",
+        "sundayFrom": "19:00",
+        "fridayUntil": "07:00",
+        "mondayUntil": "07:00",
+        "sundayUntil": "07:00",
+        "tuesdayFrom": "19:00",
+        "saturdayFrom": "19:00",
+        "thursdayFrom": "19:00",
+        "tuesdayUntil": "07:00",
+        "saturdayUntil": "07:00",
+        "thursdayUntil": "07:00",
+        "wednesdayFrom": "19:00",
+        "wednesdayUntil": "07:00",
+        "daySpecificInputs": "No"
+      },
+      "approvedPremises": {
+        "required": "No"
+      },
+      "curfewAddressReview": {
+        "electricity": "Yes",
+        "homeVisitConducted": "No",
+        "addressReviewComments": ""
+      }
+    },
+    "victim": {
+      "victimLiaison": {
+        "decision": "No"
+      }
+    },
+    "approval": {
+      "release": {
+        "reason": "addressUnsuitable",
+        "decision": "No",
+        "decisionMaker": "Diane Matthews",
+        "reasonForDecision": ""
+      }
+    },
+    "reporting": {
+      "reportingInstructions": {
+        "name": "The Duty Officer",
+        "postcode": "S2 9BC",
+        "telephone": "01234567890",
+        "townOrCity": "Sheffield",
+        "organisation": "National Probation Service",
+        "reportingDate": "02/01/2021",
+        "reportingTime": "11:11",
+        "buildingAndStreet1": "123 High Street",
+        "buildingAndStreet2": "Town"
+      }
+    },
     "eligibility": {
+      "crdTime": {
+        "decision": "No"
+      },
       "excluded": {
         "decision": "No"
       },
       "suitability": {
         "decision": "No"
-      },
-      "crdTime": {
+      }
+    },
+    "finalChecks": {
+      "onRemand": {
         "decision": "No"
+      },
+      "seriousOffence": {
+        "decision": "No"
+      },
+      "confiscationOrder": {
+        "decision": "No"
+      }
+    },
+    "bassReferral": {
+      "bassRequest": {
+        "bassRequested": "No"
       }
     },
     "proposedAddress": {
       "optOut": {
         "decision": "No"
       },
-      "bassReferral": {
-        "decision": "No"
-      },
       "curfewAddress": {
-        "addressLine1": "Street",
-        "addressLine2": "",
-        "addressTown": "Town",
-        "postCode": "AB1 1AB",
-        "telephone": "0123 456789",
         "occupier": {
-          "name": "Main Occupier",
-          "age": "21",
-          "relationship": "Brother"
+          "name": "James Smith",
+          "isOffender": "Yes",
+          "relationship": ""
         },
-        "residents": [
-          {
-            "name": "Other Resident",
-            "age": "10",
-            "relationship": "Son"
-          },
-          {
-            "name": "",
-            "age": "",
-            "relationship": ""
-          },
-          {
-            "name": "Yet Another",
-            "age": "20",
-            "relationship": "Wife"
-          }
-        ],
+        "postCode": "S3 2JB",
+        "residents": [],
+        "telephone": "01234567890",
+        "addressTown": "Sheffield",
+        "addressLine1": "1 James Road",
+        "addressLine2": "Yoxley",
+        "additionalInformation": "",
+        "residentOffenceDetails": "",
         "cautionedAgainstResident": "No"
-      }
-    },
-    "curfew": {
-      "curfewHours": {
-        "firstNightFrom": "18:30",
-        "firstNightUntil": "10:11",
-        "mondayFrom": "21:22",
-        "mondayUntil": "08:09",
-        "tuesdayFrom": "19:00",
-        "tuesdayUntil": "07:00",
-        "wednesdayFrom": "19:00",
-        "wednesdayUntil": "07:00",
-        "thursdayFrom": "19:00",
-        "thursdayUntil": "07:00",
-        "fridayFrom": "19:00",
-        "fridayUntil": "07:00",
-        "saturdayFrom": "19:00",
-        "saturdayUntil": "07:00",
-        "sundayFrom": "18:19",
-        "sundayUntil": "06:07"
       },
-      "curfewAddressReview": {
-        "consent": "Yes",
-        "electricity": "Yes",
-        "homeVisitConducted": "Yes"
-      },
-      "addressSafety": {
-        "deemedSafe": "Yes"
+      "addressProposed": {
+        "decision": "Yes"
       }
     },
     "licenceConditions": {
       "standard": {
-        "additionalConditionsRequired": "Yes"
-      },
-      "additional": {
-        "NOCAMERAPHONE": {}
-      },
-      "bespoke": [
-        {
-          "text": "First bespoke condition",
-          "approved": "Yes"
-        }
-      ]
-    },
-    "risk": {
-      "riskManagement": {
-        "planningActions": "No",
-        "awaitingInformation": "No",
-        "victimLiaison": "No"
-      }
-    },
-    "reporting": {
-      "reportingInstructions": {
-        "name": "Reporting Name",
-        "buildingAndStreet1": "Street",
-        "buildingAndStreet2": "",
-        "townOrCity": "Town",
-        "postcode": "AB1 1AB",
-        "telephone": "0123 456789"
-      }
-    },
-    "finalChecks": {
-      "seriousOffence": {
-        "decision": "No"
-      },
-      "onRemand": {
-        "decision": "No"
-      }
-    },
-    "approval": {
-      "release": {
-        "decision": "No"
+        "additionalConditionsRequired": "No"
       }
     }
   }

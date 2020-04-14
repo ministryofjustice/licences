@@ -42,17 +42,17 @@ module.exports = {
     const { optedOut, addressWithdrawn, approvedPremisesRequired } = decisions
 
     if (optedOut) {
-      return change('/hdc/proposedAddress/curfewAddressChoice/')
+      return change('/hdc/proposedAddress/curfewAddressChoice/', 'proposed-curfew-address')
     }
 
     if (approvedPremisesRequired) {
-      return viewEdit('/hdc/curfew/approvedPremisesChoice/')
+      return viewEdit('/hdc/curfew/approvedPremisesChoice/', 'proposed-curfew-address')
     }
 
     if (addressWithdrawn) {
-      return viewEdit('/hdc/curfew/consentWithdrawn/')
+      return viewEdit('/hdc/curfew/consentWithdrawn/', 'proposed-curfew-address')
     }
-    return viewEdit('/hdc/review/address/')
+    return viewEdit('/hdc/review/address/', 'proposed-curfew-address')
   },
 
   getCaProcessingAction: ({ decisions, tasks }) => {
@@ -60,18 +60,18 @@ module.exports = {
     const { curfewAddress } = tasks
 
     if (optedOut) {
-      return change('/hdc/proposedAddress/curfewAddressChoice/')
+      return change('/hdc/proposedAddress/curfewAddressChoice/', 'proposed-curfew-address')
     }
 
     if (approvedPremisesRequired) {
-      return viewEdit('/hdc/curfew/approvedPremisesChoice/')
+      return viewEdit('/hdc/curfew/approvedPremisesChoice/', 'proposed-curfew-address')
     }
 
     if (curfewAddress === 'UNSTARTED') {
-      return standardAction(curfewAddress, '/hdc/proposedAddress/curfewAddressChoice/')
+      return standardAction(curfewAddress, '/hdc/proposedAddress/curfewAddressChoice/', 'proposed-curfew-address')
     }
 
-    return change('/hdc/review/address/')
+    return change('/hdc/review/address/', 'proposed-curfew-address')
   },
 
   getDmAction: ({ decisions }) => {

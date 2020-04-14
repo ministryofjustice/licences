@@ -29,6 +29,7 @@ describe('hdc refusal task', () => {
         text: 'Update refusal',
         href: '/hdc/finalChecks/refuse/',
         type: 'btn',
+        dataQa: 'refuse',
       })
     })
 
@@ -41,6 +42,7 @@ describe('hdc refusal task', () => {
         text: 'Refuse HDC',
         href: '/hdc/finalChecks/refuse/',
         type: 'btn-secondary',
+        dataQa: 'refuse',
       })
     })
   })
