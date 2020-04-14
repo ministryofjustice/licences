@@ -23,11 +23,12 @@ RUN apt-get update \
 # Install AWS RDS Root cert
 RUN curl https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem > /app/root.cert
 
-RUN npm install --production && \
+RUN npm install && \
     npm run build && \
     export BUILD_NUMBER=${BUILD_NUMBER:-1_0_0} && \
     export GIT_REF=${GIT_REF:-dummy} && \
-    npm run record-build-info
+    npm run record-build-info && \
+    npm prune --production
 
 ENV PORT=3000
 
