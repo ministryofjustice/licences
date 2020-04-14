@@ -75,27 +75,25 @@ const combiner = (acc, data) => {
 }
 
 function getApprovalStageState(licence) {
-  const {
-    approved,
-    refused,
-    dmRefused,
-    approval,
-    refusalReason,
-    bassOffer,
-    bassAccepted,
-    bassAddress,
-  } = getApprovalState(licence)
+  const approvalRelease = getIn(licence, ['approval', 'release']) || {}
+  const finalChecksRefusal = getIn(licence, ['finalChecks', 'refusal']) || {}
+
+  const dmRefusalReasonText = extractDmRefusalReasonsText(approvalRelease.reason)
+  const caRefusalReasonText = extractCaRefusalReasonText(finalChecksRefusal.reason)
+  const refusalReason = dmRefusalReasonText || caRefusalReasonText
+
+  const { bassAccepted, bassOffer, bassAddress } = getBassState(licence)
 
   return {
     decisions: {
-      approved,
-      refused,
-      dmRefused,
+      approved: approvalRelease.decision === 'Yes' && finalChecksRefusal.decision !== 'Yes',
+      refused: approvalRelease.decision === 'No' || finalChecksRefusal.decision === 'Yes',
+      dmRefused: approvalRelease.decision === 'No',
       refusalReason,
       bassAccepted,
     },
     tasks: {
-      approval,
+      approval: isEmpty(approvalRelease.decision) ? taskStates.UNSTARTED : taskStates.DONE,
       bassOffer,
       bassAddress,
     },
@@ -364,57 +362,24 @@ function getVictimLiaisonState(licence) {
   }
 }
 
-function getApprovalState(licence) {
-  const dmApproval = getDmApproval(licence)
-  const caRefusal = getCaRefusal(licence)
-  const { bassAccepted, bassOffer, bassAddress } = getBassState(licence)
-
-  return {
-    approved: dmApproval.approved && !caRefusal.refused,
-    refused: dmApproval.refused || caRefusal.refused,
-    approval: dmApproval.approval,
-    dmRefused: dmApproval.refused,
-    refusalReason: dmApproval.refusalReason || caRefusal.refusalReason,
-    bassAccepted,
-    bassOffer,
-    bassAddress,
-  }
-}
-
-function getDmApproval(licence) {
+function extractDmRefusalReasonsText(reasons) {
   const refusalReasons = {
     addressUnsuitable: 'address unsuitable',
     insufficientTime: 'insufficient time',
     noAvailableAddress: 'no available address',
     outOfTime: 'out of time',
   }
-
-  const decision = getIn(licence, ['approval', 'release', 'decision'])
-  const reasons = flatten([getIn(licence, ['approval', 'release', 'reason'])])
+  const reasonsString = flatten([reasons])
     .map((reason) => refusalReasons[reason])
     .join(', ')
-
-  return {
-    approved: decision === 'Yes',
-    refused: decision === 'No',
-    refusalReason: reasons.charAt(0).toUpperCase() + reasons.slice(1),
-    approval: isEmpty(decision) ? taskStates.UNSTARTED : taskStates.DONE,
-  }
+  return reasonsString.charAt(0).toUpperCase() + reasonsString.slice(1)
 }
 
-function getCaRefusal(licence) {
-  const refusalReasons = {
+function extractCaRefusalReasonText(reason) {
+  return {
     addressUnsuitable: 'No available address',
     insufficientTime: 'Out of time',
-  }
-
-  const finalChecksRefused = getIn(licence, ['finalChecks', 'refusal', 'decision'])
-  const finalChecksRefusalReason = getIn(licence, ['finalChecks', 'refusal', 'reason'])
-
-  return {
-    refused: finalChecksRefused === 'Yes',
-    refusalReason: refusalReasons[finalChecksRefusalReason],
-  }
+  }[reason]
 }
 
 function getCurfewAddressState(licence, optedOut, bassReferralNeeded, curfewAddressRejected) {
