@@ -74,7 +74,7 @@ module.exports = {
     }
   },
 
-  continueBtn: (href, dataQa) => {
+  continueBtn: (href) => {
     return {
       text: 'Continue',
       type: 'btn',
