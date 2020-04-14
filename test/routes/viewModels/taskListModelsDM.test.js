@@ -94,7 +94,7 @@ describe('TaskList models', () => {
   const postpone = {
     title: 'Postpone',
     label: 'Use this to indicate that the process is postponed if a confiscation order is in place',
-    action: { href: '/hdc/finalChecks/postpone/', text: 'Postpone', type: 'btn' },
+    action: { href: '/hdc/finalChecks/postpone/', text: 'Postpone', type: 'btn', dataQa: 'postpone' },
   }
 
   describe('dmTasks', () => {

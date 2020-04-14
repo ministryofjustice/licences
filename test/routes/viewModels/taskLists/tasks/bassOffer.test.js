@@ -95,6 +95,7 @@ describe('bass offer task', () => {
         text: 'Change',
         href: '/hdc/bassReferral/bassOffer/',
         type: 'link',
+        dataQa: 'bass-address',
       })
     })
 
@@ -121,6 +122,7 @@ describe('bass offer task', () => {
         text: 'Change',
         href: '/hdc/bassReferral/bassOffer/',
         type: 'link',
+        dataQa: 'bass-address',
       })
     })
 
@@ -152,6 +154,7 @@ describe('bass offer task', () => {
         text: 'Start now',
         href: '/hdc/proposedAddress/curfewAddressChoice/',
         type: 'btn',
+        dataQa: 'bass-address',
       })
     })
 
@@ -165,6 +168,7 @@ describe('bass offer task', () => {
         text: 'Change',
         href: '/hdc/proposedAddress/curfewAddressChoice/',
         type: 'link',
+        dataQa: 'bass-address',
       })
     })
 
@@ -183,6 +187,7 @@ describe('bass offer task', () => {
         text: 'Continue',
         href: '/hdc/proposedAddress/curfewAddressChoice/',
         type: 'btn',
+        dataQa: 'bass-address',
       })
     })
   })

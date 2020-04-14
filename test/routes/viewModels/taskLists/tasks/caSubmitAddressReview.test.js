@@ -35,6 +35,7 @@ describe('ca submit for address review task', () => {
         text: 'Continue',
         href: '/hdc/review/curfewAddress/',
         type: 'btn',
+        dataQa: 'continue',
       })
     })
 

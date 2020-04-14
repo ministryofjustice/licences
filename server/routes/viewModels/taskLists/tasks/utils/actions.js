@@ -1,10 +1,11 @@
 module.exports = {
-  standardAction: (task, href) => {
+  standardAction: (task, href, dataQa) => {
     if (task === 'DONE') {
       return {
         text: 'Change',
         type: 'link',
         href,
+        dataQa,
       }
     }
 
@@ -47,11 +48,12 @@ module.exports = {
     }
   },
 
-  viewEdit: (href) => {
+  viewEdit: (href, dataQa) => {
     return {
       text: 'View/Edit',
       type: 'btn-secondary',
       href,
+      dataQa,
     }
   },
 
@@ -63,11 +65,12 @@ module.exports = {
     }
   },
 
-  change: (href) => {
+  change: (href, dataQa) => {
     return {
       text: 'Change',
       type: 'link',
       href,
+      dataQa,
     }
   },
 
@@ -76,14 +79,16 @@ module.exports = {
       text: 'Continue',
       type: 'btn',
       href,
+      dataQa: 'continue',
     }
   },
 
-  taskBtn: (href, text, secondary) => {
+  taskBtn: (href, text, secondary, dataQa) => {
     return {
       text,
       type: secondary ? 'btn-secondary' : 'btn',
       href,
+      dataQa,
     }
   },
 }

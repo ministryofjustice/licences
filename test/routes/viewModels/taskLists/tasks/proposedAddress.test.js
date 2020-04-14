@@ -90,6 +90,7 @@ describe('victim liaison task', () => {
         text: 'Change',
         href: '/hdc/proposedAddress/rejected/',
         type: 'link',
+        dataQa: 'curfew-address',
       })
     })
 
@@ -129,6 +130,7 @@ describe('victim liaison task', () => {
         text: 'Change',
         href: '/hdc/bassReferral/rejected/',
         type: 'link',
+        dataQa: 'curfew-address',
       })
     })
 

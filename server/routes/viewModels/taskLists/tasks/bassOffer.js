@@ -55,7 +55,7 @@ module.exports = {
     const { bassAreaCheck, bassOffer, optOut, curfewAddress, bassRequest } = tasks
 
     if (bassWithdrawn) {
-      return change('/hdc/bassReferral/bassOffer/')
+      return change('/hdc/bassReferral/bassOffer/', 'bass-address')
     }
 
     if (bassAreaCheck === 'DONE' && approvedPremisesRequired === true) {
@@ -63,17 +63,22 @@ module.exports = {
     }
 
     if (bassAreaCheck === 'DONE') {
-      return standardAction(bassOffer, '/hdc/bassReferral/bassOffer/')
+      return standardAction(bassOffer, '/hdc/bassReferral/bassOffer/', 'bass-address')
     }
 
     if ([optOut, curfewAddress, bassRequest].every((task) => task === 'UNSTARTED')) {
-      return { text: 'Start now', href: '/hdc/proposedAddress/curfewAddressChoice/', type: 'btn' }
+      return {
+        text: 'Start now',
+        href: '/hdc/proposedAddress/curfewAddressChoice/',
+        type: 'btn',
+        dataQa: 'bass-address',
+      }
     }
 
     if ([optOut, curfewAddress, bassRequest].every((task) => task === 'DONE')) {
-      return change('/hdc/proposedAddress/curfewAddressChoice/')
+      return change('/hdc/proposedAddress/curfewAddressChoice/', 'bass-address')
     }
 
-    return { text: 'Continue', href: '/hdc/proposedAddress/curfewAddressChoice/', type: 'btn' }
+    return { text: 'Continue', href: '/hdc/proposedAddress/curfewAddressChoice/', type: 'btn', dataQa: 'bass-address' }
   },
 }

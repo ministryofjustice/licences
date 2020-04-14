@@ -47,6 +47,7 @@ describe('ca submit for approval task', () => {
         text: 'Continue',
         href: '/hdc/send/approval/',
         type: 'btn',
+        dataQa: 'continue',
       })
     })
 

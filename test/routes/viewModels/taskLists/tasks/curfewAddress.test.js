@@ -137,6 +137,7 @@ describe('curfew address task', () => {
         text: 'View/Edit',
         href: '/hdc/curfew/consentWithdrawn/',
         type: 'btn-secondary',
+        dataQa: 'proposed-curfew-address',
       })
     })
 
@@ -150,6 +151,7 @@ describe('curfew address task', () => {
         text: 'View/Edit',
         href: '/hdc/review/address/',
         type: 'btn-secondary',
+        dataQa: 'proposed-curfew-address',
       })
     })
 
@@ -163,6 +165,7 @@ describe('curfew address task', () => {
         text: 'View/Edit',
         href: '/hdc/curfew/approvedPremisesChoice/',
         type: 'btn-secondary',
+        dataQa: 'proposed-curfew-address',
       })
     })
 
@@ -176,6 +179,7 @@ describe('curfew address task', () => {
         text: 'Change',
         href: '/hdc/proposedAddress/curfewAddressChoice/',
         type: 'link',
+        dataQa: 'proposed-curfew-address',
       })
     })
   })
@@ -191,6 +195,7 @@ describe('curfew address task', () => {
         text: 'Change',
         href: '/hdc/proposedAddress/curfewAddressChoice/',
         type: 'link',
+        dataQa: 'proposed-curfew-address',
       })
     })
 
@@ -204,6 +209,7 @@ describe('curfew address task', () => {
         text: 'Change',
         href: '/hdc/proposedAddress/curfewAddressChoice/',
         type: 'link',
+        dataQa: 'proposed-curfew-address',
       })
     })
 
@@ -230,6 +236,7 @@ describe('curfew address task', () => {
         text: 'Change',
         href: '/hdc/review/address/',
         type: 'link',
+        dataQa: 'proposed-curfew-address',
       })
     })
   })

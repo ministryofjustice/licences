@@ -35,11 +35,11 @@ module.exports = {
     const { curfewAddress, optOut, bassRequest } = tasks
 
     if (curfewAddressRejected) {
-      return standardAction(curfewAddress, '/hdc/proposedAddress/rejected/')
+      return standardAction(curfewAddress, '/hdc/proposedAddress/rejected/', 'curfew-address')
     }
 
     if (bassAreaNotSuitable) {
-      return standardAction(curfewAddress, '/hdc/bassReferral/rejected/')
+      return standardAction(curfewAddress, '/hdc/bassReferral/rejected/', 'curfew-address')
     }
 
     return standardActionMulti([curfewAddress, optOut, bassRequest], '/hdc/proposedAddress/curfewAddressChoice/')

@@ -13,10 +13,19 @@ module.exports = {
   getAction: ({ decisions }) => {
     const { postponed } = decisions
 
+    if (postponed) {
+      return {
+        text: 'Resume',
+        href: '/hdc/finalChecks/postpone/',
+        type: 'btn',
+        dataQa: 'postpone',
+      }
+    }
     return {
-      text: postponed ? 'Resume' : 'Postpone',
+      text: 'Postpone',
       href: '/hdc/finalChecks/postpone/',
       type: 'btn',
+      dataQa: 'postpone',
     }
   },
 }

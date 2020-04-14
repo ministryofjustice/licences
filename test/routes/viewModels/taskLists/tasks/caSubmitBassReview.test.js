@@ -59,6 +59,7 @@ describe('ca submit for bass review task', () => {
         text: 'Continue',
         href: '/hdc/review/bassRequest/',
         type: 'btn',
+        dataQa: 'continue',
       })
     })
 
@@ -72,6 +73,7 @@ describe('ca submit for bass review task', () => {
         text: 'Continue',
         href: '/hdc/review/bassRequest/',
         type: 'btn',
+        dataQa: 'continue',
       })
     })
 
