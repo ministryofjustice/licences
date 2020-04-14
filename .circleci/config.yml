@@ -1,89 +1,27 @@
 version: 2.1
-commands:
-  setup:
-    description: "Install tools and configure kubectl"
-    steps:
-      - aws-cli/install
-      - kubernetes/install
-      - helm/install-helm-client:
-          version: v3.0.2
-      - run:
-          name: Setup kubectl
-          command: |
-            echo -n "${KUBE_ENV_CACERT}" | base64 -d > /tmp/cluster_ca.crt
-            kubectl config set-cluster "${KUBE_ENV_NAME}" \
-              --certificate-authority="/tmp/cluster_ca.crt" \
-              --server="https://api.${KUBE_ENV_NAME}"
-            kubectl config set-credentials circleci \
-              --token="${KUBE_ENV_TOKEN}"
-            kubectl config set-context circleci \
-              --cluster="${KUBE_ENV_NAME}" \
-              --user="circleci" \
-              --namespace="${KUBE_ENV_NAMESPACE}"
-            # confirm setup is ok
-            kubectl config use-context circleci
-  deploy_to_env:
-    parameters:
-      env:
-        type: string
-      slack_notification:
-        type: boolean
-        default: false
-    steps:
-      - setup
-      - checkout:
-          path: ~/git
-      - attach_workspace:
-          at: ~/app
-      - deploy:
-          name: Deploy to << parameters.env >>
-          command: |
-            APP=licences
-            APP_VERSION=$(egrep buildNumber build-info.json  | awk -F"\"" '{print $4}')
-            echo "export APP_VERSION=$APP_VERSION;export APP=$APP" >> $BASH_ENV
-            sed -i "s/appVersion: \".*\"/appVersion: \"${APP_VERSION}\"/g" ~/git/helm_deploy/${APP}/Chart.yaml
-            aws secretsmanager get-secret-value --secret-id ${AWS_SECRET_NAME} | jq -r .SecretString | \
-            helm upgrade ${APP} ~/git/helm_deploy/${APP}/. \
-              --install --wait --reset-values --timeout 5m --history-max 10 \
-              --namespace=${KUBE_ENV_NAMESPACE} \
-              --values ~/git/helm_deploy/values-<< parameters.env >>.yaml \
-              --values - \
-              --set image.tag="${APP_VERSION}"
-      - when:
-          condition: <<parameters.slack_notification>>
-          steps:
-            - slack/notify:
-                message: "*${APP}* version:*${APP_VERSION}* deployed to << parameters.env >>"
-                include_project_field: false
-                include_job_number_field: false
+
+orbs:
+  dps: ministryofjustice/dps@1.2.1
 
 executors:
-  deployer:
-    docker:
-      - image: circleci/python:3
-    working_directory: ~/app
   builder:
     docker:
       - image: circleci/node:10-buster-browsers
     working_directory: ~/app
-
-orbs:
-  aws-cli: circleci/aws-cli@0.1.18
-  kubernetes: circleci/kubernetes@0.10.1
-  helm: circleci/helm@0.2.3
-  slack: circleci/slack@3.4.2
+  integration-tests:
+    docker:
+      - image: circleci/openjdk:11-jdk-node-browsers
+      - image: circleci/postgres:10.6-alpine-ram
+        environment:
+          POSTGRES_USER: licences
+          POSTGRES_DB: licences
+    working_directory: ~/app
 
 jobs:
-  validate:
+  build:
     executor: builder
     steps:
       - checkout
-      - helm/install-helm-client:
-          version: v2.13.1
-      - run:
-          name: Run helm lint
-          command: helm lint licences --values=values-dev.yaml --values=secrets-example.yaml
-          working_directory: helm_deploy
       - run:
           name: Update npm
           command: 'sudo npm install -g npm@latest'
@@ -96,19 +34,27 @@ jobs:
           key: dependency-cache-{{ checksum "package-lock.json" }}
           paths:
             - node_modules
+            - ~/.cache
       - run:
           name: Linter check
           command: npm run lint
       - run:
           command: |
             npm run build
+            DATE=$(date '+%Y-%m-%d')
+            export BUILD_NUMBER=${DATE}.${CIRCLE_BUILD_NUM}
+            export GIT_REF="$CIRCLE_SHA1"
+            npm run record-build-info
       - persist_to_workspace:
           root: .
           paths:
             - node_modules
+            - build-info.json
+            - dist
             - assets/stylesheets
+            - .cache/Cypress
 
-  integration_tests:
+  unit_test:
     executor: builder
     steps:
       - checkout
@@ -122,14 +68,8 @@ jobs:
       - store_artifacts:
           path: test-results/unit-test-reports.html
 
-  feature_tests:
-    working_directory: ~/noms-digital-studio/licences
-    docker:
-      - image: circleci/openjdk:11-jdk-node-browsers
-      - image: circleci/postgres:alpine-ram
-        environment:
-          POSTGRES_USER: licences
-          POSTGRES_DB: licences
+  integration_test:
+    executor: integration-tests
     environment:
       DB_SSL_ENABLED: false
       ENABLE_TEST_UTILS: true
@@ -140,7 +80,7 @@ jobs:
     steps:
       - checkout
       - attach_workspace:
-          at: ~/noms-digital-studio/licences
+          at: ~/app
       - run:
           name: Run the node app.
           command: npm start
@@ -175,94 +115,47 @@ jobs:
       - store_test_results:
           path: licences-specs/build/test-results
 
-  build:
-    executor: deployer
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ~/app
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: Build container and publish to docker hub
-          command: |
-            DATE=$(date '+%Y-%m-%d')
-            APP_VERSION=${DATE}.${CIRCLE_BUILD_NUM}
-
-            docker build --rm=false . \
-              --build-arg BUILD_NUMBER=$APP_VERSION \
-              --build-arg GIT_REF=$CIRCLE_SHA1 \
-              --tag "mojdigitalstudio/licences:$APP_VERSION" \
-              --label "maintainer=dps-hmpps@digital.justice.gov.uk" \
-              --label "app.version=$APP_VERSION" \
-              --label "build.version=$APP_VERSION" \
-              --label "build.number=$CIRCLE_BUILD_NUM" \
-              --label "build.url=$CIRCLE_BUILD_URL" \
-              --label "build.gitref=$CIRCLE_SHA1"
-
-            # Copy build-info.json from image
-            docker run -it --rm mojdigitalstudio/licences:$APP_VERSION cat /app/build-info.json > build-info.json
-
-            if [[ "${CIRCLE_BRANCH}" == "master" ]]; then
-              #publish to docker hub as the tag
-              docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-              docker tag mojdigitalstudio/licences:$APP_VERSION mojdigitalstudio/licences:latest
-              docker push mojdigitalstudio/licences:$APP_VERSION
-              docker push mojdigitalstudio/licences:latest
-            fi
-      - persist_to_workspace:
-          root: .
-          paths:
-            - build-info.json
-
-  deploy_dev:
-    executor: deployer
-    steps:
-      - deploy_to_env:
-          env: "dev"
-  deploy_preprod:
-    executor: deployer
-    steps:
-      - deploy_to_env:
-          env: "preprod"
-  deploy_prod:
-    executor: deployer
-    steps:
-      - deploy_to_env:
-          env: "prod"
-          slack_notification: true
-
 workflows:
   version: 2
   build-test-and-deploy:
     jobs:
-      - validate:
-          filters:
-            tags:
-              ignore: /.*/
-      - integration_tests:
-          requires:
-            - validate
-      - feature_tests:
-          requires:
-            - integration_tests
       - build:
-          filters:
-            branches:
-              only: master
-      - deploy_dev:
+        filters:
+          tags:
+            ignore: /.*/
+      - unit_test:
           requires:
             - build
-            - feature_tests
-            - integration_tests
+      - integration_test:
+          requires:
+            - build
+      - dps/helm_lint:
+          name: helm_lint
+      - dps/build_docker:
+          name: build_docker
           filters:
             branches:
-              only: master
+              only:
+                - master
+      - dps/deploy_env:
+          name: deploy_dev
+          env: "dev"
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - helm_lint
+            - unit_test
+            - integration_test
+            - build_docker
       - request-preprod-approval:
           type: approval
           requires:
             - deploy_dev
-      - deploy_preprod:
+      - dps/deploy_env:
+          name: deploy_preprod
+          env: "preprod"
           context: licences-preprod
           requires:
             - request-preprod-approval
@@ -270,7 +163,21 @@ workflows:
           type: approval
           requires:
             - deploy_preprod
-      - deploy_prod:
+      - dps/deploy_env:
+          name: deploy_prod
+          env: "prod"
+          slack_notification: true
           context: licences-prod
           requires:
             - request-prod-approval
+
+  scheduled:
+    triggers:
+      - schedule:
+          cron: "0 6 * * 1-5"
+          filters:
+            branches:
+              only:
+                - master
+    jobs:
+      - dps/npm_security_audit
