@@ -4,7 +4,7 @@
 replicaCount: 4
 
 image:
-  repository: docker.io/mojdigitalstudio/licences
+  repository: quay.io/hmpps/licences
   tag: latest
   pullPolicy: IfNotPresent
   port: 3000
