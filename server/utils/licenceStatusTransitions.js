@@ -111,7 +111,6 @@ function canSendCaToDmRefusal(licenceStatus) {
   const { stage, decisions } = licenceStatus
   const { addressWithdrawn, curfewAddressRejected, finalChecksRefused, bassReferralNeeded } = decisions
   const bassFailure = isBassFailure(decisions)
-
   if (['PROCESSING_CA', 'DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(stage)) {
     if (finalChecksRefused) {
       return false

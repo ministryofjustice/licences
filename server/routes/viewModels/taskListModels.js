@@ -1,6 +1,7 @@
 const { pickKey } = require('../../utils/functionalHelpers')
 const getDmTasks = require('./taskLists/dmTasks')
 const { getRoTasksPostApproval, getRoTasks } = require('./taskLists/roTasks')
+const { getAllowedTransition } = require('../../utils/licenceStatusTransitions')
 const { getCaTasksEligibility, getCaTasksFinalChecks, getCaTasksPostApproval } = require('./taskLists/caTasks')
 const getVaryTasks = require('./taskLists/varyTasks')
 
@@ -33,12 +34,12 @@ const taskListsConfig = {
 module.exports = (
   role,
   postRelease,
-  { decisions, tasks, stage },
-  { version = null, versionDetails = null, approvedVersion = {}, approvedVersionDetails = {}, licence = {} } = {},
-  allowedTransition
+  licenceStatus,
+  { version = null, versionDetails = null, approvedVersion = {}, approvedVersionDetails = {}, licence = {} } = {}
 ) => {
+  const { decisions, tasks, stage } = licenceStatus
   const taskListName = getTaskListName(role, stage, postRelease)
-
+  const allowedTransition = getAllowedTransition(licenceStatus, role)
   switch (taskListName) {
     case 'dmTasks':
       return getDmTasks({ decisions, tasks, stage, allowedTransition })

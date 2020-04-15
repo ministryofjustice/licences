@@ -156,6 +156,18 @@ describe('TaskList models', () => {
       dataQa: 'continue',
     },
     title: 'Submit to prison case admin',
+    label: 'Tasks not yet complete',
+    visible: true,
+  }
+
+  const submitCAComplete = {
+    action: {
+      href: '/hdc/review/licenceDetails/',
+      text: 'Continue',
+      type: 'btn',
+      dataQa: 'continue',
+    },
+    title: 'Submit to prison case admin',
     label: 'Ready to submit',
     visible: true,
   }
@@ -452,9 +464,12 @@ describe('TaskList models', () => {
         taskListModel(
           'RO',
           false,
-          { decisions: { approvedPremisesRequired: true }, tasks: {}, stage: 'PROCESSING_RO' },
-          {},
-          'roToCa'
+          {
+            decisions: { approvedPremisesRequired: true },
+            tasks: {},
+            stage: 'PROCESSING_RO',
+          },
+          {}
         )
       ).toEqual([
         proposedCurfewAddress,
@@ -473,12 +488,19 @@ describe('TaskList models', () => {
           'RO',
           false,
           {
-            decisions: { approvedPremisesRequired: true, bassReferralNeeded: true, curfewAddressRejected: false },
-            tasks: { curfewAddress: 'DONE', approvedPremisesAddress: 'DONE' },
+            decisions: {
+              approvedPremisesRequired: true,
+              bassReferralNeeded: true,
+              curfewAddressRejected: false,
+            },
+            tasks: {
+              curfewAddress: 'DONE',
+              approvedPremisesAddress: 'DONE',
+              bassAreaCheck: 'DONE',
+            },
             stage: 'PROCESSING_RO',
           },
-          {},
-          'roToCa'
+          {}
         )
       ).toEqual([
         bassAreaCheckWithApprovedAddress,
@@ -487,7 +509,7 @@ describe('TaskList models', () => {
         additionalConditions,
         reportingInstructions,
         curfewAddressCheck,
-        submitCA,
+        submitCAComplete,
       ])
     })
   })
