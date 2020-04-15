@@ -6,7 +6,7 @@ const path = require('path')
 const { asyncMiddleware } = require('../utils/middleware')
 const { getLicenceStatus } = require('../utils/licenceStatus')
 const { getStatusLabel } = require('../utils/licenceStatusLabels')
-const { getAllowedTransition } = require('../utils/licenceStatusTransitions')
+
 const { isEmpty } = require('../utils/functionalHelpers')
 const getTaskListModel = require('./viewModels/taskListModels')
 const logger = require('../../log')
@@ -114,14 +114,12 @@ module.exports = ({ prisonerService, licenceService, audit, caService }) => (rou
       }
 
       const licenceStatus = getLicenceStatus(licence)
-      const allowedTransition = getAllowedTransition(licenceStatus, req.user.role)
       const { statusLabel } = getStatusLabel(licenceStatus, req.user.role)
 
       const model = {
         licenceStatus,
         licenceVersion: licence ? licence.version : 0,
         approvedVersionDetails: licence ? licence.approvedVersionDetails : 0,
-        allowedTransition,
         statusLabel,
         prisonerInfo,
         bookingId,
@@ -144,13 +142,7 @@ module.exports = ({ prisonerService, licenceService, audit, caService }) => (rou
         }
       }
 
-      const taskListModel = getTaskListModel(
-        req.user.role,
-        postRelease,
-        licenceStatus,
-        licence || {},
-        allowedTransition
-      )
+      const taskListModel = getTaskListModel(req.user.role, postRelease, licenceStatus, licence || {})
 
       res.render('taskList/taskListBuilder', {
         ...model,
