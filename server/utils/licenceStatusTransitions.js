@@ -15,14 +15,7 @@ function getAllowedTransition(licenceStatus, role) {
 
       return null
 
-    case 'DM':
-      if (canSendDmToCa(licenceStatus)) {
-        return 'dmToCa'
-      }
-
-      return null
-
-    default:
+    case 'CA':
       if (canSendCaToDmRefusal(licenceStatus)) {
         return 'caToDmRefusal'
       }
@@ -34,7 +27,9 @@ function getAllowedTransition(licenceStatus, role) {
       if (canSendCaToRo(licenceStatus)) {
         return 'caToRo'
       }
+      return null
 
+    default:
       return null
   }
 }
@@ -68,11 +63,6 @@ function canSendRoToCa(licenceStatus) {
   ]
 
   return required.every((it) => it === taskStates.DONE)
-}
-
-function canSendDmToCa(licenceStatus) {
-  const { tasks, stage } = licenceStatus
-  return tasks.approval === taskStates.DONE && stage === 'APPROVAL'
 }
 
 function canSendCaToRo(licenceStatus) {
