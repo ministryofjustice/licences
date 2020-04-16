@@ -1,32 +1,6 @@
 const { getAllowedTransition } = require('../../server/utils/licenceStatusTransitions')
 
 describe('getAllowedTransition', () => {
-  describe('DM to CA', () => {
-    test('should allow DM to CA for DM when approval task done', () => {
-      const status = {
-        stage: 'APPROVAL',
-        tasks: {
-          approval: 'DONE',
-        },
-      }
-
-      const allowed = getAllowedTransition(status, 'DM')
-      expect(allowed).toBe('dmToCa')
-    })
-
-    test('should not allow DM to CA for DM when approval task not done', () => {
-      const status = {
-        stage: 'APPROVAL',
-        tasks: {
-          approval: 'UNSTARTED',
-        },
-      }
-
-      const allowed = getAllowedTransition(status, 'DM')
-      expect(allowed).toBe(null)
-    })
-  })
-
   describe('RO to CA', () => {
     test('should allow RO to CA for RO when all RO tasks done', () => {
       const status = {
