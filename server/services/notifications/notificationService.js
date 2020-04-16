@@ -5,7 +5,7 @@ const { sendingUserName } = require('../../utils/userProfile')
 
 /**
  * @param {PrisonerService} prisonerService
- * @param {import('./EventPublisher')} eventPublisher
+ * @param {import('./eventPublisher')} eventPublisher
  */
 module.exports = function createNotificationService(
   caAndDmNotificationSender,

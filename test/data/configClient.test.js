@@ -1,7 +1,11 @@
+jest.mock('../../server/data/dataAccess/db')
+
 const configClient = require('../../server/data/configClient')
 const db = require('../../server/data/dataAccess/db')
 
-jest.mock('../../server/data/dataAccess/db')
+beforeEach(() => {
+  db.query.mockReturnValue({ rows: [] })
+})
 
 afterEach(() => {
   db.query.mockReset()
@@ -53,7 +57,6 @@ describe('configClient', () => {
     })
 
     test('should handle empty result', async () => {
-      db.query.mockReturnValue({})
       await configClient.getMailbox('id')
       expect(db.query).toHaveBeenCalledTimes(1)
     })

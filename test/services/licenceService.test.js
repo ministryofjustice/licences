@@ -1,10 +1,10 @@
+jest.mock('../../server/services/utils/formValidation')
+
 const varyConfig = require('../../server/routes/config/vary')
 
 const createLicenceService = require('../../server/services/licenceService')
 
 const formValidation = require('../../server/services/utils/formValidation')
-
-jest.mock('../../server/services/utils/formValidation')
 
 afterEach(() => {
   formValidation.validateGroup.mockReset()

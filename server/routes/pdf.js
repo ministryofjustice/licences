@@ -65,7 +65,7 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
 
       await pdfService.updateLicenceType(licence, bookingId, offenceBeforeCutoff, licenceTypeRadio, postRelease)
 
-      res.redirect(`/hdc/pdf/taskList/${bookingId}`)
+      return res.redirect(`/hdc/pdf/taskList/${bookingId}`)
     })
   )
 

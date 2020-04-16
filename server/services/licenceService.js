@@ -78,7 +78,7 @@ module.exports = function createLicenceService(licenceClient) {
       const licenceConditions = { ...existingLicenceConditions, ...newConditionsObject }
 
       if (equals(existingLicenceConditions, licenceConditions)) {
-        return
+        return null
       }
 
       await updateModificationStage(bookingId, existingLicence.stage, { requiresApproval: true })
@@ -144,7 +144,7 @@ module.exports = function createLicenceService(licenceClient) {
 
   function updateModificationStage(bookingId, stage, { requiresApproval, noModify = false }) {
     if (noModify) {
-      return
+      return null
     }
 
     if (requiresApproval && (stage === 'DECIDED' || stage === 'MODIFIED')) {
@@ -154,6 +154,7 @@ module.exports = function createLicenceService(licenceClient) {
     if (stage === 'DECIDED') {
       return licenceClient.updateStage(bookingId, licenceStages.MODIFIED)
     }
+    return null
   }
 
   const getFormResponse = (fieldMap, userInput) => fieldMap.reduce(answersFromMapReducer(userInput), {})

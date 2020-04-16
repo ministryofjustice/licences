@@ -71,7 +71,7 @@ module.exports = ({ formConfig, licenceService, sectionName, nomisPushService = 
       return res.redirect(`${nextPath}${req.body.path}/${bookingId}`)
     }
 
-    res.redirect(`${nextPath}${bookingId}`)
+    return res.redirect(`${nextPath}${bookingId}`)
   }
 
   function getTarget(formName) {

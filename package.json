@@ -8,16 +8,20 @@
     "npm": "^5.6.0"
   },
   "scripts": {
-    "build": "npm run clean && npm run css-build",
+    "copy-views": "cp -R server/views/ dist/server/views/",
+    "watch-views": "nodemon --watch server/views -e pug -x npm run copy-views",
+    "watch-ts": "tsc -w",
+    "watch-node": "DEBUG=gov-starter-server* nodemon --watch dist/ dist/server.js",
+    "build": "npm run clean && npm run css-build && tsc && npm run copy-views",
     "start": "node server.js",
-    "start:dev": "npm run build && DEBUG=gov-starter-server* nodemon server.js",
+    "start:dev": "npm run build && concurrently -k -p \"[{name}]\" -n \"Views,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-views\" \"npm run watch-ts\" \"npm run watch-node\"",
     "test": "jest",
     "test-ci": "jest --runInBand",
     "lint": "eslint .",
     "typecheck": "tsc",
     "record-build-info": "node ./bin/record-build-info",
     "css-build": "./bin/build-css",
-    "clean": "rm -rf public/* .port.tmp *.log build/* uploads/* test-results.xml",
+    "clean": "rm -rf dist/* public/* .port.tmp *.log build/* uploads/* test-results.xml",
     "db:knex": "knex",
     "db:knex-migrate": "knex-migrate",
     "db:seed": "knex seed:run --env standard",
@@ -59,11 +63,12 @@
   },
   "homepage": "https://github.com/noms-digital-studio/licences#readme",
   "jest": {
+    "preset": "ts-jest",
     "collectCoverageFrom": [
-      "(server|test)/**/*.{js,jsx,mjs}"
+      "server/**/*.{ts,js,jsx,mjs}"
     ],
     "testMatch": [
-      "<rootDir>/(server|job|test)/**/?(*.)(spec|test).{js,jsx,mjs}"
+      "<rootDir>/test/**/?(*.)(spec|test).{ts,js,jsx,mjs}"
     ],
     "testEnvironment": "node",
     "reporters": [
@@ -84,6 +89,8 @@
   },
   "dependencies": {
     "@ministryofjustice/express-template-to-pdf": "^2.1.0",
+    "@typescript-eslint/eslint-plugin": "^2.27.0",
+    "@typescript-eslint/parser": "^2.27.0",
     "adm-zip": "^0.4.14",
     "agentkeepalive": "^4.1.0",
     "applicationinsights": "^1.7.3",
@@ -97,7 +104,6 @@
     "cookie-session": "^2.0.0-beta.3",
     "csurf": "^1.11.0",
     "dotenv": "^8.2.0",
-    "eslint-config-google": "^0.14.0",
     "express": "^4.17.1",
     "express-request-id": "^1.4.1",
     "express-winston": "^4.0.3",
@@ -138,9 +144,12 @@
   "devDependencies": {
     "@types/jest": "^25.2.1",
     "@types/node": "^13.11.0",
+    "concurrently": "^5.1.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.1.0",
+    "eslint-config-airbnb-typescript": "^7.2.1",
     "eslint-config-prettier": "^6.10.1",
+    "eslint-import-resolver-typescript": "^2.0.0",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-prettier": "^3.1.2",
     "husky": "^4.2.3",
@@ -154,6 +163,7 @@
     "pdf-parse": "^1.1.1",
     "prettier": "2.0.2",
     "supertest": "^4.0.2",
+    "ts-jest": "^25.3.1",
     "typescript": "^3.8.3"
   }
 }

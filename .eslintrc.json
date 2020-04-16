@@ -1,18 +1,107 @@
 {
-  "extends": ["airbnb-base", "plugin:prettier/recommended"],
-  "rules": {
-    "no-unused-vars": [
-      1,
-      {
-        "argsIgnorePattern": "res|next|^err|_",
-        "ignoreRestSiblings": true
-      }
-    ],
-    "prettier/prettier": ["error"],
-    "no-use-before-define": "off",
-    "prefer-destructuring": "warn",
-    "consistent-return": "off",
-    "no-console": ["error"]
+  "env": {
+    "browser": true,
+    "node": true,
+    "jest": true
   },
-  "plugins": ["prettier"]
+
+  "overrides": [
+    {
+      "parser": "@typescript-eslint/parser",
+      "plugins": ["@typescript-eslint", "import"],
+      "files": ["**/*.ts"],
+      "extends": [
+        "airbnb-typescript/base",
+        "prettier/@typescript-eslint",
+        "plugin:prettier/recommended"
+      ],
+      "parserOptions": {
+        "project": "./tsconfig.json"
+      },
+      "rules": {
+        "@typescript-eslint/no-unused-vars": [
+          1,
+          {
+            "argsIgnorePattern": "res|next|^err|_",
+            "ignoreRestSiblings": true
+          }
+        ],
+        "@typescript-eslint/semi": 0,
+        "import/no-unresolved": "error",
+        "import/extensions": [
+          "error",
+          "ignorePackages",
+          {
+            "js": "never",
+            "mjs": "never",
+            "jsx": "never",
+            "ts": "never",
+            "tsx": "never"
+          }
+        ]
+      },
+      "settings": {
+        "import/parsers": {
+          "@typescript-eslint/parser": [".ts", ".tsx"]
+        },
+        "import/resolver": {
+          "typescript": {
+            "alwaysTryTypes": true
+          },
+          "node": {
+            "extensions": [".js", ".jsx", ".ts", ".tsx", ".json"]
+          }
+        }
+      }
+    },
+    {
+      "files": ["**/*.js"],
+      "extends": ["airbnb-base", "plugin:prettier/recommended"],
+      "rules": {
+        "no-unused-vars": [
+          1,
+          {
+            "argsIgnorePattern": "res|next|^err|_",
+            "ignoreRestSiblings": true
+          }
+        ],
+        "no-use-before-define": 0,
+        "semi": 0,
+        "import/no-unresolved": "error",
+        "import/extensions": [
+          "error",
+          "ignorePackages",
+          {
+            "js": "never",
+            "mjs": "never",
+            "jsx": "never",
+            "ts": "never",
+            "tsx": "never"
+          }
+        ],
+        "comma-dangle": [
+          "error",
+          {
+            "arrays": "always-multiline",
+            "objects": "always-multiline",
+            "imports": "always-multiline",
+            "exports": "always-multiline",
+            "functions": "never"
+          }
+        ]
+      },
+      "plugins": ["import"],
+
+      "settings": {
+        "import/resolver": {
+          "typescript": {
+            "alwaysTryTypes": true
+          },
+          "node": {
+            "extensions": [".js", ".jsx", ".ts", ".tsx", ".json"]
+          }
+        }
+      }
+    }
+  ]
 }

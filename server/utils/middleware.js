@@ -43,11 +43,11 @@ function checkLicenceMiddleware(licenceService, prisonerService) {
       res.locals.prisoner = prisoner
       res.locals.postRelease = prisoner.agencyLocationId ? prisoner.agencyLocationId.toUpperCase() === 'OUT' : false
       res.locals.licenceStatus = licenceStatus
-      next()
+      return next()
     } catch (error) {
       // TODO proper error handling
       logger.error('Error collecting licence from checkLicence')
-      res.redirect('/')
+      return res.redirect('/')
     }
   }
 }
@@ -68,7 +68,7 @@ function authorisationMiddleware(req, res, next) {
     return next(unauthorisedError())
   }
 
-  next()
+  return next()
 }
 
 function auditMiddleware(audit, key) {

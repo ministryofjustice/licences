@@ -39,7 +39,7 @@ module.exports = ({ licenceService, prisonerService }) => (router, audited) => {
       const errorObject = firstItem(req.flash('errors')) || {}
       const userInput = firstItem(req.flash('userInput')) || {}
 
-      res.render('vary/licenceDetails', {
+      return res.render('vary/licenceDetails', {
         prisonerInfo,
         bookingId,
         errorObject,
@@ -75,7 +75,7 @@ module.exports = ({ licenceService, prisonerService }) => (router, audited) => {
         true
       )
       const nextPath = req.body.additionalConditions === 'Yes' ? 'licenceConditions/additionalConditions' : 'taskList'
-      res.redirect(`/hdc/${nextPath}/${bookingId}`)
+      return res.redirect(`/hdc/${nextPath}/${bookingId}`)
     })
   )
 
@@ -126,7 +126,7 @@ module.exports = ({ licenceService, prisonerService }) => (router, audited) => {
       formConfig.licenceDetails,
       true
     )
-    res.redirect(`/hdc/taskList/${bookingId}`)
+    return res.redirect(`/hdc/taskList/${bookingId}`)
   }
 
   router.post('/address/:bookingId', audited, asyncMiddleware(postVaryForm('address')))

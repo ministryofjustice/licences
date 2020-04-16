@@ -98,6 +98,7 @@ module.exports = function createJobSchedulerService(
         logger.error(`Error starting ${job.name}`, error)
       }
     }
+    return null
   }
 
   async function activate(job) {

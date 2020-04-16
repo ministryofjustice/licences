@@ -89,6 +89,7 @@ module.exports = ({ formService }) => (router) => {
         return pdf
       } catch (e) {
         logger.warn(`Caught an exception while rendering form ${templateName}: ${e}`)
+        return null
       }
     })
   )

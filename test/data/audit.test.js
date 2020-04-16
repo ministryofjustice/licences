@@ -1,9 +1,8 @@
+jest.mock('../../server/data/dataAccess/db')
 const moment = require('moment')
 
 const audit = require('../../server/data/audit')
 const db = require('../../server/data/dataAccess/db')
-
-jest.mock('../../server/data/dataAccess/db')
 
 afterEach(() => {
   db.query.mockReset()

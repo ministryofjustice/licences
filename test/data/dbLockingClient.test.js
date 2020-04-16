@@ -1,9 +1,9 @@
+jest.mock('../../server/data/dataAccess/db')
+
 const hash = require('string-hash')
 
 const dbLockingClient = require('../../server/data/dbLockingClient')
 const db = require('../../server/data/dataAccess/db')
-
-jest.mock('../../server/data/dataAccess/db')
 
 afterEach(() => {
   db.query.mockReset()

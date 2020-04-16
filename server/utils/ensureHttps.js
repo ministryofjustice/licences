@@ -7,5 +7,5 @@ module.exports = function ensureHttps(req, res, next) {
   const redirectUrl = `https://${req.hostname}${req.url}`
   logger.info(`Redirecting to ${redirectUrl}`)
 
-  res.redirect(redirectUrl)
+  return res.redirect(redirectUrl)
 }

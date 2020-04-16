@@ -1,7 +1,7 @@
+jest.mock('../../server/data/dataAccess/db')
+
 const activeLduClient = require('../../server/data/activeLduClient')
 const db = require('../../server/data/dataAccess/db')
-
-jest.mock('../../server/data/dataAccess/db')
 
 afterEach(() => {
   db.query.mockReset()

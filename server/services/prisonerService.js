@@ -33,7 +33,7 @@ function createPrisonerService(nomisClientBuilder, roService) {
         const prisoners = await nomisClient.getOffenderSentencesByBookingId(bookingId)
         const prisoner = prisoners[0]
         if (!prisoner) {
-          return
+          return null
         }
 
         const [aliases, offences, com] = await Promise.all([
@@ -72,7 +72,7 @@ function createPrisonerService(nomisClientBuilder, roService) {
         const prisoners = await nomisClient.getOffenderSentencesByBookingId(bookingId)
         const prisoner = prisoners[0]
         if (!prisoner) {
-          return
+          return null
         }
 
         const { offenderNo } = prisoner
