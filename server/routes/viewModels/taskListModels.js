@@ -1,4 +1,3 @@
-const { pickKey } = require('../../utils/functionalHelpers')
 const getDmTasks = require('./taskLists/dmTasks')
 const { getRoTasksPostApproval, getRoTasks } = require('./taskLists/roTasks')
 const { getAllowedTransition } = require('../../utils/licenceStatusTransitions')
