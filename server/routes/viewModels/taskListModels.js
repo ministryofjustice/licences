@@ -42,7 +42,7 @@ module.exports = (
   const allowedTransition = getAllowedTransition(licenceStatus, role)
   switch (taskListName) {
     case 'dmTasks':
-      return getDmTasks({ decisions, tasks, stage, allowedTransition })
+      return getDmTasks({ decisions, tasks, stage })
 
     case 'roTasks':
       return getRoTasks({ decisions, tasks, allowedTransition })
