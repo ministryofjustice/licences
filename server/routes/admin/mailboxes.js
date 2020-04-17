@@ -49,7 +49,7 @@ module.exports = ({ configClient }) => (router, audited) => {
       return res.redirect(`/admin/mailboxes/edit/${id}`)
     }
 
-    res.redirect('/admin/mailboxes')
+    return res.redirect('/admin/mailboxes')
   })
 
   router.get(
@@ -112,6 +112,7 @@ module.exports = ({ configClient }) => (router, audited) => {
     if (!userInput.role || !['CA', 'DM'].includes(userInput.role)) {
       return { role: 'Valid role is required' }
     }
+    return null
   }
 
   return router

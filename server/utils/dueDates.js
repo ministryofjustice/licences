@@ -1,3 +1,4 @@
+/** @type {any} */
 const moment = require('moment-business-days')
 const { dueDateFormat, roNewCaseWorkingDays, roNewCaseTodayCutOff } = require('../config').notifications
 

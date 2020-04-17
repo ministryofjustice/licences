@@ -101,7 +101,7 @@ function getAdditionalConditionsText(licencePathSelector, conditionsConfig) {
   // if additionalConditionsRequired === Yes but no conditions selected then licenceConditions not replaced with array
   // TODO fix conditionsService to not overwrite licenceConditions section of licence
   if (standardOnly || isEmpty(conditions) || !Array.isArray(conditions)) {
-    return
+    return null
   }
 
   const start = conditionsConfig.startIndex

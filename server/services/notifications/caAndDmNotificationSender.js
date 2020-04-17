@@ -137,7 +137,7 @@ module.exports = function createCaAndDmNotificationSender(
     sendingUserName,
   }) {
     if (!activeNotificationTypes.includes(notificationType)) {
-      return
+      return []
     }
 
     try {

@@ -104,13 +104,11 @@ module.exports = ({ prisonerService, licenceService, audit, caService }) => (rou
       const access = determineAccessLevel(licence, postRelease, req.user.role)
 
       if (access === NONE) {
-        res.redirect('/caseList/active')
-        return
+        return res.redirect('/caseList/active')
       }
 
       if (access === READ_ONLY) {
-        res.redirect(`/hdc/review/licence/${bookingId}`)
-        return
+        return res.redirect(`/hdc/review/licence/${bookingId}`)
       }
 
       const licenceStatus = getLicenceStatus(licence)
@@ -144,7 +142,7 @@ module.exports = ({ prisonerService, licenceService, audit, caService }) => (rou
 
       const taskListModel = getTaskListModel(req.user.role, postRelease, licenceStatus, licence || {})
 
-      res.render('taskList/taskListBuilder', {
+      return res.render('taskList/taskListBuilder', {
         ...model,
         taskListModel,
         errors: [],
@@ -189,12 +187,12 @@ module.exports = ({ prisonerService, licenceService, audit, caService }) => (rou
       const prisonerImage = await prisonerService.getPrisonerImage(req.params.imageId, res.locals.token)
 
       if (!prisonerImage) {
-        const placeHolder = path.join(__dirname, '../../assets/images/no-photo.png')
+        const placeHolder = path.join(process.cwd(), '/assets/images/no-photo.png')
         res.status(302)
         return res.sendFile(placeHolder)
       }
       res.contentType('image/jpeg')
-      res.send(prisonerImage)
+      return res.send(prisonerImage)
     })
   )
 

@@ -119,7 +119,7 @@ describe('deliusClient', () => {
     test('should ignore errors', () => {
       fakeDelius.put(`/users/bobUser/roles/${config.delius.responsibleOfficerRoleId}`).reply(500)
 
-      return expect(deliusClient.addResponsibleOfficerRole('bobUser')).resolves.toStrictEqual(undefined)
+      return expect(deliusClient.addResponsibleOfficerRole('bobUser')).resolves.toStrictEqual(null)
     })
   })
 })

@@ -467,4 +467,5 @@ function approvedAddressValidationConfig(licence) {
       missingMessage: 'Enter the approved premises address details',
     }
   }
+  return null
 }

@@ -46,6 +46,7 @@ module.exports = function createReminderService(
       return cases ? cases.length : 0
     } catch (error) {
       logger.error(`Error notifying cases for notification type: ${notificationType}`, error.stack)
+      return 0
     }
   }
 

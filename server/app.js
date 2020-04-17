@@ -168,16 +168,16 @@ module.exports = function createApp({
   const cacheControl = { maxAge: config.staticResourceCacheDuration * 1000 }
 
   ;[
-    '../public',
-    '../assets',
-    '../assets/stylesheets',
-    '../node_modules/govuk_template_jinja/assets',
-    '../node_modules/govuk_frontend_toolkit',
+    '/public',
+    '/assets',
+    '/assets/stylesheets',
+    '/node_modules/govuk_template_jinja/assets',
+    '/node_modules/govuk_frontend_toolkit',
   ].forEach((dir) => {
-    app.use('/public', express.static(path.join(__dirname, dir), cacheControl))
+    app.use('/public', express.static(path.join(process.cwd(), dir), cacheControl))
   })
-  ;['../node_modules/govuk_frontend_toolkit/images'].forEach((dir) => {
-    app.use('/public/images/icons', express.static(path.join(__dirname, dir), cacheControl))
+  ;['/node_modules/govuk_frontend_toolkit/images'].forEach((dir) => {
+    app.use('/public/images/icons', express.static(path.join(process.cwd(), dir), cacheControl))
   })
 
   // GovUK Template Configuration
@@ -242,7 +242,7 @@ module.exports = function createApp({
         }
       }
     }
-    next()
+    return next()
   })
 
   // Update a value in the cookie so that the set-cookie will be sent.
@@ -407,7 +407,7 @@ function handleKnownErrors(error, req, res, next) {
       logger.error('Unauthorised: ', error.stack)
       return res.redirect('/logout')
     default:
-      next(error)
+      return next(error)
   }
 }
 

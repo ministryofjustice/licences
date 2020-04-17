@@ -108,6 +108,7 @@ module.exports = (signInService) => {
         `Error calling delius, path: '${path}', verb: 'PUT', response: '${getIn(error, ['response', 'text'])}'`,
         error.stack
       )
+      return null
     }
   }
 }

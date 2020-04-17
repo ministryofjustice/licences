@@ -8,6 +8,7 @@ module.exports = function createNotificationJobs(reminderService, signInService)
       return await reminderService.notifyRoReminders(systemToken.token)
     } catch (error) {
       logger.error('Error running RO reminders', error.stack)
+      return null
     }
   }
 

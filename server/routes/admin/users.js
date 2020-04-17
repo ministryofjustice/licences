@@ -58,7 +58,7 @@ module.exports = ({ userAdminService }) => (router, audited) => {
       return res.redirect(`/admin/roUsers/edit/${originalNomisId}`)
     }
 
-    res.redirect('/admin/roUsers')
+    return res.redirect('/admin/roUsers')
   })
 
   router.get(
@@ -125,6 +125,7 @@ module.exports = ({ userAdminService }) => (router, audited) => {
     if (!userInput.deliusId || userInput.deliusId.trim() === '') {
       return { deliusId: 'Delius staff id is required' }
     }
+    return null
   }
 
   return router

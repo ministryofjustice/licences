@@ -725,13 +725,7 @@ function getBassState(licence) {
 }
 
 function getBassOfferState(bassAccepted) {
-  if (!bassAccepted) {
-    return taskStates.UNSTARTED
-  }
-
-  if (bassAccepted) {
-    return taskStates.DONE
-  }
+  return !bassAccepted ? taskStates.UNSTARTED : taskStates.DONE
 }
 
 function getBassAddressState(licence) {
