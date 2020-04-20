@@ -195,12 +195,7 @@ module.exports = {
       {
         title: 'Additional conditions',
         label: additionalConditions.getLabel({ decisions, tasks }, 'CA'),
-        action: {
-          type: 'btn-secondary',
-          href: '/hdc/licenceConditions/standard/',
-          text: 'View/Edit',
-          dataQa: 'additional-conditions',
-        },
+        action: additionalConditions.getCaAction(),
         visible: validAddress,
       },
       {
@@ -343,12 +338,7 @@ module.exports = {
       {
         title: 'Additional conditions',
         label: additionalConditions.getLabel({ decisions, tasks }, 'CA'),
-        action: {
-          type: 'btn-secondary',
-          href: '/hdc/licenceConditions/standard/',
-          text: 'View/Edit',
-          dataQa: 'additional-conditions',
-        },
+        action: additionalConditions.getCaAction(),
         visible: validAddress,
       },
       {
