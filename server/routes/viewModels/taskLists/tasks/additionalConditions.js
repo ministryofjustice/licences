@@ -1,4 +1,4 @@
-const { standardAction } = require('./utils/actions')
+const { standardAction, viewEdit, view } = require('./utils/actions')
 
 module.exports = {
   getLabel: ({ decisions, tasks }, role) => {
@@ -34,16 +34,7 @@ module.exports = {
     return standardAction(licenceConditions, '/hdc/licenceConditions/standard/')
   },
 
-  getDmAction: () => ({
-    type: 'btn-secondary',
-    href: '/hdc/review/conditions/',
-    text: 'View',
-  }),
+  view: () => view('/hdc/review/conditions/'),
 
-  getCaAction: () => ({
-    type: 'btn-secondary',
-    href: '/hdc/licenceConditions/standard/',
-    text: 'View/Edit',
-    dataQa: 'additional-conditions',
-  }),
+  edit: () => viewEdit('/hdc/licenceConditions/standard/', 'additional-conditions'),
 }

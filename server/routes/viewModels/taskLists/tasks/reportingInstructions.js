@@ -1,4 +1,4 @@
-const { standardAction } = require('./utils/actions')
+const { standardAction, viewEdit, view } = require('./utils/actions')
 
 module.exports = {
   getLabel: ({ tasks }) => {
@@ -10,4 +10,8 @@ module.exports = {
     const { reportingInstructions } = tasks
     return standardAction(reportingInstructions, '/hdc/reporting/reportingInstructions/')
   },
+
+  edit: () => viewEdit('/hdc/reporting/reportingInstructions/', 'reporting-instructions'),
+
+  view: () => view('/hdc/review/reporting/'),
 }

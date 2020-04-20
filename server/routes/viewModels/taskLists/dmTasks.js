@@ -19,22 +19,14 @@ const rejectedAddressTaskList = (licenceStatus) => {
     {
       title: 'Proposed curfew address',
       label: curfewAddress.getLabel(licenceStatus),
-      action: {
-        type: 'btn-secondary',
-        href: '/hdc/review/address/',
-        text: 'View',
-      },
+      action: curfewAddress.getDmRejectedAction(),
     },
     ...(showRiskManagement
       ? [
           {
             title: 'Risk management',
             label: riskManagement.getLabel(licenceStatus),
-            action: {
-              type: 'btn-secondary',
-              href: '/hdc/review/risk/',
-              text: 'View',
-            },
+            action: riskManagement.view(),
           },
         ]
       : []),
@@ -87,57 +79,37 @@ const standardTaskList = (licenceStatus) => {
     {
       title: 'Risk management',
       label: riskManagement.getLabel(licenceStatus),
-      action: {
-        type: 'btn-secondary',
-        href: '/hdc/review/risk/',
-        text: 'View',
-      },
+      action: riskManagement.view(),
       visible: !approvedPremisesRequired,
     },
     {
       title: 'Victim liaison',
       label: victimLiaison.getLabel(licenceStatus),
-      action: {
-        type: 'btn-secondary',
-        href: '/hdc/review/victimLiaison/',
-        text: 'View',
-      },
+      action: victimLiaison.view(),
       visible: true,
     },
     {
       title: 'Curfew hours',
       label: curfewHours.getLabel(licenceStatus),
-      action: {
-        type: 'btn-secondary',
-        href: '/hdc/review/curfewHours/',
-        text: 'View',
-      },
+      action: curfewHours.view(),
       visible: true,
     },
     {
       title: 'Additional conditions',
       label: additionalConditions.getLabel(licenceStatus),
-      action: additionalConditions.getDmAction(),
+      action: additionalConditions.view(),
       visible: true,
     },
     {
       title: 'Reporting instructions',
       label: reportingInstructions.getLabel(licenceStatus),
-      action: {
-        type: 'btn-secondary',
-        href: '/hdc/review/reporting/',
-        text: 'View',
-      },
+      action: reportingInstructions.view(),
       visible: true,
     },
     {
       title: 'Review case',
       label: finalChecks.getLabel(licenceStatus),
-      action: {
-        type: 'btn-secondary',
-        href: '/hdc/review/finalChecks/',
-        text: 'View',
-      },
+      action: finalChecks.view(),
       visible: true,
     },
     {

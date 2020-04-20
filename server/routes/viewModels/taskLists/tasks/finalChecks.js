@@ -1,4 +1,4 @@
-const { standardAction } = require('./utils/actions')
+const { standardAction, view } = require('./utils/actions')
 
 module.exports = {
   getLabel: ({ decisions, tasks }) => {
@@ -31,4 +31,6 @@ module.exports = {
 
     return standardAction(finalChecks, '/hdc/finalChecks/seriousOffence/', 'review-case')
   },
+
+  view: () => view('/hdc/review/finalChecks/'),
 }

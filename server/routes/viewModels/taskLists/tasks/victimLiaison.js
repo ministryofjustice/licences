@@ -1,4 +1,4 @@
-const { standardAction } = require('./utils/actions')
+const { standardAction, viewEdit, view } = require('./utils/actions')
 
 module.exports = {
   getLabel: ({ decisions, tasks }) => {
@@ -15,4 +15,8 @@ module.exports = {
     const { victim } = tasks
     return standardAction(victim, '/hdc/victim/victimLiaison/')
   },
+
+  edit: () => viewEdit('/hdc/victim/victimLiaison/', 'victim-liaison'),
+
+  view: () => view('/hdc/review/victimLiaison/'),
 }

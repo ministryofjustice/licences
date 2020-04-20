@@ -66,12 +66,7 @@ module.exports = {
       {
         title: 'Risk management',
         label: riskManagement.getLabel({ decisions, tasks }),
-        action: {
-          type: 'btn-secondary',
-          href: '/hdc/risk/riskManagement/',
-          text: 'View/Edit',
-          dataQa: 'risk-management',
-        },
+        action: riskManagement.edit(),
         visible: addressUnsuitable,
       },
 
@@ -159,12 +154,7 @@ module.exports = {
       {
         title: 'Risk management',
         label: riskManagement.getLabel({ decisions, tasks }),
-        action: {
-          type: 'btn-secondary',
-          href: '/hdc/risk/riskManagement/',
-          text: 'View/Edit',
-          dataQa: 'risk-management',
-        },
+        action: riskManagement.edit(),
         visible:
           (!approvedPremisesRequired && curfewAddressApproved) ||
           addressUnsuitable ||
@@ -173,40 +163,25 @@ module.exports = {
       {
         title: 'Victim liaison',
         label: victimLiaison.getLabel({ decisions, tasks }),
-        action: {
-          type: 'btn-secondary',
-          href: '/hdc/victim/victimLiaison/',
-          text: 'View/Edit',
-          dataQa: 'victim-liaison',
-        },
+        action: victimLiaison.edit(),
         visible: validAddress,
       },
       {
         title: 'Curfew hours',
         label: curfewHours.getLabel({ tasks }),
-        action: {
-          type: 'btn-secondary',
-          href: '/hdc/curfew/curfewHours/',
-          text: 'View/Edit',
-          dataQa: 'curfew-hours',
-        },
+        action: curfewHours.edit(),
         visible: validAddress,
       },
       {
         title: 'Additional conditions',
         label: additionalConditions.getLabel({ decisions, tasks }, 'CA'),
-        action: additionalConditions.getCaAction(),
+        action: additionalConditions.edit(),
         visible: validAddress,
       },
       {
         title: 'Reporting instructions',
         label: reportingInstructions.getLabel({ tasks }),
-        action: {
-          type: 'btn-secondary',
-          href: '/hdc/reporting/reportingInstructions/',
-          text: 'View/Edit',
-          dataQa: 'reporting-instructions',
-        },
+        action: reportingInstructions.edit(),
         visible: validAddress,
       },
       {
@@ -305,51 +280,31 @@ module.exports = {
       {
         title: 'Risk management',
         label: riskManagement.getLabel({ decisions, tasks }),
-        action: {
-          type: 'btn-secondary',
-          href: '/hdc/risk/riskManagement/',
-          text: 'View/Edit',
-          dataQa: 'risk-management',
-        },
+        action: riskManagement.edit(),
         visible: !approvedPremisesRequired && (curfewAddressApproved || bassOfferMade || addressUnsuitable),
       },
       {
         title: 'Victim liaison',
         label: victimLiaison.getLabel({ decisions, tasks }),
-        action: {
-          type: 'btn-secondary',
-          href: '/hdc/victim/victimLiaison/',
-          text: 'View/Edit',
-          dataQa: 'victim-liaison',
-        },
+        action: victimLiaison.edit(),
         visible: validAddress,
       },
       {
         title: 'Curfew hours',
         label: curfewHours.getLabel({ tasks }),
-        action: {
-          type: 'btn-secondary',
-          href: '/hdc/curfew/curfewHours/',
-          text: 'View/Edit',
-          dataQa: 'curfew-hours',
-        },
+        action: curfewHours.edit(),
         visible: validAddress,
       },
       {
         title: 'Additional conditions',
         label: additionalConditions.getLabel({ decisions, tasks }, 'CA'),
-        action: additionalConditions.getCaAction(),
+        action: additionalConditions.edit(),
         visible: validAddress,
       },
       {
         title: 'Reporting instructions',
         label: reportingInstructions.getLabel({ tasks }),
-        action: {
-          type: 'btn-secondary',
-          href: '/hdc/reporting/reportingInstructions/',
-          text: 'View/Edit',
-          dataQa: 'reporting-instructions',
-        },
+        action: reportingInstructions.edit(),
         visible: validAddress,
       },
       {

@@ -1,4 +1,4 @@
-const { standardAction } = require('./utils/actions')
+const { standardAction, viewEdit, view } = require('./utils/actions')
 
 module.exports = {
   getLabel: ({ decisions, tasks }) => {
@@ -20,8 +20,12 @@ module.exports = {
     return 'Not completed'
   },
 
+  view: () => view('/hdc/review/risk/'),
+
   getRoAction: ({ tasks }) => {
     const { riskManagement } = tasks
     return standardAction(riskManagement, '/hdc/risk/riskManagement/')
   },
+
+  edit: () => viewEdit('/hdc/risk/riskManagement/', 'risk-management'),
 }
