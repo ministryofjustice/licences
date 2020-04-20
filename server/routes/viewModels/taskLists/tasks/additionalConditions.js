@@ -33,4 +33,17 @@ module.exports = {
     const { licenceConditions } = tasks
     return standardAction(licenceConditions, '/hdc/licenceConditions/standard/')
   },
+
+  getDmAction: () => ({
+    type: 'btn-secondary',
+    href: '/hdc/review/conditions/',
+    text: 'View',
+  }),
+
+  getCaAction: () => ({
+    type: 'btn-secondary',
+    href: '/hdc/licenceConditions/standard/',
+    text: 'View/Edit',
+    dataQa: 'additional-conditions',
+  }),
 }

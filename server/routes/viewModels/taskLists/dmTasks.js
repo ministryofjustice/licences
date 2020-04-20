@@ -7,15 +7,14 @@ const curfewHours = require('./tasks/curfewHours')
 const additionalConditions = require('./tasks/additionalConditions')
 const reportingInstructions = require('./tasks/reportingInstructions')
 const finalChecks = require('./tasks/finalChecks')
-const { getStatusLabel } = require('../../../utils/licenceStatusLabels')
+const finalDecision = require('./tasks/finalDecision')
 
 const rejectedAddressTaskList = (licenceStatus) => {
   const {
     decisions: { addressWithdrawn, addressReviewFailed },
   } = licenceStatus
-
-  /** @type {Array<any>} */
-  const taskList = [
+  const showRiskManagement = !(addressReviewFailed || addressWithdrawn)
+  return [
     { task: 'eligibilitySummaryTask' },
     {
       title: 'Proposed curfew address',
@@ -26,21 +25,19 @@ const rejectedAddressTaskList = (licenceStatus) => {
         text: 'View',
       },
     },
-  ]
-
-  if (!(addressReviewFailed || addressWithdrawn)) {
-    taskList.push({
-      title: 'Risk management',
-      label: riskManagement.getLabel(licenceStatus),
-      action: {
-        type: 'btn-secondary',
-        href: '/hdc/review/risk/',
-        text: 'View',
-      },
-    })
-  }
-
-  taskList.push(
+    ...(showRiskManagement
+      ? [
+          {
+            title: 'Risk management',
+            label: riskManagement.getLabel(licenceStatus),
+            action: {
+              type: 'btn-secondary',
+              href: '/hdc/review/risk/',
+              text: 'View',
+            },
+          },
+        ]
+      : []),
     {
       title: 'Return to prison case admin',
       action: {
@@ -51,49 +48,25 @@ const rejectedAddressTaskList = (licenceStatus) => {
     },
     {
       title: 'Final decision',
-      label: getDecisionLabel(licenceStatus),
-      action: {
-        type: 'btn',
-        href: '/hdc/approval/refuseReason/',
-        text: 'Refuse HDC',
-      },
-    }
-  )
-  return taskList
+      label: finalDecision.getLabel(licenceStatus),
+      action: finalDecision.getRefusalAction(),
+    },
+  ]
 }
 
-module.exports = (licenceStatus) => {
+const insufficientTimeStopTaskList = (licenceStatus) => [
+  { task: 'eligibilitySummaryTask' },
+  {
+    title: 'Final decision',
+    label: finalDecision.getLabel(licenceStatus),
+    action: finalDecision.getRefusalAction(),
+  },
+]
+
+const standardTaskList = (licenceStatus) => {
   const {
-    decisions: {
-      addressWithdrawn,
-      approvedPremisesRequired,
-      bassAccepted,
-      bassReferralNeeded,
-      confiscationOrder,
-      curfewAddressRejected,
-      insufficientTimeStop,
-    },
+    decisions: { approvedPremisesRequired, bassReferralNeeded, confiscationOrder },
   } = licenceStatus
-
-  if (insufficientTimeStop) {
-    return [
-      { task: 'eligibilitySummaryTask' },
-      {
-        title: 'Final decision',
-        label: getDecisionLabel(licenceStatus),
-        action: {
-          type: 'btn',
-          href: '/hdc/approval/refuseReason/',
-          text: 'Refuse HDC',
-        },
-      },
-    ]
-  }
-
-  if (bassAccepted !== 'Yes' && (addressWithdrawn || curfewAddressRejected)) {
-    return rejectedAddressTaskList(licenceStatus)
-  }
-
   return [
     {
       title: 'BASS address',
@@ -103,11 +76,13 @@ module.exports = (licenceStatus) => {
         href: approvedPremisesRequired ? '/hdc/review/approvedPremisesAddress/' : '/hdc/review/bassOffer/',
         text: 'View',
       },
+      visible: bassReferralNeeded,
     },
     {
       title: 'Proposed curfew address',
       label: curfewAddress.getLabel(licenceStatus),
       action: curfewAddress.getDmAction(licenceStatus),
+      visible: !bassReferralNeeded,
     },
     {
       title: 'Risk management',
@@ -117,6 +92,7 @@ module.exports = (licenceStatus) => {
         href: '/hdc/review/risk/',
         text: 'View',
       },
+      visible: !approvedPremisesRequired,
     },
     {
       title: 'Victim liaison',
@@ -126,6 +102,7 @@ module.exports = (licenceStatus) => {
         href: '/hdc/review/victimLiaison/',
         text: 'View',
       },
+      visible: true,
     },
     {
       title: 'Curfew hours',
@@ -135,15 +112,13 @@ module.exports = (licenceStatus) => {
         href: '/hdc/review/curfewHours/',
         text: 'View',
       },
+      visible: true,
     },
     {
       title: 'Additional conditions',
       label: additionalConditions.getLabel(licenceStatus),
-      action: {
-        type: 'btn-secondary',
-        href: '/hdc/review/conditions/',
-        text: 'View',
-      },
+      action: additionalConditions.getDmAction(),
+      visible: true,
     },
     {
       title: 'Reporting instructions',
@@ -153,6 +128,7 @@ module.exports = (licenceStatus) => {
         href: '/hdc/review/reporting/',
         text: 'View',
       },
+      visible: true,
     },
     {
       title: 'Review case',
@@ -162,11 +138,13 @@ module.exports = (licenceStatus) => {
         href: '/hdc/review/finalChecks/',
         text: 'View',
       },
+      visible: true,
     },
     {
       title: 'Postpone',
       label: postponement.getLabel(licenceStatus),
       action: postponement.getAction(licenceStatus),
+      visible: confiscationOrder,
     },
     {
       title: 'Return to prison case admin',
@@ -175,46 +153,31 @@ module.exports = (licenceStatus) => {
         href: '/hdc/send/return/',
         text: 'Return to prison case admin',
       },
+      visible: true,
     },
     {
       title: 'Final decision',
-      label: getDecisionLabel(licenceStatus),
-      action: {
-        type: 'btn',
-        href: '/hdc/approval/release/',
-        text: 'Continue',
-      },
+      label: finalDecision.getLabel(licenceStatus),
+      action: finalDecision.getDecisionAction(),
+      visible: true,
     },
-  ].filter((task) => {
-    if (task.title === 'BASS address') {
-      return bassReferralNeeded
-    }
-
-    if (task.title === 'Proposed curfew address') {
-      return !bassReferralNeeded
-    }
-
-    if (task.title === 'Postpone') {
-      return confiscationOrder
-    }
-
-    if (task.title === 'Risk management') {
-      return !approvedPremisesRequired
-    }
-
-    return true
-  })
+  ]
+    .filter((task) => task.visible)
+    .map(({ visible, ...rest }) => rest)
 }
 
-function getDecisionLabel(licenceStatus) {
-  const { statusLabel } = getStatusLabel(licenceStatus, 'DM')
-
+module.exports = (licenceStatus) => {
   const {
-    decisions: { refused, refusalReason },
+    decisions: { addressWithdrawn, bassAccepted, curfewAddressRejected, insufficientTimeStop },
   } = licenceStatus
 
-  if (refused && refusalReason) {
-    return `${statusLabel}`
+  if (insufficientTimeStop) {
+    return insufficientTimeStopTaskList(licenceStatus)
   }
-  return statusLabel
+
+  if (bassAccepted !== 'Yes' && (addressWithdrawn || curfewAddressRejected)) {
+    return rejectedAddressTaskList(licenceStatus)
+  }
+
+  return standardTaskList(licenceStatus)
 }
