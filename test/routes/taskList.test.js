@@ -46,6 +46,20 @@ const dmAddressRefusal = {
   },
 }
 
+const dmHasProvidedHdcDecisionComments = {
+  stage: 'DECIDED',
+  licence: {
+    approval: {
+      release: {
+        reason: 'addressUnsuitable',
+        decision: 'No',
+        decisionMaker: 'Diane Matthews',
+        reasonForDecision: 'The reason for the prisoner not being granted HDC is ...',
+      },
+    },
+  },
+}
+
 const licenceWithEligibilityComplete = {
   eligibility: {
     excluded: {
@@ -286,6 +300,23 @@ describe('GET /taskList/:prisonNumber', () => {
         .expect(200)
         .expect((res) => {
           expect(res.text).toContain('id="eligibilityCheckStart"')
+        })
+    })
+
+    test('should contain "The reason for the prisoner not being granted HDC" ', () => {
+      licenceService.getLicence.mockResolvedValue(dmHasProvidedHdcDecisionComments)
+
+      const app = createApp(
+        { licenceServiceStub: licenceService, prisonerServiceStub: prisonerService, caServiceStub: caService },
+        'caUser'
+      )
+
+      return request(app)
+        .get('/taskList/123')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect((res) => {
+          expect(res.text).toContain('The reason for the prisoner not being granted HD')
         })
     })
 

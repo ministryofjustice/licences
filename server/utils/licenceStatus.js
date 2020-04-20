@@ -91,6 +91,7 @@ function getApprovalStageState(licence) {
       dmRefused: approvalRelease.decision === 'No',
       refusalReason,
       bassAccepted,
+      decisionComments: approvalRelease.reasonForDecision,
     },
     tasks: {
       approval: isEmpty(approvalRelease.decision) ? taskStates.UNSTARTED : taskStates.DONE,
