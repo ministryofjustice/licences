@@ -353,7 +353,7 @@ describe('GET /taskList/:prisonNumber', () => {
         })
     })
 
-    test('should contain "Home detention curfew refused by Case Admin" ', () => {
+    test('should contain "Home detention curfew refused by Prison Case Administrator" ', () => {
       licenceService.getLicence.mockResolvedValue(caHasRefusedHdc)
 
       const app = createApp(
@@ -366,7 +366,7 @@ describe('GET /taskList/:prisonNumber', () => {
         .expect(200)
         .expect('Content-Type', /html/)
         .expect((res) => {
-          expect(res.text).toContain('Home detention curfew refused by Case Admin')
+          expect(res.text).toContain('Home detention curfew refused by Prison Case Administrator')
         })
     })
 

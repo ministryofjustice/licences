@@ -179,7 +179,7 @@ function getCaStageState(licence) {
       bassAccepted,
       bassWithdrawn,
       bassWithdrawalReason,
-      caRefused: (approvalRelease.decision === 'Yes' && finalChecksRefusal.decision === 'Yes') || false,
+      caRefused: approvalRelease.decision === 'Yes' && finalChecksRefusal.decision === 'Yes',
     },
     tasks: {
       seriousOffenceCheck,
