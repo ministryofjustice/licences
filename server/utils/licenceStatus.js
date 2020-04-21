@@ -91,6 +91,7 @@ function getApprovalStageState(licence) {
       dmRefused: approvalRelease.decision === 'No',
       refusalReason,
       bassAccepted,
+      decisionComments: approvalRelease.reasonForDecision ? approvalRelease.reasonForDecision.trim() : null,
     },
     tasks: {
       approval: isEmpty(approvalRelease.decision) ? taskStates.UNSTARTED : taskStates.DONE,
@@ -164,6 +165,8 @@ function getCaStageState(licence) {
   const { finalChecksPass, finalChecksRefused, postponed } = getFinalChecksState(licence, seriousOffence, onRemand)
   const finalChecks = getOverallState([seriousOffenceCheck, onRemandCheck, confiscationOrderCheck])
   const { bassAccepted, bassOffer, bassWithdrawn, bassWithdrawalReason } = getBassState(licence)
+  const approvalRelease = getIn(licence, ['approval', 'release']) || {}
+  const finalChecksRefusal = getIn(licence, ['finalChecks', 'refusal']) || {}
 
   return {
     decisions: {
@@ -176,6 +179,7 @@ function getCaStageState(licence) {
       bassAccepted,
       bassWithdrawn,
       bassWithdrawalReason,
+      caRefused: approvalRelease.decision === 'Yes' && finalChecksRefusal.decision === 'Yes',
     },
     tasks: {
       seriousOffenceCheck,
