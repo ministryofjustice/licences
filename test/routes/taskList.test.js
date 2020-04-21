@@ -60,6 +60,22 @@ const dmHasProvidedHdcDecisionComments = {
   },
 }
 
+const caHasRefusedHdc = {
+  stage: 'DECIDED',
+  licence: {
+    approval: {
+      release: {
+        decision: 'Yes',
+      },
+    },
+    finalChecks: {
+      refusal: {
+        decision: 'Yes',
+      },
+    },
+  },
+}
+
 const licenceWithEligibilityComplete = {
   eligibility: {
     excluded: {
@@ -317,6 +333,40 @@ describe('GET /taskList/:prisonNumber', () => {
         .expect('Content-Type', /html/)
         .expect((res) => {
           expect(res.text).toContain('The reason for the prisoner not being granted HD')
+        })
+    })
+
+    test('should contain "Home detention curfew refused by Decision Maker" ', () => {
+      licenceService.getLicence.mockResolvedValue(dmHasProvidedHdcDecisionComments)
+
+      const app = createApp(
+        { licenceServiceStub: licenceService, prisonerServiceStub: prisonerService, caServiceStub: caService },
+        'caUser'
+      )
+
+      return request(app)
+        .get('/taskList/123')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect((res) => {
+          expect(res.text).toContain('Home detention curfew refused by Decision Maker')
+        })
+    })
+
+    test('should contain "Home detention curfew refused by Case Admin" ', () => {
+      licenceService.getLicence.mockResolvedValue(caHasRefusedHdc)
+
+      const app = createApp(
+        { licenceServiceStub: licenceService, prisonerServiceStub: prisonerService, caServiceStub: caService },
+        'caUser'
+      )
+
+      return request(app)
+        .get('/taskList/123')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect((res) => {
+          expect(res.text).toContain('Home detention curfew refused by Case Admin')
         })
     })
 
