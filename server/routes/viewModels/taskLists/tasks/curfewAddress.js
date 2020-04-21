@@ -83,4 +83,6 @@ module.exports = {
 
     return view('/hdc/review/address/')
   },
+
+  getDmRejectedAction: () => view('/hdc/review/address/'),
 }
