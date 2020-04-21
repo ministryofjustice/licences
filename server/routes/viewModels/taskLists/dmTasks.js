@@ -1,4 +1,4 @@
-const postponement = require('./tasks/postponement')
+const { postpone } = require('./tasks/postponement')
 const bassOffer = require('./tasks/bassOffer')
 const curfewAddress = require('./tasks/curfewAddress')
 const riskManagement = require('./tasks/riskManagement')
@@ -98,18 +98,8 @@ const standardTaskList = (licenceStatus) => {
       action: reportingInstructions.view(),
       visible: true,
     },
-    {
-      title: 'Review case',
-      label: finalChecks.getLabel(licenceStatus),
-      action: finalChecks.view(),
-      visible: true,
-    },
-    {
-      title: 'Postpone',
-      label: postponement.getLabel(licenceStatus),
-      action: postponement.getAction(licenceStatus),
-      visible: confiscationOrder,
-    },
+    finalChecks.view({ decisions: licenceStatus.decisions, tasks: licenceStatus.tasks, visible: true }),
+    postpone({ decisions: licenceStatus.decisions, visible: confiscationOrder }),
     returnToPrisonCaseAdmin(),
     {
       title: 'Final decision',

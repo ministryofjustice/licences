@@ -1,41 +1,61 @@
-const { getLabel, getAction } = require('../../../../../server/routes/viewModels/taskLists/tasks/postponement')
+const { postpone, postponeOrRefuse } = require('../../../../../server/routes/viewModels/taskLists/tasks/postponement')
 
-describe('postponement task', () => {
-  describe('getLabel', () => {
-    test('should return HDC application postponed if postponed = true', () => {
-      expect(getLabel({ decisions: { postponed: true } })).toBe('HDC application postponed')
-    })
-
-    test('should return confiscation order message if confiscationOrder = true', () => {
-      expect(getLabel({ decisions: { confiscationOrder: true } })).toBe(
-        'Use this to indicate that the process is postponed if a confiscation order is in place'
-      )
-    })
-
-    test('should return default message if confiscationOrder && postponed= false', () => {
-      expect(getLabel({ decisions: { confiscationOrder: false, postponed: false } })).toBe(
-        "Postpone the case if you're waiting for information on risk management"
-      )
+describe('postpone', () => {
+  test('should return HDC application postponed if postponed = true', () => {
+    expect(postpone({ decisions: { postponed: true }, visible: true })).toStrictEqual({
+      action: { dataQa: 'postpone', href: '/hdc/finalChecks/postpone/', text: 'Resume', type: 'btn' },
+      label: 'HDC application postponed',
+      title: 'Postpone',
+      visible: true,
     })
   })
 
-  describe('getAction', () => {
-    test('should return resume text if postponed = true', () => {
-      expect(getAction({ decisions: { postponed: true } })).toEqual({
-        text: 'Resume',
-        href: '/hdc/finalChecks/postpone/',
-        type: 'btn',
-        dataQa: 'postpone',
-      })
+  test('should return confiscation order message if confiscationOrder = true', () => {
+    expect(postpone({ decisions: { confiscationOrder: true }, visible: true })).toStrictEqual({
+      action: { dataQa: 'postpone', href: '/hdc/finalChecks/postpone/', text: 'Postpone', type: 'btn' },
+      label: 'Use this to indicate that the process is postponed if a confiscation order is in place',
+      title: 'Postpone',
+      visible: true,
     })
+  })
 
-    test('should return postpone text if postponed = false', () => {
-      expect(getAction({ decisions: { postponed: false } })).toEqual({
-        text: 'Postpone',
-        href: '/hdc/finalChecks/postpone/',
-        type: 'btn',
-        dataQa: 'postpone',
-      })
+  test('should return default message if confiscationOrder && postponed= false', () => {
+    expect(postpone({ decisions: { confiscationOrder: false, postponed: false }, visible: true })).toStrictEqual({
+      action: { dataQa: 'postpone', href: '/hdc/finalChecks/postpone/', text: 'Postpone', type: 'btn' },
+      label: "Postpone the case if you're waiting for information on risk management",
+      title: 'Postpone',
+      visible: true,
+    })
+  })
+})
+
+describe('postpone or refuse', () => {
+  test('should return HDC application postponed if postponed = true', () => {
+    expect(postponeOrRefuse({ decisions: { postponed: true }, visible: true })).toStrictEqual({
+      action: { dataQa: 'postpone', href: '/hdc/finalChecks/postpone/', text: 'Resume', type: 'btn' },
+      label: 'HDC application postponed',
+      title: 'Postpone or refuse',
+      visible: true,
+    })
+  })
+
+  test('should return confiscation order message if confiscationOrder = true', () => {
+    expect(postponeOrRefuse({ decisions: { confiscationOrder: true }, visible: true })).toStrictEqual({
+      action: { dataQa: 'postpone', href: '/hdc/finalChecks/postpone/', text: 'Postpone', type: 'btn' },
+      label: 'Use this to indicate that the process is postponed if a confiscation order is in place',
+      title: 'Postpone or refuse',
+      visible: true,
+    })
+  })
+
+  test('should return default message if confiscationOrder && postponed= false', () => {
+    expect(
+      postponeOrRefuse({ decisions: { confiscationOrder: false, postponed: false }, visible: true })
+    ).toStrictEqual({
+      action: { dataQa: 'postpone', href: '/hdc/finalChecks/postpone/', text: 'Postpone', type: 'btn' },
+      label: "Postpone the case if you're waiting for information on risk management",
+      title: 'Postpone or refuse',
+      visible: true,
     })
   })
 })

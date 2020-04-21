@@ -1,5 +1,3 @@
-const { standardAction } = require('./utils/actions')
-
 const { getStatusLabel } = require('../../../../utils/licenceStatusLabels')
 
 module.exports = {

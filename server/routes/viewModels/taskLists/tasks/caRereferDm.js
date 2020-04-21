@@ -1,11 +1,10 @@
 const { taskBtn } = require('./utils/actions')
 
-module.exports = {
-  getLabel: () => {
-    return 'Resubmit to the DM if a reconsideration is required'
-  },
-
-  getCaAction: () => {
-    return taskBtn('/hdc/send/resubmit/', 'Resubmit', true, 'resubmit')
-  },
+module.exports = ({ visible }) => {
+  return {
+    title: 'Resubmit to DM',
+    label: 'Resubmit to the DM if a reconsideration is required',
+    action: taskBtn('/hdc/send/resubmit/', 'Resubmit', true, 'resubmit'),
+    visible,
+  }
 }
