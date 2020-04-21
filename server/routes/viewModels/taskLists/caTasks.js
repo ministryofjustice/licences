@@ -131,15 +131,10 @@ module.exports = {
       visible: bassReferralNeeded,
     }
 
-    const refusalTask = {
-      title: null,
-      label: hdcRefusal.getLabel({ decisions }),
-      action: hdcRefusal.getCaAction({ decisions }),
-      visible: true,
-    }
-
     if (optedOut) {
-      return [proposedAddressTask, curfewAddressTask, bassTask, refusalTask].filter((task) => task.visible)
+      return [proposedAddressTask, curfewAddressTask, bassTask, hdcRefusal({ decisions })].filter(
+        (task) => task.visible
+      )
     }
 
     if (!eligible) {
@@ -196,7 +191,7 @@ module.exports = {
         action: postponement.getAction({ decisions }),
         visible: validAddress,
       },
-      refusalTask,
+      hdcRefusal({ decisions }),
       {
         title: 'Submit to decision maker',
         label: caSubmitApproval.getLabel({ decisions, allowedTransition }),
@@ -319,12 +314,7 @@ module.exports = {
         action: postponement.getAction({ decisions }),
         visible: validAddress && !dmRefused,
       },
-      {
-        title: null,
-        label: hdcRefusal.getLabel({ decisions }),
-        action: hdcRefusal.getCaAction({ decisions }),
-        visible: !dmRefused,
-      },
+      hdcRefusal({ decisions, visible: !dmRefused }),
       {
         title: 'Submit to decision maker',
         label: caSubmitApproval.getLabel({ decisions, allowedTransition }),

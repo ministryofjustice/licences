@@ -1,15 +1,19 @@
 const { taskBtn } = require('./utils/actions')
 
-module.exports = {
-  getLabel: ({ decisions }) => {
-    const { refused } = decisions
-    return refused ? 'HDC refused' : 'Refuse the case if there is no available address or not enough time'
-  },
+const getLabel = (refused) =>
+  refused ? 'HDC refused' : 'Refuse the case if there is no available address or not enough time'
 
-  getCaAction: ({ decisions }) => {
-    const { refused } = decisions
-    return refused
-      ? taskBtn('/hdc/finalChecks/refuse/', 'Update refusal', false, 'refuse')
-      : taskBtn('/hdc/finalChecks/refuse/', 'Refuse HDC', true, 'refuse')
-  },
+const getCaAction = (refused) =>
+  refused
+    ? taskBtn('/hdc/finalChecks/refuse/', 'Update refusal', false, 'refuse')
+    : taskBtn('/hdc/finalChecks/refuse/', 'Refuse HDC', true, 'refuse')
+
+module.exports = ({ decisions, visible = true }) => {
+  const { refused } = decisions
+  return {
+    title: null,
+    label: getLabel(refused),
+    action: getCaAction(refused),
+    visible,
+  }
 }
