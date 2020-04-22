@@ -42,12 +42,7 @@ module.exports = {
         visible: !approvedPremisesRequired && (validAddress || addressRejectedInRiskPhase),
       }),
       victimLiaison.ro({ decisions, tasks, visible: validAddress }),
-      {
-        title: 'Curfew hours',
-        label: curfewHours.getLabel({ tasks }),
-        action: curfewHours.getRoAction({ tasks }),
-        visible: validAddress,
-      },
+      curfewHours.ro({ tasks, visible: validAddress }),
       {
         title: 'Additional conditions',
         label: additionalConditions.getLabel({ decisions, tasks }),
@@ -76,12 +71,7 @@ module.exports = {
         visible: approvedPremisesRequired,
       },
       riskManagement.ro({ decisions, tasks, visible: !approvedPremisesRequired }),
-      {
-        title: 'Curfew hours',
-        label: curfewHours.getLabel({ tasks }),
-        action: curfewHours.getRoAction({ tasks }),
-        visible: true,
-      },
+      curfewHours.ro({ tasks, visible: true }),
       {
         title: 'Additional conditions',
         label: additionalConditions.getLabel({ decisions, tasks }),

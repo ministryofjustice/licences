@@ -141,12 +141,7 @@ module.exports = {
           (bassChecksDone && !approvedPremisesRequired),
       }),
       victimLiaison.edit({ decisions, tasks, visible: validAddress }),
-      {
-        title: 'Curfew hours',
-        label: curfewHours.getLabel({ tasks }),
-        action: curfewHours.edit(),
-        visible: validAddress,
-      },
+      curfewHours.edit({ tasks, visible: validAddress }),
       {
         title: 'Additional conditions',
         label: additionalConditions.getLabel({ decisions, tasks }, 'CA'),
@@ -238,12 +233,7 @@ module.exports = {
         visible: !approvedPremisesRequired && (curfewAddressApproved || bassOfferMade || addressUnsuitable),
       }),
       victimLiaison.edit({ decisions, tasks, visible: validAddress }),
-      {
-        title: 'Curfew hours',
-        label: curfewHours.getLabel({ tasks }),
-        action: curfewHours.edit(),
-        visible: validAddress,
-      },
+      curfewHours.edit({ tasks, visible: validAddress }),
       {
         title: 'Additional conditions',
         label: additionalConditions.getLabel({ decisions, tasks }, 'CA'),

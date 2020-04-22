@@ -1,22 +1,22 @@
-const { getLabel, getRoAction } = require('../../../../../server/routes/viewModels/taskLists/tasks/curfewHours')
+const curfewHours = require('../../../../../server/routes/viewModels/taskLists/tasks/curfewHours')
 
 describe('curfew hours task', () => {
   describe('getLabel', () => {
     test('should Completed if task is done', () => {
       expect(
-        getLabel({
+        curfewHours.edit({
           decisions: {},
           tasks: { curfewHours: 'DONE' },
-        })
+        }).label
       ).toBe('Confirmed')
     })
 
     test('should Not completed if task is not done', () => {
       expect(
-        getLabel({
+        curfewHours.edit({
           decisions: {},
           tasks: { curfewHours: 'SOMETHING' },
-        })
+        }).label
       ).toBe('Not completed')
     })
   })
@@ -24,10 +24,10 @@ describe('curfew hours task', () => {
   describe('getRoAction', () => {
     test('should show btn to curfewHours if curfewHours: UNSTARTED', () => {
       expect(
-        getRoAction({
+        curfewHours.ro({
           decisions: {},
           tasks: { curfewHours: 'UNSTARTED' },
-        })
+        }).action
       ).toEqual({
         text: 'Start now',
         href: '/hdc/curfew/curfewHours/',
@@ -37,10 +37,10 @@ describe('curfew hours task', () => {
 
     test('should show change link to curfewHours if curfewHours: DONE', () => {
       expect(
-        getRoAction({
+        curfewHours.ro({
           decisions: {},
           tasks: { curfewHours: 'DONE' },
-        })
+        }).action
       ).toEqual({
         text: 'Change',
         href: '/hdc/curfew/curfewHours/',
@@ -50,10 +50,10 @@ describe('curfew hours task', () => {
 
     test('should show continue btn to curfewHours if curfewHours: !DONE || UNSTARTED', () => {
       expect(
-        getRoAction({
+        curfewHours.ro({
           decisions: {},
           tasks: { curfewHours: 'SOMETHING' },
-        })
+        }).action
       ).toEqual({
         text: 'Continue',
         href: '/hdc/curfew/curfewHours/',

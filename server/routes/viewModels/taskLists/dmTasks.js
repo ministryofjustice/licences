@@ -72,12 +72,7 @@ const standardTaskList = (licenceStatus) => {
       visible: !approvedPremisesRequired,
     }),
     victimLiaison.view({ decisions: licenceStatus.decisions, tasks: licenceStatus.tasks, visible: true }),
-    {
-      title: 'Curfew hours',
-      label: curfewHours.getLabel(licenceStatus),
-      action: curfewHours.view(),
-      visible: true,
-    },
+    curfewHours.view({ tasks: licenceStatus.tasks, visible: true }),
     {
       title: 'Additional conditions',
       label: additionalConditions.getLabel(licenceStatus),
