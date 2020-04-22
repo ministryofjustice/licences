@@ -1,17 +1,33 @@
 const { standardAction, viewEdit, view } = require('./utils/actions')
 
+const getLabel = ({ reportingInstructions }) => (reportingInstructions === 'DONE' ? 'Confirmed' : 'Not completed')
+
+const title = 'Reporting instructions'
+
 module.exports = {
-  getLabel: ({ tasks }) => {
-    const { reportingInstructions } = tasks
-    return reportingInstructions === 'DONE' ? 'Confirmed' : 'Not completed'
+  edit: ({ tasks, visible }) => {
+    return {
+      title,
+      label: getLabel(tasks),
+      action: viewEdit('/hdc/reporting/reportingInstructions/', 'reporting-instructions'),
+      visible,
+    }
   },
-
-  getRoAction: ({ tasks }) => {
-    const { reportingInstructions } = tasks
-    return standardAction(reportingInstructions, '/hdc/reporting/reportingInstructions/')
+  view: ({ tasks, visible }) => {
+    return {
+      title,
+      label: getLabel(tasks),
+      action: view('/hdc/review/reporting/'),
+      visible,
+    }
   },
-
-  edit: () => viewEdit('/hdc/reporting/reportingInstructions/', 'reporting-instructions'),
-
-  view: () => view('/hdc/review/reporting/'),
+  ro: ({ tasks, visible }) => {
+    const { reportingInstructions } = tasks
+    return {
+      title,
+      label: getLabel(tasks),
+      action: standardAction(reportingInstructions, '/hdc/reporting/reportingInstructions/'),
+      visible,
+    }
+  },
 }

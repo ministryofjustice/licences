@@ -1,91 +1,142 @@
-const { getLabel, getRoAction } = require('../../../../../server/routes/viewModels/taskLists/tasks/riskManagement')
+const riskManagement = require('../../../../../server/routes/viewModels/taskLists/tasks/riskManagement')
 
 describe('risk management task', () => {
-  describe('getLabel', () => {
-    test('should return Address unsuitable if addressUnsuitable = true', () => {
-      expect(
-        getLabel({
-          decisions: { addressUnsuitable: true },
-          tasks: {},
-        })
-      ).toBe('Address unsuitable')
-    })
-
-    test('should return No risks if risk management not needed', () => {
-      expect(
-        getLabel({
-          decisions: { addressReviewFailed: false, riskManagementNeeded: false },
-          tasks: { riskManagement: 'DONE' },
-        })
-      ).toBe('No risks')
-    })
-
-    test('should return Risk management required if risk management needed', () => {
-      expect(
-        getLabel({
-          decisions: { addressReviewFailed: false, riskManagementNeeded: true },
-          tasks: { riskManagement: 'DONE' },
-        })
-      ).toBe('Risk management required')
-    })
-
-    test('should return Not completed if risk task not done', () => {
-      expect(
-        getLabel({
-          decisions: { addressReviewFailed: false, riskManagementNeeded: true },
-          tasks: { riskManagement: 'UNSTARTED' },
-        })
-      ).toBe('Not completed')
-    })
-
-    test('should return warning if still waiting for information', () => {
-      expect(
-        getLabel({
-          decisions: { awaitingRiskInformation: true },
-          tasks: {},
-        })
-      ).toBe('WARNING||Still waiting for information')
+  test('should return Address unsuitable if addressUnsuitable = true', () => {
+    expect(
+      riskManagement.view({
+        decisions: { addressUnsuitable: true },
+        tasks: {},
+        visible: true,
+      })
+    ).toStrictEqual({
+      action: { href: '/hdc/review/risk/', text: 'View', type: 'btn-secondary' },
+      label: 'Address unsuitable',
+      title: 'Risk management',
+      visible: true,
     })
   })
 
-  describe('getRoAction', () => {
-    test('should show btn to curfewAddressReview if curfewAddressReview: UNSTARTED', () => {
-      expect(
-        getRoAction({
-          decisions: {},
-          tasks: { riskManagement: 'UNSTARTED' },
-        })
-      ).toEqual({
-        text: 'Start now',
-        href: '/hdc/risk/riskManagement/',
-        type: 'btn',
+  test('should return No risks if risk management not needed', () => {
+    expect(
+      riskManagement.view({
+        decisions: { addressReviewFailed: false, riskManagementNeeded: false },
+        tasks: { riskManagement: 'DONE' },
+        visible: true,
       })
+    ).toStrictEqual({
+      action: { href: '/hdc/review/risk/', text: 'View', type: 'btn-secondary' },
+      label: 'No risks',
+      title: 'Risk management',
+      visible: true,
     })
+  })
 
-    test('should show change link to curfewAddressReview if curfewAddressReview: DONE', () => {
-      expect(
-        getRoAction({
-          decisions: {},
-          tasks: { riskManagement: 'DONE' },
-        })
-      ).toEqual({
-        text: 'Change',
-        href: '/hdc/risk/riskManagement/',
-        type: 'link',
+  test('should return Risk management required if risk management needed', () => {
+    expect(
+      riskManagement.view({
+        decisions: { addressReviewFailed: false, riskManagementNeeded: true },
+        tasks: { riskManagement: 'DONE' },
+        visible: true,
       })
+    ).toStrictEqual({
+      action: { href: '/hdc/review/risk/', text: 'View', type: 'btn-secondary' },
+      label: 'Risk management required',
+      title: 'Risk management',
+      visible: true,
     })
+  })
 
-    test('should show continue btn to curfewAddressReview if curfewAddressReview: !DONE || UNSTARTED', () => {
-      expect(
-        getRoAction({
-          decisions: {},
-          tasks: { riskManagement: 'SOMETHING' },
-        })
-      ).toEqual({
-        text: 'Continue',
-        href: '/hdc/risk/riskManagement/',
-        type: 'btn',
+  test('should return Not completed if risk task not done', () => {
+    expect(
+      riskManagement.view({
+        decisions: { addressReviewFailed: false, riskManagementNeeded: true },
+        tasks: { riskManagement: 'UNSTARTED' },
+        visible: true,
       })
+    ).toStrictEqual({
+      action: { href: '/hdc/review/risk/', text: 'View', type: 'btn-secondary' },
+      label: 'Not completed',
+      title: 'Risk management',
+      visible: true,
+    })
+  })
+
+  test('should return warning if still waiting for information', () => {
+    expect(
+      riskManagement.view({
+        decisions: { awaitingRiskInformation: true },
+        tasks: {},
+        visible: true,
+      })
+    ).toStrictEqual({
+      action: { href: '/hdc/review/risk/', text: 'View', type: 'btn-secondary' },
+      label: 'WARNING||Still waiting for information',
+      title: 'Risk management',
+      visible: true,
+    })
+  })
+
+  test('should show continue btn to curfewAddressReview if curfewAddressReview: !DONE || UNSTARTED', () => {
+    expect(
+      riskManagement.view({
+        decisions: {},
+        tasks: { riskManagement: 'SOMETHING' },
+        visible: true,
+      })
+    ).toStrictEqual({
+      action: {
+        href: '/hdc/review/risk/',
+        text: 'View',
+        type: 'btn-secondary',
+      },
+      label: 'Not completed',
+      title: 'Risk management',
+      visible: true,
+    })
+  })
+})
+
+describe('Action varies based on type', () => {
+  test('view', () => {
+    expect(
+      riskManagement.view({
+        decisions: {},
+        tasks: { riskManagement: 'SOMETHING' },
+        visible: true,
+      }).action
+    ).toStrictEqual({
+      href: '/hdc/review/risk/',
+      text: 'View',
+      type: 'btn-secondary',
+    })
+  })
+
+  test('edit', () => {
+    expect(
+      riskManagement.edit({
+        decisions: {},
+        tasks: { riskManagement: 'SOMETHING' },
+        visible: true,
+      }).action
+    ).toStrictEqual({
+      dataQa: 'risk-management',
+      href: '/hdc/risk/riskManagement/',
+      text: 'View/Edit',
+      type: 'btn-secondary',
+    })
+  })
+
+  test('ro', () => {
+    expect(
+      riskManagement.ro({
+        decisions: {},
+        tasks: { riskManagement: 'SOMETHING' },
+        visible: true,
+      }).action
+    ).toStrictEqual({
+      href: '/hdc/risk/riskManagement/',
+      text: 'Continue',
+      type: 'btn',
     })
   })
 })

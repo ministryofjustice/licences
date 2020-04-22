@@ -17,7 +17,6 @@ const rejectedAddressTaskList = (licenceStatus) => {
     decisions: { addressWithdrawn, addressReviewFailed },
   } = licenceStatus
   const showRiskManagement = !(addressReviewFailed || addressWithdrawn)
-
   return tasklist([
     { task: 'eligibilitySummaryTask', visible: true },
     {
@@ -26,12 +25,11 @@ const rejectedAddressTaskList = (licenceStatus) => {
       action: curfewAddress.getDmRejectedAction(),
       visible: true,
     },
-    {
-      title: 'Risk management',
-      label: riskManagement.getLabel(licenceStatus),
-      action: riskManagement.view(),
+    riskManagement.view({
+      decisions: licenceStatus.decisions,
+      tasks: licenceStatus.tasks,
       visible: showRiskManagement,
-    },
+    }),
     returnToPrisonCaseAdmin(),
     {
       title: 'Final decision',
@@ -68,12 +66,11 @@ const standardTaskList = (licenceStatus) => {
       action: curfewAddress.getDmAction(licenceStatus),
       visible: !bassReferralNeeded,
     },
-    {
-      title: 'Risk management',
-      label: riskManagement.getLabel(licenceStatus),
-      action: riskManagement.view(),
+    riskManagement.view({
+      decisions: licenceStatus.decisions,
+      tasks: licenceStatus.tasks,
       visible: !approvedPremisesRequired,
-    },
+    }),
     {
       title: 'Victim liaison',
       label: victimLiaison.getLabel(licenceStatus),
@@ -92,12 +89,7 @@ const standardTaskList = (licenceStatus) => {
       action: additionalConditions.view(),
       visible: true,
     },
-    {
-      title: 'Reporting instructions',
-      label: reportingInstructions.getLabel(licenceStatus),
-      action: reportingInstructions.view(),
-      visible: true,
-    },
+    reportingInstructions.view({ tasks: licenceStatus.tasks, visible: true }),
     finalChecks.view({ decisions: licenceStatus.decisions, tasks: licenceStatus.tasks, visible: true }),
     postpone({ decisions: licenceStatus.decisions, visible: confiscationOrder }),
     returnToPrisonCaseAdmin(),

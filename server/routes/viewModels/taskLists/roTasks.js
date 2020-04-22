@@ -36,12 +36,11 @@ module.exports = {
         action: curfewAddress.getRoAction({ decisions, tasks }),
         visible: (!bassReferralNeeded && !curfewAddressRejected) || addressRejectedInReviewPhase,
       },
-      {
-        title: 'Risk management',
-        label: riskManagement.getLabel({ decisions, tasks }),
-        action: riskManagement.getRoAction({ tasks }),
+      riskManagement.ro({
+        decisions,
+        tasks,
         visible: !approvedPremisesRequired && (validAddress || addressRejectedInRiskPhase),
-      },
+      }),
       {
         title: 'Victim liaison',
         label: victimLiaison.getLabel({ decisions, tasks }),
@@ -60,12 +59,7 @@ module.exports = {
         action: additionalConditions.getRoAction({ tasks }),
         visible: validAddress,
       },
-      {
-        title: 'Reporting instructions',
-        label: reportingInstructions.getLabel({ tasks }),
-        action: reportingInstructions.getRoAction({ tasks }),
-        visible: validAddress,
-      },
+      reportingInstructions.ro({ tasks, visible: validAddress }),
       curfewAddressFormTask,
       {
         title: 'Submit to prison case admin',
@@ -86,12 +80,7 @@ module.exports = {
         action: curfewAddress.getRoAction({ decisions, tasks }),
         visible: approvedPremisesRequired,
       },
-      {
-        title: 'Risk management',
-        label: riskManagement.getLabel({ decisions, tasks }),
-        action: riskManagement.getRoAction({ tasks }),
-        visible: !approvedPremisesRequired,
-      },
+      riskManagement.ro({ decisions, tasks, visible: !approvedPremisesRequired }),
       {
         title: 'Curfew hours',
         label: curfewHours.getLabel({ tasks }),
@@ -104,12 +93,7 @@ module.exports = {
         action: additionalConditions.getRoAction({ tasks }),
         visible: true,
       },
-      {
-        title: 'Reporting instructions',
-        label: reportingInstructions.getLabel({ tasks }),
-        action: reportingInstructions.getRoAction({ tasks }),
-        visible: true,
-      },
+      reportingInstructions.ro({ tasks, visible: true }),
       curfewAddressFormTask,
     ].filter((task) => task.visible)
   },
