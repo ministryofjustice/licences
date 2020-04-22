@@ -140,12 +140,7 @@ module.exports = {
           addressUnsuitable ||
           (bassChecksDone && !approvedPremisesRequired),
       }),
-      {
-        title: 'Victim liaison',
-        label: victimLiaison.getLabel({ decisions, tasks }),
-        action: victimLiaison.edit(),
-        visible: validAddress,
-      },
+      victimLiaison.edit({ decisions, tasks, visible: validAddress }),
       {
         title: 'Curfew hours',
         label: curfewHours.getLabel({ tasks }),
@@ -242,12 +237,7 @@ module.exports = {
         tasks,
         visible: !approvedPremisesRequired && (curfewAddressApproved || bassOfferMade || addressUnsuitable),
       }),
-      {
-        title: 'Victim liaison',
-        label: victimLiaison.getLabel({ decisions, tasks }),
-        action: victimLiaison.edit(),
-        visible: validAddress,
-      },
+      victimLiaison.edit({ decisions, tasks, visible: validAddress }),
       {
         title: 'Curfew hours',
         label: curfewHours.getLabel({ tasks }),

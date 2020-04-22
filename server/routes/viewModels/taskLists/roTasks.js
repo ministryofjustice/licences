@@ -41,12 +41,7 @@ module.exports = {
         tasks,
         visible: !approvedPremisesRequired && (validAddress || addressRejectedInRiskPhase),
       }),
-      {
-        title: 'Victim liaison',
-        label: victimLiaison.getLabel({ decisions, tasks }),
-        action: victimLiaison.getRoAction({ tasks }),
-        visible: validAddress,
-      },
+      victimLiaison.ro({ decisions, tasks, visible: validAddress }),
       {
         title: 'Curfew hours',
         label: curfewHours.getLabel({ tasks }),

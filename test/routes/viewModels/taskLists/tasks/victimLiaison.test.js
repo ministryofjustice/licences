@@ -1,31 +1,31 @@
-const { getLabel, getRoAction } = require('../../../../../server/routes/viewModels/taskLists/tasks/victimLiaison')
+const victimLiaison = require('../../../../../server/routes/viewModels/taskLists/tasks/victimLiaison')
 
 describe('victim liaison task', () => {
   describe('getLabel', () => {
     test('should return Victim liaison required if task DONE and victimLiaisonNeeded = true', () => {
       expect(
-        getLabel({
+        victimLiaison.edit({
           decisions: { victimLiaisonNeeded: true },
           tasks: { victim: 'DONE' },
-        })
+        }).label
       ).toBe('Victim liaison required')
     })
 
     test('should return No victim liaison required if task DONE and victimLiaisonNeeded = false', () => {
       expect(
-        getLabel({
+        victimLiaison.edit({
           decisions: { victimLiaisonNeeded: false },
           tasks: { victim: 'DONE' },
-        })
+        }).label
       ).toBe('No victim liaison required')
     })
 
     test('should Not completed if task is not done', () => {
       expect(
-        getLabel({
+        victimLiaison.edit({
           decisions: { victimLiaisonNeeded: false },
           tasks: { victim: 'SOMETHING' },
-        })
+        }).label
       ).toBe('Not completed')
     })
   })
@@ -33,10 +33,10 @@ describe('victim liaison task', () => {
   describe('getRoAction', () => {
     test('should show btn to curfewAddressReview if curfewAddressReview: UNSTARTED', () => {
       expect(
-        getRoAction({
+        victimLiaison.ro({
           decisions: {},
           tasks: { victim: 'UNSTARTED' },
-        })
+        }).action
       ).toEqual({
         text: 'Start now',
         href: '/hdc/victim/victimLiaison/',
@@ -46,10 +46,10 @@ describe('victim liaison task', () => {
 
     test('should show change link to curfewAddressReview if curfewAddressReview: DONE', () => {
       expect(
-        getRoAction({
+        victimLiaison.ro({
           decisions: {},
           tasks: { victim: 'DONE' },
-        })
+        }).action
       ).toEqual({
         text: 'Change',
         href: '/hdc/victim/victimLiaison/',
@@ -59,10 +59,10 @@ describe('victim liaison task', () => {
 
     test('should show continue btn to curfewAddressReview if curfewAddressReview: !DONE || UNSTARTED', () => {
       expect(
-        getRoAction({
+        victimLiaison.ro({
           decisions: {},
           tasks: { victim: 'SOMETHING' },
-        })
+        }).action
       ).toEqual({
         text: 'Continue',
         href: '/hdc/victim/victimLiaison/',
