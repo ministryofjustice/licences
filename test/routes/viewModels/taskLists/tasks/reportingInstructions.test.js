@@ -1,36 +1,33 @@
-const {
-  getLabel,
-  getRoAction,
-} = require('../../../../../server/routes/viewModels/taskLists/tasks/reportingInstructions')
+const reportingInstructions = require('../../../../../server/routes/viewModels/taskLists/tasks/reportingInstructions')
 
 describe('reporting instructions task', () => {
-  describe('getLabel', () => {
+  describe('label', () => {
     test('should return Victim liaison required if task DONE', () => {
       expect(
-        getLabel({
+        reportingInstructions.edit({
           decisions: {},
           tasks: { reportingInstructions: 'DONE' },
-        })
+        }).label
       ).toBe('Confirmed')
     })
 
     test('should return No victim liaison required if task not DONE', () => {
       expect(
-        getLabel({
+        reportingInstructions.edit({
           decisions: {},
           tasks: { reportingInstructions: 'SOMETHING' },
-        })
+        }).label
       ).toBe('Not completed')
     })
   })
 
-  describe('getRoAction', () => {
+  describe('RO action', () => {
     test('should show btn to reportingInstructions if reportingInstructions: UNSTARTED', () => {
       expect(
-        getRoAction({
+        reportingInstructions.ro({
           decisions: {},
           tasks: { reportingInstructions: 'UNSTARTED' },
-        })
+        }).action
       ).toEqual({
         text: 'Start now',
         href: '/hdc/reporting/reportingInstructions/',
@@ -40,10 +37,10 @@ describe('reporting instructions task', () => {
 
     test('should show change link to reportingInstructions if reportingInstructions: DONE', () => {
       expect(
-        getRoAction({
+        reportingInstructions.ro({
           decisions: {},
           tasks: { reportingInstructions: 'DONE' },
-        })
+        }).action
       ).toEqual({
         text: 'Change',
         href: '/hdc/reporting/reportingInstructions/',
@@ -53,10 +50,10 @@ describe('reporting instructions task', () => {
 
     test('should show continue btn to reportingInstructions if reportingInstructions: !DONE || UNSTARTED', () => {
       expect(
-        getRoAction({
+        reportingInstructions.ro({
           decisions: {},
           tasks: { reportingInstructions: 'SOMETHING' },
-        })
+        }).action
       ).toEqual({
         text: 'Continue',
         href: '/hdc/reporting/reportingInstructions/',

@@ -1,17 +1,33 @@
 const { standardAction, viewEdit, view } = require('./utils/actions')
 
+const getLabel = ({ curfewHours }) => (curfewHours === 'DONE' ? 'Confirmed' : 'Not completed')
+
+const title = 'Curfew hours'
+
 module.exports = {
-  getLabel: ({ tasks }) => {
-    const { curfewHours } = tasks
-    return curfewHours === 'DONE' ? 'Confirmed' : 'Not completed'
+  edit: ({ tasks, visible }) => {
+    return {
+      title,
+      label: getLabel(tasks),
+      action: viewEdit('/hdc/curfew/curfewHours/', 'curfew-hours'),
+      visible,
+    }
   },
-
-  getRoAction: ({ tasks }) => {
-    const { curfewHours } = tasks
-    return standardAction(curfewHours, '/hdc/curfew/curfewHours/')
+  view: ({ tasks, visible }) => {
+    return {
+      title,
+      label: getLabel(tasks),
+      action: view('/hdc/review/curfewHours/'),
+      visible,
+    }
   },
-
-  edit: () => viewEdit('/hdc/curfew/curfewHours/', 'curfew-hours'),
-
-  view: () => view('/hdc/review/curfewHours/'),
+  ro: ({ tasks, visible }) => {
+    const { curfewHours } = tasks
+    return {
+      title,
+      label: getLabel(tasks),
+      action: standardAction(curfewHours, '/hdc/curfew/curfewHours/'),
+      visible,
+    }
+  },
 }

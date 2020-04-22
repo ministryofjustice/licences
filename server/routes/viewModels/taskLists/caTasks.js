@@ -62,12 +62,7 @@ module.exports = {
         action: proposedAddress.getCaAction({ decisions, tasks }),
         visible: eligible,
       },
-      {
-        title: 'Risk management',
-        label: riskManagement.getLabel({ decisions, tasks }),
-        action: riskManagement.edit(),
-        visible: addressUnsuitable,
-      },
+      riskManagement.edit({ decisions, tasks, visible: addressUnsuitable }),
       caSubmitToDm.refusal({ decisions, visible: allowedTransition === 'caToDmRefusal' }),
       caSubmitBassReview({
         decisions,
@@ -137,39 +132,23 @@ module.exports = {
       proposedAddressTask,
       curfewAddressTask,
       bassTask,
-      {
-        title: 'Risk management',
-        label: riskManagement.getLabel({ decisions, tasks }),
-        action: riskManagement.edit(),
+      riskManagement.edit({
+        decisions,
+        tasks,
         visible:
           (!approvedPremisesRequired && curfewAddressApproved) ||
           addressUnsuitable ||
           (bassChecksDone && !approvedPremisesRequired),
-      },
-      {
-        title: 'Victim liaison',
-        label: victimLiaison.getLabel({ decisions, tasks }),
-        action: victimLiaison.edit(),
-        visible: validAddress,
-      },
-      {
-        title: 'Curfew hours',
-        label: curfewHours.getLabel({ tasks }),
-        action: curfewHours.edit(),
-        visible: validAddress,
-      },
+      }),
+      victimLiaison.edit({ decisions, tasks, visible: validAddress }),
+      curfewHours.edit({ tasks, visible: validAddress }),
       {
         title: 'Additional conditions',
         label: additionalConditions.getLabel({ decisions, tasks }, 'CA'),
         action: additionalConditions.edit(),
         visible: validAddress,
       },
-      {
-        title: 'Reporting instructions',
-        label: reportingInstructions.getLabel({ tasks }),
-        action: reportingInstructions.edit(),
-        visible: validAddress,
-      },
+      reportingInstructions.edit({ tasks, visible: validAddress }),
       finalChecks.review({ decisions, tasks, visible: validAddress }),
       postponeOrRefuse({ decisions, visible: validAddress }),
       hdcRefusal({ decisions }),
@@ -248,36 +227,20 @@ module.exports = {
         action: curfewAddress.getCaPostApprovalAction({ decisions }),
         visible: !bassReferralNeeded && allowedTransition !== 'caToRo',
       },
-      {
-        title: 'Risk management',
-        label: riskManagement.getLabel({ decisions, tasks }),
-        action: riskManagement.edit(),
+      riskManagement.edit({
+        decisions,
+        tasks,
         visible: !approvedPremisesRequired && (curfewAddressApproved || bassOfferMade || addressUnsuitable),
-      },
-      {
-        title: 'Victim liaison',
-        label: victimLiaison.getLabel({ decisions, tasks }),
-        action: victimLiaison.edit(),
-        visible: validAddress,
-      },
-      {
-        title: 'Curfew hours',
-        label: curfewHours.getLabel({ tasks }),
-        action: curfewHours.edit(),
-        visible: validAddress,
-      },
+      }),
+      victimLiaison.edit({ decisions, tasks, visible: validAddress }),
+      curfewHours.edit({ tasks, visible: validAddress }),
       {
         title: 'Additional conditions',
         label: additionalConditions.getLabel({ decisions, tasks }, 'CA'),
         action: additionalConditions.edit(),
         visible: validAddress,
       },
-      {
-        title: 'Reporting instructions',
-        label: reportingInstructions.getLabel({ tasks }),
-        action: reportingInstructions.edit(),
-        visible: validAddress,
-      },
+      reportingInstructions.edit({ tasks, visible: validAddress }),
       finalChecks.review({
         decisions,
         tasks,
