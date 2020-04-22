@@ -49,7 +49,7 @@
       "node_modules/*",
       "integration-tests/*"
     ],
-    "delay": "2500",
+    "delay": 2500,
     "ext": "js,json,html,pug"
   },
   "repository": {

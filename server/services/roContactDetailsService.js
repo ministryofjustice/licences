@@ -1,6 +1,6 @@
 /**
  * @typedef {import("../../types/licences").RoService} RoService
- * @typedef {import("../data/probationTeamsClient").ProbationTeamsClient} ProbationTeamsClient
+ * @typedef {import("../../types/probationTeams").ProbationTeamsClient} ProbationTeamsClient
  * @typedef {import("../../types/licences").RoContactDetailsService} RoContactDetailsService
  * @typedef {import("../../types/licences").Error} Error
  * @typedef {import("../../types/licences").ResponsibleOfficer} ResponsibleOfficer
