@@ -1,89 +1,58 @@
-const { getLabel, getCaAction } = require('../../../../../server/routes/viewModels/taskLists/tasks/caSubmitBassReview')
+const caSubmitBassReview = require('../../../../../server/routes/viewModels/taskLists/tasks/caSubmitBassReview')
 
 describe('ca submit for bass review task', () => {
-  describe('getLabel', () => {
-    test('should Submission unavailable if opted out', () => {
-      expect(
-        getLabel({
-          decisions: { optedOut: true },
-          tasks: {},
-        })
-      ).toBe('Submission unavailable - Offender has opted out of HDC')
-    })
-
-    test('should return Ready to submit if task DONE', () => {
-      expect(
-        getLabel({
-          decisions: { optedOut: false },
-          tasks: { bassRequest: 'DONE' },
-        })
-      ).toBe('Ready to submit')
-    })
-
-    test('should return Ready to submit if task STARTED', () => {
-      expect(
-        getLabel({
-          decisions: { optedOut: false },
-          tasks: { bassRequest: 'STARTED' },
-        })
-      ).toBe('Ready to submit')
-    })
-
-    test('should return Not completed if task not DONE or STARTED', () => {
-      expect(
-        getLabel({
-          decisions: { optedOut: false },
-          tasks: { bassRequest: 'SOMETHING' },
-        })
-      ).toBe('Not completed')
+  test('should show submission unavailable if opted out', () => {
+    expect(
+      caSubmitBassReview({
+        decisions: { optedOut: true },
+        tasks: {},
+        visible: true,
+      })
+    ).toStrictEqual({
+      action: null,
+      label: 'Submission unavailable - Offender has opted out of HDC',
+      title: 'Send for BASS area checks',
+      visible: true,
     })
   })
 
-  describe('getCaAction', () => {
-    test('should show nothing if opted out', () => {
-      expect(
-        getCaAction({
-          decisions: { optedOut: true },
-          tasks: {},
-        })
-      ).toBe(null)
-    })
-
-    test('should show Continue to bassRequest if task DONE', () => {
-      expect(
-        getCaAction({
-          decisions: { optedOut: false },
-          tasks: { bassRequest: 'DONE' },
-        })
-      ).toEqual({
-        text: 'Continue',
-        href: '/hdc/review/bassRequest/',
-        type: 'btn',
-        dataQa: 'continue',
+  test('should return Ready to submit if task DONE', () => {
+    expect(
+      caSubmitBassReview({
+        decisions: { optedOut: false },
+        tasks: { bassRequest: 'DONE' },
+        visible: true,
       })
+    ).toStrictEqual({
+      action: { dataQa: 'continue', href: '/hdc/review/bassRequest/', text: 'Continue', type: 'btn' },
+      label: 'Ready to submit',
+      title: 'Send for BASS area checks',
+      visible: true,
     })
+  })
 
-    test('should show Continue to bassRequest if task STARTED', () => {
-      expect(
-        getCaAction({
-          decisions: { optedOut: false },
-          tasks: { bassRequest: 'STARTED' },
-        })
-      ).toEqual({
-        text: 'Continue',
-        href: '/hdc/review/bassRequest/',
-        type: 'btn',
-        dataQa: 'continue',
+  test('should allow reviewing if task STARTED', () => {
+    expect(
+      caSubmitBassReview({
+        decisions: { optedOut: false },
+        tasks: { bassRequest: 'STARTED' },
+        visible: true,
       })
+    ).toStrictEqual({
+      action: { dataQa: 'continue', href: '/hdc/review/bassRequest/', text: 'Continue', type: 'btn' },
+      label: 'Ready to submit',
+      title: 'Send for BASS area checks',
+      visible: true,
     })
+  })
 
-    test('should show nothing if task not DONE or STARTED', () => {
-      expect(
-        getCaAction({
-          decisions: { optedOut: false },
-          tasks: { bassRequest: 'SOMETHING' },
-        })
-      ).toBe(null)
-    })
+  test('should show not completed and have no action if not DONE or STARTED', () => {
+    expect(
+      caSubmitBassReview({
+        decisions: { optedOut: false },
+        tasks: { bassRequest: 'SOMETHING' },
+        visible: true,
+      })
+    ).toStrictEqual({ action: null, label: 'Not completed', title: 'Send for BASS area checks', visible: true })
   })
 })

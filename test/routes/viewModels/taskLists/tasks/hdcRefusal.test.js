@@ -1,49 +1,29 @@
-const { getLabel, getCaAction } = require('../../../../../server/routes/viewModels/taskLists/tasks/hdcRefusal')
+const hdcRefusal = require('../../../../../server/routes/viewModels/taskLists/tasks/hdcRefusal')
 
-describe('hdc refusal task', () => {
-  describe('getLabel', () => {
-    test('should return Refuse the case if not refused', () => {
-      expect(
-        getLabel({
-          decisions: { refused: false },
-        })
-      ).toBe('Refuse the case if there is no available address or not enough time')
-    })
-
-    test('should return HDC refused if refused', () => {
-      expect(
-        getLabel({
-          decisions: { refused: true },
-        })
-      ).toBe('HDC refused')
+describe('hdc refusal task - when refused', () => {
+  test('When case is not refused', () => {
+    expect(
+      hdcRefusal({
+        decisions: { refused: false, visible: true },
+      })
+    ).toStrictEqual({
+      title: null,
+      label: 'Refuse the case if there is no available address or not enough time',
+      action: { dataQa: 'refuse', href: '/hdc/finalChecks/refuse/', text: 'Refuse HDC', type: 'btn-secondary' },
+      visible: true,
     })
   })
 
-  describe('getCaAction', () => {
-    test('should show update to refuse if refused', () => {
-      expect(
-        getCaAction({
-          decisions: { refused: true },
-        })
-      ).toEqual({
-        text: 'Update refusal',
-        href: '/hdc/finalChecks/refuse/',
-        type: 'btn',
-        dataQa: 'refuse',
+  test('When case is refused', () => {
+    expect(
+      hdcRefusal({
+        decisions: { refused: true, visible: true },
       })
-    })
-
-    test('should show refuse if not refused', () => {
-      expect(
-        getCaAction({
-          decisions: { refused: false },
-        })
-      ).toEqual({
-        text: 'Refuse HDC',
-        href: '/hdc/finalChecks/refuse/',
-        type: 'btn-secondary',
-        dataQa: 'refuse',
-      })
+    ).toStrictEqual({
+      title: null,
+      label: 'HDC refused',
+      action: { dataQa: 'refuse', href: '/hdc/finalChecks/refuse/', text: 'Update refusal', type: 'btn' },
+      visible: true,
     })
   })
 })

@@ -1,4 +1,4 @@
-const postponement = require('./tasks/postponement')
+const { postponeOrRefuse } = require('./tasks/postponement')
 const bassOfferTask = require('./tasks/bassOffer')
 const bassAddress = require('./tasks/bassAddress')
 const curfewAddress = require('./tasks/curfewAddress')
@@ -9,9 +9,8 @@ const additionalConditions = require('./tasks/additionalConditions')
 const reportingInstructions = require('./tasks/reportingInstructions')
 const proposedAddress = require('./tasks/proposedAddress')
 const caSubmitAddressReview = require('./tasks/caSubmitAddressReview')
-const caSubmitRefusal = require('./tasks/caSubmitRefusal')
 const caSubmitBassReview = require('./tasks/caSubmitBassReview')
-const caSubmitApproval = require('./tasks/caSubmitApproval')
+const caSubmitToDm = require('./tasks/caSubmitToDm')
 const hdcRefusal = require('./tasks/hdcRefusal')
 const createLicence = require('./tasks/createLicence')
 const finalChecks = require('./tasks/finalChecks')
@@ -69,25 +68,17 @@ module.exports = {
         action: riskManagement.edit(),
         visible: addressUnsuitable,
       },
-
-      {
-        title: 'Submit to decision maker',
-        label: caSubmitRefusal.getLabel({ decisions }),
-        action: caSubmitRefusal.getCaAction({ decisions }),
-        visible: allowedTransition === 'caToDmRefusal',
-      },
-      {
-        title: 'Send for BASS area checks',
-        label: caSubmitBassReview.getLabel({ decisions, tasks }),
-        action: caSubmitBassReview.getCaAction({ decisions, tasks }),
+      caSubmitToDm.refusal({ decisions, visible: allowedTransition === 'caToDmRefusal' }),
+      caSubmitBassReview({
+        decisions,
+        tasks,
         visible: optOutRefused && bassReferralNeeded && allowedTransition !== 'caToDmRefusal',
-      },
-      {
-        title: 'Submit curfew address',
-        label: caSubmitAddressReview.getLabel({ tasks }),
-        action: caSubmitAddressReview.getCaAction({ decisions, tasks }),
+      }),
+      caSubmitAddressReview({
+        decisions,
+        tasks,
         visible: optOutRefused && !bassReferralNeeded && allowedTransition !== 'caToDmRefusal',
-      },
+      }),
     ].filter((task) => task.visible)
   },
 
@@ -131,15 +122,10 @@ module.exports = {
       visible: bassReferralNeeded,
     }
 
-    const refusalTask = {
-      title: null,
-      label: hdcRefusal.getLabel({ decisions }),
-      action: hdcRefusal.getCaAction({ decisions }),
-      visible: true,
-    }
-
     if (optedOut) {
-      return [proposedAddressTask, curfewAddressTask, bassTask, refusalTask].filter((task) => task.visible)
+      return [proposedAddressTask, curfewAddressTask, bassTask, hdcRefusal({ decisions })].filter(
+        (task) => task.visible
+      )
     }
 
     if (!eligible) {
@@ -184,43 +170,28 @@ module.exports = {
         action: reportingInstructions.edit(),
         visible: validAddress,
       },
-      {
-        title: 'Review case',
-        label: finalChecks.getLabel({ decisions, tasks }),
-        action: finalChecks.getCaProcessingAction({ tasks }),
-        visible: validAddress,
-      },
-      {
-        title: 'Postpone or refuse',
-        label: postponement.getLabel({ decisions }),
-        action: postponement.getAction({ decisions }),
-        visible: validAddress,
-      },
-      refusalTask,
-      {
-        title: 'Submit to decision maker',
-        label: caSubmitApproval.getLabel({ decisions, allowedTransition }),
-        action: caSubmitApproval.getCaAction({ allowedTransition }),
+      finalChecks.review({ decisions, tasks, visible: validAddress }),
+      postponeOrRefuse({ decisions, visible: validAddress }),
+      hdcRefusal({ decisions }),
+      caSubmitToDm.approval({
+        decisions,
+        allowedTransition,
         visible: allowedTransition !== 'caToDmRefusal' && allowedTransition !== 'caToRo',
-      },
-      {
-        title: 'Submit to decision maker',
-        label: caSubmitRefusal.getLabel({ decisions }),
-        action: caSubmitRefusal.getCaAction({ decisions }),
+      }),
+      caSubmitToDm.refusal({
+        decisions,
         visible: allowedTransition === 'caToDmRefusal',
-      },
-      {
-        title: 'Submit curfew address',
-        label: caSubmitAddressReview.getLabel({ tasks }),
-        action: caSubmitAddressReview.getCaAction({ decisions, tasks }),
+      }),
+      caSubmitAddressReview({
+        decisions,
+        tasks,
         visible: !bassReferralNeeded && allowedTransition === 'caToRo',
-      },
-      {
-        title: 'Send for BASS area checks',
-        label: caSubmitBassReview.getLabel({ decisions, tasks }),
-        action: caSubmitBassReview.getCaAction({ decisions, tasks }),
+      }),
+      caSubmitBassReview({
+        decisions,
+        tasks,
         visible: bassReferralNeeded && allowedTransition === 'caToRo',
-      },
+      }),
     ].filter((task) => task.visible)
   },
 
@@ -307,54 +278,41 @@ module.exports = {
         action: reportingInstructions.edit(),
         visible: validAddress,
       },
-      {
-        title: 'Review case',
-        label: finalChecks.getLabel({ decisions, tasks }),
-        action: finalChecks.getCaProcessingAction({ tasks }),
+      finalChecks.review({
+        decisions,
+        tasks,
         visible: validAddress,
-      },
-      {
-        title: 'Postpone or refuse',
-        label: postponement.getLabel({ decisions }),
-        action: postponement.getAction({ decisions }),
+      }),
+      postponeOrRefuse({
+        decisions,
         visible: validAddress && !dmRefused,
-      },
-      {
-        title: null,
-        label: hdcRefusal.getLabel({ decisions }),
-        action: hdcRefusal.getCaAction({ decisions }),
+      }),
+      hdcRefusal({
+        decisions,
         visible: !dmRefused,
-      },
-      {
-        title: 'Submit to decision maker',
-        label: caSubmitApproval.getLabel({ decisions, allowedTransition }),
-        action: caSubmitApproval.getCaAction({ allowedTransition }),
+      }),
+      caSubmitToDm.approval({
+        decisions,
+        allowedTransition,
         visible: allowedTransition === 'caToDm',
-      },
-      {
-        title: 'Submit to decision maker',
-        label: caSubmitRefusal.getLabel({ decisions }),
-        action: caSubmitRefusal.getCaAction({ decisions }),
+      }),
+      caSubmitToDm.refusal({
+        decisions,
         visible: allowedTransition === 'caToDmRefusal',
-      },
-      {
-        title: 'Send for BASS area checks',
-        label: caSubmitBassReview.getLabel({ decisions, tasks }),
-        action: caSubmitBassReview.getCaAction({ decisions, tasks }),
+      }),
+      caSubmitBassReview({
+        decisions,
+        tasks,
         visible: bassReferralNeeded && allowedTransition === 'caToRo',
-      },
-      {
-        title: 'Submit curfew address',
-        label: caSubmitAddressReview.getLabel({ tasks }),
-        action: caSubmitAddressReview.getCaAction({ decisions, tasks }),
+      }),
+      caSubmitAddressReview({
+        decisions,
+        tasks,
         visible: !bassReferralNeeded && allowedTransition === 'caToRo',
-      },
-      {
-        title: 'Resubmit to DM',
-        label: caRereferDm.getLabel(),
-        action: caRereferDm.getCaAction(),
+      }),
+      caRereferDm({
         visible: !['caToDm', 'caToDmRefusal', 'caToRo'].includes(allowedTransition) && dmRefused !== undefined,
-      },
+      }),
       {
         title: 'Create licence',
         action: createLicence.getCaAction({ decisions, tasks, stage }),

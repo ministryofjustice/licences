@@ -1,42 +1,53 @@
-const {
-  getLabel,
-  getCaProcessingAction,
-} = require('../../../../../server/routes/viewModels/taskLists/tasks/finalChecks')
+const finalChecks = require('../../../../../server/routes/viewModels/taskLists/tasks/finalChecks')
 
 describe('final checks task', () => {
-  describe('getLabel', () => {
+  describe('review', () => {
     test('should return Confirmed if task DONE', () => {
       expect(
-        getLabel({
+        finalChecks.review({
           decisions: {},
           tasks: { finalChecks: 'DONE' },
+          visible: true,
         })
-      ).toBe('Confirmed')
+      ).toStrictEqual({
+        action: { dataQa: 'review-case', href: '/hdc/finalChecks/seriousOffence/', text: 'Change', type: 'link' },
+        label: 'Confirmed',
+        title: 'Review case',
+        visible: true,
+      })
     })
 
-    test('should return not completed if task not DONE', () => {
+    test('should show start now if task not DONE', () => {
       expect(
-        getLabel({
+        finalChecks.review({
           decisions: {},
           tasks: { finalChecks: 'UNSTARTED' },
+          visible: true,
         })
-      ).toBe('Not completed')
+      ).toStrictEqual({
+        action: { href: '/hdc/finalChecks/seriousOffence/', text: 'Start now', type: 'btn' },
+        label: 'Not completed',
+        title: 'Review case',
+        visible: true,
+      })
     })
 
     test('should return warning message when any checks failed', () => {
       expect(
-        getLabel({
+        finalChecks.review({
           decisions: { onRemand: true },
           tasks: { finalChecks: 'DONE' },
-        })
-      ).toBe('WARNING||The offender is on remand')
+        }).label
+      ).toStrictEqual('WARNING||The offender is on remand')
     })
 
     test('should return multiple warning messages when multiple checks failed', () => {
-      const labels = getLabel({
-        decisions: { seriousOffence: true, onRemand: true, confiscationOrder: true },
-        tasks: { finalChecks: 'DONE' },
-      }).split('||')
+      const labels = finalChecks
+        .review({
+          decisions: { seriousOffence: true, onRemand: true, confiscationOrder: true },
+          tasks: { finalChecks: 'DONE' },
+        })
+        .label.split('||')
 
       expect(labels[0]).toBe('WARNING')
       expect(labels.length).toBe(4)
@@ -44,43 +55,57 @@ describe('final checks task', () => {
     })
   })
 
-  describe('getCaProcessingAction', () => {
-    test('should show start button to serious offence question when final checks UNSTARTED', () => {
+  describe('view', () => {
+    test('should return Confirmed if task DONE', () => {
       expect(
-        getCaProcessingAction({
-          decisions: {},
-          tasks: { finalChecks: 'UNSTARTED' },
-        })
-      ).toEqual({
-        text: 'Start now',
-        href: '/hdc/finalChecks/seriousOffence/',
-        type: 'btn',
-      })
-    })
-    test('should show change link to serious offence question when final checks DONE', () => {
-      expect(
-        getCaProcessingAction({
+        finalChecks.view({
           decisions: {},
           tasks: { finalChecks: 'DONE' },
+          visible: true,
         })
-      ).toEqual({
-        text: 'Change',
-        href: '/hdc/finalChecks/seriousOffence/',
-        type: 'link',
-        dataQa: 'review-case',
+      ).toStrictEqual({
+        action: { href: '/hdc/review/finalChecks/', text: 'View', type: 'btn-secondary' },
+        label: 'Confirmed',
+        title: 'Review case',
+        visible: true,
       })
     })
-    test('should show continue button to serious offence question when final checks STARTED', () => {
+
+    test('should show start now if task not DONE', () => {
       expect(
-        getCaProcessingAction({
+        finalChecks.view({
           decisions: {},
-          tasks: { finalChecks: 'STARTED' },
+          tasks: { finalChecks: 'UNSTARTED' },
+          visible: true,
         })
-      ).toEqual({
-        text: 'Continue',
-        href: '/hdc/finalChecks/seriousOffence/',
-        type: 'btn',
+      ).toStrictEqual({
+        action: { href: '/hdc/review/finalChecks/', text: 'View', type: 'btn-secondary' },
+        label: 'Not completed',
+        title: 'Review case',
+        visible: true,
       })
+    })
+
+    test('should return warning message when any checks failed', () => {
+      expect(
+        finalChecks.view({
+          decisions: { onRemand: true },
+          tasks: { finalChecks: 'DONE' },
+        }).label
+      ).toStrictEqual('WARNING||The offender is on remand')
+    })
+
+    test('should return multiple warning messages when multiple checks failed', () => {
+      const labels = finalChecks
+        .view({
+          decisions: { seriousOffence: true, onRemand: true, confiscationOrder: true },
+          tasks: { finalChecks: 'DONE' },
+        })
+        .label.split('||')
+
+      expect(labels[0]).toBe('WARNING')
+      expect(labels.length).toBe(4)
+      expect(labels).toContain('The offender is on remand')
     })
   })
 })

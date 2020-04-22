@@ -1,4 +1,4 @@
-const postponement = require('./tasks/postponement')
+const { postpone } = require('./tasks/postponement')
 const bassOffer = require('./tasks/bassOffer')
 const curfewAddress = require('./tasks/curfewAddress')
 const riskManagement = require('./tasks/riskManagement')
@@ -8,42 +8,38 @@ const additionalConditions = require('./tasks/additionalConditions')
 const reportingInstructions = require('./tasks/reportingInstructions')
 const finalChecks = require('./tasks/finalChecks')
 const finalDecision = require('./tasks/finalDecision')
+const returnToPrisonCaseAdmin = require('./tasks/returnToPrisonCaseAdmin')
+
+const tasklist = (tasks) => tasks.filter((task) => task.visible).map(({ visible, ...rest }) => rest)
 
 const rejectedAddressTaskList = (licenceStatus) => {
   const {
     decisions: { addressWithdrawn, addressReviewFailed },
   } = licenceStatus
   const showRiskManagement = !(addressReviewFailed || addressWithdrawn)
-  return [
-    { task: 'eligibilitySummaryTask' },
+
+  return tasklist([
+    { task: 'eligibilitySummaryTask', visible: true },
     {
       title: 'Proposed curfew address',
       label: curfewAddress.getLabel(licenceStatus),
       action: curfewAddress.getDmRejectedAction(),
+      visible: true,
     },
-    ...(showRiskManagement
-      ? [
-          {
-            title: 'Risk management',
-            label: riskManagement.getLabel(licenceStatus),
-            action: riskManagement.view(),
-          },
-        ]
-      : []),
     {
-      title: 'Return to prison case admin',
-      action: {
-        type: 'btn-secondary',
-        href: '/hdc/send/return/',
-        text: 'Return to prison case admin',
-      },
+      title: 'Risk management',
+      label: riskManagement.getLabel(licenceStatus),
+      action: riskManagement.view(),
+      visible: showRiskManagement,
     },
+    returnToPrisonCaseAdmin(),
     {
       title: 'Final decision',
       label: finalDecision.getLabel(licenceStatus),
       action: finalDecision.getRefusalAction(),
+      visible: true,
     },
-  ]
+  ])
 }
 
 const insufficientTimeStopTaskList = (licenceStatus) => [
@@ -59,15 +55,11 @@ const standardTaskList = (licenceStatus) => {
   const {
     decisions: { approvedPremisesRequired, bassReferralNeeded, confiscationOrder },
   } = licenceStatus
-  return [
+  return tasklist([
     {
       title: 'BASS address',
       label: bassOffer.getLabel(licenceStatus),
-      action: {
-        type: 'btn-secondary',
-        href: approvedPremisesRequired ? '/hdc/review/approvedPremisesAddress/' : '/hdc/review/bassOffer/',
-        text: 'View',
-      },
+      action: bassOffer.getDmAction(licenceStatus),
       visible: bassReferralNeeded,
     },
     {
@@ -106,36 +98,16 @@ const standardTaskList = (licenceStatus) => {
       action: reportingInstructions.view(),
       visible: true,
     },
-    {
-      title: 'Review case',
-      label: finalChecks.getLabel(licenceStatus),
-      action: finalChecks.view(),
-      visible: true,
-    },
-    {
-      title: 'Postpone',
-      label: postponement.getLabel(licenceStatus),
-      action: postponement.getAction(licenceStatus),
-      visible: confiscationOrder,
-    },
-    {
-      title: 'Return to prison case admin',
-      action: {
-        type: 'btn-secondary',
-        href: '/hdc/send/return/',
-        text: 'Return to prison case admin',
-      },
-      visible: true,
-    },
+    finalChecks.view({ decisions: licenceStatus.decisions, tasks: licenceStatus.tasks, visible: true }),
+    postpone({ decisions: licenceStatus.decisions, visible: confiscationOrder }),
+    returnToPrisonCaseAdmin(),
     {
       title: 'Final decision',
       label: finalDecision.getLabel(licenceStatus),
       action: finalDecision.getDecisionAction(),
       visible: true,
     },
-  ]
-    .filter((task) => task.visible)
-    .map(({ visible, ...rest }) => rest)
+  ])
 }
 
 module.exports = (licenceStatus) => {

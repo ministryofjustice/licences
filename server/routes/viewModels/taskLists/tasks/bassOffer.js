@@ -1,4 +1,4 @@
-const { standardAction, change, viewEdit } = require('./utils/actions')
+const { standardAction, change, viewEdit, view } = require('./utils/actions')
 
 module.exports = {
   getLabel: ({ decisions, tasks }) => {
@@ -48,6 +48,16 @@ module.exports = {
     }
 
     return 'BASS referral requested'
+  },
+
+  getDmAction: ({ decisions }) => {
+    const { approvedPremisesRequired } = decisions
+
+    if (approvedPremisesRequired) {
+      return view('/hdc/review/approvedPremisesAddress/')
+    }
+
+    return view('/hdc/review/bassOffer/')
   },
 
   getAction: ({ decisions, tasks }) => {
