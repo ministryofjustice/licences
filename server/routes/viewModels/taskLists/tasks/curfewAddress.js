@@ -1,88 +1,47 @@
-const { view, viewEdit, standardAction, change } = require('./utils/actions')
+const { standardAction, standardActionMulti } = require('./utils/actions')
 
 module.exports = {
   getLabel: ({ decisions, tasks }) => {
-    const { optedOut, addressWithdrawn, addressReviewFailed, approvedPremisesRequired } = decisions
-    const { curfewAddressReview, approvedPremisesAddress } = tasks
+    const { optedOut, bassReferralNeeded, bassAreaNotSuitable, curfewAddressRejected } = decisions
+    const { bassRequest, curfewAddress } = tasks
 
     if (optedOut) {
-      return 'Opted out'
+      return 'Offender has opted out of HDC'
     }
-    if (approvedPremisesRequired) {
-      return approvedPremisesAddress === 'DONE' ? 'Approved premises required' : 'Not completed'
+
+    if (bassReferralNeeded) {
+      if (bassAreaNotSuitable) {
+        return 'ALERT||BASS area rejected'
+      }
+      if (bassRequest === 'DONE') {
+        return 'Completed'
+      }
+      return 'Not completed'
     }
-    if (addressWithdrawn) {
-      return 'Address withdrawn'
+
+    if (curfewAddressRejected) {
+      return 'ALERT||Address rejected'
     }
-    if (addressReviewFailed) {
-      return 'Address rejected'
+
+    if (curfewAddress === 'DONE') {
+      return 'Completed'
     }
-    if (curfewAddressReview === 'DONE') {
-      return 'Address checked'
-    }
+
     return 'Not completed'
   },
 
-  getRoAction: ({ decisions, tasks }) => {
-    const { curfewAddressRejected } = decisions
-    const { curfewAddressReview } = tasks
+  getCaAction: ({ decisions, tasks }) => {
+    const { curfewAddressRejected, bassAreaNotSuitable } = decisions
+    const { curfewAddress, optOut, bassRequest } = tasks
 
     if (curfewAddressRejected) {
-      return {
-        text: 'Change',
-        href: '/hdc/curfew/approvedPremises/',
-        type: 'link',
-      }
+      return standardAction(curfewAddress, '/hdc/proposedAddress/rejected/', 'curfew-address')
     }
 
-    return standardAction(curfewAddressReview, '/hdc/curfew/approvedPremises/')
+    if (bassAreaNotSuitable) {
+      return standardAction(curfewAddress, '/hdc/bassReferral/rejected/', 'curfew-address')
+    }
+
+    return standardActionMulti([curfewAddress, optOut, bassRequest], '/hdc/proposedAddress/curfewAddressChoice/')
   },
-
-  getCaPostApprovalAction: ({ decisions }) => {
-    const { optedOut, addressWithdrawn, approvedPremisesRequired } = decisions
-
-    if (optedOut) {
-      return change('/hdc/proposedAddress/curfewAddressChoice/', 'proposed-curfew-address')
-    }
-
-    if (approvedPremisesRequired) {
-      return viewEdit('/hdc/curfew/approvedPremisesChoice/', 'proposed-curfew-address')
-    }
-
-    if (addressWithdrawn) {
-      return viewEdit('/hdc/curfew/consentWithdrawn/', 'proposed-curfew-address')
-    }
-    return viewEdit('/hdc/review/address/', 'proposed-curfew-address')
-  },
-
-  getCaProcessingAction: ({ decisions, tasks }) => {
-    const { optedOut, approvedPremisesRequired } = decisions
-    const { curfewAddress } = tasks
-
-    if (optedOut) {
-      return change('/hdc/proposedAddress/curfewAddressChoice/', 'proposed-curfew-address')
-    }
-
-    if (approvedPremisesRequired) {
-      return viewEdit('/hdc/curfew/approvedPremisesChoice/', 'proposed-curfew-address')
-    }
-
-    if (curfewAddress === 'UNSTARTED') {
-      return standardAction(curfewAddress, '/hdc/proposedAddress/curfewAddressChoice/', 'proposed-curfew-address')
-    }
-
-    return change('/hdc/review/address/', 'proposed-curfew-address')
-  },
-
-  getDmAction: ({ decisions }) => {
-    const { approvedPremisesRequired } = decisions
-
-    if (approvedPremisesRequired) {
-      return view('/hdc/review/approvedPremisesAddress/')
-    }
-
-    return view('/hdc/review/address/')
-  },
-
-  getDmRejectedAction: () => view('/hdc/review/address/'),
 }

@@ -2,7 +2,7 @@ const riskManagement = require('./tasks/riskManagement')
 const curfewHours = require('./tasks/curfewHours')
 const additionalConditions = require('./tasks/additionalConditions')
 const reportingInstructions = require('./tasks/reportingInstructions')
-const curfewAddress = require('./tasks/curfewAddress')
+const proposedAddress = require('./tasks/proposedAddress')
 const victimLiaison = require('./tasks/victimLiaison')
 const bassArea = require('./tasks/bassArea')
 const roSubmit = require('./tasks/roSubmit')
@@ -30,12 +30,11 @@ module.exports = {
         action: bassArea.getRoAction({ tasks }),
         visible: bassReferralNeeded,
       },
-      {
-        title: 'Proposed curfew address',
-        label: curfewAddress.getLabel({ decisions, tasks }),
-        action: curfewAddress.getRoAction({ decisions, tasks }),
+      proposedAddress.ro({
+        decisions,
+        tasks,
         visible: (!bassReferralNeeded && !curfewAddressRejected) || addressRejectedInReviewPhase,
-      },
+      }),
       riskManagement.ro({
         decisions,
         tasks,
@@ -43,12 +42,7 @@ module.exports = {
       }),
       victimLiaison.ro({ decisions, tasks, visible: validAddress }),
       curfewHours.ro({ tasks, visible: validAddress }),
-      {
-        title: 'Additional conditions',
-        label: additionalConditions.getLabel({ decisions, tasks }),
-        action: additionalConditions.getRoAction({ tasks }),
-        visible: validAddress,
-      },
+      additionalConditions.ro({ tasks, decisions, visible: validAddress }),
       reportingInstructions.ro({ tasks, visible: validAddress }),
       curfewAddressFormTask,
       {
@@ -64,20 +58,14 @@ module.exports = {
     const { approvedPremisesRequired } = decisions
 
     return [
-      {
-        title: 'Proposed curfew address',
-        label: curfewAddress.getLabel({ decisions, tasks }),
-        action: curfewAddress.getRoAction({ decisions, tasks }),
+      proposedAddress.ro({
+        decisions,
+        tasks,
         visible: approvedPremisesRequired,
-      },
+      }),
       riskManagement.ro({ decisions, tasks, visible: !approvedPremisesRequired }),
       curfewHours.ro({ tasks, visible: true }),
-      {
-        title: 'Additional conditions',
-        label: additionalConditions.getLabel({ decisions, tasks }),
-        action: additionalConditions.getRoAction({ tasks }),
-        visible: true,
-      },
+      additionalConditions.ro({ tasks, decisions, visible: true }),
       reportingInstructions.ro({ tasks, visible: true }),
       curfewAddressFormTask,
     ].filter((task) => task.visible)

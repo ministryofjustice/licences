@@ -1,6 +1,6 @@
 const { postpone } = require('./tasks/postponement')
 const bassOffer = require('./tasks/bassOffer')
-const curfewAddress = require('./tasks/curfewAddress')
+const proposedAddress = require('./tasks/proposedAddress')
 const riskManagement = require('./tasks/riskManagement')
 const victimLiaison = require('./tasks/victimLiaison')
 const curfewHours = require('./tasks/curfewHours')
@@ -19,12 +19,7 @@ const rejectedAddressTaskList = (licenceStatus) => {
   const showRiskManagement = !(addressReviewFailed || addressWithdrawn)
   return tasklist([
     { task: 'eligibilitySummaryTask', visible: true },
-    {
-      title: 'Proposed curfew address',
-      label: curfewAddress.getLabel(licenceStatus),
-      action: curfewAddress.getDmRejectedAction(),
-      visible: true,
-    },
+    proposedAddress.dm.rejected({ decisions: licenceStatus.decisions, tasks: licenceStatus.tasks, visible: true }),
     riskManagement.view({
       decisions: licenceStatus.decisions,
       tasks: licenceStatus.tasks,
@@ -60,12 +55,11 @@ const standardTaskList = (licenceStatus) => {
       action: bassOffer.getDmAction(licenceStatus),
       visible: bassReferralNeeded,
     },
-    {
-      title: 'Proposed curfew address',
-      label: curfewAddress.getLabel(licenceStatus),
-      action: curfewAddress.getDmAction(licenceStatus),
+    proposedAddress.dm.view({
+      decisions: licenceStatus.decisions,
+      tasks: licenceStatus.tasks,
       visible: !bassReferralNeeded,
-    },
+    }),
     riskManagement.view({
       decisions: licenceStatus.decisions,
       tasks: licenceStatus.tasks,
@@ -73,12 +67,7 @@ const standardTaskList = (licenceStatus) => {
     }),
     victimLiaison.view({ decisions: licenceStatus.decisions, tasks: licenceStatus.tasks, visible: true }),
     curfewHours.view({ tasks: licenceStatus.tasks, visible: true }),
-    {
-      title: 'Additional conditions',
-      label: additionalConditions.getLabel(licenceStatus),
-      action: additionalConditions.view(),
-      visible: true,
-    },
+    additionalConditions.view({ tasks: licenceStatus.tasks, decisions: licenceStatus.decisions, visible: true }),
     reportingInstructions.view({ tasks: licenceStatus.tasks, visible: true }),
     finalChecks.view({ decisions: licenceStatus.decisions, tasks: licenceStatus.tasks, visible: true }),
     postpone({ decisions: licenceStatus.decisions, visible: confiscationOrder }),

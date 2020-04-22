@@ -58,8 +58,8 @@ module.exports = {
       },
       {
         title: 'Curfew address',
-        label: proposedAddress.getLabel({ decisions, tasks }),
-        action: proposedAddress.getCaAction({ decisions, tasks }),
+        label: curfewAddress.getLabel({ decisions, tasks }),
+        action: curfewAddress.getCaAction({ decisions, tasks }),
         visible: eligible,
       },
       riskManagement.edit({ decisions, tasks, visible: addressUnsuitable }),
@@ -96,17 +96,10 @@ module.exports = {
 
     const validAddress = approvedPremisesRequired || curfewAddressApproved || bassChecksDone
 
-    const proposedAddressTask = {
-      title: 'Proposed curfew address',
-      label: curfewAddress.getLabel({ decisions, tasks }),
-      action: curfewAddress.getCaProcessingAction({ decisions, tasks }),
-      visible: !bassReferralNeeded && allowedTransition !== 'caToRo',
-    }
-
     const curfewAddressTask = {
       title: 'Curfew address',
-      label: proposedAddress.getLabel({ decisions, tasks }),
-      action: proposedAddress.getCaAction({ decisions, tasks }),
+      label: curfewAddress.getLabel({ decisions, tasks }),
+      action: curfewAddress.getCaAction({ decisions, tasks }),
       visible: !bassReferralNeeded && allowedTransition === 'caToRo',
     }
 
@@ -118,9 +111,16 @@ module.exports = {
     }
 
     if (optedOut) {
-      return [proposedAddressTask, curfewAddressTask, bassTask, hdcRefusal({ decisions })].filter(
-        (task) => task.visible
-      )
+      return [
+        proposedAddress.ca.processing({
+          tasks,
+          decisions,
+          visible: !bassReferralNeeded && allowedTransition !== 'caToRo',
+        }),
+        curfewAddressTask,
+        bassTask,
+        hdcRefusal({ decisions }),
+      ].filter((task) => task.visible)
     }
 
     if (!eligible) {
@@ -129,7 +129,11 @@ module.exports = {
 
     return [
       eligibilityTask,
-      proposedAddressTask,
+      proposedAddress.ca.processing({
+        tasks,
+        decisions,
+        visible: !bassReferralNeeded && allowedTransition !== 'caToRo',
+      }),
       curfewAddressTask,
       bassTask,
       riskManagement.edit({
@@ -142,12 +146,7 @@ module.exports = {
       }),
       victimLiaison.edit({ decisions, tasks, visible: validAddress }),
       curfewHours.edit({ tasks, visible: validAddress }),
-      {
-        title: 'Additional conditions',
-        label: additionalConditions.getLabel({ decisions, tasks }, 'CA'),
-        action: additionalConditions.edit(),
-        visible: validAddress,
-      },
+      additionalConditions.edit({ tasks, decisions, visible: validAddress }),
       reportingInstructions.edit({ tasks, visible: validAddress }),
       finalChecks.review({ decisions, tasks, visible: validAddress }),
       postponeOrRefuse({ decisions, visible: validAddress }),
@@ -211,8 +210,8 @@ module.exports = {
       eligibilitySummaryTask,
       {
         title: 'Curfew address',
-        label: proposedAddress.getLabel({ decisions, tasks }),
-        action: proposedAddress.getCaAction({ decisions, tasks }),
+        label: curfewAddress.getLabel({ decisions, tasks }),
+        action: curfewAddress.getCaAction({ decisions, tasks }),
         visible: allowedTransition === 'caToRo',
       },
       {
@@ -221,12 +220,11 @@ module.exports = {
         action: bassAddress.getCaAction({ tasks }),
         visible: bassReferralNeeded && allowedTransition !== 'caToRo',
       },
-      {
-        title: 'Proposed curfew address',
-        label: curfewAddress.getLabel({ decisions, tasks }),
-        action: curfewAddress.getCaPostApprovalAction({ decisions }),
+      proposedAddress.ca.postApproval({
+        tasks,
+        decisions,
         visible: !bassReferralNeeded && allowedTransition !== 'caToRo',
-      },
+      }),
       riskManagement.edit({
         decisions,
         tasks,
@@ -234,12 +232,7 @@ module.exports = {
       }),
       victimLiaison.edit({ decisions, tasks, visible: validAddress }),
       curfewHours.edit({ tasks, visible: validAddress }),
-      {
-        title: 'Additional conditions',
-        label: additionalConditions.getLabel({ decisions, tasks }, 'CA'),
-        action: additionalConditions.edit(),
-        visible: validAddress,
-      },
+      additionalConditions.edit({ tasks, decisions, visible: validAddress }),
       reportingInstructions.edit({ tasks, visible: validAddress }),
       finalChecks.review({
         decisions,
