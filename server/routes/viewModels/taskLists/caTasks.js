@@ -55,12 +55,7 @@ module.exports = {
         ...informOffenderTask,
         visible: eligibilityDone && optOutUnstarted && !optedOut,
       },
-      {
-        title: 'Curfew address',
-        label: curfewAddress.getLabel({ decisions, tasks }),
-        action: curfewAddress.getCaAction({ decisions, tasks }),
-        visible: eligible,
-      },
+      curfewAddress({ decisions, tasks, visible: eligible }),
       riskManagement.edit({ decisions, tasks, visible: addressUnsuitable }),
       caSubmitToDm.refusal({ decisions, visible: allowedTransition === 'caToDmRefusal' }),
       caSubmitBassReview({
@@ -95,13 +90,6 @@ module.exports = {
 
     const validAddress = approvedPremisesRequired || curfewAddressApproved || bassChecksDone
 
-    const curfewAddressTask = {
-      title: 'Curfew address',
-      label: curfewAddress.getLabel({ decisions, tasks }),
-      action: curfewAddress.getCaAction({ decisions, tasks }),
-      visible: !bassReferralNeeded && allowedTransition === 'caToRo',
-    }
-
     if (optedOut) {
       return [
         proposedAddress.ca.processing({
@@ -109,7 +97,7 @@ module.exports = {
           decisions,
           visible: !bassReferralNeeded && allowedTransition !== 'caToRo',
         }),
-        curfewAddressTask,
+        curfewAddress({ decisions, tasks, visible: !bassReferralNeeded && allowedTransition === 'caToRo' }),
         bassAddress.ca.postApproval({
           decisions,
           tasks,
@@ -130,7 +118,7 @@ module.exports = {
         decisions,
         visible: !bassReferralNeeded && allowedTransition !== 'caToRo',
       }),
-      curfewAddressTask,
+      curfewAddress({ decisions, tasks, visible: !bassReferralNeeded && allowedTransition === 'caToRo' }),
       bassAddress.ca.postApproval({
         decisions,
         tasks,
@@ -208,12 +196,7 @@ module.exports = {
 
     return [
       eligibilitySummaryTask,
-      {
-        title: 'Curfew address',
-        label: curfewAddress.getLabel({ decisions, tasks }),
-        action: curfewAddress.getCaAction({ decisions, tasks }),
-        visible: allowedTransition === 'caToRo',
-      },
+      curfewAddress({ decisions, tasks, visible: allowedTransition === 'caToRo' }),
       bassAddress.ca.standard({ decisions, tasks, visible: bassReferralNeeded && allowedTransition !== 'caToRo' }),
       proposedAddress.ca.postApproval({
         tasks,
