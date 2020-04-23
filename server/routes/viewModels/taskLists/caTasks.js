@@ -16,21 +16,18 @@ const createLicence = require('./tasks/createLicence')
 const finalChecks = require('./tasks/finalChecks')
 const caRereferDm = require('./tasks/caRereferDm')
 
-const eligibilityTask = {
-  task: 'eligibilityTask',
-  visible: true,
-}
+const namedTask = (name) => (/** @type {any} */ args = {}) => ({ task: name, ...args })
 
-const namedTask = (name) => (args = {}) => ({ task: name, ...args })
+const caBlocked = namedTask('caBlockedTask')
+const eligibilityTask = namedTask('eligibilityTask')
+const eligibilitySummaryTask = namedTask('eligibilitySummaryTask')
+const invisibleInformOffenderTask = namedTask('informOffenderTask')
 
 module.exports = {
   getTasksForBlocked: (errorCode) => [
-    eligibilityTask,
+    eligibilityTask(),
     informOffenderTask({ visible: true }),
-    {
-      task: 'caBlockedTask',
-      errorCode,
-    },
+    caBlocked({ errorCode }),
   ],
 
   getCaTasksEligibility: ({ decisions, tasks, allowedTransition }) => {
@@ -42,7 +39,7 @@ module.exports = {
     const optOutRefused = optOut === 'DONE' && !optedOut
 
     return [
-      eligibilityTask,
+      eligibilityTask({ visible: true }),
       informOffenderTask({ visible: eligibilityDone && optOutUnstarted && !optedOut }),
       curfewAddress({ decisions, tasks, visible: eligible }),
       riskManagement.edit({ decisions, tasks, visible: addressUnsuitable }),
@@ -97,11 +94,11 @@ module.exports = {
     }
 
     if (!eligible) {
-      return [eligibilityTask, informOffenderTask({ visible: true })]
+      return [eligibilityTask({ visible: true }), informOffenderTask({ visible: true })]
     }
 
     return [
-      eligibilityTask,
+      eligibilityTask({ visible: true }),
       proposedAddress.ca.processing({
         tasks,
         decisions,
@@ -169,22 +166,14 @@ module.exports = {
 
     const validAddress = approvedPremisesRequired || curfewAddressApproved || bassOfferMade
 
-    const eligibilitySummaryTask = {
-      task: 'eligibilitySummaryTask',
-      visible: validAddress,
-    }
-
-    const invisibleInformOffenderTask = {
-      task: 'informOffenderTask',
-      visible: true,
-    }
-
     if (!eligible) {
-      return [eligibilitySummaryTask, invisibleInformOffenderTask].filter((task) => task.visible)
+      return [eligibilitySummaryTask({ visible: validAddress }), invisibleInformOffenderTask({ visible: true })].filter(
+        (task) => task.visible
+      )
     }
 
     return [
-      eligibilitySummaryTask,
+      eligibilitySummaryTask({ visible: validAddress }),
       curfewAddress({ decisions, tasks, visible: allowedTransition === 'caToRo' }),
       bassAddress.ca.standard({ decisions, tasks, visible: bassReferralNeeded && allowedTransition !== 'caToRo' }),
       proposedAddress.ca.postApproval({
