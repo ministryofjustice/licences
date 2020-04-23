@@ -11,6 +11,7 @@ const caSubmitAddressReview = require('./tasks/caSubmitAddressReview')
 const caSubmitBassReview = require('./tasks/caSubmitBassReview')
 const caSubmitToDm = require('./tasks/caSubmitToDm')
 const hdcRefusal = require('./tasks/hdcRefusal')
+const informOffenderTask = require('./tasks/informOffenderTask')
 const createLicence = require('./tasks/createLicence')
 const finalChecks = require('./tasks/finalChecks')
 const caRereferDm = require('./tasks/caRereferDm')
@@ -20,21 +21,10 @@ const eligibilityTask = {
   visible: true,
 }
 
-const informOffenderTask = {
-  title: 'Inform the offender',
-  label: 'You should now tell the offender using the relevant HDC form from NOMIS',
-  action: {
-    type: 'btn-secondary',
-    href: '/caseList/active',
-    text: 'Back to case list',
-  },
-  visible: true,
-}
-
 module.exports = {
   getTasksForBlocked: (errorCode) => [
     eligibilityTask,
-    informOffenderTask,
+    informOffenderTask({ visible: true }),
     {
       task: 'caBlockedTask',
       errorCode,
@@ -51,10 +41,7 @@ module.exports = {
 
     return [
       eligibilityTask,
-      {
-        ...informOffenderTask,
-        visible: eligibilityDone && optOutUnstarted && !optedOut,
-      },
+      informOffenderTask({ visible: eligibilityDone && optOutUnstarted && !optedOut }),
       curfewAddress({ decisions, tasks, visible: eligible }),
       riskManagement.edit({ decisions, tasks, visible: addressUnsuitable }),
       caSubmitToDm.refusal({ decisions, visible: allowedTransition === 'caToDmRefusal' }),
@@ -108,7 +95,7 @@ module.exports = {
     }
 
     if (!eligible) {
-      return [eligibilityTask, informOffenderTask]
+      return [eligibilityTask, informOffenderTask({ visible: true })]
     }
 
     return [
