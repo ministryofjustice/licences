@@ -21,6 +21,8 @@ const eligibilityTask = {
   visible: true,
 }
 
+const namedTask = (name) => (args = {}) => ({ task: name, ...args })
+
 module.exports = {
   getTasksForBlocked: (errorCode) => [
     eligibilityTask,
@@ -234,11 +236,12 @@ module.exports = {
       caRereferDm({
         visible: !['caToDm', 'caToDmRefusal', 'caToRo'].includes(allowedTransition) && dmRefused !== undefined,
       }),
-      {
-        title: 'Create licence',
-        action: createLicence.getCaAction({ decisions, tasks, stage }),
+      createLicence({
+        decisions,
+        tasks,
+        stage,
         visible: validAddress && !['caToDm', 'caToDmRefusal', 'caToRo'].includes(allowedTransition) && !dmRefused,
-      },
+      }),
     ].filter((task) => task.visible)
   },
 }
