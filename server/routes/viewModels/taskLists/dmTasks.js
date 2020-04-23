@@ -26,22 +26,13 @@ const rejectedAddressTaskList = (licenceStatus) => {
       visible: showRiskManagement,
     }),
     returnToPrisonCaseAdmin(),
-    {
-      title: 'Final decision',
-      label: finalDecision.getLabel(licenceStatus),
-      action: finalDecision.getRefusalAction(),
-      visible: true,
-    },
+    finalDecision.refusal(licenceStatus),
   ])
 }
 
 const insufficientTimeStopTaskList = (licenceStatus) => [
   { task: 'eligibilitySummaryTask' },
-  {
-    title: 'Final decision',
-    label: finalDecision.getLabel(licenceStatus),
-    action: finalDecision.getRefusalAction(),
-  },
+  finalDecision.refusal(licenceStatus),
 ]
 
 const standardTaskList = (licenceStatus) => {
@@ -67,12 +58,7 @@ const standardTaskList = (licenceStatus) => {
     finalChecks.view({ decisions: licenceStatus.decisions, tasks: licenceStatus.tasks, visible: true }),
     postpone({ decisions: licenceStatus.decisions, visible: confiscationOrder }),
     returnToPrisonCaseAdmin(),
-    {
-      title: 'Final decision',
-      label: finalDecision.getLabel(licenceStatus),
-      action: finalDecision.getDecisionAction(),
-      visible: true,
-    },
+    finalDecision.standard(licenceStatus),
   ])
 }
 

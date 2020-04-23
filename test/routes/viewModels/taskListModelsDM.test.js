@@ -84,6 +84,7 @@ describe('TaskList models', () => {
     title: 'Final decision',
     label: 'Awaiting refusal',
     action: { href: '/hdc/approval/refuseReason/', text: 'Refuse HDC', type: 'btn' },
+    visible: true,
   }
   const finalDecisionRefuse = {
     title: 'Final decision',

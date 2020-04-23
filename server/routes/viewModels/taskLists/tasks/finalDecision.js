@@ -1,32 +1,33 @@
 const { getStatusLabel } = require('../../../../utils/licenceStatusLabels')
 
+const getLabel = (licenceStatus) => {
+  const { statusLabel } = getStatusLabel(licenceStatus, 'DM')
+  return statusLabel
+}
+
 module.exports = {
-  getLabel(licenceStatus) {
-    const { statusLabel } = getStatusLabel(licenceStatus, 'DM')
-
-    const {
-      decisions: { refused, refusalReason },
-    } = licenceStatus
-
-    if (refused && refusalReason) {
-      return `${statusLabel}`
-    }
-    return statusLabel
-  },
-
-  getRefusalAction: () => {
+  standard: (licenceStatus) => {
     return {
-      type: 'btn',
-      href: '/hdc/approval/refuseReason/',
-      text: 'Refuse HDC',
+      title: 'Final decision',
+      label: getLabel(licenceStatus),
+      action: {
+        type: 'btn',
+        href: '/hdc/approval/release/',
+        text: 'Continue',
+      },
+      visible: true,
     }
   },
-
-  getDecisionAction: () => {
+  refusal: (licenceStatus) => {
     return {
-      type: 'btn',
-      href: '/hdc/approval/release/',
-      text: 'Continue',
+      title: 'Final decision',
+      label: getLabel(licenceStatus),
+      action: {
+        type: 'btn',
+        href: '/hdc/approval/refuseReason/',
+        text: 'Refuse HDC',
+      },
+      visible: true,
     }
   },
 }
