@@ -1,5 +1,4 @@
 const { postponeOrRefuse } = require('./tasks/postponement')
-const bassOfferTask = require('./tasks/bassOffer')
 const bassAddress = require('./tasks/bassAddress')
 const curfewAddress = require('./tasks/curfewAddress')
 const riskManagement = require('./tasks/riskManagement')
@@ -103,13 +102,6 @@ module.exports = {
       visible: !bassReferralNeeded && allowedTransition === 'caToRo',
     }
 
-    const bassTask = {
-      title: 'BASS address',
-      label: bassOfferTask.getLabel({ decisions, tasks }),
-      action: bassOfferTask.getAction({ decisions, tasks }),
-      visible: bassReferralNeeded,
-    }
-
     if (optedOut) {
       return [
         proposedAddress.ca.processing({
@@ -118,7 +110,11 @@ module.exports = {
           visible: !bassReferralNeeded && allowedTransition !== 'caToRo',
         }),
         curfewAddressTask,
-        bassTask,
+        bassAddress.ca.postApproval({
+          decisions,
+          tasks,
+          visible: bassReferralNeeded,
+        }),
         hdcRefusal({ decisions }),
       ].filter((task) => task.visible)
     }
@@ -135,7 +131,11 @@ module.exports = {
         visible: !bassReferralNeeded && allowedTransition !== 'caToRo',
       }),
       curfewAddressTask,
-      bassTask,
+      bassAddress.ca.postApproval({
+        decisions,
+        tasks,
+        visible: bassReferralNeeded,
+      }),
       riskManagement.edit({
         decisions,
         tasks,
@@ -214,12 +214,7 @@ module.exports = {
         action: curfewAddress.getCaAction({ decisions, tasks }),
         visible: allowedTransition === 'caToRo',
       },
-      {
-        title: 'BASS address',
-        label: bassAddress.getLabel({ decisions, tasks }),
-        action: bassAddress.getCaAction({ tasks }),
-        visible: bassReferralNeeded && allowedTransition !== 'caToRo',
-      },
+      bassAddress.ca.standard({ decisions, tasks, visible: bassReferralNeeded && allowedTransition !== 'caToRo' }),
       proposedAddress.ca.postApproval({
         tasks,
         decisions,

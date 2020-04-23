@@ -1,5 +1,5 @@
 const { postpone } = require('./tasks/postponement')
-const bassOffer = require('./tasks/bassOffer')
+const bassAddress = require('./tasks/bassAddress')
 const proposedAddress = require('./tasks/proposedAddress')
 const riskManagement = require('./tasks/riskManagement')
 const victimLiaison = require('./tasks/victimLiaison')
@@ -49,12 +49,7 @@ const standardTaskList = (licenceStatus) => {
     decisions: { approvedPremisesRequired, bassReferralNeeded, confiscationOrder },
   } = licenceStatus
   return tasklist([
-    {
-      title: 'BASS address',
-      label: bassOffer.getLabel(licenceStatus),
-      action: bassOffer.getDmAction(licenceStatus),
-      visible: bassReferralNeeded,
-    },
+    bassAddress.view({ decisions: licenceStatus.decisions, tasks: licenceStatus.tasks, visible: bassReferralNeeded }),
     proposedAddress.dm.view({
       decisions: licenceStatus.decisions,
       tasks: licenceStatus.tasks,
