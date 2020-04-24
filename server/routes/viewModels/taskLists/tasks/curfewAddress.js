@@ -1,88 +1,54 @@
-const { view, viewEdit, standardAction, change } = require('./utils/actions')
+const { standardAction, standardActionMulti } = require('./utils/actions')
 
-module.exports = {
-  getLabel: ({ decisions, tasks }) => {
-    const { optedOut, addressWithdrawn, addressReviewFailed, approvedPremisesRequired } = decisions
-    const { curfewAddressReview, approvedPremisesAddress } = tasks
+const getLabel = ({ decisions, tasks }) => {
+  const { optedOut, bassReferralNeeded, bassAreaNotSuitable, curfewAddressRejected } = decisions
+  const { bassRequest, curfewAddress } = tasks
 
-    if (optedOut) {
-      return 'Opted out'
+  if (optedOut) {
+    return 'Offender has opted out of HDC'
+  }
+
+  if (bassReferralNeeded) {
+    if (bassAreaNotSuitable) {
+      return 'ALERT||BASS area rejected'
     }
-    if (approvedPremisesRequired) {
-      return approvedPremisesAddress === 'DONE' ? 'Approved premises required' : 'Not completed'
-    }
-    if (addressWithdrawn) {
-      return 'Address withdrawn'
-    }
-    if (addressReviewFailed) {
-      return 'Address rejected'
-    }
-    if (curfewAddressReview === 'DONE') {
-      return 'Address checked'
+    if (bassRequest === 'DONE') {
+      return 'Completed'
     }
     return 'Not completed'
-  },
+  }
 
-  getRoAction: ({ decisions, tasks }) => {
-    const { curfewAddressRejected } = decisions
-    const { curfewAddressReview } = tasks
+  if (curfewAddressRejected) {
+    return 'ALERT||Address rejected'
+  }
 
-    if (curfewAddressRejected) {
-      return {
-        text: 'Change',
-        href: '/hdc/curfew/approvedPremises/',
-        type: 'link',
-      }
-    }
+  if (curfewAddress === 'DONE') {
+    return 'Completed'
+  }
 
-    return standardAction(curfewAddressReview, '/hdc/curfew/approvedPremises/')
-  },
+  return 'Not completed'
+}
 
-  getCaPostApprovalAction: ({ decisions }) => {
-    const { optedOut, addressWithdrawn, approvedPremisesRequired } = decisions
+const getAction = ({ decisions, tasks }) => {
+  const { curfewAddressRejected, bassAreaNotSuitable } = decisions
+  const { curfewAddress, optOut, bassRequest } = tasks
 
-    if (optedOut) {
-      return change('/hdc/proposedAddress/curfewAddressChoice/', 'proposed-curfew-address')
-    }
+  if (curfewAddressRejected) {
+    return standardAction(curfewAddress, '/hdc/proposedAddress/rejected/', 'curfew-address')
+  }
 
-    if (approvedPremisesRequired) {
-      return viewEdit('/hdc/curfew/approvedPremisesChoice/', 'proposed-curfew-address')
-    }
+  if (bassAreaNotSuitable) {
+    return standardAction(curfewAddress, '/hdc/bassReferral/rejected/', 'curfew-address')
+  }
 
-    if (addressWithdrawn) {
-      return viewEdit('/hdc/curfew/consentWithdrawn/', 'proposed-curfew-address')
-    }
-    return viewEdit('/hdc/review/address/', 'proposed-curfew-address')
-  },
+  return standardActionMulti([curfewAddress, optOut, bassRequest], '/hdc/proposedAddress/curfewAddressChoice/')
+}
 
-  getCaProcessingAction: ({ decisions, tasks }) => {
-    const { optedOut, approvedPremisesRequired } = decisions
-    const { curfewAddress } = tasks
-
-    if (optedOut) {
-      return change('/hdc/proposedAddress/curfewAddressChoice/', 'proposed-curfew-address')
-    }
-
-    if (approvedPremisesRequired) {
-      return viewEdit('/hdc/curfew/approvedPremisesChoice/', 'proposed-curfew-address')
-    }
-
-    if (curfewAddress === 'UNSTARTED') {
-      return standardAction(curfewAddress, '/hdc/proposedAddress/curfewAddressChoice/', 'proposed-curfew-address')
-    }
-
-    return change('/hdc/review/address/', 'proposed-curfew-address')
-  },
-
-  getDmAction: ({ decisions }) => {
-    const { approvedPremisesRequired } = decisions
-
-    if (approvedPremisesRequired) {
-      return view('/hdc/review/approvedPremisesAddress/')
-    }
-
-    return view('/hdc/review/address/')
-  },
-
-  getDmRejectedAction: () => view('/hdc/review/address/'),
+module.exports = ({ decisions, tasks, visible }) => {
+  return {
+    title: 'Curfew address',
+    label: getLabel({ decisions, tasks }),
+    action: getAction({ decisions, tasks }),
+    visible,
+  }
 }

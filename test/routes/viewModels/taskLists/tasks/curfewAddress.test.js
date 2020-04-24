@@ -1,224 +1,158 @@
-const {
-  getLabel,
-  getRoAction,
-  getCaPostApprovalAction,
-  getCaProcessingAction,
-  getDmAction,
-} = require('../../../../../server/routes/viewModels/taskLists/tasks/curfewAddress')
+const curfewAddress = require('../../../../../server/routes/viewModels/taskLists/tasks/curfewAddress')
 
 describe('curfew address task', () => {
   describe('getLabel', () => {
-    test('should return Opted out if optedOut = true', () => {
+    test('should return Offender has opted out of HDC if optedOut = true', () => {
       expect(
-        getLabel({
+        curfewAddress({
           decisions: { optedOut: true },
           tasks: {},
-        })
-      ).toBe('Opted out')
+        }).label
+      ).toBe('Offender has opted out of HDC')
     })
 
-    test('should return Address withdrawn if addressWithdrawn = true', () => {
+    test('should return BASS area rejected if bassReferralNeeded and bassAreaNotSuitable', () => {
       expect(
-        getLabel({
-          decisions: { addressWithdrawn: true },
+        curfewAddress({
+          decisions: { optedOut: false, bassReferralNeeded: true, bassAreaNotSuitable: true },
           tasks: {},
-        })
-      ).toBe('Address withdrawn')
+        }).label
+      ).toBe('ALERT||BASS area rejected')
     })
 
-    test('should return Address review failed if addressReviewFailed = true', () => {
+    test('should return Completed if bassReferralNeeded && bassRequest = DONE', () => {
       expect(
-        getLabel({
-          decisions: { addressReviewFailed: true },
-          tasks: {},
-        })
-      ).toBe('Address rejected')
+        curfewAddress({
+          decisions: { optedOut: false, bassReferralNeeded: true, bassAreaNotSuitable: false },
+          tasks: { bassRequest: 'DONE' },
+        }).label
+      ).toBe('Completed')
     })
 
-    test('should return Address checked if curfewAddressReview && riskManagement === DONE', () => {
+    test('should return Not completed if bassReferralNeeded && bassRequest not DONE', () => {
       expect(
-        getLabel({
-          decisions: {},
-          tasks: { curfewAddressReview: 'DONE', riskManagement: 'DONE' },
-        })
-      ).toBe('Address checked')
-    })
-
-    test('should return Approved premises label if approved premises required and done', () => {
-      expect(
-        getLabel({
-          decisions: { approvedPremisesRequired: true },
-          tasks: { approvedPremisesAddress: 'DONE' },
-        })
-      ).toBe('Approved premises required')
-    })
-
-    test('should return incomplete label if approved premises required but not done', () => {
-      expect(
-        getLabel({
-          decisions: { approvedPremisesRequired: true },
-          tasks: { approvedPremisesAddress: 'STARTED' },
-        })
+        curfewAddress({
+          decisions: { optedOut: false, bassReferralNeeded: true, bassAreaNotSuitable: false },
+          tasks: { bassRequest: 'SOMETHING' },
+        }).label
       ).toBe('Not completed')
     })
 
-    test('should return Not completed if none of above', () => {
+    test('should return Address rejected curfewAddressRejected', () => {
       expect(
-        getLabel({
-          decisions: {},
+        curfewAddress({
+          decisions: { optedOut: false, bassReferralNeeded: false, curfewAddressRejected: true },
           tasks: {},
-        })
+        }).label
+      ).toBe('ALERT||Address rejected')
+    })
+
+    test('should return Completed if curfewAddress: DONE', () => {
+      expect(
+        curfewAddress({
+          decisions: { optedOut: false, bassReferralNeeded: false, curfewAddressRejected: false },
+          tasks: { curfewAddress: 'DONE' },
+        }).label
+      ).toBe('Completed')
+    })
+
+    test('should return Not completed if curfewAddress not DONE', () => {
+      expect(
+        curfewAddress({
+          decisions: { optedOut: false, bassReferralNeeded: false, curfewAddressRejected: false },
+          tasks: { curfewAddress: 'SOMETHING' },
+        }).label
       ).toBe('Not completed')
     })
   })
 
-  describe('getRoAction', () => {
-    test('should link to approvedPremises if curfewAddressRejected', () => {
+  describe('action', () => {
+    test('should show btn to proposedAddress/rejected/ if curfewAddressRejected && curfewAddress: UNSTARTED', () => {
       expect(
-        getRoAction({
+        curfewAddress({
           decisions: { curfewAddressRejected: true },
-          tasks: {},
-        })
-      ).toEqual({
-        text: 'Change',
-        href: '/hdc/curfew/approvedPremises/',
-        type: 'link',
-      })
-    })
-
-    test('should show btn to approvedPremises if curfewAddressReview: UNSTARTED', () => {
-      expect(
-        getRoAction({
-          decisions: {},
-          tasks: { curfewAddressReview: 'UNSTARTED' },
-        })
+          tasks: { curfewAddress: 'UNSTARTED' },
+        }).action
       ).toEqual({
         text: 'Start now',
-        href: '/hdc/curfew/approvedPremises/',
+        href: '/hdc/proposedAddress/rejected/',
         type: 'btn',
       })
     })
 
-    test('should show change link to approvedPremises if curfewAddressReview: DONE', () => {
+    test('should show change link to proposedAddress/rejected/ if curfewAddressRejected && curfewAddress: DONE', () => {
       expect(
-        getRoAction({
-          decisions: {},
-          tasks: { curfewAddressReview: 'DONE' },
-        })
+        curfewAddress({
+          decisions: { curfewAddressRejected: true },
+          tasks: { curfewAddress: 'DONE' },
+        }).action
       ).toEqual({
         text: 'Change',
-        href: '/hdc/curfew/approvedPremises/',
+        href: '/hdc/proposedAddress/rejected/',
         type: 'link',
+        dataQa: 'curfew-address',
       })
     })
 
-    test('should show continue btn to approvedPremises if curfewAddressReview: !DONE || UNSTARTED', () => {
+    test('should show continue btn to proposedAddress/rejected/ if curfewAddressRejected && curfewAddress: !DONE || UNSTARTED', () => {
       expect(
-        getRoAction({
-          decisions: {},
-          tasks: { curfewAddressReview: 'SOMETHING' },
-        })
+        curfewAddress({
+          decisions: { curfewAddressRejected: true },
+          tasks: { curfewAddress: 'SOMETHING' },
+        }).action
       ).toEqual({
         text: 'Continue',
-        href: '/hdc/curfew/approvedPremises/',
+        href: '/hdc/proposedAddress/rejected/',
         type: 'btn',
       })
     })
-  })
 
-  describe('getCaPostApprovalAction', () => {
-    test('should btn to consentWithdrawn page if addressWithdrawn', () => {
+    test('should show btn to bassReferral/rejected/ if bassAreaNotSuitable && curfewAddress: UNSTARTED', () => {
       expect(
-        getCaPostApprovalAction({
-          decisions: { addressWithdrawn: true },
-          tasks: {},
-        })
+        curfewAddress({
+          decisions: { bassAreaNotSuitable: true },
+          tasks: { curfewAddress: 'UNSTARTED' },
+        }).action
       ).toEqual({
-        text: 'View/Edit',
-        href: '/hdc/curfew/consentWithdrawn/',
-        type: 'btn-secondary',
-        dataQa: 'proposed-curfew-address',
+        text: 'Start now',
+        href: '/hdc/bassReferral/rejected/',
+        type: 'btn',
       })
     })
 
-    test('should btn to review page if addressWithdrawn !== true', () => {
+    test('should show change link to bassReferral/rejected if bassAreaNotSuitable && curfewAddress: DONE', () => {
       expect(
-        getCaPostApprovalAction({
+        curfewAddress({
+          decisions: { bassAreaNotSuitable: true },
+          tasks: { curfewAddress: 'DONE' },
+        }).action
+      ).toEqual({
+        text: 'Change',
+        href: '/hdc/bassReferral/rejected/',
+        type: 'link',
+        dataQa: 'curfew-address',
+      })
+    })
+
+    test('should show continue btn to bassReferral/rejected if bassAreaNotSuitable && curfewAddress: !DONE || UNSTARTED', () => {
+      expect(
+        curfewAddress({
+          decisions: { bassAreaNotSuitable: true },
+          tasks: { curfewAddress: 'SOMETHING' },
+        }).action
+      ).toEqual({
+        text: 'Continue',
+        href: '/hdc/bassReferral/rejected/',
+        type: 'btn',
+      })
+    })
+
+    test('should show btn to curfewAddressChoice if all = UNSTARTED', () => {
+      expect(
+        curfewAddress({
           decisions: {},
-          tasks: {},
-        })
-      ).toEqual({
-        text: 'View/Edit',
-        href: '/hdc/review/address/',
-        type: 'btn-secondary',
-        dataQa: 'proposed-curfew-address',
-      })
-    })
-
-    test('should btn to approved premises choice page if approvedPremisesRequired', () => {
-      expect(
-        getCaPostApprovalAction({
-          decisions: { approvedPremisesRequired: true },
-          tasks: {},
-        })
-      ).toEqual({
-        text: 'View/Edit',
-        href: '/hdc/curfew/approvedPremisesChoice/',
-        type: 'btn-secondary',
-        dataQa: 'proposed-curfew-address',
-      })
-    })
-
-    test('should link to 3 way choice if opted out', () => {
-      expect(
-        getCaPostApprovalAction({
-          decisions: { optedOut: true },
-          tasks: { curfewAddress: 'UNSTARTED' },
-        })
-      ).toEqual({
-        text: 'Change',
-        href: '/hdc/proposedAddress/curfewAddressChoice/',
-        type: 'link',
-        dataQa: 'proposed-curfew-address',
-      })
-    })
-  })
-
-  describe('getCaProcessingAction', () => {
-    test('should link to 3 way choice if opted out', () => {
-      expect(
-        getCaProcessingAction({
-          decisions: { optedOut: true },
-          tasks: { curfewAddress: 'UNSTARTED' },
-        })
-      ).toEqual({
-        text: 'Change',
-        href: '/hdc/proposedAddress/curfewAddressChoice/',
-        type: 'link',
-        dataQa: 'proposed-curfew-address',
-      })
-    })
-
-    test('should link to 3 way choice if opted out', () => {
-      expect(
-        getCaProcessingAction({
-          decisions: { optedOut: true },
-          tasks: {},
-        })
-      ).toEqual({
-        text: 'Change',
-        href: '/hdc/proposedAddress/curfewAddressChoice/',
-        type: 'link',
-        dataQa: 'proposed-curfew-address',
-      })
-    })
-
-    test('should btn to 3 way choice if curfewAddress is UNSTARTED', () => {
-      expect(
-        getCaProcessingAction({
-          decisions: { optedOut: false },
-          tasks: { curfewAddress: 'UNSTARTED' },
-        })
+          tasks: { curfewAddress: 'UNSTARTED', optOut: 'UNSTARTED', bassRequest: 'UNSTARTED' },
+        }).action
       ).toEqual({
         text: 'Start now',
         href: '/hdc/proposedAddress/curfewAddressChoice/',
@@ -226,45 +160,29 @@ describe('curfew address task', () => {
       })
     })
 
-    test('should change link to review path if curfewAddress !== UNSTARTED and !optedOut', () => {
+    test('should show change link to curfewAddressChoice if all = DONE', () => {
       expect(
-        getCaProcessingAction({
-          decisions: { optedOut: false },
-          tasks: { curfewAddress: 'SOMETHING' },
-        })
+        curfewAddress({
+          decisions: {},
+          tasks: { curfewAddress: 'DONE', optOut: 'DONE', bassRequest: 'DONE' },
+        }).action
       ).toEqual({
         text: 'Change',
-        href: '/hdc/review/address/',
+        href: '/hdc/proposedAddress/curfewAddressChoice/',
         type: 'link',
-        dataQa: 'proposed-curfew-address',
-      })
-    })
-  })
-
-  describe('getDmAction', () => {
-    test('should link to approvedPremisesAddress if approved premises required', () => {
-      expect(
-        getDmAction({
-          decisions: { approvedPremisesRequired: true },
-          tasks: {},
-        })
-      ).toEqual({
-        text: 'View',
-        href: '/hdc/review/approvedPremisesAddress/',
-        type: 'btn-secondary',
       })
     })
 
-    test('should link to address if approved premises not required', () => {
+    test('should show continue btn to curfewAddressChoice if any not DONE', () => {
       expect(
-        getDmAction({
-          decisions: { approvedPremisesRequired: false },
-          tasks: {},
-        })
+        curfewAddress({
+          decisions: {},
+          tasks: { curfewAddress: 'SOMETHING', optOut: 'DONE', bassRequest: 'DONE' },
+        }).action
       ).toEqual({
-        text: 'View',
-        href: '/hdc/review/address/',
-        type: 'btn-secondary',
+        text: 'Continue',
+        href: '/hdc/proposedAddress/curfewAddressChoice/',
+        type: 'btn',
       })
     })
   })
