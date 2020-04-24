@@ -9,13 +9,13 @@ describe('TaskList models', () => {
     },
     label: 'Address rejected',
     title: 'Proposed curfew address',
-    visible: true,
+    visible: undefined,
   }
   const proposedCurfewAddress = {
     title: 'Proposed curfew address',
     label: 'Not completed',
     action: { type: 'btn', text: 'Continue', href: '/hdc/curfew/approvedPremises/' },
-    visible: true,
+    visible: undefined,
   }
 
   const bassAreaCheck = {
@@ -26,7 +26,6 @@ describe('TaskList models', () => {
     },
     label: 'Not completed',
     title: 'BASS area check',
-    visible: true,
   }
 
   const bassAreaCheckWithApprovedAddress = {
@@ -37,14 +36,13 @@ describe('TaskList models', () => {
     },
     label: 'Approved premises required',
     title: 'BASS area check',
-    visible: true,
   }
 
   const riskManagement = {
     title: 'Risk management',
     label: 'Not completed',
     action: { type: 'btn', text: 'Continue', href: '/hdc/risk/riskManagement/' },
-    visible: true,
+    visible: undefined,
   }
   const riskManagementAddressUnsuitable = {
     action: {
@@ -54,7 +52,7 @@ describe('TaskList models', () => {
     },
     label: 'Address unsuitable',
     title: 'Risk management',
-    visible: true,
+    visible: undefined,
   }
 
   const victimLiasion = {
@@ -65,14 +63,14 @@ describe('TaskList models', () => {
     },
     label: 'Not completed',
     title: 'Victim liaison',
-    visible: true,
+    visible: undefined,
   }
 
   const curfewHours = {
     title: 'Curfew hours',
     label: 'Not completed',
     action: { type: 'btn', text: 'Continue', href: '/hdc/curfew/curfewHours/' },
-    visible: true,
+    visible: undefined,
   }
   const curfewHoursChange = {
     title: 'Curfew hours',
@@ -84,7 +82,7 @@ describe('TaskList models', () => {
     title: 'Additional conditions',
     label: 'Not completed',
     action: { type: 'btn', text: 'Continue', href: '/hdc/licenceConditions/standard/' },
-    visible: true,
+    visible: undefined,
   }
   const additionalConditionsChange = {
     title: 'Additional conditions',
@@ -96,7 +94,7 @@ describe('TaskList models', () => {
     title: 'Reporting instructions',
     label: 'Not completed',
     action: { type: 'btn', text: 'Continue', href: '/hdc/reporting/reportingInstructions/' },
-    visible: true,
+    visible: undefined,
   }
   const reportingInstructionsChange = {
     title: 'Reporting instructions',
@@ -386,7 +384,6 @@ describe('TaskList models', () => {
           },
           label: 'Not completed',
           title: 'BASS area check',
-          visible: true,
         },
         riskManagement,
         victimLiasion,

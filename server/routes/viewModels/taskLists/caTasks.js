@@ -1,3 +1,4 @@
+const { tasklist, namedTask } = require('./tasklistBuilder')
 const { postponeOrRefuse } = require('./tasks/postponement')
 const bassAddress = require('./tasks/bassAddress')
 const curfewAddress = require('./tasks/curfewAddress')
@@ -16,19 +17,18 @@ const createLicence = require('./tasks/createLicence')
 const finalChecks = require('./tasks/finalChecks')
 const caRereferDm = require('./tasks/caRereferDm')
 
-const namedTask = (name) => (/** @type {any} */ args = {}) => ({ task: name, ...args })
-
-const caBlocked = namedTask('caBlockedTask')
+const caBlocked = (errorCode) => () => ({ task: 'caBlockedTask', errorCode })
 const eligibilityTask = namedTask('eligibilityTask')
 const eligibilitySummaryTask = namedTask('eligibilitySummaryTask')
 const invisibleInformOffenderTask = namedTask('informOffenderTask')
 
 module.exports = {
-  getTasksForBlocked: (errorCode) => [
-    eligibilityTask(),
-    informOffenderTask({ visible: true }),
-    caBlocked({ errorCode }),
-  ],
+  getTasksForBlocked: (errorCode) =>
+    tasklist({}, [
+      [eligibilityTask, true],
+      [informOffenderTask, true],
+      [caBlocked(errorCode), true],
+    ]),
 
   getCaTasksEligibility: ({ decisions, tasks, allowedTransition }) => {
     const { optedOut, eligible, bassReferralNeeded, addressUnsuitable } = decisions
@@ -38,23 +38,17 @@ module.exports = {
     const optOutUnstarted = optOut === 'UNSTARTED'
     const optOutRefused = optOut === 'DONE' && !optedOut
 
-    return [
-      eligibilityTask({ visible: true }),
-      informOffenderTask({ visible: eligibilityDone && optOutUnstarted && !optedOut }),
-      curfewAddress({ decisions, tasks, visible: eligible }),
-      riskManagement.edit({ decisions, tasks, visible: addressUnsuitable }),
-      caSubmitToDm.refusal({ decisions, visible: allowedTransition === 'caToDmRefusal' }),
-      caSubmitBassReview({
-        decisions,
-        tasks,
-        visible: optOutRefused && bassReferralNeeded && allowedTransition !== 'caToDmRefusal',
-      }),
-      caSubmitAddressReview({
-        decisions,
-        tasks,
-        visible: optOutRefused && !bassReferralNeeded && allowedTransition !== 'caToDmRefusal',
-      }),
-    ].filter((task) => task.visible)
+    const context = { decisions, tasks, allowedTransition }
+
+    return tasklist(context, [
+      [eligibilityTask, true],
+      [informOffenderTask, eligibilityDone && optOutUnstarted && !optedOut],
+      [curfewAddress, eligible],
+      [riskManagement.edit, addressUnsuitable],
+      [caSubmitToDm.refusal, allowedTransition === 'caToDmRefusal'],
+      [caSubmitBassReview, optOutRefused && bassReferralNeeded && allowedTransition !== 'caToDmRefusal'],
+      [caSubmitAddressReview, optOutRefused && !bassReferralNeeded && allowedTransition !== 'caToDmRefusal'],
+    ])
   },
 
   getCaTasksFinalChecks: ({ decisions, tasks, allowedTransition }) => {
@@ -75,76 +69,47 @@ module.exports = {
     const bassChecksDone = bassReferralNeeded && bassAreaChecked && !bassWithdrawn && !bassExcluded
 
     const validAddress = approvedPremisesRequired || curfewAddressApproved || bassChecksDone
+    const context = { decisions, tasks, allowedTransition }
 
     if (optedOut) {
-      return [
-        proposedAddress.ca.processing({
-          tasks,
-          decisions,
-          visible: !bassReferralNeeded && allowedTransition !== 'caToRo',
-        }),
-        curfewAddress({ decisions, tasks, visible: !bassReferralNeeded && allowedTransition === 'caToRo' }),
-        bassAddress.ca.postApproval({
-          decisions,
-          tasks,
-          visible: bassReferralNeeded,
-        }),
-        hdcRefusal({ decisions }),
-      ].filter((task) => task.visible)
+      return tasklist(context, [
+        [proposedAddress.ca.processing, !bassReferralNeeded && allowedTransition !== 'caToRo'],
+        [curfewAddress, !bassReferralNeeded && allowedTransition === 'caToRo'],
+        [bassAddress.ca.postApproval, bassReferralNeeded],
+        [hdcRefusal, true],
+      ])
     }
 
     if (!eligible) {
-      return [eligibilityTask({ visible: true }), informOffenderTask({ visible: true })]
+      return tasklist(context, [
+        [eligibilityTask, true],
+        [informOffenderTask, true],
+      ])
     }
 
-    return [
-      eligibilityTask({ visible: true }),
-      proposedAddress.ca.processing({
-        tasks,
-        decisions,
-        visible: !bassReferralNeeded && allowedTransition !== 'caToRo',
-      }),
-      curfewAddress({ decisions, tasks, visible: !bassReferralNeeded && allowedTransition === 'caToRo' }),
-      bassAddress.ca.postApproval({
-        decisions,
-        tasks,
-        visible: bassReferralNeeded,
-      }),
-      riskManagement.edit({
-        decisions,
-        tasks,
-        visible:
-          (!approvedPremisesRequired && curfewAddressApproved) ||
-          addressUnsuitable ||
-          (bassChecksDone && !approvedPremisesRequired),
-      }),
-      victimLiaison.edit({ decisions, tasks, visible: validAddress }),
-      curfewHours.edit({ tasks, visible: validAddress }),
-      additionalConditions.edit({ tasks, decisions, visible: validAddress }),
-      reportingInstructions.edit({ tasks, visible: validAddress }),
-      finalChecks.review({ decisions, tasks, visible: validAddress }),
-      postponeOrRefuse({ decisions, visible: validAddress }),
-      hdcRefusal({ decisions }),
-      caSubmitToDm.approval({
-        decisions,
-        allowedTransition,
-        visible: allowedTransition !== 'caToDmRefusal' && allowedTransition !== 'caToRo',
-      }),
-      caSubmitToDm.refusal({
-        decisions,
-        visible: allowedTransition === 'caToDmRefusal',
-      }),
-      caSubmitAddressReview({
-        decisions,
-        tasks,
-        visible: !bassReferralNeeded && allowedTransition === 'caToRo',
-      }),
-      caSubmitBassReview({
-        decisions,
-        tasks,
-        visible: bassReferralNeeded && allowedTransition === 'caToRo',
-      }),
-    ].filter((task) => task.visible)
+    const showRiskManagement =
+      (!approvedPremisesRequired && curfewAddressApproved) ||
+      addressUnsuitable ||
+      (bassChecksDone && !approvedPremisesRequired)
+
+    return tasklist(context, [
+      [eligibilityTask, true],
+      [proposedAddress.ca.processing, !bassReferralNeeded && allowedTransition !== 'caToRo'],
+      [curfewAddress, !bassReferralNeeded && allowedTransition === 'caToRo'],
+      [bassAddress.ca.postApproval, bassReferralNeeded],
+      [riskManagement.edit, showRiskManagement],
+      [victimLiaison.edit, validAddress],
+      [curfewHours.edit, validAddress],
+      [additionalConditions.edit, validAddress],
+      [reportingInstructions.edit, validAddress],
+      [finalChecks.review, validAddress],
+      [postponeOrRefuse, validAddress],
+      [hdcRefusal, true],
+      [caSubmitToDm.approval, allowedTransition !== 'caToDmRefusal' && allowedTransition !== 'caToRo'],
+      [caSubmitToDm.refusal, allowedTransition === 'caToDmRefusal'],
+      [caSubmitAddressReview, !bassReferralNeeded && allowedTransition === 'caToRo'],
+      [caSubmitBassReview, bassReferralNeeded && allowedTransition === 'caToRo'],
+    ])
   },
 
   getCaTasksPostApproval: (stage) => ({ decisions, tasks, allowedTransition }) => {
@@ -166,71 +131,34 @@ module.exports = {
 
     const validAddress = approvedPremisesRequired || curfewAddressApproved || bassOfferMade
 
+    const context = { decisions, tasks, stage, allowedTransition }
+
     if (!eligible) {
-      return [eligibilitySummaryTask({ visible: validAddress }), invisibleInformOffenderTask({ visible: true })].filter(
-        (task) => task.visible
-      )
+      return tasklist(context, [
+        [eligibilitySummaryTask, validAddress],
+        [invisibleInformOffenderTask, true],
+      ])
     }
 
-    return [
-      eligibilitySummaryTask({ visible: validAddress }),
-      curfewAddress({ decisions, tasks, visible: allowedTransition === 'caToRo' }),
-      bassAddress.ca.standard({ decisions, tasks, visible: bassReferralNeeded && allowedTransition !== 'caToRo' }),
-      proposedAddress.ca.postApproval({
-        tasks,
-        decisions,
-        visible: !bassReferralNeeded && allowedTransition !== 'caToRo',
-      }),
-      riskManagement.edit({
-        decisions,
-        tasks,
-        visible: !approvedPremisesRequired && (curfewAddressApproved || bassOfferMade || addressUnsuitable),
-      }),
-      victimLiaison.edit({ decisions, tasks, visible: validAddress }),
-      curfewHours.edit({ tasks, visible: validAddress }),
-      additionalConditions.edit({ tasks, decisions, visible: validAddress }),
-      reportingInstructions.edit({ tasks, visible: validAddress }),
-      finalChecks.review({
-        decisions,
-        tasks,
-        visible: validAddress,
-      }),
-      postponeOrRefuse({
-        decisions,
-        visible: validAddress && !dmRefused,
-      }),
-      hdcRefusal({
-        decisions,
-        visible: !dmRefused,
-      }),
-      caSubmitToDm.approval({
-        decisions,
-        allowedTransition,
-        visible: allowedTransition === 'caToDm',
-      }),
-      caSubmitToDm.refusal({
-        decisions,
-        visible: allowedTransition === 'caToDmRefusal',
-      }),
-      caSubmitBassReview({
-        decisions,
-        tasks,
-        visible: bassReferralNeeded && allowedTransition === 'caToRo',
-      }),
-      caSubmitAddressReview({
-        decisions,
-        tasks,
-        visible: !bassReferralNeeded && allowedTransition === 'caToRo',
-      }),
-      caRereferDm({
-        visible: !['caToDm', 'caToDmRefusal', 'caToRo'].includes(allowedTransition) && dmRefused !== undefined,
-      }),
-      createLicence({
-        decisions,
-        tasks,
-        stage,
-        visible: validAddress && !['caToDm', 'caToDmRefusal', 'caToRo'].includes(allowedTransition) && !dmRefused,
-      }),
-    ].filter((task) => task.visible)
+    return tasklist(context, [
+      [eligibilitySummaryTask, validAddress],
+      [curfewAddress, allowedTransition === 'caToRo'],
+      [bassAddress.ca.standard, bassReferralNeeded && allowedTransition !== 'caToRo'],
+      [proposedAddress.ca.postApproval, !bassReferralNeeded && allowedTransition !== 'caToRo'],
+      [riskManagement.edit, !approvedPremisesRequired && (curfewAddressApproved || bassOfferMade || addressUnsuitable)],
+      [victimLiaison.edit, validAddress],
+      [curfewHours.edit, validAddress],
+      [additionalConditions.edit, validAddress],
+      [reportingInstructions.edit, validAddress],
+      [finalChecks.review, validAddress],
+      [postponeOrRefuse, validAddress && !dmRefused],
+      [hdcRefusal, !dmRefused],
+      [caSubmitToDm.approval, allowedTransition === 'caToDm'],
+      [caSubmitToDm.refusal, allowedTransition === 'caToDmRefusal'],
+      [caSubmitBassReview, allowedTransition === 'caToRo'],
+      [caSubmitAddressReview, !bassReferralNeeded && allowedTransition === 'caToRo'],
+      [caRereferDm, !['caToDm', 'caToDmRefusal', 'caToRo'].includes(allowedTransition) && dmRefused !== undefined],
+      [createLicence, validAddress && !['caToDm', 'caToDmRefusal', 'caToRo'].includes(allowedTransition) && !dmRefused],
+    ])
   },
 }

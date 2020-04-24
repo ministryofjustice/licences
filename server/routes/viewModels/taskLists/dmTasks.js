@@ -1,3 +1,4 @@
+const { tasklist, namedTask } = require('./tasklistBuilder')
 const { postpone } = require('./tasks/postponement')
 const bassAddress = require('./tasks/bassAddress')
 const proposedAddress = require('./tasks/proposedAddress')
@@ -10,55 +11,42 @@ const finalChecks = require('./tasks/finalChecks')
 const finalDecision = require('./tasks/finalDecision')
 const returnToPrisonCaseAdmin = require('./tasks/returnToPrisonCaseAdmin')
 
-const tasklist = (tasks) => tasks.filter((task) => task.visible).map(({ visible, ...rest }) => rest)
+const eligibilitySummaryTask = namedTask('eligibilitySummaryTask')
 
 const rejectedAddressTaskList = (licenceStatus) => {
-  const {
-    decisions: { addressWithdrawn, addressReviewFailed },
-  } = licenceStatus
-  const showRiskManagement = !(addressReviewFailed || addressWithdrawn)
-  return tasklist([
-    { task: 'eligibilitySummaryTask', visible: true },
-    proposedAddress.dm.rejected({ decisions: licenceStatus.decisions, tasks: licenceStatus.tasks, visible: true }),
-    riskManagement.view({
-      decisions: licenceStatus.decisions,
-      tasks: licenceStatus.tasks,
-      visible: showRiskManagement,
-    }),
-    returnToPrisonCaseAdmin(),
-    finalDecision.refusal(licenceStatus),
+  const { decisions } = licenceStatus
+  const showRiskManagement = !(decisions.addressReviewFailed || decisions.addressWithdrawn)
+  return tasklist(licenceStatus, [
+    [eligibilitySummaryTask, true],
+    [proposedAddress.dm.rejected, true],
+    [riskManagement.view, showRiskManagement],
+    [returnToPrisonCaseAdmin, true],
+    [finalDecision.refusal, true],
   ])
 }
 
-const insufficientTimeStopTaskList = (licenceStatus) => [
-  { task: 'eligibilitySummaryTask' },
-  finalDecision.refusal(licenceStatus),
-]
+const insufficientTimeStopTaskList = (licenceStatus) =>
+  tasklist(licenceStatus, [
+    [eligibilitySummaryTask, true],
+    [finalDecision.refusal, true],
+  ])
 
 const standardTaskList = (licenceStatus) => {
   const {
     decisions: { approvedPremisesRequired, bassReferralNeeded, confiscationOrder },
   } = licenceStatus
-  return tasklist([
-    bassAddress.view({ decisions: licenceStatus.decisions, tasks: licenceStatus.tasks, visible: bassReferralNeeded }),
-    proposedAddress.dm.view({
-      decisions: licenceStatus.decisions,
-      tasks: licenceStatus.tasks,
-      visible: !bassReferralNeeded,
-    }),
-    riskManagement.view({
-      decisions: licenceStatus.decisions,
-      tasks: licenceStatus.tasks,
-      visible: !approvedPremisesRequired,
-    }),
-    victimLiaison.view({ decisions: licenceStatus.decisions, tasks: licenceStatus.tasks, visible: true }),
-    curfewHours.view({ tasks: licenceStatus.tasks, visible: true }),
-    additionalConditions.view({ tasks: licenceStatus.tasks, decisions: licenceStatus.decisions, visible: true }),
-    reportingInstructions.view({ tasks: licenceStatus.tasks, visible: true }),
-    finalChecks.view({ decisions: licenceStatus.decisions, tasks: licenceStatus.tasks, visible: true }),
-    postpone({ decisions: licenceStatus.decisions, visible: confiscationOrder }),
-    returnToPrisonCaseAdmin(),
-    finalDecision.standard(licenceStatus),
+  return tasklist(licenceStatus, [
+    [bassAddress.view, bassReferralNeeded],
+    [proposedAddress.dm.view, !bassReferralNeeded],
+    [riskManagement.view, !approvedPremisesRequired],
+    [victimLiaison.view, true],
+    [curfewHours.view, true],
+    [additionalConditions.view, true],
+    [reportingInstructions.view, true],
+    [finalChecks.view, true],
+    [postpone, confiscationOrder],
+    [returnToPrisonCaseAdmin, true],
+    [finalDecision.standard, true],
   ])
 }
 
