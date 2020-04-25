@@ -31,29 +31,26 @@ const getLabel = ({ decisions, tasks }, role) => {
 const title = 'Additional conditions'
 
 module.exports = {
-  edit: ({ decisions, tasks, visible }) => {
+  edit: ({ decisions, tasks }) => {
     return {
       title,
       label: getLabel({ decisions, tasks }, 'CA'),
       action: viewEdit('/hdc/licenceConditions/standard/', 'additional-conditions'),
-      visible,
     }
   },
-  view: ({ decisions, tasks, visible }) => {
+  view: ({ decisions, tasks }) => {
     return {
       title,
       label: getLabel({ decisions, tasks }),
       action: view('/hdc/review/conditions/'),
-      visible,
     }
   },
-  ro: ({ decisions, tasks, visible }) => {
+  ro: ({ decisions, tasks }) => {
     const { licenceConditions } = tasks
     return {
       title,
       label: getLabel({ decisions, tasks }),
       action: standardAction(licenceConditions, '/hdc/licenceConditions/standard/'),
-      visible,
     }
   },
 }

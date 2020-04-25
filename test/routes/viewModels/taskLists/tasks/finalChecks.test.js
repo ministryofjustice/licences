@@ -7,13 +7,11 @@ describe('final checks task', () => {
         finalChecks.review({
           decisions: {},
           tasks: { finalChecks: 'DONE' },
-          visible: true,
         })
       ).toStrictEqual({
         action: { dataQa: 'review-case', href: '/hdc/finalChecks/seriousOffence/', text: 'Change', type: 'link' },
         label: 'Confirmed',
         title: 'Review case',
-        visible: true,
       })
     })
 
@@ -22,13 +20,11 @@ describe('final checks task', () => {
         finalChecks.review({
           decisions: {},
           tasks: { finalChecks: 'UNSTARTED' },
-          visible: true,
         })
       ).toStrictEqual({
         action: { href: '/hdc/finalChecks/seriousOffence/', text: 'Start now', type: 'btn' },
         label: 'Not completed',
         title: 'Review case',
-        visible: true,
       })
     })
 
@@ -61,13 +57,11 @@ describe('final checks task', () => {
         finalChecks.view({
           decisions: {},
           tasks: { finalChecks: 'DONE' },
-          visible: true,
         })
       ).toStrictEqual({
         action: { href: '/hdc/review/finalChecks/', text: 'View', type: 'btn-secondary' },
         label: 'Confirmed',
         title: 'Review case',
-        visible: true,
       })
     })
 
@@ -76,13 +70,11 @@ describe('final checks task', () => {
         finalChecks.view({
           decisions: {},
           tasks: { finalChecks: 'UNSTARTED' },
-          visible: true,
         })
       ).toStrictEqual({
         action: { href: '/hdc/review/finalChecks/', text: 'View', type: 'btn-secondary' },
         label: 'Not completed',
         title: 'Review case',
-        visible: true,
       })
     })
 

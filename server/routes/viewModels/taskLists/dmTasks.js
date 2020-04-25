@@ -17,19 +17,16 @@ const rejectedAddressTaskList = (licenceStatus) => {
   const { decisions } = licenceStatus
   const showRiskManagement = !(decisions.addressReviewFailed || decisions.addressWithdrawn)
   return tasklist(licenceStatus, [
-    [eligibilitySummaryTask, true],
-    [proposedAddress.dm.rejected, true],
+    [eligibilitySummaryTask],
+    [proposedAddress.dm.rejected],
     [riskManagement.view, showRiskManagement],
-    [returnToPrisonCaseAdmin, true],
-    [finalDecision.refusal, true],
+    [returnToPrisonCaseAdmin],
+    [finalDecision.refusal],
   ])
 }
 
 const insufficientTimeStopTaskList = (licenceStatus) =>
-  tasklist(licenceStatus, [
-    [eligibilitySummaryTask, true],
-    [finalDecision.refusal, true],
-  ])
+  tasklist(licenceStatus, [[eligibilitySummaryTask], [finalDecision.refusal]])
 
 const standardTaskList = (licenceStatus) => {
   const {
@@ -39,14 +36,14 @@ const standardTaskList = (licenceStatus) => {
     [bassAddress.view, bassReferralNeeded],
     [proposedAddress.dm.view, !bassReferralNeeded],
     [riskManagement.view, !approvedPremisesRequired],
-    [victimLiaison.view, true],
-    [curfewHours.view, true],
-    [additionalConditions.view, true],
-    [reportingInstructions.view, true],
-    [finalChecks.view, true],
+    [victimLiaison.view],
+    [curfewHours.view],
+    [additionalConditions.view],
+    [reportingInstructions.view],
+    [finalChecks.view],
     [postpone, confiscationOrder],
-    [returnToPrisonCaseAdmin, true],
-    [finalDecision.standard, true],
+    [returnToPrisonCaseAdmin],
+    [finalDecision.standard],
   ])
 }
 

@@ -26,19 +26,17 @@ const getLabel = ({ decisions, tasks }) => {
 }
 
 module.exports = {
-  review: ({ decisions, tasks, visible = true }) => {
+  review: ({ decisions, tasks }) => {
     const { finalChecks } = tasks
     return {
       title: 'Review case',
       label: getLabel({ decisions, tasks }),
       action: standardAction(finalChecks, '/hdc/finalChecks/seriousOffence/', 'review-case'),
-      visible,
     }
   },
-  view: ({ decisions, tasks, visible = true }) => ({
+  view: ({ decisions, tasks }) => ({
     title: 'Review case',
     label: getLabel({ decisions, tasks }),
     action: view('/hdc/review/finalChecks/'),
-    visible,
   }),
 }

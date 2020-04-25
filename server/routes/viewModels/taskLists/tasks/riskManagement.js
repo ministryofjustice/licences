@@ -22,29 +22,26 @@ const getLabel = ({ decisions, tasks }) => {
 const title = 'Risk management'
 
 module.exports = {
-  edit: ({ decisions, tasks, visible }) => {
+  edit: ({ decisions, tasks }) => {
     return {
       title,
       label: getLabel({ decisions, tasks }),
       action: viewEdit('/hdc/risk/riskManagement/', 'risk-management'),
-      visible,
     }
   },
-  view: ({ decisions, tasks, visible }) => {
+  view: ({ decisions, tasks }) => {
     return {
       title,
       label: getLabel({ decisions, tasks }),
       action: view('/hdc/review/risk/'),
-      visible,
     }
   },
-  ro: ({ decisions, tasks, visible }) => {
+  ro: ({ decisions, tasks }) => {
     const { riskManagement } = tasks
     return {
       title,
       label: getLabel({ decisions, tasks }),
       action: standardAction(riskManagement, '/hdc/risk/riskManagement/'),
-      visible,
     }
   },
 }

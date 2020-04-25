@@ -4,7 +4,7 @@ describe('create licence task', () => {
   describe('getCaAction', () => {
     test('should show continue if approved', () => {
       expect(
-        createLicence({
+        createLicence.ca({
           decisions: { approved: true, bassReferralNeeded: false, addressWithdrawn: false },
           tasks: {},
           stage: 'APPROVED',
@@ -19,7 +19,7 @@ describe('create licence task', () => {
 
     test('should show continue if bass is approved', () => {
       expect(
-        createLicence({
+        createLicence.ca({
           decisions: { approved: true, bassReferralNeeded: true },
           tasks: { bassAddress: 'DONE' },
           stage: 'APPROVED',
@@ -34,7 +34,7 @@ describe('create licence task', () => {
 
     test('should show nothing if modified pending approval', () => {
       expect(
-        createLicence({
+        createLicence.ca({
           decisions: { approved: true, bassReferralNeeded: true },
           tasks: { bassAddress: 'DONE' },
           stage: 'MODIFIED_APPROVAL',
@@ -44,7 +44,7 @@ describe('create licence task', () => {
 
     test('should show nothing if modified withdrawn', () => {
       expect(
-        createLicence({
+        createLicence.ca({
           decisions: { approved: true, bassReferralNeeded: false, addressWithdrawn: true },
           tasks: { bassAddress: 'DONE' },
           stage: 'APPROVED',
@@ -54,7 +54,7 @@ describe('create licence task', () => {
 
     test('should show nothing if bass not complete', () => {
       expect(
-        createLicence({
+        createLicence.ca({
           decisions: { approved: true, bassReferralNeeded: true },
           tasks: { bassAddress: 'SOMETHING' },
           stage: 'APPROVED',

@@ -15,7 +15,6 @@ module.exports = {
         href: '/hdc/approval/release/',
         text: 'Continue',
       },
-      visible: true,
     }
   },
   refusal: (licenceStatus) => {
@@ -27,7 +26,6 @@ module.exports = {
         href: '/hdc/approval/refuseReason/',
         text: 'Refuse HDC',
       },
-      visible: true,
     }
   },
 }

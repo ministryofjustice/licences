@@ -1,6 +1,6 @@
 const { taskBtn } = require('./utils/actions')
 
-module.exports = ({ decisions, visible = true }) => {
+module.exports = ({ decisions }) => {
   const { refused } = decisions
   return {
     title: null,
@@ -8,6 +8,5 @@ module.exports = ({ decisions, visible = true }) => {
     action: refused
       ? taskBtn('/hdc/finalChecks/refuse/', 'Update refusal', false, 'refuse')
       : taskBtn('/hdc/finalChecks/refuse/', 'Refuse HDC', true, 'refuse'),
-    visible,
   }
 }

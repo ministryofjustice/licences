@@ -23,12 +23,7 @@ const eligibilitySummaryTask = namedTask('eligibilitySummaryTask')
 const invisibleInformOffenderTask = namedTask('informOffenderTask')
 
 module.exports = {
-  getTasksForBlocked: (errorCode) =>
-    tasklist({}, [
-      [eligibilityTask, true],
-      [informOffenderTask, true],
-      [caBlocked(errorCode), true],
-    ]),
+  getTasksForBlocked: (errorCode) => tasklist({}, [[eligibilityTask], [informOffenderTask], [caBlocked(errorCode)]]),
 
   getCaTasksEligibility: ({ decisions, tasks, allowedTransition }) => {
     const { optedOut, eligible, bassReferralNeeded, addressUnsuitable } = decisions
@@ -41,7 +36,7 @@ module.exports = {
     const context = { decisions, tasks, allowedTransition }
 
     return tasklist(context, [
-      [eligibilityTask, true],
+      [eligibilityTask],
       [informOffenderTask, eligibilityDone && optOutUnstarted && !optedOut],
       [curfewAddress, eligible],
       [riskManagement.edit, addressUnsuitable],
@@ -76,15 +71,12 @@ module.exports = {
         [proposedAddress.ca.processing, !bassReferralNeeded && allowedTransition !== 'caToRo'],
         [curfewAddress, !bassReferralNeeded && allowedTransition === 'caToRo'],
         [bassAddress.ca.postApproval, bassReferralNeeded],
-        [hdcRefusal, true],
+        [hdcRefusal],
       ])
     }
 
     if (!eligible) {
-      return tasklist(context, [
-        [eligibilityTask, true],
-        [informOffenderTask, true],
-      ])
+      return tasklist(context, [[eligibilityTask], [informOffenderTask]])
     }
 
     const showRiskManagement =
@@ -93,7 +85,7 @@ module.exports = {
       (bassChecksDone && !approvedPremisesRequired)
 
     return tasklist(context, [
-      [eligibilityTask, true],
+      [eligibilityTask],
       [proposedAddress.ca.processing, !bassReferralNeeded && allowedTransition !== 'caToRo'],
       [curfewAddress, !bassReferralNeeded && allowedTransition === 'caToRo'],
       [bassAddress.ca.postApproval, bassReferralNeeded],
@@ -104,7 +96,7 @@ module.exports = {
       [reportingInstructions.edit, validAddress],
       [finalChecks.review, validAddress],
       [postponeOrRefuse, validAddress],
-      [hdcRefusal, true],
+      [hdcRefusal],
       [caSubmitToDm.approval, allowedTransition !== 'caToDmRefusal' && allowedTransition !== 'caToRo'],
       [caSubmitToDm.refusal, allowedTransition === 'caToDmRefusal'],
       [caSubmitAddressReview, !bassReferralNeeded && allowedTransition === 'caToRo'],
@@ -134,10 +126,7 @@ module.exports = {
     const context = { decisions, tasks, stage, allowedTransition }
 
     if (!eligible) {
-      return tasklist(context, [
-        [eligibilitySummaryTask, validAddress],
-        [invisibleInformOffenderTask, true],
-      ])
+      return tasklist(context, [[eligibilitySummaryTask, validAddress], [invisibleInformOffenderTask]])
     }
 
     return tasklist(context, [
@@ -158,7 +147,10 @@ module.exports = {
       [caSubmitBassReview, allowedTransition === 'caToRo'],
       [caSubmitAddressReview, !bassReferralNeeded && allowedTransition === 'caToRo'],
       [caRereferDm, !['caToDm', 'caToDmRefusal', 'caToRo'].includes(allowedTransition) && dmRefused !== undefined],
-      [createLicence, validAddress && !['caToDm', 'caToDmRefusal', 'caToRo'].includes(allowedTransition) && !dmRefused],
+      [
+        createLicence.ca,
+        validAddress && !['caToDm', 'caToDmRefusal', 'caToRo'].includes(allowedTransition) && !dmRefused,
+      ],
     ])
   },
 }

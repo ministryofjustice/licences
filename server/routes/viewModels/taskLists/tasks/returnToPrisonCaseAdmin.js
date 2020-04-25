@@ -5,5 +5,4 @@ module.exports = () => ({
     href: '/hdc/send/return/',
     text: 'Return to prison case admin',
   },
-  visible: true,
 })

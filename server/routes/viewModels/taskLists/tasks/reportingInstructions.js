@@ -5,29 +5,26 @@ const getLabel = ({ reportingInstructions }) => (reportingInstructions === 'DONE
 const title = 'Reporting instructions'
 
 module.exports = {
-  edit: ({ tasks, visible }) => {
+  edit: ({ tasks }) => {
     return {
       title,
       label: getLabel(tasks),
       action: viewEdit('/hdc/reporting/reportingInstructions/', 'reporting-instructions'),
-      visible,
     }
   },
-  view: ({ tasks, visible }) => {
+  view: ({ tasks }) => {
     return {
       title,
       label: getLabel(tasks),
       action: view('/hdc/review/reporting/'),
-      visible,
     }
   },
-  ro: ({ tasks, visible }) => {
+  ro: ({ tasks }) => {
     const { reportingInstructions } = tasks
     return {
       title,
       label: getLabel(tasks),
       action: standardAction(reportingInstructions, '/hdc/reporting/reportingInstructions/'),
-      visible,
     }
   },
 }

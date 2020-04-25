@@ -62,39 +62,35 @@ const title = 'Proposed curfew address'
 
 module.exports = {
   dm: {
-    view: ({ decisions, tasks, visible }) => {
+    view: ({ decisions, tasks }) => {
       const { approvedPremisesRequired } = decisions
       return {
         title,
         label: getLabel({ decisions, tasks }),
         action: approvedPremisesRequired ? view('/hdc/review/approvedPremisesAddress/') : view('/hdc/review/address/'),
-        visible,
       }
     },
-    rejected: ({ decisions, tasks, visible }) => ({
+    rejected: ({ decisions, tasks }) => ({
       title,
       label: getLabel({ decisions, tasks }),
       action: view('/hdc/review/address/'),
-      visible,
     }),
   },
 
   ca: {
-    processing: ({ decisions, tasks, visible }) => ({
+    processing: ({ decisions, tasks }) => ({
       title,
       label: getLabel({ decisions, tasks }),
       action: getCaProcessingAction({ decisions, tasks }),
-      visible,
     }),
-    postApproval: ({ decisions, tasks, visible }) => ({
+    postApproval: ({ decisions, tasks }) => ({
       title,
       label: getLabel({ decisions, tasks }),
       action: getCaPostApprovalAction({ decisions }),
-      visible,
     }),
   },
 
-  ro: ({ decisions, tasks, visible }) => {
+  ro: ({ decisions, tasks }) => {
     const { curfewAddressRejected } = decisions
     const { curfewAddressReview } = tasks
 
@@ -110,7 +106,6 @@ module.exports = {
       action: curfewAddressRejected
         ? rejectedTask
         : standardAction(curfewAddressReview, '/hdc/curfew/approvedPremises/'),
-      visible,
     }
   },
 }

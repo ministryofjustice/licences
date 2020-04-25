@@ -6,6 +6,5 @@ module.exports = ({ allowedTransition, decisions }) => {
     title: 'Submit to prison case admin',
     label: allowedTransition === 'roToCa' ? 'Ready to submit' : 'Tasks not yet complete',
     action: optedOut ? continueBtn('/hdc/send/optedOut/') : continueBtn('/hdc/review/licenceDetails/'),
-    visible: true,
   }
 }

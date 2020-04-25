@@ -11,7 +11,6 @@ describe('TaskList models', () => {
     },
     label: 'You should now tell the offender using the relevant HDC form from NOMIS',
     title: 'Inform the offender',
-    visible: undefined,
   }
   const informOffenderStandard = { task: 'informOffenderTask', visible: undefined }
 
@@ -23,7 +22,6 @@ describe('TaskList models', () => {
     },
     label: 'Not completed',
     title: 'Curfew address',
-    visible: undefined,
   }
   const curfewAddressAddressRejected = {
     action: {
@@ -33,7 +31,6 @@ describe('TaskList models', () => {
     },
     label: 'Not completed',
     title: 'Curfew address',
-    visible: undefined,
   }
   const curfewAddressOptedOut = {
     action: {
@@ -43,14 +40,12 @@ describe('TaskList models', () => {
     },
     label: 'Offender has opted out of HDC',
     title: 'Curfew address',
-    visible: undefined,
   }
 
   const submitCurfewAddress = {
     action: null,
     label: 'Not completed',
     title: 'Submit curfew address',
-    visible: undefined,
   }
   const submitDecisionMakerRefusal = {
     action: {
@@ -61,19 +56,16 @@ describe('TaskList models', () => {
     },
     label: 'Ready to submit for refusal',
     title: 'Submit to decision maker',
-    visible: true,
   }
   const sendBassAreaChecks = {
     action: null,
     label: 'Not completed',
     title: 'Send for BASS area checks',
-    visible: undefined,
   }
   const submitDecisionMaker = {
     action: null,
     label: 'Not completed',
     title: 'Submit to decision maker',
-    visible: true,
   }
   const proposedCurfewAddress = {
     action: {
@@ -84,7 +76,6 @@ describe('TaskList models', () => {
     },
     label: 'Not completed',
     title: 'Proposed curfew address',
-    visible: undefined,
   }
   const proposedCurfewAddressOptedOut = {
     title: 'Proposed curfew address',
@@ -95,7 +86,6 @@ describe('TaskList models', () => {
       type: 'link',
       dataQa: 'proposed-curfew-address',
     },
-    visible: undefined,
   }
   const proposedCurfewAddressEdit = {
     action: {
@@ -106,7 +96,6 @@ describe('TaskList models', () => {
     },
     label: 'Not completed',
     title: 'Proposed curfew address',
-    visible: undefined,
   }
   const proposedCurfewAddressEditAP = {
     action: {
@@ -117,7 +106,6 @@ describe('TaskList models', () => {
     },
     label: 'Approved premises required',
     title: 'Proposed curfew address',
-    visible: undefined,
   }
 
   const bassAddress = {
@@ -128,7 +116,6 @@ describe('TaskList models', () => {
       text: 'Continue',
       type: 'btn',
     },
-    visible: undefined,
   }
   const bassAddressRejected = {
     title: 'BASS address',
@@ -139,7 +126,6 @@ describe('TaskList models', () => {
       type: 'btn',
       dataQa: 'bass-address',
     },
-    visible: undefined,
   }
 
   const bassAddressWithApprovedAddress = {
@@ -150,7 +136,6 @@ describe('TaskList models', () => {
       text: 'View/Edit',
       type: 'btn-secondary',
     },
-    visible: undefined,
   }
 
   const riskManagement = {
@@ -162,7 +147,6 @@ describe('TaskList models', () => {
     },
     label: 'Not completed',
     title: 'Risk management',
-    visible: undefined,
   }
   const riskManagementAddressUnsuitable = {
     action: {
@@ -173,7 +157,6 @@ describe('TaskList models', () => {
     },
     label: 'Address unsuitable',
     title: 'Risk management',
-    visible: undefined,
   }
 
   const victimLiasion = {
@@ -185,7 +168,6 @@ describe('TaskList models', () => {
     },
     label: 'Not completed',
     title: 'Victim liaison',
-    visible: undefined,
   }
 
   const curfewHours = {
@@ -197,7 +179,6 @@ describe('TaskList models', () => {
     },
     label: 'Not completed',
     title: 'Curfew hours',
-    visible: undefined,
   }
 
   const additionalConditionsEdit = {
@@ -209,7 +190,6 @@ describe('TaskList models', () => {
     },
     label: 'Not completed',
     title: 'Additional conditions',
-    visible: undefined,
   }
 
   const reportingInstructionsReview = {
@@ -221,7 +201,6 @@ describe('TaskList models', () => {
     },
     label: 'Not completed',
     title: 'Reporting instructions',
-    visible: undefined,
   }
 
   const reportingInstructions = {
@@ -233,7 +212,6 @@ describe('TaskList models', () => {
     },
     label: 'Not completed',
     title: 'Reporting instructions',
-    visible: undefined,
   }
 
   const reviewCase = {
@@ -244,28 +222,24 @@ describe('TaskList models', () => {
     },
     label: 'Not completed',
     title: 'Review case',
-    visible: true,
   }
 
   const postponeOrRefuse = {
     label: "Postpone the case if you're waiting for information on risk management",
     title: 'Postpone or refuse',
     action: { type: 'btn', text: 'Postpone', href: '/hdc/finalChecks/postpone/', dataQa: 'postpone' },
-    visible: undefined,
   }
 
   const resubmit = {
     action: { href: '/hdc/send/resubmit/', text: 'Resubmit', type: 'btn-secondary', dataQa: 'resubmit' },
     label: 'Resubmit to the DM if a reconsideration is required',
     title: 'Resubmit to DM',
-    visible: undefined,
   }
 
   const refuse = {
     label: 'Refuse the case if there is no available address or not enough time',
     title: null,
     action: { type: 'btn-secondary', text: 'Refuse HDC', href: '/hdc/finalChecks/refuse/', dataQa: 'refuse' },
-    visible: true,
   }
 
   const eligibilitySummary = { task: 'eligibilitySummaryTask' }
@@ -273,7 +247,6 @@ describe('TaskList models', () => {
   const createLicence = {
     action: null,
     title: 'Create licence',
-    visible: undefined,
   }
 
   const bassAddressNoAddress = {
@@ -284,7 +257,6 @@ describe('TaskList models', () => {
     },
     label: 'WARNING||Address not available',
     title: 'BASS address',
-    visible: undefined,
   }
 
   describe('caEligibility', () => {
