@@ -6,47 +6,55 @@ describe('TaskList models', () => {
   const returnPCA = {
     title: 'Return to prison case admin',
     action: { type: 'btn-secondary', href: '/hdc/send/return/', text: 'Return to prison case admin' },
+    visible: true,
   }
 
   const riskManagement = {
     title: 'Risk management',
     label: 'Not completed',
     action: { href: '/hdc/review/risk/', text: 'View', type: 'btn-secondary' },
+    visible: undefined,
   }
 
   const victimLiasion = {
     title: 'Victim liaison',
     label: 'Not completed',
     action: { href: '/hdc/review/victimLiaison/', text: 'View', type: 'btn-secondary' },
+    visible: undefined,
   }
 
   const curfewHours = {
     title: 'Curfew hours',
     label: 'Not completed',
     action: { href: '/hdc/review/curfewHours/', text: 'View', type: 'btn-secondary' },
+    visible: undefined,
   }
 
   const additionalConditions = {
     title: 'Additional conditions',
     label: 'Not completed',
     action: { href: '/hdc/review/conditions/', text: 'View', type: 'btn-secondary' },
+    visible: undefined,
   }
 
   const reportingInstructions = {
     title: 'Reporting instructions',
     label: 'Not completed',
     action: { href: '/hdc/review/reporting/', text: 'View', type: 'btn-secondary' },
+    visible: undefined,
   }
 
   const reviewCase = {
     title: 'Review case',
     label: 'Not completed',
     action: { type: 'btn-secondary', href: '/hdc/review/finalChecks/', text: 'View' },
+    visible: true,
   }
   const reviewCaseConfiscationOrder = {
     title: 'Review case',
     label: 'WARNING||The offender is subject to a confiscation order',
     action: { type: 'btn-secondary', href: '/hdc/review/finalChecks/', text: 'View' },
+    visible: true,
   }
 
   const proposedCurfewAddress = {
@@ -58,6 +66,7 @@ describe('TaskList models', () => {
     title: 'Proposed curfew address',
     label: 'Address withdrawn',
     action: { type: 'btn-secondary', href: '/hdc/review/address/', text: 'View' },
+    visible: undefined,
   }
   const proposedCurfewAddressAP = {
     action: {
@@ -67,18 +76,21 @@ describe('TaskList models', () => {
     },
     label: 'Not completed',
     title: 'Proposed curfew address',
+    visible: undefined,
   }
 
   const bassAddress = {
     title: 'BASS address',
     label: 'BASS referral requested',
     action: { href: '/hdc/review/bassOffer/', text: 'View', type: 'btn-secondary' },
+    visible: undefined,
   }
 
   const finalDecision = {
     title: 'Final decision',
     label: 'Not started',
     action: { href: '/hdc/approval/release/', text: 'Continue', type: 'btn' },
+    visible: true,
   }
   const finalDecisionAwaitingRefusal = {
     title: 'Final decision',
@@ -90,12 +102,14 @@ describe('TaskList models', () => {
     title: 'Final decision',
     label: 'Not started',
     action: { href: '/hdc/approval/refuseReason/', text: 'Refuse HDC', type: 'btn' },
+    visible: true,
   }
 
   const postpone = {
     title: 'Postpone',
     label: 'Use this to indicate that the process is postponed if a confiscation order is in place',
     action: { href: '/hdc/finalChecks/postpone/', text: 'Postpone', type: 'btn', dataQa: 'postpone' },
+    visible: undefined,
   }
 
   describe('dmTasks', () => {

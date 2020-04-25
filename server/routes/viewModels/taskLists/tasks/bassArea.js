@@ -1,31 +1,33 @@
 const { standardAction } = require('./utils/actions')
 
-module.exports = {
-  getLabel: ({ decisions, tasks }) => {
-    const { bassAreaSpecified, bassAreaSuitable, approvedPremisesRequired } = decisions
-    const { bassAreaCheck, approvedPremisesAddress } = tasks
+const getLabel = ({ decisions, tasks }) => {
+  const { bassAreaSpecified, bassAreaSuitable, approvedPremisesRequired } = decisions
+  const { bassAreaCheck, approvedPremisesAddress } = tasks
 
-    if (bassAreaCheck === 'DONE' && approvedPremisesAddress !== 'DONE') {
-      if (bassAreaSpecified) {
-        return bassAreaSuitable ? 'BASS area suitable' : 'BASS area is not suitable'
-      }
-      if (!bassAreaSpecified && approvedPremisesRequired === true) {
-        return 'Approved premises required'
-      }
-      return 'No specific BASS area requested'
+  if (bassAreaCheck === 'DONE' && approvedPremisesAddress !== 'DONE') {
+    if (bassAreaSpecified) {
+      return bassAreaSuitable ? 'BASS area suitable' : 'BASS area is not suitable'
     }
-
-    if (approvedPremisesAddress === 'DONE') {
+    if (!bassAreaSpecified && approvedPremisesRequired === true) {
       return 'Approved premises required'
     }
-    return 'Not completed'
-  },
+    return 'No specific BASS area requested'
+  }
 
-  getRoAction: ({ tasks }) => {
-    const { bassAreaCheck, approvedPremisesAddress } = tasks
-    if (approvedPremisesAddress === 'DONE') {
-      return standardAction(approvedPremisesAddress, '/hdc/bassReferral/bassAreaCheck/')
-    }
-    return standardAction(bassAreaCheck, '/hdc/bassReferral/bassAreaCheck/')
-  },
+  if (approvedPremisesAddress === 'DONE') {
+    return 'Approved premises required'
+  }
+  return 'Not completed'
+}
+
+module.exports = ({ decisions, tasks }) => {
+  const { bassAreaCheck, approvedPremisesAddress } = tasks
+  return {
+    title: 'BASS area check',
+    label: getLabel({ decisions, tasks }),
+    action:
+      approvedPremisesAddress === 'DONE'
+        ? standardAction(approvedPremisesAddress, '/hdc/bassReferral/bassAreaCheck/')
+        : standardAction(bassAreaCheck, '/hdc/bassReferral/bassAreaCheck/'),
+  }
 }

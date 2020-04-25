@@ -1,40 +1,40 @@
-const { getLabel, getRoAction } = require('../../../../../server/routes/viewModels/taskLists/tasks/bassArea')
+const bassArea = require('../../../../../server/routes/viewModels/taskLists/tasks/bassArea')
 
 describe('bass area task', () => {
   describe('getLabel', () => {
     test('should return Not completed if task not DONE', () => {
       expect(
-        getLabel({
+        bassArea({
           decisions: {},
           tasks: { bassAreaCheck: 'SOMETHING' },
-        })
+        }).label
       ).toBe('Not completed')
     })
 
     test('should return No specific BASS area requested if bassAreaSpecified = false', () => {
       expect(
-        getLabel({
+        bassArea({
           decisions: { bassAreaSpecified: false },
           tasks: { bassAreaCheck: 'DONE' },
-        })
+        }).label
       ).toBe('No specific BASS area requested')
     })
 
     test('should return BASS area suitable if decision is true', () => {
       expect(
-        getLabel({
+        bassArea({
           decisions: { bassAreaSpecified: true, bassAreaSuitable: true },
           tasks: { bassAreaCheck: 'DONE' },
-        })
+        }).label
       ).toBe('BASS area suitable')
     })
 
     test('should return BASS area is not suitable if decision is false', () => {
       expect(
-        getLabel({
+        bassArea({
           decisions: { bassAreaSpecified: true, bassAreaSuitable: false },
           tasks: { bassAreaCheck: 'DONE' },
-        })
+        }).label
       ).toBe('BASS area is not suitable')
     })
   })
@@ -42,10 +42,10 @@ describe('bass area task', () => {
   describe('getRoAction', () => {
     test('should show btn to bassAreaCheck if bassAreaCheck: UNSTARTED', () => {
       expect(
-        getRoAction({
+        bassArea({
           decisions: {},
           tasks: { bassAreaCheck: 'UNSTARTED' },
-        })
+        }).action
       ).toEqual({
         text: 'Start now',
         href: '/hdc/bassReferral/bassAreaCheck/',
@@ -55,10 +55,10 @@ describe('bass area task', () => {
 
     test('should show change link to bassAreaCheck if bassAreaCheck: DONE', () => {
       expect(
-        getRoAction({
+        bassArea({
           decisions: {},
           tasks: { bassAreaCheck: 'DONE' },
-        })
+        }).action
       ).toEqual({
         text: 'Change',
         href: '/hdc/bassReferral/bassAreaCheck/',
@@ -68,10 +68,10 @@ describe('bass area task', () => {
 
     test('should show continue btn to bassAreaCheck if bassAreaCheck: !DONE || UNSTARTED', () => {
       expect(
-        getRoAction({
+        bassArea({
           decisions: {},
           tasks: { bassAreaCheck: 'SOMETHING' },
-        })
+        }).action
       ).toEqual({
         text: 'Continue',
         href: '/hdc/bassReferral/bassAreaCheck/',
@@ -81,10 +81,10 @@ describe('bass area task', () => {
 
     test('should show change link to Bass area check if approvedPremisesAddress: DONE, irrespective of value in bassAreaCheck', () => {
       expect(
-        getRoAction({
+        bassArea({
           decisions: {},
           tasks: { approvedPremisesAddress: 'DONE', bassAreaCheck: 'SOMETHING' },
-        })
+        }).action
       ).toEqual({
         text: 'Change',
         href: '/hdc/bassReferral/bassAreaCheck/',

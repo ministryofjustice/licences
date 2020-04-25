@@ -1,7 +1,7 @@
 const taskListModel = require('../../../server/routes/viewModels/taskListModels')
 
 describe('TaskList models', () => {
-  const eligibility = { task: 'eligibilityTask', visible: true }
+  const eligibility = { task: 'eligibilityTask' }
 
   const informOffender = {
     action: {
@@ -11,9 +11,9 @@ describe('TaskList models', () => {
     },
     label: 'You should now tell the offender using the relevant HDC form from NOMIS',
     title: 'Inform the offender',
-    visible: true,
+    visible: undefined,
   }
-  const informOffenderStandard = { task: 'informOffenderTask', visible: true }
+  const informOffenderStandard = { task: 'informOffenderTask', visible: undefined }
 
   const curfewAddress = {
     action: {
@@ -23,7 +23,7 @@ describe('TaskList models', () => {
     },
     label: 'Not completed',
     title: 'Curfew address',
-    visible: true,
+    visible: undefined,
   }
   const curfewAddressAddressRejected = {
     action: {
@@ -33,7 +33,7 @@ describe('TaskList models', () => {
     },
     label: 'Not completed',
     title: 'Curfew address',
-    visible: true,
+    visible: undefined,
   }
   const curfewAddressOptedOut = {
     action: {
@@ -43,14 +43,14 @@ describe('TaskList models', () => {
     },
     label: 'Offender has opted out of HDC',
     title: 'Curfew address',
-    visible: true,
+    visible: undefined,
   }
 
   const submitCurfewAddress = {
     action: null,
     label: 'Not completed',
     title: 'Submit curfew address',
-    visible: true,
+    visible: undefined,
   }
   const submitDecisionMakerRefusal = {
     action: {
@@ -67,7 +67,7 @@ describe('TaskList models', () => {
     action: null,
     label: 'Not completed',
     title: 'Send for BASS area checks',
-    visible: true,
+    visible: undefined,
   }
   const submitDecisionMaker = {
     action: null,
@@ -84,7 +84,7 @@ describe('TaskList models', () => {
     },
     label: 'Not completed',
     title: 'Proposed curfew address',
-    visible: true,
+    visible: undefined,
   }
   const proposedCurfewAddressOptedOut = {
     title: 'Proposed curfew address',
@@ -95,7 +95,7 @@ describe('TaskList models', () => {
       type: 'link',
       dataQa: 'proposed-curfew-address',
     },
-    visible: true,
+    visible: undefined,
   }
   const proposedCurfewAddressEdit = {
     action: {
@@ -106,7 +106,7 @@ describe('TaskList models', () => {
     },
     label: 'Not completed',
     title: 'Proposed curfew address',
-    visible: true,
+    visible: undefined,
   }
   const proposedCurfewAddressEditAP = {
     action: {
@@ -117,7 +117,7 @@ describe('TaskList models', () => {
     },
     label: 'Approved premises required',
     title: 'Proposed curfew address',
-    visible: true,
+    visible: undefined,
   }
 
   const bassAddress = {
@@ -128,7 +128,7 @@ describe('TaskList models', () => {
       text: 'Continue',
       type: 'btn',
     },
-    visible: true,
+    visible: undefined,
   }
   const bassAddressRejected = {
     title: 'BASS address',
@@ -139,7 +139,7 @@ describe('TaskList models', () => {
       type: 'btn',
       dataQa: 'bass-address',
     },
-    visible: true,
+    visible: undefined,
   }
 
   const bassAddressWithApprovedAddress = {
@@ -150,7 +150,7 @@ describe('TaskList models', () => {
       text: 'View/Edit',
       type: 'btn-secondary',
     },
-    visible: true,
+    visible: undefined,
   }
 
   const riskManagement = {
@@ -162,7 +162,7 @@ describe('TaskList models', () => {
     },
     label: 'Not completed',
     title: 'Risk management',
-    visible: true,
+    visible: undefined,
   }
   const riskManagementAddressUnsuitable = {
     action: {
@@ -173,7 +173,7 @@ describe('TaskList models', () => {
     },
     label: 'Address unsuitable',
     title: 'Risk management',
-    visible: true,
+    visible: undefined,
   }
 
   const victimLiasion = {
@@ -185,7 +185,7 @@ describe('TaskList models', () => {
     },
     label: 'Not completed',
     title: 'Victim liaison',
-    visible: true,
+    visible: undefined,
   }
 
   const curfewHours = {
@@ -197,7 +197,7 @@ describe('TaskList models', () => {
     },
     label: 'Not completed',
     title: 'Curfew hours',
-    visible: true,
+    visible: undefined,
   }
 
   const additionalConditionsEdit = {
@@ -209,7 +209,7 @@ describe('TaskList models', () => {
     },
     label: 'Not completed',
     title: 'Additional conditions',
-    visible: true,
+    visible: undefined,
   }
 
   const reportingInstructionsReview = {
@@ -221,7 +221,7 @@ describe('TaskList models', () => {
     },
     label: 'Not completed',
     title: 'Reporting instructions',
-    visible: true,
+    visible: undefined,
   }
 
   const reportingInstructions = {
@@ -233,7 +233,7 @@ describe('TaskList models', () => {
     },
     label: 'Not completed',
     title: 'Reporting instructions',
-    visible: true,
+    visible: undefined,
   }
 
   const reviewCase = {
@@ -251,14 +251,14 @@ describe('TaskList models', () => {
     label: "Postpone the case if you're waiting for information on risk management",
     title: 'Postpone or refuse',
     action: { type: 'btn', text: 'Postpone', href: '/hdc/finalChecks/postpone/', dataQa: 'postpone' },
-    visible: true,
+    visible: undefined,
   }
 
   const resubmit = {
     action: { href: '/hdc/send/resubmit/', text: 'Resubmit', type: 'btn-secondary', dataQa: 'resubmit' },
     label: 'Resubmit to the DM if a reconsideration is required',
     title: 'Resubmit to DM',
-    visible: true,
+    visible: undefined,
   }
 
   const refuse = {
@@ -268,12 +268,12 @@ describe('TaskList models', () => {
     visible: true,
   }
 
-  const eligibilitySummary = { task: 'eligibilitySummaryTask', visible: true }
+  const eligibilitySummary = { task: 'eligibilitySummaryTask' }
 
   const createLicence = {
     action: null,
     title: 'Create licence',
-    visible: true,
+    visible: undefined,
   }
 
   const bassAddressNoAddress = {
@@ -284,7 +284,7 @@ describe('TaskList models', () => {
     },
     label: 'WARNING||Address not available',
     title: 'BASS address',
-    visible: true,
+    visible: undefined,
   }
 
   describe('caEligibility', () => {

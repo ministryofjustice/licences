@@ -1,3 +1,4 @@
+const { tasklist } = require('./tasklistBuilder')
 const riskManagement = require('./tasks/riskManagement')
 const curfewHours = require('./tasks/curfewHours')
 const additionalConditions = require('./tasks/additionalConditions')
@@ -6,6 +7,7 @@ const proposedAddress = require('./tasks/proposedAddress')
 const victimLiaison = require('./tasks/victimLiaison')
 const bassArea = require('./tasks/bassArea')
 const roSubmit = require('./tasks/roSubmit')
+const curfewAddressForm = require('./tasks/curfewAddressForm')
 
 module.exports = {
   getRoTasks: ({ decisions, tasks, allowedTransition }) => {
@@ -22,63 +24,31 @@ module.exports = {
     const addressRejectedInReviewPhase = curfewAddressRejected && addressReviewFailed
 
     const validAddress = !curfewAddressRejected && !bassAreaNotSuitable
+    const context = { decisions, tasks, allowedTransition }
 
-    return [
-      {
-        title: 'BASS area check',
-        label: bassArea.getLabel({ decisions, tasks }),
-        action: bassArea.getRoAction({ tasks }),
-        visible: bassReferralNeeded,
-      },
-      proposedAddress.ro({
-        decisions,
-        tasks,
-        visible: (!bassReferralNeeded && !curfewAddressRejected) || addressRejectedInReviewPhase,
-      }),
-      riskManagement.ro({
-        decisions,
-        tasks,
-        visible: !approvedPremisesRequired && (validAddress || addressRejectedInRiskPhase),
-      }),
-      victimLiaison.ro({ decisions, tasks, visible: validAddress }),
-      curfewHours.ro({ tasks, visible: validAddress }),
-      additionalConditions.ro({ tasks, decisions, visible: validAddress }),
-      reportingInstructions.ro({ tasks, visible: validAddress }),
-      curfewAddressFormTask,
-      {
-        title: 'Submit to prison case admin',
-        label: roSubmit.getLabel({ allowedTransition }),
-        action: roSubmit.getRoAction({ decisions }),
-        visible: true,
-      },
-    ].filter((task) => task.visible)
+    return tasklist(context, [
+      [bassArea, bassReferralNeeded],
+      [proposedAddress.ro, (!bassReferralNeeded && !curfewAddressRejected) || addressRejectedInReviewPhase],
+      [riskManagement.ro, !approvedPremisesRequired && (validAddress || addressRejectedInRiskPhase)],
+      [victimLiaison.ro, validAddress],
+      [curfewHours.ro, validAddress],
+      [additionalConditions.ro, validAddress],
+      [reportingInstructions.ro, validAddress],
+      [curfewAddressForm, true],
+      [roSubmit, true],
+    ])
   },
 
   getRoTasksPostApproval: ({ decisions, tasks }) => {
     const { approvedPremisesRequired } = decisions
-
-    return [
-      proposedAddress.ro({
-        decisions,
-        tasks,
-        visible: approvedPremisesRequired,
-      }),
-      riskManagement.ro({ decisions, tasks, visible: !approvedPremisesRequired }),
-      curfewHours.ro({ tasks, visible: true }),
-      additionalConditions.ro({ tasks, decisions, visible: true }),
-      reportingInstructions.ro({ tasks, visible: true }),
-      curfewAddressFormTask,
-    ].filter((task) => task.visible)
+    const context = { decisions, tasks }
+    return tasklist(context, [
+      [proposedAddress.ro, approvedPremisesRequired],
+      [riskManagement.ro, !approvedPremisesRequired],
+      [curfewHours.ro, true],
+      [additionalConditions.ro, true],
+      [reportingInstructions.ro, true],
+      [curfewAddressForm, true],
+    ])
   },
-}
-
-const curfewAddressFormTask = {
-  title: 'Curfew address check form',
-  action: {
-    text: 'Create PDF',
-    type: 'btn',
-    href: '/hdc/forms/curfewAddress/',
-    newTab: true,
-  },
-  visible: true,
 }
