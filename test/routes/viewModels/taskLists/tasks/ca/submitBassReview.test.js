@@ -1,4 +1,4 @@
-const caSubmitBassReview = require('../../../../../server/routes/viewModels/taskLists/tasks/caSubmitBassReview')
+const caSubmitBassReview = require('../../../../../../server/routes/viewModels/taskLists/tasks/ca/submitBassReview')
 
 describe('ca submit for bass review task', () => {
   test('should show submission unavailable if opted out', () => {

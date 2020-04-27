@@ -8,8 +8,8 @@ const curfewHours = require('./tasks/curfewHours')
 const additionalConditions = require('./tasks/additionalConditions')
 const reportingInstructions = require('./tasks/reportingInstructions')
 const finalChecks = require('./tasks/finalChecks')
-const finalDecision = require('./tasks/finalDecision')
-const returnToPrisonCaseAdmin = require('./tasks/returnToPrisonCaseAdmin')
+const makeFinalDecision = require('./tasks/dm/makeFinalDecision')
+const returnToCa = require('./tasks/dm/returnToCa')
 
 const eligibilitySummaryTask = namedTask('eligibilitySummaryTask')
 
@@ -20,13 +20,13 @@ const rejectedAddressTaskList = (licenceStatus) => {
     [eligibilitySummaryTask],
     [proposedAddress.dm.rejected],
     [riskManagement.view, showRiskManagement],
-    [returnToPrisonCaseAdmin],
-    [finalDecision.refusal],
+    [returnToCa],
+    [makeFinalDecision.refusal],
   ])
 }
 
 const insufficientTimeStopTaskList = (licenceStatus) =>
-  tasklist(licenceStatus, [[eligibilitySummaryTask], [finalDecision.refusal]])
+  tasklist(licenceStatus, [[eligibilitySummaryTask], [makeFinalDecision.refusal]])
 
 const standardTaskList = (licenceStatus) => {
   const {
@@ -42,8 +42,8 @@ const standardTaskList = (licenceStatus) => {
     [reportingInstructions.view],
     [finalChecks.view],
     [postpone, confiscationOrder],
-    [returnToPrisonCaseAdmin],
-    [finalDecision.standard],
+    [returnToCa],
+    [makeFinalDecision.standard],
   ])
 }
 

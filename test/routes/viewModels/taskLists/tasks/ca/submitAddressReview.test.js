@@ -1,4 +1,4 @@
-const caSubmitAddressReview = require('../../../../../server/routes/viewModels/taskLists/tasks/caSubmitAddressReview')
+const caSubmitAddressReview = require('../../../../../../server/routes/viewModels/taskLists/tasks/ca/submitAddressReview')
 
 describe('ca submit for address review task', () => {
   test('should show btn to curfewAddress if curfewAddress: DONE and not opted out', () => {

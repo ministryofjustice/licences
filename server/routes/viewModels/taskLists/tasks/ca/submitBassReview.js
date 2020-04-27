@@ -1,4 +1,4 @@
-const { continueBtn } = require('./utils/actions')
+const { continueBtn } = require('../utils/actions')
 
 const getLabel = (optedOut, bassRequest) => {
   if (optedOut) {

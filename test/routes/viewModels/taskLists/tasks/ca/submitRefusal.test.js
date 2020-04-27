@@ -1,4 +1,4 @@
-const { getLabel, getCaAction } = require('../../../../../server/routes/viewModels/taskLists/tasks/caSubmitRefusal')
+const { getLabel, getCaAction } = require('../../../../../../server/routes/viewModels/taskLists/tasks/ca/submitRefusal')
 
 describe('ca submit for address review task', () => {
   describe('getLabel', () => {

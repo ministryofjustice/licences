@@ -1,21 +1,21 @@
 const { tasklist, namedTask } = require('./tasklistBuilder')
 const { postponeOrRefuse } = require('./tasks/postponement')
 const bassAddress = require('./tasks/bassAddress')
-const curfewAddress = require('./tasks/curfewAddress')
+const curfewAddress = require('./tasks/ca/curfewAddress')
 const riskManagement = require('./tasks/riskManagement')
 const victimLiaison = require('./tasks/victimLiaison')
 const curfewHours = require('./tasks/curfewHours')
 const additionalConditions = require('./tasks/additionalConditions')
 const reportingInstructions = require('./tasks/reportingInstructions')
 const proposedAddress = require('./tasks/proposedAddress')
-const caSubmitAddressReview = require('./tasks/caSubmitAddressReview')
-const caSubmitBassReview = require('./tasks/caSubmitBassReview')
-const caSubmitToDm = require('./tasks/caSubmitToDm')
-const hdcRefusal = require('./tasks/hdcRefusal')
-const informOffenderTask = require('./tasks/informOffenderTask')
+const submitAddressReview = require('./tasks/ca/submitAddressReview')
+const submitBassReview = require('./tasks/ca/submitBassReview')
+const submitToDm = require('./tasks/ca/submitToDm')
+const refuseHdc = require('./tasks/ca/refuseHdc')
+const informOffenderTask = require('./tasks/ca/informOffenderTask')
 const createLicence = require('./tasks/createLicence')
 const finalChecks = require('./tasks/finalChecks')
-const caRereferDm = require('./tasks/caRereferDm')
+const resubmitToDm = require('./tasks/ca/resubmitToDm')
 
 const caBlocked = (errorCode) => () => ({ task: 'caBlockedTask', errorCode })
 const eligibilityTask = namedTask('eligibilityTask')
@@ -40,9 +40,9 @@ module.exports = {
       [informOffenderTask, eligibilityDone && optOutUnstarted && !optedOut],
       [curfewAddress, eligible],
       [riskManagement.edit, addressUnsuitable],
-      [caSubmitToDm.refusal, allowedTransition === 'caToDmRefusal'],
-      [caSubmitBassReview, optOutRefused && bassReferralNeeded && allowedTransition !== 'caToDmRefusal'],
-      [caSubmitAddressReview, optOutRefused && !bassReferralNeeded && allowedTransition !== 'caToDmRefusal'],
+      [submitToDm.refusal, allowedTransition === 'caToDmRefusal'],
+      [submitBassReview, optOutRefused && bassReferralNeeded && allowedTransition !== 'caToDmRefusal'],
+      [submitAddressReview, optOutRefused && !bassReferralNeeded && allowedTransition !== 'caToDmRefusal'],
     ])
   },
 
@@ -71,7 +71,7 @@ module.exports = {
         [proposedAddress.ca.processing, !bassReferralNeeded && allowedTransition !== 'caToRo'],
         [curfewAddress, !bassReferralNeeded && allowedTransition === 'caToRo'],
         [bassAddress.ca.postApproval, bassReferralNeeded],
-        [hdcRefusal],
+        [refuseHdc],
       ])
     }
 
@@ -96,11 +96,11 @@ module.exports = {
       [reportingInstructions.edit, validAddress],
       [finalChecks.review, validAddress],
       [postponeOrRefuse, validAddress],
-      [hdcRefusal],
-      [caSubmitToDm.approval, allowedTransition !== 'caToDmRefusal' && allowedTransition !== 'caToRo'],
-      [caSubmitToDm.refusal, allowedTransition === 'caToDmRefusal'],
-      [caSubmitAddressReview, !bassReferralNeeded && allowedTransition === 'caToRo'],
-      [caSubmitBassReview, bassReferralNeeded && allowedTransition === 'caToRo'],
+      [refuseHdc],
+      [submitToDm.approval, allowedTransition !== 'caToDmRefusal' && allowedTransition !== 'caToRo'],
+      [submitToDm.refusal, allowedTransition === 'caToDmRefusal'],
+      [submitAddressReview, !bassReferralNeeded && allowedTransition === 'caToRo'],
+      [submitBassReview, bassReferralNeeded && allowedTransition === 'caToRo'],
     ])
   },
 
@@ -141,12 +141,12 @@ module.exports = {
       [reportingInstructions.edit, validAddress],
       [finalChecks.review, validAddress],
       [postponeOrRefuse, validAddress && !dmRefused],
-      [hdcRefusal, !dmRefused],
-      [caSubmitToDm.approval, allowedTransition === 'caToDm'],
-      [caSubmitToDm.refusal, allowedTransition === 'caToDmRefusal'],
-      [caSubmitBassReview, allowedTransition === 'caToRo'],
-      [caSubmitAddressReview, !bassReferralNeeded && allowedTransition === 'caToRo'],
-      [caRereferDm, !['caToDm', 'caToDmRefusal', 'caToRo'].includes(allowedTransition) && dmRefused !== undefined],
+      [refuseHdc, !dmRefused],
+      [submitToDm.approval, allowedTransition === 'caToDm'],
+      [submitToDm.refusal, allowedTransition === 'caToDmRefusal'],
+      [submitBassReview, allowedTransition === 'caToRo'],
+      [submitAddressReview, !bassReferralNeeded && allowedTransition === 'caToRo'],
+      [resubmitToDm, !['caToDm', 'caToDmRefusal', 'caToRo'].includes(allowedTransition) && dmRefused !== undefined],
       [
         createLicence.ca,
         validAddress && !['caToDm', 'caToDmRefusal', 'caToRo'].includes(allowedTransition) && !dmRefused,

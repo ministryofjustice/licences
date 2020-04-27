@@ -1,4 +1,4 @@
-const { standardAction } = require('./utils/actions')
+const { standardAction } = require('../utils/actions')
 
 const getLabel = ({ decisions, tasks }) => {
   const { bassAreaSpecified, bassAreaSuitable, approvedPremisesRequired } = decisions

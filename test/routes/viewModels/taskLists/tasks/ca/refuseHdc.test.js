@@ -1,4 +1,4 @@
-const hdcRefusal = require('../../../../../server/routes/viewModels/taskLists/tasks/hdcRefusal')
+const hdcRefusal = require('../../../../../../server/routes/viewModels/taskLists/tasks/ca/refuseHdc')
 
 describe('hdc refusal task - when refused', () => {
   test('When case is not refused', () => {

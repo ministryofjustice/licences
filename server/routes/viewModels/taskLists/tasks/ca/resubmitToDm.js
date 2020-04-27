@@ -1,4 +1,4 @@
-const { taskBtn } = require('./utils/actions')
+const { taskBtn } = require('../utils/actions')
 
 module.exports = () => {
   return {
