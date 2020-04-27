@@ -1,15 +1,14 @@
 const request = require('supertest')
 
+const { appSetup, testFormPageGets } = require('../supertestSetup')
+
 const {
   createPrisonerServiceStub,
   createLicenceServiceStub,
-  authenticationMiddleware,
   auditStub,
-  appSetup,
-  testFormPageGets,
   createSignInServiceStub,
   createNomisPushServiceStub,
-} = require('../supertestSetup')
+} = require('../mockServices')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/approval')
@@ -197,7 +196,11 @@ describe('/hdc/approval', () => {
   })
 })
 
-function createApp({ licenceServiceStub, nomisPushServiceStub, signInServiceStub }, user, config = {}) {
+function createApp(
+  { licenceServiceStub = null, nomisPushServiceStub = null, signInServiceStub = null },
+  user,
+  config = {}
+) {
   const prisonerService = createPrisonerServiceStub()
   prisonerService.getPrisonerDetails = jest.fn().mockReturnValue(prisonerInfoResponse)
   const licenceService = licenceServiceStub || createLicenceServiceStub()
@@ -207,12 +210,11 @@ function createApp({ licenceServiceStub, nomisPushServiceStub, signInServiceStub
   const baseRouter = standardRouter({
     licenceService,
     prisonerService,
-    authenticationMiddleware,
     audit: auditStub,
     signInService,
     config,
   })
-  const route = baseRouter(createRoute({ licenceService, prisonerService, nomisPushService, signInService }))
+  const route = baseRouter(createRoute({ licenceService, prisonerService, nomisPushService }))
 
   return appSetup(route, user, '/hdc/approval')
 }

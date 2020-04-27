@@ -30,10 +30,12 @@ describe('roService', () => {
 
     deliusClient = {
       getROPrisoners: jest.fn().mockReturnValue(roPrisoners),
-      getResponsibleOfficer: jest.fn().mockReturnValue(roResponse),
       getStaffDetailsByStaffCode: jest.fn().mockReturnValue({ staffCode: 'N02A008' }),
       getStaffDetailsByUsername: jest.fn().mockReturnValue({ staffCode: 'N02A008' }),
       getAllOffenderManagers: jest.fn(),
+      getAllProbationAreas: jest.fn(),
+      getAllLdusForProbationArea: jest.fn(),
+      addResponsibleOfficerRole: jest.fn(),
     }
 
     const nomisClientBuilder = jest.fn().mockReturnValue(nomisClient)

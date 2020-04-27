@@ -47,7 +47,7 @@ describe('sendRoNotifications', () => {
       beforeEach(() => {
         const time = new Date('March 11, 2019 14:59:59')
         realDateNow = Date.now.bind(global.Date)
-        global.Date = jest.fn(() => time)
+        jest.spyOn(Date, 'now').mockImplementation(() => time.getTime())
       })
 
       afterEach(() => {
@@ -73,6 +73,10 @@ describe('sendRoNotifications', () => {
         email: 'ro@ro.email',
         organisation: 'Orgnisation 1',
         functionalMailbox: 'admin@ro.email',
+        isUnlinkedAccount: false,
+        teamCode: 'aa',
+        teamDescription: 'bb',
+        isAllocated: true,
       }
 
       test('should generate RO notification data for RO_TWO_DAYS', async () => {

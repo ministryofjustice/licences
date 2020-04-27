@@ -1,14 +1,15 @@
 const request = require('supertest')
 const pdfParse = require('pdf-parse')
 
+const { appSetup } = require('../supertestSetup')
+
 const {
   createPdfServiceStub,
-  appSetup,
   auditStub,
   createPrisonerServiceStub,
   createLicenceServiceStub,
   createSignInServiceStub,
-} = require('../supertestSetup')
+} = require('../mockServices')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createPdfRouter = require('../../server/routes/pdf')
@@ -356,12 +357,12 @@ describe('PDF:', () => {
   })
 })
 
-function createApp({ licenceServiceStub, pdfServiceStub, prisonerServiceStub }, user) {
+function createApp({ licenceServiceStub = null, pdfServiceStub = null, prisonerServiceStub = null }, user) {
   const prisonerService = prisonerServiceStub || createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()
 
-  const baseRouter = standardRouter({ licenceService, prisonerService, audit: auditStub, signInService })
+  const baseRouter = standardRouter({ licenceService, prisonerService, audit: auditStub, signInService, config: null })
   const route = baseRouter(createPdfRouter({ pdfService: pdfServiceStub, prisonerService }), {
     auditKey: 'CREATE_PDF',
   })

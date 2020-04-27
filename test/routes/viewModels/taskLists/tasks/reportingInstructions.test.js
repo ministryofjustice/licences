@@ -5,7 +5,6 @@ describe('reporting instructions task', () => {
     test('should return Victim liaison required if task DONE', () => {
       expect(
         reportingInstructions.edit({
-          decisions: {},
           tasks: { reportingInstructions: 'DONE' },
         }).label
       ).toBe('Confirmed')
@@ -14,7 +13,6 @@ describe('reporting instructions task', () => {
     test('should return No victim liaison required if task not DONE', () => {
       expect(
         reportingInstructions.edit({
-          decisions: {},
           tasks: { reportingInstructions: 'SOMETHING' },
         }).label
       ).toBe('Not completed')
@@ -25,7 +23,6 @@ describe('reporting instructions task', () => {
     test('should show btn to reportingInstructions if reportingInstructions: UNSTARTED', () => {
       expect(
         reportingInstructions.ro({
-          decisions: {},
           tasks: { reportingInstructions: 'UNSTARTED' },
         }).action
       ).toEqual({
@@ -38,7 +35,6 @@ describe('reporting instructions task', () => {
     test('should show change link to reportingInstructions if reportingInstructions: DONE', () => {
       expect(
         reportingInstructions.ro({
-          decisions: {},
           tasks: { reportingInstructions: 'DONE' },
         }).action
       ).toEqual({
@@ -51,7 +47,6 @@ describe('reporting instructions task', () => {
     test('should show continue btn to reportingInstructions if reportingInstructions: !DONE || UNSTARTED', () => {
       expect(
         reportingInstructions.ro({
-          decisions: {},
           tasks: { reportingInstructions: 'SOMETHING' },
         }).action
       ).toEqual({

@@ -9,7 +9,8 @@ describe('conditionsValidator', () => {
     }
 
     const conditionsSelected = [{ field_position: { appointmentDate: 0 } }]
-
-    expect(formatConditionsInput(inputObject, conditionsSelected).appointmentDate).toBe('23/12/2017')
+    /** @type {any} */
+    const formatted = formatConditionsInput(inputObject, conditionsSelected)
+    expect(formatted.appointmentDate).toBe('23/12/2017')
   })
 })

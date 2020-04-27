@@ -6,7 +6,6 @@ describe('ca submit for address review task', () => {
       expect(
         getLabel({
           decisions: { optedOut: true },
-          tasks: {},
         })
       ).toBe('Submission unavailable - Offender has opted out of HDC')
     })
@@ -15,7 +14,6 @@ describe('ca submit for address review task', () => {
       expect(
         getLabel({
           decisions: { optedOut: false },
-          tasks: {},
         })
       ).toBe('Ready to submit for refusal')
     })
@@ -26,7 +24,6 @@ describe('ca submit for address review task', () => {
       expect(
         getCaAction({
           decisions: { optedOut: false },
-          tasks: {},
         })
       ).toEqual({
         text: 'Continue',
@@ -40,7 +37,6 @@ describe('ca submit for address review task', () => {
       expect(
         getCaAction({
           decisions: { optedOut: true },
-          tasks: {},
         })
       ).toBe(null)
     })

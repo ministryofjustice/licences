@@ -1,6 +1,7 @@
 jest.mock('../../server/data/dataAccess/db')
 
 const userClient = require('../../server/data/userClient')
+/** @type {any} */
 const db = require('../../server/data/dataAccess/db')
 
 afterEach(() => {
@@ -36,7 +37,7 @@ describe('userClient', () => {
 
     test('should return empty if no matches', async () => {
       db.query = jest.fn().mockReturnValue({})
-      const result = await userClient.getRoUsers('id')
+      const result = await userClient.getRoUsers()
       expect(db.query).toHaveBeenCalled()
       expect(result).toEqual([])
     })

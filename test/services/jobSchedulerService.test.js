@@ -117,11 +117,11 @@ describe('jobSchedulerService', () => {
         getJobSpec: jest.fn().mockReturnValue(jobSpec),
       }
 
-      jobs = createNotificationJobs(reminderService, configClient, signInService)
+      jobs = createNotificationJobs(reminderService, configClient)
     })
 
     test('should schedule jobs using the scheduler library', async () => {
-      const scheduleStub = jest.fn().mockReturnValue({ reschedule: jest.fn().mockReturnValue() })
+      const scheduleStub = jest.fn().mockReturnValue({ reschedule: jest.fn() })
 
       const service = createJobSchedulerService(dbLockingClient, configClient, jobs, scheduleStub)
       await service.startAllJobs()

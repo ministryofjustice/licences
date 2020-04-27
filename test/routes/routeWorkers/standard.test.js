@@ -1,5 +1,5 @@
 const standard = require('../../../server/routes/routeWorkers/standard')
-const { createLicenceServiceStub, createNomisPushServiceStub } = require('../../supertestSetup')
+const { createLicenceServiceStub, createNomisPushServiceStub } = require('../../mockServices')
 
 const testLicence = {
   sectionName: { testForm: {} },
@@ -93,7 +93,7 @@ describe('formPost', () => {
       })
 
       test('should not send to nomisPushService if no form config', async () => {
-        const standardRoute = createRoute({})
+        const standardRoute = createRoute({ nomisPush: null, config: null, validate: null })
 
         await standardRoute.formPost(req, res, 'testForm', '123', '')
         expect(nomisPushService.pushStatus).not.toHaveBeenCalled()
@@ -269,7 +269,7 @@ describe('formPost', () => {
 
     describe('processingCallback', () => {
       test('should invoke the processing callback if one is supplied', async () => {
-        const standardRoute = createRoute({})
+        const standardRoute = createRoute({ nomisPush: null, config: null, validate: null })
         const callback = jest.fn()
         const callbackPost = standardRoute.callbackPost('testForm', callback)
 

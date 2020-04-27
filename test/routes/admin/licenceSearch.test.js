@@ -1,14 +1,7 @@
 const request = require('supertest')
 
-const {
-  auditStub,
-  createPrisonerServiceStub,
-  createLicenceServiceStub,
-  appSetup,
-  createSignInServiceStub,
-} = require('../../supertestSetup')
+const { startRoute } = require('../../supertestSetup')
 
-const standardRouter = require('../../../server/routes/routeWorkers/standardRouter')
 const createAdminRoute = require('../../../server/routes/admin/licenceSearch')
 
 describe('/licenceSearch/', () => {
@@ -71,12 +64,5 @@ describe('/licenceSearch/', () => {
     })
   })
 
-  function createApp(user) {
-    const prisonerService = createPrisonerServiceStub()
-    const licenceService = createLicenceServiceStub()
-    const signInService = createSignInServiceStub()
-    const baseRouter = standardRouter({ licenceService, prisonerService, audit: auditStub, signInService })
-    const route = baseRouter(createAdminRoute(licenceSearchService))
-    return appSetup(route, user, '/admin/licenceSearch')
-  }
+  const createApp = (user) => startRoute(createAdminRoute(licenceSearchService), '/admin/licenceSearch', user)
 })

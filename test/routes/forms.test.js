@@ -1,6 +1,7 @@
 const pdfParse = require('pdf-parse')
 const request = require('supertest')
-const { appSetup, authenticationMiddleware, createSignInServiceStub } = require('../supertestSetup')
+const { appSetup } = require('../supertestSetup')
+const { createSignInServiceStub } = require('../mockServices')
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/forms')
 
@@ -231,8 +232,9 @@ describe('/forms/', () => {
     const baseRouter = standardRouter({
       licenceService,
       prisonerService,
-      authenticationMiddleware,
       signInService,
+      audit: null,
+      config: null,
     })
     const route = baseRouter(createRoute({ formService }))
     return appSetup(route, user, '/hdc/forms')

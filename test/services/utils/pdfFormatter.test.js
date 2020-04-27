@@ -6,7 +6,7 @@ describe('pdfFormatter', () => {
   beforeEach(() => {
     const time = new Date('January 1, 2001 12:00:00')
     realDateNow = Date.now.bind(global.Date)
-    Date.now = jest.fn(() => time)
+    jest.spyOn(Date, 'now').mockImplementation(() => time.getTime())
   })
 
   afterEach(() => {
@@ -82,7 +82,7 @@ describe('pdfFormatter', () => {
   test('should convert image to base64 string', () => {
     const data = formatWith({ image: 'IMAGE INPUT' })
 
-    expect(data.values.OFF_PHOTO).toEqual('IMAGE INPUT'.toString('base64'))
+    expect(data.values.OFF_PHOTO).toEqual('IMAGE INPUT')
     expect(data.missing).not.toHaveProperty('OFF_PHOTO')
   })
 

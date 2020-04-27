@@ -1,6 +1,7 @@
 jest.mock('../../server/data/dataAccess/db')
 
 const licenceClient = require('../../server/data/licenceClient')
+/** @type {any} */
 const db = require('../../server/data/dataAccess/db')
 
 afterEach(() => {

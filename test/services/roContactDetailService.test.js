@@ -1,4 +1,5 @@
 const createRoContactDetailsService = require('../../server/services/roContactDetailsService')
+const { createRoServiceStub } = require('../mockServices')
 
 describe('roContactDetailsService', () => {
   let service
@@ -10,18 +11,17 @@ describe('roContactDetailsService', () => {
     userAdminService = {
       getRoUserByDeliusId: jest.fn(),
     }
-    roService = {
-      getStaffByCode: jest.fn(),
-      findResponsibleOfficer: jest.fn().mockResolvedValue({
-        deliusId: 'delius-1',
-        teamCode: 'TEAM_CODE',
-        teamDescription: 'The Team',
-        lduDescription: 'Sheffield',
-        lduCode: 'SHF-1',
-        probationAreaCode: 'PA1',
-        probationAreaDescription: 'Probation Area 1',
-      }),
-    }
+    roService = createRoServiceStub()
+    roService.findResponsibleOfficer.mockResolvedValue({
+      deliusId: 'delius-1',
+      teamCode: 'TEAM_CODE',
+      teamDescription: 'The Team',
+      lduDescription: 'Sheffield',
+      lduCode: 'SHF-1',
+      probationAreaCode: 'PA1',
+      probationAreaDescription: 'Probation Area 1',
+    })
+
     probationTeamsService = {
       getFunctionalMailbox: jest.fn(),
     }

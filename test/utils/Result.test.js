@@ -52,7 +52,7 @@ describe('Result', () => {
   })
 
   test('Success.orRecoverAsync', async () => {
-    const resultP = Result.Success('a').orRecoverAsync(() => Result.Success('a'))
+    const resultP = Result.Success('a').orRecoverAsync(async () => Result.Success('a'))
     expect(resultP).toBeInstanceOf(Promise)
     const result = await resultP
     expect(result.isSuccess()).toBe(true)

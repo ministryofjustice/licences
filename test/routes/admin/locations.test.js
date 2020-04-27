@@ -1,13 +1,7 @@
 const request = require('supertest')
 
-const {
-  auditStub,
-  createLduServiceStub,
-  appSetup,
-  createSignInServiceStub,
-  createLicenceServiceStub,
-  createPrisonerServiceStub,
-} = require('../../supertestSetup')
+const { startRoute } = require('../../supertestSetup')
+const { createLduServiceStub } = require('../../mockServices')
 
 const standardRouter = require('../../../server/routes/routeWorkers/standardRouter')
 const createAdminRoute = require('../../../server/routes/admin/locations')
@@ -99,17 +93,5 @@ describe('/locations', () => {
     })
   })
 
-  // utility function used by tests above
-  function createApp(user) {
-    const signInService = createSignInServiceStub()
-    const prisonerService = createPrisonerServiceStub()
-    const licenceService = createLicenceServiceStub()
-
-    const baseRouter = standardRouter({ licenceService, prisonerService, audit: auditStub, signInService })
-    const route = baseRouter(createAdminRoute(lduService), {
-      auditKey: 'ACTIVE_LDUS',
-    })
-
-    return appSetup(route, user, '/admin/locations')
-  }
+  const createApp = (user) => startRoute(createAdminRoute(lduService), '/admin/locations', user, 'ACTIVE_LDUS')
 })

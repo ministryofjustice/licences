@@ -1,14 +1,14 @@
 const request = require('supertest')
 
+const { appSetup } = require('../supertestSetup')
+
 const {
   createPrisonerServiceStub,
   createLicenceServiceStub,
-  authenticationMiddleware,
   auditStub,
-  appSetup,
   createSignInServiceStub,
   createNomisPushServiceStub,
-} = require('../supertestSetup')
+} = require('../mockServices')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/finalChecks')
@@ -237,7 +237,7 @@ describe('/hdc/finalChecks', () => {
   })
 })
 
-function createApp({ licenceServiceStub, nomisPushServiceStub }, user, config = {}) {
+function createApp({ licenceServiceStub = null, nomisPushServiceStub = null }, user, config = {}) {
   const prisonerService = createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()
@@ -247,7 +247,6 @@ function createApp({ licenceServiceStub, nomisPushServiceStub }, user, config = 
   const baseRouter = standardRouter({
     licenceService,
     prisonerService,
-    authenticationMiddleware,
     audit: auditStub,
     signInService,
     config,

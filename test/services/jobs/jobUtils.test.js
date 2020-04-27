@@ -12,7 +12,7 @@ describe('jobUtils', () => {
       tryLock: jest.fn().mockReturnValue(true),
       unlock: jest.fn().mockReturnValue(true),
     }
-    callback = jest.fn().mockReturnValue()
+    callback = jest.fn()
 
     jobUtils = createJobUtils(dbLockingClient)
   })

@@ -1,6 +1,7 @@
 const nock = require('nock')
 
 const createPdfService = require('../../server/services/pdfService')
+const { createPrisonerServiceStub } = require('../mockServices')
 
 describe('pdfService', () => {
   let licenceService
@@ -37,11 +38,10 @@ describe('pdfService', () => {
       populateLicenceWithConditions: jest.fn().mockReturnValue(licence),
     }
 
-    prisonerService = {
-      getPrisonerDetails: jest.fn().mockReturnValue(prisonerResponse),
-      getEstablishmentForPrisoner: jest.fn().mockReturnValue(establishmentResponse),
-      getPrisonerImage: jest.fn().mockReturnValue(imageResponse),
-    }
+    prisonerService = createPrisonerServiceStub()
+    prisonerService.getPrisonerDetails.mockReturnValue(prisonerResponse)
+    prisonerService.getEstablishmentForPrisoner.mockReturnValue(establishmentResponse)
+    prisonerService.getPrisonerImage.mockReturnValue(imageResponse)
 
     pdfFormatter = {
       formatPdfData: jest.fn().mockReturnValue({ values }),

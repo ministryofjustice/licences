@@ -8,6 +8,7 @@ describe('versionInfo', () => {
           version: 1.0,
           versionDetails: { version: 1, vary_version: 0 },
           approvedVersionDetails: { version: 1, vary_version: 0 },
+          licence: {},
         }).lastVersion
       ).toEqual({ version: 1, vary_version: 0 })
     })
@@ -18,6 +19,7 @@ describe('versionInfo', () => {
           version: 1.0,
           versionDetails: { version: 1, vary_version: 0 },
           approvedVersionDetails: {},
+          licence: {},
         }).isNewVersion
       ).toBe(true)
     })
@@ -28,6 +30,7 @@ describe('versionInfo', () => {
           version: 1.0,
           versionDetails: { version: 2, vary_version: 0 },
           approvedVersionDetails: { version: 1, vary_version: 0 },
+          licence: {},
         }).isNewVersion
       ).toBe(true)
     })
@@ -38,6 +41,7 @@ describe('versionInfo', () => {
           version: 1.0,
           versionDetails: { version: 1, vary_version: 1 },
           approvedVersionDetails: { version: 1, vary_version: 0 },
+          licence: {},
         }).isNewVersion
       ).toBe(true)
     })
@@ -55,27 +59,23 @@ describe('versionInfo', () => {
 
     test('should return template label stored on version', () => {
       expect(
-        versionInfo(
-          {
-            version: 1.0,
-            versionDetails: { version: 1, vary_version: 1 },
-            approvedVersionDetails: { version: 1, vary_version: 0, template: 'hdc_yn' },
-          },
-          'hdc_ap_pss'
-        ).lastTemplateLabel
+        versionInfo({
+          version: 1.0,
+          versionDetails: { version: 1, vary_version: 1 },
+          approvedVersionDetails: { version: 1, vary_version: 0, template: 'hdc_yn' },
+          licence: {},
+        }).lastTemplateLabel
       ).toBe('Young person’s licence')
     })
 
     test('should return new template if passed in is different to previous', () => {
       expect(
-        versionInfo(
-          {
-            version: 1.0,
-            versionDetails: { version: 1, vary_version: 1 },
-            approvedVersionDetails: { version: 1, vary_version: 0, template: 'hdc_yn' },
-          },
-          'hdc_ap_pss'
-        ).isNewTemplate
+        versionInfo({
+          version: 1.0,
+          versionDetails: { version: 1, vary_version: 1 },
+          approvedVersionDetails: { version: 1, vary_version: 0, template: 'hdc_yn' },
+          licence: {},
+        }).isNewTemplate
       ).toBe(true)
     })
 

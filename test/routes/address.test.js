@@ -1,13 +1,14 @@
 const request = require('supertest')
 
+const { appSetup } = require('../supertestSetup')
+
 const {
   createPrisonerServiceStub,
   createLicenceServiceStub,
   auditStub,
-  appSetup,
   createSignInServiceStub,
   createNomisPushServiceStub,
-} = require('../supertestSetup')
+} = require('../mockServices')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/address')
@@ -84,7 +85,7 @@ describe('/hdc/proposedAddress/', () => {
   })
 })
 
-function createApp({ licenceServiceStub, prisonerServiceStub, nomisPushServiceStub }, user, config = {}) {
+function createApp({ licenceServiceStub, prisonerServiceStub = null, nomisPushServiceStub = null }, user, config = {}) {
   const prisonerService = prisonerServiceStub || createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()

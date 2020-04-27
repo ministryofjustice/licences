@@ -1,13 +1,8 @@
 const request = require('supertest')
 
-const {
-  createPrisonerServiceStub,
-  createLicenceServiceStub,
-  appSetup,
-  createSignInServiceStub,
-} = require('../../supertestSetup')
+const { createPrisonerServiceStub, createLicenceServiceStub, createSignInServiceStub } = require('../../mockServices')
+const { startRoute } = require('../../supertestSetup')
 
-const standardRouter = require('../../../server/routes/routeWorkers/standardRouter')
 const createAdminRoute = require('../../../server/routes/admin/licence')
 
 describe('/licences/', () => {
@@ -155,12 +150,11 @@ describe('/licences/', () => {
     })
   })
 
-  function createApp(user) {
-    const signInService = createSignInServiceStub()
-    const baseRouter = standardRouter({ licenceService, prisonerService, audit, signInService })
-    const route = baseRouter(
-      createAdminRoute(licenceService, signInService, prisonerService, audit, roNotificationHandler)
+  const createApp = (user) =>
+    startRoute(
+      createAdminRoute(licenceService, createSignInServiceStub(), prisonerService, audit, roNotificationHandler),
+      '/admin/licences',
+      user,
+      'ACTIVE_LDUS'
     )
-    return appSetup(route, user, '/admin/licences')
-  }
 })

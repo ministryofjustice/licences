@@ -1,12 +1,15 @@
 const request = require('supertest')
 
+const { startRoute } = require('../supertestSetup')
+
 const {
   createPrisonerServiceStub,
   createLicenceServiceStub,
+  createRoServiceStub,
   appSetup,
   auditStub,
   createSignInServiceStub,
-} = require('../supertestSetup')
+} = require('../mockServices')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createContactRoute = require('../../server/routes/contact')
@@ -19,34 +22,33 @@ describe('/contact', () => {
   let signInService
 
   beforeEach(() => {
-    roService = {
-      findResponsibleOfficer: jest.fn().mockReturnValue({
-        deliusId: 'DELIUS_ID',
-        teamCode: 'TEAM_CODE',
-        teamDescription: 'The Team',
-        lduCode: 'ABC123',
-        lduDescription: 'LDU Description',
-        name: 'Ro Name',
-        probationAreaDescription: 'PA Description',
-        probationAreaCode: 'PA_CODE',
-      }),
-      getStaffByCode: jest.fn().mockReturnValue({
-        username: 'username',
-        email: '123456@somewhere.com',
-        staffCode: 'DELIUS_ID',
-        staff: { forenames: 'RO', surname: 'Name' },
-        teams: [
-          {
-            code: 'TEAM_CODE',
-            description: 'The Team',
-            telephone: '01234567890',
-            localDeliveryUnit: { code: 'ABC123', description: 'LDU Description' },
-            district: { code: 'D', description: 'District' },
-            borough: { code: 'B', description: 'Borough' },
-          },
-        ],
-      }),
-    }
+    roService = createRoServiceStub()
+    roService.findResponsibleOfficer.mockReturnValue({
+      deliusId: 'DELIUS_ID',
+      teamCode: 'TEAM_CODE',
+      teamDescription: 'The Team',
+      lduCode: 'ABC123',
+      lduDescription: 'LDU Description',
+      name: 'Ro Name',
+      probationAreaDescription: 'PA Description',
+      probationAreaCode: 'PA_CODE',
+    })
+    roService.getStaffByCode.mockReturnValue({
+      username: 'username',
+      email: '123456@somewhere.com',
+      staffCode: 'DELIUS_ID',
+      staff: { forenames: 'RO', surname: 'Name' },
+      teams: [
+        {
+          code: 'TEAM_CODE',
+          description: 'The Team',
+          telephone: '01234567890',
+          localDeliveryUnit: { code: 'ABC123', description: 'LDU Description' },
+          district: { code: 'D', description: 'District' },
+          borough: { code: 'B', description: 'Borough' },
+        },
+      ],
+    })
 
     userAdminService = {
       getRoUserByDeliusId: jest.fn().mockReturnValue(undefined),
@@ -55,7 +57,7 @@ describe('/contact', () => {
 
     signInService = createSignInServiceStub()
 
-    app = createApp({ userAdminService, roService, signInService }, 'caUser')
+    app = startRoute(createContactRoute(userAdminService, roService, signInService), '/contact', 'caUser')
   })
 
   describe('GET /contact/:bookingId', () => {
@@ -124,13 +126,3 @@ describe('/contact', () => {
     })
   })
 })
-
-function createApp({ userAdminService, roService, signInService }, user) {
-  const prisonerService = createPrisonerServiceStub()
-  const licenceService = createLicenceServiceStub()
-
-  const baseRouter = standardRouter({ licenceService, prisonerService, audit: auditStub, signInService })
-  const route = baseRouter(createContactRoute(userAdminService, roService, signInService))
-
-  return appSetup(route, user, '/contact/')
-}

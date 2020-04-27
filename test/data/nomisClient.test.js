@@ -380,8 +380,8 @@ describe('nomisClient', () => {
 
     beforeEach(() => {
       const time = new Date('May 31, 2018 12:00:00')
+      jest.spyOn(Date, 'now').mockImplementation(() => time.getTime())
       realDateNow = Date.now.bind(global.Date)
-      global.Date = jest.fn(() => time)
     })
 
     afterEach(() => {
@@ -512,7 +512,7 @@ describe('nomisClient', () => {
     beforeEach(() => {
       const time = new Date('May 31, 2018 12:00:00')
       realDateNow = Date.now.bind(global.Date)
-      global.Date = jest.fn(() => time)
+      jest.spyOn(Date, 'now').mockImplementation(() => time.getTime())
     })
 
     afterEach(() => {
@@ -563,7 +563,7 @@ describe('nomisClient', () => {
     beforeEach(() => {
       const time = new Date('May 31, 2018 12:00:00')
       realDateNow = Date.now.bind(global.Date)
-      global.Date = jest.fn(() => time)
+      jest.spyOn(Date, 'now').mockImplementation(() => time.getTime())
     })
 
     afterEach(() => {

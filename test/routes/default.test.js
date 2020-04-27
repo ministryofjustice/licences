@@ -1,14 +1,6 @@
 const request = require('supertest')
-const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const defaultRoute = require('../../server/routes/default')
-const {
-  appSetup,
-  createPrisonerServiceStub,
-  createLicenceServiceStub,
-  createSignInServiceStub,
-  authenticationMiddleware,
-  auditStub,
-} = require('../supertestSetup')
+const { startRoute } = require('../supertestSetup')
 
 describe('GET /', () => {
   test('redirects to caselist for normal users', () => {
@@ -24,19 +16,4 @@ describe('GET /', () => {
   })
 })
 
-function createApp(user) {
-  const prisonerService = createPrisonerServiceStub()
-  const licenceService = createLicenceServiceStub()
-  const signInService = createSignInServiceStub()
-
-  const baseRouter = standardRouter({
-    licenceService,
-    prisonerService,
-    authenticationMiddleware,
-    audit: auditStub,
-    signInService,
-  })
-  const route = baseRouter(defaultRoute())
-
-  return appSetup(route, user, '/')
-}
+const createApp = (user) => startRoute(defaultRoute(), '/', user)

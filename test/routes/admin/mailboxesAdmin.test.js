@@ -1,15 +1,17 @@
 const request = require('supertest')
 
+const { appSetup } = require('../../supertestSetup')
+
 const {
   auditStub,
   createPrisonerServiceStub,
   createLicenceServiceStub,
-  appSetup,
-  createSignInServiceStub,
-} = require('../supertestSetup')
 
-const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
-const createAdminRoute = require('../../server/routes/admin/mailboxes')
+  createSignInServiceStub,
+} = require('../../mockServices')
+
+const standardRouter = require('../../../server/routes/routeWorkers/standardRouter')
+const createAdminRoute = require('../../../server/routes/admin/mailboxes')
 
 describe('/admin', () => {
   let configClient
@@ -23,9 +25,9 @@ describe('/admin', () => {
       getMailbox: jest
         .fn()
         .mockResolvedValue({ id: '1', email: 'email1', establishment: 'establishment1', role: 'role1', name: 'name1' }),
-      updateMailbox: jest.fn().mockReturnValue(),
-      deleteMailbox: jest.fn().mockReturnValue(),
-      addMailbox: jest.fn().mockReturnValue(),
+      updateMailbox: jest.fn(),
+      deleteMailbox: jest.fn(),
+      addMailbox: jest.fn(),
     }
   })
 
@@ -240,7 +242,7 @@ function createApp(configClient, user) {
   const licenceService = createLicenceServiceStub()
   const signInService = createSignInServiceStub()
 
-  const baseRouter = standardRouter({ licenceService, prisonerService, audit: auditStub, signInService })
+  const baseRouter = standardRouter({ licenceService, prisonerService, audit: auditStub, signInService, config: null })
   const route = baseRouter(createAdminRoute({ configClient }))
 
   return appSetup(route, user, '/admin/mailboxes/')

@@ -2,12 +2,18 @@ const createRoNotificationHandler = require('../../../server/services/notificati
 const transitionForDestinations = require('../../../server/services/notifications/transitionsForDestinations')
 const { STAFF_NOT_LINKED } = require('../../../server/services/serviceErrors')
 
+const { createPrisonerServiceStub } = require('../../mockServices')
+
 describe('roNotificationHandler', () => {
+  /** @type {any} */
   let roNotificationSender
   let licenceService
   let prisonerService
+  /** @type {any} */
   let eventPublisher
+  /** @type {any} */
   let warningClient
+  /** @type {any} */
   let deliusClient
   let roNotificationHandler
   let roContactDetailsService
@@ -22,12 +28,13 @@ describe('roNotificationHandler', () => {
 
   beforeEach(() => {
     licenceService = {
-      markForHandover: jest.fn().mockReturnValue(),
+      markForHandover: jest.fn(),
       removeDecision: jest.fn().mockReturnValue({}),
     }
 
     roContactDetailsService = {
       getResponsibleOfficerWithContactDetails: jest.fn(),
+      getFunctionalMailBox: jest.fn(),
     }
 
     warningClient = {
@@ -38,11 +45,10 @@ describe('roNotificationHandler', () => {
       addResponsibleOfficerRole: jest.fn(),
     }
 
-    prisonerService = {
-      getEstablishmentForPrisoner: jest.fn().mockReturnValue({ premise: 'HMP Blah', agencyId: 'LT1' }),
-      getOrganisationContactDetails: jest.fn().mockReturnValue(submissionTarget),
-      getPrisonerPersonalDetails: jest.fn().mockReturnValue(prisoner),
-    }
+    prisonerService = createPrisonerServiceStub()
+    prisonerService.getEstablishmentForPrisoner.mockReturnValue({ premise: 'HMP Blah', agencyId: 'LT1' })
+    prisonerService.getOrganisationContactDetails.mockReturnValue(submissionTarget)
+    prisonerService.getPrisonerPersonalDetails.mockReturnValue(prisoner)
 
     roNotificationSender = {
       sendNotifications: jest.fn().mockReturnValue({}),

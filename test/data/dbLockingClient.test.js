@@ -3,6 +3,7 @@ jest.mock('../../server/data/dataAccess/db')
 const hash = require('string-hash')
 
 const dbLockingClient = require('../../server/data/dbLockingClient')
+/** @type {any} */
 const db = require('../../server/data/dataAccess/db')
 
 afterEach(() => {

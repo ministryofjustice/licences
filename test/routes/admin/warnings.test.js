@@ -1,15 +1,8 @@
 const request = require('supertest')
 
-const {
-  createWarningsClientStub,
-  auditStub,
-  createPrisonerServiceStub,
-  createLicenceServiceStub,
-  appSetup,
-  createSignInServiceStub,
-} = require('../../supertestSetup')
+const { startRoute } = require('../../supertestSetup')
+const { createWarningsClientStub, auditStub } = require('../../mockServices')
 
-const standardRouter = require('../../../server/routes/routeWorkers/standardRouter')
 const createAdminRoute = require('../../../server/routes/admin/warnings')
 
 describe('/warnings', () => {
@@ -27,6 +20,8 @@ describe('/warnings', () => {
     warningsClient.getOutstandingWarnings = jest.fn().mockReturnValue([createWarning(1), createWarning(2)])
     warningsClient.getAcknowledgedWarnings = jest.fn().mockReturnValue([createWarning(3), createWarning(4)])
   })
+
+  const createApp = (user) => startRoute(createAdminRoute(warningsClient), '/admin/warnings', user, 'WARNINGS')
 
   describe('GET outstanding', () => {
     test('calls user service and renders HTML output', () => {
@@ -116,16 +111,4 @@ describe('/warnings', () => {
         })
     })
   })
-
-  function createApp(user) {
-    const prisonerService = createPrisonerServiceStub()
-    const licenceService = createLicenceServiceStub()
-    const signInService = createSignInServiceStub()
-    const baseRouter = standardRouter({ licenceService, prisonerService, audit: auditStub, signInService })
-    const route = baseRouter(createAdminRoute(warningsClient), {
-      auditKey: 'WARNINGS',
-    })
-
-    return appSetup(route, user, '/admin/warnings')
-  }
 })

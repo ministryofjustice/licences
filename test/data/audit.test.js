@@ -2,6 +2,7 @@ jest.mock('../../server/data/dataAccess/db')
 const moment = require('moment')
 
 const audit = require('../../server/data/audit')
+/** @type {any} */
 const db = require('../../server/data/dataAccess/db')
 
 afterEach(() => {

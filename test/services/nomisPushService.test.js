@@ -11,8 +11,8 @@ describe('nomisPushService', () => {
 
   beforeEach(() => {
     nomisClientMock = {
-      putApprovalStatus: jest.fn().mockReturnValue(),
-      putChecksPassed: jest.fn().mockReturnValue(),
+      putApprovalStatus: jest.fn(),
+      putChecksPassed: jest.fn(),
     }
     nomisClientBuilder = jest.fn().mockReturnValue(nomisClientMock)
     signInService = {

@@ -1,4 +1,5 @@
 const createReminderService = require('../../server/services/reminderService')
+const { createPrisonerServiceStub } = require('../mockServices')
 
 describe('reminderService', () => {
   let service
@@ -10,10 +11,11 @@ describe('reminderService', () => {
   const transitionDate = '2019-01-01 12:00:00'
 
   beforeEach(() => {
-    prisonerService = {
-      getEstablishmentForPrisoner: jest.fn().mockReturnValue({ premise: 'HMP Blah', agencyId: 'LT1' }),
-    }
+    prisonerService = createPrisonerServiceStub()
+    prisonerService.getEstablishmentForPrisoner.mockReturnValue({ premise: 'HMP Blah', agencyId: 'LT1' })
+
     roContactDetailsService = {
+      getFunctionalMailBox: jest.fn(),
       getResponsibleOfficerWithContactDetails: jest.fn().mockReturnValue({ deliusId: 'code-1' }),
     }
 
@@ -27,6 +29,8 @@ describe('reminderService', () => {
 
     roNotificationSender = {
       sendNotifications: jest.fn(),
+      notificationTypes: jest.fn(),
+      getNotifications: jest.fn(),
     }
 
     service = createReminderService(roContactDetailsService, prisonerService, deadlineService, roNotificationSender, [
@@ -79,8 +83,8 @@ describe('reminderService', () => {
     })
 
     test('should do nothing further if empty notifiable cases', async () => {
-      deadlineService.getDueInDays = jest.fn().mockReturnValue()
-      deadlineService.getOverdue = jest.fn().mockReturnValue()
+      deadlineService.getDueInDays = jest.fn()
+      deadlineService.getOverdue = jest.fn()
       const result = await service.notifyRoReminders('token')
 
       expect(roContactDetailsService.getResponsibleOfficerWithContactDetails).toHaveBeenCalledTimes(0)
@@ -153,7 +157,7 @@ describe('reminderService', () => {
 
     test('should continue with subsequent reminder types even after a failure', async () => {
       deadlineService.getOverdue.mockRejectedValue(new Error('error message'))
-      deadlineService.getDueInDays = jest.fn().mockReturnValue()
+      deadlineService.getDueInDays = jest.fn()
       await service.notifyRoReminders('token')
 
       expect(deadlineService.getOverdue).toHaveBeenCalled()

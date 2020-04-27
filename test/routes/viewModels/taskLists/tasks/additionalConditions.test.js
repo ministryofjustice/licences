@@ -51,13 +51,10 @@ describe('additional conditions task', () => {
 
     test('should return rejected action message if bespoke conditions have been rejected', () => {
       expect(
-        additionalConditions.edit(
-          {
-            decisions: { bespokeRejected: 1 },
-            tasks: { licenceConditions: 'DONE' },
-          },
-          'CA'
-        ).label
+        additionalConditions.edit({
+          decisions: { bespokeRejected: 1 },
+          tasks: { licenceConditions: 'DONE' },
+        }).label
       ).toBe('WARNING||Some bespoke conditions were rejected. Remove these and inform the responsible officer.')
     })
 

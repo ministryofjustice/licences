@@ -1,5 +1,6 @@
 const createFormService = require('../../server/services/formService')
 const { pickCurfewAddress } = require('../../server/services/utils/pdfFormatter')
+const { createPrisonerServiceStub } = require('../mockServices')
 
 describe('formService', () => {
   let service
@@ -26,16 +27,16 @@ describe('formService', () => {
     conditionsService = {
       getFullTextForApprovedConditions: jest.fn().mockReturnValue({}),
     }
-    prisonerService = {
-      getPrisonerDetails: jest.fn().mockReturnValue({}),
-    }
+    prisonerService = createPrisonerServiceStub()
+    prisonerService.getPrisonerDetails.mockReturnValue({})
+
     configClient = {
       getMailboxes: jest.fn().mockReturnValue([{ email: 'first' }, { email: 'second' }]),
     }
     service = createFormService(pdfFormatter, conditionsService, prisonerService, configClient)
     const time = new Date('April 25, 2019 01:00:00')
     realDateNow = Date.now.bind(global.Date)
-    Date.now = jest.fn(() => time)
+    jest.spyOn(Date, 'now').mockImplementation(() => time.getTime())
   })
 
   afterEach(() => {

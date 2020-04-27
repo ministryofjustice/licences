@@ -108,8 +108,7 @@ describe('TaskList models', () => {
             tasks: {},
             stage: 'APPROVAL',
           },
-          {},
-          null
+          {}
         )
       ).toEqual([eligibilitySummary, finalDecisionAwaitingRefusal])
     })
@@ -129,8 +128,7 @@ describe('TaskList models', () => {
             tasks: {},
             stage: 'APPROVAL',
           },
-          {},
-          null
+          {}
         )
       ).toEqual([eligibilitySummary, proposedCurfewAddressWithdrawn, returnPCA, finalDecisionRefuse])
     })
@@ -152,8 +150,7 @@ describe('TaskList models', () => {
             tasks: {},
             stage: 'APPROVAL',
           },
-          {},
-          null
+          {}
         )
       ).toEqual([
         eligibilitySummary,
@@ -181,8 +178,7 @@ describe('TaskList models', () => {
             tasks: {},
             stage: 'APPROVAL',
           },
-          {},
-          null
+          {}
         )
       ).toEqual([
         eligibilitySummary,
@@ -208,8 +204,7 @@ describe('TaskList models', () => {
             tasks: {},
             stage: 'APPROVAL',
           },
-          {},
-          null
+          {}
         )
       ).toEqual([
         proposedCurfewAddress,
@@ -240,8 +235,7 @@ describe('TaskList models', () => {
             tasks: {},
             stage: 'APPROVAL',
           },
-          {},
-          null
+          {}
         )
       ).toEqual([
         bassAddress,
@@ -272,8 +266,7 @@ describe('TaskList models', () => {
             tasks: {},
             stage: 'APPROVAL',
           },
-          {},
-          null
+          {}
         )
       ).toEqual([
         proposedCurfewAddressAP,
@@ -304,8 +297,7 @@ describe('TaskList models', () => {
             tasks: {},
             stage: 'APPROVAL',
           },
-          {},
-          null
+          {}
         )
       ).toEqual([
         bassAddress,

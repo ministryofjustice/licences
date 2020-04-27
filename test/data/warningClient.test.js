@@ -1,6 +1,7 @@
 jest.mock('../../server/data/dataAccess/db')
 
 const warningClient = require('../../server/data/warningClient')
+/** @type {any} */
 const db = require('../../server/data/dataAccess/db')
 
 afterEach(() => {

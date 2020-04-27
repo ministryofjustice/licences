@@ -1,6 +1,7 @@
 jest.mock('../../server/data/dataAccess/db')
 
 const configClient = require('../../server/data/configClient')
+/** @type {any} */
 const db = require('../../server/data/dataAccess/db')
 
 beforeEach(() => {
