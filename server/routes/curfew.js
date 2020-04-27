@@ -1,7 +1,7 @@
 const { asyncMiddleware } = require('../utils/middleware')
 const createStandardRoutes = require('./routeWorkers/standard')
 const { getPathFor } = require('../utils/routes')
-const { getIn, mergeWithRight } = require('../utils/functionalHelpers')
+const { getIn, mergeWithRight, isYes } = require('../utils/functionalHelpers')
 const formConfig = require('./config/curfew')
 
 module.exports = ({ licenceService, nomisPushService }) => (router, audited, { pushToNomis }) => {
@@ -32,11 +32,6 @@ module.exports = ({ licenceService, nomisPushService }) => (router, audited, { p
     }
 
     return null
-  }
-
-  function isYes(licence, pathSegments) {
-    const answer = getIn(licence, pathSegments)
-    return answer && answer === 'Yes'
   }
 
   router.post(

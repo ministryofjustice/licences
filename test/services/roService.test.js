@@ -5,21 +5,6 @@ describe('roService', () => {
   let nomisClient
   let deliusClient
 
-  const roResponse = [
-    {
-      forenames: 'COMFIRST',
-      surname: 'comLast',
-      staffCode: 'delius1',
-      teamCode: 'TEAM_1',
-      teamDescription: 'The Team',
-      lduCode: 'code-1',
-      lduDescription: 'lduDescription-1',
-      nomsNumber: 'AAAA12',
-      probationAreaCode: 'prob-code-1',
-      probationAreaDescription: 'prob-desc-1',
-    },
-  ]
-
   const roPrisoners = [{ nomsNumber: 'A' }, { nomsNumber: 'B' }, { nomsNumber: 'C' }]
 
   beforeEach(() => {
