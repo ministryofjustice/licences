@@ -44,11 +44,10 @@ const getAction = ({ decisions, tasks }) => {
   return standardActionMulti([curfewAddress, optOut, bassRequest], '/hdc/proposedAddress/curfewAddressChoice/')
 }
 
-module.exports = ({ decisions, tasks, visible }) => {
+module.exports = ({ decisions, tasks }) => {
   return {
     title: 'Curfew address',
     label: getLabel({ decisions, tasks }),
     action: getAction({ decisions, tasks }),
-    visible,
   }
 }

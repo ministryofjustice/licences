@@ -8,21 +8,24 @@ const getCaAction = ({ decisions, tasks, stage }) => {
     return null
   }
 
-  if (approvedPremisesRequired) {
-    return approvedPremisesAddress === 'DONE' ? continueBtn('/hdc/pdf/selectLicenceType/') : null
-  }
+  const outstandingApproved = approvedPremisesRequired && approvedPremisesAddress !== 'DONE'
+  const outstandingBass = bassReferralNeeded && bassAddress !== 'DONE'
 
-  if (bassReferralNeeded) {
-    return bassAddress === 'DONE' ? continueBtn('/hdc/pdf/selectLicenceType/') : null
-  }
-
-  return addressWithdrawn ? null : continueBtn('/hdc/pdf/selectLicenceType/')
+  return !outstandingApproved && !outstandingBass && !addressWithdrawn
+    ? continueBtn('/hdc/pdf/selectLicenceType/')
+    : null
 }
 
-module.exports = ({ decisions, tasks, stage, visible }) => {
-  return {
+module.exports = {
+  ca: ({ decisions, tasks, stage }) => {
+    return {
+      title: 'Create licence',
+      action: getCaAction({ decisions, tasks, stage }),
+    }
+  },
+  vary: (version) => () => ({
     title: 'Create licence',
-    action: getCaAction({ decisions, tasks, stage }),
-    visible,
-  }
+    label: `Ready to create version ${version}`,
+    action: { type: 'btn', text: 'Continue', href: '/hdc/pdf/selectLicenceType/' },
+  }),
 }

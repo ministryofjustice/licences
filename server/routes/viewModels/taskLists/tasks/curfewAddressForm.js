@@ -6,5 +6,4 @@ module.exports = () => ({
     href: '/hdc/forms/curfewAddress/',
     newTab: true,
   },
-  visible: true,
 })

@@ -6,13 +6,11 @@ describe('risk management task', () => {
       riskManagement.view({
         decisions: { addressUnsuitable: true },
         tasks: {},
-        visible: true,
       })
     ).toStrictEqual({
       action: { href: '/hdc/review/risk/', text: 'View', type: 'btn-secondary' },
       label: 'Address unsuitable',
       title: 'Risk management',
-      visible: true,
     })
   })
 
@@ -21,13 +19,11 @@ describe('risk management task', () => {
       riskManagement.view({
         decisions: { addressReviewFailed: false, riskManagementNeeded: false },
         tasks: { riskManagement: 'DONE' },
-        visible: true,
       })
     ).toStrictEqual({
       action: { href: '/hdc/review/risk/', text: 'View', type: 'btn-secondary' },
       label: 'No risks',
       title: 'Risk management',
-      visible: true,
     })
   })
 
@@ -36,13 +32,11 @@ describe('risk management task', () => {
       riskManagement.view({
         decisions: { addressReviewFailed: false, riskManagementNeeded: true },
         tasks: { riskManagement: 'DONE' },
-        visible: true,
       })
     ).toStrictEqual({
       action: { href: '/hdc/review/risk/', text: 'View', type: 'btn-secondary' },
       label: 'Risk management required',
       title: 'Risk management',
-      visible: true,
     })
   })
 
@@ -51,13 +45,11 @@ describe('risk management task', () => {
       riskManagement.view({
         decisions: { addressReviewFailed: false, riskManagementNeeded: true },
         tasks: { riskManagement: 'UNSTARTED' },
-        visible: true,
       })
     ).toStrictEqual({
       action: { href: '/hdc/review/risk/', text: 'View', type: 'btn-secondary' },
       label: 'Not completed',
       title: 'Risk management',
-      visible: true,
     })
   })
 
@@ -66,13 +58,11 @@ describe('risk management task', () => {
       riskManagement.view({
         decisions: { awaitingRiskInformation: true },
         tasks: {},
-        visible: true,
       })
     ).toStrictEqual({
       action: { href: '/hdc/review/risk/', text: 'View', type: 'btn-secondary' },
       label: 'WARNING||Still waiting for information',
       title: 'Risk management',
-      visible: true,
     })
   })
 
@@ -81,7 +71,6 @@ describe('risk management task', () => {
       riskManagement.view({
         decisions: {},
         tasks: { riskManagement: 'SOMETHING' },
-        visible: true,
       })
     ).toStrictEqual({
       action: {
@@ -91,7 +80,6 @@ describe('risk management task', () => {
       },
       label: 'Not completed',
       title: 'Risk management',
-      visible: true,
     })
   })
 })
@@ -102,7 +90,6 @@ describe('Action varies based on type', () => {
       riskManagement.view({
         decisions: {},
         tasks: { riskManagement: 'SOMETHING' },
-        visible: true,
       }).action
     ).toStrictEqual({
       href: '/hdc/review/risk/',
@@ -116,7 +103,6 @@ describe('Action varies based on type', () => {
       riskManagement.edit({
         decisions: {},
         tasks: { riskManagement: 'SOMETHING' },
-        visible: true,
       }).action
     ).toStrictEqual({
       dataQa: 'risk-management',
@@ -131,7 +117,6 @@ describe('Action varies based on type', () => {
       riskManagement.ro({
         decisions: {},
         tasks: { riskManagement: 'SOMETHING' },
-        visible: true,
       }).action
     ).toStrictEqual({
       href: '/hdc/risk/riskManagement/',

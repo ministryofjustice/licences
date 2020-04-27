@@ -9,13 +9,11 @@ describe('TaskList models', () => {
     },
     label: 'Address rejected',
     title: 'Proposed curfew address',
-    visible: undefined,
   }
   const proposedCurfewAddress = {
     title: 'Proposed curfew address',
     label: 'Not completed',
     action: { type: 'btn', text: 'Continue', href: '/hdc/curfew/approvedPremises/' },
-    visible: undefined,
   }
 
   const bassAreaCheck = {
@@ -42,7 +40,6 @@ describe('TaskList models', () => {
     title: 'Risk management',
     label: 'Not completed',
     action: { type: 'btn', text: 'Continue', href: '/hdc/risk/riskManagement/' },
-    visible: undefined,
   }
   const riskManagementAddressUnsuitable = {
     action: {
@@ -52,7 +49,6 @@ describe('TaskList models', () => {
     },
     label: 'Address unsuitable',
     title: 'Risk management',
-    visible: undefined,
   }
 
   const victimLiasion = {
@@ -63,87 +59,73 @@ describe('TaskList models', () => {
     },
     label: 'Not completed',
     title: 'Victim liaison',
-    visible: undefined,
   }
 
   const curfewHours = {
     title: 'Curfew hours',
     label: 'Not completed',
     action: { type: 'btn', text: 'Continue', href: '/hdc/curfew/curfewHours/' },
-    visible: undefined,
   }
   const curfewHoursChange = {
     title: 'Curfew hours',
     action: { type: 'link', text: 'Change', href: '/hdc/curfew/curfewHours/' },
-    visible: true,
   }
 
   const additionalConditions = {
     title: 'Additional conditions',
     label: 'Not completed',
     action: { type: 'btn', text: 'Continue', href: '/hdc/licenceConditions/standard/' },
-    visible: undefined,
   }
   const additionalConditionsChange = {
     title: 'Additional conditions',
     action: { type: 'link', text: 'Change', href: '/hdc/licenceConditions/standard/' },
-    visible: true,
   }
 
   const reportingInstructions = {
     title: 'Reporting instructions',
     label: 'Not completed',
     action: { type: 'btn', text: 'Continue', href: '/hdc/reporting/reportingInstructions/' },
-    visible: undefined,
   }
   const reportingInstructionsChange = {
     title: 'Reporting instructions',
     action: { type: 'link', text: 'Change', href: '/hdc/vary/reportingAddress/' },
-    visible: true,
   }
 
   const curfewAddressCheck = {
     title: 'Curfew address check form',
     action: { type: 'btn', href: '/hdc/forms/curfewAddress/', text: 'Create PDF', newTab: true },
-    visible: true,
   }
 
   const createLicenceVersion1 = {
     title: 'Create licence',
     label: 'Ready to create version 1',
     action: { type: 'btn', href: '/hdc/pdf/selectLicenceType/', text: 'Continue' },
-    visible: true,
   }
   const createLicenceVersion22 = {
     title: 'Create licence',
     label: 'Ready to create version 2.2',
     action: { type: 'btn', href: '/hdc/pdf/selectLicenceType/', text: 'Continue' },
-    visible: true,
   }
   const createLicenceVersion12 = {
     title: 'Create licence',
     label: 'Ready to create version 1.2',
     action: { type: 'btn', href: '/hdc/pdf/selectLicenceType/', text: 'Continue' },
-    visible: true,
   }
 
   const viewCurrentLicence = {
     title: 'View current licence',
     label: 'Licence version 2',
     action: { type: 'btn', href: '/hdc/pdf/create/', text: 'View', newTab: true },
-    visible: true,
   }
 
-  const vary = { task: 'varyLicenceTask', visible: true }
+  const vary = { task: 'varyLicenceTask' }
   const permissionForVariation = {
     title: 'Permission for variation and justification of conditions',
     action: { type: 'link', text: 'Change', href: '/hdc/vary/evidence/' },
-    visible: true,
   }
   const curfewAddressVary = {
     title: 'Curfew address',
     action: { type: 'link', text: 'Change', href: '/hdc/vary/address/' },
-    visible: true,
   }
 
   const submitCA = {
@@ -155,7 +137,6 @@ describe('TaskList models', () => {
     },
     title: 'Submit to prison case admin',
     label: 'Tasks not yet complete',
-    visible: true,
   }
 
   const submitCAComplete = {
@@ -167,7 +148,6 @@ describe('TaskList models', () => {
     },
     title: 'Submit to prison case admin',
     label: 'Ready to submit',
-    visible: true,
   }
 
   describe('roTasksPostApproval', () => {

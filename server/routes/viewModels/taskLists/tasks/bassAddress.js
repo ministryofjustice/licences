@@ -118,30 +118,27 @@ const title = 'BASS address'
 
 module.exports = {
   ca: {
-    standard: ({ decisions, tasks, visible }) => {
+    standard: ({ decisions, tasks }) => {
       return {
         title,
         label: getLabel({ decisions, tasks }),
         action: getAction({ tasks }),
-        visible,
       }
     },
-    postApproval: ({ decisions, tasks, visible }) => {
+    postApproval: ({ decisions, tasks }) => {
       return {
         title,
         label: getOfferLabel({ decisions, tasks }),
         action: getOfferAction({ decisions, tasks }),
-        visible,
       }
     },
   },
-  view: ({ decisions, tasks, visible }) => {
+  view: ({ decisions, tasks }) => {
     const { approvedPremisesRequired } = decisions
     return {
       title,
       label: getOfferLabel({ decisions, tasks }),
       action: approvedPremisesRequired ? view('/hdc/review/approvedPremisesAddress/') : view('/hdc/review/bassOffer/'),
-      visible,
     }
   },
 }

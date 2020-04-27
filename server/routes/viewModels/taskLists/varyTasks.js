@@ -1,57 +1,26 @@
 const versionInfo = require('../../../utils/versionInfo')
 const { isEmpty } = require('../../../utils/functionalHelpers')
+const { tasklist, namedTask } = require('./tasklistBuilder')
+
+const viewCurrentLicence = require('./tasks/viewCurrentLicence')
+const createLicence = require('./tasks/createLicence')
+
+const varyLicenceTask = namedTask('varyLicenceTask')
+const changeTask = (title, href) => () => ({ title, action: { type: 'link', text: 'Change', href } })
 
 module.exports = ({ version, versionDetails, approvedVersion, approvedVersionDetails, licence }) => ({ stage }) => {
   const licenceUnstarted = stage === 'UNSTARTED'
   const licenceVersionExists = !isEmpty(approvedVersionDetails)
   const { isNewVersion } = versionInfo({ version, versionDetails, approvedVersionDetails, licence })
 
-  return [
-    {
-      title: 'View current licence',
-      label: `Licence version ${approvedVersion}`,
-      action: {
-        type: 'btn',
-        text: 'View',
-        href: `/hdc/pdf/create/`,
-        newTab: true,
-      },
-      visible: licenceVersionExists && !isNewVersion,
-    },
-    {
-      task: 'varyLicenceTask',
-      visible: licenceUnstarted,
-    },
-    {
-      title: 'Permission for variation and justification of conditions',
-      action: { type: 'link', text: 'Change', href: '/hdc/vary/evidence/' },
-      visible: !licenceUnstarted,
-    },
-    {
-      title: 'Curfew address',
-      action: { type: 'link', text: 'Change', href: '/hdc/vary/address/' },
-      visible: !licenceUnstarted,
-    },
-    {
-      title: 'Additional conditions',
-      action: { type: 'link', text: 'Change', href: '/hdc/licenceConditions/standard/' },
-      visible: !licenceUnstarted,
-    },
-    {
-      title: 'Curfew hours',
-      action: { type: 'link', text: 'Change', href: '/hdc/curfew/curfewHours/' },
-      visible: !licenceUnstarted,
-    },
-    {
-      title: 'Reporting instructions',
-      action: { type: 'link', text: 'Change', href: '/hdc/vary/reportingAddress/' },
-      visible: !licenceUnstarted,
-    },
-    {
-      title: 'Create licence',
-      label: `Ready to create version ${version}`,
-      action: { type: 'btn', text: 'Continue', href: '/hdc/pdf/selectLicenceType/' },
-      visible: !licenceUnstarted && isNewVersion,
-    },
-  ].filter((task) => task.visible)
+  return tasklist({}, [
+    [viewCurrentLicence(approvedVersion), licenceVersionExists && !isNewVersion],
+    [varyLicenceTask, licenceUnstarted],
+    [changeTask('Permission for variation and justification of conditions', '/hdc/vary/evidence/'), !licenceUnstarted],
+    [changeTask('Curfew address', '/hdc/vary/address/'), !licenceUnstarted],
+    [changeTask('Additional conditions', '/hdc/licenceConditions/standard/'), !licenceUnstarted],
+    [changeTask('Curfew hours', '/hdc/curfew/curfewHours/'), !licenceUnstarted],
+    [changeTask('Reporting instructions', '/hdc/vary/reportingAddress/'), !licenceUnstarted],
+    [createLicence.vary(version), !licenceUnstarted && isNewVersion],
+  ])
 }

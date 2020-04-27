@@ -6,7 +6,6 @@ describe('ca submit for address review task', () => {
       caSubmitAddressReview({
         decisions: { optedOut: false },
         tasks: { curfewAddress: 'DONE' },
-        visible: true,
       })
     ).toStrictEqual({
       action: {
@@ -17,7 +16,6 @@ describe('ca submit for address review task', () => {
       },
       label: 'Ready to submit',
       title: 'Submit curfew address',
-      visible: true,
     })
   })
 
@@ -26,9 +24,8 @@ describe('ca submit for address review task', () => {
       caSubmitAddressReview({
         decisions: { optedOut: false },
         tasks: { curfewAddress: 'SOMETHING' },
-        visible: true,
       })
-    ).toStrictEqual({ action: null, label: 'Not completed', title: 'Submit curfew address', visible: true })
+    ).toStrictEqual({ action: null, label: 'Not completed', title: 'Submit curfew address' })
   })
 
   test('should show nothing if opted out', () => {
@@ -36,8 +33,7 @@ describe('ca submit for address review task', () => {
       caSubmitAddressReview({
         decisions: { optedOut: true },
         tasks: { curfewAddress: 'DONE' },
-        visible: true,
       })
-    ).toStrictEqual({ action: null, label: 'Ready to submit', title: 'Submit curfew address', visible: true })
+    ).toStrictEqual({ action: null, label: 'Ready to submit', title: 'Submit curfew address' })
   })
 })

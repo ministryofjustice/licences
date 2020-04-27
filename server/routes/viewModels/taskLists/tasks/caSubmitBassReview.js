@@ -15,13 +15,12 @@ const getCaAction = (optedOut, bassRequest) => {
   return null
 }
 
-module.exports = ({ decisions, tasks, visible }) => {
+module.exports = ({ decisions, tasks }) => {
   const { optedOut } = decisions
   const { bassRequest } = tasks
   return {
     title: 'Send for BASS area checks',
     label: getLabel(optedOut, bassRequest),
     action: getCaAction(optedOut, bassRequest),
-    visible,
   }
 }

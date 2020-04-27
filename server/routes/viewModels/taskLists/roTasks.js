@@ -34,8 +34,8 @@ module.exports = {
       [curfewHours.ro, validAddress],
       [additionalConditions.ro, validAddress],
       [reportingInstructions.ro, validAddress],
-      [curfewAddressForm, true],
-      [roSubmit, true],
+      [curfewAddressForm],
+      [roSubmit],
     ])
   },
 
@@ -45,10 +45,10 @@ module.exports = {
     return tasklist(context, [
       [proposedAddress.ro, approvedPremisesRequired],
       [riskManagement.ro, !approvedPremisesRequired],
-      [curfewHours.ro, true],
-      [additionalConditions.ro, true],
-      [reportingInstructions.ro, true],
-      [curfewAddressForm, true],
+      [curfewHours.ro],
+      [additionalConditions.ro],
+      [reportingInstructions.ro],
+      [curfewAddressForm],
     ])
   },
 }

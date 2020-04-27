@@ -8,7 +8,7 @@ const getLabel = (postponed, confiscationOrder) => {
   return "Postpone the case if you're waiting for information on risk management"
 }
 
-const task = (title) => ({ decisions, visible }) => {
+const task = (title) => ({ decisions }) => {
   const { postponed, confiscationOrder } = decisions
 
   return {
@@ -20,7 +20,6 @@ const task = (title) => ({ decisions, visible }) => {
       type: 'btn',
       dataQa: 'postpone',
     },
-    visible,
   }
 }
 
