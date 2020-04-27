@@ -1,4 +1,4 @@
-const { continueBtn } = require('./utils/actions')
+const { continueBtn } = require('../utils/actions')
 
 module.exports = ({ decisions, tasks }) => {
   const { optedOut } = decisions

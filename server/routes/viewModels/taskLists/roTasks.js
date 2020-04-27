@@ -5,9 +5,9 @@ const additionalConditions = require('./tasks/additionalConditions')
 const reportingInstructions = require('./tasks/reportingInstructions')
 const proposedAddress = require('./tasks/proposedAddress')
 const victimLiaison = require('./tasks/victimLiaison')
-const bassArea = require('./tasks/bassArea')
-const roSubmit = require('./tasks/roSubmit')
-const curfewAddressForm = require('./tasks/curfewAddressForm')
+const bassArea = require('./tasks/ro/bassArea')
+const submitToCa = require('./tasks/ro/submitToCa')
+const createCurfewAddressForm = require('./tasks/ro/createCurfewAddressForm')
 
 module.exports = {
   getRoTasks: ({ decisions, tasks, allowedTransition }) => {
@@ -34,8 +34,8 @@ module.exports = {
       [curfewHours.ro, validAddress],
       [additionalConditions.ro, validAddress],
       [reportingInstructions.ro, validAddress],
-      [curfewAddressForm],
-      [roSubmit],
+      [createCurfewAddressForm],
+      [submitToCa],
     ])
   },
 
@@ -48,7 +48,7 @@ module.exports = {
       [curfewHours.ro],
       [additionalConditions.ro],
       [reportingInstructions.ro],
-      [curfewAddressForm],
+      [createCurfewAddressForm],
     ])
   },
 }

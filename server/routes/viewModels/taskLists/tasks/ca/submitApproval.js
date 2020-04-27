@@ -1,4 +1,4 @@
-const { continueBtn } = require('./utils/actions')
+const { continueBtn } = require('../utils/actions')
 
 module.exports = {
   getLabel: ({ decisions, allowedTransition }) => {

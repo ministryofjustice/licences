@@ -1,4 +1,4 @@
-const curfewAddress = require('../../../../../server/routes/viewModels/taskLists/tasks/curfewAddress')
+const curfewAddress = require('../../../../../../server/routes/viewModels/taskLists/tasks/ca/curfewAddress')
 
 describe('curfew address task', () => {
   describe('getLabel', () => {

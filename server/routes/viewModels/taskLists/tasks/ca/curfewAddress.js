@@ -1,4 +1,4 @@
-const { standardAction, standardActionMulti } = require('./utils/actions')
+const { standardAction, standardActionMulti } = require('../utils/actions')
 
 const getLabel = ({ decisions, tasks }) => {
   const { optedOut, bassReferralNeeded, bassAreaNotSuitable, curfewAddressRejected } = decisions

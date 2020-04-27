@@ -1,4 +1,4 @@
-const bassArea = require('../../../../../server/routes/viewModels/taskLists/tasks/bassArea')
+const bassArea = require('../../../../../../server/routes/viewModels/taskLists/tasks/ro/bassArea')
 
 describe('bass area task', () => {
   describe('getLabel', () => {

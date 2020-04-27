@@ -1,4 +1,4 @@
-const roSubmit = require('../../../../../server/routes/viewModels/taskLists/tasks/roSubmit')
+const roSubmit = require('../../../../../../server/routes/viewModels/taskLists/tasks/ro/submitToCa')
 
 describe('victim liaison task', () => {
   describe('getLabel', () => {

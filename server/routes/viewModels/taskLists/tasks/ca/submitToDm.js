@@ -1,5 +1,5 @@
-const caSubmitApproval = require('./caSubmitApproval')
-const caSubmitRefusal = require('./caSubmitRefusal')
+const caSubmitApproval = require('./submitApproval')
+const caSubmitRefusal = require('./submitRefusal')
 
 const title = 'Submit to decision maker'
 

@@ -1,4 +1,4 @@
-const { getStatusLabel } = require('../../../../utils/licenceStatusLabels')
+const { getStatusLabel } = require('../../../../../utils/licenceStatusLabels')
 
 const getLabel = (licenceStatus) => {
   const { statusLabel } = getStatusLabel(licenceStatus, 'DM')
