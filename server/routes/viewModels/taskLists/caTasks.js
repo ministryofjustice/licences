@@ -20,7 +20,6 @@ const resubmitToDm = require('./tasks/ca/resubmitToDm')
 const caBlocked = (errorCode) => () => ({ task: 'caBlockedTask', errorCode })
 const eligibilityTask = namedTask('eligibilityTask')
 const eligibilitySummaryTask = namedTask('eligibilitySummaryTask')
-const invisibleInformOffenderTask = namedTask('informOffenderTask')
 
 module.exports = {
   getTasksForBlocked: (errorCode) => tasklist({}, [[eligibilityTask], [informOffenderTask], [caBlocked(errorCode)]]),
@@ -126,7 +125,7 @@ module.exports = {
     const context = { decisions, tasks, stage, allowedTransition }
 
     if (!eligible) {
-      return tasklist(context, [[eligibilitySummaryTask, validAddress], [invisibleInformOffenderTask]])
+      return tasklist(context, [[eligibilitySummaryTask, validAddress], [informOffenderTask]])
     }
 
     return tasklist(context, [

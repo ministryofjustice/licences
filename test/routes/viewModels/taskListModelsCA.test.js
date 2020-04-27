@@ -9,10 +9,9 @@ describe('TaskList models', () => {
       text: 'Back to case list',
       type: 'btn-secondary',
     },
-    label: 'You should now tell the offender using the relevant HDC form from NOMIS',
+    label: 'You should now tell the offender using the relevant HDC form',
     title: 'Inform the offender',
   }
-  const informOffenderStandard = { task: 'informOffenderTask', visible: undefined }
 
   const curfewAddress = {
     action: {
@@ -781,7 +780,7 @@ describe('TaskList models', () => {
           },
           {}
         )
-      ).toEqual([eligibilitySummary, informOffenderStandard])
+      ).toEqual([eligibilitySummary, informOffender])
     })
 
     test('should send for refusal if no approved address and no new one added', () => {
