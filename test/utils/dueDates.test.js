@@ -33,7 +33,7 @@ describe('Due dates calcuations', () => {
     const nowIs = (val) => {
       const time = new Date(val)
       realDateNow = Date.now.bind(global.Date)
-      Date.now = jest.fn(() => time)
+      jest.spyOn(Date, 'now').mockImplementation(() => time.getTime())
     }
 
     afterEach(() => {

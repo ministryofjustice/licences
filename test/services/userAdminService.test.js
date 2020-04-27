@@ -24,7 +24,7 @@ describe('userAdminService', () => {
   beforeEach(() => {
     userClient = {
       getRoUsers: jest.fn().mockReturnValue([user1, user2]),
-      getCasesRequiringRo: jest.fn().mockReturnValue(),
+      getCasesRequiringRo: jest.fn(),
       getRoUser: jest.fn().mockReturnValue(user2),
       getRoUserByDeliusId: jest.fn().mockReturnValue(user2),
       updateRoUser: jest.fn().mockReturnValue({}),
@@ -38,9 +38,12 @@ describe('userAdminService', () => {
       getBooking: jest.fn().mockReturnValue({}),
     }
 
+    /** @type {any} */
+    const probationTeamClient = {}
+
     const nomisClientBuilder = jest.fn().mockReturnValue(nomisClient)
 
-    service = createUserService(nomisClientBuilder, userClient)
+    service = createUserService(nomisClientBuilder, userClient, probationTeamClient)
   })
 
   afterEach(() => {

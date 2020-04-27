@@ -21,7 +21,7 @@ describe('deadlineService', () => {
     service = createDeadlineService(licenceClient)
     const time = new Date('April 25, 2019 01:00:00')
     realDateNow = Date.now.bind(global.Date)
-    Date.now = jest.fn(() => time)
+    jest.spyOn(Date, 'now').mockImplementation(() => time.getTime())
   })
 
   afterEach(() => {

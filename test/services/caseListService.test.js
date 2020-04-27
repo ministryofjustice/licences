@@ -1,6 +1,7 @@
 const createCaseListService = require('../../server/services/caseListService')
 const createCaseListFormatter = require('../../server/services/utils/caseListFormatter')
 const { logger } = require('../supertestSetup')
+const { createRoServiceStub } = require('../mockServices')
 
 describe('caseListService', () => {
   let nomisClient
@@ -73,31 +74,31 @@ describe('caseListService', () => {
       getHdcEligiblePrisoners: jest.fn(),
     }
 
-    roService = {
-      getROPrisoners: jest.fn().mockReturnValue([
-        {
-          bookingId: 0,
-          offenderNo: 'A12345',
-          firstName: 'MARK',
-          middleNames: '',
-          lastName: 'ANDREWS',
-          agencyLocationDesc: 'BERWIN (HMP)',
-          internalLocationDesc: 'A-C-2-002',
-          sentenceDetail: {
-            homeDetentionCurfewEligibilityDate: '2017-09-07',
-            effectiveConditionalReleaseDate: '2017-12-15',
-            receptionDate: '2018-01-03',
-          },
+    roService = createRoServiceStub()
+    roService.getROPrisoners.mockReturnValue([
+      {
+        bookingId: 0,
+        offenderNo: 'A12345',
+        firstName: 'MARK',
+        middleNames: '',
+        lastName: 'ANDREWS',
+        agencyLocationDesc: 'BERWIN (HMP)',
+        internalLocationDesc: 'A-C-2-002',
+        sentenceDetail: {
+          homeDetentionCurfewEligibilityDate: '2017-09-07',
+          effectiveConditionalReleaseDate: '2017-12-15',
+          receptionDate: '2018-01-03',
         },
-      ]),
-      getStaffByUsername: jest.fn().mockReturnValue({
-        username: 'username',
-        email: 'email',
-        staffCode: 'ABC123',
-        staff: { forenames: 'user', surname: 'name' },
-        teams: [],
-      }),
-    }
+      },
+    ])
+
+    roService.getStaffByUsername.mockReturnValue({
+      username: 'username',
+      email: 'email',
+      staffCode: 'ABC123',
+      staff: { forenames: 'user', surname: 'name' },
+      teams: [],
+    })
 
     licenceClient = {
       getLicences: jest.fn().mockReturnValue([]),
@@ -159,7 +160,7 @@ describe('caseListService', () => {
       beforeEach(() => {
         const time = new Date('May 31, 2018 00:00:00')
         realDateNow = Date.now.bind(global.Date)
-        Date.now = jest.fn(() => time)
+        jest.spyOn(Date, 'now').mockImplementation(() => time.getTime())
       })
 
       afterEach(() => {
@@ -375,7 +376,7 @@ describe('caseListService', () => {
         beforeEach(() => {
           const time = new Date('May 31, 2018 00:00:00')
           realDateNow = Date.now.bind(global.Date)
-          Date.now = jest.fn(() => time)
+          jest.spyOn(Date, 'now').mockImplementation(() => time.getTime())
         })
 
         afterEach(() => {

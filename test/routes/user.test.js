@@ -1,13 +1,7 @@
 const request = require('supertest')
 
-const {
-  auditStub,
-  authenticationMiddleware,
-  createPrisonerServiceStub,
-  createLicenceServiceStub,
-  users,
-  appSetup,
-} = require('../supertestSetup')
+const { users, appSetup } = require('../supertestSetup')
+const { auditStub, createPrisonerServiceStub, createLicenceServiceStub } = require('../mockServices')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/user')
@@ -23,8 +17,8 @@ describe('/user', () => {
         { caseLoadId: '1', description: 'a' },
         { caseLoadId: '2', description: 'b' },
       ]),
-      setRole: jest.fn().mockReturnValue(),
-      setActiveCaseLoad: jest.fn().mockReturnValue(),
+      setRole: jest.fn(),
+      setActiveCaseLoad: jest.fn(),
     }
     signInService = {
       getClientCredentialsTokens: jest.fn().mockReturnValue({ token: 'system-token' }),
@@ -166,8 +160,8 @@ describe('/user', () => {
       licenceService,
       signInService,
       prisonerService,
-      authenticationMiddleware,
       audit: auditStub,
+      config: null,
     })
     const route = baseRouter(createRoute({ userService }))
 

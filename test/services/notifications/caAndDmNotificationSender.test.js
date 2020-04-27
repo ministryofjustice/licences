@@ -1,4 +1,5 @@
 const createSendCaAndDmNotifications = require('../../../server/services/notifications/caAndDmNotificationSender')
+const { createPrisonerServiceStub } = require('../../mockServices')
 
 describe('sendCaAndDmNotifications', () => {
   let service
@@ -29,9 +30,8 @@ describe('sendCaAndDmNotifications', () => {
       domain: 'http://localhost:3000',
     }
 
-    prisonerService = {
-      getEstablishmentForPrisoner: jest.fn().mockReturnValue({ premise: 'HMP Blah', agencyId: 'LT1' }),
-    }
+    prisonerService = createPrisonerServiceStub()
+    prisonerService.getEstablishmentForPrisoner.mockReturnValue({ premise: 'HMP Blah', agencyId: 'LT1' })
     roContactDetailsService = {
       getFunctionalMailBox: jest.fn().mockReturnValue('admin@ro.email'),
     }
@@ -97,7 +97,7 @@ describe('sendCaAndDmNotifications', () => {
 
     describe('CA notification data', () => {
       test('should return empty when missing CA email addresses for agency', async () => {
-        configClient.getMailboxes = jest.fn().mockReturnValue()
+        configClient.getMailboxes = jest.fn()
         const data = await service.getNotificationData({
           prisoner: {},
           notificationType: 'CA_RETURN',

@@ -5,7 +5,6 @@ describe('curfew hours task', () => {
     test('should Completed if task is done', () => {
       expect(
         curfewHours.edit({
-          decisions: {},
           tasks: { curfewHours: 'DONE' },
         }).label
       ).toBe('Confirmed')
@@ -14,7 +13,6 @@ describe('curfew hours task', () => {
     test('should Not completed if task is not done', () => {
       expect(
         curfewHours.edit({
-          decisions: {},
           tasks: { curfewHours: 'SOMETHING' },
         }).label
       ).toBe('Not completed')
@@ -25,7 +23,6 @@ describe('curfew hours task', () => {
     test('should show btn to curfewHours if curfewHours: UNSTARTED', () => {
       expect(
         curfewHours.ro({
-          decisions: {},
           tasks: { curfewHours: 'UNSTARTED' },
         }).action
       ).toEqual({
@@ -38,7 +35,6 @@ describe('curfew hours task', () => {
     test('should show change link to curfewHours if curfewHours: DONE', () => {
       expect(
         curfewHours.ro({
-          decisions: {},
           tasks: { curfewHours: 'DONE' },
         }).action
       ).toEqual({
@@ -51,7 +47,6 @@ describe('curfew hours task', () => {
     test('should show continue btn to curfewHours if curfewHours: !DONE || UNSTARTED', () => {
       expect(
         curfewHours.ro({
-          decisions: {},
           tasks: { curfewHours: 'SOMETHING' },
         }).action
       ).toEqual({

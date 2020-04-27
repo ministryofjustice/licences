@@ -13,7 +13,7 @@ describe('addressHelpers', () => {
     })
 
     test('should return true if consent is missed but occupier is the offender', () => {
-      expect(isAcceptedAddress({ electricity: 'Yes' }, 'Yes', true)).toBe(true)
+      expect(isAcceptedAddress({ electricity: 'Yes', consent: null }, 'Yes', true)).toBe(true)
     })
   })
 })

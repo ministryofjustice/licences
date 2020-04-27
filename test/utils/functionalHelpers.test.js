@@ -172,6 +172,7 @@ describe('functionalHelpers', () => {
 
     test('should sort top level of an object only', () => {
       const input = { b: 1, a: { a2: 1, c2: 3, b2: 2 } }
+      /** @type {any} */
       const result = sortKeys(input)
       expect(result).toStrictEqual(input)
       expect(Object.keys(result)).toStrictEqual(['a', 'b'])
@@ -180,25 +181,26 @@ describe('functionalHelpers', () => {
   })
 
   describe('unwrapResultOrThrow', () => {
+    const errorFormatter = (error) => `${error.message} ${error.code}`
     test('should handle empty object', () => {
-      expect(unwrapResultOrThrow({})).toStrictEqual({})
+      expect(unwrapResultOrThrow({}, errorFormatter)).toStrictEqual({})
     })
     test('should handle null object', () => {
-      expect(unwrapResultOrThrow(null)).toStrictEqual(null)
+      expect(unwrapResultOrThrow(null, errorFormatter)).toStrictEqual(null)
     })
 
     test('should handle simple success', () => {
-      expect(unwrapResultOrThrow(true)).toStrictEqual(true)
+      expect(unwrapResultOrThrow(true, errorFormatter)).toStrictEqual(true)
     })
 
     test('should handle simple success object', () => {
-      expect(unwrapResultOrThrow({ a: 1 })).toStrictEqual({ a: 1 })
+      expect(unwrapResultOrThrow({ a: 1 }, errorFormatter)).toStrictEqual({ a: 1 })
     })
 
     test('should handle error', () => {
-      expect(() =>
-        unwrapResultOrThrow({ code: '1', message: 'some problem' }, (error) => `${error.message} ${error.code}`)
-      ).toThrow(Error('some problem 1'))
+      expect(() => unwrapResultOrThrow({ code: '1', message: 'some problem' }, errorFormatter)).toThrow(
+        Error('some problem 1')
+      )
     })
   })
 

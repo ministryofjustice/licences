@@ -1,6 +1,7 @@
 jest.mock('../../server/data/dataAccess/db')
 
 const activeLduClient = require('../../server/data/activeLduClient')
+/** @type {any} */
 const db = require('../../server/data/dataAccess/db')
 
 afterEach(() => {
@@ -32,7 +33,7 @@ describe('Persist and check exitence of LDUs in active_local_delivery_units tabl
     test('should return false if ldu is not present', async () => {
       db.query.mockReturnValue({ rows: [{ count: 0 }] })
 
-      const result = await activeLduClient.isLduPresent()
+      const result = await activeLduClient.isLduPresent('C01', 'C01LDU1')
       expect(result).toBe(false)
     })
   })

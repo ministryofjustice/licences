@@ -1,15 +1,14 @@
 const request = require('supertest')
 
+const { appSetup, testFormPageGets } = require('../supertestSetup')
+
 const {
   createPrisonerServiceStub,
   createLicenceServiceStub,
-  authenticationMiddleware,
   auditStub,
-  appSetup,
-  testFormPageGets,
   createConditionsServiceStub,
   createSignInServiceStub,
-} = require('../supertestSetup')
+} = require('../mockServices')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/conditions')
@@ -220,16 +219,16 @@ describe('/hdc/licenceConditions', () => {
   })
 })
 
-function createApp({ licenceService, conditionsService, prisonerService }, user) {
+function createApp({ licenceService = null, conditionsService = null, prisonerService = null }, user) {
   const prisonerServiceMock = prisonerService || createPrisonerServiceStub()
   const signInService = createSignInServiceStub()
 
   const baseRouter = standardRouter({
     licenceService,
     prisonerService: prisonerServiceMock,
-    authenticationMiddleware,
     audit: auditStub,
     signInService,
+    config: null,
   })
   const route = baseRouter(createRoute({ licenceService, conditionsService }))
 

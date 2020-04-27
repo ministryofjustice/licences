@@ -24,8 +24,7 @@ describe('probationTeamsClient', () => {
     test('should throw error on GET when no token', async () => {
       signInService.getAnonymousClientCredentialsTokens.mockResolvedValue(null)
       return expect(probationTeamsClient.getFunctionalMailbox('AREA_CODE', 'LDU_CODE', 'TEAM_CODE')).rejects.toThrow(
-        Error,
-        /Failed to get token when attempting to call probationTeamsService: .*?\/local-delivery-units\/code-1\/functional-mailbox/
+        /Failed to get token when attempting to call probationTeamsService: .*?\/probation-areas\/AREA_CODE\/local-delivery-units\/LDU_CODE/
       )
     })
 

@@ -3,7 +3,7 @@ const { getReviewSections } = require('../../../server/routes/viewModels/reviewM
 describe('Review page models', () => {
   describe('getReviewSections', () => {
     test('should be empty if no decisions', () => {
-      expect(getReviewSections({})).toEqual({})
+      expect(getReviewSections({ decisions: null })).toEqual({})
     })
 
     test('should activate bassArea on bassReferralNeeded', () => {

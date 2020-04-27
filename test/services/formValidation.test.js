@@ -3,7 +3,7 @@ const moment = require('moment')
 const createLicenceService = require('../../server/services/licenceService')
 
 describe('validation', () => {
-  const service = createLicenceService({}, {})
+  const service = createLicenceService({})
 
   describe('validateForm', () => {
     describe('eligibility', () => {

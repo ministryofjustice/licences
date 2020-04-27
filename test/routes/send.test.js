@@ -1,12 +1,12 @@
 const request = require('supertest')
+const { appSetup, users } = require('../supertestSetup')
+
 const {
   createLicenceServiceStub,
   createPrisonerServiceStub,
-  appSetup,
   auditStub,
   createSignInServiceStub,
-  users,
-} = require('../supertestSetup')
+} = require('../mockServices')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/send')
@@ -291,26 +291,28 @@ describe('send', () => {
   })
 })
 
-function createApp({ prisonerServiceStub, notificationServiceStub }, user) {
+function createApp({ prisonerServiceStub = null, notificationServiceStub = null }, user) {
   const prisonerService = prisonerServiceStub || createPrisonerServiceStub()
   const licenceService = createLicenceServiceStub()
   const signInService = createSignInServiceStub()
 
-  const baseRouter = standardRouter({ licenceService, prisonerService, audit: auditStub, signInService })
+  const baseRouter = standardRouter({ licenceService, prisonerService, audit: auditStub, signInService, config: null })
   const route = baseRouter(
     createRoute({
-      licenceService,
       prisonerService,
       notificationService: notificationServiceStub,
-      audit: auditStub,
-    }),
-    'USER_MANAGEMENT'
+    })
   )
 
   return appSetup(route, user, '/hdc/send/')
 }
 
-function createAppForReconsideration({ prisonerServiceStub, notificationServiceStub }, user, stage, licence) {
+function createAppForReconsideration(
+  { prisonerServiceStub = null, notificationServiceStub = null },
+  user,
+  stage,
+  licence
+) {
   const prisonerService = prisonerServiceStub || createPrisonerServiceStub()
   const licenceService = createLicenceServiceStub()
   const signInService = createSignInServiceStub()
@@ -322,15 +324,12 @@ function createAppForReconsideration({ prisonerServiceStub, notificationServiceS
     licence,
   })
 
-  const baseRouter = standardRouter({ licenceService, prisonerService, audit: auditStub, signInService })
+  const baseRouter = standardRouter({ licenceService, prisonerService, audit: auditStub, signInService, config: null })
   const route = baseRouter(
     createRoute({
-      licenceService,
       prisonerService,
       notificationService: notificationServiceStub,
-      audit: auditStub,
-    }),
-    'USER_MANAGEMENT'
+    })
   )
 
   return appSetup(route, user, '/hdc/send/')

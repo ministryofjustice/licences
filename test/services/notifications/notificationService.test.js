@@ -1,8 +1,10 @@
 const createNotificationService = require('../../../server/services/notifications/notificationService')
 const transitionForDestinations = require('../../../server/services/notifications/transitionsForDestinations')
+const { createPrisonerServiceStub } = require('../../mockServices')
 
 describe('NotificationService', () => {
   let caAndDmNotificationSender
+  /** @type {any} */
   let eventPublisher
   let licenceService
   let prisonerService
@@ -21,7 +23,7 @@ describe('NotificationService', () => {
 
   beforeEach(() => {
     licenceService = {
-      markForHandover: jest.fn().mockReturnValue(),
+      markForHandover: jest.fn(),
       removeDecision: jest.fn().mockReturnValue({}),
     }
 
@@ -29,16 +31,15 @@ describe('NotificationService', () => {
       sendRo: jest.fn(),
     }
 
-    prisonerService = {
-      getDestinations: jest.fn().mockReturnValue({
-        submissionTarget,
-        source,
-        target,
-      }),
+    prisonerService = createPrisonerServiceStub()
+    prisonerService.getDestinations.mockReturnValue({
+      submissionTarget,
+      source,
+      target,
+    })
 
-      getOrganisationContactDetails: jest.fn().mockReturnValue(submissionTarget),
-      getPrisonerPersonalDetails: jest.fn().mockReturnValue(prisoner),
-    }
+    prisonerService.getOrganisationContactDetails.mockReturnValue(submissionTarget)
+    prisonerService.getPrisonerPersonalDetails.mockReturnValue(prisoner)
 
     caAndDmNotificationSender = {
       sendNotifications: jest.fn().mockReturnValue({}),

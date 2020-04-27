@@ -1,15 +1,7 @@
 const request = require('supertest')
 
-const {
-  createUserAdminServiceStub,
-  auditStub,
-  createPrisonerServiceStub,
-  createLicenceServiceStub,
-  appSetup,
-  createSignInServiceStub,
-} = require('../../supertestSetup')
-
-const standardRouter = require('../../../server/routes/routeWorkers/standardRouter')
+const { startRoute } = require('../../supertestSetup')
+const { createUserAdminServiceStub, auditStub } = require('../../mockServices')
 const createAdminRoute = require('../../../server/routes/admin/users')
 
 const user1 = {
@@ -49,9 +41,12 @@ describe('/admin', () => {
     })
   })
 
+  const createApp = (user) =>
+    startRoute(createAdminRoute({ userAdminService }), '/admin/roUsers', user, 'USER_MANAGEMENT')
+
   describe('GET /admin/roUsers', () => {
     test('calls user service and renders HTML output', () => {
-      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
+      const app = createApp('batchUser')
       return request(app)
         .get('/admin/roUsers')
         .expect(200)
@@ -62,7 +57,7 @@ describe('/admin', () => {
     })
 
     test('should display the user details', () => {
-      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
+      const app = createApp('batchUser')
       return request(app)
         .get('/admin/roUsers')
         .expect(200)
@@ -73,7 +68,7 @@ describe('/admin', () => {
     })
 
     test('should throw if submitted by non-authorised user', () => {
-      const app = createApp({ userAdminServiceStub: userAdminService }, 'roUser')
+      const app = createApp('roUser')
       return request(app).get('/admin/roUsers').expect(403)
     })
   })
@@ -84,7 +79,7 @@ describe('/admin', () => {
 
       examples.forEach((example) => {
         test('redirects back to page and does not call user service when no search term', () => {
-          const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
+          const app = createApp('batchUser')
           return request(app)
             .post('/admin/roUsers')
             .send({ searchTerm: example })
@@ -101,7 +96,7 @@ describe('/admin', () => {
 
       examples.forEach((example) => {
         test('calls user service and renders HTML output', () => {
-          const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
+          const app = createApp('batchUser')
           return request(app)
             .post('/admin/roUsers')
             .send({ searchTerm: example })
@@ -120,7 +115,7 @@ describe('/admin', () => {
 
   describe('GET /admin/roUsers/edit', () => {
     test('calls user service and shows user details', () => {
-      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
+      const app = createApp('batchUser')
       return request(app)
         .get('/admin/roUsers/edit/1')
         .expect(200)
@@ -147,7 +142,7 @@ describe('/admin', () => {
 
       examples.forEach((example) => {
         test(`redirects back to page and does not call user service when ${example.reason}`, () => {
-          const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
+          const app = createApp('batchUser')
           return request(app)
             .post('/admin/roUsers/edit/1')
             .send(example.input)
@@ -169,7 +164,7 @@ describe('/admin', () => {
 
       examples.forEach((example) => {
         test('calls user service and redirects to user list', () => {
-          const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
+          const app = createApp('batchUser')
           return request(app)
             .post('/admin/roUsers/edit/1')
             .send(example)
@@ -182,7 +177,7 @@ describe('/admin', () => {
         })
 
         test('Audits the edit user event', () => {
-          const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
+          const app = createApp('batchUser')
           return request(app)
             .post('/admin/roUsers/edit/1')
             .send(example)
@@ -203,7 +198,7 @@ describe('/admin', () => {
 
   describe('GET /admin/roUsers/delete', () => {
     test('calls user service and shows user details', () => {
-      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
+      const app = createApp('batchUser')
       return request(app)
         .get('/admin/roUsers/delete/1')
         .expect(200)
@@ -221,7 +216,7 @@ describe('/admin', () => {
 
   describe('POST /admin/roUsers/delete', () => {
     test('calls user service and redirects to user list', () => {
-      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
+      const app = createApp('batchUser')
       return request(app)
         .post('/admin/roUsers/delete/1')
         .send()
@@ -234,7 +229,7 @@ describe('/admin', () => {
     })
 
     test('Audits the delete user event', () => {
-      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
+      const app = createApp('batchUser')
       return request(app)
         .post('/admin/roUsers/delete/1')
         .expect(302)
@@ -269,7 +264,7 @@ describe('/admin', () => {
 
       examples.forEach((example) => {
         test(`redirects back to page and does not call user service when ${example.reason}`, () => {
-          const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
+          const app = createApp('batchUser')
           return request(app)
             .post('/admin/roUsers/add/')
             .send(example.input)
@@ -291,7 +286,7 @@ describe('/admin', () => {
 
       examples.forEach((example) => {
         test('calls user service and redirects to user list', () => {
-          const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
+          const app = createApp('batchUser')
           return request(app)
             .post('/admin/roUsers/add/')
             .send(example)
@@ -304,7 +299,7 @@ describe('/admin', () => {
         })
 
         test('Audits the add user event', () => {
-          const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
+          const app = createApp('batchUser')
           return request(app)
             .post('/admin/roUsers/add/')
             .send(example)
@@ -325,7 +320,7 @@ describe('/admin', () => {
 
   describe('GET /admin/roUsers/verify', () => {
     test('calls nomis and returns JSON', () => {
-      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
+      const app = createApp('batchUser')
       return request(app)
         .get('/admin/roUsers/verify?nomisUserName=USER_NAME')
         .expect(200)
@@ -337,7 +332,7 @@ describe('/admin', () => {
     })
 
     test('should display the user details', () => {
-      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
+      const app = createApp('batchUser')
       return request(app)
         .get('/admin/roUsers/verify?nomisUserName=USER_NAME')
         .expect(200)
@@ -350,7 +345,7 @@ describe('/admin', () => {
 
     test('should give 404 when no match for user name', () => {
       userAdminService.verifyUserDetails.mockRejectedValue()
-      const app = createApp({ userAdminServiceStub: userAdminService }, 'batchUser')
+      const app = createApp('batchUser')
       return request(app)
         .get('/admin/roUsers/verify?nomisUserName=USER_NAME')
         .expect(404)
@@ -358,22 +353,8 @@ describe('/admin', () => {
     })
 
     test('should throw if submitted by non-authorised user', () => {
-      const app = createApp({ userAdminServiceStub: userAdminService }, 'roUser')
+      const app = createApp('roUser')
       return request(app).get('/admin/roUsers/verify?nomisUserName=USER_NAME').expect(403)
     })
   })
 })
-
-function createApp({ licenceServiceStub, userAdminServiceStub }, user) {
-  const prisonerService = createPrisonerServiceStub()
-  const licenceService = licenceServiceStub || createLicenceServiceStub()
-  const signInService = createSignInServiceStub()
-  const userAdminService = userAdminServiceStub || createUserAdminServiceStub()
-
-  const baseRouter = standardRouter({ licenceService, prisonerService, audit: auditStub, signInService })
-  const route = baseRouter(createAdminRoute({ userAdminService }), {
-    auditKey: 'USER_MANAGEMENT',
-  })
-
-  return appSetup(route, user, '/admin/roUsers/')
-}

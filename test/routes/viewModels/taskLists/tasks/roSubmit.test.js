@@ -15,8 +15,8 @@ describe('victim liaison task', () => {
     test('should show btn to curfewAddressReview if curfewAddressReview: UNSTARTED', () => {
       expect(
         roSubmit({
+          allowedTransition: null,
           decisions: { optedOut: true },
-          tasks: {},
         }).action
       ).toEqual({
         text: 'Continue',
@@ -29,8 +29,8 @@ describe('victim liaison task', () => {
     test('should show change link to curfewAddressReview if curfewAddressReview: DONE', () => {
       expect(
         roSubmit({
+          allowedTransition: null,
           decisions: { optedOut: false },
-          tasks: {},
         }).action
       ).toEqual({
         text: 'Continue',

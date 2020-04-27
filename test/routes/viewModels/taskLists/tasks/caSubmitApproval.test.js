@@ -23,6 +23,7 @@ describe('ca submit for approval task', () => {
     test('should return Submission unavailable - HDC refused to submit if finalChecksRefused', () => {
       expect(
         getLabel({
+          allowedTransition: null,
           decisions: { postponed: false, finalChecksRefused: true },
         })
       ).toBe('Submission unavailable - HDC refused')
@@ -31,6 +32,7 @@ describe('ca submit for approval task', () => {
     test('should return Not completed if not postponed or finalChecksRefused', () => {
       expect(
         getLabel({
+          allowedTransition: null,
           decisions: { postponed: false, finalChecksRefused: false },
         })
       ).toBe('Not completed')

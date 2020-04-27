@@ -4,6 +4,7 @@ const varyConfig = require('../../server/routes/config/vary')
 
 const createLicenceService = require('../../server/services/licenceService')
 
+/** @type {any} */
 const formValidation = require('../../server/services/utils/formValidation')
 
 afterEach(() => {
@@ -14,22 +15,18 @@ describe('licenceService', () => {
   let licenceClient
   let service
 
-  const establishmentsClient = {
-    findById: jest.fn().mockReturnValue({ a: 'b' }),
-  }
-
   beforeEach(() => {
     licenceClient = {
       getLicence: jest.fn().mockReturnValue({ licence: { a: 'b' }, version: 2, vary_version: 5 }),
       createLicence: jest.fn().mockReturnValue('abc'),
-      updateSection: jest.fn().mockReturnValue(),
-      updateStage: jest.fn().mockReturnValue(),
+      updateSection: jest.fn(),
+      updateStage: jest.fn(),
       getAdditionalConditions: jest.fn().mockReturnValue([{ user_input: 1, id: 1, field_position: null }]),
-      updateLicence: jest.fn().mockReturnValue(),
-      updateStageAndVersion: jest.fn().mockReturnValue(),
+      updateLicence: jest.fn(),
+      updateStageAndVersion: jest.fn(),
       getApprovedLicenceVersion: jest.fn().mockReturnValue({ version: 2, vary_version: 4 }),
     }
-    service = createLicenceService(licenceClient, establishmentsClient)
+    service = createLicenceService(licenceClient)
   })
 
   describe('getLicence', () => {

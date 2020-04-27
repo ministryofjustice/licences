@@ -1,4 +1,5 @@
 const { createPrisonerService } = require('../../server/services/prisonerService')
+const { createRoServiceStub } = require('../mockServices')
 
 describe('prisonerDetailsService', () => {
   let nomisClientMock
@@ -54,9 +55,9 @@ describe('prisonerDetailsService', () => {
       getRecentMovements: jest.fn().mockReturnValue(recentMovementsResponse),
     }
     const nomisClientBuilder = jest.fn().mockReturnValue(nomisClientMock)
-    roService = {
-      findResponsibleOfficer: jest.fn().mockReturnValue(responsibleOfficerResponse),
-    }
+    roService = createRoServiceStub()
+    roService.findResponsibleOfficer.mockReturnValue(responsibleOfficerResponse)
+
     service = createPrisonerService(nomisClientBuilder, roService)
   })
 

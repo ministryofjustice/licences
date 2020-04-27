@@ -1,15 +1,14 @@
 const request = require('supertest')
 
+const { appSetup, testFormPageGets } = require('../supertestSetup')
+
 const {
   createPrisonerServiceStub,
   createLicenceServiceStub,
-  authenticationMiddleware,
   auditStub,
-  appSetup,
-  testFormPageGets,
   createSignInServiceStub,
   createNomisPushServiceStub,
-} = require('../supertestSetup')
+} = require('../mockServices')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/curfew')
@@ -603,7 +602,11 @@ describe('/hdc/curfew', () => {
   })
 })
 
-function createApp({ licenceServiceStub, prisonerServiceStub, nomisPushServiceStub }, user, config = {}) {
+function createApp(
+  { licenceServiceStub = null, prisonerServiceStub = null, nomisPushServiceStub = null },
+  user,
+  config = {}
+) {
   const prisonerService = prisonerServiceStub || createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()
@@ -612,7 +615,6 @@ function createApp({ licenceServiceStub, prisonerServiceStub, nomisPushServiceSt
   const baseRouter = standardRouter({
     licenceService,
     prisonerService,
-    authenticationMiddleware,
     audit: auditStub,
     signInService,
     config,

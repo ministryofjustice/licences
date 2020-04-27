@@ -277,9 +277,7 @@ describe('TaskList models', () => {
             },
             stage: 'ELIGIBILITY',
           },
-          {},
-          {},
-          null
+          {}
         )
       ).toEqual([eligibility])
     })
@@ -301,8 +299,7 @@ describe('TaskList models', () => {
             },
             stage: 'ELIGIBILITY',
           },
-          {},
-          null
+          {}
         )
       ).toEqual([eligibility, informOffender, curfewAddress])
     })
@@ -324,8 +321,7 @@ describe('TaskList models', () => {
             },
             stage: 'ELIGIBILITY',
           },
-          {},
-          null
+          {}
         )
       ).toEqual([eligibility, curfewAddress, submitCurfewAddress])
     })
@@ -347,8 +343,7 @@ describe('TaskList models', () => {
             },
             stage: 'ELIGIBILITY',
           },
-          {},
-          null
+          {}
         )
       ).toEqual([eligibility, curfewAddress, sendBassAreaChecks])
     })
@@ -370,8 +365,7 @@ describe('TaskList models', () => {
             },
             stage: 'ELIGIBILITY',
           },
-          {},
-          null
+          {}
         )
       ).toEqual([eligibility, curfewAddressOptedOut])
     })
@@ -443,8 +437,7 @@ describe('TaskList models', () => {
             },
             stage: 'PROCESSING_CA',
           },
-          {},
-          null
+          {}
         )
       ).toEqual([
         eligibility,
@@ -624,7 +617,7 @@ describe('TaskList models', () => {
       ).toEqual([eligibility, proposedCurfewAddress, refuse, submitDecisionMaker])
     })
 
-    test('should show  Bass Address task with Approved Premises label and View/Edit button if AP input)', () => {
+    test('should show  Bass Address task with Approved Premises label and View/Edit button if AP input', () => {
       expect(
         taskListModel(
           'CA',
@@ -641,8 +634,7 @@ describe('TaskList models', () => {
             },
             stage: 'PROCESSING_CA',
           },
-          { approvedPremisesAddress: 'DONE' },
-          'null'
+          {}
         )
       ).toEqual([
         eligibility,

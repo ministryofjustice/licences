@@ -1,18 +1,26 @@
 const createCaService = require('../../server/services/caService')
+const { createRoServiceStub } = require('../mockServices')
 
 let roService
 let caService
-const lduActiveClient = { isLduPresent: jest.fn() }
+/** @type {any} */
+let lduActiveClient
+
 const responsibleOfficer = {
   isAllocated: true,
   lduCode: 'ldu-123',
 }
-roService = { findResponsibleOfficer: jest.fn().mockResolvedValue(responsibleOfficer) }
 
 describe('caService', () => {
-  describe('Allow CA to proceed to RO', () => {
-    caService = createCaService(roService, lduActiveClient, false)
+  beforeEach(() => {
+    roService = createRoServiceStub()
+    roService.findResponsibleOfficer.mockResolvedValue(responsibleOfficer)
+    lduActiveClient = { isLduPresent: jest.fn() }
 
+    caService = createCaService(roService, lduActiveClient)
+  })
+
+  describe('Allow CA to proceed to RO', () => {
     describe('getReasonForNotContinuing', () => {
       it('Should return null', async () => {
         lduActiveClient.isLduPresent.mockResolvedValue(true)
@@ -23,10 +31,6 @@ describe('caService', () => {
   })
 
   describe('Prevent CA from proceeding to RO', () => {
-    beforeEach(() => {
-      caService = createCaService(roService, lduActiveClient)
-    })
-
     describe('getReasonForNotContinuing', () => {
       it('should return [] because RO is allocated, Ldu is active', async () => {
         lduActiveClient.isLduPresent.mockResolvedValue(true)
@@ -66,11 +70,7 @@ describe('caService', () => {
     }
 
     beforeEach(() => {
-      roService = {
-        findResponsibleOfficer: jest.fn().mockResolvedValue(error),
-      }
-
-      caService = createCaService(roService, lduActiveClient, true)
+      roService.findResponsibleOfficer.mockResolvedValue(error)
     })
     it('should return NO_OFFENDER_NUMBER because no offender number on nomis for bookingId', async () => {
       const result = await caService.getReasonForNotContinuing('bookingId-1', 'token-1')

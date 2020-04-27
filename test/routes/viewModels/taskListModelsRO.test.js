@@ -161,8 +161,7 @@ describe('TaskList models', () => {
             tasks: {},
             stage: 'DECIDED',
           },
-          { version: 1 },
-          null
+          { version: 1 }
         )
       ).toEqual([riskManagement, curfewHours, additionalConditions, reportingInstructions, curfewAddressCheck])
     })
@@ -177,8 +176,7 @@ describe('TaskList models', () => {
             tasks: {},
             stage: 'DECIDED',
           },
-          { version: 1 },
-          null
+          { version: 1 }
         )
       ).toEqual([proposedCurfewAddress, curfewHours, additionalConditions, reportingInstructions, curfewAddressCheck])
     })
@@ -195,8 +193,7 @@ describe('TaskList models', () => {
             tasks: {},
             stage: 'UNSTARTED',
           },
-          { version: 1, versionDetails: {}, approvedVersion: {}, approvedVersionDetails: {} },
-          null
+          { version: 1, versionDetails: {}, approvedVersion: {}, approvedVersionDetails: {} }
         )
       ).toEqual([vary])
     })
@@ -211,8 +208,7 @@ describe('TaskList models', () => {
             tasks: {},
             stage: 'SOMETHINGELSE',
           },
-          { version: 1, approvedVersion: 1, versionDetails: {}, approvedVersionDetails: {} },
-          null
+          { version: 1, approvedVersion: 1, versionDetails: {}, approvedVersionDetails: {} }
         )
       ).toEqual([
         permissionForVariation,
@@ -239,8 +235,7 @@ describe('TaskList models', () => {
             approvedVersion: 2,
             versionDetails: { version: 1, vary_version: 0 },
             approvedVersionDetails: { version: 1, vary_version: 0, template: 'templateName' },
-          },
-          null
+          }
         )
       ).toEqual([
         viewCurrentLicence,
@@ -267,8 +262,7 @@ describe('TaskList models', () => {
             approvedVersion: null,
             versionDetails: { version: 1, vary_version: 0 },
             approvedVersionDetails: {},
-          },
-          null
+          }
         )
       ).toEqual([
         permissionForVariation,
@@ -295,8 +289,7 @@ describe('TaskList models', () => {
             approvedVersion: 1.1,
             versionDetails: { version: 1, vary_version: 2 },
             approvedVersionDetails: { version: 1, vary_version: 1 },
-          },
-          null
+          }
         )
       ).toEqual([
         permissionForVariation,
@@ -323,8 +316,7 @@ describe('TaskList models', () => {
             tasks: {},
             stage: 'PROCESSING_RO',
           },
-          {},
-          'roToCa'
+          {}
         )
       ).toEqual([
         proposedCurfewAddress,
@@ -352,8 +344,7 @@ describe('TaskList models', () => {
             tasks: {},
             stage: 'PROCESSING_CA',
           },
-          {},
-          'roToCa'
+          {}
         )
       ).toEqual([
         {
@@ -390,8 +381,7 @@ describe('TaskList models', () => {
             tasks: {},
             stage: 'APPROVAL',
           },
-          {},
-          'roToCa'
+          {}
         )
       ).toEqual([proposedCurfewAddressRejected, curfewAddressCheck, submitCA])
     })
@@ -411,8 +401,7 @@ describe('TaskList models', () => {
             tasks: {},
             stage: 'ELIGIBILITY',
           },
-          {},
-          'roToCa'
+          {}
         )
       ).toEqual([riskManagementAddressUnsuitable, curfewAddressCheck, submitCA])
     })
@@ -430,8 +419,7 @@ describe('TaskList models', () => {
             tasks: {},
             stage: 'APPROVAL',
           },
-          {},
-          'roToCa'
+          {}
         )
       ).toEqual([bassAreaCheck, curfewAddressCheck, submitCA])
     })
@@ -502,8 +490,7 @@ describe('TaskList models', () => {
             tasks: {},
             stage: 'UNSTARTED',
           },
-          {},
-          'roToCa'
+          {}
         )
       ).toEqual([
         {

@@ -1,5 +1,5 @@
 const createLduService = require('../../server/services/lduService')
-
+/** @type {any} */
 const deliusClient = {
   getAllLdusForProbationArea: jest.fn(),
   getAllProbationAreas: jest.fn(),
@@ -7,6 +7,7 @@ const deliusClient = {
 const activeLduClient = {
   allActiveLdusInArea: jest.fn(),
   updateActiveLdu: jest.fn(),
+  isLduPresent: jest.fn(),
 }
 
 const probationAreaCode = 'N02'

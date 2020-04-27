@@ -1,14 +1,13 @@
 const request = require('supertest')
 
+const { appSetup, testFormPageGets } = require('../supertestSetup')
+
 const {
   createPrisonerServiceStub,
   createLicenceServiceStub,
-  authenticationMiddleware,
   auditStub,
-  appSetup,
-  testFormPageGets,
   createSignInServiceStub,
-} = require('../supertestSetup')
+} = require('../mockServices')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/bassReferral')
@@ -340,11 +339,11 @@ function createApp({ licenceServiceStub }, user) {
   const baseRouter = standardRouter({
     licenceService,
     prisonerService,
-    authenticationMiddleware,
     audit: auditStub,
     signInService,
+    config: null,
   })
-  const route = baseRouter(createRoute({ licenceService, prisonerService }))
+  const route = baseRouter(createRoute({ licenceService, nomisPushService: null }))
 
   return appSetup(route, user, '/hdc/bassReferral')
 }
