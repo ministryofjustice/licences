@@ -1,6 +1,6 @@
 const { asyncMiddleware } = require('../utils/middleware')
 const createStandardRoutes = require('./routeWorkers/standard')
-const { getIn, mergeWithRight, omit, isEmpty } = require('../utils/functionalHelpers')
+const { getIn, mergeWithRight, omit, isEmpty, isYes } = require('../utils/functionalHelpers')
 const formConfig = require('./config/proposedAddress')
 
 module.exports = ({ licenceService, nomisPushService }) => (router, audited, { pushToNomis }) => {
@@ -101,11 +101,6 @@ function getCurfewAddressChoice(licence) {
   }
 
   return null
-}
-
-function isYes(licence, pathSegments) {
-  const answer = getIn(licence, pathSegments)
-  return answer && answer === 'Yes'
 }
 
 function getBassReferralContent(decision, licence) {

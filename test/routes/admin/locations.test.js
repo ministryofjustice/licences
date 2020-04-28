@@ -3,7 +3,6 @@ const request = require('supertest')
 const { startRoute } = require('../../supertestSetup')
 const { createLduServiceStub } = require('../../mockServices')
 
-const standardRouter = require('../../../server/routes/routeWorkers/standardRouter')
 const createAdminRoute = require('../../../server/routes/admin/locations')
 
 describe('/locations', () => {

@@ -97,6 +97,16 @@ function unwrapResultOrThrow(result, errorMessageBuilder) {
   return success
 }
 
+function isYes(obj, pathSegments) {
+  const answer = getIn(obj, pathSegments)
+  return answer ? answer === 'Yes' : false
+}
+
+function isNo(obj, pathSegments) {
+  const answer = getIn(obj, pathSegments)
+  return answer ? answer === 'No' : false
+}
+
 function sortKeys(o) {
   return Object.keys(o || {})
     .sort()
@@ -146,4 +156,6 @@ module.exports = {
   omit,
   sortKeys,
   splitEvery: R.splitEvery,
+  isYes,
+  isNo,
 }

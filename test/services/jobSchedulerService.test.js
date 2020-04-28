@@ -94,17 +94,12 @@ describe('jobSchedulerService', () => {
 
   describe('scheduler', () => {
     let jobs
-    let signInService
     let reminderService
     let dbLockingClient
     let configClient
     const jobSpec = '* * * * * *'
 
     beforeEach(() => {
-      signInService = {
-        getClientCredentialsTokens: jest.fn().mockReturnValue({ token: 'system-user-token' }),
-      }
-
       reminderService = {
         notifyRoReminders: jest.fn().mockReturnValue({}),
       }

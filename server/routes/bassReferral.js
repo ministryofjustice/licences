@@ -1,7 +1,7 @@
 const { asyncMiddleware } = require('../utils/middleware')
 const createStandardRoutes = require('./routeWorkers/standard')
 const formConfig = require('./config/bassReferral')
-const { getIn, firstItem, mergeWithRight } = require('../utils/functionalHelpers')
+const { getIn, firstItem, mergeWithRight, isYes } = require('../utils/functionalHelpers')
 const recordList = require('../services/utils/recordList')
 
 module.exports = ({ licenceService, nomisPushService }) => (router, audited, pushToNomis) => {
@@ -43,11 +43,6 @@ module.exports = ({ licenceService, nomisPushService }) => (router, audited, pus
     }
 
     return null
-  }
-
-  function isYes(licence, pathSegments) {
-    const answer = getIn(licence, pathSegments)
-    return answer && answer === 'Yes'
   }
 
   router.post(

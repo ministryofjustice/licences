@@ -2,16 +2,8 @@ const request = require('supertest')
 
 const { startRoute } = require('../supertestSetup')
 
-const {
-  createPrisonerServiceStub,
-  createLicenceServiceStub,
-  createRoServiceStub,
-  appSetup,
-  auditStub,
-  createSignInServiceStub,
-} = require('../mockServices')
+const { createRoServiceStub, createSignInServiceStub } = require('../mockServices')
 
-const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createContactRoute = require('../../server/routes/contact')
 
 let app
