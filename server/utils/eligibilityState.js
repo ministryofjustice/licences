@@ -3,20 +3,35 @@ const { getIn, isEmpty } = require('./functionalHelpers')
 
 module.exports = {
   getEligibilityState,
-  getExclusionState,
-  getCrdTimeState,
-  getSuitabilityState,
 }
 
-function getEligibilityState(notEligible, eligibilityTasks) {
-  const eligibility = notEligible ? taskStates.DONE : getOverallState(eligibilityTasks)
+function getEligibilityState(licence) {
+  const { exclusion, excluded } = getExclusionState(licence)
+  const { crdTime, insufficientTime, insufficientTimeContinue, insufficientTimeStop } = getCrdTimeState(licence)
+  const { suitability, unsuitable, unsuitableResult, exceptionalCircumstances } = getSuitabilityState(licence)
 
+  const notEligible = excluded || insufficientTimeStop || unsuitableResult
+  const eligibility = notEligible ? taskStates.DONE : getOverallState([exclusion, crdTime, suitability])
   // some things mean not eligible no matter what else, but we only know definitely eligible when all answers complete
   const eligible = notEligible ? false : eligibility === taskStates.DONE
 
   return {
-    eligibility,
-    eligible,
+    tasks: {
+      exclusion,
+      suitability,
+      crdTime,
+      eligibility,
+    },
+    decisions: {
+      eligible,
+      excluded,
+      unsuitable,
+      unsuitableResult,
+      exceptionalCircumstances,
+      insufficientTime,
+      insufficientTimeContinue,
+      insufficientTimeStop,
+    },
   }
 }
 
