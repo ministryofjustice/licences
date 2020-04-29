@@ -1,6 +1,6 @@
 import * as R from 'ramda'
 import { asyncMiddleware, authorisationMiddleware } from '../../utils/middleware'
-import { FunctionalMailboxService, LduMap, LdusWithTeamsMap } from '../../../types/probationTeams'
+import { FunctionalMailboxService, LdusWithTeamsMap } from '../../../types/probationTeams'
 
 const objectToSortedList = R.pipe(
   R.toPairs,
