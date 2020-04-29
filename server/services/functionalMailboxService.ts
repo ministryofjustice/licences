@@ -67,33 +67,6 @@ export class FunctionalMailboxService {
 
   getAllProbationAreas = async () => (await this.deliusClient.getAllProbationAreas()).content
 
-  private addProbationTeamsToLdu = async (probationAreaCode: string, ldu: Ldu): Promise<LduWithProbationTeams> => {
-    const { content: probationTeams = [] } = await this.deliusClient.getAllTeamsForLdu(probationAreaCode, ldu.code)
-    return {
-      ...ldu,
-      probationTeams,
-    }
-  }
-
-  getLdusAndTeamsForProbationArea = async (probationAreaCode): Promise<LdusWithTeamsMap> => {
-    const [{ content: ldus = [] }, { localDeliveryUnits }] = await Promise.all([
-      this.deliusClient.getAllLdusForProbationArea(probationAreaCode),
-      this.probationTeamsClient.getProbationArea(probationAreaCode),
-    ])
-
-    const ldusWithTeams = await Promise.all(ldus.map((ldu) => this.addProbationTeamsToLdu(probationAreaCode, ldu)))
-    return mergeLduAndTeamData(ldusWithTeams, localDeliveryUnits)
-  }
-
-  getLdusForProbationArea = async (probationAreaCode): Promise<LduMap> => {
-    const [{ content: ldus = [] }, { localDeliveryUnits }] = await Promise.all([
-      this.deliusClient.getAllLdusForProbationArea(probationAreaCode),
-      this.probationTeamsClient.getProbationArea(probationAreaCode),
-    ])
-
-    return mergeLduData(ldus, localDeliveryUnits)
-  }
-
   getLduWithTeams = async (probationAreaCode: string, lduCode: string): Promise<LduWithTeams> => {
     const [{ content: ldus = [] }, { content: probationTeams = [] }, localDeliveryUnitDto] = await Promise.all([
       this.deliusClient.getAllLdusForProbationArea(probationAreaCode),

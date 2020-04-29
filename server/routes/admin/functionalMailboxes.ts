@@ -26,17 +26,6 @@ export const functionalMailboxRouter = (functionalMailboxService: FunctionalMail
   )
 
   router.get(
-    '/probationAreas/:probationAreaCode/ldusAndTeams',
-    asyncMiddleware(async (req, res) => {
-      const ldusWithTeams =
-        (await functionalMailboxService.getLdusAndTeamsForProbationArea(req.params.probationAreaCode)) || {}
-      const viewData = lduWithTeamsMapToView(ldusWithTeams)
-      viewData.msg = req.flash('success')
-      res.render('admin/functionalMailboxes/ldusAndTeams', viewData)
-    })
-  )
-
-  router.get(
     '/probationAreas/:probationAreaCode/ldus',
     asyncMiddleware(async (req, res) => {
       const { probationAreaCode } = req.params

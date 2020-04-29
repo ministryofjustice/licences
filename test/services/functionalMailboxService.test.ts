@@ -2,7 +2,6 @@ import { FunctionalMailboxService, mergeLduAndTeamData } from '../../server/serv
 
 import { mockProbationTeamsClient, mockDeliusClient } from '../mockClients'
 import { LduWithProbationTeams } from '../../types/delius'
-import { LdusWithTeamsMap } from '../../types/probationTeams'
 
 describe('FunctionalMailboxService', () => {
   describe('mergeLduData', () => {
@@ -95,49 +94,6 @@ describe('FunctionalMailboxService', () => {
       deliusClient = mockDeliusClient()
       probationTeamsClient = mockProbationTeamsClient()
       functionalMailboxService = new FunctionalMailboxService(deliusClient, probationTeamsClient)
-    })
-
-    it('No LDUs or LDU FMBs', async () => {
-      deliusClient.getAllLdusForProbationArea.mockResolvedValue({})
-      probationTeamsClient.getProbationArea.mockResolvedValue({
-        probationAreaCode: 'A',
-        localDeliveryUnits: {},
-      })
-
-      const lduMap: LdusWithTeamsMap = await functionalMailboxService.getLdusAndTeamsForProbationArea('A')
-      expect(lduMap).toEqual({})
-    })
-
-    it('Delius has LDUs, but no probation teams. No FMB data', async () => {
-      deliusClient.getAllLdusForProbationArea.mockResolvedValue({
-        content: [
-          { code: 'LA', description: 'LDU A' },
-          { code: 'LB', description: 'LDU B' },
-        ],
-      })
-
-      deliusClient.getAllTeamsForLdu.mockResolvedValue({ content: [] })
-
-      probationTeamsClient.getProbationArea.mockResolvedValue({
-        probationAreaCode: 'A',
-        localDeliveryUnits: {},
-      })
-
-      const lduMap: LdusWithTeamsMap = await functionalMailboxService.getLdusAndTeamsForProbationArea('A')
-      expect(lduMap).toEqual({
-        LA: {
-          description: 'LDU A',
-          probationTeams: {},
-        },
-        LB: {
-          description: 'LDU B',
-          probationTeams: {},
-        },
-      })
-
-      expect(deliusClient.getAllTeamsForLdu).toHaveBeenCalledTimes(2)
-      expect(deliusClient.getAllTeamsForLdu).toHaveBeenCalledWith('A', 'LA')
-      expect(deliusClient.getAllTeamsForLdu).toHaveBeenCalledWith('A', 'LB')
     })
   })
 })

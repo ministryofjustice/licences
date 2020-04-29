@@ -78,7 +78,6 @@ export interface ProbationTeamMap {
 
 export interface FunctionalMailboxService {
   getAllProbationAreas: () => Promise<ProbationAreaSummary[]>
-  getLdusAndTeamsForProbationArea: (probationAreaCode: string) => Promise<LdusWithTeamsMap>
   getLdusForProbationArea: (probationAreaCode: string) => Promise<LduMap>
   getLduWithTeams: (probationAreaCode: string, lduCode: string) => Promise<LduWithTeams>
 }
