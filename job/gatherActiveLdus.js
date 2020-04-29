@@ -6,7 +6,7 @@ const { unwrapResult } = require('../server/utils/functionalHelpers')
 
 const nomisClientBuilder = require('../server/data/nomisClientBuilder')
 const createSignInService = require('../server/authentication/signInService')
-const createDeliusClient = require('../server/data/deliusClient')
+const { createDeliusClient } = require('../server/data/deliusClient')
 const createRoService = require('../server/services/roService')
 
 const signInService = createSignInService()

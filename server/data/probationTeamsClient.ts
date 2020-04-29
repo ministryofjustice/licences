@@ -10,15 +10,24 @@ const timeoutSpec = {
 }
 
 const apiUrl = `${config.probationTeams.apiUrl}`
-/**
- * @typedef {import("../../types/probationTeams").ProbationTeamsClient} ProbationTeamsClient
- */
-
-/**
- * @return { ProbationTeamsClient }
- */
 // eslint-disable-next-line import/prefer-default-export
-export const createProbationTeamsClient = (signInService): ProbationTeamsClient => {
+export const createProbationTeamsClient = (
+  signInService
+): {
+  getFunctionalMailbox(probationAreaCode, lduCode, teamCode): Promise<any>
+  deleteLduFunctionalMailbox(token, probationAreaCode, localDeliveryUnitCode): Promise<void>
+  getProbationArea(probationAreaCode): Promise<any>
+  deleteProbationTeamFunctionalMailbox(token, probationAreaCode, localDeliveryUnitCode, teamCode): Promise<void>
+  getLduWithProbationTeams(probationAreaCode, lduCode): Promise<any>
+  setLduFunctionalMailbox(token, probationAreaCode, localDeliveryUnitCode, proposedFunctionalMailbox): Promise<void>
+  setProbationTeamFunctionalMailbox(
+    token,
+    probationAreaCode,
+    localDeliveryUnitCode,
+    teamCode,
+    proposedFunctionalMailbox
+  ): Promise<void>
+} => {
   async function getResource(path) {
     const token = await signInService.getAnonymousClientCredentialsTokens('probationTeams')
     if (!token) {
@@ -83,7 +92,7 @@ export const createProbationTeamsClient = (signInService): ProbationTeamsClient 
 
   return {
     async getFunctionalMailbox(probationAreaCode, lduCode, teamCode) {
-      const ldu = await getResource(`${apiUrl}/probation-areas/${probationAreaCode}/local-delivery-units/${lduCode}`)
+      const ldu = await this.getLduWithProbationTeams(probationAreaCode, lduCode)
       const teamAddress = R.path(['probationTeams', teamCode, 'functionalMailbox'], ldu)
       const functionalMailbox = teamAddress || (ldu && ldu.functionalMailbox)
       if (!functionalMailbox) {
@@ -92,6 +101,10 @@ export const createProbationTeamsClient = (signInService): ProbationTeamsClient 
         )
       }
       return functionalMailbox
+    },
+
+    async getLduWithProbationTeams(probationAreaCode, lduCode) {
+      return getResource(`${apiUrl}/probation-areas/${probationAreaCode}/local-delivery-units/${lduCode}`)
     },
 
     async getProbationArea(probationAreaCode) {

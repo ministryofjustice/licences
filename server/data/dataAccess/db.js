@@ -11,10 +11,10 @@ const pool = new Pool({
   password: config.db.password,
   port: config.db.port,
   ssl:
-    config.production && config.db.sslEnabled === 'true'
+    config.db.sslEnabled === 'true'
       ? {
           ca: fs.readFileSync('root.cert'),
-          rejectUnauthorized: true,
+          rejectUnauthorized: config.production,
         }
       : false,
 })

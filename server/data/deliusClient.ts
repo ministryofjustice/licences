@@ -1,19 +1,12 @@
-/**
- * @typedef {import("../../types/delius").DeliusClient} DeliusClient
- */
-/** @type {any} */
-const Agent = require('agentkeepalive')
-const { HttpsAgent } = require('agentkeepalive')
-const superagent = require('superagent')
-const logger = require('../../log')
-const config = require('../config')
+import Agent, { HttpsAgent } from 'agentkeepalive'
+import superagent from 'superagent'
+import { DeliusClient } from '../../types/delius'
+import logger from '../../log'
+import config from '../config'
+import { getIn } from '../utils/functionalHelpers'
 
-const { getIn } = require('../utils/functionalHelpers')
-
-/**
- * @return { DeliusClient }
- */
-module.exports = (signInService) => {
+// eslint-disable-next-line import/prefer-default-export
+export const createDeliusClient = (signInService): DeliusClient => {
   const timeoutSpec = {
     response: config.delius.timeout.response,
     deadline: config.delius.timeout.deadline,
@@ -27,36 +20,6 @@ module.exports = (signInService) => {
 
   const apiUrl = `${config.delius.apiUrl}${config.delius.apiPrefix}`
   const keepaliveAgent = apiUrl.startsWith('https') ? new HttpsAgent(agentOptions) : new Agent(agentOptions)
-
-  return {
-    getStaffDetailsByStaffCode(staffCode) {
-      return get(`${apiUrl}/staff/staffCode/${staffCode}`)
-    },
-
-    getStaffDetailsByUsername(username) {
-      return get(`${apiUrl}/staff/username/${username}`)
-    },
-
-    getROPrisoners(deliusStaffCode) {
-      return get(`${apiUrl}/staff/staffCode/${deliusStaffCode}/managedOffenders`)
-    },
-
-    getAllOffenderManagers(offenderNo) {
-      return get(`${apiUrl}/offenders/nomsNumber/${offenderNo}/allOffenderManagers`)
-    },
-
-    getAllProbationAreas() {
-      return get(`${apiUrl}/probationAreas?excludeEstablishments=true&active=true`)
-    },
-
-    getAllLdusForProbationArea(probationAreaCode) {
-      return get(`${apiUrl}/probationAreas/code/${probationAreaCode}/localDeliveryUnits`)
-    },
-
-    addResponsibleOfficerRole(username) {
-      return put(`${apiUrl}/users/${username}/roles/${config.delius.responsibleOfficerRoleId}`)
-    },
-  }
 
   async function get(path) {
     const token = await signInService.getAnonymousClientCredentialsTokens('delius')
@@ -110,5 +73,39 @@ module.exports = (signInService) => {
       )
       return null
     }
+  }
+
+  return {
+    getStaffDetailsByStaffCode(staffCode) {
+      return get(`${apiUrl}/staff/staffCode/${staffCode}`)
+    },
+
+    getStaffDetailsByUsername(username) {
+      return get(`${apiUrl}/staff/username/${username}`)
+    },
+
+    getROPrisoners(deliusStaffCode) {
+      return get(`${apiUrl}/staff/staffCode/${deliusStaffCode}/managedOffenders`)
+    },
+
+    getAllOffenderManagers(offenderNo) {
+      return get(`${apiUrl}/offenders/nomsNumber/${offenderNo}/allOffenderManagers`)
+    },
+
+    getAllProbationAreas() {
+      return get(`${apiUrl}/probationAreas?excludeEstablishments=true&active=true`)
+    },
+
+    getAllLdusForProbationArea(probationAreaCode) {
+      return get(`${apiUrl}/probationAreas/code/${probationAreaCode}/localDeliveryUnits`)
+    },
+
+    getAllTeamsForLdu(probationAreaCode, lduCode) {
+      return get(`${apiUrl}/probationAreas/code/${probationAreaCode}/localDeliveryUnits/code/${lduCode}/teams`)
+    },
+
+    addResponsibleOfficerRole(username) {
+      return put(`${apiUrl}/users/${username}/roles/${config.delius.responsibleOfficerRoleId}`)
+    },
   }
 }

@@ -21,6 +21,7 @@ describe('roService', () => {
       getAllProbationAreas: jest.fn(),
       getAllLdusForProbationArea: jest.fn(),
       addResponsibleOfficerRole: jest.fn(),
+      getAllTeamsForLdu: jest.fn(),
     }
 
     const nomisClientBuilder = jest.fn().mockReturnValue(nomisClient)

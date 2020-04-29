@@ -1,7 +1,7 @@
 const nock = require('nock')
 
 const config = require('../../server/config')
-const createDeliusClient = require('../../server/data/deliusClient')
+const { createDeliusClient } = require('../../server/data/deliusClient')
 
 describe('deliusClient', () => {
   let fakeDelius

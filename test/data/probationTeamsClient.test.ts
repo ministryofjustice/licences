@@ -1,7 +1,6 @@
-const nock = require('nock')
-
-const config = require('../../server/config')
-const { createProbationTeamsClient } = require('../../dist/server/data/probationTeamsClient')
+import nock from 'nock'
+import config from '../../server/config'
+import { createProbationTeamsClient } from '../../server/data/probationTeamsClient'
 
 describe('probationTeamsClient', () => {
   let fakeProbationTeamsService

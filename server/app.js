@@ -36,6 +36,7 @@ const locationsRouter = require('./routes/admin/locations')
 const warningsRouter = require('./routes/admin/warnings')
 const licenceSearchRouter = require('./routes/admin/licenceSearch')
 const licenceRouter = require('./routes/admin/licence')
+const { functionalMailboxRouter } = require('./routes/admin/functionalMailboxes')
 const apiRouter = require('./routes/api')
 
 const caseListRouter = require('./routes/caseList')
@@ -86,6 +87,7 @@ module.exports = function createApp({
   caService,
   warningClient,
   lduService,
+  functionalMailboxService,
   roNotificationHandler,
 }) {
   const app = express()
@@ -353,6 +355,10 @@ module.exports = function createApp({
   app.use(
     '/admin/licences/',
     secureRoute(licenceRouter(licenceService, signInService, prisonerService, audit, roNotificationHandler))
+  )
+  app.use(
+    '/admin/functionalMailboxes',
+    secureRoute(functionalMailboxRouter(functionalMailboxService), { auditKey: 'FUNCTIONAL_MAILBOX' })
   )
 
   app.use('/hdc/contact/', secureRoute(contactRouter(userAdminService, roService, signInService)))

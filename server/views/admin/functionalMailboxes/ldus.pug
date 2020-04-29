@@ -1,0 +1,15 @@
+extends ../../layout
+
+block content
+
+  div.back-link-container.smallPaddingTop
+    a#back.link-back(href="/admin/functionalMailboxes/probationAreas") Back
+
+
+  h1.heading-large LDUs in #{probationAreaCode}
+  div.pure-g.form-group.smallPaddingTop
+    div.form-group.pure-u-1.pure-u-sm-10-24
+      ul
+        each ldu in ldus
+          li
+            a.link(href="/admin/functionalMailboxes/probationAreas/" + probationAreaCode + "/ldus/" + ldu.code) #{ldu.description} (#{ldu.code})

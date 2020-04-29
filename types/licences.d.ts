@@ -1,4 +1,4 @@
-import { StaffDetails, Ldu, ProbationAreaSummary } from './delius'
+import { StaffDetails, ProbationAreaSummary } from './delius'
 
 interface ResponsibleOfficer {
   deliusId: string
@@ -119,7 +119,7 @@ interface ProbationArea {
   ldus: Array<LduStatus>
 }
 
-interface LduStatus {
+export interface LduStatus {
   code: string
   description: string
   active: boolean
