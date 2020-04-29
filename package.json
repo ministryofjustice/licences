@@ -13,7 +13,7 @@
     "watch-ts": "tsc -w",
     "watch-node": "DEBUG=gov-starter-server* nodemon --watch dist/ dist/server.js",
     "build": "npm run clean && npm run css-build && tsc && npm run copy-views",
-    "start": "node server.js",
+    "start": "node dist/server.js",
     "start:dev": "npm run build && concurrently -k -p \"[{name}]\" -n \"Views,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-views\" \"npm run watch-ts\" \"npm run watch-node\"",
     "test": "jest",
     "test-ci": "jest --runInBand",
