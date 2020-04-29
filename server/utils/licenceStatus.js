@@ -1,8 +1,10 @@
-const { taskStates } = require('../services/config/taskStates')
+const { taskStates, getOverallState } = require('../services/config/taskStates')
 const { licenceStages } = require('../services/config/licenceStages')
 const { getIn, isEmpty, flatten } = require('./functionalHelpers')
-const { isAcceptedAddress } = require('./addressHelpers')
+
 const { getBassAreaState, getBassRequestState, getBassState } = require('./bassAddressState')
+const { getCurfewAddressReviewState, getCurfewAddressState } = require('./curfewAddressState')
+const { getEligibilityState, getExclusionState, getCrdTimeState, getSuitabilityState } = require('./eligibilityState')
 
 module.exports = { getLicenceStatus }
 
@@ -246,83 +248,6 @@ function getEligibilityStageState(licence) {
   }
 }
 
-function getEligibilityState(notEligible, eligibilityTasks) {
-  const eligibility = notEligible ? taskStates.DONE : getOverallState(eligibilityTasks)
-
-  // some things mean not eligible no matter what else, but we only know definitely eligible when all answers complete
-  const eligible = notEligible ? false : eligibility === taskStates.DONE
-
-  return {
-    eligibility,
-    eligible,
-  }
-}
-
-function getExclusionState(licence) {
-  const excludedAnswer = getIn(licence, ['eligibility', 'excluded', 'decision'])
-
-  return {
-    excluded: excludedAnswer === 'Yes',
-    exclusion: excludedAnswer ? taskStates.DONE : taskStates.UNSTARTED,
-  }
-}
-
-function getCrdTimeState(licence) {
-  const decision = getIn(licence, ['eligibility', 'crdTime', 'decision'])
-  const dmApproval = getIn(licence, ['eligibility', 'crdTime', 'dmApproval'])
-
-  return {
-    insufficientTimeContinue: decision === 'Yes' && dmApproval === 'Yes',
-    insufficientTimeStop: decision === 'Yes' && dmApproval === 'No',
-    insufficientTime: decision === 'Yes',
-    crdTime: getState(),
-  }
-
-  function getState() {
-    if (isEmpty(getIn(licence, ['eligibility', 'crdTime']))) {
-      return taskStates.UNSTARTED
-    }
-
-    if (decision === 'No') {
-      return taskStates.DONE
-    }
-
-    if (isEmpty(dmApproval)) {
-      return taskStates.STARTED
-    }
-
-    return taskStates.DONE
-  }
-}
-
-function getSuitabilityState(licence) {
-  const unsuitableAnswer = getIn(licence, ['eligibility', 'suitability', 'decision'])
-  const exceptionalCircumstances = getIn(licence, ['eligibility', 'exceptionalCircumstances', 'decision'])
-
-  return {
-    unsuitable: unsuitableAnswer === 'Yes',
-    exceptionalCircumstances: exceptionalCircumstances === 'Yes',
-    unsuitableResult: unsuitableAnswer === 'Yes' && exceptionalCircumstances === 'No',
-    suitability: getState(),
-  }
-
-  function getState() {
-    if (!unsuitableAnswer) {
-      return taskStates.UNSTARTED
-    }
-
-    if (unsuitableAnswer === 'No') {
-      return taskStates.DONE
-    }
-
-    if (exceptionalCircumstances) {
-      return taskStates.DONE
-    }
-
-    return taskStates.STARTED
-  }
-}
-
 function getOptOutState(licence) {
   const optOutAnswer = getIn(licence, ['proposedAddress', 'optOut', 'decision'])
 
@@ -385,114 +310,6 @@ function extractCaRefusalReasonText(reason) {
     addressUnsuitable: 'No available address',
     insufficientTime: 'Out of time',
   }[reason]
-}
-
-function getCurfewAddressState(licence, optedOut, bassReferralNeeded, curfewAddressRejected) {
-  const address = getIn(licence, ['proposedAddress', 'curfewAddress']) || {}
-
-  return {
-    offenderIsMainOccupier: getIn(address, ['occupier', 'isOffender']) === 'Yes',
-    curfewAddress: getAddressState(),
-  }
-
-  function getAddressState() {
-    if (optedOut || bassReferralNeeded) {
-      return taskStates.DONE
-    }
-
-    if (isEmpty(address)) {
-      return taskStates.UNSTARTED
-    }
-
-    if (curfewAddressRejected) {
-      return taskStates.STARTED
-    }
-
-    const required = ['cautionedAgainstResident', 'addressLine1', 'addressTown', 'postCode']
-
-    if (required.some((field) => !address[field])) {
-      return taskStates.STARTED
-    }
-
-    const offenderIsMainOccupier = getIn(address, ['occupier', 'isOffender']) === 'Yes'
-
-    if (!offenderIsMainOccupier && !address.telephone) {
-      return taskStates.STARTED
-    }
-
-    return taskStates.DONE
-  }
-}
-
-const approvedPremisesAddressState = (licence) => {
-  const approvedPremisesAddressAnswer =
-    getIn(licence, ['curfew', 'approvedPremisesAddress']) ||
-    getIn(licence, ['bassReferral', 'approvedPremisesAddress']) ||
-    {}
-  if (isEmpty(approvedPremisesAddressAnswer)) {
-    return taskStates.UNSTARTED
-  }
-
-  if (
-    approvedPremisesAddressAnswer.addressLine1 &&
-    approvedPremisesAddressAnswer.addressTown &&
-    approvedPremisesAddressAnswer.postCode
-  ) {
-    return taskStates.DONE
-  }
-
-  return taskStates.STARTED
-}
-
-const taskCompletion = (licence) => {
-  const { consent, electricity } = getIn(licence, ['curfew', 'curfewAddressReview']) || {}
-  const curfewAddress = getIn(licence, ['proposedAddress', 'curfewAddress']) || {}
-  const offenderIsOccupier = getIn(curfewAddress, ['occupier', 'isOffender']) === 'Yes'
-
-  if (offenderIsOccupier && electricity) {
-    return taskStates.DONE
-  }
-  if (consent && electricity) {
-    return taskStates.DONE
-  }
-  if (consent || electricity) {
-    return taskStates.STARTED
-  }
-  return taskStates.UNSTARTED
-}
-
-function getCurfewAddressReviewState(licence) {
-  const approvedPremisesRequiredAnswer =
-    getIn(licence, ['curfew', 'approvedPremises', 'required']) ||
-    getIn(licence, ['bassReferral', 'bassAreaCheck', 'approvedPremisesRequiredYesNo']) ||
-    {}
-
-  if (approvedPremisesRequiredAnswer === 'Yes') {
-    const approvedAddressTaskState = approvedPremisesAddressState(licence)
-    return {
-      approvedPremisesRequired: true,
-      approvedPremisesAddress: approvedAddressTaskState,
-      curfewAddressReview: approvedAddressTaskState,
-      curfewAddressApproved: false,
-      addressReviewFailed: false,
-      addressWithdrawn: false,
-    }
-  }
-
-  const addressReview = getIn(licence, ['curfew', 'curfewAddressReview']) || {}
-  const rejectedAddresses = getIn(licence, ['proposedAddress', 'rejections'])
-  const curfewAddress = getIn(licence, ['proposedAddress', 'curfewAddress']) || {}
-  const addressSuitable = getIn(licence, ['risk', 'riskManagement', 'proposedAddressSuitable'])
-  const offenderIsOccupier = getIn(curfewAddress, ['occupier', 'isOffender']) === 'Yes'
-
-  return {
-    approvedPremisesRequired: false,
-    approvedPremisesAddress: taskStates.UNSTARTED,
-    curfewAddressReview: taskCompletion(licence),
-    curfewAddressApproved: isAcceptedAddress(addressReview, addressSuitable, offenderIsOccupier),
-    addressReviewFailed: addressReview.consent === 'No' || addressReview.electricity === 'No',
-    addressWithdrawn: isEmpty(curfewAddress) && rejectedAddresses && rejectedAddresses.length > 0,
-  }
 }
 
 function getCurfewHoursState(licence) {
@@ -609,18 +426,6 @@ function getFinalChecksState(licence, seriousOffence, onRemand) {
     finalChecksRefused,
     postponed,
   }
-}
-
-function getOverallState(tasks) {
-  if (tasks.every((it) => it === taskStates.UNSTARTED)) {
-    return taskStates.UNSTARTED
-  }
-
-  if (tasks.every((it) => it === taskStates.DONE)) {
-    return taskStates.DONE
-  }
-
-  return taskStates.STARTED
 }
 
 function isPostDecision(stage) {
