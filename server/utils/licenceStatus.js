@@ -4,7 +4,7 @@ const { getIn, isEmpty, flatten } = require('./functionalHelpers')
 
 const { getBassAreaState, getBassRequestState, getBassState } = require('./bassAddressState')
 const { getCurfewAddressReviewState, getCurfewAddressState } = require('./curfewAddressState')
-const { getEligibilityState, getExclusionState, getCrdTimeState, getSuitabilityState } = require('./eligibilityState')
+const { getEligibilityState } = require('./eligibilityState')
 
 module.exports = { getLicenceStatus }
 
@@ -195,12 +195,7 @@ function getCaStageState(licence) {
 }
 
 function getEligibilityStageState(licence) {
-  const { exclusion, excluded } = getExclusionState(licence)
-  const { crdTime, insufficientTime, insufficientTimeContinue, insufficientTimeStop } = getCrdTimeState(licence)
-  const { suitability, unsuitable, unsuitableResult, exceptionalCircumstances } = getSuitabilityState(licence)
-
-  const notEligible = excluded || insufficientTimeStop || unsuitableResult
-  const { eligibility, eligible } = getEligibilityState(notEligible, [exclusion, crdTime, suitability])
+  const eligibilityState = getEligibilityState(licence)
 
   const { curfewAddressApproved, addressReviewFailed } = getCurfewAddressReviewState(licence)
   const { addressUnsuitable, riskManagement } = getRiskManagementState(licence)
@@ -217,14 +212,7 @@ function getEligibilityStageState(licence) {
 
   return {
     decisions: {
-      exceptionalCircumstances,
-      excluded,
-      insufficientTime,
-      insufficientTimeContinue,
-      insufficientTimeStop,
-      unsuitable,
-      unsuitableResult,
-      eligible,
+      ...eligibilityState.decisions,
       optedOut,
       bassReferralNeeded,
       bassAreaSpecified,
@@ -236,10 +224,7 @@ function getEligibilityStageState(licence) {
       addressUnsuitable,
     },
     tasks: {
-      exclusion,
-      crdTime,
-      suitability,
-      eligibility,
+      ...eligibilityState.tasks,
       optOut,
       bassRequest,
       curfewAddress,
