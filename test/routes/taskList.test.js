@@ -60,7 +60,7 @@ const dmHasProvidedHdcDecisionComments = {
   },
 }
 
-const caHasRefusedHdc = {
+const caHasRefusedHdcButNotProvidedReason = {
   stage: 'DECIDED',
   licence: {
     approval: {
@@ -71,6 +71,23 @@ const caHasRefusedHdc = {
     finalChecks: {
       refusal: {
         decision: 'Yes',
+      },
+    },
+  },
+}
+
+const caHasRefusedHdcAndProvidedReason = {
+  stage: 'DECIDED',
+  licence: {
+    approval: {
+      release: {
+        decision: 'Yes',
+      },
+    },
+    finalChecks: {
+      refusal: {
+        decision: 'Yes',
+        reason: 'addressUnsuitable',
       },
     },
   },
@@ -353,8 +370,8 @@ describe('GET /taskList/:prisonNumber', () => {
         })
     })
 
-    test('should contain "Home detention curfew refused by prison case administrator" ', () => {
-      licenceService.getLicence.mockResolvedValue(caHasRefusedHdc)
+    test('should contain "Home detention curfew refused by prison case admin" ', () => {
+      licenceService.getLicence.mockResolvedValue(caHasRefusedHdcButNotProvidedReason)
 
       const app = createApp(
         { licenceServiceStub: licenceService, prisonerServiceStub: prisonerService, caServiceStub: caService },
@@ -367,6 +384,24 @@ describe('GET /taskList/:prisonNumber', () => {
         .expect('Content-Type', /html/)
         .expect((res) => {
           expect(res.text).toContain('Home detention curfew refused by prison case admin')
+          expect(res.text).not.toContain('case admin:')
+        })
+    })
+
+    test('should contain "Home detention curfew refused by prison case admin: No available address" ', () => {
+      licenceService.getLicence.mockResolvedValue(caHasRefusedHdcAndProvidedReason)
+
+      const app = createApp(
+        { licenceServiceStub: licenceService, prisonerServiceStub: prisonerService, caServiceStub: caService },
+        'caUser'
+      )
+
+      return request(app)
+        .get('/taskList/123')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect((res) => {
+          expect(res.text).toContain('Home detention curfew refused by prison case admin: No available address')
         })
     })
 
