@@ -5,6 +5,9 @@ block content
   div.back-link-container.smallPaddingTop
     a#back.link-back(href="/admin/functionalMailboxes/probationAreas") Back
 
+  if msg && msg[0]
+    div.error-banner.marginTopMedium
+      span.bold #{msg[0]}
 
   h1.heading-large LDUs in #{probationAreaCode}
   div.pure-g.form-group.smallPaddingTop

@@ -28,16 +28,14 @@ export interface ProbationTeamsClient {
   getLduWithProbationTeams: (probationAreaCode, lduCode) => Promise<LocalDeliveryUnitDto>
 
   setLduFunctionalMailbox: (
-    token: string,
     probationAreaCode: string,
     localDeliveryUnitCode: string,
     proposedFunctionalMailbox: string
   ) => Promise<Void>
 
-  deleteLduFunctionalMailbox: (token: string, probationAreaCode: string, localDeliveryUnitCode: string) => Promise<Void>
+  deleteLduFunctionalMailbox: (probationAreaCode: string, localDeliveryUnitCode: string) => Promise<Void>
 
   setProbationTeamFunctionalMailbox: (
-    token: string,
     probationAreaCode: string,
     localDeliveryUnitCode: string,
     teamCode: string,
@@ -45,7 +43,6 @@ export interface ProbationTeamsClient {
   ) => Promise<Void>
 
   deleteProbationTeamFunctionalMailbox: (
-    token: string,
     probationAreaCode: string,
     localDeliveryUnitCode: string,
     teamCode: string
@@ -80,4 +77,5 @@ export interface FunctionalMailboxService {
   getAllProbationAreas: () => Promise<ProbationAreaSummary[]>
   getLdusForProbationArea: (probationAreaCode: string) => Promise<LduMap>
   getLduWithTeams: (probationAreaCode: string, lduCode: string) => Promise<LduWithTeams>
+  updateLduFunctionalMailbox: (probationAreaCode: string, lduCode: string, functionalMailbox: string) => Promise<void>
 }

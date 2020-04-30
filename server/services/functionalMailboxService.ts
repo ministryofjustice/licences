@@ -1,31 +1,6 @@
 import * as R from 'ramda'
-import {
-  LduMap,
-  LdusWithTeamsMap,
-  LduWithTeams,
-  LocalDeliveryUnitDto,
-  ProbationTeamsClient,
-} from '../../types/probationTeams'
-import { DeliusClient, Ldu, LduWithProbationTeams, ProbationTeam } from '../../types/delius'
-
-export const mergeLduAndTeamData = (
-  ldus: LduWithProbationTeams[],
-  lduDtos: {
-    [localDeliveryUnitCode: string]: LocalDeliveryUnitDto
-  }
-): LdusWithTeamsMap => {
-  const lduMap = R.pipe(
-    R.indexBy(R.prop('code')),
-    R.map((ldu) => ({
-      description: ldu.description,
-      probationTeams: R.pipe(R.indexBy(R.prop('code')), R.map(R.pick(['description'])))(ldu.probationTeams),
-    }))
-  )(ldus)
-
-  const filteredDtos = R.map(R.pick(['functionalMailbox', 'probationTeams']), lduDtos)
-
-  return R.mergeDeepRight(lduMap, filteredDtos)
-}
+import { LduMap, LduWithTeams, LocalDeliveryUnitDto, ProbationTeamsClient } from '../../types/probationTeams'
+import { DeliusClient, Ldu, ProbationTeam } from '../../types/delius'
 
 export const mergeLduData = (
   ldus: Ldu[],
@@ -67,6 +42,15 @@ export class FunctionalMailboxService {
 
   getAllProbationAreas = async () => (await this.deliusClient.getAllProbationAreas()).content
 
+  getLdusForProbationArea = async (probationAreaCode): Promise<LduMap> => {
+    const [{ content: ldus = [] }, { localDeliveryUnits }] = await Promise.all([
+      this.deliusClient.getAllLdusForProbationArea(probationAreaCode),
+      this.probationTeamsClient.getProbationArea(probationAreaCode),
+    ])
+
+    return mergeLduData(ldus, localDeliveryUnits)
+  }
+
   getLduWithTeams = async (probationAreaCode: string, lduCode: string): Promise<LduWithTeams> => {
     const [{ content: ldus = [] }, { content: probationTeams = [] }, localDeliveryUnitDto] = await Promise.all([
       this.deliusClient.getAllLdusForProbationArea(probationAreaCode),
@@ -78,6 +62,14 @@ export class FunctionalMailboxService {
       description: getDescription(ldus, lduCode),
       functionalMailbox: R.propOr('', 'functionalMailbox', localDeliveryUnitDto),
       probationTeams: mergeProbationTeams(probationTeams, localDeliveryUnitDto),
+    }
+  }
+
+  updateLduFunctionalMailbox = async (probationAreaCode: string, lduCode: string, functionalMailbox: string) => {
+    if (functionalMailbox) {
+      await this.probationTeamsClient.setLduFunctionalMailbox(probationAreaCode, lduCode, functionalMailbox)
+    } else {
+      await this.probationTeamsClient.deleteLduFunctionalMailbox(probationAreaCode, lduCode)
     }
   }
 }

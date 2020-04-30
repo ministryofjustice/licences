@@ -11,23 +11,7 @@ const timeoutSpec = {
 
 const apiUrl = `${config.probationTeams.apiUrl}`
 // eslint-disable-next-line import/prefer-default-export
-export const createProbationTeamsClient = (
-  signInService
-): {
-  getFunctionalMailbox(probationAreaCode, lduCode, teamCode): Promise<any>
-  deleteLduFunctionalMailbox(token, probationAreaCode, localDeliveryUnitCode): Promise<void>
-  getProbationArea(probationAreaCode): Promise<any>
-  deleteProbationTeamFunctionalMailbox(token, probationAreaCode, localDeliveryUnitCode, teamCode): Promise<void>
-  getLduWithProbationTeams(probationAreaCode, lduCode): Promise<any>
-  setLduFunctionalMailbox(token, probationAreaCode, localDeliveryUnitCode, proposedFunctionalMailbox): Promise<void>
-  setProbationTeamFunctionalMailbox(
-    token,
-    probationAreaCode,
-    localDeliveryUnitCode,
-    teamCode,
-    proposedFunctionalMailbox
-  ): Promise<void>
-} => {
+export const createProbationTeamsClient = (signInService): ProbationTeamsClient => {
   async function getResource(path) {
     const token = await signInService.getAnonymousClientCredentialsTokens('probationTeams')
     if (!token) {
@@ -50,27 +34,30 @@ export const createProbationTeamsClient = (
     }
   }
 
-  async function deleteResource(token: string, path: string) {
+  async function deleteResource(path: string) {
+    const token = await signInService.getAnonymousClientCredentialsTokens('probationTeams')
     if (!token) {
-      throw Error(`No token supplied when attempting to DELETE probationTeamsService: ${path}`)
+      throw Error(`Failed to get token when attempting to GET probationTeamsService: ${path}`)
     }
 
     try {
       logger.debug(`DELETE ${path}`)
-      const result = await superagent.delete(path).set('Authorization', `Bearer ${token}`).timeout(timeoutSpec)
+      const result = await superagent.delete(path).set('Authorization', `Bearer ${token.token}`).timeout(timeoutSpec)
       logger.debug(`DELETE ${path} -> ${result.status}`)
     } catch (error) {
       if (error.status === 404) {
         logger.debug('Returned 404', path, error.response, error.stack)
+        return
       }
       logger.warn('Error calling probationTeamsService', path, error.response, error.stack)
       throw error
     }
   }
 
-  async function putResource(token: string, path: string, body: string) {
+  async function putResource(path: string, body: string) {
+    const token = await signInService.getAnonymousClientCredentialsTokens('probationTeams')
     if (!token) {
-      throw Error(`No token supplied when attempting to PUT probationTeamsService: ${path}`)
+      throw Error(`Failed to get token when attempting to GET probationTeamsService: ${path}`)
     }
 
     try {
@@ -78,10 +65,10 @@ export const createProbationTeamsClient = (
 
       const result = await superagent
         .put(path)
-        .type('json')
-        .set('Authorization', `Bearer ${token}`)
-        .send(body)
+        .type('application/json')
+        .set('Authorization', `Bearer ${token.token}`)
         .timeout(timeoutSpec)
+        .send(body)
 
       logger.debug(`PUT ${path} -> ${result.status}`)
     } catch (error) {
@@ -111,47 +98,32 @@ export const createProbationTeamsClient = (
       return getResource(`${apiUrl}/probation-areas/${probationAreaCode}`)
     },
 
-    async deleteLduFunctionalMailbox(token, probationAreaCode, localDeliveryUnitCode): Promise<void> {
+    async deleteLduFunctionalMailbox(probationAreaCode, localDeliveryUnitCode): Promise<void> {
       await deleteResource(
-        token,
         `${apiUrl}/probation-areas/${probationAreaCode}/local-delivery-units/${localDeliveryUnitCode}/functional-mailbox`
       )
     },
 
-    async deleteProbationTeamFunctionalMailbox(
-      token,
-      probationAreaCode,
-      localDeliveryUnitCode,
-      teamCode
-    ): Promise<void> {
-      await deleteResource(
-        token,
-        `${apiUrl}/probation-areas/${probationAreaCode}/local-delivery-units/${localDeliveryUnitCode}/teams/${teamCode}/functional-mailbox`
-      )
-    },
-
-    async setLduFunctionalMailbox(
-      token,
-      probationAreaCode,
-      localDeliveryUnitCode,
-      proposedFunctionalMailbox
-    ): Promise<void> {
+    async setLduFunctionalMailbox(probationAreaCode, localDeliveryUnitCode, proposedFunctionalMailbox): Promise<void> {
       await putResource(
-        token,
         `${apiUrl}/probation-areas/${probationAreaCode}/local-delivery-units/${localDeliveryUnitCode}/functional-mailbox`,
         `"${proposedFunctionalMailbox}"`
       )
     },
 
+    async deleteProbationTeamFunctionalMailbox(probationAreaCode, localDeliveryUnitCode, teamCode): Promise<void> {
+      await deleteResource(
+        `${apiUrl}/probation-areas/${probationAreaCode}/local-delivery-units/${localDeliveryUnitCode}/teams/${teamCode}/functional-mailbox`
+      )
+    },
+
     async setProbationTeamFunctionalMailbox(
-      token,
       probationAreaCode,
       localDeliveryUnitCode,
       teamCode,
       proposedFunctionalMailbox
     ): Promise<void> {
       await putResource(
-        token,
         `${apiUrl}/probation-areas/${probationAreaCode}/local-delivery-units/${localDeliveryUnitCode}/teams/${teamCode}/functional-mailbox`,
         `"${proposedFunctionalMailbox}"`
       )

@@ -1,4 +1,4 @@
-import { lduWithTeamsMapToView } from '../../../server/routes/admin/functionalMailboxes'
+import { lduWithTeamsMapToView, validateLduFmb } from '../../../server/routes/admin/functionalMailboxes'
 
 describe('functionalMailboxes router', () => {
   describe('toViewData', () => {
@@ -70,6 +70,54 @@ describe('functionalMailboxes router', () => {
           ],
         },
       ])
+    })
+  })
+  describe('lduFmbSchema', () => {
+    it('accepts valid values', () => {
+      const { error, value } = validateLduFmb('ABCDEFGHIJ', 'VW_XYZ123', 'a@b.com')
+      expect(error).toBeNull()
+      expect(value).toEqual({
+        probationAreaCode: 'ABCDEFGHIJ',
+        lduCode: 'VW_XYZ123',
+        functionalMailbox: 'a@b.com',
+      })
+    })
+
+    it('accepts empty fmb', () => {
+      const { error, value } = validateLduFmb('A', 'B', '')
+      expect(error).toBeNull()
+      expect(value).toEqual({
+        probationAreaCode: 'A',
+        lduCode: 'B',
+        functionalMailbox: '',
+      })
+    })
+
+    it('reject invalid fmb', () => {
+      const { error, value } = validateLduFmb('A', 'B', 'abcd123')
+      expect(error.details[0]).toEqual(
+        expect.objectContaining({ message: '"Functional Mailbox" must be a valid email', path: ['functionalMailbox'] })
+      )
+      expect(value).toEqual({ functionalMailbox: 'abcd123', lduCode: 'B', probationAreaCode: 'A' })
+    })
+
+    it('reject invalid codes', () => {
+      const { error, value } = validateLduFmb('A B', 'A*B', 'abc@def.com')
+      expect(error.details).toEqual([
+        expect.objectContaining({
+          message: '"probationAreaCode" with value "A B" fails to match the required pattern: /^[0-9A-Z_]{1,10}$/',
+          path: ['probationAreaCode'],
+        }),
+        expect.objectContaining({
+          message: '"lduCode" with value "A*B" fails to match the required pattern: /^[0-9A-Z_]{1,10}$/',
+          path: ['lduCode'],
+        }),
+      ])
+    })
+
+    it('trims space', () => {
+      const { value } = validateLduFmb(' A ', '  B ', '  abc@def.com ')
+      expect(value).toEqual({ functionalMailbox: 'abc@def.com', lduCode: 'B', probationAreaCode: 'A' })
     })
   })
 })

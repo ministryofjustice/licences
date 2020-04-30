@@ -1,4 +1,5 @@
 import * as R from 'ramda'
+import * as Joi from 'joi'
 import { asyncMiddleware, authorisationMiddleware } from '../../utils/middleware'
 import { FunctionalMailboxService, LdusWithTeamsMap } from '../../../types/probationTeams'
 
@@ -13,6 +14,21 @@ export const lduWithTeamsMapToView = (ldus: LdusWithTeamsMap) =>
     ...ldu,
     probationTeams: ldu.probationTeams ? objectToSortedList(ldu.probationTeams) : [],
   }))
+
+const codeSchema = Joi.string()
+  .trim()
+  .required()
+  .regex(/^[0-9A-Z_]{1,10}$/)
+
+const lduFmbSchema = Joi.object({
+  probationAreaCode: codeSchema,
+  lduCode: codeSchema,
+  // functionalMailbox - absence indicates that the FMB should be deleted
+  functionalMailbox: Joi.string().trim().allow('').email().label('Functional Mailbox'),
+})
+
+export const validateLduFmb = (probationAreaCode, lduCode, functionalMailbox) =>
+  Joi.validate({ probationAreaCode, lduCode, functionalMailbox }, lduFmbSchema, { abortEarly: false })
 
 export const functionalMailboxRouter = (functionalMailboxService: FunctionalMailboxService) => (router, audited) => {
   router.use(authorisationMiddleware)
@@ -48,12 +64,34 @@ export const functionalMailboxRouter = (functionalMailboxService: FunctionalMail
       const viewData = {
         probationAreaCode,
         lduCode,
-        lduWithTeams,
-        // msg: req.flash('success'),
+        ...lduWithTeams,
+        errors: req.flash('errors'),
       }
       res.render('admin/functionalMailboxes/lduWithTeams', viewData)
     })
   )
 
+  router.post(
+    '/probationAreas/:probationAreaCode/ldus/:lduCode',
+    asyncMiddleware(async (req, res) => {
+      const {
+        body: { functionalMailbox },
+        params: { lduCode, probationAreaCode },
+      } = req
+      const { error, value } = validateLduFmb(probationAreaCode, lduCode, functionalMailbox)
+      if (error) {
+        req.flash('errors', error.details[0])
+        res.redirect(`/admin/functionalMailboxes/probationAreas/${probationAreaCode}/ldus/${lduCode}`)
+      } else {
+        await functionalMailboxService.updateLduFunctionalMailbox(probationAreaCode, lduCode, value.functionalMailbox)
+        if (value.functionalMailbox) {
+          req.flash('success', `Updated functional mailbox for LDU ${lduCode} to "${value.functionalMailbox}"`)
+        } else {
+          req.flash('success', `Deleted functional mailbox for LDU ${lduCode}`)
+        }
+        res.redirect(`/admin/functionalMailboxes/probationAreas/${probationAreaCode}/ldus`)
+      }
+    })
+  )
   return router
 }
