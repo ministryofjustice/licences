@@ -51,7 +51,7 @@ export class FunctionalMailboxService {
     return mergeLduData(ldus, localDeliveryUnits)
   }
 
-  getLduWithTeams = async (probationAreaCode: string, lduCode: string): Promise<LduWithTeams> => {
+  getLduWithProbationTeams = async (probationAreaCode: string, lduCode: string): Promise<LduWithTeams> => {
     const [
       { content: ldus = [] } = {},
       { content: probationTeams = [] } = {},

@@ -1,4 +1,11 @@
-import { lduWithTeamsMapToView, validateLduFmb } from '../../../server/routes/admin/functionalMailboxes'
+import supertest from 'supertest'
+import {
+  lduWithTeamsMapToView,
+  validateLduFmb,
+  functionalMailboxRouter,
+} from '../../../server/routes/admin/functionalMailboxes'
+
+const { startRoute } = require('../../supertestSetup')
 
 describe('functionalMailboxes router', () => {
   describe('toViewData', () => {
@@ -118,6 +125,61 @@ describe('functionalMailboxes router', () => {
     it('trims space', () => {
       const { value } = validateLduFmb(' A ', '  B ', '  abc@def.com ')
       expect(value).toEqual({ functionalMailbox: 'abc@def.com', lduCode: 'B', probationAreaCode: 'A' })
+    })
+  })
+
+  describe('router', () => {
+    let functionalMailboxService
+
+    const createApp = (user) =>
+      startRoute(functionalMailboxRouter(functionalMailboxService), '/admin/functionalMailboxes', user, undefined)
+
+    beforeEach(() => {
+      functionalMailboxService = {
+        getAllProbationAreas: jest.fn(),
+        getLdusForProbationArea: jest.fn(),
+        getLduWithTeams: jest.fn(),
+        updateLduFunctionalMailbox: jest.fn(),
+        updateProbationTeamFunctionalMailbox: jest.fn(),
+      }
+    })
+
+    it('/probationAreas/{probationAreaCode}/ldus', () => {
+      functionalMailboxService.getLdusForProbationArea.mockResolvedValue({
+        L_A: { description: 'LA', functionalMailbox: 'a@b.com' },
+        L_B: { description: 'LB', functionalMailbox: 'b@b.com' },
+      })
+
+      return supertest(createApp('batchUser'))
+        .get('/admin/functionalMailboxes/probationAreas/PA/ldus')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect((res) => {
+          expect(res.text).toContain('LA (L_A)')
+          expect(res.text).toContain('LB (L_B)')
+        })
+    })
+
+    it('/probationAreas/{probationAreaCode}/ldus/{lduCode}', async () => {
+      functionalMailboxService.getLduWithTeams.mockResolvedValue({
+        description: 'LDU A',
+        functionalMailbox: 'a@b.com',
+        probationTeams: {
+          T_A: { description: 'Team A', functionalMailbox: 'ta@b.com' },
+          T_B: { functionalMailbox: 'tb@b.com' },
+          T_C: {},
+        },
+      })
+
+      await supertest(createApp('batchUser'))
+        .get('/admin/functionalMailboxes/probationAreas/PA/ldus/L_A')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect((res) => {
+          expect(res.text).toContain('LDU A (L_A)')
+        })
+
+      expect(functionalMailboxService.getLduWithTeams).toHaveBeenCalledWith('PA', 'L_A')
     })
   })
 })
