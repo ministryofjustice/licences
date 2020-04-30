@@ -129,7 +129,7 @@ describe('probationTeamsClient', () => {
         .reply(201)
 
       await expect(
-        probationTeamsClient.setLduFunctionalMailbox('token', 'AREA_CODE', 'LDU_CODE', 'a@b.com')
+        probationTeamsClient.setLduFunctionalMailbox('AREA_CODE', 'LDU_CODE', 'a@b.com')
       ).resolves.toBeUndefined()
     })
 
@@ -139,7 +139,7 @@ describe('probationTeamsClient', () => {
         .reply(500)
 
       await expect(
-        probationTeamsClient.setLduFunctionalMailbox('token', 'AREA_CODE', 'LDU_CODE', 'a@b.com')
+        probationTeamsClient.setLduFunctionalMailbox('AREA_CODE', 'LDU_CODE', 'a@b.com')
       ).rejects.toThrowError('Internal Server Error')
     })
   })
@@ -151,7 +151,7 @@ describe('probationTeamsClient', () => {
         .reply(201)
 
       await expect(
-        probationTeamsClient.setProbationTeamFunctionalMailbox('token', 'AREA_CODE', 'LDU_CODE', 'TEAM_CODE', 'a@b.com')
+        probationTeamsClient.setProbationTeamFunctionalMailbox('AREA_CODE', 'LDU_CODE', 'TEAM_CODE', 'a@b.com')
       ).resolves.toBeUndefined()
     })
 
@@ -161,7 +161,7 @@ describe('probationTeamsClient', () => {
         .reply(500)
 
       await expect(
-        probationTeamsClient.setProbationTeamFunctionalMailbox('token', 'AREA_CODE', 'LDU_CODE', 'TEAM_CODE', 'a@b.com')
+        probationTeamsClient.setProbationTeamFunctionalMailbox('AREA_CODE', 'LDU_CODE', 'TEAM_CODE', 'a@b.com')
       ).rejects.toThrowError('Internal Server Error')
     })
   })
@@ -172,9 +172,7 @@ describe('probationTeamsClient', () => {
         .delete('/probation-areas/AREA_CODE/local-delivery-units/LDU_CODE/functional-mailbox')
         .reply(204)
 
-      await expect(
-        probationTeamsClient.deleteLduFunctionalMailbox('token', 'AREA_CODE', 'LDU_CODE')
-      ).resolves.toBeUndefined()
+      await expect(probationTeamsClient.deleteLduFunctionalMailbox('AREA_CODE', 'LDU_CODE')).resolves.toBeUndefined()
     })
 
     test('Should reject when api fails', async () => {
@@ -182,9 +180,9 @@ describe('probationTeamsClient', () => {
         .delete('/probation-areas/AREA_CODE/local-delivery-units/LDU_CODE/functional-mailbox')
         .reply(500)
 
-      await expect(
-        probationTeamsClient.deleteLduFunctionalMailbox('token', 'AREA_CODE', 'LDU_CODE')
-      ).rejects.toThrowError('Internal Server Error')
+      await expect(probationTeamsClient.deleteLduFunctionalMailbox('AREA_CODE', 'LDU_CODE')).rejects.toThrowError(
+        'Internal Server Error'
+      )
     })
   })
 
@@ -195,7 +193,7 @@ describe('probationTeamsClient', () => {
         .reply(204)
 
       await expect(
-        probationTeamsClient.deleteProbationTeamFunctionalMailbox('token', 'AREA_CODE', 'LDU_CODE', 'TEAM_CODE')
+        probationTeamsClient.deleteProbationTeamFunctionalMailbox('AREA_CODE', 'LDU_CODE', 'TEAM_CODE')
       ).resolves.toBeUndefined()
     })
 
@@ -205,7 +203,7 @@ describe('probationTeamsClient', () => {
         .reply(500)
 
       await expect(
-        probationTeamsClient.deleteProbationTeamFunctionalMailbox('token', 'AREA_CODE', 'LDU_CODE', 'TEAM_CODE')
+        probationTeamsClient.deleteProbationTeamFunctionalMailbox('AREA_CODE', 'LDU_CODE', 'TEAM_CODE')
       ).rejects.toThrowError('Internal Server Error')
     })
   })

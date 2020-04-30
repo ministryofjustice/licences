@@ -78,4 +78,10 @@ export interface FunctionalMailboxService {
   getLdusForProbationArea: (probationAreaCode: string) => Promise<LduMap>
   getLduWithTeams: (probationAreaCode: string, lduCode: string) => Promise<LduWithTeams>
   updateLduFunctionalMailbox: (probationAreaCode: string, lduCode: string, functionalMailbox: string) => Promise<void>
+  updateProbationTeamFunctionalMailbox: (
+    probationAreaCode: string,
+    lduCode: string,
+    teamCode: string,
+    functionalMailbox: string
+  ) => Promise<void>
 }

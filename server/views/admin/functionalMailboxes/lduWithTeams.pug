@@ -3,7 +3,7 @@ extends ../../layout
 block content
 
   div.back-link-container.smallPaddingTop
-    a#back.link-back(href="/admin/functionalMailboxes/probationAreas/" + probationAreaCode + "/ldus") Back
+    a#back.link-back(href=`/admin/functionalMailboxes/probationAreas/${probationAreaCode}/ldus`) Back
 
   if errors && errors.length > 0
     div.largeMarginBottom
@@ -14,15 +14,19 @@ block content
           each error in errors
             li.error #{error.message}
 
+  if success && success[0]
+    div.error-banner.marginTopMedium
+      span.bold #{success[0]}
+
   h2.heading-medium LDU
   div.pure-g.borderBottom.paddingBottom
     div.pure-u-1.pure-u-md-1-3.midMarginBottom
       p
-        span.bold Probation Area:&nbsp;
-        span #{probationAreaCode}
-      p
         span.bold LDU:&nbsp;
         span #{description} (#{lduCode})
+      p
+        span.bold Probation Area:&nbsp;
+        span #{probationAreaCode}
 
       form(method="post").largeMarginTop
         input(type="hidden" name="_csrf" value=csrfToken)
@@ -32,7 +36,6 @@ block content
             input.form-control.smallMarginTop(id="functionalMailbox" type="text" name="functionalMailbox" value=functionalMailbox)
         div.inlineButtons
           input.requiredButton.button(type="submit" value="Update")
-          a.requiredButton.button.button-secondary(href="/admin/functionalMailboxes/probationAreas/" + probationAreaCode + "/ldus") Cancel
 
   div.pure-g.paddingTop
     div.pure-u-1
@@ -47,11 +50,22 @@ block content
           tbody
             each team in probationTeams
               tr
-              td
-                | #{team.description}
-              td
-                | #{team.code}
-              td
-                | #{team.functionalMailbox}
+                input(type="hidden" name="_csrf" value=csrfToken)
+                td
+                  | #{team.description}
+                td
+                  | #{team.code}
+                td
+                  form(method="post", action=`/admin/functionalMailboxes/probationAreas/${probationAreaCode}/ldus/${lduCode}/probationTeams/${team.code}`)
+                    input(type="hidden" name="_csrf" value=csrfToken)
+                    div.pure-g
+                      div.pure-u-3-4
+                        input.form-control(id="functionalMailbox" type="text" name="functionalMailbox" value=team.functionalMailbox)
+                      div.pure-u-1-4.padLeftRight15
+                        input.requiredButton.button(type="submit" value="Update")
       else
         h2.heading-medium No Probation Teams
+  div.pure-g.xlargePaddingTop
+    div.pure-u-1
+      a.requiredButton.button.button-secondary(href=`/admin/functionalMailboxes/probationAreas/${probationAreaCode}/ldus`) Back
+

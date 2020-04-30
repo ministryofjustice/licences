@@ -15,7 +15,7 @@ export const mergeLduData = (
 
   const filteredDtos = R.map(R.pick(['functionalMailbox']), lduDtos)
 
-  return R.mergeRight(lduMap, filteredDtos)
+  return R.mergeDeepRight(lduMap, filteredDtos)
 }
 
 function getDescription(ldus: any[], lduCode: string) {
@@ -43,7 +43,7 @@ export class FunctionalMailboxService {
   getAllProbationAreas = async () => (await this.deliusClient.getAllProbationAreas()).content
 
   getLdusForProbationArea = async (probationAreaCode): Promise<LduMap> => {
-    const [{ content: ldus = [] }, { localDeliveryUnits }] = await Promise.all([
+    const [{ content: ldus = [] } = {}, { localDeliveryUnits = {} } = {}] = await Promise.all([
       this.deliusClient.getAllLdusForProbationArea(probationAreaCode),
       this.probationTeamsClient.getProbationArea(probationAreaCode),
     ])
@@ -52,7 +52,11 @@ export class FunctionalMailboxService {
   }
 
   getLduWithTeams = async (probationAreaCode: string, lduCode: string): Promise<LduWithTeams> => {
-    const [{ content: ldus = [] }, { content: probationTeams = [] }, localDeliveryUnitDto] = await Promise.all([
+    const [
+      { content: ldus = [] } = {},
+      { content: probationTeams = [] } = {},
+      localDeliveryUnitDto,
+    ] = await Promise.all([
       this.deliusClient.getAllLdusForProbationArea(probationAreaCode),
       this.deliusClient.getAllTeamsForLdu(probationAreaCode, lduCode),
       this.probationTeamsClient.getLduWithProbationTeams(probationAreaCode, lduCode),
@@ -70,6 +74,24 @@ export class FunctionalMailboxService {
       await this.probationTeamsClient.setLduFunctionalMailbox(probationAreaCode, lduCode, functionalMailbox)
     } else {
       await this.probationTeamsClient.deleteLduFunctionalMailbox(probationAreaCode, lduCode)
+    }
+  }
+
+  updateProbationTeamFunctionalMailbox = async (
+    probationAreaCode: string,
+    lduCode: string,
+    teamCode: string,
+    functionalMailbox: string
+  ) => {
+    if (functionalMailbox) {
+      await this.probationTeamsClient.setProbationTeamFunctionalMailbox(
+        probationAreaCode,
+        lduCode,
+        teamCode,
+        functionalMailbox
+      )
+    } else {
+      await this.probationTeamsClient.deleteProbationTeamFunctionalMailbox(probationAreaCode, lduCode, teamCode)
     }
   }
 }
