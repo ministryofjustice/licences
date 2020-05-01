@@ -1,4 +1,8 @@
-import { FunctionalMailboxService, mergeLduData } from '../../server/services/functionalMailboxService'
+import {
+  FunctionalMailboxService,
+  mergeLduData,
+  mergeProbationAreaData,
+} from '../../server/services/functionalMailboxService'
 import { mockDeliusClient, mockProbationTeamsClient } from '../mockClients'
 
 describe('FunctionalMailboxService', () => {
@@ -41,6 +45,99 @@ describe('FunctionalMailboxService', () => {
           functionalMailbox: 'c@b.com',
         },
       })
+    })
+  })
+
+  describe('mergeProbationAreaData', () => {
+    const institution = Object.freeze({
+      institutionId: 1,
+      isEstablishment: false,
+      code: 'I1',
+      description: 'I1',
+      institutionName: 'I1',
+      establishmentType: { code: 'I1', description: 'I1' },
+      isPrivate: false,
+    })
+
+    const baseProbationArea = {
+      probationAreaId: 1,
+      nps: false,
+      institution,
+      organisation: { code: 'org', description: 'org' },
+      teams: [],
+    }
+
+    it('merges empty data sets', () => {
+      expect(mergeProbationAreaData([], [])).toEqual({})
+    })
+
+    it('merges overlapping data sets', () => {
+      expect(
+        mergeProbationAreaData(
+          [
+            {
+              ...baseProbationArea,
+              code: 'A',
+              description: 'PA A',
+              probationAreaId: 1,
+            },
+            {
+              ...baseProbationArea,
+              code: 'B',
+              description: 'PA B',
+              probationAreaId: 2,
+            },
+          ],
+          ['B', 'C']
+        )
+      ).toEqual({
+        A: {
+          description: 'PA A',
+        },
+        B: {
+          description: 'PA B',
+        },
+        C: {},
+      })
+    })
+  })
+
+  describe('getAllProbationAreas', () => {
+    let deliusClient
+    let probationTeamsClient
+    let functionalMailboxService
+
+    beforeEach(() => {
+      deliusClient = mockDeliusClient()
+      probationTeamsClient = mockProbationTeamsClient()
+      functionalMailboxService = new FunctionalMailboxService(deliusClient, probationTeamsClient)
+    })
+
+    it('Happy path', async () => {
+      deliusClient.getAllProbationAreas.mockResolvedValue({
+        content: [
+          { code: 'A', description: 'PA A' },
+          { code: 'B', description: 'PA B' },
+        ],
+      })
+      probationTeamsClient.getProbationAreaCodes.mockResolvedValue(['B', 'C'])
+
+      expect(await functionalMailboxService.getAllProbationAreas()).toEqual({
+        A: {
+          description: 'PA A',
+        },
+        B: {
+          description: 'PA B',
+        },
+        C: {},
+      })
+    })
+
+    it('absent data', async () => {
+      deliusClient.getAllProbationAreas.mockResolvedValue(undefined)
+      probationTeamsClient.getProbationAreaCodes.mockResolvedValue(undefined)
+
+      expect(await functionalMailboxService.getAllProbationAreas()).toEqual({})
     })
   })
 

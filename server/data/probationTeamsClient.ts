@@ -90,6 +90,10 @@ export const createProbationTeamsClient = (signInService): ProbationTeamsClient 
       return functionalMailbox
     },
 
+    async getProbationAreaCodes() {
+      return getResource(`${apiUrl}/probation-area-codes`)
+    },
+
     async getLduWithProbationTeams(probationAreaCode, lduCode) {
       return getResource(`${apiUrl}/probation-areas/${probationAreaCode}/local-delivery-units/${lduCode}`)
     },

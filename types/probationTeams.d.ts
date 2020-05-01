@@ -23,6 +23,8 @@ export interface ProbationAreaDto {
 export interface ProbationTeamsClient {
   getFunctionalMailbox: (probationAreaCode: string, lduCode: string, teamCode: string) => Promise<string>
 
+  getProbationAreaCodes: () => Promise<Array<string>>
+
   getProbationArea: (probationAreaCode: string) => Promise<ProbationAreaDto>
 
   getLduWithProbationTeams: (probationAreaCode, lduCode) => Promise<LocalDeliveryUnitDto>
@@ -76,7 +78,7 @@ export interface ProbationTeamMap {
 export interface FunctionalMailboxService {
   getAllProbationAreas: () => Promise<ProbationAreaSummary[]>
   getLdusForProbationArea: (probationAreaCode: string) => Promise<LduMap>
-  getLduWithTeams: (probationAreaCode: string, lduCode: string) => Promise<LduWithTeams>
+  getLduWithProbationTeams: (probationAreaCode: string, lduCode: string) => Promise<LduWithTeams>
   updateLduFunctionalMailbox: (probationAreaCode: string, lduCode: string, functionalMailbox: string) => Promise<void>
   updateProbationTeamFunctionalMailbox: (
     probationAreaCode: string,

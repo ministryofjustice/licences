@@ -138,7 +138,7 @@ describe('functionalMailboxes router', () => {
       functionalMailboxService = {
         getAllProbationAreas: jest.fn(),
         getLdusForProbationArea: jest.fn(),
-        getLduWithTeams: jest.fn(),
+        getLduWithProbationTeams: jest.fn(),
         updateLduFunctionalMailbox: jest.fn(),
         updateProbationTeamFunctionalMailbox: jest.fn(),
       }
@@ -161,7 +161,7 @@ describe('functionalMailboxes router', () => {
     })
 
     it('/probationAreas/{probationAreaCode}/ldus/{lduCode}', async () => {
-      functionalMailboxService.getLduWithTeams.mockResolvedValue({
+      functionalMailboxService.getLduWithProbationTeams.mockResolvedValue({
         description: 'LDU A',
         functionalMailbox: 'a@b.com',
         probationTeams: {
@@ -179,7 +179,7 @@ describe('functionalMailboxes router', () => {
           expect(res.text).toContain('LDU A (L_A)')
         })
 
-      expect(functionalMailboxService.getLduWithTeams).toHaveBeenCalledWith('PA', 'L_A')
+      expect(functionalMailboxService.getLduWithProbationTeams).toHaveBeenCalledWith('PA', 'L_A')
     })
   })
 })

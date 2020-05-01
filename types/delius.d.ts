@@ -41,7 +41,7 @@ interface AllTeam {
   borough: KeyValue
 }
 
-interface ProbationArea {
+export interface ProbationArea {
   probationAreaId: number
   code: string
   description: string

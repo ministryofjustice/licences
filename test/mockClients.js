@@ -11,6 +11,7 @@ const mockDeliusClient = () => ({
 
 const mockProbationTeamsClient = () => ({
   getFunctionalMailbox: jest.fn(),
+  getProbationAreaCodes: jest.fn(),
   getProbationArea: jest.fn(),
   setLduFunctionalMailbox: jest.fn(),
   deleteLduFunctionalMailbox: jest.fn(),

@@ -49,7 +49,7 @@ export const functionalMailboxRouter = (functionalMailboxService: FunctionalMail
   router.get(
     '/probationAreas',
     asyncMiddleware(async (req, res) => {
-      const probationAreas = await functionalMailboxService.getAllProbationAreas()
+      const probationAreas = objectToSortedList(await functionalMailboxService.getAllProbationAreas())
       res.render('admin/functionalMailboxes/probationAreas', { probationAreas })
     })
   )
@@ -71,7 +71,7 @@ export const functionalMailboxRouter = (functionalMailboxService: FunctionalMail
     '/probationAreas/:probationAreaCode/ldus/:lduCode',
     asyncMiddleware(async (req, res) => {
       const { probationAreaCode, lduCode } = req.params
-      const lduWithTeams = await functionalMailboxService.getLduWithTeams(probationAreaCode, lduCode)
+      const lduWithTeams = await functionalMailboxService.getLduWithProbationTeams(probationAreaCode, lduCode)
       lduWithTeams.probationTeams = objectToSortedList(lduWithTeams.probationTeams)
       const viewData = {
         probationAreaCode,
