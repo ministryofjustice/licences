@@ -71,6 +71,7 @@ module.exports = function createFormService(pdfFormatter, conditionsService, pri
       SENT_HDCED: () => getDateValue(prisoner, ['sentenceDetail', 'homeDetentionCurfewEligibilityDate']),
       SENT_CRD: () => getDateValue(prisoner, ['sentenceDetail', 'releaseDate']),
       CURFEW_ADDRESS: () => getCurfewAddress(pdfFormatter.pickCurfewAddress(selectPathsFrom(licence))),
+      CURFEW_TELEPHONE: () => getCurfewTelephone(pdfFormatter.pickCurfewAddress(selectPathsFrom(licence))),
       REFUSAL_REASON: () => getRefusalReason(licence),
       INELIGIBLE_REASON: () => getIneligibleReason(licence),
       UNSUITABLE_REASON: () => getUnsuitableReason(licence),
@@ -92,6 +93,10 @@ module.exports = function createFormService(pdfFormatter, conditionsService, pri
 
   function getCurfewAddress(address) {
     return address ? combine(address, [['addressLine1'], ['addressLine2'], ['addressTown'], ['postCode']], '\n') : ''
+  }
+
+  function getCurfewTelephone(address) {
+    return address ? address.telephone : ''
   }
 
   function getRefusalReason(licence) {
