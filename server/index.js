@@ -57,7 +57,7 @@ const probationTeamsClient = createProbationTeamsClient(signInService)
 const roService = createRoService(deliusClient, nomisClientBuilder)
 const caService = createCaService(roService, activeLduClient)
 const prisonerService = createPrisonerService(nomisClientBuilder, roService)
-const caseListFormatter = createCaseListFormatter(logger, licenceClient)
+const caseListFormatter = createCaseListFormatter(licenceClient)
 const caseListService = createCaseListService(nomisClientBuilder, roService, licenceClient, caseListFormatter)
 const pdfService = createPdfService(logger, licenceService, conditionsService, prisonerService, pdfFormatter)
 const formService = createFormService(pdfFormatter, conditionsService, prisonerService, configClient)
@@ -109,7 +109,7 @@ const nomisPushService = createNomisPushService(nomisClientBuilder, signInServic
 const notificationJobs = createNotificationJobs(reminderService, signInService)
 const jobSchedulerService = createJobSchedulerService(dbLockingClient, configClient, notificationJobs)
 const lduService = createLduService(deliusClient, activeLduClient)
-const functionalMailboxService = new FunctionalMailboxService(deliusClient, probationTeamsClient)
+const functionalMailboxService = new FunctionalMailboxService(deliusClient, probationTeamsClient, audit)
 const licenceSearchService = createLicenceSearchService(licenceClient, signInService, nomisClientBuilder)
 
 const app = createApp({

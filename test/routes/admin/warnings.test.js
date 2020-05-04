@@ -1,8 +1,7 @@
 const request = require('supertest')
-
+const { mockAudit } = require('../../mockClients')
 const { startRoute } = require('../../supertestSetup')
-const { createWarningsClientStub, auditStub } = require('../../mockServices')
-
+const { createWarningsClientStub } = require('../../mockServices')
 const createAdminRoute = require('../../../server/routes/admin/warnings')
 
 describe('/warnings', () => {
@@ -21,7 +20,8 @@ describe('/warnings', () => {
     warningsClient.getAcknowledgedWarnings = jest.fn().mockReturnValue([createWarning(3), createWarning(4)])
   })
 
-  const createApp = (user) => startRoute(createAdminRoute(warningsClient), '/admin/warnings', user, 'WARNINGS')
+  const createApp = (user, audit = mockAudit()) =>
+    startRoute(createAdminRoute(warningsClient), '/admin/warnings', user, 'WARNINGS', null, audit)
 
   describe('GET outstanding', () => {
     test('calls user service and renders HTML output', () => {
@@ -83,15 +83,17 @@ describe('/warnings', () => {
 
   describe('POST Acknowledged', () => {
     test('Audits the acknowledge warnings event', () => {
-      const app = createApp('batchUser')
+      const audit = mockAudit()
+      const app = createApp('batchUser', audit)
+
       return request(app)
         .post('/admin/warnings/acknowledge')
         .send({ bookingId: [1, 2, 3] })
         .expect(302)
         .expect('Location', '/admin/warnings/outstanding')
         .expect(() => {
-          expect(auditStub.record).toHaveBeenCalled()
-          expect(auditStub.record).toHaveBeenCalledWith('WARNINGS', 'NOMIS_BATCHLOAD', {
+          expect(audit.record).toHaveBeenCalled()
+          expect(audit.record).toHaveBeenCalledWith('WARNINGS', 'NOMIS_BATCHLOAD', {
             bookingId: [1, 2, 3],
             path: '/admin/warnings/acknowledge',
             userInput: {},

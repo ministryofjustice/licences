@@ -1,5 +1,12 @@
 import * as R from 'ramda'
-import { LduMap, LduWithTeams, LocalDeliveryUnitDto, ProbationTeamsClient } from '../../types/probationTeams'
+import {
+  LduIdentifer,
+  LduMap,
+  LduWithTeams,
+  LocalDeliveryUnitDto,
+  ProbationTeamIdentifier,
+  ProbationTeamsClient,
+} from '../../types/probationTeams'
 import { DeliusClient, Ldu, ProbationArea, ProbationTeam } from '../../types/delius'
 
 export const mergeLduData = (
@@ -43,7 +50,8 @@ export function mergeProbationAreaData(probationAreas: ProbationArea[], probatio
 export class FunctionalMailboxService {
   constructor(
     private readonly deliusClient: DeliusClient,
-    private readonly probationTeamsClient: ProbationTeamsClient
+    private readonly probationTeamsClient: ProbationTeamsClient,
+    private readonly audit
   ) {}
 
   getAllProbationAreas = async () => {
@@ -63,7 +71,7 @@ export class FunctionalMailboxService {
     return mergeLduData(ldus, localDeliveryUnits)
   }
 
-  getLduWithProbationTeams = async (probationAreaCode: string, lduCode: string): Promise<LduWithTeams> => {
+  getLduWithProbationTeams = async ({ probationAreaCode, lduCode }): Promise<LduWithTeams> => {
     const [
       { content: ldus = [] } = {},
       { content: probationTeams = [] } = {},
@@ -71,7 +79,7 @@ export class FunctionalMailboxService {
     ] = await Promise.all([
       this.deliusClient.getAllLdusForProbationArea(probationAreaCode),
       this.deliusClient.getAllTeamsForLdu(probationAreaCode, lduCode),
-      this.probationTeamsClient.getLduWithProbationTeams(probationAreaCode, lduCode),
+      this.probationTeamsClient.getLduWithProbationTeams({ probationAreaCode, lduCode }),
     ])
 
     return {
@@ -81,29 +89,39 @@ export class FunctionalMailboxService {
     }
   }
 
-  updateLduFunctionalMailbox = async (probationAreaCode: string, lduCode: string, functionalMailbox: string) => {
+  updateLduFunctionalMailbox = async (user: string, identifier: LduIdentifer, functionalMailbox: string) => {
     if (functionalMailbox) {
-      await this.probationTeamsClient.setLduFunctionalMailbox(probationAreaCode, lduCode, functionalMailbox)
+      await this.probationTeamsClient.setLduFunctionalMailbox(identifier, functionalMailbox)
+      await this.auditUpdateLduFmb(user, identifier, functionalMailbox)
     } else {
-      await this.probationTeamsClient.deleteLduFunctionalMailbox(probationAreaCode, lduCode)
+      await this.probationTeamsClient.deleteLduFunctionalMailbox(identifier)
+      await this.auditDeleteLduFmb(user, identifier)
     }
   }
 
   updateProbationTeamFunctionalMailbox = async (
-    probationAreaCode: string,
-    lduCode: string,
-    teamCode: string,
+    user: string,
+    identifier: ProbationTeamIdentifier,
     functionalMailbox: string
   ) => {
     if (functionalMailbox) {
-      await this.probationTeamsClient.setProbationTeamFunctionalMailbox(
-        probationAreaCode,
-        lduCode,
-        teamCode,
-        functionalMailbox
-      )
+      await this.probationTeamsClient.setProbationTeamFunctionalMailbox(identifier, functionalMailbox)
+      await this.auditUpdateTeamFmb(user, identifier, functionalMailbox)
     } else {
-      await this.probationTeamsClient.deleteProbationTeamFunctionalMailbox(probationAreaCode, lduCode, teamCode)
+      await this.probationTeamsClient.deleteProbationTeamFunctionalMailbox(identifier)
+      await this.auditDeleteTeamFmb(user, identifier)
     }
   }
+
+  private auditUpdateLduFmb = (user: string, identifier: LduIdentifer, functionalMailbox: string) =>
+    this.audit.record('FUNCTIONAL_MAILBOX', user, { operation: 'UPDATE', identifier, functionalMailbox })
+
+  private auditDeleteLduFmb = (user: string, identifier: LduIdentifer) =>
+    this.audit.record('FUNCTIONAL_MAILBOX', user, { operation: 'DELETE', identifier })
+
+  private auditUpdateTeamFmb = async (user: string, identifier: ProbationTeamIdentifier, functionalMailbox: string) =>
+    this.audit.record('FUNCTIONAL_MAILBOX', user, { operation: 'UPDATE', identifier, functionalMailbox })
+
+  private auditDeleteTeamFmb = (user: string, identifier: ProbationTeamIdentifier) =>
+    this.audit.record('FUNCTIONAL_MAILBOX', user, { operation: 'DELETE', identifier })
 }

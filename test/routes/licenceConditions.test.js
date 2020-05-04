@@ -1,11 +1,10 @@
 const request = require('supertest')
-
+const { mockAudit } = require('../mockClients')
 const { appSetup, testFormPageGets } = require('../supertestSetup')
 
 const {
   createPrisonerServiceStub,
   createLicenceServiceStub,
-  auditStub,
   createConditionsServiceStub,
   createSignInServiceStub,
 } = require('../mockServices')
@@ -26,7 +25,6 @@ describe('/hdc/licenceConditions', () => {
       },
     })
     conditionsService.populateLicenceWithConditions = jest.fn().mockReturnValue({ licence: {} })
-    auditStub.record.mockReset()
   })
 
   describe('licenceConditions routes', () => {
@@ -176,14 +174,15 @@ describe('/hdc/licenceConditions', () => {
 
     test('audits the delete event', () => {
       const licenceService = createLicenceServiceStub()
-      const app = createApp({ licenceService, conditionsService }, 'roUser')
+      const audit = mockAudit()
+      const app = createApp({ licenceService, conditionsService, audit }, 'roUser')
 
       return request(app)
         .post('/hdc/licenceConditions/additionalConditions/123/delete/ABC')
         .send(formResponse)
         .expect(() => {
-          expect(auditStub.record).toHaveBeenCalled()
-          expect(auditStub.record).toHaveBeenCalledWith('UPDATE_SECTION', 'RO_USER', {
+          expect(audit.record).toHaveBeenCalled()
+          expect(audit.record).toHaveBeenCalledWith('UPDATE_SECTION', 'RO_USER', {
             path: '/hdc/licenceConditions/additionalConditions/123/delete/ABC',
             bookingId: '123',
             userInput: {
@@ -219,14 +218,17 @@ describe('/hdc/licenceConditions', () => {
   })
 })
 
-function createApp({ licenceService = null, conditionsService = null, prisonerService = null }, user) {
+function createApp(
+  { licenceService = null, conditionsService = null, prisonerService = null, audit = mockAudit() },
+  user
+) {
   const prisonerServiceMock = prisonerService || createPrisonerServiceStub()
   const signInService = createSignInServiceStub()
 
   const baseRouter = standardRouter({
     licenceService,
     prisonerService: prisonerServiceMock,
-    audit: auditStub,
+    audit,
     signInService,
     config: null,
   })

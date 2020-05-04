@@ -1,4 +1,4 @@
-import { ProbationAreaSummary } from './delius'
+import { Ldu } from './delius'
 
 export interface ProbationTeamDto {
   functionalMailbox?: string
@@ -20,35 +20,34 @@ export interface ProbationAreaDto {
   }
 }
 
+export interface LduIdentifer {
+  probationAreaCode: string
+  lduCode: string
+}
+export interface ProbationTeamIdentifier extends LduIdentifier {
+  probationAreaCode: string
+  lduCode: string
+  teamCode: string
+}
 export interface ProbationTeamsClient {
-  getFunctionalMailbox: (probationAreaCode: string, lduCode: string, teamCode: string) => Promise<string>
+  getFunctionalMailbox: (probationTeamIdentifier: ProbationTeamIdentifier) => Promise<string>
 
   getProbationAreaCodes: () => Promise<Array<string>>
 
   getProbationArea: (probationAreaCode: string) => Promise<ProbationAreaDto>
 
-  getLduWithProbationTeams: (probationAreaCode, lduCode) => Promise<LocalDeliveryUnitDto>
+  getLduWithProbationTeams: (lduIdentifier: LduIdentifer) => Promise<LocalDeliveryUnitDto>
 
-  setLduFunctionalMailbox: (
-    probationAreaCode: string,
-    localDeliveryUnitCode: string,
-    proposedFunctionalMailbox: string
-  ) => Promise<Void>
+  setLduFunctionalMailbox: (lduIdentifer: LduIdentifer, proposedFunctionalMailbox: string) => Promise<Void>
 
-  deleteLduFunctionalMailbox: (probationAreaCode: string, localDeliveryUnitCode: string) => Promise<Void>
+  deleteLduFunctionalMailbox: (lduIdentifer: LduIdentifer) => Promise<Void>
 
   setProbationTeamFunctionalMailbox: (
-    probationAreaCode: string,
-    localDeliveryUnitCode: string,
-    teamCode: string,
+    probationTeamIdentifier: ProbationTeamIdentifier,
     proposedFunctionalMailbox: string
   ) => Promise<Void>
 
-  deleteProbationTeamFunctionalMailbox: (
-    probationAreaCode: string,
-    localDeliveryUnitCode: string,
-    teamCode: string
-  ) => Promise<Void>
+  deleteProbationTeamFunctionalMailbox: (probationTeamIdentifier: ProbationTeamIdentifier) => Promise<Void>
 }
 
 export interface LduMap {
@@ -73,17 +72,4 @@ export interface ProbationTeamMap {
     description?: string
     functionalMailbox?: string
   }
-}
-
-export interface FunctionalMailboxService {
-  getAllProbationAreas: () => Promise<ProbationAreaSummary[]>
-  getLdusForProbationArea: (probationAreaCode: string) => Promise<LduMap>
-  getLduWithProbationTeams: (probationAreaCode: string, lduCode: string) => Promise<LduWithTeams>
-  updateLduFunctionalMailbox: (probationAreaCode: string, lduCode: string, functionalMailbox: string) => Promise<void>
-  updateProbationTeamFunctionalMailbox: (
-    probationAreaCode: string,
-    lduCode: string,
-    teamCode: string,
-    functionalMailbox: string
-  ) => Promise<void>
 }

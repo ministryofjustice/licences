@@ -1,7 +1,8 @@
 import * as R from 'ramda'
 import * as Joi from 'joi'
 import { asyncMiddleware, authorisationMiddleware } from '../../utils/middleware'
-import { FunctionalMailboxService, LdusWithTeamsMap } from '../../../types/probationTeams'
+import { LdusWithTeamsMap } from '../../../types/probationTeams'
+import { FunctionalMailboxService } from '../../services/functionalMailboxService'
 
 const objectToSortedList = R.pipe(
   R.toPairs,
@@ -43,7 +44,7 @@ export const validateProbationTeamFmb = (probationAreaCode, lduCode, teamCode, f
     abortEarly: false,
   })
 
-export const functionalMailboxRouter = (functionalMailboxService: FunctionalMailboxService) => (router, audited) => {
+export const functionalMailboxRouter = (functionalMailboxService: FunctionalMailboxService) => (router) => {
   router.use(authorisationMiddleware)
 
   router.get(
@@ -71,7 +72,7 @@ export const functionalMailboxRouter = (functionalMailboxService: FunctionalMail
     '/probationAreas/:probationAreaCode/ldus/:lduCode',
     asyncMiddleware(async (req, res) => {
       const { probationAreaCode, lduCode } = req.params
-      const lduWithTeams = await functionalMailboxService.getLduWithProbationTeams(probationAreaCode, lduCode)
+      const lduWithTeams = await functionalMailboxService.getLduWithProbationTeams({ probationAreaCode, lduCode })
       lduWithTeams.probationTeams = objectToSortedList(lduWithTeams.probationTeams)
       const viewData = {
         probationAreaCode,
@@ -95,7 +96,11 @@ export const functionalMailboxRouter = (functionalMailboxService: FunctionalMail
       if (error) {
         req.flash('errors', error.details[0])
       } else {
-        await functionalMailboxService.updateLduFunctionalMailbox(probationAreaCode, lduCode, value.functionalMailbox)
+        await functionalMailboxService.updateLduFunctionalMailbox(
+          req.user,
+          { probationAreaCode, lduCode },
+          value.functionalMailbox
+        )
         if (value.functionalMailbox) {
           req.flash('success', `Updated functional mailbox for LDU ${lduCode} to "${value.functionalMailbox}"`)
         } else {
@@ -111,16 +116,15 @@ export const functionalMailboxRouter = (functionalMailboxService: FunctionalMail
     asyncMiddleware(async (req, res) => {
       const {
         body: { functionalMailbox },
-        params: { lduCode, probationAreaCode, teamCode },
+        params: { probationAreaCode, lduCode, teamCode },
       } = req
       const { error, value } = validateProbationTeamFmb(probationAreaCode, lduCode, teamCode, functionalMailbox)
       if (error) {
         req.flash('errors', error.details[0])
       } else {
         await functionalMailboxService.updateProbationTeamFunctionalMailbox(
-          probationAreaCode,
-          lduCode,
-          teamCode,
+          req.user,
+          { probationAreaCode, lduCode, teamCode },
           value.functionalMailbox
         )
         if (value.functionalMailbox) {

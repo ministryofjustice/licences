@@ -1,8 +1,3 @@
-/** @type {any} */
-const auditStub = {
-  record: jest.fn(),
-}
-
 const createSignInServiceStub = () => ({
   signIn: jest.fn(),
   refresh: jest.fn(),
@@ -114,7 +109,6 @@ const createCaServiceStub = {
 }
 
 module.exports = {
-  auditStub,
   createSignInServiceStub,
   createLicenceServiceStub,
   createConditionsServiceStub,

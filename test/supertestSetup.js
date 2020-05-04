@@ -5,13 +5,9 @@ const bodyParser = require('body-parser')
 const cookieSession = require('cookie-session')
 const flash = require('connect-flash')
 const pdfRenderer = require('@ministryofjustice/express-template-to-pdf')
+const { mockAudit } = require('./mockClients')
 
-const {
-  createSignInServiceStub,
-  createPrisonerServiceStub,
-  createLicenceServiceStub,
-  auditStub,
-} = require('./mockServices')
+const { createSignInServiceStub, createPrisonerServiceStub, createLicenceServiceStub } = require('./mockServices')
 const standardRouter = require('../server/routes/routeWorkers/standardRouter')
 
 function testFormPageGets(app, routes, licenceServiceStub) {
@@ -106,7 +102,7 @@ const appSetup = (route, user = 'caUser', prefix = '') => {
   return app
 }
 
-const startRoute = (route, urlPath, user, auditKey, config) => {
+const startRoute = (route, urlPath, user, auditKey, config, audit = mockAudit()) => {
   const signInService = createSignInServiceStub()
   const prisonerService = createPrisonerServiceStub()
   const licenceService = createLicenceServiceStub()
@@ -114,7 +110,7 @@ const startRoute = (route, urlPath, user, auditKey, config) => {
   const baseRouter = standardRouter({
     licenceService,
     prisonerService,
-    audit: auditStub,
+    audit,
     signInService,
     config,
   })

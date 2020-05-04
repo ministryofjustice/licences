@@ -68,7 +68,11 @@ module.exports = function createRoContactDetailsService(userAdminService, roServ
     if (error) {
       return error
     }
-    const functionalMailbox = await probationTeamsClient.getFunctionalMailbox(probationAreaCode, lduCode, teamCode)
+    const functionalMailbox = await probationTeamsClient.getFunctionalMailbox({
+      probationAreaCode,
+      lduCode,
+      teamCode,
+    })
     logger.info(
       `Got functional mailbox: '${functionalMailbox}' for probation area '${probationAreaCode}', ldu ${lduCode}, team ${teamCode}'`,
       staff

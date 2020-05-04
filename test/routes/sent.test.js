@@ -1,14 +1,9 @@
 const request = require('supertest')
 
 const { appSetup } = require('../supertestSetup')
+const { mockAudit } = require('../mockClients')
 
-const {
-  createPrisonerServiceStub,
-  createLicenceServiceStub,
-
-  auditStub,
-  createSignInServiceStub,
-} = require('../mockServices')
+const { createPrisonerServiceStub, createLicenceServiceStub, createSignInServiceStub } = require('../mockServices')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/sent')
@@ -125,8 +120,9 @@ function createApp({ licenceServiceStub = null, prisonerServiceStub = null }, us
   const prisonerService = prisonerServiceStub || createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()
+  const audit = mockAudit()
 
-  const baseRouter = standardRouter({ licenceService, prisonerService, audit: auditStub, signInService, config: null })
+  const baseRouter = standardRouter({ licenceService, prisonerService, audit, signInService, config: null })
   const route = baseRouter(createRoute({ prisonerService }))
 
   return appSetup(route, user, '/hdc/sent/')
@@ -136,6 +132,7 @@ function createAppForResubmission({ prisonerServiceStub }, user, stage, licence)
   const prisonerService = prisonerServiceStub || createPrisonerServiceStub()
   const licenceService = createLicenceServiceStub()
   const signInService = createSignInServiceStub()
+  const audit = mockAudit()
 
   licenceService.getLicence.mockResolvedValue({
     versionDetails: { version: 1 },
@@ -144,7 +141,7 @@ function createAppForResubmission({ prisonerServiceStub }, user, stage, licence)
     licence,
   })
 
-  const baseRouter = standardRouter({ licenceService, prisonerService, audit: auditStub, signInService, config: null })
+  const baseRouter = standardRouter({ licenceService, prisonerService, audit, signInService, config: null })
   const route = baseRouter(
     createRoute({
       prisonerService,

@@ -116,7 +116,7 @@ module.exports = function createUserService(nomisClientBuilder, userClient, prob
 
   const getFunctionalMailbox = async (probationAreaCode, lduCode, teamCode) => {
     if (!lduCode || !probationAreaCode || !teamCode) return undefined
-    return probationTeamsClient.getFunctionalMailbox(probationAreaCode, lduCode, teamCode)
+    return probationTeamsClient.getFunctionalMailbox({ probationAreaCode, lduCode, teamCode })
   }
 
   return {

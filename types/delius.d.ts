@@ -85,11 +85,7 @@ export interface ProbationTeam {
   description: string
 }
 
-export interface LduWithProbationTeams extends Ldu {
-  probationTeams: ProbationTeam[]
-}
-
-interface Page<T> {
+export interface Page<T> {
   content?: T[]
 }
 

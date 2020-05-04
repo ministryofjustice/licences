@@ -356,10 +356,7 @@ module.exports = function createApp({
     '/admin/licences/',
     secureRoute(licenceRouter(licenceService, signInService, prisonerService, audit, roNotificationHandler))
   )
-  app.use(
-    '/admin/functionalMailboxes',
-    secureRoute(functionalMailboxRouter(functionalMailboxService), { auditKey: 'FUNCTIONAL_MAILBOX' })
-  )
+  app.use('/admin/functionalMailboxes', secureRoute(functionalMailboxRouter(functionalMailboxService)))
 
   app.use('/hdc/contact/', secureRoute(contactRouter(userAdminService, roService, signInService)))
   app.use('/hdc/pdf/', secureRoute(pdfRouter({ pdfService, prisonerService }), { auditKey: 'CREATE_PDF' }))

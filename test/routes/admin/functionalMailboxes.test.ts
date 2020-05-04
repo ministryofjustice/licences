@@ -179,7 +179,10 @@ describe('functionalMailboxes router', () => {
           expect(res.text).toContain('LDU A (L_A)')
         })
 
-      expect(functionalMailboxService.getLduWithProbationTeams).toHaveBeenCalledWith('PA', 'L_A')
+      expect(functionalMailboxService.getLduWithProbationTeams).toHaveBeenCalledWith({
+        probationAreaCode: 'PA',
+        lduCode: 'L_A',
+      })
     })
   })
 })

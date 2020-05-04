@@ -3,6 +3,7 @@ import R from 'ramda'
 import { ProbationTeamsClient } from '../../types/probationTeams'
 import logger from '../../log'
 import config from '../config'
+import { getIn } from '../utils/functionalHelpers'
 
 const timeoutSpec = {
   response: config.probationTeams.timeout.response,
@@ -15,7 +16,7 @@ export const createProbationTeamsClient = (signInService): ProbationTeamsClient 
   async function getResource(path) {
     const token = await signInService.getAnonymousClientCredentialsTokens('probationTeams')
     if (!token) {
-      throw Error(`Failed to get token when attempting to GET probationTeamsService: ${path}`)
+      throw Error(`Failed to get token when attempting to GET probation-teams: ${path}`)
     }
 
     try {
@@ -26,10 +27,16 @@ export const createProbationTeamsClient = (signInService): ProbationTeamsClient 
       return result.body
     } catch (error) {
       if (error.status === 404) {
-        logger.debug('Returned 404', path, error.response, error.stack)
+        logger.info(`Not found calling probation-teams at path: '${path}', verb: 'GET'`, error.stack)
         return null
       }
-      logger.warn('Error calling probationTeamsService', path, error.response, error.stack)
+      logger.warn(
+        `Error calling probation-teams, path: '${path}', verb: 'GET', response: '${getIn(error, [
+          'response',
+          'text',
+        ])}'`,
+        error.stack
+      )
       throw error
     }
   }
@@ -37,7 +44,7 @@ export const createProbationTeamsClient = (signInService): ProbationTeamsClient 
   async function deleteResource(path: string) {
     const token = await signInService.getAnonymousClientCredentialsTokens('probationTeams')
     if (!token) {
-      throw Error(`Failed to get token when attempting to GET probationTeamsService: ${path}`)
+      throw Error(`Failed to get token when attempting to DELETE probation-teams: ${path}`)
     }
 
     try {
@@ -46,10 +53,16 @@ export const createProbationTeamsClient = (signInService): ProbationTeamsClient 
       logger.debug(`DELETE ${path} -> ${result.status}`)
     } catch (error) {
       if (error.status === 404) {
-        logger.debug('Returned 404', path, error.response, error.stack)
+        logger.info(`Not found calling probation-teams at path: '${path}', verb: 'DELETE'`, error.stack)
         return
       }
-      logger.warn('Error calling probationTeamsService', path, error.response, error.stack)
+      logger.warn(
+        `Error calling probation-teams, path: '${path}', verb: 'DELETE', response: '${getIn(error, [
+          'response',
+          'text',
+        ])}'`,
+        error.stack
+      )
       throw error
     }
   }
@@ -57,7 +70,7 @@ export const createProbationTeamsClient = (signInService): ProbationTeamsClient 
   async function putResource(path: string, body: string) {
     const token = await signInService.getAnonymousClientCredentialsTokens('probationTeams')
     if (!token) {
-      throw Error(`Failed to get token when attempting to GET probationTeamsService: ${path}`)
+      throw Error(`Failed to get token when attempting to PUT probation-teams: ${path}`)
     }
 
     try {
@@ -72,14 +85,20 @@ export const createProbationTeamsClient = (signInService): ProbationTeamsClient 
 
       logger.debug(`PUT ${path} -> ${result.status}`)
     } catch (error) {
-      logger.warn('Error calling probationTeamsService', path, error.response, error.stack)
+      logger.warn(
+        `Error calling probation-teams, path: '${path}', verb: 'PUT', response: '${getIn(error, [
+          'response',
+          'text',
+        ])}'`,
+        error.stack
+      )
       throw error
     }
   }
 
   return {
-    async getFunctionalMailbox(probationAreaCode, lduCode, teamCode) {
-      const ldu = await this.getLduWithProbationTeams(probationAreaCode, lduCode)
+    async getFunctionalMailbox({ probationAreaCode, lduCode, teamCode }) {
+      const ldu = await this.getLduWithProbationTeams({ probationAreaCode, lduCode })
       const teamAddress = R.path(['probationTeams', teamCode, 'functionalMailbox'], ldu)
       const functionalMailbox = teamAddress || (ldu && ldu.functionalMailbox)
       if (!functionalMailbox) {
@@ -94,7 +113,7 @@ export const createProbationTeamsClient = (signInService): ProbationTeamsClient 
       return getResource(`${apiUrl}/probation-area-codes`)
     },
 
-    async getLduWithProbationTeams(probationAreaCode, lduCode) {
+    async getLduWithProbationTeams({ probationAreaCode, lduCode }) {
       return getResource(`${apiUrl}/probation-areas/${probationAreaCode}/local-delivery-units/${lduCode}`)
     },
 
@@ -102,33 +121,31 @@ export const createProbationTeamsClient = (signInService): ProbationTeamsClient 
       return getResource(`${apiUrl}/probation-areas/${probationAreaCode}`)
     },
 
-    async deleteLduFunctionalMailbox(probationAreaCode, localDeliveryUnitCode): Promise<void> {
+    async deleteLduFunctionalMailbox({ probationAreaCode, lduCode }): Promise<void> {
       await deleteResource(
-        `${apiUrl}/probation-areas/${probationAreaCode}/local-delivery-units/${localDeliveryUnitCode}/functional-mailbox`
+        `${apiUrl}/probation-areas/${probationAreaCode}/local-delivery-units/${lduCode}/functional-mailbox`
       )
     },
 
-    async setLduFunctionalMailbox(probationAreaCode, localDeliveryUnitCode, proposedFunctionalMailbox): Promise<void> {
+    async setLduFunctionalMailbox({ probationAreaCode, lduCode }, proposedFunctionalMailbox): Promise<void> {
       await putResource(
-        `${apiUrl}/probation-areas/${probationAreaCode}/local-delivery-units/${localDeliveryUnitCode}/functional-mailbox`,
+        `${apiUrl}/probation-areas/${probationAreaCode}/local-delivery-units/${lduCode}/functional-mailbox`,
         `"${proposedFunctionalMailbox}"`
       )
     },
 
-    async deleteProbationTeamFunctionalMailbox(probationAreaCode, localDeliveryUnitCode, teamCode): Promise<void> {
+    async deleteProbationTeamFunctionalMailbox({ probationAreaCode, lduCode, teamCode }): Promise<void> {
       await deleteResource(
-        `${apiUrl}/probation-areas/${probationAreaCode}/local-delivery-units/${localDeliveryUnitCode}/teams/${teamCode}/functional-mailbox`
+        `${apiUrl}/probation-areas/${probationAreaCode}/local-delivery-units/${lduCode}/teams/${teamCode}/functional-mailbox`
       )
     },
 
     async setProbationTeamFunctionalMailbox(
-      probationAreaCode,
-      localDeliveryUnitCode,
-      teamCode,
+      { probationAreaCode, lduCode, teamCode },
       proposedFunctionalMailbox
     ): Promise<void> {
       await putResource(
-        `${apiUrl}/probation-areas/${probationAreaCode}/local-delivery-units/${localDeliveryUnitCode}/teams/${teamCode}/functional-mailbox`,
+        `${apiUrl}/probation-areas/${probationAreaCode}/local-delivery-units/${lduCode}/teams/${teamCode}/functional-mailbox`,
         `"${proposedFunctionalMailbox}"`
       )
     },
