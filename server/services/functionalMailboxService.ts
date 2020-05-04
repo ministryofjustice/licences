@@ -15,14 +15,21 @@ export const mergeLduData = (
     [localDeliveryUnitCode: string]: LocalDeliveryUnitDto
   }
 ): LduMap => {
-  const lduMap = R.pipe(
-    R.indexBy(R.prop('code')),
-    R.map((ldu) => ({ description: ldu.description }))
-  )(ldus)
-
+  const lduMap = R.pipe(R.indexBy(R.prop('code')), R.map(R.pick(['description'])))(ldus)
   const filteredDtos = R.map(R.pick(['functionalMailbox']), lduDtos)
-
   return R.mergeDeepRight(lduMap, filteredDtos)
+}
+
+function mergeProbationTeams(probationTeams: ProbationTeam[], localDeliveryUnitDto: LocalDeliveryUnitDto) {
+  const probationTeamMap = R.pipe(R.indexBy(R.prop('code')), R.map(R.pick(['description'])))(probationTeams)
+  const probationTeamDtoMap = localDeliveryUnitDto.probationTeams || {}
+  return R.mergeDeepRight(probationTeamMap, probationTeamDtoMap)
+}
+
+export function mergeProbationAreaData(probationAreas: ProbationArea[], probationAreaCodes: string[]) {
+  const probationCodeMap = R.pipe(R.indexBy(R.identity), R.map(R.always({})))(probationAreaCodes)
+  const probationAreaMap = R.pipe(R.indexBy(R.prop('code')), R.map(R.pick(['description'])))(probationAreas)
+  return R.mergeDeepRight(probationAreaMap, probationCodeMap)
 }
 
 function getDescription(ldus: any[], lduCode: string) {
@@ -31,20 +38,6 @@ function getDescription(ldus: any[], lduCode: string) {
     [0, 'description'],
     ldus.filter((ldu) => ldu.code === lduCode)
   )
-}
-
-function mergeProbationTeams(probationTeams: ProbationTeam[], localDeliveryUnitDto: LocalDeliveryUnitDto) {
-  return R.pipe(
-    R.indexBy(R.prop('code')),
-    R.map(R.pick(['description'])),
-    R.mergeDeepRight(R.propOr({}, 'probationTeams', localDeliveryUnitDto))
-  )(probationTeams)
-}
-
-export function mergeProbationAreaData(probationAreas: ProbationArea[], probationAreaCodes: string[]) {
-  const probationCodeMap = R.pipe(R.indexBy(R.identity), R.map(R.always({})))(probationAreaCodes)
-  const probationAreaMap = R.pipe(R.indexBy(R.prop('code')), R.map(R.pick(['description'])))(probationAreas)
-  return R.mergeDeepRight(probationAreaMap, probationCodeMap)
 }
 
 export class FunctionalMailboxService {
