@@ -44,7 +44,7 @@ export const createDeliusClient = (signInService): DeliusClient => {
     } catch (error) {
       if (error.status === 404) {
         logger.info(`Not found calling delius at path: '${path}', verb: 'GET'`, error.stack)
-        return null
+        return undefined
       }
       logger.warn(
         `Error calling delius, path: '${path}', verb: 'GET', response: '${getIn(error, ['response', 'text'])}'`,

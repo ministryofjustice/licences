@@ -2,6 +2,7 @@ import {
   FunctionalMailboxService,
   mergeLduData,
   mergeProbationAreaData,
+  mergeProbationTeams,
 } from '../../server/services/functionalMailboxService'
 
 import {
@@ -81,43 +82,49 @@ describe('FunctionalMailboxService', () => {
     })
   })
 
-  describe('service methods', () => {
-    describe('mergeProbationAreaData', () => {
-      it('merges empty data sets', () => {
-        expect(mergeProbationAreaData([], [])).toEqual({})
-      })
-
-      it('merges overlapping data sets', () => {
-        expect(
-          mergeProbationAreaData(
-            [
-              {
-                ...BASE_PROBATION_AREA,
-                code: 'A',
-                description: 'PA A',
-                probationAreaId: 1,
-              },
-              {
-                ...BASE_PROBATION_AREA,
-                code: 'B',
-                description: 'PA B',
-                probationAreaId: 2,
-              },
-            ],
-            ['B', 'C']
-          )
-        ).toEqual({
-          A: {
-            description: 'PA A',
-          },
-          B: {
-            description: 'PA B',
-          },
-          C: {},
-        })
-      })
+  describe('mergeProbationAreaData', () => {
+    it('merges empty data sets', () => {
+      expect(mergeProbationAreaData([], [])).toEqual({})
     })
 
+    it('merges overlapping data sets', () => {
+      expect(
+        mergeProbationAreaData(
+          [
+            {
+              ...BASE_PROBATION_AREA,
+              code: 'A',
+              description: 'PA A',
+              probationAreaId: 1,
+            },
+            {
+              ...BASE_PROBATION_AREA,
+              code: 'B',
+              description: 'PA B',
+              probationAreaId: 2,
+            },
+          ],
+          ['B', 'C']
+        )
+      ).toEqual({
+        A: {
+          description: 'PA A',
+        },
+        B: {
+          description: 'PA B',
+        },
+        C: {},
+      })
+    })
+  })
+
+  describe('mergeProbationTeams', () => {
+    it('handles missing data', () => {
+      expect(mergeProbationTeams([], undefined)).toEqual({})
+    })
+  })
+
+  describe('service methods', () => {
     let deliusClient: DeliusClientMock
     let probationTeamsClient: ProbationTeamsClientMock
     let functionalMailboxService: FunctionalMailboxService
@@ -245,6 +252,23 @@ describe('FunctionalMailboxService', () => {
               functionalMailbox: 'c@b.com',
             },
           },
+        })
+      })
+
+      it('No data', async () => {
+        deliusClient.getAllLdusForProbationArea.mockResolvedValue(undefined)
+        deliusClient.getAllTeamsForLdu.mockResolvedValue(undefined)
+        probationTeamsClient.getLduWithProbationTeams.mockResolvedValue(undefined)
+
+        expect(
+          await functionalMailboxService.getLduWithProbationTeams({
+            probationAreaCode: 'PA',
+            lduCode: 'B',
+          })
+        ).toEqual({
+          description: '',
+          functionalMailbox: '',
+          probationTeams: {},
         })
       })
     })

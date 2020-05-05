@@ -21,12 +21,12 @@ export const mergeLduData = (
   return R.mergeDeepRight(lduMap, filteredDtos)
 }
 
-function mergeProbationTeams(probationTeams: ProbationTeam[], localDeliveryUnitDto: LocalDeliveryUnitDto) {
+export const mergeProbationTeams = (probationTeams: ProbationTeam[], localDeliveryUnitDto: LocalDeliveryUnitDto) => {
   const probationTeamMap = probationTeams.reduce(
     (map, { code, description }) => ({ ...map, [code]: { description } }),
     {}
   )
-  const probationTeamDtoMap = localDeliveryUnitDto.probationTeams || {}
+  const probationTeamDtoMap = R.propOr({}, 'probationTeams', localDeliveryUnitDto)
   return R.mergeDeepRight(probationTeamMap, probationTeamDtoMap)
 }
 
@@ -89,27 +89,27 @@ export class FunctionalMailboxService {
     }
   }
 
-  updateLduFunctionalMailbox = async (user: string, identifier: LduIdentifer, functionalMailbox: string) => {
+  updateLduFunctionalMailbox = async (userName: string, identifier: LduIdentifer, functionalMailbox: string) => {
     if (functionalMailbox) {
       await this.probationTeamsClient.setLduFunctionalMailbox(identifier, functionalMailbox)
-      await this.auditUpdateLduFmb(user, identifier, functionalMailbox)
+      await this.auditUpdateLduFmb(userName, identifier, functionalMailbox)
     } else {
       await this.probationTeamsClient.deleteLduFunctionalMailbox(identifier)
-      await this.auditDeleteLduFmb(user, identifier)
+      await this.auditDeleteLduFmb(userName, identifier)
     }
   }
 
   updateProbationTeamFunctionalMailbox = async (
-    user: string,
+    userName: string,
     identifier: ProbationTeamIdentifier,
     functionalMailbox: string
   ) => {
     if (functionalMailbox) {
       await this.probationTeamsClient.setProbationTeamFunctionalMailbox(identifier, functionalMailbox)
-      await this.auditUpdateTeamFmb(user, identifier, functionalMailbox)
+      await this.auditUpdateTeamFmb(userName, identifier, functionalMailbox)
     } else {
       await this.probationTeamsClient.deleteProbationTeamFunctionalMailbox(identifier)
-      await this.auditDeleteTeamFmb(user, identifier)
+      await this.auditDeleteTeamFmb(userName, identifier)
     }
   }
 

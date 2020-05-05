@@ -99,7 +99,7 @@ describe('probationTeamsClient', () => {
       test('should return null on 404', async () => {
         fakeProbationTeamsService.get('/probation-areas/AREA_CODE/local-delivery-units/LDU_CODE').reply(404)
 
-        await expect(probationTeamsClient.getFunctionalMailbox(PROBATION_TEAM_ID)).resolves.toStrictEqual(null)
+        await expect(probationTeamsClient.getFunctionalMailbox(PROBATION_TEAM_ID)).resolves.toBeUndefined()
       })
     })
   })

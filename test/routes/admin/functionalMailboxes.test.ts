@@ -144,7 +144,7 @@ describe('functionalMailboxes router', () => {
       }
     })
 
-    it('/probationAreas/{probationAreaCode}/ldus', () => {
+    it('GET /probationAreas/{probationAreaCode}/ldus', () => {
       functionalMailboxService.getLdusForProbationArea.mockResolvedValue({
         L_A: { description: 'LA', functionalMailbox: 'a@b.com' },
         L_B: { description: 'LB', functionalMailbox: 'b@b.com' },
@@ -183,6 +183,45 @@ describe('functionalMailboxes router', () => {
         probationAreaCode: 'PA',
         lduCode: 'L_A',
       })
+    })
+
+    it('POST /probationAreas/{probationAreaCode}/ldus/{lduCode}', async () => {
+      functionalMailboxService.updateLduFunctionalMailbox.mockResolvedValue(undefined)
+
+      await supertest(createApp('batchUser'))
+        .post('/admin/functionalMailboxes/probationAreas/PA/ldus/L_A')
+        .send('functionalMailbox=a@b.com')
+        .expect(302)
+        .expect('Location', '/admin/functionalMailboxes/probationAreas/PA/ldus/L_A')
+
+      expect(functionalMailboxService.updateLduFunctionalMailbox).toHaveBeenCalledWith(
+        'NOMIS_BATCHLOAD',
+        {
+          probationAreaCode: 'PA',
+          lduCode: 'L_A',
+        },
+        'a@b.com'
+      )
+    })
+
+    it('POST /probationAreas/{probationAreaCode}/ldus/{lduCode}/probationTeams/{teamCode}', async () => {
+      functionalMailboxService.updateProbationTeamFunctionalMailbox.mockResolvedValue(undefined)
+
+      await supertest(createApp('batchUser'))
+        .post('/admin/functionalMailboxes/probationAreas/PA/ldus/L_A/probationTeams/PT_A')
+        .send('functionalMailbox=a@b.com')
+        .expect(302)
+        .expect('Location', '/admin/functionalMailboxes/probationAreas/PA/ldus/L_A')
+
+      expect(functionalMailboxService.updateProbationTeamFunctionalMailbox).toHaveBeenCalledWith(
+        'NOMIS_BATCHLOAD',
+        {
+          probationAreaCode: 'PA',
+          lduCode: 'L_A',
+          teamCode: 'PT_A',
+        },
+        'a@b.com'
+      )
     })
   })
 })

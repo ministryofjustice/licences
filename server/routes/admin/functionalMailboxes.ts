@@ -97,7 +97,7 @@ export const functionalMailboxRouter = (functionalMailboxService: FunctionalMail
         req.flash('errors', error.details[0])
       } else {
         await functionalMailboxService.updateLduFunctionalMailbox(
-          req.user,
+          req.user.username,
           { probationAreaCode, lduCode },
           value.functionalMailbox
         )
@@ -123,7 +123,7 @@ export const functionalMailboxRouter = (functionalMailboxService: FunctionalMail
         req.flash('errors', error.details[0])
       } else {
         await functionalMailboxService.updateProbationTeamFunctionalMailbox(
-          req.user,
+          req.user.username,
           { probationAreaCode, lduCode, teamCode },
           value.functionalMailbox
         )

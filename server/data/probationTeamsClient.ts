@@ -28,7 +28,7 @@ export const createProbationTeamsClient = (signInService): ProbationTeamsClient 
     } catch (error) {
       if (error.status === 404) {
         logger.info(`Not found calling probation-teams at path: '${path}', verb: 'GET'`, error.stack)
-        return null
+        return undefined
       }
       logger.warn(
         `Error calling probation-teams, path: '${path}', verb: 'GET', response: '${getIn(error, [
