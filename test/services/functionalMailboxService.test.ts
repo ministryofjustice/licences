@@ -59,6 +59,11 @@ describe('FunctionalMailboxService', () => {
               functionalMailbox: 'c@b.com',
               probationTeams: {},
             },
+            D: {
+              probationAreaCode: 'PA',
+              localDeliveryUnitCode: 'D',
+              probationTeams: {},
+            },
           }
         )
       ).toEqual({

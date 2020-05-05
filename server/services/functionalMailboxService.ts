@@ -15,7 +15,7 @@ export const mergeLduData = (
 ): LduMap => {
   const lduMap = ldus.reduce((map, { code, description }) => ({ ...map, [code]: { description } }), {})
   const filteredDtos = Object.entries(lduDtos).reduce(
-    (map, [code, { functionalMailbox }]) => ({ ...map, [code]: { functionalMailbox } }),
+    (map, [code, { functionalMailbox }]) => (functionalMailbox ? { ...map, [code]: { functionalMailbox } } : map),
     {}
   )
   return R.mergeDeepRight(lduMap, filteredDtos)
