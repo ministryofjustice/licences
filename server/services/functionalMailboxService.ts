@@ -11,24 +11,31 @@ import { DeliusClient, Ldu, ProbationArea, ProbationTeam } from '../../types/del
 
 export const mergeLduData = (
   ldus: Ldu[],
-  lduDtos: {
-    [localDeliveryUnitCode: string]: LocalDeliveryUnitDto
-  }
+  lduDtos: { [localDeliveryUnitCode: string]: LocalDeliveryUnitDto }
 ): LduMap => {
-  const lduMap = R.pipe(R.indexBy(R.prop('code')), R.map(R.pick(['description'])))(ldus)
-  const filteredDtos = R.map(R.pick(['functionalMailbox']), lduDtos)
+  const lduMap = ldus.reduce((map, { code, description }) => ({ ...map, [code]: { description } }), {})
+  const filteredDtos = Object.entries(lduDtos).reduce(
+    (map, [code, { functionalMailbox }]) => ({ ...map, [code]: { functionalMailbox } }),
+    {}
+  )
   return R.mergeDeepRight(lduMap, filteredDtos)
 }
 
 function mergeProbationTeams(probationTeams: ProbationTeam[], localDeliveryUnitDto: LocalDeliveryUnitDto) {
-  const probationTeamMap = R.pipe(R.indexBy(R.prop('code')), R.map(R.pick(['description'])))(probationTeams)
+  const probationTeamMap = probationTeams.reduce(
+    (map, { code, description }) => ({ ...map, [code]: { description } }),
+    {}
+  )
   const probationTeamDtoMap = localDeliveryUnitDto.probationTeams || {}
   return R.mergeDeepRight(probationTeamMap, probationTeamDtoMap)
 }
 
 export function mergeProbationAreaData(probationAreas: ProbationArea[], probationAreaCodes: string[]) {
   const probationCodeMap = probationAreaCodes.reduce((map, code) => ({ ...map, [code]: {} }), {})
-  const probationAreaMap = R.pipe(R.indexBy(R.prop('code')), R.map(R.pick(['description'])))(probationAreas)
+  const probationAreaMap = probationAreas.reduce(
+    (map, { code, description }) => ({ ...map, [code]: { description } }),
+    {}
+  )
   return R.mergeDeepRight(probationAreaMap, probationCodeMap)
 }
 
