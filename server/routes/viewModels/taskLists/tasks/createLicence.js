@@ -8,12 +8,15 @@ const getCaAction = ({ decisions, tasks, stage }) => {
     return null
   }
 
-  const outstandingApproved = approvedPremisesRequired && approvedPremisesAddress !== 'DONE'
-  const outstandingBass = bassReferralNeeded && bassAddress !== 'DONE'
+  if (approvedPremisesRequired) {
+    return approvedPremisesAddress === 'DONE' ? continueBtn('/hdc/pdf/selectLicenceType/') : null
+  }
 
-  return !outstandingApproved && !outstandingBass && !addressWithdrawn
-    ? continueBtn('/hdc/pdf/selectLicenceType/')
-    : null
+  if (bassReferralNeeded) {
+    return bassAddress === 'DONE' ? continueBtn('/hdc/pdf/selectLicenceType/') : null
+  }
+
+  return addressWithdrawn ? null : continueBtn('/hdc/pdf/selectLicenceType/')
 }
 
 module.exports = {

@@ -17,6 +17,26 @@ describe('create licence task', () => {
       })
     })
 
+    test('should show continue approved premise required and complte when bass not complete', () => {
+      expect(
+        createLicence.ca({
+          decisions: {
+            approved: true,
+            bassReferralNeeded: true,
+            approvedPremisesRequired: true,
+            addressWithdrawn: false,
+          },
+          tasks: { approvedPremisesAddress: 'DONE' },
+          stage: 'APPROVED',
+        }).action
+      ).toEqual({
+        text: 'Continue',
+        href: '/hdc/pdf/selectLicenceType/',
+        type: 'btn',
+        dataQa: 'continue',
+      })
+    })
+
     test('should show continue if bass is approved', () => {
       expect(
         createLicence.ca({
