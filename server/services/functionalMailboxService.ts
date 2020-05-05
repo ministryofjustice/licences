@@ -27,7 +27,7 @@ function mergeProbationTeams(probationTeams: ProbationTeam[], localDeliveryUnitD
 }
 
 export function mergeProbationAreaData(probationAreas: ProbationArea[], probationAreaCodes: string[]) {
-  const probationCodeMap = R.pipe(R.indexBy(R.identity), R.map(R.always({})))(probationAreaCodes)
+  const probationCodeMap = probationAreaCodes.reduce((map, code) => ({ ...map, [code]: {} }), {})
   const probationAreaMap = R.pipe(R.indexBy(R.prop('code')), R.map(R.pick(['description'])))(probationAreas)
   return R.mergeDeepRight(probationAreaMap, probationCodeMap)
 }
