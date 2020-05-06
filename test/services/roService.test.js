@@ -1,4 +1,5 @@
 const createRoService = require('../../server/services/roService')
+const { mockDeliusClient } = require('../mockClients')
 
 describe('roService', () => {
   let service
@@ -6,6 +7,7 @@ describe('roService', () => {
   let deliusClient
 
   const roPrisoners = [{ nomsNumber: 'A' }, { nomsNumber: 'B' }, { nomsNumber: 'C' }]
+  const staffDetails = { staffCode: 'N02A008', staff: { forenames: 'x', surname: 'x' }, teams: [] }
 
   beforeEach(() => {
     nomisClient = {
@@ -13,16 +15,10 @@ describe('roService', () => {
       getBooking: jest.fn().mockReturnValue({ offenderNo: 1 }),
     }
 
-    deliusClient = {
-      getROPrisoners: jest.fn().mockReturnValue(roPrisoners),
-      getStaffDetailsByStaffCode: jest.fn().mockReturnValue({ staffCode: 'N02A008' }),
-      getStaffDetailsByUsername: jest.fn().mockReturnValue({ staffCode: 'N02A008' }),
-      getAllOffenderManagers: jest.fn(),
-      getAllProbationAreas: jest.fn(),
-      getAllLdusForProbationArea: jest.fn(),
-      addResponsibleOfficerRole: jest.fn(),
-      getAllTeamsForLdu: jest.fn(),
-    }
+    deliusClient = mockDeliusClient()
+    deliusClient.getROPrisoners.mockResolvedValue(roPrisoners)
+    deliusClient.getStaffDetailsByStaffCode.mockResolvedValue(staffDetails)
+    deliusClient.getStaffDetailsByUsername.mockResolvedValue(staffDetails)
 
     const nomisClientBuilder = jest.fn().mockReturnValue(nomisClient)
 
