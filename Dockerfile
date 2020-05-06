@@ -16,7 +16,7 @@ RUN addgroup --gid 2000 --system appgroup && \
 WORKDIR /app
 
 # Install latest chrome dev package libs so that the bundled version of Chromium installed by Puppeteer will work
-# https://github.com/GoogleChrome/puppeteer/blob/master/docs/troubleshooting.md#running-puppeteer-in-docker    
+# https://github.com/GoogleChrome/puppeteer/blob/master/docs/troubleshooting.md#running-puppeteer-in-docker
 RUN apt-get update \
     && apt-get install -y wget gnupg gnupg1 gnupg2 make python \
     && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
@@ -73,4 +73,4 @@ EXPOSE 3000
 ENV NODE_ENV='production'
 USER 2000
 
-CMD [ "npm", "start" ]
+CMD [ "node", "server.js" ]
