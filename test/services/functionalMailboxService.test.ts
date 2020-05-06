@@ -196,7 +196,7 @@ describe('FunctionalMailboxService', () => {
       })
 
       it('Handles missing data', async () => {
-        deliusClient.getAllLdusForProbationArea.mockResolvedValue({ content: [] })
+        deliusClient.getAllLdusForProbationArea.mockResolvedValue(undefined)
         probationTeamsClient.getProbationArea.mockResolvedValue(undefined)
 
         expect(await functionalMailboxService.getLdusForProbationArea('PA')).toEqual({})
@@ -256,6 +256,23 @@ describe('FunctionalMailboxService', () => {
       })
 
       it('No data', async () => {
+        deliusClient.getAllLdusForProbationArea.mockResolvedValue({ content: undefined })
+        deliusClient.getAllTeamsForLdu.mockResolvedValue({ content: undefined })
+        probationTeamsClient.getLduWithProbationTeams.mockResolvedValue(undefined)
+
+        expect(
+          await functionalMailboxService.getLduWithProbationTeams({
+            probationAreaCode: 'PA',
+            lduCode: 'B',
+          })
+        ).toEqual({
+          description: '',
+          functionalMailbox: '',
+          probationTeams: {},
+        })
+      })
+
+      it('Not found', async () => {
         deliusClient.getAllLdusForProbationArea.mockResolvedValue({ content: [] })
         deliusClient.getAllTeamsForLdu.mockResolvedValue({ content: [] })
         probationTeamsClient.getLduWithProbationTeams.mockResolvedValue(undefined)
