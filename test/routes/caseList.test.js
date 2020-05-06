@@ -39,6 +39,7 @@ describe('GET /caseList', () => {
       .expect('Content-Type', /html/)
       .expect((res) => {
         expect(res.text).toContain('id="hdcEligiblePrisoners">')
+        expect(res.text).toContain('href="/" data-qa="exit-to-dps-link"')
       })
   })
 })

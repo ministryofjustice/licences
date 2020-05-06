@@ -1,6 +1,6 @@
 const logger = require('../../log')
 const { asyncMiddleware, authorisationMiddleware } = require('../utils/middleware')
-const { globalSearchUrl } = require('../config').nomis
+const { links } = require('../config')
 
 module.exports = ({ caseListService }) => (router) => {
   router.use(authorisationMiddleware)
@@ -23,7 +23,8 @@ module.exports = ({ caseListService }) => (router) => {
         message,
         labels,
         tab: req.params.tab,
-        globalSearchUrl: `${globalSearchUrl}?referrer=licences`,
+        globalSearchUrl: `${links.globalSearchUrl}?referrer=licences`,
+        exitUrl: links.exitUrl,
       })
     })
   )

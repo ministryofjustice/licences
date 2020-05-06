@@ -2,6 +2,9 @@ extends ../layout
 
 block content
   div.pure-g
+    div.pure-u-1.smallMarginTop
+      a.link(href=exitUrl data-qa='exit-to-dps-link') Exit to Digital Prison Services
+
     if user.role === 'RO'
       div.pure-u-1.searchLink.alignRight.sm-padTop55.u-paddingTop
         a#searchOffenderLink(href=globalSearchUrl) Search all offenders
@@ -28,6 +31,9 @@ block content
 
       if user.role === 'DM'
         include ./DMTable
+
+      div.largePaddingBottom
+        a.link.marginTop(href=exitUrl data-qa='exit-to-dps-link') Exit to Digital Prison Services
 
 block append scripts
   script(src="/public/javascripts/caseListFilter.js?" + version)
