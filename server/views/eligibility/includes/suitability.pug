@@ -22,30 +22,19 @@ block unsuitableForm
         label(for='recalled') Recalled for poor behaviour during a previous period of HDC
     div.pure-u-4-24
     div.pure-u-1.pure-u-md-10-24
-      if cja2003s19za
-        div.multiple-choice
-          input(type='checkbox' name='reason[]' id='sentenceCategory' value='sentenceCategory' checked=vals.indexOf('sentenceCategory') !== -1)
-          label(for='sentenceCategory') Serving a sentence for one of the following categories:
-            ul.list
-              li - Homicide
-              li - Explosives
-              li - Possession of an offensive weapon
-              li - Possession of firearms with intent
-              li - Cruelty to Children
-              li - Racially aggravated offences
-              li - Offender currently serving for a terrorism or terrorism-related offence NOT in schedule 19ZA of the Criminal Justice Act 2003
-        div.multiple-choice
-          input(type='checkbox' name='reason[]' id='historyOfTerrorism' value='historyOfTerrorism' checked=vals.indexOf('historyOfTerrorism') !== -1)
-          label(for='historyOfTerrorism') Offender not currently serving for a terrorism or terrorism-related offence but with a history of such offending
-      else
-        div.multiple-choice
-          input(type='checkbox' name='reason[]' id='sentenceCategory' value='sentenceCategory' checked=vals.indexOf('sentenceCategory') !== -1)
-          label(for='sentenceCategory') Serving a sentence for one of the following categories:
-            ul.list
-              li - Homicide
-              li - Explosives
-              li - Possession of an offensive weapon
-              li - Possession of firearms with intent
-              li - Cruelty to Children
-              li - Racially aggravated offences
-              li - Terrorism
+      div.multiple-choice
+        input(type='checkbox' name='reason[]' id='sentenceCategory' value='sentenceCategory' checked=vals.indexOf('sentenceCategory') !== -1)
+        label(for='sentenceCategory') Serving a sentence for one of the following categories:
+          ul.list
+            li - Homicide
+            li - Explosives
+            li - Possession of an offensive weapon
+            li - Possession of firearms with intent
+            li - Cruelty to Children
+            li - Racially aggravated offences
+            li - Offender currently serving for a terrorism or terrorism-related offence NOT in schedule 19ZA of the Criminal Justice Act 2003
+            li - COVID-19 related offences
+      div.multiple-choice
+        input(type='checkbox' name='reason[]' id='historyOfTerrorism' value='historyOfTerrorism' checked=vals.indexOf('historyOfTerrorism') !== -1)
+        label(for='historyOfTerrorism') Offender not currently serving for a terrorism or terrorism-related offence but with a history of such offending
+        

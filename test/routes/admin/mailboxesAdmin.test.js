@@ -3,12 +3,13 @@ const request = require('supertest')
 const { appSetup } = require('../../supertestSetup')
 
 const {
-  auditStub,
   createPrisonerServiceStub,
   createLicenceServiceStub,
 
   createSignInServiceStub,
 } = require('../../mockServices')
+
+const { mockAudit } = require('../../mockClients')
 
 const standardRouter = require('../../../server/routes/routeWorkers/standardRouter')
 const createAdminRoute = require('../../../server/routes/admin/mailboxes')
@@ -241,8 +242,9 @@ function createApp(configClient, user) {
   const prisonerService = createPrisonerServiceStub()
   const licenceService = createLicenceServiceStub()
   const signInService = createSignInServiceStub()
+  const audit = mockAudit()
 
-  const baseRouter = standardRouter({ licenceService, prisonerService, audit: auditStub, signInService, config: null })
+  const baseRouter = standardRouter({ licenceService, prisonerService, audit, signInService, config: null })
   const route = baseRouter(createAdminRoute({ configClient }))
 
   return appSetup(route, user, '/admin/mailboxes/')

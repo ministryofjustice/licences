@@ -1,13 +1,8 @@
 const request = require('supertest')
-
+const { mockAudit } = require('../mockClients')
 const { appSetup, testFormPageGets } = require('../supertestSetup')
 
-const {
-  createPrisonerServiceStub,
-  createLicenceServiceStub,
-  auditStub,
-  createSignInServiceStub,
-} = require('../mockServices')
+const { createPrisonerServiceStub, createLicenceServiceStub, createSignInServiceStub } = require('../mockServices')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/victim')
@@ -18,7 +13,6 @@ describe('/hdc/victim', () => {
 
   beforeEach(() => {
     licenceService = createLicenceServiceStub()
-    auditStub.record.mockReset()
   })
 
   describe('victim liaison routes', () => {
@@ -78,14 +72,16 @@ describe('/hdc/victim', () => {
       })
 
       test('audits the update event', () => {
-        const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
+        const audit = mockAudit()
+
+        const app = createApp({ licenceServiceStub: licenceService, audit }, 'roUser')
 
         return request(app)
           .post('/hdc/victim/victimLiaison/1')
           .send(formResponse)
           .expect(() => {
-            expect(auditStub.record).toHaveBeenCalled()
-            expect(auditStub.record).toHaveBeenCalledWith('UPDATE_SECTION', 'RO_USER', {
+            expect(audit.record).toHaveBeenCalled()
+            expect(audit.record).toHaveBeenCalledWith('UPDATE_SECTION', 'RO_USER', {
               path: '/hdc/victim/victimLiaison/1',
               bookingId: '1',
               userInput: {
@@ -105,7 +101,7 @@ describe('/hdc/victim', () => {
   })
 })
 
-function createApp({ licenceServiceStub }, user) {
+function createApp({ licenceServiceStub, audit = mockAudit() }, user) {
   const prisonerService = createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()
@@ -113,7 +109,7 @@ function createApp({ licenceServiceStub }, user) {
   const baseRouter = standardRouter({
     licenceService,
     prisonerService,
-    audit: auditStub,
+    audit,
     signInService,
     config: null,
   })

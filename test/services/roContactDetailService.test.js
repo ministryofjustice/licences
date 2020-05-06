@@ -1,10 +1,11 @@
 const createRoContactDetailsService = require('../../server/services/roContactDetailsService')
 const { createRoServiceStub } = require('../mockServices')
+const { mockProbationTeamsClient } = require('../mockClients')
 
 describe('roContactDetailsService', () => {
   let service
   let userAdminService
-  let probationTeamsService
+  let probationTeamsClient
   let roService
 
   beforeEach(() => {
@@ -22,11 +23,9 @@ describe('roContactDetailsService', () => {
       probationAreaDescription: 'Probation Area 1',
     })
 
-    probationTeamsService = {
-      getFunctionalMailbox: jest.fn(),
-    }
+    probationTeamsClient = mockProbationTeamsClient()
 
-    service = createRoContactDetailsService(userAdminService, roService, probationTeamsService)
+    service = createRoContactDetailsService(userAdminService, roService, probationTeamsClient)
   })
 
   describe('getFunctionalMailBox', () => {
@@ -48,7 +47,7 @@ describe('roContactDetailsService', () => {
 
     test('local data not stored, retrieve from external service is enabled', async () => {
       userAdminService.getRoUserByDeliusId.mockReturnValue(null)
-      probationTeamsService.getFunctionalMailbox.mockResolvedValue('ro-org@email.com')
+      probationTeamsClient.getFunctionalMailbox.mockResolvedValue('ro-org@email.com')
       roService.getStaffByCode.mockResolvedValue({ email: 'ro@email.com' })
 
       const result = await service.getFunctionalMailBox('delius-1')
@@ -101,7 +100,7 @@ describe('roContactDetailsService', () => {
     test('no staff record local, found in delius', async () => {
       userAdminService.getRoUserByDeliusId.mockResolvedValue(null)
 
-      probationTeamsService.getFunctionalMailbox.mockResolvedValue('ro-org@email.com')
+      probationTeamsClient.getFunctionalMailbox.mockResolvedValue('ro-org@email.com')
       roService.getStaffByCode.mockResolvedValue({ email: 'ro@ro.email.com', username: 'user-1' })
 
       const result = await service.getResponsibleOfficerWithContactDetails(1, 'token-1')
@@ -127,7 +126,7 @@ describe('roContactDetailsService', () => {
     test('no staff record local, linked user found in delius', async () => {
       userAdminService.getRoUserByDeliusId.mockResolvedValue(null)
 
-      probationTeamsService.getFunctionalMailbox.mockResolvedValue('ro-org@email.com')
+      probationTeamsClient.getFunctionalMailbox.mockResolvedValue('ro-org@email.com')
       roService.getStaffByCode.mockResolvedValue({ email: 'ro@ro.email.com', username: 'user-1' })
 
       const result = await service.getResponsibleOfficerWithContactDetails(1, 'token-1')
@@ -158,7 +157,7 @@ describe('roContactDetailsService', () => {
         lduDescription: 'Sheffield',
         lduCode: 'SHF-1',
       })
-      probationTeamsService.getFunctionalMailbox.mockResolvedValue('ro-org@email.com')
+      probationTeamsClient.getFunctionalMailbox.mockResolvedValue('ro-org@email.com')
       roService.getStaffByCode.mockResolvedValue({})
 
       const result = await service.getResponsibleOfficerWithContactDetails(1, 'token-1')

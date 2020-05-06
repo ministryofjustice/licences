@@ -1,7 +1,7 @@
 const request = require('supertest')
-
+const { mockAudit } = require('../mockClients')
 const { users, appSetup } = require('../supertestSetup')
-const { auditStub, createPrisonerServiceStub, createLicenceServiceStub } = require('../mockServices')
+const { createPrisonerServiceStub, createLicenceServiceStub } = require('../mockServices')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/user')
@@ -23,7 +23,6 @@ describe('/user', () => {
     signInService = {
       getClientCredentialsTokens: jest.fn().mockReturnValue({ token: 'system-token' }),
     }
-    auditStub.record.mockReset()
   })
 
   describe('user page get', () => {
@@ -155,12 +154,13 @@ describe('/user', () => {
   function createApp(user) {
     const prisonerService = createPrisonerServiceStub()
     const licenceService = createLicenceServiceStub()
+    const audit = mockAudit()
 
     const baseRouter = standardRouter({
       licenceService,
       signInService,
       prisonerService,
-      audit: auditStub,
+      audit,
       config: null,
     })
     const route = baseRouter(createRoute({ userService }))

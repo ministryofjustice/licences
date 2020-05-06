@@ -1,6 +1,5 @@
 const createCaseListService = require('../../server/services/caseListService')
 const createCaseListFormatter = require('../../server/services/utils/caseListFormatter')
-const { logger } = require('../supertestSetup')
 const { createRoServiceStub } = require('../mockServices')
 
 describe('caseListService', () => {
@@ -106,7 +105,7 @@ describe('caseListService', () => {
     }
 
     const nomisClientBuilder = jest.fn().mockReturnValue(nomisClient)
-    const caseListFormatter = createCaseListFormatter(logger, licenceClient)
+    const caseListFormatter = createCaseListFormatter(licenceClient)
 
     service = createCaseListService(nomisClientBuilder, roService, licenceClient, caseListFormatter)
   })

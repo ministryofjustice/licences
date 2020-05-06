@@ -1,11 +1,10 @@
 const request = require('supertest')
-
+const { mockAudit } = require('../mockClients')
 const { appSetup } = require('../supertestSetup')
 
 const {
   createPrisonerServiceStub,
   createLicenceServiceStub,
-  auditStub,
   createSignInServiceStub,
   createCaServiceStub,
 } = require('../mockServices')
@@ -60,7 +59,7 @@ const dmHasProvidedHdcDecisionComments = {
   },
 }
 
-const caHasRefusedHdc = {
+const caHasRefusedHdcButNotProvidedReason = {
   stage: 'DECIDED',
   licence: {
     approval: {
@@ -71,6 +70,23 @@ const caHasRefusedHdc = {
     finalChecks: {
       refusal: {
         decision: 'Yes',
+      },
+    },
+  },
+}
+
+const caHasRefusedHdcAndProvidedReason = {
+  stage: 'DECIDED',
+  licence: {
+    approval: {
+      release: {
+        decision: 'Yes',
+      },
+    },
+    finalChecks: {
+      refusal: {
+        decision: 'Yes',
+        reason: 'addressUnsuitable',
       },
     },
   },
@@ -353,8 +369,8 @@ describe('GET /taskList/:prisonNumber', () => {
         })
     })
 
-    test('should contain "Home detention curfew refused by prison case administrator" ', () => {
-      licenceService.getLicence.mockResolvedValue(caHasRefusedHdc)
+    test('should contain "Home detention curfew refused by prison case admin" ', () => {
+      licenceService.getLicence.mockResolvedValue(caHasRefusedHdcButNotProvidedReason)
 
       const app = createApp(
         { licenceServiceStub: licenceService, prisonerServiceStub: prisonerService, caServiceStub: caService },
@@ -367,6 +383,24 @@ describe('GET /taskList/:prisonNumber', () => {
         .expect('Content-Type', /html/)
         .expect((res) => {
           expect(res.text).toContain('Home detention curfew refused by prison case admin')
+          expect(res.text).not.toContain('case admin:')
+        })
+    })
+
+    test('should contain "Home detention curfew refused by prison case admin: No available address" ', () => {
+      licenceService.getLicence.mockResolvedValue(caHasRefusedHdcAndProvidedReason)
+
+      const app = createApp(
+        { licenceServiceStub: licenceService, prisonerServiceStub: prisonerService, caServiceStub: caService },
+        'caUser'
+      )
+
+      return request(app)
+        .get('/taskList/123')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect((res) => {
+          expect(res.text).toContain('Home detention curfew refused by prison case admin: No available address')
         })
     })
 
@@ -451,6 +485,7 @@ describe('GET /taskList/:prisonNumber', () => {
       })
 
       test('should audit the new licence creation event', () => {
+        const audit = mockAudit()
         licenceService.getLicence.mockResolvedValue(undefined)
         licenceService.createLicence.mockResolvedValue()
 
@@ -458,6 +493,7 @@ describe('GET /taskList/:prisonNumber', () => {
           licenceServiceStub: licenceService,
           prisonerServiceStub: prisonerService,
           caServiceStub: caService,
+          audit,
         })
 
         return request(app)
@@ -465,8 +501,8 @@ describe('GET /taskList/:prisonNumber', () => {
           .send({ bookingId: '123' })
           .expect(302)
           .expect(() => {
-            expect(auditStub.record).toHaveBeenCalled()
-            expect(auditStub.record).toHaveBeenCalledWith('LICENCE_RECORD_STARTED', 'CA_USER_TEST', {
+            expect(audit.record).toHaveBeenCalled()
+            expect(audit.record).toHaveBeenCalledWith('LICENCE_RECORD_STARTED', 'CA_USER_TEST', {
               bookingId: '123',
             })
           })
@@ -517,6 +553,7 @@ describe('GET /taskList/:prisonNumber', () => {
       })
 
       test('should audit the new licence creation event', () => {
+        const audit = mockAudit()
         licenceService.getLicence.mockResolvedValue(undefined)
         licenceService.createLicence.mockResolvedValue()
 
@@ -524,6 +561,7 @@ describe('GET /taskList/:prisonNumber', () => {
           licenceServiceStub: licenceService,
           prisonerServiceStub: prisonerService,
           caServiceStub: caService,
+          audit,
         })
 
         return request(app)
@@ -531,8 +569,8 @@ describe('GET /taskList/:prisonNumber', () => {
           .send({ bookingId: '123' })
           .expect(302)
           .expect(() => {
-            expect(auditStub.record).toHaveBeenCalled()
-            expect(auditStub.record).toHaveBeenCalledWith('VARY_NOMIS_LICENCE_CREATED', 'CA_USER_TEST', {
+            expect(audit.record).toHaveBeenCalled()
+            expect(audit.record).toHaveBeenCalledWith('VARY_NOMIS_LICENCE_CREATED', 'CA_USER_TEST', {
               bookingId: '123',
             })
           })
@@ -669,18 +707,18 @@ describe('GET /taskList/:prisonNumber', () => {
   })
 })
 
-function createApp({ licenceServiceStub, prisonerServiceStub, caServiceStub }, user) {
+function createApp({ licenceServiceStub, prisonerServiceStub, caServiceStub, audit = mockAudit() }, user) {
   const prisonerService = prisonerServiceStub || createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()
   const caService = caServiceStub || createCaServiceStub
 
-  const baseRouter = standardRouter({ licenceService, prisonerService, audit: auditStub, signInService, config: null })
+  const baseRouter = standardRouter({ licenceService, prisonerService, audit, signInService, config: null })
   const route = baseRouter(
     createRoute({
       licenceService,
       prisonerService,
-      audit: auditStub,
+      audit,
       caService,
     }),
     { licenceRequired: false }

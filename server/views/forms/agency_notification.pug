@@ -30,7 +30,7 @@ block content
     tr
       td Curfew address: #{CURFEW_ADDRESS}
     tr
-      td Telephone number: #{curfewAddress.telephone}
+      td Telephone number: #{CURFEW_TELEPHONE}
     tr
       td Mobile number:
     tr
@@ -38,7 +38,7 @@ block content
     tr.spaceUnder
       td Second telephone number (if required):
     tr
-      td Main occupier of curfew address: #{occupier.name}
+      td Main occupier of curfew address: #{occupier && occupier.name}
     tr.spaceUnder
       td Responsible adult (for children under 18 released on HDC):
     tr

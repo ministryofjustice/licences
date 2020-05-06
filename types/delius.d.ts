@@ -41,7 +41,7 @@ interface AllTeam {
   borough: KeyValue
 }
 
-interface ProbationArea {
+export interface ProbationArea {
   probationAreaId: number
   code: string
   description: string
@@ -62,36 +62,40 @@ export interface CommunityOrPrisonOffenderManager {
   fromDate: Date
 }
 
-interface StaffDetails {
-  username?: string;
-  email?: string;
-  staffCode: string;
-  staff: Human;
-  teams: Team[];
+export interface StaffDetails {
+  username?: string
+  email?: string
+  staffCode: string
+  staff: Human
+  teams: Team[]
 }
 
-interface ProbationAreaSummary {
-  code: string;
-  description: string;
+export interface ProbationAreaSummary {
+  code: string
+  description: string
 }
 
-interface Ldu {
-  code: string;
-  description: string;
+export interface Ldu {
+  code: string
+  description: string
 }
 
+export interface ProbationTeam {
+  code: string
+  description: string
+}
 
-interface Page<T> {
-  content: T[]
+export interface Page<T> {
+  content?: T[]
 }
 
 export interface DeliusClient {
-  getStaffDetailsByStaffCode: (staffCode : string) => Promise<StaffDetails>
+  getStaffDetailsByStaffCode: (staffCode: string) => Promise<StaffDetails>
   getStaffDetailsByUsername: (username: string) => Promise<StaffDetails>
   getROPrisoners: (deliusStaffCode: string) => Promise<any>
-  getAllOffenderManagers: (offenderNumber: string) =>  Promise<Array<CommunityOrPrisonOffenderManager>>
-  getAllProbationAreas: ()=> Promise<Page<ProbationArea>>
-  getAllLdusForProbationArea: (probationAreaCode: string)=> Promise<Page<Ldu>>
+  getAllOffenderManagers: (offenderNumber: string) => Promise<Array<CommunityOrPrisonOffenderManager>>
+  getAllProbationAreas: () => Promise<Page<ProbationArea>>
+  getAllLdusForProbationArea: (probationAreaCode: string) => Promise<Page<Ldu>>
+  getAllTeamsForLdu: (probationAreaCode: string, lduCode: string) => Promise<Page<ProbationTeam>>
   addResponsibleOfficerRole: (username: string) => Promise<void>
 }
-

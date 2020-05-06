@@ -17,27 +17,29 @@ block content
   else
     include ../includes/backToCaseList
 
-  if licenceStatus.decisions.excluded
+  - var decisions = licenceStatus.decisions
+  if decisions.excluded
     div.error-banner.marginTopMedium
       strong.bold The offender is statutorily excluded from HDC
-  else if licenceStatus.decisions.unsuitableResult
+  else if decisions.unsuitableResult
     div.error-banner.marginTopMedium
       strong.bold The offender is presumed unsuitable for HDC release
-  else if user.role === 'CA' && licenceStatus.decisions.caRefused
+  else if user.role === 'CA' && decisions.caRefused
     div.error-banner.marginTopMedium
-      strong.bold Home detention curfew refused by prison case admin: #{licenceStatus.decisions.refusalReason}
-  else if user.role === 'CA' && licenceStatus.decisions.refused && licenceStatus.decisions.decisionComments
-    div.error-banner.marginTopMedium
-      details.govuk-details.alignLeft(data-module="govuk-details")
-       summary.govuk-details__summary
-         span.govuk-details__summary-text
-          strong.bold Home detention curfew refused by decision maker: #{licenceStatus.decisions.refusalReason}
-       div.govuk-details__text.marginTopMedium
-       | #{licenceStatus.decisions.decisionComments}
-  else if user.role === 'CA' && licenceStatus.decisions.refused 
-    div.error-banner.marginTopMedium
-      strong.bold Home detention curfew refused by decision maker: #{licenceStatus.decisions.refusalReason}
-  else if licenceStatus.decisions.optedOut
+      strong.bold Home detention curfew refused by prison case admin#{decisions.refusalReason ?': ' + decisions.refusalReason : ''}
+  else if user.role === 'CA' && decisions.refused
+    if decisions.decisionComments
+      div.error-banner.marginTopMedium
+        details.govuk-details.alignLeft(data-module="govuk-details")
+          summary.govuk-details__summary
+            span.govuk-details__summary-text
+              strong.bold Home detention curfew refused by decision maker: #{decisions.refusalReason}
+          div.govuk-details__text.marginTopMedium
+          | #{decisions.decisionComments}
+    else
+      div.error-banner.marginTopMedium
+        strong.bold Home detention curfew refused by decision maker: #{decisions.refusalReason}
+  else if decisions.optedOut
     div.error-banner.marginTopMedium
       strong.bold The offender has opted out from Home Detention Curfew
 

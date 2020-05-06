@@ -1,4 +1,5 @@
 const request = require('supertest')
+const { mockAudit } = require('../mockClients')
 const { getLicenceStatus } = require('../../server/utils/licenceStatus')
 
 const { appSetup } = require('../supertestSetup')
@@ -7,7 +8,6 @@ const {
   createLicenceServiceStub,
   createPrisonerServiceStub,
   createConditionsServiceStub,
-  auditStub,
   createSignInServiceStub,
 } = require('../mockServices')
 
@@ -289,10 +289,12 @@ describe('/review/', () => {
 
 function createApp(user) {
   const signInService = createSignInServiceStub()
+  const audit = mockAudit()
+
   const baseRouter = standardRouter({
     licenceService,
     prisonerService,
-    audit: auditStub,
+    audit,
     signInService,
     config: null,
   })

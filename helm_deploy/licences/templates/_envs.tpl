@@ -127,6 +127,4 @@ env:
   - name: DOMAIN
     value: https://{{ .Values.ingress.host }}
 
-  - name: CJA2003_SZA
-    value: {{ .Values.env.CJA2003_SZA | quote }}
 {{- end -}}
