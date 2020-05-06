@@ -1,6 +1,6 @@
 /**
  * @typedef {import("../../types/licences").RoService} RoService
- * @typedef {import("../data/probationTeamsClient").ProbationTeamsClient} ProbationTeamsClient
+ * @typedef {import("../../types/probationTeams").ProbationTeamsClient} ProbationTeamsClient
  * @typedef {import("../../types/licences").RoContactDetailsService} RoContactDetailsService
  * @typedef {import("../../types/licences").Error} Error
  * @typedef {import("../../types/licences").ResponsibleOfficer} ResponsibleOfficer
@@ -68,7 +68,11 @@ module.exports = function createRoContactDetailsService(userAdminService, roServ
     if (error) {
       return error
     }
-    const functionalMailbox = await probationTeamsClient.getFunctionalMailbox(probationAreaCode, lduCode, teamCode)
+    const functionalMailbox = await probationTeamsClient.getFunctionalMailbox({
+      probationAreaCode,
+      lduCode,
+      teamCode,
+    })
     logger.info(
       `Got functional mailbox: '${functionalMailbox}' for probation area '${probationAreaCode}', ldu ${lduCode}, team ${teamCode}'`,
       staff

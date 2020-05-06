@@ -1,5 +1,9 @@
 /* eslint-disable no-param-reassign */
 function flattenObject(source, target, prefix) {
+  if (prefix.split('_').length > 3) {
+    // Don't go on for ever...
+    return
+  }
   Object.keys(source).forEach((key) => {
     const sourceVal = source[key]
     const fullKey = `${prefix}_${key}`

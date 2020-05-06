@@ -40,11 +40,12 @@ const createNomisPushService = require('./services/nomisPushService')
 const createDeadlineService = require('./services/deadlineService')
 const createJobSchedulerService = require('./services/jobSchedulerService')
 const createNotificationJobs = require('./services/jobs/notificationJobs')
-const createDeliusClient = require('./data/deliusClient')
-const createProbationTeamsClient = require('./data/probationTeamsClient')
+const { createDeliusClient } = require('./data/deliusClient')
+const { createProbationTeamsClient } = require('./data/probationTeamsClient')
 const createRoService = require('./services/roService')
 const createCaService = require('./services/caService')
 const createLduService = require('./services/lduService')
+const { FunctionalMailboxService } = require('./services/functionalMailboxService')
 const createLicenceSearchService = require('./services/licenceSearchService')
 
 const signInService = createSignInService()
@@ -56,7 +57,7 @@ const probationTeamsClient = createProbationTeamsClient(signInService)
 const roService = createRoService(deliusClient, nomisClientBuilder)
 const caService = createCaService(roService, activeLduClient)
 const prisonerService = createPrisonerService(nomisClientBuilder, roService)
-const caseListFormatter = createCaseListFormatter(logger, licenceClient)
+const caseListFormatter = createCaseListFormatter(licenceClient)
 const caseListService = createCaseListService(nomisClientBuilder, roService, licenceClient, caseListFormatter)
 const pdfService = createPdfService(logger, licenceService, conditionsService, prisonerService, pdfFormatter)
 const formService = createFormService(pdfFormatter, conditionsService, prisonerService, configClient)
@@ -108,6 +109,7 @@ const nomisPushService = createNomisPushService(nomisClientBuilder, signInServic
 const notificationJobs = createNotificationJobs(reminderService, signInService)
 const jobSchedulerService = createJobSchedulerService(dbLockingClient, configClient, notificationJobs)
 const lduService = createLduService(deliusClient, activeLduClient)
+const functionalMailboxService = new FunctionalMailboxService(deliusClient, probationTeamsClient, audit)
 const licenceSearchService = createLicenceSearchService(licenceClient, signInService, nomisClientBuilder)
 
 const app = createApp({
@@ -131,6 +133,7 @@ const app = createApp({
   caService,
   warningClient,
   lduService,
+  functionalMailboxService,
   roNotificationHandler,
 })
 
