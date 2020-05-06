@@ -5,7 +5,7 @@ const { getLicenceStatus } = require('../../utils/licenceStatus')
 const { getStatusLabel } = require('../../utils/licenceStatusLabels')
 const { licenceStages } = require('../config/licenceStages')
 
-module.exports = function createCaseListFormatter(logger, licenceClient) {
+module.exports = function createCaseListFormatter(licenceClient) {
   async function formatCaseList(hdcEligibleReleases, role) {
     const licences = await licenceClient.getLicences(getBookingIds(hdcEligibleReleases))
 

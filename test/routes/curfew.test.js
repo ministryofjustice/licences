@@ -1,11 +1,10 @@
 const request = require('supertest')
-
+const { mockAudit } = require('../mockClients')
 const { appSetup, testFormPageGets } = require('../supertestSetup')
 
 const {
   createPrisonerServiceStub,
   createLicenceServiceStub,
-  auditStub,
   createSignInServiceStub,
   createNomisPushServiceStub,
 } = require('../mockServices')
@@ -611,11 +610,12 @@ function createApp(
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()
   const nomisPushService = nomisPushServiceStub || createNomisPushServiceStub()
+  const audit = mockAudit()
 
   const baseRouter = standardRouter({
     licenceService,
     prisonerService,
-    audit: auditStub,
+    audit,
     signInService,
     config,
   })

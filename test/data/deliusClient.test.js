@@ -1,7 +1,7 @@
 const nock = require('nock')
 
 const config = require('../../server/config')
-const createDeliusClient = require('../../server/data/deliusClient')
+const { createDeliusClient } = require('../../server/data/deliusClient')
 
 describe('deliusClient', () => {
   let fakeDelius
@@ -101,11 +101,35 @@ describe('deliusClient', () => {
     test('should return list of all probation codes', () => {
       fakeDelius
         .get(`/probationAreas/code/N02/localDeliveryUnits`)
-        .reply(200, [{ code: 'some code', description: 'some description' }])
+        .reply(200, { content: [{ code: 'some code', description: 'some description' }] })
 
-      return expect(deliusClient.getAllLdusForProbationArea('N02')).resolves.toStrictEqual([
-        { code: 'some code', description: 'some description' },
-      ])
+      return expect(deliusClient.getAllLdusForProbationArea('N02')).resolves.toStrictEqual({
+        content: [{ code: 'some code', description: 'some description' }],
+      })
+    })
+
+    test('Probation code not known to Delius', () => {
+      fakeDelius.get(`/probationAreas/code/N02/localDeliveryUnits`).reply(404)
+
+      return expect(deliusClient.getAllLdusForProbationArea('N02')).resolves.toStrictEqual({ content: [] })
+    })
+  })
+
+  describe('getAllTeamsForLdu', () => {
+    test('should return list of all probation codes', () => {
+      fakeDelius
+        .get('/probationAreas/code/N02/localDeliveryUnits/code/LDU/teams')
+        .reply(200, { content: [{ code: 'some code', description: 'some description' }] })
+
+      return expect(deliusClient.getAllTeamsForLdu('N02', 'LDU')).resolves.toStrictEqual({
+        content: [{ code: 'some code', description: 'some description' }],
+      })
+    })
+
+    test('LDU not known to Delius', () => {
+      fakeDelius.get('/probationAreas/code/N02/localDeliveryUnits/code/LDU/teams').reply(404)
+
+      return expect(deliusClient.getAllTeamsForLdu('N02', 'LDU')).resolves.toStrictEqual({ content: [] })
     })
   })
 

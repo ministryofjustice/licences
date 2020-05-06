@@ -1,12 +1,8 @@
 const request = require('supertest')
+const { mockAudit } = require('../mockClients')
 const { appSetup, users } = require('../supertestSetup')
 
-const {
-  createLicenceServiceStub,
-  createPrisonerServiceStub,
-  auditStub,
-  createSignInServiceStub,
-} = require('../mockServices')
+const { createLicenceServiceStub, createPrisonerServiceStub, createSignInServiceStub } = require('../mockServices')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/send')
@@ -295,8 +291,9 @@ function createApp({ prisonerServiceStub = null, notificationServiceStub = null 
   const prisonerService = prisonerServiceStub || createPrisonerServiceStub()
   const licenceService = createLicenceServiceStub()
   const signInService = createSignInServiceStub()
+  const audit = mockAudit()
 
-  const baseRouter = standardRouter({ licenceService, prisonerService, audit: auditStub, signInService, config: null })
+  const baseRouter = standardRouter({ licenceService, prisonerService, audit, signInService, config: null })
   const route = baseRouter(
     createRoute({
       prisonerService,
@@ -316,6 +313,7 @@ function createAppForReconsideration(
   const prisonerService = prisonerServiceStub || createPrisonerServiceStub()
   const licenceService = createLicenceServiceStub()
   const signInService = createSignInServiceStub()
+  const audit = mockAudit()
 
   licenceService.getLicence.mockResolvedValue({
     versionDetails: { version: 1 },
@@ -324,7 +322,7 @@ function createAppForReconsideration(
     licence,
   })
 
-  const baseRouter = standardRouter({ licenceService, prisonerService, audit: auditStub, signInService, config: null })
+  const baseRouter = standardRouter({ licenceService, prisonerService, audit, signInService, config: null })
   const route = baseRouter(
     createRoute({
       prisonerService,
