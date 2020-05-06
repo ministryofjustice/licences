@@ -168,8 +168,8 @@ function getCaStageState(licence) {
   const { finalChecksPass, finalChecksRefused, postponed } = getFinalChecksState(licence, seriousOffence, onRemand)
   const finalChecks = getOverallState([seriousOffenceCheck, onRemandCheck, confiscationOrderCheck])
   const { bassAccepted, bassOffer, bassWithdrawn, bassWithdrawalReason } = getBassState(licence)
-  const approvalRelease = getIn(licence, ['approval', 'release']) || {}
   const finalChecksRefusal = getIn(licence, ['finalChecks', 'refusal']) || {}
+  const refusalReason = extractCaRefusalReasonText(finalChecksRefusal.reason)
 
   return {
     decisions: {
@@ -182,7 +182,8 @@ function getCaStageState(licence) {
       bassAccepted,
       bassWithdrawn,
       bassWithdrawalReason,
-      caRefused: approvalRelease.decision === 'Yes' && finalChecksRefusal.decision === 'Yes',
+      caRefused: finalChecksRefusal.decision === 'Yes',
+      refusalReason,
     },
     tasks: {
       seriousOffenceCheck,
