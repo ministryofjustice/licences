@@ -196,7 +196,7 @@ describe('FunctionalMailboxService', () => {
       })
 
       it('Handles missing data', async () => {
-        deliusClient.getAllLdusForProbationArea.mockResolvedValue(undefined)
+        deliusClient.getAllLdusForProbationArea.mockResolvedValue({ content: [] })
         probationTeamsClient.getProbationArea.mockResolvedValue(undefined)
 
         expect(await functionalMailboxService.getLdusForProbationArea('PA')).toEqual({})
@@ -256,8 +256,8 @@ describe('FunctionalMailboxService', () => {
       })
 
       it('No data', async () => {
-        deliusClient.getAllLdusForProbationArea.mockResolvedValue(undefined)
-        deliusClient.getAllTeamsForLdu.mockResolvedValue(undefined)
+        deliusClient.getAllLdusForProbationArea.mockResolvedValue({ content: [] })
+        deliusClient.getAllTeamsForLdu.mockResolvedValue({ content: [] })
         probationTeamsClient.getLduWithProbationTeams.mockResolvedValue(undefined)
 
         expect(

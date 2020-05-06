@@ -27,7 +27,7 @@ module.exports = function createLduService(deliusClient, activeLduClient) {
       const activeLdus = await activeLduClient.allActiveLdusInArea(probationAreaCode)
       const activeLdusCodes = activeLdus.map((ldu) => ldu.code)
 
-      const { content: ldus = [] } = await deliusClient.getAllLdusForProbationArea(probationAreaCode)
+      const { content: ldus } = await deliusClient.getAllLdusForProbationArea(probationAreaCode)
 
       const allLdus = ldus.map((ldu) => ({
         code: ldu.code,

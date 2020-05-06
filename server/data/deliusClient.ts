@@ -5,6 +5,9 @@ import logger from '../../log'
 import config from '../config'
 import { getIn } from '../utils/functionalHelpers'
 
+// HTTP status code 404 - Not Found
+const NOT_FOUND = 404
+
 // eslint-disable-next-line import/prefer-default-export
 export const createDeliusClient = (signInService): DeliusClient => {
   const timeoutSpec = {
@@ -42,10 +45,6 @@ export const createDeliusClient = (signInService): DeliusClient => {
 
       return result.body
     } catch (error) {
-      if (error.status === 404) {
-        logger.info(`Not found calling delius at path: '${path}', verb: 'GET'`, error.stack)
-        return undefined
-      }
       logger.warn(
         `Error calling delius, path: '${path}', verb: 'GET', response: '${getIn(error, ['response', 'text'])}'`,
         error.stack
@@ -100,12 +99,28 @@ export const createDeliusClient = (signInService): DeliusClient => {
       return get(`${apiUrl}/probationAreas?excludeEstablishments=true&active=true`)
     },
 
-    getAllLdusForProbationArea(probationAreaCode) {
-      return get(`${apiUrl}/probationAreas/code/${probationAreaCode}/localDeliveryUnits`)
+    async getAllLdusForProbationArea(probationAreaCode) {
+      try {
+        return await get(`${apiUrl}/probationAreas/code/${probationAreaCode}/localDeliveryUnits`)
+      } catch (error) {
+        if (error.status === NOT_FOUND) {
+          return { content: [] }
+        }
+        logger.error(`deliusClient.getAllLdusForProbationArea(${probationAreaCode})`, error.stack)
+        throw error
+      }
     },
 
-    getAllTeamsForLdu(probationAreaCode, lduCode) {
-      return get(`${apiUrl}/probationAreas/code/${probationAreaCode}/localDeliveryUnits/code/${lduCode}/teams`)
+    async getAllTeamsForLdu(probationAreaCode, lduCode) {
+      try {
+        return await get(`${apiUrl}/probationAreas/code/${probationAreaCode}/localDeliveryUnits/code/${lduCode}/teams`)
+      } catch (error) {
+        if (error.status === NOT_FOUND) {
+          return { content: [] }
+        }
+        logger.error(`deliusClient.getAllTeamsForLdu(${probationAreaCode}, ${lduCode})`, error.stack)
+        throw error
+      }
     },
 
     addResponsibleOfficerRole(username) {
