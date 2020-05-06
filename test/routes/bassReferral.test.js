@@ -111,6 +111,31 @@ describe('/hdc/bassReferral', () => {
       })
     })
 
+    describe('GET /hdc/bassReferral/approvedPremisesChoice/1', () => {
+      const licenceService = createLicenceServiceStub()
+      const app = createApp({ licenceServiceStub: licenceService }, 'caUser')
+      test(`Overrides bass referal form with blank data`, () => {
+        return request(app)
+          .post('/hdc/bassReferral/approvedPremisesChoice/1')
+          .send({ decision: 'OptOut' })
+          .expect(302)
+          .expect('Content-Type', /plain/)
+          .expect((res) => {
+            expect(res.header.location).toBe('/hdc/taskList/1')
+            expect(licenceService.updateSection.mock.calls).toEqual([
+              ['proposedAddress', '1', { optOut: { decision: 'Yes' } }],
+              [
+                'bassReferral',
+                '1',
+                {
+                  bassAreaCheck: { approvedPremisesRequiredYesNo: null, bassAreaCheckSeen: null, bassAreaReason: null },
+                },
+              ],
+            ])
+          })
+      })
+    })
+
     test(`bassReferral/bassRequest/1 renders "Additional information" text content`, () => {
       const licenceService = createLicenceServiceStub()
 
