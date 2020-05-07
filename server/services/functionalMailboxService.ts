@@ -63,7 +63,7 @@ export class FunctionalMailboxService {
   }
 
   getLdusForProbationArea = async (probationAreaCode): Promise<LduMap> => {
-    const [{ content: ldus = [] } = {}, { localDeliveryUnits = {} } = {}] = await Promise.all([
+    const [{ content: ldus }, { localDeliveryUnits = {} } = {}] = await Promise.all([
       this.deliusClient.getAllLdusForProbationArea(probationAreaCode),
       this.probationTeamsClient.getProbationArea(probationAreaCode),
     ])
@@ -72,11 +72,7 @@ export class FunctionalMailboxService {
   }
 
   getLduWithProbationTeams = async ({ probationAreaCode, lduCode }): Promise<LduWithTeams> => {
-    const [
-      { content: ldus = [] } = {},
-      { content: probationTeams = [] } = {},
-      localDeliveryUnitDto,
-    ] = await Promise.all([
+    const [{ content: ldus }, { content: probationTeams }, localDeliveryUnitDto] = await Promise.all([
       this.deliusClient.getAllLdusForProbationArea(probationAreaCode),
       this.deliusClient.getAllTeamsForLdu(probationAreaCode, lduCode),
       this.probationTeamsClient.getLduWithProbationTeams({ probationAreaCode, lduCode }),
