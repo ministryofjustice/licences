@@ -48,7 +48,6 @@ module.exports = {
       apiClientId: get('ADMIN_API_CLIENT_ID', 'licencesadmin'),
       apiClientSecret: get('ADMIN_API_CLIENT_SECRET', 'clientsecret'),
     },
-    globalSearchUrl: get('GLOBAL_SEARCH_URL', 'http://localhost:3002/global-search'),
   },
 
   delius: {
@@ -164,5 +163,10 @@ module.exports = {
     systemUser: get('REMINDERS_SYSTEM_USER', ''),
     autostart: get('SCHEDULED_JOBS_AUTOSTART', 'no') === 'yes',
     overlapTimeout: get('SCHEDULED_JOBS_OVERLAP', 5000),
+  },
+
+  links: {
+    exitUrl: get('EXIT_LOCATION_URL', '/', { requireInProduction: true }),
+    globalSearchUrl: get('GLOBAL_SEARCH_URL', 'http://localhost:3002/global-search'),
   },
 }
