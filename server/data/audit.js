@@ -13,8 +13,16 @@ const keys = [
   'WARNINGS',
   'LICENCE_SEARCH',
   'LOCATIONS',
+  'FUNCTIONAL_MAILBOX',
 ]
 
+/**
+ * @typedef {import("../../types/audit").AuditClient} AuditClient
+ */
+
+/**
+ * @return {AuditClient}
+ */
 module.exports = {
   deleteAll() {
     return db.query(`delete from audit`)

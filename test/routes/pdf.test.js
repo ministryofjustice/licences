@@ -1,11 +1,10 @@
 const request = require('supertest')
 const pdfParse = require('pdf-parse')
-
+const { mockAudit } = require('../mockClients')
 const { appSetup } = require('../supertestSetup')
 
 const {
   createPdfServiceStub,
-  auditStub,
   createPrisonerServiceStub,
   createLicenceServiceStub,
   createSignInServiceStub,
@@ -46,12 +45,12 @@ describe('PDF:', () => {
   const prisonerServiceStub = createPrisonerServiceStub()
   const licenceServiceStub = createLicenceServiceStub()
   const pdfServiceStub = createPdfServiceStub()
+  const audit = mockAudit()
 
   let app
 
   beforeEach(() => {
-    app = createApp({ licenceServiceStub, pdfServiceStub, prisonerServiceStub }, 'caUser')
-    auditStub.record.mockReset()
+    app = createApp({ licenceServiceStub, pdfServiceStub, prisonerServiceStub, audit }, 'caUser')
     pdfServiceStub.getPdfLicenceData.mockReset()
     pdfServiceStub.updateLicenceType.mockReset()
     pdfServiceStub.checkAndTakeSnapshot.mockReset()
@@ -340,8 +339,8 @@ describe('PDF:', () => {
         .expect(200)
         .expect('Content-Type', 'application/pdf')
         .expect(() => {
-          expect(auditStub.record).toHaveBeenCalled()
-          expect(auditStub.record).toHaveBeenCalledWith('CREATE_PDF', 'CA_USER_TEST', {
+          expect(audit.record).toHaveBeenCalled()
+          expect(audit.record).toHaveBeenCalledWith('CREATE_PDF', 'CA_USER_TEST', {
             path: '/hdc/pdf/create/123',
             bookingId: '123',
             userInput: {},
@@ -357,12 +356,15 @@ describe('PDF:', () => {
   })
 })
 
-function createApp({ licenceServiceStub = null, pdfServiceStub = null, prisonerServiceStub = null }, user) {
+function createApp(
+  { licenceServiceStub = null, pdfServiceStub = null, prisonerServiceStub = null, audit = mockAudit() },
+  user
+) {
   const prisonerService = prisonerServiceStub || createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()
 
-  const baseRouter = standardRouter({ licenceService, prisonerService, audit: auditStub, signInService, config: null })
+  const baseRouter = standardRouter({ licenceService, prisonerService, audit, signInService, config: null })
   const route = baseRouter(createPdfRouter({ pdfService: pdfServiceStub, prisonerService }), {
     auditKey: 'CREATE_PDF',
   })

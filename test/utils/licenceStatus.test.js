@@ -296,7 +296,7 @@ describe('getLicenceStatus', () => {
       expect(status.decisions.approvedPremisesRequired).toBe(false)
     })
 
-    test('should show refusal reason if not in array', () => {
+    test('should show DM refusal reason if not in array', () => {
       const licence = {
         stage: 'APPROVAL',
         licence: {
@@ -667,11 +667,13 @@ describe('getLicenceStatus', () => {
             },
             refusal: {
               decision: 'Yes',
+              reason: 'addressUnsuitable',
             },
           },
           approval: {
             release: {
               decision: 'Yes',
+              reason: 'outOfTime',
             },
           },
         },
@@ -682,6 +684,7 @@ describe('getLicenceStatus', () => {
       expect(status.decisions.refused).toBe(true)
       expect(status.decisions.finalChecksRefused).toBe(true)
       expect(status.decisions.dmRefused).toBe(false)
+      expect(status.decisions.refusalReason).toBe('Out of time')
     })
   })
 
@@ -1114,6 +1117,25 @@ describe('getLicenceStatus', () => {
         const status = getLicenceStatus(licence)
 
         expect(status.tasks.curfewAddressReview).toEqual(taskStates.UNSTARTED)
+      })
+
+      test('should show refusal reason and caRefused in PROCESSING_CA', () => {
+        const licence = {
+          stage: 'PROCESSING_CA',
+          licence: {
+            finalChecks: {
+              refusal: {
+                decision: 'Yes',
+                reason: 'addressUnsuitable',
+              },
+            },
+          },
+        }
+
+        const status = getLicenceStatus(licence)
+
+        expect(status.decisions.caRefused).toEqual(true)
+        expect(status.decisions.refusalReason).toEqual('No available address')
       })
     })
   })

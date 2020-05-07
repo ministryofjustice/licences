@@ -1,7 +1,7 @@
 const request = require('supertest')
-
+const { mockAudit } = require('../../mockClients')
 const { startRoute } = require('../../supertestSetup')
-const { createUserAdminServiceStub, auditStub } = require('../../mockServices')
+const { createUserAdminServiceStub } = require('../../mockServices')
 const createAdminRoute = require('../../../server/routes/admin/users')
 
 const user1 = {
@@ -22,8 +22,6 @@ describe('/admin', () => {
   let userAdminService
 
   beforeEach(() => {
-    auditStub.record.mockReset()
-
     userAdminService = createUserAdminServiceStub()
 
     userAdminService.findRoUsers.mockReset()
@@ -41,8 +39,8 @@ describe('/admin', () => {
     })
   })
 
-  const createApp = (user) =>
-    startRoute(createAdminRoute({ userAdminService }), '/admin/roUsers', user, 'USER_MANAGEMENT')
+  const createApp = (user, audit = mockAudit()) =>
+    startRoute(createAdminRoute({ userAdminService }), '/admin/roUsers', user, 'USER_MANAGEMENT', null, audit)
 
   describe('GET /admin/roUsers', () => {
     test('calls user service and renders HTML output', () => {
@@ -177,15 +175,16 @@ describe('/admin', () => {
         })
 
         test('Audits the edit user event', () => {
-          const app = createApp('batchUser')
+          const audit = mockAudit()
+          const app = createApp('batchUser', audit)
           return request(app)
             .post('/admin/roUsers/edit/1')
             .send(example)
             .expect(302)
             .expect('Location', '/admin/roUsers')
             .expect(() => {
-              expect(auditStub.record).toHaveBeenCalled()
-              expect(auditStub.record).toHaveBeenCalledWith('USER_MANAGEMENT', 'NOMIS_BATCHLOAD', {
+              expect(audit.record).toHaveBeenCalled()
+              expect(audit.record).toHaveBeenCalledWith('USER_MANAGEMENT', 'NOMIS_BATCHLOAD', {
                 bookingId: undefined,
                 path: '/admin/roUsers/edit/1',
                 userInput: example,
@@ -229,14 +228,15 @@ describe('/admin', () => {
     })
 
     test('Audits the delete user event', () => {
-      const app = createApp('batchUser')
+      const audit = mockAudit()
+      const app = createApp('batchUser', audit)
       return request(app)
         .post('/admin/roUsers/delete/1')
         .expect(302)
         .expect('Location', '/admin/roUsers')
         .expect(() => {
-          expect(auditStub.record).toHaveBeenCalled()
-          expect(auditStub.record).toHaveBeenCalledWith('USER_MANAGEMENT', 'NOMIS_BATCHLOAD', {
+          expect(audit.record).toHaveBeenCalled()
+          expect(audit.record).toHaveBeenCalledWith('USER_MANAGEMENT', 'NOMIS_BATCHLOAD', {
             bookingId: undefined,
             path: '/admin/roUsers/delete/1',
             userInput: {},
@@ -299,15 +299,17 @@ describe('/admin', () => {
         })
 
         test('Audits the add user event', () => {
-          const app = createApp('batchUser')
+          const audit = mockAudit()
+          const app = createApp('batchUser', audit)
+
           return request(app)
             .post('/admin/roUsers/add/')
             .send(example)
             .expect(302)
             .expect('Location', '/admin/roUsers')
             .expect(() => {
-              expect(auditStub.record).toHaveBeenCalled()
-              expect(auditStub.record).toHaveBeenCalledWith('USER_MANAGEMENT', 'NOMIS_BATCHLOAD', {
+              expect(audit.record).toHaveBeenCalled()
+              expect(audit.record).toHaveBeenCalledWith('USER_MANAGEMENT', 'NOMIS_BATCHLOAD', {
                 bookingId: undefined,
                 path: '/admin/roUsers/add/',
                 userInput: example,

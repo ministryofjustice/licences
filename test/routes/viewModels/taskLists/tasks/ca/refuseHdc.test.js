@@ -4,7 +4,7 @@ describe('hdc refusal task - when refused', () => {
   test('When case is not refused', () => {
     expect(
       hdcRefusal({
-        decisions: { refused: false },
+        decisions: { caRefused: false },
       })
     ).toStrictEqual({
       title: null,
@@ -16,7 +16,7 @@ describe('hdc refusal task - when refused', () => {
   test('When case is refused', () => {
     expect(
       hdcRefusal({
-        decisions: { refused: true },
+        decisions: { caRefused: true },
       })
     ).toStrictEqual({
       title: null,
