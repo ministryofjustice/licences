@@ -126,7 +126,28 @@ describe('deliusClient', () => {
       })
     })
 
-    test('LDU not known to Delius', () => {
+    test('LDU not known to Delius: 200, but no "content" field', () => {
+      fakeDelius.get('/probationAreas/code/N02/localDeliveryUnits/code/LDU/teams').reply(200, {
+        pageable: 'INSTANCE',
+        totalElements: 0,
+        last: true,
+        totalPages: 1,
+        sort: {
+          sorted: false,
+          unsorted: true,
+          empty: true,
+        },
+        first: true,
+        number: 0,
+        size: 0,
+        numberOfElements: 0,
+        empty: true,
+      })
+
+      return expect(deliusClient.getAllTeamsForLdu('N02', 'LDU')).resolves.toStrictEqual({ content: [] })
+    })
+
+    test('LDU not known to Delius: 404', () => {
       fakeDelius.get('/probationAreas/code/N02/localDeliveryUnits/code/LDU/teams').reply(404)
 
       return expect(deliusClient.getAllTeamsForLdu('N02', 'LDU')).resolves.toStrictEqual({ content: [] })

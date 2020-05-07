@@ -113,7 +113,13 @@ export const createDeliusClient = (signInService): DeliusClient => {
 
     async getAllTeamsForLdu(probationAreaCode, lduCode) {
       try {
-        return await get(`${apiUrl}/probationAreas/code/${probationAreaCode}/localDeliveryUnits/code/${lduCode}/teams`)
+        const body = await get(
+          `${apiUrl}/probationAreas/code/${probationAreaCode}/localDeliveryUnits/code/${lduCode}/teams`
+        )
+        if (body && body.content) {
+          return body
+        }
+        return { content: [] }
       } catch (error) {
         if (error.status === NOT_FOUND) {
           return { content: [] }

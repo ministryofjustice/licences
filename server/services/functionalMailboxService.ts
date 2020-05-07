@@ -55,7 +55,7 @@ export class FunctionalMailboxService {
   ) {}
 
   getAllProbationAreas = async () => {
-    const [{ content: probationAreas = [] } = {}, probationAreaCodes = []] = await Promise.all([
+    const [{ content: probationAreas } = { content: [] }, probationAreaCodes = []] = await Promise.all([
       this.deliusClient.getAllProbationAreas(),
       this.probationTeamsClient.getProbationAreaCodes(),
     ])

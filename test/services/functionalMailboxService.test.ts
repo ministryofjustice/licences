@@ -271,6 +271,23 @@ describe('FunctionalMailboxService', () => {
           probationTeams: {},
         })
       })
+
+      it('Not found', async () => {
+        deliusClient.getAllLdusForProbationArea.mockResolvedValue({ content: [] })
+        deliusClient.getAllTeamsForLdu.mockResolvedValue({ content: [] })
+        probationTeamsClient.getLduWithProbationTeams.mockResolvedValue(undefined)
+
+        expect(
+          await functionalMailboxService.getLduWithProbationTeams({
+            probationAreaCode: 'PA',
+            lduCode: 'B',
+          })
+        ).toEqual({
+          description: '',
+          functionalMailbox: '',
+          probationTeams: {},
+        })
+      })
     })
 
     describe('updateLduFunctionalMailbox', () => {
