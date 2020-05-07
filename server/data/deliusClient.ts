@@ -124,7 +124,7 @@ export const createDeliusClient = (signInService): DeliusClient => {
         if (error.status === NOT_FOUND) {
           return { content: [] }
         }
-        logger.error(`deliusClient.getAllLdusForProbationArea(${probationAreaCode})`, error.stack)
+        logger.error(`deliusClient.getAllTeamsForLdu(${probationAreaCode}, ${lduCode})`, error.stack)
         throw error
       }
     },
