@@ -588,6 +588,8 @@ describe('caseListService', () => {
               hdcEligible: [
                 { stage: 'APPROVAL', activeCase: true },
                 { stage: 'DECIDED', activeCase: true },
+                { stage: 'MODIFIED', activeCase: true },
+                { stage: 'MODIFIED_APPROVAL', activeCase: true },
                 { stage: 'PROCESSING_CA', status: 'Postponed', activeCase: true },
               ],
             })
