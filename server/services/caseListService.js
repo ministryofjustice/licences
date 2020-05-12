@@ -120,7 +120,13 @@ module.exports = function createCaseListService(nomisClientBuilder, roService, l
         { stage: 'MODIFIED' },
         { stage: 'MODIFIED_APPROVAL' },
       ],
-      DM: [{ stage: 'APPROVAL' }, { stage: 'DECIDED' }, { stage: 'PROCESSING_CA', status: 'Postponed' }],
+      DM: [
+        { stage: 'PROCESSING_CA', status: 'Postponed' },
+        { stage: 'APPROVAL' },
+        { stage: 'DECIDED' },
+        { stage: 'MODIFIED' },
+        { stage: 'MODIFIED_APPROVAL' },
+      ],
     }
 
     if (!interestedStatuses[role]) {

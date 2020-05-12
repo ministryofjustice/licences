@@ -36,12 +36,16 @@ table#hdcEligiblePrisoners.largeMarginBottom
           td
             -var label = labels.dm[prisoner.status] || 'View'
 
-            if ['APPROVAL', 'DECIDED'].includes(prisoner.stage)
+            if ['APPROVAL'].includes(prisoner.stage)
               -var path ="/hdc/taskList/" + prisoner.bookingId
               if ['Start now'].includes(label)
                 a.button.button-primary.fullWidth.center(href=path role="button") #{label}
               else
                 a.button.button-secondary.fullWidth.center(href=path role="button") #{label}
+
+            else if ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(prisoner.stage)
+              -var path = "/hdc/review/licence/" + prisoner.bookingId
+              a.button.button-secondary.fullWidth.center(href=path role="button") #{label}
 
 if !hdcEligible || hdcEligible.length === 0
   p No HDC cases

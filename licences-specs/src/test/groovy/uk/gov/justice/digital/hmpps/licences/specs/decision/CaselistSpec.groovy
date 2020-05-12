@@ -96,8 +96,10 @@ class CaselistSpec extends GebReportingSpec {
     find('a.button').getAttribute('href').contains(target)
 
     where:
-    stage      | sample               | target
-    'APPROVAL' | 'decision/unstarted' | '/taskList'
-    'DECIDED'  | 'decision/approved'  | '/taskList'
+    stage                | sample               | target
+    'APPROVAL'           | 'decision/unstarted' | '/taskList'
+    'DECIDED'            | 'decision/approved'  | '/review/licence'
+    'MODIFIED'           | 'decision/approved'  | '/review/licence'
+    'MODIFIED_APPROVAL'  | 'decision/approved'  | '/review/licence'
   }
 }
