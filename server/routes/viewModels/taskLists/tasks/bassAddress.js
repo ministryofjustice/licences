@@ -83,8 +83,12 @@ const getOfferLabel = ({ decisions, tasks }) => {
 }
 
 const getOfferAction = ({ decisions, tasks }) => {
-  const { bassWithdrawn, approvedPremisesRequired } = decisions
+  const { bassWithdrawn, approvedPremisesRequired, optedOut } = decisions
   const { bassAreaCheck, bassOffer, optOut, curfewAddress, bassRequest } = tasks
+
+  if (optedOut) {
+    return change('/hdc/proposedAddress/curfewAddressChoice/', 'bass-address')
+  }
 
   if (bassWithdrawn) {
     return change('/hdc/bassReferral/bassOffer/', 'bass-address')
@@ -125,7 +129,7 @@ module.exports = {
         action: getAction({ tasks }),
       }
     },
-    postApproval: ({ decisions, tasks }) => {
+    postEligibility: ({ decisions, tasks }) => {
       return {
         title,
         label: getOfferLabel({ decisions, tasks }),
