@@ -46,6 +46,8 @@ whitelist:
   durham-tees-valley: "51.179.197.1/32"
   oakwood-1: "217.161.76.187/32"
   oakwood-2: "217.161.76.195/32"
+  oakwood-3: "217.161.76.186/32"
+  oakwood-4: "217.161.76.194/32"
   dxc-mitcheldean: "195.92.38.16/28"
   ark-dom1-ttp1: "195.59.75.0/24"
   ark-dom1-farnborough: "194.33.192.0/24"
