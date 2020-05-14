@@ -148,7 +148,7 @@ describe('bass offer', () => {
 
     test('should return offer made if bassOffer = DONE && bassAccepted = Yes', () => {
       expect(
-        bassAddress.ca.postEligibility({
+        bassAddress.ca.postApproval({
           decisions: { bassAccepted: 'Yes' },
           tasks: { bassOffer: 'DONE' },
         }).label
@@ -157,7 +157,7 @@ describe('bass offer', () => {
 
     test('should return Not suitable for BASS if bassOffer = DONE && bassAccepted === Unsuitable', () => {
       expect(
-        bassAddress.ca.postEligibility({
+        bassAddress.ca.postApproval({
           decisions: { bassAccepted: 'Unsuitable' },
           tasks: { bassOffer: 'DONE' },
         }).label
@@ -166,7 +166,7 @@ describe('bass offer', () => {
 
     test('should return Address not available if bassOffer = DONE && bassAccepted !== Unsuitable or Yes', () => {
       expect(
-        bassAddress.ca.postEligibility({
+        bassAddress.ca.postApproval({
           decisions: { bassAccepted: 'Something else' },
           tasks: { bassOffer: 'DONE' },
         }).label
@@ -175,7 +175,7 @@ describe('bass offer', () => {
 
     test('should return Not completed if bassAreaCheck == DONE && bassAreaSuitable', () => {
       expect(
-        bassAddress.ca.postEligibility({
+        bassAddress.ca.postApproval({
           decisions: { bassAreaSuitable: true },
           tasks: { bassAreaCheck: 'DONE' },
         }).label
@@ -184,7 +184,7 @@ describe('bass offer', () => {
 
     test('should return BASS referral requested if bassAreaCheck == DONE && !bassAreaSuitable', () => {
       expect(
-        bassAddress.ca.postEligibility({
+        bassAddress.ca.postApproval({
           decisions: { bassAreaSuitable: false },
           tasks: { bassOffer: 'UNSTARTED' },
         }).label
@@ -193,7 +193,7 @@ describe('bass offer', () => {
 
     test('should return BASS referral requested if !bassAreaNotSuitable, !bassWithdrawn, bassOffer !== DONE, bassAreaCheck !== DONE', () => {
       expect(
-        bassAddress.ca.postEligibility({
+        bassAddress.ca.postApproval({
           decisions: { bassAreaNotSuitable: false, bassWithdrawn: false },
           tasks: { bassOffer: 'UNSTARTED', bassAreaCheck: 'UNSTARTED' },
         }).label
@@ -204,7 +204,7 @@ describe('bass offer', () => {
   describe('getAction', () => {
     test('should link to bass offer if bassWithdrawn', () => {
       expect(
-        bassAddress.ca.postEligibility({
+        bassAddress.ca.postApproval({
           decisions: { bassWithdrawn: true },
           tasks: {},
         }).action
@@ -218,7 +218,7 @@ describe('bass offer', () => {
 
     test('should show btn to bassOffer if checks: DONE && bassOffer: UNSTARTED', () => {
       expect(
-        bassAddress.ca.postEligibility({
+        bassAddress.ca.postApproval({
           decisions: { bassWithdrawn: false },
           tasks: { bassAreaCheck: 'DONE', bassOffer: 'UNSTARTED' },
         }).action
@@ -231,7 +231,7 @@ describe('bass offer', () => {
 
     test('should show change link to bassOffer if checks: DONE && bassOffer: DONE', () => {
       expect(
-        bassAddress.ca.postEligibility({
+        bassAddress.ca.postApproval({
           decisions: { bassWithdrawn: false },
           tasks: { bassAreaCheck: 'DONE', bassOffer: 'DONE' },
         }).action
@@ -245,7 +245,7 @@ describe('bass offer', () => {
 
     test('should show continue btn to bassOffer if checks: DONE && bassOffer: !DONE || UNSTARTED', () => {
       expect(
-        bassAddress.ca.postEligibility({
+        bassAddress.ca.postApproval({
           decisions: { bassWithdrawn: false },
           tasks: { bassAreaCheck: 'DONE', bassOffer: 'SOMETHING' },
         }).action
@@ -256,23 +256,9 @@ describe('bass offer', () => {
       })
     })
 
-    test('should go to 3 way choice if opted out', () => {
-      expect(
-        bassAddress.ca.postEligibility({
-          decisions: { optedOut: true },
-          tasks: {},
-        }).action
-      ).toEqual({
-        text: 'Change',
-        href: '/hdc/proposedAddress/curfewAddressChoice/',
-        type: 'link',
-        dataQa: 'bass-address',
-      })
-    })
-
     test('should go to 3 way choice if checks: !DONE && !bassWithdrawn && optout, curfewAddress, bassRequest == UNSTARTED', () => {
       expect(
-        bassAddress.ca.postEligibility({
+        bassAddress.ca.postApproval({
           decisions: { bassWithdrawn: false },
           tasks: {
             bassAreaCheck: 'SOMETHING',
@@ -291,7 +277,7 @@ describe('bass offer', () => {
 
     test('should link to 3 way choice if checks: !DONE && !bassWithdrawn && optout, curfewAddress, bassRequest == DONE', () => {
       expect(
-        bassAddress.ca.postEligibility({
+        bassAddress.ca.postApproval({
           decisions: { bassWithdrawn: false },
           tasks: { bassAreaCheck: 'SOMETHING', optOut: 'DONE', curfewAddress: 'DONE', bassRequest: 'DONE' },
         }).action
@@ -305,7 +291,7 @@ describe('bass offer', () => {
 
     test('should continue to 3 way choice if checks: !DONE && !bassWithdrawn && any optout, curfewAddress, bassRequest != DONE', () => {
       expect(
-        bassAddress.ca.postEligibility({
+        bassAddress.ca.postApproval({
           decisions: { bassWithdrawn: false },
           tasks: {
             bassAreaCheck: 'SOMETHING',

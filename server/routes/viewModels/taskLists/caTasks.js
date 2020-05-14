@@ -69,7 +69,8 @@ module.exports = {
       return tasklist(context, [
         [proposedAddress.ca.processing, !bassReferralNeeded && allowedTransition !== 'caToRo'],
         [curfewAddress, !bassReferralNeeded && allowedTransition === 'caToRo'],
-        [bassAddress.ca.postEligibility, bassReferralNeeded],
+        [bassAddress.ca.postApproval, bassReferralNeeded],
+        [refuseHdc],
       ])
     }
 
@@ -86,7 +87,7 @@ module.exports = {
       [eligibilityTask],
       [proposedAddress.ca.processing, !bassReferralNeeded && allowedTransition !== 'caToRo'],
       [curfewAddress, !bassReferralNeeded && allowedTransition === 'caToRo'],
-      [bassAddress.ca.postEligibility, bassReferralNeeded],
+      [bassAddress.ca.postApproval, bassReferralNeeded],
       [riskManagement.edit, showRiskManagement],
       [victimLiaison.edit, validAddress],
       [curfewHours.edit, validAddress],
