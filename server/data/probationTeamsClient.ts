@@ -37,7 +37,7 @@ export const createProbationTeamsClient = (signInService): ProbationTeamsClient 
         ])}'`,
         error.stack
       )
-      throw error
+      throw Error(error.message)
     }
   }
 
@@ -63,7 +63,7 @@ export const createProbationTeamsClient = (signInService): ProbationTeamsClient 
         ])}'`,
         error.stack
       )
-      throw error
+      throw Error(error.message)
     }
   }
 
@@ -92,7 +92,7 @@ export const createProbationTeamsClient = (signInService): ProbationTeamsClient 
         ])}'`,
         error.stack
       )
-      throw error
+      throw Error(error.message)
     }
   }
 

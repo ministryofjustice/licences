@@ -4,6 +4,7 @@ import { DeliusClient } from '../../types/delius'
 import logger from '../../log'
 import config from '../config'
 import { getIn } from '../utils/functionalHelpers'
+import sanitiseError from '../utils/errorSanitiser'
 
 // HTTP status code 404 - Not Found
 const NOT_FOUND = 404
@@ -49,7 +50,9 @@ export const createDeliusClient = (signInService): DeliusClient => {
         `Error calling delius, path: '${path}', verb: 'GET', response: '${getIn(error, ['response', 'text'])}'`,
         error.stack
       )
-      throw error
+      const e = Error()
+      Object.assign(e, sanitiseError(error))
+      throw e
     }
   }
 

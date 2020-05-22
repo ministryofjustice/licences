@@ -219,7 +219,7 @@ function nomisGetBuilder(token) {
         )}'`,
         error.stack
       )
-      throw error
+      throw Error(error.message)
     }
   }
 }
@@ -245,7 +245,7 @@ function nomisPushBuilder(verb, token) {
         `Error calling nomis, path: '${path}', verb: '${verb}', response: '${getIn(error, ['response', 'text'])}'`,
         error.stack
       )
-      throw error
+      throw Error(error.message)
     }
   }
 }

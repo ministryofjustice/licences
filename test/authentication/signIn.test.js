@@ -1,4 +1,5 @@
 const nock = require('nock')
+const R = require('ramda')
 const signInService = require('../../server/authentication/signInService')
 const config = require('../../server/config')
 
@@ -51,6 +52,19 @@ describe('signInService', () => {
       const newToken = await service.getAnonymousClientCredentialsTokens()
 
       expect(newToken).toEqual({ refreshToken: 'refreshed', expiresIn: '1200', token: 'token' })
+    })
+
+    test('Authorization header should not be included in error', async () => {
+      fakeOauth.post(`/oauth/token`, 'grant_type=client_credentials').reply(401, {})
+
+      try {
+        await service.getAnonymousClientCredentialsTokens()
+        expect('Unexpected').toEqual('Failure')
+      } catch (e) {
+        expect(e.status).toEqual(401)
+        const headerKeys = R.pipe(R.pathOr({}, ['response', 'request', 'header']), R.keys, R.map(R.toLower))(e)
+        expect(headerKeys).not.toContain('authorization')
+      }
     })
 
     test('should pass username for regular client credentials token', async () => {

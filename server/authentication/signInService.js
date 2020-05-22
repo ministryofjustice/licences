@@ -1,5 +1,6 @@
 const superagent = require('superagent')
 const querystring = require('querystring')
+const sanitiseError = require('../utils/errorSanitiser')
 const config = require('../config')
 const { generateOauthClientToken, generateAdminOauthClientToken } = require('./oauth')
 const logger = require('../../log')
@@ -61,6 +62,7 @@ const getOauthToken = (oauthClientToken, requestSpec, service) => {
     .set('content-type', 'application/x-www-form-urlencoded')
     .send(oauthRequest)
     .timeout(timeoutSpec)
+    .catch((e) => Promise.reject(sanitiseError(e)))
 }
 
 const oauthTokenRequest = async (clientToken, oauthRequest, service) => {
