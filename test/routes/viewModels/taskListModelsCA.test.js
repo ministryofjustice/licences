@@ -547,7 +547,7 @@ describe('TaskList models', () => {
           },
           {}
         )
-      ).toEqual([proposedCurfewAddressOptedOut])
+      ).toEqual([proposedCurfewAddressOptedOut, refuse])
     })
 
     test('should return limited bass specific list of tasks when bass area check not done', () => {

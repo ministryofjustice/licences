@@ -79,8 +79,8 @@ module.exports = ({ licenceService, nomisPushService }) => (router, audited, pus
   )
 
   const approvedPremisesContents = {
-    OptOut: { bassAreaCheck: { bassAreaCheckSeen: null, bassAreaReason: null, approvedPremisesRequiredYesNo: null } },
-    ApprovedPremises: { bassAreaCheck: { approvedPremisesRequiredYesNo: 'Yes' } },
+    OptOut: { approvedPremises: { required: 'No' } },
+    ApprovedPremises: { approvedPremises: { required: 'Yes' } },
   }
 
   const proposedAddressContents = {
