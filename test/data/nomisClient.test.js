@@ -20,17 +20,17 @@ describe('nomisClient', () => {
 
   describe('nomisClient', () => {
     test('should throw error on GET when no token', () => {
-      const badClient = nomisClientBuilder()
+      const badClient = nomisClientBuilder(undefined)
       return expect(badClient.getBooking('1')).rejects.toThrow('Unauthorised access')
     })
 
     test('should throw error on POST when no token', () => {
-      const badClient = nomisClientBuilder()
+      const badClient = nomisClientBuilder(undefined)
       return expect(badClient.getOffenderSentencesByBookingId(['1'])).rejects.toThrow('Unauthorised access')
     })
 
     test('should throw error on PUT when no token', () => {
-      const badClient = nomisClientBuilder()
+      const badClient = nomisClientBuilder(undefined)
       return expect(badClient.putActiveCaseLoad('1')).rejects.toThrow('Unauthorised access')
     })
   })

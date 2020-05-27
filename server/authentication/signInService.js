@@ -1,10 +1,11 @@
 const superagent = require('superagent')
 const querystring = require('querystring')
-const sanitiseError = require('../utils/errorSanitiser')
+const R = require('ramda')
 const config = require('../config')
 const { generateOauthClientToken, generateAdminOauthClientToken } = require('./oauth')
 const logger = require('../../log')
 const fiveMinutesBefore = require('../utils/fiveMinutesBefore')
+const handleError = require('../data/clientErrorHandler').buildErrorHandler('OAuth')
 
 const timeoutSpec = {
   response: config.nomis.timeout.response,
@@ -62,7 +63,7 @@ const getOauthToken = (oauthClientToken, requestSpec, service) => {
     .set('content-type', 'application/x-www-form-urlencoded')
     .send(oauthRequest)
     .timeout(timeoutSpec)
-    .catch((e) => Promise.reject(sanitiseError(e)))
+    .catch((error) => handleError(error, 'oauth/token', 'POST'))
 }
 
 const oauthTokenRequest = async (clientToken, oauthRequest, service) => {

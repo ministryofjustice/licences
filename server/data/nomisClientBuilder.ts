@@ -1,18 +1,14 @@
-/**
- * @typedef {import("../../types/elite2api").Role} Role
- * @typedef {import("../../types/elite2api").Profile} Profile
- *
- */
+import Agent, { HttpsAgent } from 'agentkeepalive'
+import moment from 'moment'
+import superagent from 'superagent'
+import logger from '../../log'
+import config from '../config'
+import { isEmpty, merge, pipe, splitEvery } from '../utils/functionalHelpers'
+import { unauthorisedError } from '../utils/errors'
+import { buildErrorHandler } from './clientErrorHandler'
+import { Role, Profile } from '../../types/elite2api'
 
-/** @type {any} */
-const Agent = require('agentkeepalive')
-const { HttpsAgent } = require('agentkeepalive')
-const moment = require('moment')
-const superagent = require('superagent')
-const logger = require('../../log')
-const config = require('../config')
-const { merge, pipe, getIn, splitEvery, isEmpty } = require('../utils/functionalHelpers')
-const { unauthorisedError } = require('../utils/errors')
+const handleError = buildErrorHandler('NOMIS')
 
 const timeoutSpec = {
   response: config.nomis.timeout.response,
@@ -41,7 +37,124 @@ const batchRequests = async (args, batchSize, call) => {
     .reduce((acc, val) => acc.concat(val), [])
 }
 
-module.exports = (token) => {
+function nomisGetBuilder(token) {
+  return async ({ path, query = {}, headers = {}, responseType = '' }) => {
+    if (!token) {
+      throw unauthorisedError()
+    }
+
+    try {
+      const result = await superagent
+        .get(path)
+        .agent(keepaliveAgent)
+        .query(query)
+        .set('Authorization', `Bearer ${token}`)
+        .set(headers)
+        .retry(2, (err) => {
+          if (err) logger.info(`Retry handler found API error with ${err.code} ${err.message}`)
+          return undefined // retry handler only for logging retries, not to influence retry logic
+        })
+        .responseType(responseType)
+        .timeout(timeoutSpec)
+      return result.body
+    } catch (error) {
+      handleError(error, path, 'GET')
+      return undefined // unreachable
+    }
+  }
+}
+
+async function post(token, path, body, headers, responseType) {
+  return superagent
+    .post(path)
+    .agent(keepaliveAgent)
+    .send(body)
+    .set('Authorization', `Bearer ${token}`)
+    .set(headers)
+    .responseType(responseType)
+    .timeout(timeoutSpec)
+}
+
+async function put(token, path, body, headers, responseType) {
+  return superagent
+    .put(path)
+    .agent(keepaliveAgent)
+    .send(body)
+    .set('Authorization', `Bearer ${token}`)
+    .set(headers)
+    .responseType(responseType)
+    .timeout(timeoutSpec)
+}
+
+function nomisPushBuilder(verb, token) {
+  const updateMethod = {
+    put,
+    post,
+  }
+
+  return async ({ path, body, headers = {}, responseType = '' }) => {
+    if (!token) {
+      throw unauthorisedError()
+    }
+
+    try {
+      const result = await updateMethod[verb](token, path, body || '', headers, responseType)
+      return result.body
+    } catch (error) {
+      handleError(error, path, verb)
+      return undefined // unreachable, but stops Typescript complaining about a missing return value
+    }
+  }
+}
+
+function findFirstValid(datesList) {
+  return datesList.find((date) => date && date !== invalidDate) || null
+}
+
+function addEffectiveConditionalReleaseDate(prisoner) {
+  const { conditionalReleaseDate, conditionalReleaseOverrideDate } = prisoner.sentenceDetail
+
+  const crd = findFirstValid([conditionalReleaseOverrideDate, conditionalReleaseDate])
+
+  return {
+    ...prisoner,
+    sentenceDetail: merge(prisoner.sentenceDetail, { effectiveConditionalReleaseDate: crd }),
+  }
+}
+
+function addEffectiveAutomaticReleaseDate(prisoner) {
+  const { automaticReleaseDate, automaticReleaseOverrideDate } = prisoner.sentenceDetail
+
+  const ard = findFirstValid([automaticReleaseOverrideDate, automaticReleaseDate])
+
+  return {
+    ...prisoner,
+    sentenceDetail: merge(prisoner.sentenceDetail, { effectiveAutomaticReleaseDate: ard }),
+  }
+}
+
+function addReleaseDate(prisoner) {
+  const {
+    automaticReleaseDate,
+    automaticReleaseOverrideDate,
+    conditionalReleaseDate,
+    conditionalReleaseOverrideDate,
+  } = prisoner.sentenceDetail
+
+  const releaseDate = findFirstValid([
+    conditionalReleaseOverrideDate,
+    conditionalReleaseDate,
+    automaticReleaseOverrideDate,
+    automaticReleaseDate,
+  ])
+
+  return {
+    ...prisoner,
+    sentenceDetail: merge(prisoner.sentenceDetail, { releaseDate }),
+  }
+}
+
+export = (token) => {
   const nomisGet = nomisGetBuilder(token)
   const nomisPost = nomisPushBuilder('post', token)
   const nomisPut = nomisPushBuilder('put', token)
@@ -134,18 +247,12 @@ module.exports = (token) => {
       return nomisGet({ path })
     },
 
-    /**
-     * @returns {Promise<Profile>}
-     */
-    getLoggedInUserInfo() {
+    getLoggedInUserInfo(): Promise<Profile> {
       const path = `${authUrl}/api/user/me`
       return nomisGet({ path })
     },
 
-    /**
-     * @returns {Promise<[Role]>}
-     */
-    getUserRoles() {
+    getUserRoles(): Promise<Role> {
       const path = `${authUrl}/api/user/me/roles`
       return nomisGet({ path })
     },
@@ -185,136 +292,5 @@ module.exports = (token) => {
       const headers = { 'Page-Limit': 10000 }
       return nomisPost({ path, body: [offenderNo], headers })
     },
-  }
-}
-
-function nomisGetBuilder(token) {
-  return async ({ path, query = {}, headers = {}, responseType = '' }) => {
-    if (!token) {
-      throw unauthorisedError()
-    }
-
-    try {
-      logger.debug(`GET ${path}`)
-      const result = await superagent
-        .get(path)
-        .agent(keepaliveAgent)
-        .query(query)
-        .set('Authorization', `Bearer ${token}`)
-        .set(headers)
-        .retry(2, (err) => {
-          if (err) logger.info(`Retry handler found API error with ${err.code} ${err.message}`)
-          return undefined // retry handler only for logging retries, not to influence retry logic
-        })
-        .responseType(responseType)
-        .timeout(timeoutSpec)
-
-      logger.debug(`GET ${path} -> ${result.status}`)
-      return result.body
-    } catch (error) {
-      logger.warn(
-        `Error calling nomis, path: '${path}', verb: 'GET', query: '${JSON.stringify(query)}', response: '${getIn(
-          error,
-          ['response', 'text']
-        )}'`,
-        error.stack
-      )
-      throw Error(error.message)
-    }
-  }
-}
-
-function nomisPushBuilder(verb, token) {
-  const updateMethod = {
-    put,
-    post,
-  }
-
-  return async ({ path, body, headers = {}, responseType = '' }) => {
-    if (!token) {
-      throw unauthorisedError()
-    }
-
-    try {
-      logger.debug(`${verb} ${path}`)
-      const result = await updateMethod[verb](token, path, body || '', headers, responseType)
-      logger.debug(`${verb} ${path} -> ${result.status}`)
-      return result.body
-    } catch (error) {
-      logger.warn(
-        `Error calling nomis, path: '${path}', verb: '${verb}', response: '${getIn(error, ['response', 'text'])}'`,
-        error.stack
-      )
-      throw Error(error.message)
-    }
-  }
-}
-
-async function post(token, path, body, headers, responseType) {
-  return superagent
-    .post(path)
-    .agent(keepaliveAgent)
-    .send(body)
-    .set('Authorization', `Bearer ${token}`)
-    .set(headers)
-    .responseType(responseType)
-    .timeout(timeoutSpec)
-}
-
-async function put(token, path, body, headers, responseType) {
-  return superagent
-    .put(path)
-    .agent(keepaliveAgent)
-    .send(body)
-    .set('Authorization', `Bearer ${token}`)
-    .set(headers)
-    .responseType(responseType)
-    .timeout(timeoutSpec)
-}
-
-function findFirstValid(datesList) {
-  return datesList.find((date) => date && date !== invalidDate) || null
-}
-
-function addEffectiveConditionalReleaseDate(prisoner) {
-  const { conditionalReleaseDate, conditionalReleaseOverrideDate } = prisoner.sentenceDetail
-
-  const crd = findFirstValid([conditionalReleaseOverrideDate, conditionalReleaseDate])
-
-  return {
-    ...prisoner,
-    sentenceDetail: merge(prisoner.sentenceDetail, { effectiveConditionalReleaseDate: crd }),
-  }
-}
-
-function addEffectiveAutomaticReleaseDate(prisoner) {
-  const { automaticReleaseDate, automaticReleaseOverrideDate } = prisoner.sentenceDetail
-
-  const ard = findFirstValid([automaticReleaseOverrideDate, automaticReleaseDate])
-
-  return {
-    ...prisoner,
-    sentenceDetail: merge(prisoner.sentenceDetail, { effectiveAutomaticReleaseDate: ard }),
-  }
-}
-
-function addReleaseDate(prisoner) {
-  const {
-    automaticReleaseDate,
-    automaticReleaseOverrideDate,
-    conditionalReleaseDate,
-    conditionalReleaseOverrideDate,
-  } = prisoner.sentenceDetail
-
-  const releaseDate = findFirstValid([
-    conditionalReleaseOverrideDate,
-    conditionalReleaseDate,
-    automaticReleaseOverrideDate,
-    automaticReleaseDate,
-  ])
-
-  return {
-    ...prisoner,
-    sentenceDetail: merge(prisoner.sentenceDetail, { releaseDate }),
   }
 }

@@ -1,5 +1,4 @@
 const nock = require('nock')
-const R = require('ramda')
 const signInService = require('../../server/authentication/signInService')
 const config = require('../../server/config')
 
@@ -59,11 +58,9 @@ describe('signInService', () => {
 
       try {
         await service.getAnonymousClientCredentialsTokens()
-        expect('Unexpected').toEqual('Failure')
+        expect('Unexpected').toEqual('Failure') // Fail if service doesn't throw...
       } catch (e) {
-        expect(e.status).toEqual(401)
-        const headerKeys = R.pipe(R.pathOr({}, ['response', 'request', 'header']), R.keys, R.map(R.toLower))(e)
-        expect(headerKeys).not.toContain('authorization')
+        expect(e.message).toEqual('Unauthorized')
       }
     })
 

@@ -4,7 +4,11 @@ import { DeliusClient } from '../../types/delius'
 import logger from '../../log'
 import config from '../config'
 import { getIn } from '../utils/functionalHelpers'
-import sanitiseError from '../utils/errorSanitiser'
+import { buildErrorLogger, buildErrorHandler } from './clientErrorHandler'
+
+const DELIUS_API_NAME = 'Delius Community API'
+const logError = buildErrorLogger(DELIUS_API_NAME)
+const handleError = buildErrorHandler(DELIUS_API_NAME)
 
 // HTTP status code 404 - Not Found
 const NOT_FOUND = 404
@@ -30,95 +34,86 @@ export const createDeliusClient = (signInService): DeliusClient => {
     if (!token) {
       throw Error(`Failed to get token when attempting to call delius: ${path}`)
     }
+    const result = await superagent
+      .get(`${apiUrl}${path}`)
+      .agent(keepaliveAgent)
+      .set('Authorization', `Bearer ${token.token}`)
+      .retry(2, (err) => {
+        if (err) logger.info(`Retry handler found API error with ${err.code} ${err.message}`)
+        return undefined // retry handler only for logging retries, not to influence retry logic
+      })
+      .timeout(timeoutSpec)
 
+    return result.body
+  }
+
+  async function safeGet(path) {
     try {
-      logger.debug(`GET ${path}`)
-      const result = await superagent
-        .get(path)
-        .agent(keepaliveAgent)
-        .set('Authorization', `Bearer ${token.token}`)
-        .retry(2, (err) => {
-          if (err) logger.info(`Retry handler found API error with ${err.code} ${err.message}`)
-          return undefined // retry handler only for logging retries, not to influence retry logic
-        })
-        .timeout(timeoutSpec)
-      logger.debug(`GET ${path} -> ${result.status}`)
-
-      return result.body
+      return await get(path)
     } catch (error) {
-      logger.warn(
-        `Error calling delius, path: '${path}', verb: 'GET', response: '${getIn(error, ['response', 'text'])}'`,
-        error.stack
-      )
-      const e = Error()
-      Object.assign(e, sanitiseError(error))
-      throw e
+      handleError(error, path)
+      return undefined // unreachable
     }
   }
 
   async function put(path) {
-    const token = await signInService.getAnonymousClientCredentialsTokens('delius')
-    if (!token) {
-      throw Error(`Failed to get token when attempting to call delius: ${path}`)
-    }
-
     try {
-      logger.debug(`PUT ${path}`)
+      const token = await signInService.getAnonymousClientCredentialsTokens('delius')
+      if (!token) {
+        throw Error(`Failed to get token when attempting to call delius: ${path}`)
+      }
+
       const result = await superagent
-        .put(path)
+        .put(`${apiUrl}${path}`)
         .agent(keepaliveAgent)
         .set('Authorization', `Bearer ${token.token}`)
         .timeout(timeoutSpec)
-      logger.debug(`PUT ${path} -> ${result.status}`)
 
       return result.body
     } catch (error) {
-      logger.warn(
-        `Error calling delius, path: '${path}', verb: 'PUT', response: '${getIn(error, ['response', 'text'])}'`,
-        error.stack
-      )
+      logError(error, path, 'PUT')
       return null
     }
   }
 
   return {
     getStaffDetailsByStaffCode(staffCode) {
-      return get(`${apiUrl}/staff/staffCode/${staffCode}`)
+      return safeGet(`/staff/staffCode/${staffCode}`)
     },
 
     getStaffDetailsByUsername(username) {
-      return get(`${apiUrl}/staff/username/${username}`)
+      return safeGet(`/staff/username/${username}`)
     },
 
     getROPrisoners(deliusStaffCode) {
-      return get(`${apiUrl}/staff/staffCode/${deliusStaffCode}/managedOffenders`)
+      return safeGet(`/staff/staffCode/${deliusStaffCode}/managedOffenders`)
     },
 
     getAllOffenderManagers(offenderNo) {
-      return get(`${apiUrl}/offenders/nomsNumber/${offenderNo}/allOffenderManagers`)
+      return safeGet(`/offenders/nomsNumber/${offenderNo}/allOffenderManagers`)
     },
 
     getAllProbationAreas() {
-      return get(`${apiUrl}/probationAreas?excludeEstablishments=true&active=true`)
+      return safeGet(`/probationAreas?excludeEstablishments=true&active=true`)
     },
 
     async getAllLdusForProbationArea(probationAreaCode) {
+      const path = `/probationAreas/code/${probationAreaCode}/localDeliveryUnits`
       try {
-        return await get(`${apiUrl}/probationAreas/code/${probationAreaCode}/localDeliveryUnits`)
+        return await get(path)
       } catch (error) {
         if (error.status === NOT_FOUND) {
           return { content: [] }
         }
-        logger.error(`deliusClient.getAllLdusForProbationArea(${probationAreaCode})`, error.stack)
-        throw error
+        handleError(error, path)
+        return undefined // unreachable
       }
     },
 
     async getAllTeamsForLdu(probationAreaCode, lduCode) {
+      const path = `/probationAreas/code/${probationAreaCode}/localDeliveryUnits/code/${lduCode}/teams`
       try {
-        const body = await get(
-          `${apiUrl}/probationAreas/code/${probationAreaCode}/localDeliveryUnits/code/${lduCode}/teams`
-        )
+        const body = await get(path)
         if (body && body.content) {
           return body
         }
@@ -127,13 +122,13 @@ export const createDeliusClient = (signInService): DeliusClient => {
         if (error.status === NOT_FOUND) {
           return { content: [] }
         }
-        logger.error(`deliusClient.getAllTeamsForLdu(${probationAreaCode}, ${lduCode})`, error.stack)
-        throw error
+        handleError(error, path)
+        return undefined // unreachable
       }
     },
 
     addResponsibleOfficerRole(username) {
-      return put(`${apiUrl}/users/${username}/roles/${config.delius.responsibleOfficerRoleId}`)
+      return put(`/users/${username}/roles/${config.delius.responsibleOfficerRoleId}`)
     },
   }
 }
