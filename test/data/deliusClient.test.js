@@ -1,6 +1,7 @@
 const nock = require('nock')
 
 const config = require('../../server/config')
+const restClientBuilder = require('../../server/data/restClientBuilder')
 const { createDeliusClient } = require('../../server/data/deliusClient')
 
 describe('deliusClient', () => {
@@ -13,7 +14,14 @@ describe('deliusClient', () => {
     signInService = {
       getAnonymousClientCredentialsTokens: jest.fn().mockReturnValue('token'),
     }
-    deliusClient = createDeliusClient(signInService)
+    const restClient = restClientBuilder(
+      signInService,
+      `${config.delius.apiUrl}${config.delius.apiPrefix}`,
+      'delius',
+      'Delius community API',
+      { timeout: config.delius.timeout, agent: config.delius.agent }
+    )
+    deliusClient = createDeliusClient(restClient)
   })
 
   afterEach(() => {
@@ -24,7 +32,7 @@ describe('deliusClient', () => {
     test('should throw error on GET when no token', () => {
       signInService.getAnonymousClientCredentialsTokens.mockReturnValue(null)
       return expect(deliusClient.getROPrisoners('1')).rejects.toThrow(
-        /Failed to get token when attempting to call delius: .*?\/staff\/staffCode\/1\/managedOffenders/
+        "Error calling Delius community API. Failed to get OAuth token, path: /staff/staffCode/1/managedOffenders, verb: 'GET'"
       )
     })
   })
@@ -158,13 +166,15 @@ describe('deliusClient', () => {
     test('should return data from api', () => {
       fakeDelius.put(`/users/bobUser/roles/${config.delius.responsibleOfficerRoleId}`).reply(200)
 
-      return expect(deliusClient.addResponsibleOfficerRole('bobUser')).resolves.toStrictEqual({})
+      // The only place where addResponsibleOfficerRole is used is in roNotificationHandler.assignDeliusRoRole
+      // The assignDeliusRoRole function ignores the return value.
+      return expect(deliusClient.addResponsibleOfficerRole('bobUser')).resolves.toBeUndefined()
     })
 
     test('should ignore errors', () => {
       fakeDelius.put(`/users/bobUser/roles/${config.delius.responsibleOfficerRoleId}`).reply(500)
 
-      return expect(deliusClient.addResponsibleOfficerRole('bobUser')).resolves.toStrictEqual(null)
+      return expect(deliusClient.addResponsibleOfficerRole('bobUser')).resolves.toBeUndefined()
     })
   })
 })
