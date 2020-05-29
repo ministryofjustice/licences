@@ -1,7 +1,7 @@
 const nock = require('nock')
 
 const config = require('../../server/config')
-const restClientBuilder = require('../../server/data/restClientBuilder')
+const { buildRestClient, dynamicTokenSource } = require('../../server/data/restClientBuilder')
 const { createDeliusClient } = require('../../server/data/deliusClient')
 
 describe('deliusClient', () => {
@@ -12,12 +12,11 @@ describe('deliusClient', () => {
   beforeEach(() => {
     fakeDelius = nock(`${config.delius.apiUrl}${config.delius.apiPrefix}`)
     signInService = {
-      getAnonymousClientCredentialsTokens: jest.fn().mockReturnValue('token'),
+      getAnonymousClientCredentialsTokens: jest.fn().mockResolvedValue({ token: 'token' }),
     }
-    const restClient = restClientBuilder(
-      signInService,
+    const restClient = buildRestClient(
+      dynamicTokenSource(signInService, 'delius'),
       `${config.delius.apiUrl}${config.delius.apiPrefix}`,
-      'delius',
       'Delius community API',
       { timeout: config.delius.timeout, agent: config.delius.agent }
     )
@@ -31,9 +30,7 @@ describe('deliusClient', () => {
   describe('deliusClient', () => {
     test('should throw error on GET when no token', () => {
       signInService.getAnonymousClientCredentialsTokens.mockReturnValue(null)
-      return expect(deliusClient.getROPrisoners('1')).rejects.toThrow(
-        "Error calling Delius community API. Failed to get OAuth token, path: /staff/staffCode/1/managedOffenders, verb: 'GET'"
-      )
+      return expect(deliusClient.getROPrisoners('1')).rejects.toThrow('Error obtaining OAuth token')
     })
   })
 

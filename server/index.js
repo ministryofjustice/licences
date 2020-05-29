@@ -40,7 +40,7 @@ const createNomisPushService = require('./services/nomisPushService')
 const createDeadlineService = require('./services/deadlineService')
 const createJobSchedulerService = require('./services/jobSchedulerService')
 const createNotificationJobs = require('./services/jobs/notificationJobs')
-const restClientBuilder = require('./data/restClientBuilder')
+const { buildRestClient, dynamicTokenSource } = require('./data/restClientBuilder')
 const { createDeliusClient } = require('./data/deliusClient')
 const { createProbationTeamsClient } = require('./data/probationTeamsClient')
 const createRoService = require('./services/roService')
@@ -53,23 +53,23 @@ const signInService = createSignInService()
 const licenceService = createLicenceService(licenceClient)
 const conditionsService = createConditionsService(config)
 
-const deliusRestClient = restClientBuilder(
-  signInService,
-  `${config.delius.apiUrl}${config.delius.apiPrefix}`,
-  'delius',
-  'Delius community API',
-  { timeout: config.delius.timeout, agent: config.delius.agent }
+const deliusClient = createDeliusClient(
+  buildRestClient(
+    dynamicTokenSource(signInService, 'delius'),
+    `${config.delius.apiUrl}${config.delius.apiPrefix}`,
+    'Delius community API',
+    { timeout: config.delius.timeout, agent: config.delius.agent }
+  )
 )
-const deliusClient = createDeliusClient(deliusRestClient)
 
-const probationTeamsRestClient = restClientBuilder(
-  signInService,
-  config.probationTeams.apiUrl,
-  'probationTeams',
-  'probation-teams',
-  { timeout: config.probationTeams.timeout, agent: config.probationTeams.agent }
+const probationTeamsClient = createProbationTeamsClient(
+  buildRestClient(
+    dynamicTokenSource(signInService, 'probationTeams'),
+    config.probationTeams.apiUrl,
+    'probation-teams',
+    { timeout: config.probationTeams.timeout, agent: config.probationTeams.agent }
+  )
 )
-const probationTeamsClient = createProbationTeamsClient(probationTeamsRestClient)
 
 const roService = createRoService(deliusClient, nomisClientBuilder)
 const caService = createCaService(roService, activeLduClient)

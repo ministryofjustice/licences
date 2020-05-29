@@ -1,6 +1,5 @@
 const superagent = require('superagent')
 const querystring = require('querystring')
-const R = require('ramda')
 const config = require('../config')
 const { generateOauthClientToken, generateAdminOauthClientToken } = require('./oauth')
 const logger = require('../../log')

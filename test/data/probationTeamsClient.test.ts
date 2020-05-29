@@ -1,7 +1,7 @@
 import nock from 'nock'
 
 import config from '../../server/config'
-import restClientBuilder from '../../server/data/restClientBuilder'
+import { buildRestClient, dynamicTokenSource } from '../../server/data/restClientBuilder'
 import { createProbationTeamsClient } from '../../server/data/probationTeamsClient'
 
 const LDU_ID = Object.freeze({ probationAreaCode: 'AREA_CODE', lduCode: 'LDU_CODE' })
@@ -16,12 +16,11 @@ describe('probationTeamsClient', () => {
   beforeEach(() => {
     fakeProbationTeamsService = nock(`${config.probationTeams.apiUrl}`)
     signInService = {
-      getAnonymousClientCredentialsTokens: jest.fn().mockReturnValue('token'),
+      getAnonymousClientCredentialsTokens: jest.fn().mockResolvedValue({ token: 'token' }),
     }
-    const restClient = restClientBuilder(
-      signInService,
+    const restClient = buildRestClient(
+      dynamicTokenSource(signInService, 'probationTeams'),
       config.probationTeams.apiUrl,
-      'probationTeams',
       'probation-teams',
       {
         timeout: {
@@ -42,7 +41,7 @@ describe('probationTeamsClient', () => {
     test('should throw error on GET when no token', async () => {
       signInService.getAnonymousClientCredentialsTokens.mockResolvedValue(null)
       await expect(probationTeamsClient.getFunctionalMailbox(PROBATION_TEAM_ID)).rejects.toThrow(
-        "Error calling probation-teams. Failed to get OAuth token, path: /probation-areas/AREA_CODE/local-delivery-units/LDU_CODE, verb: 'GET'"
+        'Error obtaining OAuth token'
       )
     })
 
