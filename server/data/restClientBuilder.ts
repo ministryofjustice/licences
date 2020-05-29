@@ -14,7 +14,7 @@ interface AgentConfig {
   freeSocketTimeout: number
 }
 
-interface RestClientConfig {
+export interface RestClientConfig {
   timeout: TimeoutSpec
   agent: AgentConfig
 }
@@ -42,8 +42,7 @@ export const dynamicTokenSource = (signInService, oauthServiceName: string): Tok
 }
 
 /**
- * Configure and return a REST api client.  Building clients like this provides
- * consistency across the various REST clients defined within this module.
+ * Configure and return a REST api client.  This is used by the REST API facades within this module.
  */
 export const buildRestClient = (
   tokenSource: TokenSource,
@@ -65,9 +64,16 @@ export const buildRestClient = (
           .set('Authorization', `Bearer ${token}`)
           .set(headers)
           .retry(2, (err, res) => {
-            if (res?.status >= 300 && res?.status !== NOT_FOUND && res?.status !== UNAUTHORIZED) {
-              if (err) logger.warn(`Retry handler found API error with ${res?.status} ${res?.error?.message}`)
-              return true
+            if (res) {
+              if (res.status >= 300 && res.status !== NOT_FOUND && res.status !== UNAUTHORIZED) {
+                logger.warn(
+                  `Retry handler found API error with status: '${res.status}', message: '${res.error?.message}'`
+                )
+                return true
+              }
+            }
+            if (err) {
+              logger.warn(`Retry handler found API error, status '${err.status}', message: '${err.message}'`)
             }
             return false
           })
