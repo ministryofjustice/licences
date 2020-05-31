@@ -7,7 +7,7 @@ const { asyncMiddleware } = require('../utils/middleware')
 const { getLicenceStatus } = require('../utils/licenceStatus')
 const { getStatusLabel } = require('../utils/licenceStatusLabels')
 
-const { isEmpty } = require('../utils/functionalHelpers')
+const { isEmpty, getIn } = require('../utils/functionalHelpers')
 const getTaskListModel = require('./viewModels/taskListModels')
 const logger = require('../../log')
 const { getTasksForBlocked } = require('./viewModels/taskLists/caTasks')
@@ -99,7 +99,7 @@ module.exports = ({ prisonerService, licenceService, audit, caService }) => (rou
       }
 
       const postRelease = prisonerInfo.agencyLocationId ? prisonerInfo.agencyLocationId.toUpperCase() === 'OUT' : false
-      const licence = await licenceService.getLicence(bookingId)
+      let licence = await licenceService.getLicence(bookingId)
 
       const access = determineAccessLevel(licence, postRelease, req.user.role)
 
@@ -111,8 +111,19 @@ module.exports = ({ prisonerService, licenceService, audit, caService }) => (rou
         return res.redirect(`/hdc/review/licence/${bookingId}`)
       }
 
-      const licenceStatus = getLicenceStatus(licence)
+      let licenceStatus = getLicenceStatus(licence)
       const { statusLabel } = getStatusLabel(licenceStatus, req.user.role)
+
+      if (req.user.role === 'CA' && licence && licenceStatus.stage !== 'ELIGIBILITY') {
+        const licenceFormdata = licence.licence
+        const caRefusalDecision = getIn(licenceFormdata, ['finalChecks', 'refusal', 'decision'])
+        const caRefusalReason = getIn(licenceFormdata, ['finalChecks', 'refusal', 'reason'])
+
+        if (caRefusalDecision === 'Yes' && !caRefusalReason) {
+          licence = await licenceService.removeCaRefusalDecision(bookingId, licenceFormdata)
+          licenceStatus = getLicenceStatus(licence)
+        }
+      }
 
       const model = {
         licenceStatus,

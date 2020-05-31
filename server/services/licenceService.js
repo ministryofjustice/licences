@@ -295,6 +295,12 @@ module.exports = function createLicenceService(licenceClient) {
     return updatedLicence
   }
 
+  async function removeCaRefusalDecision(bookingId, licence) {
+    const changedLicence = removePath(['finalChecks', 'refusal'], licence)
+    await licenceClient.updateLicence(bookingId, changedLicence, false)
+    return licenceClient.getLicence(bookingId)
+  }
+
   function rejectBass(licence, bookingId, bassRequested, reason) {
     const lastBassReferral = getIn(licence, ['bassReferral'])
 
@@ -495,6 +501,7 @@ module.exports = function createLicenceService(licenceClient) {
     saveApprovedLicenceVersion: licenceClient.saveApprovedLicenceVersion,
     addSplitDateFields,
     removeDecision,
+    removeCaRefusalDecision,
     rejectBass,
     withdrawBass,
     reinstateBass,

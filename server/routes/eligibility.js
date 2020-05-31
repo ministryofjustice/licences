@@ -1,6 +1,6 @@
 const formConfig = require('./config/eligibility')
 const { asyncMiddleware } = require('../utils/middleware')
-const { getIn, firstItem } = require('../utils/functionalHelpers')
+const { getIn } = require('../utils/functionalHelpers')
 const createStandardRoutes = require('./routeWorkers/standard')
 
 module.exports = ({ licenceService, nomisPushService }) => (router, audited, config) => {

@@ -26,7 +26,7 @@ block content
       strong.bold The offender is presumed unsuitable for HDC release
   else if user.role === 'CA' && decisions.caRefused
     div.error-banner.marginTopMedium
-      strong.bold Home detention curfew refused by prison case admin#{decisions.refusalReason ?': ' + decisions.refusalReason : ''}
+      strong.bold Home detention curfew refused by prison case admin: #{licenceStatus.decisions.refusalReason}
   else if user.role === 'CA' && decisions.refused
     if decisions.decisionComments
       div.error-banner.marginTopMedium

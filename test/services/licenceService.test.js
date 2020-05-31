@@ -324,6 +324,41 @@ describe('licenceService', () => {
     })
   })
 
+  describe('removeCaRefusalDecision', () => {
+    test('should update licence', () => {
+      service.removeCaRefusalDecision('1', {})
+
+      expect(licenceClient.updateLicence).toHaveBeenCalled()
+      expect(licenceClient.updateLicence).toHaveBeenCalledWith('1', {}, false)
+    })
+
+    test('should strip out refusal object from finalChecks object', () => {
+      const licence = {
+        finalChecks: {
+          refusal: {
+            reason: '',
+            decision: 'Yes',
+            outOfTimeReasons: '[]',
+          },
+          seriousOffence: {
+            decision: 'No',
+          },
+        },
+      }
+
+      const licenceNoRefusal = {
+        finalChecks: {
+          seriousOffence: {
+            decision: 'No',
+          },
+        },
+      }
+
+      service.removeCaRefusalDecision('1', licence)
+      expect(licenceClient.updateLicence).toHaveBeenCalledWith('1', licenceNoRefusal, false)
+    })
+  })
+
   describe('addSplitDateFields', () => {
     test('should add day, month and year fields to split dates', () => {
       const rawData = {

@@ -62,15 +62,10 @@ const dmHasProvidedHdcDecisionComments = {
 const caHasRefusedHdcButNotProvidedReason = {
   stage: 'DECIDED',
   licence: {
-    approval: {
-      release: {
-        decision: 'Yes',
-      },
-    },
-    finalChecks: {
-      refusal: {
-        decision: 'Yes',
-      },
+    refusal: {
+      reason: '',
+      decision: 'Yes',
+      outOfTimeReasons: '[]',
     },
   },
 }
@@ -369,7 +364,7 @@ describe('GET /taskList/:prisonNumber', () => {
         })
     })
 
-    test('should contain "Home detention curfew refused by prison case admin" ', () => {
+    test('should not contain "Home detention curfew refused by prison case admin" ', () => {
       licenceService.getLicence.mockResolvedValue(caHasRefusedHdcButNotProvidedReason)
 
       const app = createApp(
@@ -382,8 +377,7 @@ describe('GET /taskList/:prisonNumber', () => {
         .expect(200)
         .expect('Content-Type', /html/)
         .expect((res) => {
-          expect(res.text).toContain('Home detention curfew refused by prison case admin')
-          expect(res.text).not.toContain('case admin:')
+          expect(res.text).not.toContain('Home detention curfew refused by prison case admin')
         })
     })
 
