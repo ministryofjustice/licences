@@ -48,11 +48,11 @@ describe('restClientBuilder', () => {
         expect(scope.isDone()).toBeTruthy()
         expect(warnSpy).toHaveBeenNthCalledWith(
           1,
-          "Response status: '500', message: 'cannot GET /a-path (500)'. Retrying..."
+          "Error calling Test API, path '/a-path', verb: 'GET', status: '500', message: 'cannot GET /a-path (500)'. Retrying..."
         )
         expect(warnSpy).toHaveBeenNthCalledWith(
           2,
-          "Response status: '500', message: 'cannot GET /a-path (500)'. Retrying..."
+          "Error calling Test API, path '/a-path', verb: 'GET', status: '500', message: 'cannot GET /a-path (500)'. Retrying..."
         )
         expect(warnSpy).toHaveBeenNthCalledWith(
           3,
@@ -81,6 +81,28 @@ describe('restClientBuilder', () => {
         )
 
         expect(warnSpy).toBeCalledTimes(1)
+      })
+
+      it('Error, but no response.', async () => {
+        scope.get('/a-path').times(3).replyWithError('Network error')
+        await expect(restClient.getResource('/a-path')).rejects.toThrowError('Network error')
+        expect(scope.isDone()).toBeTruthy()
+
+        expect(warnSpy).toHaveBeenNthCalledWith(
+          1,
+          "Error calling Test API, path '/a-path', verb: 'GET', message: 'Network error'. Retrying..."
+        )
+        expect(warnSpy).toHaveBeenNthCalledWith(
+          2,
+          "Error calling Test API, path '/a-path', verb: 'GET', message: 'Network error'. Retrying..."
+        )
+        expect(warnSpy).toHaveBeenNthCalledWith(
+          3,
+          "Error calling Test API, path: '/a-path', verb: 'GET'",
+          expect.anything()
+        )
+
+        expect(warnSpy).toBeCalledTimes(3)
       })
     })
 

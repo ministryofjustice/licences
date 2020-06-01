@@ -65,11 +65,21 @@ export const buildRestClient = (
           .retry(2, (err, res) => {
             if (res) {
               if (res.status >= 500) {
-                logger.warn(`Response status: '${res.status}', message: '${res.error?.message}'. Retrying...`)
+                logger.warn(
+                  `Error calling ${restApiName}, path '${path}', verb: 'GET', status: '${res.status}', message: '${res.error?.message}'. Retrying...`
+                )
                 return true
               }
+              // Never retry client errors
+              return false
             }
-            return false
+            if (err) {
+              logger.warn(
+                `Error calling ${restApiName}, path '${path}', verb: 'GET', message: '${err.message}'. Retrying...`
+              )
+            }
+            // Not an obvious client error, possibly recoverable, so retry.
+            return true
           })
           .timeout(config.timeout)
 
@@ -90,7 +100,7 @@ export const buildRestClient = (
         await superagent.delete(`${apiUrl}${path}`).set('Authorization', `Bearer ${token}`).timeout(config.timeout)
       } catch (error) {
         if (error.status === 404) {
-          logger.info(`Not found calling probation-teams at path: '${path}', verb: 'DELETE'`, error.stack)
+          logger.info(`Not found calling ${restApiName} at path: '${path}', verb: 'DELETE'`)
           return
         }
         handleError(error, path, 'DELETE')
