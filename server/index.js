@@ -40,7 +40,7 @@ const createNomisPushService = require('./services/nomisPushService')
 const createDeadlineService = require('./services/deadlineService')
 const createJobSchedulerService = require('./services/jobSchedulerService')
 const createNotificationJobs = require('./services/jobs/notificationJobs')
-const { buildRestClient, dynamicTokenSource } = require('./data/restClientBuilder')
+const { buildRestClient, clientCredentialsTokenSource } = require('./data/restClientBuilder')
 const { createDeliusClient } = require('./data/deliusClient')
 const { createProbationTeamsClient } = require('./data/probationTeamsClient')
 const createRoService = require('./services/roService')
@@ -55,7 +55,7 @@ const conditionsService = createConditionsService(config)
 
 const deliusClient = createDeliusClient(
   buildRestClient(
-    dynamicTokenSource(signInService, 'delius'),
+    clientCredentialsTokenSource(signInService, 'delius'),
     `${config.delius.apiUrl}${config.delius.apiPrefix}`,
     'Delius community API',
     { timeout: config.delius.timeout, agent: config.delius.agent }
@@ -64,7 +64,7 @@ const deliusClient = createDeliusClient(
 
 const probationTeamsClient = createProbationTeamsClient(
   buildRestClient(
-    dynamicTokenSource(signInService, 'probationTeams'),
+    clientCredentialsTokenSource(signInService, 'probationTeams'),
     config.probationTeams.apiUrl,
     'probation-teams',
     { timeout: config.probationTeams.timeout, agent: config.probationTeams.agent }

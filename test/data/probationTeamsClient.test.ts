@@ -1,7 +1,7 @@
 import nock from 'nock'
 
 import config from '../../server/config'
-import { buildRestClient, dynamicTokenSource } from '../../server/data/restClientBuilder'
+import { buildRestClient, clientCredentialsTokenSource } from '../../server/data/restClientBuilder'
 import { createProbationTeamsClient } from '../../server/data/probationTeamsClient'
 
 const LDU_ID = Object.freeze({ probationAreaCode: 'AREA_CODE', lduCode: 'LDU_CODE' })
@@ -19,7 +19,7 @@ describe('probationTeamsClient', () => {
       getAnonymousClientCredentialsTokens: jest.fn().mockResolvedValue({ token: 'token' }),
     }
     const restClient = buildRestClient(
-      dynamicTokenSource(signInService, 'probationTeams'),
+      clientCredentialsTokenSource(signInService, 'probationTeams'),
       config.probationTeams.apiUrl,
       'probation-teams',
       {

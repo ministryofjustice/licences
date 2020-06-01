@@ -20,7 +20,6 @@ export interface RestClientConfig {
 }
 
 const NOT_FOUND = 404
-const UNAUTHORIZED = 401
 
 interface TokenSource {
   (): Promise<string>
@@ -33,7 +32,7 @@ export const constantTokenSource = (token): TokenSource => async () => {
   return token
 }
 
-export const dynamicTokenSource = (signInService, oauthServiceName: string): TokenSource => async () => {
+export const clientCredentialsTokenSource = (signInService, oauthServiceName: string): TokenSource => async () => {
   const token = await signInService.getAnonymousClientCredentialsTokens(oauthServiceName)
   if (!token?.token) {
     throw Error(`Error obtaining OAuth token`)
@@ -65,15 +64,10 @@ export const buildRestClient = (
           .set(headers)
           .retry(2, (err, res) => {
             if (res) {
-              if (res.status >= 300 && res.status !== NOT_FOUND && res.status !== UNAUTHORIZED) {
-                logger.warn(
-                  `Retry handler found API error with status: '${res.status}', message: '${res.error?.message}'`
-                )
+              if (res.status >= 500) {
+                logger.warn(`Response status: '${res.status}', message: '${res.error?.message}'. Retrying...`)
                 return true
               }
-            }
-            if (err) {
-              logger.warn(`Retry handler found API error, status '${err.status}', message: '${err.message}'`)
             }
             return false
           })

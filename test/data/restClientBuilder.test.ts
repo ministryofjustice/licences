@@ -4,7 +4,7 @@ import logger from '../../log'
 import {
   buildRestClient,
   constantTokenSource,
-  dynamicTokenSource,
+  clientCredentialsTokenSource,
   RestClientConfig,
 } from '../../server/data/restClientBuilder'
 
@@ -48,11 +48,11 @@ describe('restClientBuilder', () => {
         expect(scope.isDone()).toBeTruthy()
         expect(warnSpy).toHaveBeenNthCalledWith(
           1,
-          "Retry handler found API error with status: '500', message: 'cannot GET /a-path (500)'"
+          "Response status: '500', message: 'cannot GET /a-path (500)'. Retrying..."
         )
         expect(warnSpy).toHaveBeenNthCalledWith(
           2,
-          "Retry handler found API error with status: '500', message: 'cannot GET /a-path (500)'"
+          "Response status: '500', message: 'cannot GET /a-path (500)'. Retrying..."
         )
         expect(warnSpy).toHaveBeenNthCalledWith(
           3,
@@ -79,6 +79,7 @@ describe('restClientBuilder', () => {
           "Error calling Test API, path: '/a-path', verb: 'GET', status: '401'",
           expect.anything()
         )
+
         expect(warnSpy).toBeCalledTimes(1)
       })
     })
@@ -172,7 +173,7 @@ describe('restClientBuilder', () => {
     it('returns a token', async () => {
       const signInService = { getAnonymousClientCredentialsTokens: jest.fn() }
       signInService.getAnonymousClientCredentialsTokens.mockResolvedValue({ token: 't' })
-      const tokenSource = dynamicTokenSource(signInService, 'serviceName')
+      const tokenSource = clientCredentialsTokenSource(signInService, 'serviceName')
       expect(await tokenSource()).toEqual('t')
       expect(signInService.getAnonymousClientCredentialsTokens).toHaveBeenCalledWith('serviceName')
     })
@@ -180,7 +181,7 @@ describe('restClientBuilder', () => {
     it('throws error on missing token', async () => {
       const signInService = { getAnonymousClientCredentialsTokens: jest.fn() }
       signInService.getAnonymousClientCredentialsTokens.mockResolvedValue({})
-      const tokenSource = dynamicTokenSource(signInService, 'serviceName')
+      const tokenSource = clientCredentialsTokenSource(signInService, 'serviceName')
       expect(tokenSource()).rejects.toThrow('Error obtaining OAuth token')
     })
   })
