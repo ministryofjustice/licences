@@ -40,41 +40,20 @@ function getLicenceStatus(licenceRecord) {
     }
   }
   const { stage } = licenceRecord
-  const results = getRequiredState(stage, licenceRecord.licence)
   const postApproval = isPostDecision(stage)
   const createLicence = postApproval ? getLicenceCreatedTaskState(licenceRecord) : taskStates.UNSTARTED
-  return results.reduce(combiner, { stage, postApproval, decisions: {}, tasks: { createLicence } })
-}
+  const initialState = { stage, postApproval, decisions: {}, tasks: { createLicence } }
 
-function getRequiredState(stage, licence) {
-  const config = {
-    [licenceStages.ELIGIBILITY]: [getEligibilityStageState],
-    [licenceStages.PROCESSING_RO]: [getEligibilityStageState, getRoStageState],
-    [licenceStages.PROCESSING_CA]: [getEligibilityStageState, getRoStageState, getCaStageState],
-    [licenceStages.APPROVAL]: [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState],
-    [licenceStages.DECIDED]: [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState],
-    [licenceStages.MODIFIED]: [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState],
-    [licenceStages.MODIFIED_APPROVAL]: [
-      getEligibilityStageState,
-      getRoStageState,
-      getCaStageState,
-      getApprovalStageState,
-    ],
-    [licenceStages.VARY]: [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState],
-  }
-
-  return config[stage].map((getStateMethod) => getStateMethod(licence))
-}
-
-const combiner = (acc, data) => {
-  const combinedTasks = { ...acc.tasks, ...data.tasks }
-  const combinedDecisions = { ...acc.decisions, ...data.decisions }
-
-  return {
-    ...acc,
-    tasks: combinedTasks,
-    decisions: combinedDecisions,
-  }
+  return [getEligibilityStageState, getRoStageState, getCaStageState, getApprovalStageState]
+    .map((state) => state(licenceRecord.licence))
+    .reduce(
+      (acc, data) => ({
+        ...acc,
+        tasks: { ...acc.tasks, ...data.tasks },
+        decisions: { ...acc.decisions, ...data.decisions },
+      }),
+      initialState
+    )
 }
 
 function getApprovalStageState(licence) {
