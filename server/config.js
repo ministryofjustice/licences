@@ -78,6 +78,11 @@ module.exports = {
       response: 30000,
       deadline: 35000,
     },
+    agent: {
+      maxSockets: 100,
+      maxFreeSockets: 10,
+      freeSocketTimeout: 30000,
+    },
     admin: {
       apiClientId: get('PROBATION_TEAMS_API_CLIENT_ID', get('ADMIN_API_CLIENT_ID', 'licencesadmin')),
       apiClientSecret: get('PROBATION_TEAMS_API_CLIENT_SECRET', get('ADMIN_API_CLIENT_SECRET', 'clientsecret')),

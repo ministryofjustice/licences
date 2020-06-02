@@ -1,6 +1,7 @@
 const nock = require('nock')
 
 const config = require('../../server/config')
+const { buildRestClient, clientCredentialsTokenSource } = require('../../server/data/restClientBuilder')
 const { createDeliusClient } = require('../../server/data/deliusClient')
 
 describe('deliusClient', () => {
@@ -11,9 +12,15 @@ describe('deliusClient', () => {
   beforeEach(() => {
     fakeDelius = nock(`${config.delius.apiUrl}${config.delius.apiPrefix}`)
     signInService = {
-      getAnonymousClientCredentialsTokens: jest.fn().mockReturnValue('token'),
+      getAnonymousClientCredentialsTokens: jest.fn().mockResolvedValue({ token: 'token' }),
     }
-    deliusClient = createDeliusClient(signInService)
+    const restClient = buildRestClient(
+      clientCredentialsTokenSource(signInService, 'delius'),
+      `${config.delius.apiUrl}${config.delius.apiPrefix}`,
+      'Delius community API',
+      { timeout: config.delius.timeout, agent: config.delius.agent }
+    )
+    deliusClient = createDeliusClient(restClient)
   })
 
   afterEach(() => {
@@ -23,9 +30,7 @@ describe('deliusClient', () => {
   describe('deliusClient', () => {
     test('should throw error on GET when no token', () => {
       signInService.getAnonymousClientCredentialsTokens.mockReturnValue(null)
-      return expect(deliusClient.getROPrisoners('1')).rejects.toThrow(
-        /Failed to get token when attempting to call delius: .*?\/staff\/staffCode\/1\/managedOffenders/
-      )
+      return expect(deliusClient.getROPrisoners('1')).rejects.toThrow('Error obtaining OAuth token')
     })
   })
 
@@ -158,13 +163,15 @@ describe('deliusClient', () => {
     test('should return data from api', () => {
       fakeDelius.put(`/users/bobUser/roles/${config.delius.responsibleOfficerRoleId}`).reply(200)
 
-      return expect(deliusClient.addResponsibleOfficerRole('bobUser')).resolves.toStrictEqual({})
+      // The only place where addResponsibleOfficerRole is used is in roNotificationHandler.assignDeliusRoRole
+      // The assignDeliusRoRole function ignores the return value.
+      return expect(deliusClient.addResponsibleOfficerRole('bobUser')).resolves.toBeUndefined()
     })
 
     test('should ignore errors', () => {
       fakeDelius.put(`/users/bobUser/roles/${config.delius.responsibleOfficerRoleId}`).reply(500)
 
-      return expect(deliusClient.addResponsibleOfficerRole('bobUser')).resolves.toStrictEqual(null)
+      return expect(deliusClient.addResponsibleOfficerRole('bobUser')).resolves.toBeUndefined()
     })
   })
 })

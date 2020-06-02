@@ -53,6 +53,17 @@ describe('signInService', () => {
       expect(newToken).toEqual({ refreshToken: 'refreshed', expiresIn: '1200', token: 'token' })
     })
 
+    test('Authorization header should not be included in error', async () => {
+      fakeOauth.post(`/oauth/token`, 'grant_type=client_credentials').reply(401, {})
+
+      try {
+        await service.getAnonymousClientCredentialsTokens()
+        expect('Unexpected').toEqual('Failure') // Fail if service doesn't throw...
+      } catch (e) {
+        expect(e.message).toEqual('Unauthorized')
+      }
+    })
+
     test('should pass username for regular client credentials token', async () => {
       fakeOauth.post(`/oauth/token`, 'grant_type=client_credentials&username=testuser').reply(200, {
         token_type: 'type',

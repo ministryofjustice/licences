@@ -20,17 +20,17 @@ describe('nomisClient', () => {
 
   describe('nomisClient', () => {
     test('should throw error on GET when no token', () => {
-      const badClient = nomisClientBuilder()
+      const badClient = nomisClientBuilder(undefined)
       return expect(badClient.getBooking('1')).rejects.toThrow('Unauthorised access')
     })
 
     test('should throw error on POST when no token', () => {
-      const badClient = nomisClientBuilder()
+      const badClient = nomisClientBuilder(undefined)
       return expect(badClient.getOffenderSentencesByBookingId(['1'])).rejects.toThrow('Unauthorised access')
     })
 
     test('should throw error on PUT when no token', () => {
-      const badClient = nomisClientBuilder()
+      const badClient = nomisClientBuilder(undefined)
       return expect(badClient.putActiveCaseLoad('1')).rejects.toThrow('Unauthorised access')
     })
   })
@@ -49,7 +49,7 @@ describe('nomisClient', () => {
     })
 
     test('handling 400', () => {
-      fakeNomis.get(`/bookings/1`).reply(400, { error: 'some-reason' })
+      fakeNomis.get(`/bookings/1`).times(3).reply(400, { error: 'some-reason' })
 
       return expect(nomisClient.getBooking('1')).rejects.toStrictEqual(Error('Bad Request'))
     })
@@ -124,9 +124,9 @@ describe('nomisClient', () => {
 
   describe('getImageData', () => {
     test('should return a buffer', () => {
-      fakeNomis.get(`/images/1/data`).reply(200, 'image')
+      fakeNomis.get(`/images/1/data`).reply(200, Buffer.from([0, 1, 2, 3, 4]), { 'Content-Type': 'image/jpeg' })
 
-      return expect(nomisClient.getImageData('1')).resolves.toEqual(Buffer.from('image'))
+      return expect(nomisClient.getImageData('1')).resolves.toEqual(Buffer.from([0, 1, 2, 3, 4]))
     })
 
     test('should throw if not found', () => {
@@ -496,7 +496,11 @@ describe('nomisClient', () => {
     test('should return data from api', () => {
       fakeNomis.put('/users/me/activeCaseLoad').reply(200, {})
 
-      return expect(nomisClient.putActiveCaseLoad('id')).resolves.toEqual({})
+      /* The PUT request returns '{}'.  Why? It doesn't serve any purpose.
+       * The current implementation of restClientBuilder.putResource doesn't return any value (and we don't care anyway)
+       * so changed the test below to just confirm that the PUT resolves.
+       */
+      return expect(nomisClient.putActiveCaseLoad('id')).resolves.toBeUndefined()
     })
 
     test('should reject if api fails', () => {
@@ -519,41 +523,45 @@ describe('nomisClient', () => {
       global.Date.now = realDateNow
     })
 
-    test('should inject bookingId into api endpoint', () => {
-      fakeNomis
-        .put('/offender-sentences/booking/aaa/home-detention-curfews/latest/approval-status')
-        .reply(200, { result: 'answer' })
-
-      return expect(
-        nomisClient.putApprovalStatus('aaa', { approvalStatus: 'status', refusedReason: 'reason' })
-      ).resolves.toEqual({ result: 'answer' })
-    })
-
-    test('should pass in the status and date but no reason if not specified', () => {
-      fakeNomis
-        .put('/offender-sentences/booking/aaa/home-detention-curfews/latest/approval-status', {
-          approvalStatus: 'status',
-          date: '2018-05-31',
-        })
-        .reply(200, { result: 'answer' })
-
-      return expect(nomisClient.putApprovalStatus('aaa', { approvalStatus: 'status' })).resolves.toEqual({
-        result: 'answer',
-      })
-    })
-
-    test('should pass in the status, reason, and date', () => {
+    test('should inject bookingId into api endpoint', async () => {
       fakeNomis
         .put('/offender-sentences/booking/aaa/home-detention-curfews/latest/approval-status', {
           approvalStatus: 'status',
           refusedReason: 'reason',
           date: '2018-05-31',
         })
-        .reply(200, { result: 'answer' })
+        .reply(200)
 
-      return expect(
-        nomisClient.putApprovalStatus('aaa', { approvalStatus: 'status', refusedReason: 'reason' })
-      ).resolves.toEqual({ result: 'answer' })
+      const response = await nomisClient.putApprovalStatus('aaa', { approvalStatus: 'status', refusedReason: 'reason' })
+      expect(response).toBeUndefined()
+      expect(fakeNomis.isDone()).toBeTruthy()
+    })
+
+    test('should pass in the status and date but no reason if not specified', async () => {
+      fakeNomis
+        .put('/offender-sentences/booking/aaa/home-detention-curfews/latest/approval-status', {
+          approvalStatus: 'status',
+          date: '2018-05-31',
+        })
+        .reply(200)
+
+      const response = await nomisClient.putApprovalStatus('aaa', { approvalStatus: 'status' })
+      expect(response).toBeUndefined()
+      expect(fakeNomis.isDone()).toBeTruthy()
+    })
+
+    test('should pass in the status, reason, and date', async () => {
+      fakeNomis
+        .put('/offender-sentences/booking/aaa/home-detention-curfews/latest/approval-status', {
+          approvalStatus: 'status',
+          refusedReason: 'reason',
+          date: '2018-05-31',
+        })
+        .reply(200)
+
+      const response = await nomisClient.putApprovalStatus('aaa', { approvalStatus: 'status', refusedReason: 'reason' })
+      expect(response).toBeUndefined()
+      expect(fakeNomis.isDone()).toBeTruthy()
     })
   })
 
@@ -570,27 +578,25 @@ describe('nomisClient', () => {
       global.Date.now = realDateNow
     })
 
-    test('should inject bookingId into api endpoint', () => {
-      fakeNomis
-        .put('/offender-sentences/booking/aaa/home-detention-curfews/latest/checks-passed')
-        .reply(200, { result: 'answer' })
+    test('should inject bookingId into api endpoint', async () => {
+      fakeNomis.put('/offender-sentences/booking/aaa/home-detention-curfews/latest/checks-passed').reply(200)
 
-      return expect(nomisClient.putChecksPassed({ bookingId: 'aaa', passed: true })).resolves.toEqual({
-        result: 'answer',
-      })
+      const result = await nomisClient.putChecksPassed({ bookingId: 'aaa', passed: true })
+      expect(result).toBeUndefined()
+      expect(fakeNomis.isDone()).toBeTruthy()
     })
 
-    test('should pass in passed value and date', () => {
+    test('should pass in passed value and date', async () => {
       fakeNomis
         .put('/offender-sentences/booking/aaa/home-detention-curfews/latest/checks-passed', {
           passed: true,
           date: '2018-05-31',
         })
-        .reply(200, { result: 'answer' })
+        .reply(200)
 
-      return expect(nomisClient.putChecksPassed({ bookingId: 'aaa', passed: true })).resolves.toEqual({
-        result: 'answer',
-      })
+      const result = await nomisClient.putChecksPassed({ bookingId: 'aaa', passed: true })
+      expect(result).toBeUndefined()
+      expect(fakeNomis.isDone()).toBeTruthy()
     })
 
     test('should throw error if passed is not boolean', () => {

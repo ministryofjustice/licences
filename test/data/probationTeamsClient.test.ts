@@ -1,5 +1,7 @@
 import nock from 'nock'
+
 import config from '../../server/config'
+import { buildRestClient, clientCredentialsTokenSource } from '../../server/data/restClientBuilder'
 import { createProbationTeamsClient } from '../../server/data/probationTeamsClient'
 
 const LDU_ID = Object.freeze({ probationAreaCode: 'AREA_CODE', lduCode: 'LDU_CODE' })
@@ -14,9 +16,21 @@ describe('probationTeamsClient', () => {
   beforeEach(() => {
     fakeProbationTeamsService = nock(`${config.probationTeams.apiUrl}`)
     signInService = {
-      getAnonymousClientCredentialsTokens: jest.fn().mockReturnValue('token'),
+      getAnonymousClientCredentialsTokens: jest.fn().mockResolvedValue({ token: 'token' }),
     }
-    probationTeamsClient = createProbationTeamsClient(signInService)
+    const restClient = buildRestClient(
+      clientCredentialsTokenSource(signInService, 'probationTeams'),
+      config.probationTeams.apiUrl,
+      'probation-teams',
+      {
+        timeout: {
+          response: 1000,
+          deadline: 1500,
+        },
+        agent: config.probationTeams.agent,
+      }
+    )
+    probationTeamsClient = createProbationTeamsClient(restClient)
   })
 
   afterEach(() => {
@@ -27,7 +41,7 @@ describe('probationTeamsClient', () => {
     test('should throw error on GET when no token', async () => {
       signInService.getAnonymousClientCredentialsTokens.mockResolvedValue(null)
       await expect(probationTeamsClient.getFunctionalMailbox(PROBATION_TEAM_ID)).rejects.toThrow(
-        /Failed to get token when attempting to GET probation-teams: .*?\/probation-areas\/AREA_CODE\/local-delivery-units\/LDU_CODE/
+        'Error obtaining OAuth token'
       )
     })
 
@@ -89,7 +103,7 @@ describe('probationTeamsClient', () => {
       })
 
       test('should reject if api fails', async () => {
-        fakeProbationTeamsService.get('/probation-areas/AREA_CODE/local-delivery-units/LDU_CODE').reply(500)
+        fakeProbationTeamsService.get('/probation-areas/AREA_CODE/local-delivery-units/LDU_CODE').times(3).reply(500)
 
         await expect(probationTeamsClient.getFunctionalMailbox(PROBATION_TEAM_ID)).rejects.toStrictEqual(
           Error('Internal Server Error')
@@ -119,7 +133,7 @@ describe('probationTeamsClient', () => {
     })
 
     test('Should reject when api fails', async () => {
-      fakeProbationTeamsService.get('/probation-areas/AREA_CODE').reply(500)
+      fakeProbationTeamsService.get('/probation-areas/AREA_CODE').times(3).reply(500)
       await expect(probationTeamsClient.getProbationArea('AREA_CODE')).rejects.toThrowError('Internal Server Error')
     })
   })
