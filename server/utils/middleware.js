@@ -4,7 +4,7 @@
 const logger = require('../../log.js')
 const authorisationConfig = require('../routes/config/authorisation')
 const { getWhereKeyLike, isEmpty } = require('./functionalHelpers')
-const { unauthorisedError } = require('./errors')
+const { unauthorisedError, forbiddenError } = require('./errors')
 const { merge } = require('./functionalHelpers')
 const { getLicenceStatus } = require('./licenceStatus')
 
@@ -60,12 +60,12 @@ function authorisationMiddleware(req, res, next) {
 
   const authorisedRole = config.authorised.find((role) => req.user.role === role.role)
   if (!authorisedRole) {
-    return next(unauthorisedError())
+    return next(forbiddenError())
   }
 
   const authorisedForStage = isEmpty(authorisedRole.stage) || authorisedRole.stage.includes(res.locals.licence.stage)
   if (!authorisedForStage) {
-    return next(unauthorisedError())
+    return next(forbiddenError())
   }
 
   return next()

@@ -1,6 +1,6 @@
 import R from 'ramda'
 import logger from '../../log'
-import { unauthorisedError } from '../utils/errors'
+import { unauthorisedError, forbiddenError } from '../utils/errors'
 
 interface ClientError extends Error {
   message: string
@@ -26,6 +26,8 @@ export interface ResponseError extends ClientError {
 
 // HTTP status code 404 - Not Found
 const NOT_FOUND = 404
+const UNAUTHORISED = 401
+const FORBIDDEN = 403
 
 const isRequestError = (error: Error): error is RequestError => (error as RequestError).request
 
@@ -50,8 +52,10 @@ export const buildErrorHandler = (apiName: string) => {
         `Error calling ${apiName}, path: '${path}', verb: '${verb}', status: '${error.response.status}'`,
         error.stack
       )
-      if (error.response.status === 401) {
+      if (error.response.status === UNAUTHORISED) {
         throw unauthorisedError()
+      } else if (error.response.status === FORBIDDEN) {
+        throw forbiddenError()
       }
     } else if (isRequestError(error)) {
       logger.warn(`Error calling ${apiName}, path: '${path}', verb: '${verb}', code: '${error.code}'`, error.stack)
