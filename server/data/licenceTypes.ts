@@ -1,8 +1,8 @@
 export type YesNo = 'Yes' | 'No'
 
 export interface AddressAndPhone {
-  addressLine1: string
-  addressLine2: string
+  addressLine1?: string
+  addressLine2?: string
   addressTown?: string
   postCode?: string
   telephone?: string
@@ -27,8 +27,8 @@ export interface BassReferral {
     bassAreaSuitable?: YesNo
   }
   bassOffer?: {
-    addressLine1: string
-    addressLine2: string
+    addressLine1?: string
+    addressLine2?: string
     addressTown?: string
     postCode?: string
     telephone?: string
@@ -41,7 +41,7 @@ export interface BassReferral {
     bassRequested?: YesNo
     proposedCounty?: string
     proposedTown?: string
-    specificArea?: string
+    specificArea?: YesNo
   }
 }
 
@@ -91,7 +91,7 @@ export interface Curfew {
 }
 
 export interface Document {
-  template?: { decision?: string; offenceCommittedBeforeFeb2015: YesNo }
+  template?: { decision?: string; offenceCommittedBeforeFeb2015?: YesNo }
 }
 
 export interface Eligibility {
@@ -111,35 +111,35 @@ export interface FinalChecks {
 
 export interface LicenceConditions {
   additional?: {
-    ATTENDALL?: object
-    ATTENDDEPENDENCY?: object
-    ATTENDDEPENDENCYINDRUGSSECTION?: object
-    ATTENDSAMPLE?: object
-    COMPLYREQUIREMENTS?: object
-    CONFINEADDRESS?: object
-    DRUG_TESTING?: object
-    EXCLUSIONADDRESS?: object
-    EXCLUSIONAREA?: object
-    HOMEVISITS?: object
-    INTIMATERELATIONSHIP?: object
-    NOCAMERAPHONE?: object
-    NOCHILDRENSAREA?: object
-    NOCOMMUNICATEVICTIM?: object
-    NOCONTACTASSOCIATE?: object
-    NOCONTACTNAMED?: object
-    NOCONTACTPRISONER?: object
-    NOINTERNET?: object
-    NORESIDE?: object
-    NOTIFYPASSPORT?: object
-    NOTIFYRELATIONSHIP?: object
-    NOUNSUPERVISEDCONTACT?: object
-    NOWORKWITHAGE?: object
-    ONEPHONE?: object
-    REMAINADDRESS?: object
-    REPORTTO?: object
-    SURRENDERPASSPORT?: object
-    USAGEHISTORY?: object
-    VEHICLEDETAILS?: object
+    ATTENDALL?: any
+    ATTENDDEPENDENCY?: any
+    ATTENDDEPENDENCYINDRUGSSECTION?: any
+    ATTENDSAMPLE?: any
+    COMPLYREQUIREMENTS?: any
+    CONFINEADDRESS?: any
+    DRUG_TESTING?: any
+    EXCLUSIONADDRESS?: any
+    EXCLUSIONAREA?: any
+    HOMEVISITS?: any
+    INTIMATERELATIONSHIP?: any
+    NOCAMERAPHONE?: any
+    NOCHILDRENSAREA?: any
+    NOCOMMUNICATEVICTIM?: any
+    NOCONTACTASSOCIATE?: any
+    NOCONTACTNAMED?: any
+    NOCONTACTPRISONER?: any
+    NOINTERNET?: any
+    NORESIDE?: any
+    NOTIFYPASSPORT?: any
+    NOTIFYRELATIONSHIP?: any
+    NOUNSUPERVISEDCONTACT?: any
+    NOWORKWITHAGE?: any
+    ONEPHONE?: any
+    REMAINADDRESS?: any
+    REPORTTO?: any
+    SURRENDERPASSPORT?: any
+    USAGEHISTORY?: any
+    VEHICLEDETAILS?: any
   }
   bespoke?: Array<{ approved?: string; text?: string }>
   conditionsSummary?: { additionalConditionsJustification?: string }
@@ -147,13 +147,13 @@ export interface LicenceConditions {
 }
 
 export interface CurfewAddress {
-  addressLine1: string
-  addressLine2: string
+  addressLine1?: string
+  addressLine2?: string
   addressTown?: string
   postCode?: string
   telephone?: string
   additionalInformation?: string
-  cautionedAgainstResident?: string
+  cautionedAgainstResident?: YesNo
   occupier?: { isOffender?: string; name?: string; relationship?: string }
   residentOffenceDetails?: string
   residents?: Array<{ age?: string; name?: string; relationship?: string }>
@@ -172,8 +172,8 @@ export interface ProposedAddress {
 export interface Reporting {
   reportingDate?: { reportingDate?: string; reportingTime?: string }
   reportingInstructions?: {
-    buildingAndStreet1: string
-    buildingAndStreet2: string
+    buildingAndStreet1?: string
+    buildingAndStreet2?: string
     name?: string
     organisation?: string
     postcode?: string

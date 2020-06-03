@@ -9,7 +9,7 @@ const createRoute = require('../../server/routes/utils')
 
 const audit = require('../../server/data/audit')
 const warningClient = require('../../server/data/warningClient')
-const licenceClient = require('../../server/data/licenceClient')
+const { licenceClient } = require('../../server/data/licenceClient')
 
 describe('/utils/', () => {
   describe('reset', () => {

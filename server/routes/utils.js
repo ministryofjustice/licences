@@ -2,7 +2,7 @@ const express = require('express')
 const logger = require('../../log')
 
 const { asyncMiddleware } = require('../utils/middleware')
-const licenceClient = require('../data/licenceClient')
+const { licenceClient } = require('../data/licenceClient')
 const activeLduClient = require('../data/activeLduClient')
 
 const auditClient = require('../data/audit')

@@ -770,7 +770,7 @@ Some questions:
    responseType 'requiredString', 'requiredPostcode' or 'requiredPhone'? Is there some part of the application where
    those constraints are applied to the data?
 
-Answer: routes/review.js uses licencesService.validateFormGroup conditionally based on the user's role, the stage the case
+Answer: routes/review.ts uses licencesService.validateFormGroup conditionally based on the user's role, the stage the case
 is at and whether the case is 'postApproval' where
 
 ```ecmascript 6
@@ -793,11 +793,11 @@ described in the following table.
 | DM | APPROVAL | true |
 
 No validation is performed for any other combination of role and stage. Note that the 'postApproval' flag has been
-subsumed into this table. The table is derived from the `shouldValidate` function in review.js
+subsumed into this table. The table is derived from the `shouldValidate` function in review.ts
 
 Note that the value of the `validate` flag in the formConfiguration files/object has no effect here.
 
-Where does the review.js handler come into play? It handles GET request for URLs like /hdc/review/:sectionName/:bookingId
+Where does the review.ts handler come into play? It handles GET request for URLs like /hdc/review/:sectionName/:bookingId
 and makes use of pug templates at server/views/review. There are templates for these sectionNames:
 address, approvedPremisesAddress, bassOffer, bassRequest, conditions, curfewAddress, curfewHours, eligibility, finalChecks,
 reporting, risk and victimLiason). There are also templates for the 'pseudo' sectionNames 'licence' and 'licenceDetails'.
@@ -853,7 +853,7 @@ incrementing `vary_version`.
 For example, a licence is created, then modified twice before the offender is released, then after release modified once more.
 The sequence of combined versions (version.vary_version) should be 1.0 -> 2.0 -> 3.0 (release) -> 3.1
 
-licenceClient.js provides the functions for interacting with the licences and licence_versions tables.
+licenceClient.ts provides the functions for interacting with the licences and licence_versions tables.
 Licence PDFs are generated from pug templates. Below `template` is the name or key of a particular licence template.  
 The template names/ids are defined in server/routes/config/pdf.js, and a
 spec for the data provided to each template is in server/services/config/pdf.js
@@ -879,7 +879,7 @@ has been called will increment the licence version (once only)
 
 #### When is saveApprovedLicenceVersion called?
 
-licenceService.js delegates to `saveApprovedLicenceVersion`. pdfService.js has two calls to this function in
+licenceService.ts delegates to `saveApprovedLicenceVersion`. pdfService.js has two calls to this function in
 
 1. `updateLicenceTypeTemplate` not exported. called by `getPdfLicenceDataAndUpdateLicenceType`.
 1. `checkAndUpdateVersion` not exported. Called by `getPdfLicenceData`.
@@ -982,7 +982,7 @@ This means that every call to `getPdfLicenceData(templateName, bookingId, rawLic
 will take a snapshot of the current state of the licences row for the booking iff the template name has changed
 or there is no snapshot or the licence has been changed since the last snapshot.
 
-Provided that no further changes are made to the licences row (by updateLicence or updateSection in licenceClient.js)
+Provided that no further changes are made to the licences row (by updateLicence or updateSection in licenceClient.ts)
 then every subsequent call to getPdfLicenceData will have no effect on snapshots or licence versions.
 
 Any call to updateLicence or updateSection will bump the licence version (once) so that the next call to
@@ -992,10 +992,10 @@ Blimey.
 
 #### Aside - other updates to licences record
 
-There are a number of calls to the updateLicence and updateSection functions in licenceClient.js
-All calls to licenceClient.js' updateLicence function are from licenceService.js
-Calls to updateSection are in licenceService.js, routes/address.js, routes/curfew.js (licenceService.js declares
-a function 'updateSection that just delegates to updateSection in licenceClient.js )
+There are a number of calls to the updateLicence and updateSection functions in licenceClient.ts
+All calls to licenceClient.ts' updateLicence function are from licenceService.ts
+Calls to updateSection are in licenceService.ts, routes/address.js, routes/curfew.js (licenceService.ts declares
+a function 'updateSection that just delegates to updateSection in licenceClient.ts )
 
 The key related function in licencesService.js is update. This function is called from formPost in server/routes/routeWorkers/standard.js
 This means that update is called pretty much whenever a task is updated. See previous discussion about this.

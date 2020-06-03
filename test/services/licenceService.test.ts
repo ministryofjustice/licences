@@ -1,45 +1,54 @@
+import { createLicenceService, LicenceService } from '../../server/services/licenceService'
+import varyConfig from '../../server/routes/config/vary'
+import formValidation from '../../server/services/utils/formValidation'
+import { LicenceClient } from '../../server/data/licenceClient'
+import { CaseWithVaryVersion } from '../../server/data/licenceClientTypes'
+import { Licence } from '../../server/data/licenceTypes'
+
 jest.mock('../../server/services/utils/formValidation')
 
-const varyConfig = require('../../server/routes/config/vary')
-
-const createLicenceService = require('../../server/services/licenceService')
-
-/** @type {any} */
-const formValidation = require('../../server/services/utils/formValidation')
-
-afterEach(() => {
-  formValidation.validateGroup.mockReset()
-})
+const LICENCE_SAMPLE: Licence = { eligibility: { excluded: { decision: 'Yes' } } }
 
 describe('licenceService', () => {
-  let licenceClient
-  let service
+  let licenceClient: LicenceClient
+  let service: LicenceService
 
   beforeEach(() => {
     licenceClient = {
-      getLicence: jest.fn().mockReturnValue({ licence: { a: 'b' }, version: 2, vary_version: 5 }),
-      createLicence: jest.fn().mockReturnValue('abc'),
-      updateSection: jest.fn(),
-      updateStage: jest.fn(),
-      getAdditionalConditions: jest.fn().mockReturnValue([{ user_input: 1, id: 1, field_position: null }]),
-      updateLicence: jest.fn(),
-      updateStageAndVersion: jest.fn(),
+      getLicence: (jest.fn() as jest.Mock<Promise<CaseWithVaryVersion>>).mockResolvedValue({
+        licence: LICENCE_SAMPLE,
+        booking_id: 1,
+        stage: undefined,
+        version: 2,
+        vary_version: 5,
+      }),
+      createLicence: jest.fn() as jest.Mock<Promise<number>>,
+      updateSection: jest.fn() as jest.Mock<Promise<void>>,
+      updateStage: jest.fn() as jest.Mock<Promise<void>>,
+      updateLicence: jest.fn() as jest.Mock<Promise<void>>,
       getApprovedLicenceVersion: jest.fn().mockReturnValue({ version: 2, vary_version: 4 }),
+      deleteAll: undefined,
+      deleteAllTest: undefined,
+      getLicences: undefined,
+      getDeliusUserName: undefined,
+      saveApprovedLicenceVersion: undefined,
+      getLicencesInStageBetweenDates: undefined,
+      getLicencesInStageBeforeDate: undefined,
     }
     service = createLicenceService(licenceClient)
   })
 
   describe('getLicence', () => {
-    test('should request licence details from client', () => {
-      service.getLicence('123')
+    test('should request licence details from client', async () => {
+      await service.getLicence(123)
 
       expect(licenceClient.getLicence).toHaveBeenCalled()
-      expect(licenceClient.getLicence).toHaveBeenCalledWith('123')
+      expect(licenceClient.getLicence).toHaveBeenCalledWith(123)
     })
 
     test('should return licence', () => {
-      return expect(service.getLicence('123')).resolves.toEqual({
-        licence: { a: 'b' },
+      return expect(service.getLicence(123)).resolves.toEqual({
+        licence: LICENCE_SAMPLE,
         stage: undefined,
         version: '2.5',
         approvedVersion: '2.4',
@@ -55,54 +64,58 @@ describe('licenceService', () => {
     })
 
     test('should throw if error getting licence', () => {
-      licenceClient.getLicence.mockRejectedValue(Error('dead'))
-      return expect(service.getLicence('123')).rejects.toEqual(Error('dead'))
+      ;(licenceClient.getLicence as jest.Mock<Promise<CaseWithVaryVersion>>)
+        .mockReset()
+        .mockRejectedValue(new Error('dead'))
+      return expect(service.getLicence(123)).rejects.toEqual(Error('dead'))
     })
   })
 
   describe('createLicence', () => {
-    test('should create a licence', () => {
-      service.createLicence({ bookingId: '123' })
+    test('should create a licence', async () => {
+      await service.createLicence({ bookingId: 123, licence: LICENCE_SAMPLE })
 
       expect(licenceClient.createLicence).toHaveBeenCalled()
-      expect(licenceClient.createLicence).toHaveBeenCalledWith('123', {}, undefined, 1, 0)
+      expect(licenceClient.createLicence).toHaveBeenCalledWith(123, LICENCE_SAMPLE, undefined, 1, 0)
     })
 
-    test('should pass in the licence', () => {
-      service.createLicence({ bookingId: '123', data: { firstName: 'M' } })
+    test('should pass in the licence', async () => {
+      await service.createLicence({ bookingId: 123, licence: LICENCE_SAMPLE })
 
       expect(licenceClient.createLicence).toHaveBeenCalled()
-      expect(licenceClient.createLicence).toHaveBeenCalledWith('123', { firstName: 'M' }, undefined, 1, 0)
+      expect(licenceClient.createLicence).toHaveBeenCalledWith(123, LICENCE_SAMPLE, undefined, 1, 0)
     })
 
-    test('should pass in the stage', () => {
-      service.createLicence({ bookingId: '123', data: { firstName: 'M' }, stage: 'VARY' })
+    test('should pass in the stage', async () => {
+      await service.createLicence({ bookingId: 123, licence: LICENCE_SAMPLE, stage: 'VARY' })
 
       expect(licenceClient.createLicence).toHaveBeenCalled()
-      expect(licenceClient.createLicence).toHaveBeenCalledWith('123', { firstName: 'M' }, 'VARY', 1, 1)
+      expect(licenceClient.createLicence).toHaveBeenCalledWith(123, LICENCE_SAMPLE, 'VARY', 1, 1)
     })
 
-    test('should pass in vary version as 1 if stage is VARY', () => {
-      service.createLicence({ bookingId: '123', data: { firstName: 'M' }, stage: 'VARY' })
+    test('should pass in vary version as 1 if stage is VARY', async () => {
+      await service.createLicence({ bookingId: 123, licence: LICENCE_SAMPLE, stage: 'VARY' })
 
       expect(licenceClient.createLicence).toHaveBeenCalled()
-      expect(licenceClient.createLicence).toHaveBeenCalledWith('123', { firstName: 'M' }, 'VARY', 1, 1)
+      expect(licenceClient.createLicence).toHaveBeenCalledWith(123, LICENCE_SAMPLE, 'VARY', 1, 1)
     })
 
-    test('should pass in vary version as 0 if stage is not VARY', () => {
-      service.createLicence({ bookingId: '123', data: { firstName: 'M' } })
+    test('should pass in vary version as 0 if stage is not VARY', async () => {
+      await service.createLicence({ bookingId: 123, licence: LICENCE_SAMPLE })
 
       expect(licenceClient.createLicence).toHaveBeenCalled()
-      expect(licenceClient.createLicence).toHaveBeenCalledWith('123', { firstName: 'M' }, undefined, 1, 0)
+      expect(licenceClient.createLicence).toHaveBeenCalledWith(123, LICENCE_SAMPLE, undefined, 1, 0)
     })
 
     test('should return returned id', () => {
-      return expect(service.createLicence('123')).toBe('abc')
+      ;(licenceClient.createLicence as jest.Mock<Promise<number>>).mockResolvedValue(999)
+
+      return expect(service.createLicence({ bookingId: 123 })).resolves.toBe(999)
     })
 
     test('should throw if error getting licence', () => {
-      licenceClient.createLicence.mockRejectedValue(Error('dead'))
-      return expect(service.createLicence('123')).rejects.toEqual(Error('dead'))
+      ;(licenceClient.createLicence as jest.Mock<Promise<number>>).mockRejectedValue(new Error('dead'))
+      return expect(service.createLicence({ bookingId: 123 })).rejects.toEqual(Error('dead'))
     })
   })
 
@@ -163,13 +176,8 @@ describe('licenceService', () => {
     })
 
     test('should throw if error updating licence', () => {
-      licenceClient.updateSection.mockRejectedValue(Error('dead'))
-      const args = {
-        bookingId: 'ab1',
-        existingLicence: standardLicence,
-        additionalConditions: ['Scotland Street'],
-      }
-      return expect(service.updateLicenceConditions(args)).rejects.not.toBeNull()
+      ;(licenceClient.updateSection as jest.Mock<Promise<void>>).mockRejectedValue(Error('dead'))
+      return expect(service.updateLicenceConditions(123, standardLicence, ['Scotland Street'])).rejects.not.toBeNull()
     })
 
     describe('post approval modifications', () => {
@@ -260,46 +268,46 @@ describe('licenceService', () => {
     })
 
     test('should throw if error updating licence', () => {
-      licenceClient.updateSection.mockRejectedValue(Error('dead'))
+      ;(licenceClient.getLicence as jest.Mock<Promise<CaseWithVaryVersion>>).mockRejectedValue(new Error('dead'))
       return expect(service.deleteLicenceCondition('ab1', {}, 'bespoke-1')).rejects.not.toBeNull()
     })
   })
 
   describe('markForHandover', () => {
-    test('should call updateStage from the licence client', () => {
-      service.markForHandover('ab1', 'caToRo')
+    test('should call updateStage from the licence client', async () => {
+      await service.markForHandover('ab1', 'caToRo')
 
       expect(licenceClient.updateStage).toHaveBeenCalled()
       expect(licenceClient.updateStage).toHaveBeenCalledWith('ab1', 'PROCESSING_RO')
     })
 
-    test('should change stage according to transition', () => {
-      service.markForHandover('ab1', 'caToDm')
+    test('should change stage according to transition', async () => {
+      await service.markForHandover('ab1', 'caToDm')
       expect(licenceClient.updateStage).toHaveBeenCalledWith('ab1', 'APPROVAL')
     })
 
-    test('should return to ELIGIBILITY when RO sends to CA after opt out', () => {
-      service.markForHandover('ab1', 'roToCaOptedOut')
+    test('should return to ELIGIBILITY when RO sends to CA after opt out', async () => {
+      await service.markForHandover('ab1', 'roToCaOptedOut')
       expect(licenceClient.updateStage).toHaveBeenCalledWith('ab1', 'ELIGIBILITY')
     })
 
-    test('should return to ELIGIBILITY when RO sends to CA after address rejected', () => {
-      service.markForHandover('ab1', 'roToCaAddressRejected')
+    test('should return to ELIGIBILITY when RO sends to CA after address rejected', async () => {
+      await service.markForHandover('ab1', 'roToCaAddressRejected')
       expect(licenceClient.updateStage).toHaveBeenCalledWith('ab1', 'ELIGIBILITY')
     })
 
-    test('should send to PROCESSING_CA if transition type of dmToCaReturn is passed in', () => {
-      service.markForHandover('ab1', 'dmToCaReturn')
+    test('should send to PROCESSING_CA if transition type of dmToCaReturn is passed in', async () => {
+      await service.markForHandover('ab1', 'dmToCaReturn')
       expect(licenceClient.updateStage).toHaveBeenCalledWith('ab1', 'PROCESSING_CA')
     })
 
     test('should throw if error during update status', () => {
-      licenceClient.updateStage.mockRejectedValue(Error('dead'))
-      return expect(service.markForHandover('ab1', 'caToRo')).rejects.toEqual(Error('dead'))
+      ;(licenceClient.updateStage as jest.Mock<Promise<void>>).mockRejectedValue(new Error('dead'))
+      return expect(service.markForHandover(123, 'caToRo')).rejects.toEqual(Error('dead'))
     })
 
     test('should throw if no matching transition type', () => {
-      expect(() => service.markForHandover('ab1', 'caToBlah')).toThrowError(Error)
+      expect(() => service.markForHandover(123, 'caToBlah')).toThrowError(Error)
     })
   })
 
@@ -317,10 +325,10 @@ describe('licenceService', () => {
     }
 
     test('should call updateStage from the licence client', async () => {
-      await service.removeDecision('ab1', licence)
+      await service.removeDecision(123, licence)
 
       expect(licenceClient.updateLicence).toHaveBeenCalled()
-      expect(licenceClient.updateLicence).toHaveBeenCalledWith('ab1', { somethingElse: 'Yes' })
+      expect(licenceClient.updateLicence).toHaveBeenCalledWith(123, { somethingElse: 'Yes' })
     })
   })
 

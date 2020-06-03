@@ -1,8 +1,10 @@
+import { Licence } from '../../server/data/licenceTypes'
+import { licenceClient } from '../../server/data/licenceClient'
+import * as db from '../../server/data/dataAccess/db'
+
 jest.mock('../../server/data/dataAccess/db')
 
-const licenceClient = require('../../server/data/licenceClient')
-/** @type {any} */
-const db = require('../../server/data/dataAccess/db')
+const BOOKING_ID = 123456
 
 afterEach(() => {
   db.query.mockReset()
@@ -30,68 +32,70 @@ describe('licenceClient', () => {
 
   describe('getLicences', () => {
     test('should call query', () => {
-      licenceClient.getLicences(['ABC123'])
+      licenceClient.getLicences([BOOKING_ID])
       expect(db.query).toHaveBeenCalled()
     })
 
     test('should pass in the correct sql for multiple nomis IDs', async () => {
-      const expectedClause = "where l.booking_id in ('ABC123','DEF456','XYZ789')"
+      const expectedClause = `where l.booking_id in ('${BOOKING_ID}','4444','5555')`
 
-      await licenceClient.getLicences(['ABC123', 'DEF456', 'XYZ789'])
+      await licenceClient.getLicences([BOOKING_ID, 4444, 5555])
 
       expect(db.query.mock.calls[0][0].text).toContain(expectedClause)
     })
 
     test('should pass in the correct sql for a single nomis ID', async () => {
-      const expectedClause = `where l.booking_id in ('ABC123')`
+      const expectedClause = `where l.booking_id in ('${BOOKING_ID}')`
 
-      await licenceClient.getLicences(['ABC123'])
+      await licenceClient.getLicences([BOOKING_ID])
 
       expect(db.query.mock.calls[0][0].text).toContain(expectedClause)
     })
   })
 
   describe('createLicence', () => {
+    const LICENCE_SAMPLE: Licence = { eligibility: { excluded: { decision: 'Yes' } } }
+
     test('should pass in the correct sql', async () => {
       const expectedClause =
         'insert into licences (booking_id, licence, stage, version, vary_version) values ($1, $2, $3, $4, $5)'
 
-      await licenceClient.createLicence('ABC123')
+      await licenceClient.createLicence(BOOKING_ID)
 
       expect(db.query.mock.calls[0][0].text).toContain(expectedClause)
     })
 
     test('should pass in the correct parameters', async () => {
-      const expectedParameters = ['ABC123', {}, 'ELIGIBILITY', 1, 0]
+      const expectedParameters = [BOOKING_ID, {}, 'ELIGIBILITY', 1, 0]
 
-      await licenceClient.createLicence('ABC123')
+      await licenceClient.createLicence(BOOKING_ID)
 
       const { values } = db.query.mock.calls[0][0]
       expect(values).toEqual(expectedParameters)
     })
 
     test('should pass in the correct parameters if licence passed in', async () => {
-      const expectedParameters = ['ABC123', { a: 'b' }, 'ELIGIBILITY', 1, 0]
+      const expectedParameters = [BOOKING_ID, LICENCE_SAMPLE, 'ELIGIBILITY', 1, 0]
 
-      await licenceClient.createLicence('ABC123', { a: 'b' })
+      await licenceClient.createLicence(BOOKING_ID, LICENCE_SAMPLE)
 
       const { values } = db.query.mock.calls[0][0]
       expect(values).toEqual(expectedParameters)
     })
 
     test('should pass in the correct parameters if stage passed in', async () => {
-      const expectedParameters = ['ABC123', { a: 'b' }, 'SENT', 1, 0]
+      const expectedParameters = [BOOKING_ID, LICENCE_SAMPLE, 'SENT', 1, 0]
 
-      await licenceClient.createLicence('ABC123', { a: 'b' }, 'SENT')
+      await licenceClient.createLicence(BOOKING_ID, LICENCE_SAMPLE, 'SENT')
 
       const { values } = db.query.mock.calls[0][0]
       expect(values).toEqual(expectedParameters)
     })
 
     test('should pass in the correct parameters if varyVersion passed in', async () => {
-      const expectedParameters = ['ABC123', { a: 'b' }, 'SENT', 1, 1]
+      const expectedParameters = [BOOKING_ID, LICENCE_SAMPLE, 'SENT', 1, 1]
 
-      await licenceClient.createLicence('ABC123', { a: 'b' }, 'SENT', 1, 1)
+      await licenceClient.createLicence(BOOKING_ID, LICENCE_SAMPLE, 'SENT', 1, 1)
 
       const { values } = db.query.mock.calls[0][0]
       expect(values).toEqual(expectedParameters)
@@ -103,7 +107,7 @@ describe('licenceClient', () => {
       const expectedUpdate = 'update licences set licence = jsonb_set(licence, $1, $2)'
       const expectedWhere = 'where booking_id=$3'
 
-      await licenceClient.updateSection('section', 'ABC123', { hi: 'ho' })
+      await licenceClient.updateSection('section', BOOKING_ID, { hi: 'ho' })
 
       const sql = db.query.mock.calls[0][0].text
       expect(sql).toContain(expectedUpdate)
@@ -111,9 +115,9 @@ describe('licenceClient', () => {
     })
 
     test('should pass in the correct parameters', async () => {
-      const expectedParameters = ['{section}', { hi: 'ho' }, 'ABC123']
+      const expectedParameters = ['{section}', { hi: 'ho' }, BOOKING_ID]
 
-      await licenceClient.updateSection('section', 'ABC123', { hi: 'ho' })
+      await licenceClient.updateSection('section', BOOKING_ID, { hi: 'ho' })
 
       const { values } = db.query.mock.calls[0][0]
       expect(values).toEqual(expectedParameters)
@@ -124,7 +128,7 @@ describe('licenceClient', () => {
       const expectedContents2 = 'WHERE booking_id = $1 and version'
       const expectedContents3 = 'SELECT max(version'
 
-      await licenceClient.updateSection('section', 'ABC123', { hi: 'ho' })
+      await licenceClient.updateSection('section', BOOKING_ID, { hi: 'ho' })
 
       const sql = db.query.mock.calls[1][0].text
       expect(sql).toContain(expectedContents)
@@ -137,7 +141,7 @@ describe('licenceClient', () => {
       const expectedContents2 = 'WHERE booking_id = $1 and vary_version'
       const expectedContents3 = 'SELECT max(vary_version'
 
-      await licenceClient.updateSection('section', 'ABC123', { hi: 'ho' }, true)
+      await licenceClient.updateSection('section', BOOKING_ID, { hi: 'ho' }, true)
 
       const sql = db.query.mock.calls[1][0].text
       expect(sql).toContain(expectedContents)
@@ -151,7 +155,7 @@ describe('licenceClient', () => {
       const expectedUpdate = 'set (stage, transition_date) = ($1, current_timestamp) '
       const expectedWhere = 'where booking_id = $2'
 
-      await licenceClient.updateStage('ABC123', 'NEW_STAGE')
+      await licenceClient.updateStage(BOOKING_ID, 'NEW_STAGE')
 
       const sql = db.query.mock.calls[0][0].text
       expect(sql).toContain(expectedUpdate)
@@ -159,9 +163,9 @@ describe('licenceClient', () => {
     })
 
     test('should pass in the correct parameters', async () => {
-      const expectedParameters = ['NEW_STAGE', 'ABC123']
+      const expectedParameters = ['NEW_STAGE', BOOKING_ID]
 
-      await licenceClient.updateStage('ABC123', 'NEW_STAGE')
+      await licenceClient.updateStage(BOOKING_ID, 'NEW_STAGE')
 
       const { values } = db.query.mock.calls[0][0]
       expect(values).toEqual(expectedParameters)
@@ -190,7 +194,7 @@ describe('licenceClient', () => {
       const expectedSelect = 'select booking_id, licence, version, vary_version, $1'
       const expectedWhere = 'where booking_id = $2'
 
-      await licenceClient.saveApprovedLicenceVersion('ABC123', 'templateName')
+      await licenceClient.saveApprovedLicenceVersion(BOOKING_ID, 'templateName')
 
       const sql = db.query.mock.calls[0][0].text
       expect(sql).toContain(expectedWhere)
@@ -199,16 +203,16 @@ describe('licenceClient', () => {
     })
 
     test('should pass in the correct parameters', async () => {
-      await licenceClient.saveApprovedLicenceVersion('ABC123', 'templateName')
+      await licenceClient.saveApprovedLicenceVersion(BOOKING_ID, 'templateName')
 
       const { values } = db.query.mock.calls[0][0]
-      expect(values).toEqual(['templateName', 'ABC123'])
+      expect(values).toEqual(['templateName', BOOKING_ID])
     })
   })
 
   describe('getApprovedLicenceVersion', () => {
     test('should call query', () => {
-      licenceClient.getApprovedLicenceVersion(['ABC123'])
+      licenceClient.getApprovedLicenceVersion([BOOKING_ID])
       expect(db.query).toHaveBeenCalled()
     })
 
@@ -217,7 +221,7 @@ describe('licenceClient', () => {
       const expectedWhere = 'where booking_id = $1'
       const expectedOrder = 'order by version desc, vary_version desc limit 1'
 
-      await licenceClient.getApprovedLicenceVersion('ABC123')
+      await licenceClient.getApprovedLicenceVersion(BOOKING_ID)
 
       const sql = db.query.mock.calls[0][0].text
       expect(sql).toContain(expectedSelect)
@@ -226,9 +230,9 @@ describe('licenceClient', () => {
     })
 
     test('should pass in the correct parameters', async () => {
-      const expectedParameters = ['ABC123']
+      const expectedParameters = [BOOKING_ID]
 
-      await licenceClient.getApprovedLicenceVersion('ABC123')
+      await licenceClient.getApprovedLicenceVersion(BOOKING_ID)
 
       const { values } = db.query.mock.calls[0][0]
       expect(values).toEqual(expectedParameters)
@@ -237,14 +241,14 @@ describe('licenceClient', () => {
 
   describe('updateLicence', () => {
     test('should call db.query twice', async () => {
-      await licenceClient.updateLicence('ABC123', {})
+      await licenceClient.updateLicence(BOOKING_ID, {})
       expect(db.query).toHaveBeenCalledTimes(2)
     })
 
     test('should first update the licence', async () => {
       const expectedQuery = 'UPDATE licences SET licence = $1 where booking_id=$2'
 
-      await licenceClient.updateLicence('ABC123', {})
+      await licenceClient.updateLicence(BOOKING_ID, {})
 
       const sql = db.query.mock.calls[0][0].text
       expect(sql).toContain(expectedQuery)
@@ -255,7 +259,7 @@ describe('licenceClient', () => {
       const expectedContents2 = 'WHERE booking_id = $1 and version'
       const expectedContents3 = 'SELECT max(version'
 
-      await licenceClient.updateLicence('ABC123', {})
+      await licenceClient.updateLicence(BOOKING_ID, {})
 
       const sql = db.query.mock.calls[1][0].text
       expect(sql).toContain(expectedContents)
@@ -268,7 +272,7 @@ describe('licenceClient', () => {
       const expectedContents2 = 'WHERE booking_id = $1 and vary_version'
       const expectedContents3 = 'SELECT max(vary_version'
 
-      await licenceClient.updateLicence('ABC123', {}, true)
+      await licenceClient.updateLicence(BOOKING_ID, {}, true)
 
       const sql = db.query.mock.calls[1][0].text
       expect(sql).toContain(expectedContents)

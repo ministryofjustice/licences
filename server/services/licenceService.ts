@@ -1,9 +1,11 @@
-const moment = require('moment')
-const logger = require('../../log.js')
-const { formatObjectForView } = require('./utils/formatForView')
-const { licenceStages, transitions } = require('./config/licenceStages')
-const recordList = require('./utils/recordList')
-const formValidation = require('./utils/formValidation')
+import moment from 'moment'
+import logger from '../../log'
+import { licenceStages, transitions } from './config/licenceStages'
+import recordList from './utils/recordList'
+import formValidation from './utils/formValidation'
+import { LicenceClient } from '../data/licenceClient'
+import { ApprovedLicenceVersion, CaseWithVaryVersion } from '../data/licenceClientTypes'
+import { Licence } from '../data/licenceTypes'
 
 const {
   getIn,
@@ -22,39 +24,45 @@ const {
   getFieldName,
 } = require('../utils/functionalHelpers')
 
-module.exports = function createLicenceService(licenceClient) {
-  async function reset() {
+export class LicenceService {
+  private readonly licenceClient: LicenceClient
+
+  constructor(licenceClient: LicenceClient) {
+    this.licenceClient = licenceClient
+  }
+
+  async reset() {
     try {
-      await licenceClient.deleteAll()
+      await this.licenceClient.deleteAll()
     } catch (error) {
       logger.error('Error during reset licences', error.stack)
       throw error
     }
   }
 
-  async function getLicence(bookingId) {
+  async getLicence(bookingId: number) {
     try {
-      const details = await Promise.all([
-        licenceClient.getLicence(bookingId),
-        licenceClient.getApprovedLicenceVersion(bookingId),
+      const [rawLicence, rawVersionDetails] = await Promise.all<CaseWithVaryVersion, ApprovedLicenceVersion>([
+        this.licenceClient.getLicence(bookingId),
+        this.licenceClient.getApprovedLicenceVersion(bookingId),
       ])
 
-      const rawLicence = details[0]
-      const rawVersionDetails = details[1]
+      if (!rawLicence) {
+        return null
+      }
 
-      const licence = getIn(rawLicence, ['licence'])
+      const { licence, stage } = rawLicence
       if (!licence) {
         return null
       }
-      const formattedLicence = formatObjectForView(licence)
-      const approvedVersionDetails = rawVersionDetails ? formatObjectForView(rawVersionDetails) : {}
-      const stage = getIn(rawLicence, ['stage'])
+
+      const approvedVersionDetails = rawVersionDetails || { version: undefined, vary_version: undefined }
       const version = `${rawLicence.version}.${rawLicence.vary_version}`
       const versionDetails = { version: rawLicence.version, vary_version: rawLicence.vary_version }
       const approvedVersion = `${approvedVersionDetails.version}.${approvedVersionDetails.vary_version}`
 
       return {
-        licence: formattedLicence,
+        licence,
         stage,
         version,
         versionDetails,
@@ -67,12 +75,12 @@ module.exports = function createLicenceService(licenceClient) {
     }
   }
 
-  function createLicence({ bookingId, data = {}, stage = null }) {
+  createLicence({ bookingId, licence = {}, stage = null }: { bookingId: number; licence?: Licence; stage?: string }) {
     const varyVersion = stage === 'VARY' ? 1 : 0
-    return licenceClient.createLicence(bookingId, data, licenceStages[stage], 1, varyVersion)
+    return this.licenceClient.createLicence(bookingId, licence, licenceStages[stage], 1, varyVersion)
   }
 
-  async function updateLicenceConditions(bookingId, existingLicence, newConditionsObject, postRelease) {
+  async updateLicenceConditions(bookingId, existingLicence, newConditionsObject, postRelease = false) {
     try {
       const existingLicenceConditions = getIn(existingLicence, ['licence', 'licenceConditions'])
       const licenceConditions = { ...existingLicenceConditions, ...newConditionsObject }
@@ -81,44 +89,46 @@ module.exports = function createLicenceService(licenceClient) {
         return null
       }
 
-      await updateModificationStage(bookingId, existingLicence.stage, { requiresApproval: true })
+      await this.updateModificationStage(bookingId, existingLicence.stage, { requiresApproval: true })
 
-      return licenceClient.updateSection('licenceConditions', bookingId, licenceConditions, postRelease)
+      return this.licenceClient.updateSection('licenceConditions', bookingId, licenceConditions, postRelease)
     } catch (error) {
       logger.error('Error during updateAdditionalConditions', error.stack)
       throw error
     }
   }
 
-  async function deleteLicenceCondition(bookingId, existingLicence, conditionId) {
+  async deleteLicenceCondition(bookingId, existingLicence, conditionId) {
     try {
       const existingLicenceConditions = getIn(existingLicence, ['licence', 'licenceConditions'])
 
-      const newConditions = removeCondition(existingLicenceConditions, conditionId)
+      const newConditions = this.removeCondition(existingLicenceConditions, conditionId)
 
-      return licenceClient.updateSection('licenceConditions', bookingId, newConditions)
+      return this.licenceClient.updateSection('licenceConditions', bookingId, newConditions)
     } catch (error) {
       logger.error('Error during updateAdditionalConditions', error.stack)
       throw error
     }
   }
 
-  function removeCondition(oldConditions, idToRemove) {
+  removeCondition(oldConditions, idToRemove) {
     if (idToRemove.startsWith('bespoke')) {
-      return removeBespokeCondition(oldConditions, idToRemove)
+      return this.removeBespokeCondition(oldConditions, idToRemove)
     }
 
-    return removeAdditionalCondition(oldConditions, idToRemove)
+    return this.removeAdditionalCondition(oldConditions, idToRemove)
   }
 
-  function removeAdditionalCondition(oldConditions, idToRemove) {
+  // eslint-disable-next-line class-methods-use-this
+  removeAdditionalCondition(oldConditions, idToRemove) {
     const { [idToRemove]: conditionToRemove, ...theRest } = oldConditions.additional
     logger.debug(`Deleted condition: ${conditionToRemove}`)
 
     return { ...oldConditions, additional: theRest }
   }
 
-  function removeBespokeCondition(oldConditions, idToRemove) {
+  // eslint-disable-next-line class-methods-use-this
+  removeBespokeCondition(oldConditions, idToRemove) {
     const indexToRemove = idToRemove.substr(idToRemove.indexOf('-') + 1)
 
     if (indexToRemove >= oldConditions.bespoke.length) {
@@ -132,34 +142,34 @@ module.exports = function createLicenceService(licenceClient) {
     return { ...oldConditions, bespoke: theRest }
   }
 
-  function markForHandover(bookingId, transitionType) {
+  markForHandover(bookingId, transitionType) {
     const newStage = getIn(transitions, [transitionType])
 
     if (!newStage) {
       throw new Error(`Invalid handover transition: ${transitionType}`)
     }
 
-    return licenceClient.updateStage(bookingId, newStage)
+    return this.licenceClient.updateStage(bookingId, newStage)
   }
 
-  function updateModificationStage(bookingId, stage, { requiresApproval, noModify = false }) {
+  updateModificationStage(bookingId, stage, { requiresApproval, noModify = false }) {
     if (noModify) {
       return null
     }
 
     if (requiresApproval && (stage === 'DECIDED' || stage === 'MODIFIED')) {
-      return licenceClient.updateStage(bookingId, licenceStages.MODIFIED_APPROVAL)
+      return this.licenceClient.updateStage(bookingId, licenceStages.MODIFIED_APPROVAL)
     }
 
     if (stage === 'DECIDED') {
-      return licenceClient.updateStage(bookingId, licenceStages.MODIFIED)
+      return this.licenceClient.updateStage(bookingId, licenceStages.MODIFIED)
     }
     return null
   }
 
-  const getFormResponse = (fieldMap, userInput) => fieldMap.reduce(answersFromMapReducer(userInput), {})
+  getFormResponse = (fieldMap, userInput) => fieldMap.reduce(this.answersFromMapReducer(userInput), {})
 
-  async function update({ bookingId, originalLicence, config, userInput, licenceSection, formName, postRelease }) {
+  async update({ bookingId, originalLicence, config, userInput, licenceSection, formName, postRelease = false }) {
     const stage = getIn(originalLicence, ['stage'])
     const licence = getIn(originalLicence, ['licence'])
 
@@ -167,7 +177,7 @@ module.exports = function createLicenceService(licenceClient) {
       return null
     }
 
-    const updatedLicence = getUpdatedLicence({
+    const updatedLicence = this.getUpdatedLicence({
       licence,
       fieldMap: config.fields,
       userInput,
@@ -179,9 +189,9 @@ module.exports = function createLicenceService(licenceClient) {
       return licence
     }
 
-    await licenceClient.updateLicence(bookingId, updatedLicence, postRelease)
+    await this.licenceClient.updateLicence(bookingId, updatedLicence, postRelease)
 
-    await updateModificationStage(bookingId, stage, {
+    await this.updateModificationStage(bookingId, stage, {
       requiresApproval: config.modificationRequiresApproval,
       noModify: config.noModify,
     })
@@ -189,8 +199,8 @@ module.exports = function createLicenceService(licenceClient) {
     return updatedLicence
   }
 
-  function getUpdatedLicence({ licence, fieldMap, userInput, licenceSection, formName }) {
-    const answers = getFormResponse(fieldMap, userInput)
+  getUpdatedLicence({ licence, fieldMap, userInput, licenceSection, formName }) {
+    const answers = this.getFormResponse(fieldMap, userInput)
 
     return {
       ...licence,
@@ -201,9 +211,12 @@ module.exports = function createLicenceService(licenceClient) {
     }
   }
 
-  function answersFromMapReducer(userInput) {
+  answersFromMapReducer(userInput) {
     return (answersAccumulator, field) => {
-      const { fieldName, answerIsRequired, innerFields, inputIsList, inputIsSplitDate } = getFieldInfo(field, userInput)
+      const { fieldName, answerIsRequired, innerFields, inputIsList, inputIsSplitDate } = this.getFieldInfo(
+        field,
+        userInput
+      )
 
       if (!answerIsRequired) {
         return answersAccumulator
@@ -211,7 +224,7 @@ module.exports = function createLicenceService(licenceClient) {
 
       if (inputIsList) {
         const arrayOfInputs = userInput[fieldName]
-          .map((item) => getFormResponse(field[fieldName].contains, item))
+          .map((item) => this.getFormResponse(field[fieldName].contains, item))
           .filter(notAllValuesEmpty)
 
         return { ...answersAccumulator, [fieldName]: arrayOfInputs }
@@ -219,7 +232,7 @@ module.exports = function createLicenceService(licenceClient) {
 
       if (!isEmpty(innerFields)) {
         const innerFieldMap = field[fieldName].contains
-        const innerAnswers = getFormResponse(innerFieldMap, userInput[fieldName])
+        const innerAnswers = this.getFormResponse(innerFieldMap, userInput[fieldName])
 
         if (allValuesEmpty(innerAnswers)) {
           return answersAccumulator
@@ -229,14 +242,15 @@ module.exports = function createLicenceService(licenceClient) {
       }
 
       if (inputIsSplitDate) {
-        return { ...answersAccumulator, [fieldName]: getCombinedDate(field[fieldName], userInput) }
+        return { ...answersAccumulator, [fieldName]: this.getCombinedDate(field[fieldName], userInput) }
       }
 
       return { ...answersAccumulator, [fieldName]: userInput[fieldName] }
     }
   }
 
-  function getCombinedDate(dateConfig, userInput) {
+  // eslint-disable-next-line class-methods-use-this
+  getCombinedDate(dateConfig, userInput) {
     const { day, month, year } = dateConfig.splitDate
 
     if ([day, month, year].every((item) => userInput[item].length === 0)) return ''
@@ -244,7 +258,8 @@ module.exports = function createLicenceService(licenceClient) {
     return `${userInput[day]}/${userInput[month]}/${userInput[year]}`
   }
 
-  function addSplitDateFields(rawData, formFieldsConfig) {
+  // eslint-disable-next-line class-methods-use-this
+  addSplitDateFields(rawData, formFieldsConfig) {
     return formFieldsConfig.reduce((data, field) => {
       const fieldKey = firstKey(field)
       const fieldConfig = field[fieldKey]
@@ -268,7 +283,8 @@ module.exports = function createLicenceService(licenceClient) {
     }, rawData)
   }
 
-  function getFieldInfo(field, userInput) {
+  // eslint-disable-next-line class-methods-use-this
+  getFieldInfo(field, userInput) {
     const fieldName = Object.keys(field)[0]
     const fieldConfig = field[fieldName]
 
@@ -287,15 +303,15 @@ module.exports = function createLicenceService(licenceClient) {
     }
   }
 
-  async function removeDecision(bookingId, rawLicence) {
+  async removeDecision(bookingId, rawLicence) {
     const { licence } = rawLicence
     const updatedLicence = removePath(['approval'], licence)
 
-    await licenceClient.updateLicence(bookingId, updatedLicence)
+    await this.licenceClient.updateLicence(bookingId, updatedLicence)
     return updatedLicence
   }
 
-  function rejectBass(licence, bookingId, bassRequested, reason) {
+  rejectBass(licence, bookingId, bassRequested, reason) {
     const lastBassReferral = getIn(licence, ['bassReferral'])
 
     if (!lastBassReferral) {
@@ -305,10 +321,10 @@ module.exports = function createLicenceService(licenceClient) {
     const oldRecord = mergeWithRight(lastBassReferral, { rejectionReason: reason })
     const newRecord = { bassRequest: { bassRequested } }
 
-    return deactivateBassEntry(licence, oldRecord, newRecord, bookingId)
+    return this.deactivateBassEntry(licence, oldRecord, newRecord, bookingId)
   }
 
-  function withdrawBass(licence, bookingId, withdrawal) {
+  withdrawBass(licence, bookingId, withdrawal) {
     const lastBassReferral = getIn(licence, ['bassReferral'])
 
     if (!lastBassReferral) {
@@ -318,19 +334,19 @@ module.exports = function createLicenceService(licenceClient) {
     const oldRecord = mergeWithRight(lastBassReferral, { withdrawal })
     const newRecord = { bassRequest: { bassRequested: 'Yes' } }
 
-    return deactivateBassEntry(licence, oldRecord, newRecord, bookingId)
+    return this.deactivateBassEntry(licence, oldRecord, newRecord, bookingId)
   }
 
-  function deactivateBassEntry(licence, oldRecord, newRecord, bookingId) {
+  deactivateBassEntry(licence, oldRecord, newRecord, bookingId) {
     const bassRejections = recordList({ licence, path: ['bassRejections'], allowEmpty: true })
     const licenceWithBassRejections = bassRejections.add({ record: oldRecord })
 
     const updatedLicence = replacePath(['bassReferral'], newRecord, licenceWithBassRejections)
 
-    return licenceClient.updateLicence(bookingId, updatedLicence)
+    return this.licenceClient.updateLicence(bookingId, updatedLicence)
   }
 
-  function reinstateBass(licence, bookingId) {
+  reinstateBass(licence, bookingId) {
     const bassRejections = recordList({ licence, path: ['bassRejections'] })
 
     const entryToReinstate = removePath(['withdrawal'], bassRejections.last())
@@ -339,10 +355,10 @@ module.exports = function createLicenceService(licenceClient) {
 
     const updatedLicence = replacePath(['bassReferral'], entryToReinstate, licenceAfterWithdrawalRemoved)
 
-    return licenceClient.updateLicence(bookingId, updatedLicence)
+    return this.licenceClient.updateLicence(bookingId, updatedLicence)
   }
 
-  async function rejectProposedAddress(licence, bookingId, withdrawalReason) {
+  async rejectProposedAddress(licence, bookingId, withdrawalReason) {
     const address = getIn(licence, ['proposedAddress', 'curfewAddress'])
     const curfew = getIn(licence, ['curfew'])
     const addressReview = curfew ? pick(['curfewAddressReview'], curfew) : null
@@ -366,11 +382,11 @@ module.exports = function createLicenceService(licenceClient) {
       licenceWithAddressRejection
     )
 
-    await licenceClient.updateLicence(bookingId, updatedLicence)
+    await this.licenceClient.updateLicence(bookingId, updatedLicence)
     return updatedLicence
   }
 
-  async function reinstateProposedAddress(licence, bookingId) {
+  async reinstateProposedAddress(licence, bookingId) {
     const addressRejections = recordList({ licence, path: ['proposedAddress', 'rejections'] })
     const licenceAfterRemoval = addressRejections.remove()
 
@@ -389,12 +405,22 @@ module.exports = function createLicenceService(licenceClient) {
       licenceAfterRemoval
     )
 
-    await licenceClient.updateLicence(bookingId, updatedLicence)
+    await this.licenceClient.updateLicence(bookingId, updatedLicence)
     return updatedLicence
   }
 
-  /** @param {any} licenceState */
-  function validateFormGroup({ licence, stage, decisions = {}, tasks = {} }) {
+  // eslint-disable-next-line class-methods-use-this
+  validateFormGroup({
+    licence,
+    stage,
+    decisions = {},
+    tasks = {},
+  }: {
+    licence: Licence
+    stage: string
+    decisions?: any
+    tasks?: any
+  }) {
     const {
       addressUnsuitable,
       bassAreaNotSuitable,
@@ -402,8 +428,11 @@ module.exports = function createLicenceService(licenceClient) {
       addressReviewFailed,
       approvedPremisesRequired,
     } = decisions
-    const newAddressAddedForReview = stage !== 'PROCESSING_RO' && tasks.curfewAddressReview === 'UNSTARTED'
-    const newBassAreaAddedForReview = stage !== 'PROCESSING_RO' && tasks.bassAreaCheck === 'UNSTARTED'
+
+    const { curfewAddressReview, bassAreaCheck } = tasks
+
+    const newAddressAddedForReview = stage !== 'PROCESSING_RO' && curfewAddressReview === 'UNSTARTED'
+    const newBassAreaAddedForReview = stage !== 'PROCESSING_RO' && bassAreaCheck === 'UNSTARTED'
 
     const groupName = () => {
       if (stage === 'PROCESSING_RO') {
@@ -444,8 +473,8 @@ module.exports = function createLicenceService(licenceClient) {
     })
   }
 
-  async function createLicenceFromFlatInput(input, bookingId, existingLicence, pageConfig, postRelease) {
-    const inputWithCurfewHours = addCurfewHoursInput(input)
+  async createLicenceFromFlatInput(input, bookingId, existingLicence, pageConfig, postRelease = false) {
+    const inputWithCurfewHours = this.addCurfewHoursInput(input)
 
     const newLicence = pageConfig.fields.reduce((licence, field) => {
       const fieldName = getFieldName(field)
@@ -457,11 +486,12 @@ module.exports = function createLicenceService(licenceClient) {
       return replacePath(inputPosition, inputWithCurfewHours[fieldName], licence)
     }, existingLicence)
 
-    await licenceClient.updateLicence(bookingId, newLicence, postRelease)
+    await this.licenceClient.updateLicence(bookingId, newLicence, postRelease)
     return newLicence
   }
 
-  function addCurfewHoursInput(input) {
+  // eslint-disable-next-line class-methods-use-this
+  addCurfewHoursInput(input) {
     if (input.daySpecificInputs === 'Yes') {
       return input
     }
@@ -479,26 +509,12 @@ module.exports = function createLicenceService(licenceClient) {
     }, input)
   }
 
-  return {
-    reset,
-    getLicence,
-    createLicence,
-    updateLicenceConditions,
-    deleteLicenceCondition,
-    markForHandover,
-    update,
-    updateSection: licenceClient.updateSection,
-    rejectProposedAddress,
-    reinstateProposedAddress,
-    validateForm: formValidation.validate,
-    validateFormGroup,
-    saveApprovedLicenceVersion: licenceClient.saveApprovedLicenceVersion,
-    addSplitDateFields,
-    removeDecision,
-    rejectBass,
-    withdrawBass,
-    reinstateBass,
-    addCurfewHoursInput,
-    createLicenceFromFlatInput,
+  // eslint-disable-next-line class-methods-use-this
+  validateForm(params) {
+    return formValidation.validate(params)
   }
+}
+
+export function createLicenceService(licenceClient: LicenceClient) {
+  return new LicenceService(licenceClient)
 }
