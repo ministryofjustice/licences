@@ -1,13 +1,15 @@
 import { Licence } from '../../server/data/licenceTypes'
 import { licenceClient } from '../../server/data/licenceClient'
-import * as db from '../../server/data/dataAccess/db'
+import { query } from '../../server/data/dataAccess/db'
 
 jest.mock('../../server/data/dataAccess/db')
 
 const BOOKING_ID = 123456
 
+const db = { query: query as jest.Mock<Promise<any>> }
+
 afterEach(() => {
-  db.query.mockReset()
+  ;(query as jest.Mock<Promise<any>>).mockReset()
 })
 
 describe('licenceClient', () => {
@@ -27,12 +29,12 @@ describe('licenceClient', () => {
   }
 
   beforeEach(() => {
-    db.query.mockReturnValue(standardResponse)
+    db.query.mockResolvedValue(standardResponse)
   })
 
   describe('getLicences', () => {
-    test('should call query', () => {
-      licenceClient.getLicences([BOOKING_ID])
+    test('should call query', async () => {
+      await licenceClient.getLicences([BOOKING_ID])
       expect(db.query).toHaveBeenCalled()
     })
 

@@ -513,6 +513,14 @@ export class LicenceService {
   validateForm(params) {
     return formValidation.validate(params)
   }
+
+  updateSection(section, bookingId: number, object, postRelease: boolean = false) {
+    return this.licenceClient.updateSection(section, bookingId, object, postRelease)
+  }
+
+  saveApprovedLicenceVersion(bookingId, template) {
+    return this.licenceClient.saveApprovedLicenceVersion(bookingId, template)
+  }
 }
 
 export function createLicenceService(licenceClient: LicenceClient) {
