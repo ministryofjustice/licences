@@ -1,28 +1,62 @@
 extends ../layout
 
 block content
-  - var decision = data.decision || '';
-  - var reason = data.reason || '';
-  - var outOfTimeReasons = data.outOfTimeReasons || [];
+  - var decisionValue = data.decision || "";
+  - var reasonValue = data.reason || "";
+  - var outOfTimeReasonsValue = data.outOfTimeReasons || [];
 
   div.pure-g.pure-u-1
     include ../includes/backToTaskList
     include ../includes/personalDetailsSummary
+    include ../includes/errorBannerWithDetailObject
 
-  h2.heading-large HDC refusal
+  +errorBannerWithDetail(errorObject)
+
+  h2.heading-large Is HDC being refused?
 
   form(method="post")
     input(type="hidden" name="_csrf" value=csrfToken)
     input(type="hidden" name="bookingId" value=bookingId || '')
-    input(type="hidden" name="reason" value=reason)
-    input(type="hidden" name="outOfTimeReasons" value=outOfTimeReasons)
+    //- input(type="hidden" name="reason" value=reason)
+    //- input(type="hidden" name="outOfTimeReasons" value=outOfTimeReasons)
 
-    div.largePaddingBottom.smallPaddingTop.form-group.paddingBottom
-      div.multiple-choice
-        input#yes(type="radio" checked=decision === 'Yes' name="decision" value="Yes")
+    div#decisionForm(class=errorObject.decision ? 'form-group-error': 'smallPaddingTop form-group')
+      div.multiple-choice(data-target="reasonForm")
+        input#decision(type="radio" checked=decisionValue === 'Yes' name="decision" value="Yes")
         label(for="yes") Yes
+        
+      div#reasonForm(class=errorObject.reason ? 'form-group-error panel': 'js-hidden panel')
+        div.form-group
+          p Select a reason why you are refusing HDC for this offender
+
+          div.multiple-choice
+            input#reason(type="radio" checked=reasonValue === 'addressUnsuitable' name="reason" value="addressUnsuitable")
+            label(for="reason") No available address
+
+          div.multiple-choice(data-target="outOfTimeForm")
+            input#outOfTime(type="radio" checked=reasonValue === 'insufficientTime' name="reason" value="insufficientTime")
+            label(for="outOfTime") Out of time
+
+        div#outOfTimeForm(class=errorObject.outOfTimeReasons ? 'form-group-error panel': 'js-hidden panel')
+          div.pure-u-1
+            div.multiple-choice
+              input(type='checkbox' name='outOfTimeReasons' id='outOfTimeReasons' value='underInvestigation' checked=outOfTimeReasonsValue.indexOf('underInvestigation') !== -1)
+              label(for='underInvestigation') The offender is currently under investigation for an offence committed during the current sentence and has been referred to the police/Independent Adjudicator
+            
+            div.multiple-choice
+              input(type='checkbox' name='outOfTimeReasons' id='confiscationOrder' value='confiscationOrder' checked=outOfTimeReasonsValue.indexOf('confiscationOrder') !== -1)
+              label(for='confiscationOrder') The offender is subject to a confiscation order and the relevant authority has advised that HDC should not progress
+            
+            div.multiple-choice
+              input(type='checkbox' name='outOfTimeReasons' id='onRemand' value='onRemand' checked=outOfTimeReasonsValue.indexOf('onRemand') !== -1)
+              label(for='onRemand') The offender is currently on remand
+            
+            div.multiple-choice
+              input(type='checkbox' name='outOfTimeReasons' id='riskManagement' value='riskManagement' checked=outOfTimeReasonsValue.indexOf('riskManagement') !== -1)
+              label(for='riskManagement') There are unresolved risk management issues
+
       div.multiple-choice
-        input#no(type="radio" checked=decision === 'No' name="decision" value="No")
+        input#no(type="radio" checked=decisionValue === 'No' name="decision" value="No")
         label(for="no") No
 
     include ../includes/formSubmit

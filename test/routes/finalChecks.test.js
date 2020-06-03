@@ -63,22 +63,8 @@ describe('/hdc/finalChecks', () => {
       },
       {
         url: '/hdc/finalChecks/refuse/1',
-        body: { bookingId: 1, decision: 'Yes' },
-        fieldMap: formConfig.refuse,
-        formName: 'refusal',
-        nextPath: '/hdc/finalChecks/refusal/1',
-      },
-      {
-        url: '/hdc/finalChecks/refuse/1',
         body: { bookingId: 1, decision: 'No' },
         fieldMap: formConfig.refuse,
-        formName: 'refusal',
-        nextPath: '/hdc/taskList/1',
-      },
-      {
-        url: '/hdc/finalChecks/refusal/1',
-        body: { bookingId: 1, reason: 'something', outOfTimeReasons: [] },
-        fieldMap: formConfig.refusal,
         formName: 'refusal',
         nextPath: '/hdc/taskList/1',
       },
@@ -164,6 +150,19 @@ describe('/hdc/finalChecks', () => {
           .expect(302)
           .expect('Location', '/hdc/finalChecks/confiscationOrder/1')
       })
+
+      test('should redirect back to refuse page if nothing is selected and error flashed', () => {
+        const licenceService = createLicenceServiceStub()
+        licenceService.update.mockResolvedValue({ finalChecks: {} })
+        licenceService.validateForm = jest.fn().mockReturnValue({ reason: 'error' })
+        const app = createApp({ licenceServiceStub: licenceService })
+
+        return request(app)
+          .post('/hdc/finalChecks/refuse/1')
+          .send({})
+          .expect(302)
+          .expect('Location', '/hdc/finalChecks/refuse/1')
+      })
     })
 
     describe('push to nomis', () => {
@@ -174,8 +173,8 @@ describe('/hdc/finalChecks', () => {
           data: { finalChecks: { postpone: { decision: 'ABC', postponeReason: 'XYZ' } } },
         },
         {
-          type: 'refusal',
-          path: '/hdc/finalChecks/refusal/1',
+          type: 'refuse',
+          path: '/hdc/finalChecks/refuse/1',
           data: { finalChecks: { refusal: { decision: 'ABC', reason: 'XYZ' } } },
         },
       ]
