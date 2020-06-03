@@ -78,9 +78,15 @@ describe('deliusClient', () => {
 
   describe('getAllOffenderManagers', () => {
     test('should return data from api', () => {
-      fakeDelius.get(`/offenders/nomsNumber/1/allOffenderManagers`).reply(200, { key: 'value' })
+      fakeDelius.get(`/offenders/nomsNumber/1/allOffenderManagers`).reply(200, [{ key: 'value' }])
 
-      return expect(deliusClient.getAllOffenderManagers('1')).resolves.toStrictEqual({ key: 'value' })
+      return expect(deliusClient.getAllOffenderManagers('1')).resolves.toStrictEqual([{ key: 'value' }])
+    })
+
+    test('should return empty array when not found', () => {
+      fakeDelius.get(`/offenders/nomsNumber/1/allOffenderManagers`).reply(404)
+
+      return expect(deliusClient.getAllOffenderManagers('1')).resolves.toStrictEqual([])
     })
 
     test('should reject if api fails', () => {
