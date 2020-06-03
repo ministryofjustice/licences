@@ -407,7 +407,6 @@ function handleKnownErrors(error, req, res, next) {
     case 401:
       return res.redirect('/logout')
     case 403:
-      logger.error('Unauthorised: ', error.stack)
       return res.redirect('/logout')
     default:
       return next(error)

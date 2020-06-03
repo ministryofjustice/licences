@@ -60,7 +60,8 @@ describe('signInService', () => {
         await service.getAnonymousClientCredentialsTokens()
         expect('Unexpected').toEqual('Failure') // Fail if service doesn't throw...
       } catch (e) {
-        expect(e.message).toEqual('Unauthorized')
+        expect(e.message).toEqual('Unauthorised access')
+        expect(e.status).toEqual(401)
       }
     })
 

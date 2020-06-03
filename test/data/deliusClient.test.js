@@ -83,10 +83,10 @@ describe('deliusClient', () => {
       return expect(deliusClient.getAllOffenderManagers('1')).resolves.toStrictEqual([{ key: 'value' }])
     })
 
-    test('should return empty array when not found', () => {
+    test('should return undefined when not found', () => {
       fakeDelius.get(`/offenders/nomsNumber/1/allOffenderManagers`).reply(404)
 
-      return expect(deliusClient.getAllOffenderManagers('1')).resolves.toStrictEqual([])
+      return expect(deliusClient.getAllOffenderManagers('1')).resolves.toBeUndefined()
     })
 
     test('should reject if api fails', () => {

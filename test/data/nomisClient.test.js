@@ -2,6 +2,7 @@ const nock = require('nock')
 
 const config = require('../../server/config')
 const nomisClientBuilder = require('../../server/data/nomisClientBuilder')
+const { unauthorisedError } = require('../../server/utils/errors')
 
 describe('nomisClient', () => {
   let fakeNomis
@@ -21,17 +22,17 @@ describe('nomisClient', () => {
   describe('nomisClient', () => {
     test('should throw error on GET when no token', () => {
       const badClient = nomisClientBuilder(undefined)
-      return expect(badClient.getBooking('1')).rejects.toThrow('Unauthorised access')
+      return expect(badClient.getBooking('1')).rejects.toThrow(unauthorisedError())
     })
 
     test('should throw error on POST when no token', () => {
       const badClient = nomisClientBuilder(undefined)
-      return expect(badClient.getOffenderSentencesByBookingId(['1'])).rejects.toThrow('Unauthorised access')
+      return expect(badClient.getOffenderSentencesByBookingId(['1'])).rejects.toThrow(unauthorisedError())
     })
 
     test('should throw error on PUT when no token', () => {
       const badClient = nomisClientBuilder(undefined)
-      return expect(badClient.putActiveCaseLoad('1')).rejects.toThrow('Unauthorised access')
+      return expect(badClient.putActiveCaseLoad('1')).rejects.toThrow(unauthorisedError())
     })
   })
 
@@ -391,7 +392,7 @@ describe('nomisClient', () => {
     test('should not try to refresh twice in a row', () => {
       fakeNomis.get(`/agencies/prison/1`).reply(401).get(`/agencies/prison/1`).reply(401, { response: 'this' })
 
-      return expect(nomisClient.getEstablishment('1')).rejects.toStrictEqual(Error('Unauthorized'))
+      return expect(nomisClient.getEstablishment('1')).rejects.toStrictEqual(unauthorisedError())
     })
   })
 
