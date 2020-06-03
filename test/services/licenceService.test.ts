@@ -73,35 +73,35 @@ describe('licenceService', () => {
 
   describe('createLicence', () => {
     test('should create a licence', async () => {
-      await service.createLicence({ bookingId: 123, licence: LICENCE_SAMPLE })
+      await service.createLicence({ bookingId: 123, data: LICENCE_SAMPLE })
 
       expect(licenceClient.createLicence).toHaveBeenCalled()
       expect(licenceClient.createLicence).toHaveBeenCalledWith(123, LICENCE_SAMPLE, undefined, 1, 0)
     })
 
     test('should pass in the licence', async () => {
-      await service.createLicence({ bookingId: 123, licence: LICENCE_SAMPLE })
+      await service.createLicence({ bookingId: 123, data: LICENCE_SAMPLE })
 
       expect(licenceClient.createLicence).toHaveBeenCalled()
       expect(licenceClient.createLicence).toHaveBeenCalledWith(123, LICENCE_SAMPLE, undefined, 1, 0)
     })
 
     test('should pass in the stage', async () => {
-      await service.createLicence({ bookingId: 123, licence: LICENCE_SAMPLE, stage: 'VARY' })
+      await service.createLicence({ bookingId: 123, data: LICENCE_SAMPLE, stage: 'VARY' })
 
       expect(licenceClient.createLicence).toHaveBeenCalled()
       expect(licenceClient.createLicence).toHaveBeenCalledWith(123, LICENCE_SAMPLE, 'VARY', 1, 1)
     })
 
     test('should pass in vary version as 1 if stage is VARY', async () => {
-      await service.createLicence({ bookingId: 123, licence: LICENCE_SAMPLE, stage: 'VARY' })
+      await service.createLicence({ bookingId: 123, data: LICENCE_SAMPLE, stage: 'VARY' })
 
       expect(licenceClient.createLicence).toHaveBeenCalled()
       expect(licenceClient.createLicence).toHaveBeenCalledWith(123, LICENCE_SAMPLE, 'VARY', 1, 1)
     })
 
     test('should pass in vary version as 0 if stage is not VARY', async () => {
-      await service.createLicence({ bookingId: 123, licence: LICENCE_SAMPLE })
+      await service.createLicence({ bookingId: 123, data: LICENCE_SAMPLE })
 
       expect(licenceClient.createLicence).toHaveBeenCalled()
       expect(licenceClient.createLicence).toHaveBeenCalledWith(123, LICENCE_SAMPLE, undefined, 1, 0)

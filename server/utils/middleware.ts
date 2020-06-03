@@ -1,33 +1,21 @@
-/**
- * @typedef {import("../services/prisonerService").PrisonerService} PrisonerService
- */
-const logger = require('../../log.js')
-const authorisationConfig = require('../routes/config/authorisation')
-const { getWhereKeyLike, isEmpty } = require('./functionalHelpers')
-const { unauthorisedError, forbiddenError } = require('./errors')
-const { merge } = require('./functionalHelpers')
-const { getLicenceStatus } = require('./licenceStatus')
+import logger from '../../log'
+import authorisationConfig from '../routes/config/authorisation'
+import { getWhereKeyLike, isEmpty, merge } from './functionalHelpers'
+import { unauthorisedError } from './errors'
+import { getLicenceStatus } from './licenceStatus'
+import { LicenceRecord, LicenceService } from '../services/licenceService'
+import { PrisonerService } from '../services/prisonerService'
 
-module.exports = {
-  asyncMiddleware,
-  checkLicenceMiddleware,
-  authorisationMiddleware,
-  auditMiddleware,
-}
-
-function asyncMiddleware(fn) {
+export function asyncMiddleware(fn) {
   return (req, res, next) => {
     Promise.resolve(fn(req, res, next)).catch(next)
   }
 }
 
-/**
- * @param {PrisonerService} prisonerService
- */
-function checkLicenceMiddleware(licenceService, prisonerService) {
+export function checkLicenceMiddleware(licenceService: LicenceService, prisonerService: PrisonerService) {
   return async (req, res, next, bookingId) => {
     try {
-      const [licence, prisoner] = await Promise.all([
+      const [licence, prisoner] = await Promise.all<LicenceRecord, any>([
         licenceService.getLicence(bookingId),
         prisonerService.getPrisonerPersonalDetails(bookingId, res.locals.token),
       ])
@@ -52,7 +40,7 @@ function checkLicenceMiddleware(licenceService, prisonerService) {
   }
 }
 
-function authorisationMiddleware(req, res, next) {
+export function authorisationMiddleware(req, res, next) {
   const config = getWhereKeyLike(req.originalUrl, authorisationConfig)
   if (isEmpty(config)) {
     return next()
@@ -71,16 +59,7 @@ function authorisationMiddleware(req, res, next) {
   return next()
 }
 
-function auditMiddleware(audit, key) {
-  return async (req, res, next) => {
-    const bookingId = req.body.bookingId || req.params.bookingId
-    const inputs = userInputFrom(req.body)
-
-    auditEvent(req.user.username, bookingId, req.originalUrl, inputs)
-
-    next()
-  }
-
+export function auditMiddleware(audit, key) {
   function userInputFrom(data) {
     const nonEmptyKeys = Object.keys(data).filter(
       (inputKey) => data[inputKey] && !['bookingId', '_csrf', 'anchor'].includes(inputKey)
@@ -97,5 +76,14 @@ function auditMiddleware(audit, key) {
       path,
       userInput,
     })
+  }
+
+  return async (req, res, next) => {
+    const bookingId = req.body.bookingId || req.params.bookingId
+    const inputs = userInputFrom(req.body)
+
+    auditEvent(req.user.username, bookingId, req.originalUrl, inputs)
+
+    next()
   }
 }

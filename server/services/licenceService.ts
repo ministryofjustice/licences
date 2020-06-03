@@ -24,6 +24,15 @@ const {
   getFieldName,
 } = require('../utils/functionalHelpers')
 
+export interface LicenceRecord {
+  licence: Licence
+  stage: string
+  version: string
+  versionDetails: { version: number; vary_version: number }
+  approvedVersion: string
+  approvedVersionDetails: { version: number; vary_version: number }
+}
+
 export class LicenceService {
   private readonly licenceClient: LicenceClient
 
@@ -40,7 +49,7 @@ export class LicenceService {
     }
   }
 
-  async getLicence(bookingId: number) {
+  async getLicence(bookingId: number): Promise<LicenceRecord> {
     try {
       const [rawLicence, rawVersionDetails] = await Promise.all<CaseWithVaryVersion, ApprovedLicenceVersion>([
         this.licenceClient.getLicence(bookingId),
@@ -75,9 +84,9 @@ export class LicenceService {
     }
   }
 
-  createLicence({ bookingId, licence = {}, stage = null }: { bookingId: number; licence?: Licence; stage?: string }) {
+  createLicence({ bookingId, data = {}, stage = null }: { bookingId: number; data?: Licence; stage?: string }) {
     const varyVersion = stage === 'VARY' ? 1 : 0
-    return this.licenceClient.createLicence(bookingId, licence, licenceStages[stage], 1, varyVersion)
+    return this.licenceClient.createLicence(bookingId, data, licenceStages[stage], 1, varyVersion)
   }
 
   async updateLicenceConditions(bookingId, existingLicence, newConditionsObject, postRelease = false) {
@@ -111,7 +120,7 @@ export class LicenceService {
     }
   }
 
-  removeCondition(oldConditions, idToRemove) {
+  private removeCondition(oldConditions, idToRemove) {
     if (idToRemove.startsWith('bespoke')) {
       return this.removeBespokeCondition(oldConditions, idToRemove)
     }
@@ -120,7 +129,7 @@ export class LicenceService {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  removeAdditionalCondition(oldConditions, idToRemove) {
+  private removeAdditionalCondition(oldConditions, idToRemove) {
     const { [idToRemove]: conditionToRemove, ...theRest } = oldConditions.additional
     logger.debug(`Deleted condition: ${conditionToRemove}`)
 
@@ -128,7 +137,7 @@ export class LicenceService {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  removeBespokeCondition(oldConditions, idToRemove) {
+  private removeBespokeCondition(oldConditions, idToRemove) {
     const indexToRemove = idToRemove.substr(idToRemove.indexOf('-') + 1)
 
     if (indexToRemove >= oldConditions.bespoke.length) {
@@ -167,7 +176,7 @@ export class LicenceService {
     return null
   }
 
-  getFormResponse = (fieldMap, userInput) => fieldMap.reduce(this.answersFromMapReducer(userInput), {})
+  private getFormResponse = (fieldMap, userInput) => fieldMap.reduce(this.answersFromMapReducer(userInput), {})
 
   async update({ bookingId, originalLicence, config, userInput, licenceSection, formName, postRelease = false }) {
     const stage = getIn(originalLicence, ['stage'])
@@ -211,7 +220,7 @@ export class LicenceService {
     }
   }
 
-  answersFromMapReducer(userInput) {
+  private answersFromMapReducer(userInput) {
     return (answersAccumulator, field) => {
       const { fieldName, answerIsRequired, innerFields, inputIsList, inputIsSplitDate } = this.getFieldInfo(
         field,
@@ -250,7 +259,7 @@ export class LicenceService {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  getCombinedDate(dateConfig, userInput) {
+  private getCombinedDate(dateConfig, userInput) {
     const { day, month, year } = dateConfig.splitDate
 
     if ([day, month, year].every((item) => userInput[item].length === 0)) return ''
@@ -284,7 +293,7 @@ export class LicenceService {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  getFieldInfo(field, userInput) {
+  private getFieldInfo(field, userInput) {
     const fieldName = Object.keys(field)[0]
     const fieldConfig = field[fieldName]
 
@@ -337,7 +346,7 @@ export class LicenceService {
     return this.deactivateBassEntry(licence, oldRecord, newRecord, bookingId)
   }
 
-  deactivateBassEntry(licence, oldRecord, newRecord, bookingId) {
+  private deactivateBassEntry(licence, oldRecord, newRecord, bookingId) {
     const bassRejections = recordList({ licence, path: ['bassRejections'], allowEmpty: true })
     const licenceWithBassRejections = bassRejections.add({ record: oldRecord })
 
