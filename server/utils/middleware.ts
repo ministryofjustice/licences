@@ -1,7 +1,7 @@
 import logger from '../../log'
 import authorisationConfig from '../routes/config/authorisation'
 import { getWhereKeyLike, isEmpty, merge } from './functionalHelpers'
-import { unauthorisedError } from './errors'
+import { forbiddenError } from './errors'
 import { getLicenceStatus } from './licenceStatus'
 import { LicenceRecord, LicenceService } from '../services/licenceService'
 import { PrisonerService } from '../services/prisonerService'
