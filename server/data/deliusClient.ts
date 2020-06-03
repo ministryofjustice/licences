@@ -16,8 +16,8 @@ export const createDeliusClient = (restClient): DeliusClient => {
       return restClient.getResource(`/staff/staffCode/${deliusStaffCode}/managedOffenders`)
     },
 
-    getAllOffenderManagers(offenderNo) {
-      return restClient.getResource(`/offenders/nomsNumber/${offenderNo}/allOffenderManagers`)
+    async getAllOffenderManagers(offenderNo) {
+      return (await restClient.getResource(`/offenders/nomsNumber/${offenderNo}/allOffenderManagers`)) || []
     },
 
     getAllProbationAreas() {
