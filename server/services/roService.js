@@ -16,13 +16,8 @@ const { NO_OFFENDER_NUMBER, NO_COM_ASSIGNED, STAFF_NOT_PRESENT } = require('./se
 module.exports = function createRoService(deliusClient, nomisClientBuilder) {
   async function getROPrisonersFromDelius(staffCode) {
     try {
-      return await deliusClient.getROPrisoners(staffCode)
+      return (await deliusClient.getROPrisoners(staffCode)) || []
     } catch (error) {
-      if (error.status === 404) {
-        logger.warn(`Staff member not found in delius: ${staffCode}`)
-        return []
-      }
-
       logger.error(`Problem retrieving RO prisoners for: ${staffCode}`, error.stack)
       throw error
     }
@@ -32,29 +27,20 @@ module.exports = function createRoService(deliusClient, nomisClientBuilder) {
     async getStaffByCode(staffCode) {
       try {
         const result = await deliusClient.getStaffDetailsByStaffCode(staffCode)
-        return result
+        return result || { code: STAFF_NOT_PRESENT, message: `Staff does not exist in delius: ${staffCode}` }
       } catch (error) {
-        if (error.status === 404) {
-          return { code: STAFF_NOT_PRESENT, message: `Staff does not exist in delius: ${staffCode}` }
-        }
-
         logger.error(`Problem retrieving staff member for code: ${staffCode}`, error.stack)
         throw error
       }
     },
 
     async getStaffByUsername(username) {
-      try {
-        return await deliusClient.getStaffDetailsByUsername(username)
-      } catch (error) {
-        if (error.status === 404) {
-          logger.warn(`Staff member not found in delius for username: ${username}`)
-          return null
-        }
-
-        logger.error(`Problem retrieving staff member for username: ${username}`, error.stack)
-        throw error
+      const staffDetails = await deliusClient.getStaffDetailsByUsername(username)
+      if (!staffDetails) {
+        logger.warn(`Staff member not found in delius for username: ${username}`)
+        return null
       }
+      return staffDetails
     },
 
     async getROPrisoners(staffCode, token) {
@@ -77,13 +63,12 @@ module.exports = function createRoService(deliusClient, nomisClientBuilder) {
 
       try {
         const offenderManagers = await deliusClient.getAllOffenderManagers(offenderNo)
-        return extractCommunityOffenderManager(offenderNo, offenderManagers)
-      } catch (error) {
-        if (error.status === 404) {
+        if (!offenderManagers) {
           logger.error(`Offender not present in delius: ${offenderNo}`)
           return { code: NO_OFFENDER_NUMBER, message: 'Offender number not entered in delius' }
         }
-
+        return extractCommunityOffenderManager(offenderNo, offenderManagers)
+      } catch (error) {
         logger.error(`findResponsibleOfficer for: ${offenderNo}`, error.stack)
         throw error
       }

@@ -32,7 +32,7 @@ describe('roService', () => {
     })
 
     test('should return message when 404 in api when getting RO relationship', () => {
-      deliusClient.getStaffDetailsByStaffCode.mockRejectedValue({ status: 404 })
+      deliusClient.getStaffDetailsByStaffCode.mockResolvedValue(undefined)
       return expect(service.getStaffByCode('code-1')).resolves.toStrictEqual({
         code: 'STAFF_NOT_PRESENT',
         message: `Staff does not exist in delius: code-1`,
@@ -47,7 +47,7 @@ describe('roService', () => {
     })
 
     test('should return message when 404 in api when getting RO relationship', () => {
-      deliusClient.getStaffDetailsByUsername.mockRejectedValue({ status: 404 })
+      deliusClient.getStaffDetailsByUsername.mockResolvedValue(undefined)
       return expect(service.getStaffByUsername('code-1')).resolves.toBe(null)
     })
   })
@@ -82,7 +82,7 @@ describe('roService', () => {
     })
 
     test('should return empty array when staff member not found in delius', async () => {
-      deliusClient.getROPrisoners.mockRejectedValue({ status: 404 })
+      deliusClient.getROPrisoners.mockResolvedValue(undefined)
       const result = await service.getROPrisoners(123, 'token')
       expect(result).toEqual([])
     })
@@ -149,13 +149,8 @@ describe('roService', () => {
       return expect(service.findResponsibleOfficer('123', 'token')).rejects.toEqual(Error('dead'))
     })
 
-    test('should throw if error in api when getting relationships if error status other than 404', () => {
-      deliusClient.getAllOffenderManagers.mockRejectedValue({ status: 401 })
-      return expect(service.findResponsibleOfficer('123', 'token')).rejects.toEqual({ status: 401 })
-    })
-
     test('should return message when 404 in api when getting RO relationship', () => {
-      deliusClient.getAllOffenderManagers.mockRejectedValue({ status: 404 })
+      deliusClient.getAllOffenderManagers.mockResolvedValue(undefined)
       return expect(service.findResponsibleOfficer('123', 'token')).resolves.toEqual({
         code: 'NO_OFFENDER_NUMBER',
         message: 'Offender number not entered in delius',

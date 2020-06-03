@@ -21,7 +21,9 @@ module.exports = function createLicenceSearchService(licenceClient, signInServic
     const client = nomisClientBuilder(systemToken.token)
 
     try {
-      const { bookingId } = await client.getBookingByOffenderNumber(offenderIdentifier)
+      const booking = await client.getBookingByOffenderNumber(offenderIdentifier)
+      if (!booking) return null
+      const { bookingId } = booking
       return bookingId && bookingIdForExistingLicence(bookingId)
     } catch (error) {
       if (error.status === 404) {

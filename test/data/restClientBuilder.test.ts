@@ -1,4 +1,5 @@
 import nock from 'nock'
+import { unauthorisedError } from '../../server/utils/errors'
 
 import logger from '../../log'
 import {
@@ -72,7 +73,7 @@ describe('restClientBuilder', () => {
 
       it('401 (Unauthorized) response', async () => {
         scope.get('/a-path').times(1).reply(401)
-        await expect(restClient.getResource('/a-path')).rejects.toThrowError('Unauthorized')
+        await expect(restClient.getResource('/a-path')).rejects.toThrowError(unauthorisedError())
         expect(scope.isDone()).toBeTruthy()
 
         expect(warnSpy).toHaveBeenCalledWith(
@@ -134,7 +135,7 @@ describe('restClientBuilder', () => {
 
       it('401 (Unauthorized) response', async () => {
         scope.delete('/a-path').reply(401)
-        await expect(restClient.deleteResource('/a-path')).rejects.toThrowError('Unauthorized')
+        await expect(restClient.deleteResource('/a-path')).rejects.toEqual(unauthorisedError())
         expect(scope.isDone()).toBeTruthy()
 
         expect(warnSpy).toHaveBeenCalledWith(

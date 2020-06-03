@@ -1,5 +1,6 @@
 import R from 'ramda'
 import logger from '../../log'
+import { unauthorisedError } from '../utils/errors'
 
 interface ClientError extends Error {
   message: string
@@ -49,6 +50,9 @@ export const buildErrorHandler = (apiName: string) => {
         `Error calling ${apiName}, path: '${path}', verb: '${verb}', status: '${error.response.status}'`,
         error.stack
       )
+      if (error.response.status === 401) {
+        throw unauthorisedError()
+      }
     } else if (isRequestError(error)) {
       logger.warn(`Error calling ${apiName}, path: '${path}', verb: '${verb}', code: '${error.code}'`, error.stack)
     } else {
