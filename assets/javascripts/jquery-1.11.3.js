@@ -3809,7 +3809,7 @@
       if (pvt) {
         cache[id] = jQuery.extend(cache[id], name)
       } else {
-        cache[id].licence = jQuery.extend(cache[id].data, name)
+        cache[id].data = jQuery.extend(cache[id].data, name)
       }
     }
 
