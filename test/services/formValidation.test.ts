@@ -1,18 +1,29 @@
-/* eslint-disable global-require */
-const moment = require('moment')
-const createLicenceService = require('../../server/services/licenceService')
+import moment from 'moment'
+import { createLicenceService } from '../../server/services/licenceService'
+
+import { crdTime, exceptionalCircumstances, excluded, suitability } from '../../server/routes/config/eligibility'
+import { riskManagement } from '../../server/routes/config/risk'
+import { curfewAddress } from '../../server/routes/config/proposedAddress'
+import { victimLiaison } from '../../server/routes/config/victim'
+import { reportingDate, reportingInstructions } from '../../server/routes/config/reporting'
+import {
+  approvedPremisesAddress,
+  curfewAddressReview,
+  curfewHours,
+  firstNight,
+} from '../../server/routes/config/curfew'
+import { additional, standard } from '../../server/routes/config/licenceConditions'
+import { confiscationOrder, onRemand, seriousOffence } from '../../server/routes/config/finalChecks'
+import { bassAreaCheck, bassOffer, bassRequest } from '../../server/routes/config/bassReferral'
+import { release } from '../../server/routes/config/approval'
+import { licenceDetails } from '../../server/routes/config/vary'
+import { CurfewAddress, Licence } from '../../server/data/licenceTypes'
 
 describe('validation', () => {
-  const service = createLicenceService({})
+  const service = createLicenceService(null)
 
   describe('validateForm', () => {
     describe('eligibility', () => {
-      const {
-        excluded,
-        suitability,
-        exceptionalCircumstances,
-        crdTime,
-      } = require('../../server/routes/config/eligibility')
       describe('excluded', () => {
         const pageConfig = excluded
         const options = [
@@ -86,7 +97,6 @@ describe('validation', () => {
       })
 
       describe('curfewAddress', () => {
-        const { curfewAddress } = require('../../server/routes/config/proposedAddress')
         describe('curfewAddress', () => {
           const pageConfig = curfewAddress
 
@@ -268,7 +278,6 @@ describe('validation', () => {
     })
 
     describe('processing_ro', () => {
-      const { riskManagement } = require('../../server/routes/config/risk')
       describe('risk', () => {
         const pageConfig = riskManagement
         const options = [
@@ -381,7 +390,6 @@ describe('validation', () => {
         })
       })
 
-      const { victimLiaison } = require('../../server/routes/config/victim')
       describe('victim liaison', () => {
         const pageConfig = victimLiaison
         const options = [
@@ -405,7 +413,6 @@ describe('validation', () => {
         })
       })
 
-      const { reportingInstructions } = require('../../server/routes/config/reporting')
       describe('reportingInstructions', () => {
         const pageConfig = reportingInstructions
         const options = [
@@ -454,7 +461,6 @@ describe('validation', () => {
         })
       })
 
-      const { curfewHours, curfewAddressReview } = require('../../server/routes/config/curfew')
       describe('curfewAddressReview', () => {
         const pageConfig = curfewAddressReview
         const options = [
@@ -603,7 +609,6 @@ describe('validation', () => {
         })
       })
 
-      const { standard, additional } = require('../../server/routes/config/licenceConditions')
       describe('standardConditions', () => {
         const pageConfig = standard
         const options = [
@@ -1346,7 +1351,6 @@ describe('validation', () => {
     })
 
     describe('processing_ca', () => {
-      const { seriousOffence, onRemand, confiscationOrder } = require('../../server/routes/config/finalChecks')
       describe('excluded', () => {
         const pageConfig = seriousOffence
         const options = [
@@ -1406,7 +1410,6 @@ describe('validation', () => {
     })
 
     describe('curfew', () => {
-      const { firstNight } = require('../../server/routes/config/curfew')
       describe('firstNight', () => {
         const pageConfig = firstNight
 
@@ -1438,8 +1441,6 @@ describe('validation', () => {
       })
 
       describe('approvedPremisesAddress', () => {
-        const { approvedPremisesAddress } = require('../../server/routes/config/curfew')
-
         const options = [
           {
             formResponse: { telephone: 'abc' },
@@ -1462,8 +1463,6 @@ describe('validation', () => {
     })
 
     describe('bassReferral', () => {
-      const { bassRequest, bassAreaCheck, bassOffer } = require('../../server/routes/config/bassReferral')
-
       describe('bassRequest', () => {
         const pageConfig = bassRequest
         const options = [
@@ -1540,7 +1539,7 @@ describe('validation', () => {
           ]
 
           options.forEach((option) => {
-            test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.response)}`, () => {
+            test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
               const { outcome, formResponse } = option
               expect(
                 service.validateForm({
@@ -1630,7 +1629,6 @@ describe('validation', () => {
     })
 
     describe('approval', () => {
-      const { release } = require('../../server/routes/config/approval')
       describe('release', () => {
         const pageConfig = release
 
@@ -1681,7 +1679,6 @@ describe('validation', () => {
     })
 
     describe('reporting', () => {
-      const { reportingDate } = require('../../server/routes/config/reporting')
       describe('reportingDate', () => {
         const pageConfig = reportingDate
 
@@ -1719,7 +1716,6 @@ describe('validation', () => {
     })
 
     describe('vary', () => {
-      const { licenceDetails } = require('../../server/routes/config/vary')
       describe('reportingDate', () => {
         const pageConfig = licenceDetails
 
@@ -1830,7 +1826,7 @@ describe('validation', () => {
   describe('validateFormGroup', () => {
     describe('eligibility', () => {
       const stage = 'ELIGIBILITY'
-      const validAddress = {
+      const validAddress: CurfewAddress = {
         addressLine1: 'a1',
         addressTown: 't1',
         postCode: 'S105NW',
@@ -1838,14 +1834,14 @@ describe('validation', () => {
         telephone: '07700000000',
       }
 
-      const invalidAddress = {
+      const invalidAddress: CurfewAddress = {
         addressTown: 't1',
         postCode: 'S105NW',
         cautionedAgainstResident: 'No',
         telephone: '07700000000',
       }
-      const validLicence = { proposedAddress: { curfewAddress: validAddress } }
-      const invalidLicence = { proposedAddress: { curfewAddress: invalidAddress } }
+      const validLicence: Licence = { proposedAddress: { curfewAddress: validAddress } }
+      const invalidLicence: Licence = { proposedAddress: { curfewAddress: invalidAddress } }
 
       const options = [
         { licence: validLicence, outcome: {} },
@@ -1864,19 +1860,16 @@ describe('validation', () => {
       })
 
       describe('bass referral needed', () => {
-        const validBassRequest = { bassRequested: 'No', specificArea: 'No' }
-        const validBassLicence = {
+        const validBassLicence: Licence = {
           proposedAddress: {
-            curfewAddress: {
-              addresses: [validAddress],
-            },
+            curfewAddress: validAddress,
           },
           bassReferral: {
-            bassRequest: validBassRequest,
+            bassRequest: { bassRequested: 'No', specificArea: 'No' },
           },
         }
 
-        const bassOptions = [
+        const bassOptions: Array<{ licence: Licence; outcome: any }> = [
           { licence: validBassLicence, outcome: {} },
           {
             licence: {
@@ -1900,9 +1893,9 @@ describe('validation', () => {
         bassOptions.forEach((option) => {
           test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.licence)}`, () => {
             const { outcome, licence } = option
-            expect(service.validateFormGroup({ licence, stage, decisions: { bassReferralNeeded: true } })).toEqual(
-              outcome
-            )
+            expect(
+              service.validateFormGroup({ licence, stage, decisions: { bassReferralNeeded: true }, tasks: undefined })
+            ).toEqual(outcome)
           })
         })
       })
@@ -1917,7 +1910,6 @@ describe('validation', () => {
         emsInformation: 'No',
         nonDisclosableInformation: 'No',
       }
-      const validVictim = { decision: 'No' }
       const validCurfewHours = {
         daySpecificInputs: '',
         allFrom: '',
@@ -1950,9 +1942,9 @@ describe('validation', () => {
 
       const validAddressReview = { consent: 'Yes', electricity: 'Yes', homeVisitConducted: 'Yes' }
 
-      const validLicence = {
+      const validLicence: Licence = {
         risk: { riskManagement: validRiskManagement },
-        victim: { victimLiaison: validVictim },
+        victim: { victimLiaison: { decision: 'No' } },
         curfew: {
           curfewHours: validCurfewHours,
           curfewAddressReview: validAddressReview,
@@ -1972,7 +1964,7 @@ describe('validation', () => {
         },
       }
 
-      const validLicenceNoOccupierConsent = {
+      const validLicenceNoOccupierConsent: Licence = {
         ...validLicence,
         curfew: {
           ...validLicence.curfew,
@@ -1980,7 +1972,7 @@ describe('validation', () => {
         },
       }
 
-      const validLicenceNoElec = {
+      const validLicenceNoElec: Licence = {
         ...validLicence,
         curfew: {
           ...validLicence.curfew,
@@ -1988,9 +1980,9 @@ describe('validation', () => {
         },
       }
 
-      const validLicenceNoConditions = {
+      const validLicenceNoConditions: Licence = {
         risk: { riskManagement: validRiskManagement },
-        victim: { victimLiaison: validVictim },
+        victim: { victimLiaison: { decision: 'No' } },
         curfew: {
           curfewHours: validCurfewHours,
           curfewAddressReview: validAddressReview,
@@ -1999,11 +1991,11 @@ describe('validation', () => {
         licenceConditions: { standard: { additionalConditionsRequired: 'No' } },
       }
 
-      const invalidLicence = {
+      const invalidLicence: Licence = {
         risk: {
           riskManagement: { planningActions: '', awaitingInformation: 'No', nonDisclosableInformation: 'No' },
         },
-        victim: { victimLiaison: validVictim },
+        victim: { victimLiaison: { decision: 'No' } },
         curfew: {
           curfewHours: validCurfewHours,
           curfewAddressReview: validAddressReview,
@@ -2108,7 +2100,9 @@ describe('validation', () => {
 
       describe('address review failed', () => {
         options.forEach((option) => {
-          test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.licence)}`, () => {
+          test(`should return ${JSON.stringify(option.addressReviewFailedOutcome)} for ${JSON.stringify(
+            option.licence
+          )}`, () => {
             const { addressReviewFailedOutcome, licence, decisions } = option
             const decs = {
               ...decisions,
@@ -2122,7 +2116,9 @@ describe('validation', () => {
 
       describe('risk failed', () => {
         options.forEach((option) => {
-          test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.licence)}`, () => {
+          test(`should return ${JSON.stringify(option.addressRiskFailedOutcome)} for ${JSON.stringify(
+            option.licence
+          )}`, () => {
             const { addressRiskFailedOutcome, licence, decisions } = option
             const decs = {
               ...decisions,
@@ -2136,13 +2132,11 @@ describe('validation', () => {
       })
 
       describe('bass requested', () => {
-        const validBassRequest = { bassRequested: 'Yes', specificArea: 'No' }
-        const validBassAreaCheck = { bassAreaSuitable: 'Yes', approvedPremisesRequiredYesNo: 'No' }
-        const validBassLicence = {
+        const validBassLicence: Licence = {
           ...validLicence,
           bassReferral: {
-            bassRequest: validBassRequest,
-            bassAreaCheck: validBassAreaCheck,
+            bassRequest: { bassRequested: 'Yes', specificArea: 'No' },
+            bassAreaCheck: { bassAreaSuitable: 'Yes', approvedPremisesRequiredYesNo: 'No' },
           },
         }
 
@@ -2177,17 +2171,15 @@ describe('validation', () => {
       })
 
       describe('bass area suitable', () => {
-        const validBassRequest = { bassRequested: 'No', specificArea: 'No' }
-        const validBassAreaCheck = { bassAreaSuitable: 'Yes', approvedPremisesRequiredYesNo: 'No' }
-        const validBassLicence = {
+        const validBassLicence: Licence = {
           curfew: { curfewHours: validCurfewHours },
           bassReferral: {
-            bassRequest: validBassRequest,
-            bassAreaCheck: validBassAreaCheck,
+            bassRequest: { bassRequested: 'No', specificArea: 'No' },
+            bassAreaCheck: { bassAreaSuitable: 'Yes', approvedPremisesRequiredYesNo: 'No' },
           },
         }
 
-        const bassOptions = [
+        const bassOptions: Array<{ licence: Licence; bassOutcome: any }> = [
           { licence: validBassLicence, bassOutcome: {} },
           {
             licence: {
