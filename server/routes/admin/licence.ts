@@ -1,12 +1,12 @@
-const moment = require('moment')
-const setCase = require('case')
-const { unwrapResult, firstItem, sortKeys } = require('../../utils/functionalHelpers')
-const transitionsForDestinations = require('../../services/notifications/transitionsForDestinations')
-const { getLicenceStatus } = require('../../utils/licenceStatus')
+import moment from 'moment'
+import setCase from 'case'
+import { unwrapResult, firstItem, sortKeys } from '../../utils/functionalHelpers'
+import transitionsForDestinations from '../../services/notifications/transitionsForDestinations'
+import getLicenceStatus from '../../utils/licenceStatus'
 
 const { asyncMiddleware, authorisationMiddleware } = require('../../utils/middleware')
 
-module.exports = (licenceService, signInService, prisonerService, audit, roNotificationHandler) => (router) => {
+export = (licenceService, signInService, prisonerService, audit, roNotificationHandler) => (router) => {
   router.use(authorisationMiddleware)
 
   const formatEvent = (event) => ({

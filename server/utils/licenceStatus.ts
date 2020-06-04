@@ -1,14 +1,12 @@
-const { taskStates, getOverallState } = require('../services/config/taskStates')
-const { licenceStages } = require('../services/config/licenceStages')
-const { getIn, isEmpty, flatten } = require('./functionalHelpers')
+import { taskStates, getOverallState } from '../services/config/taskStates'
+import { licenceStages } from '../services/config/licenceStages'
+import { getIn, isEmpty, flatten } from './functionalHelpers'
 
-const { getBassAreaState, getBassRequestState, getBassState } = require('./bassAddressState')
-const { getCurfewAddressReviewState, getCurfewAddressState } = require('./curfewAddressState')
-const { getEligibilityState } = require('./eligibilityState')
+import { getBassAreaState, getBassRequestState, getBassState } from './bassAddressState'
+import { getCurfewAddressReviewState, getCurfewAddressState } from './curfewAddressState'
+import { getEligibilityState } from './eligibilityState'
 
-module.exports = { getLicenceStatus }
-
-function getLicenceStatus(licenceRecord) {
+export = function getLicenceStatus(licenceRecord) {
   if (!licenceRecord || isEmpty(licenceRecord.licence) || !licenceRecord.stage) {
     return {
       stage: licenceStages.UNSTARTED,
