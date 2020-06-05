@@ -1,6 +1,6 @@
 const request = require('supertest')
 const { mockAudit } = require('../mockClients')
-const { getLicenceStatus } = require('../../server/utils/licenceStatus')
+const getLicenceStatus = require('../../server/utils/licenceStatus')
 
 const { appSetup } = require('../supertestSetup')
 

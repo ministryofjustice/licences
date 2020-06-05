@@ -1,7 +1,7 @@
 const moment = require('moment')
 const { getIn } = require('../../utils/functionalHelpers')
 const { formatObjectForView } = require('./formatForView')
-const { getLicenceStatus } = require('../../utils/licenceStatus')
+const getLicenceStatus = require('../../utils/licenceStatus')
 const { getStatusLabel } = require('../../utils/licenceStatusLabels')
 const { licenceStages } = require('../config/licenceStages')
 

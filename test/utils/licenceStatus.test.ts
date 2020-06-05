@@ -1,5 +1,5 @@
-const { getLicenceStatus } = require('../../server/utils/licenceStatus')
-const { taskStates } = require('../../server/services/config/taskStates')
+import getLicenceStatus from '../../server/utils/licenceStatus'
+import { taskStates } from '../../server/services/config/taskStates'
 
 describe('getLicenceStatus', () => {
   describe('overall status', () => {

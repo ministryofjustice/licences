@@ -1,19 +1,17 @@
-/**
- * @typedef {import("../services/prisonerService").PrisonerService} PrisonerService
- * @typedef {import("../services/caService").CaService} CaService
- */
-const path = require('path')
-const { asyncMiddleware } = require('../utils/middleware')
-const { getLicenceStatus } = require('../utils/licenceStatus')
-const { getStatusLabel } = require('../utils/licenceStatusLabels')
+import path from 'path'
+import { PrisonerService, CaService } from '../../types/licences'
+import { asyncMiddleware } from '../utils/middleware'
+import getLicenceStatus from '../utils/licenceStatus'
+import { getStatusLabel } from '../utils/licenceStatusLabels'
 
-const { isEmpty } = require('../utils/functionalHelpers')
-const getTaskListModel = require('./viewModels/taskListModels')
-const logger = require('../../log')
-const { getTasksForBlocked } = require('./viewModels/taskLists/caTasks')
-const {
-  licenceStages: { APPROVAL, DECIDED, ELIGIBILITY, MODIFIED, MODIFIED_APPROVAL, PROCESSING_CA, PROCESSING_RO },
-} = require('../services/config/licenceStages')
+import { isEmpty } from '../utils/functionalHelpers'
+import getTaskListModel from './viewModels/taskListModels'
+import logger from '../../log'
+import { getTasksForBlocked } from './viewModels/taskLists/caTasks'
+
+import { licenceStages } from '../services/config/licenceStages'
+
+const { APPROVAL, DECIDED, ELIGIBILITY, MODIFIED, MODIFIED_APPROVAL, PROCESSING_CA, PROCESSING_RO } = licenceStages
 
 const READ_WRITE = 'RW'
 const READ_ONLY = 'R'
@@ -80,14 +78,7 @@ const determineAccessLevel = (licence, postRelease, role) => {
   }
 }
 
-/**
- * @param {object} args
- * @param {PrisonerService} args.prisonerService
- * @param {any} args.licenceService
- * @param {any} args.audit
- * @param {CaService} args.caService
- */
-module.exports = ({ prisonerService, licenceService, audit, caService }) => (router) => {
+export = (prisonerService: PrisonerService, licenceService, audit, caService: CaService) => (router) => {
   router.get(
     '/:bookingId',
     asyncMiddleware(async (req, res) => {

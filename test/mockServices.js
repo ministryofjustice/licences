@@ -4,6 +4,7 @@ const createSignInServiceStub = () => ({
   getClientCredentialsTokens: jest.fn().mockReturnValue({ token: 'system-token' }),
 })
 
+/** @type {any} */
 const createLicenceServiceStub = () => ({
   getLicence: jest.fn().mockReturnValue({ licence: { key: 'value' } }),
   update: jest.fn(),

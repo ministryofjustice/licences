@@ -714,15 +714,7 @@ function createApp({ licenceServiceStub, prisonerServiceStub, caServiceStub, aud
   const caService = caServiceStub || createCaServiceStub
 
   const baseRouter = standardRouter({ licenceService, prisonerService, audit, signInService, config: null })
-  const route = baseRouter(
-    createRoute({
-      licenceService,
-      prisonerService,
-      audit,
-      caService,
-    }),
-    { licenceRequired: false }
-  )
+  const route = baseRouter(createRoute(prisonerService, licenceService, audit, caService), { licenceRequired: false })
 
   return appSetup(route, user, '/taskList/')
 }
