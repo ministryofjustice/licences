@@ -1,5 +1,5 @@
 import getLicenceStatus from '../../server/utils/licenceStatus'
-import { taskStates } from '../../server/services/config/taskStates'
+import { taskState } from '../../server/services/config/taskState'
 
 describe('getLicenceStatus', () => {
   describe('overall status', () => {
@@ -380,28 +380,28 @@ describe('getLicenceStatus', () => {
 
       const status = getLicenceStatus(licence)
 
-      expect(status.tasks.exclusion).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.crdTime).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.suitability).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.eligibility).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.optOut).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.bassRequest).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.bassAreaCheck).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.bassOffer).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.bassAddress).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.curfewAddress).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.curfewAddressReview).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.curfewHours).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.licenceConditions).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.riskManagement).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.reportingInstructions).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.seriousOffenceCheck).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.onRemandCheck).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.confiscationOrderCheck).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.finalChecks).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.approval).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.createLicence).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.approvedPremisesAddress).toEqual(taskStates.UNSTARTED)
+      expect(status.tasks.exclusion).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.crdTime).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.suitability).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.eligibility).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.optOut).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.bassRequest).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.bassAreaCheck).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.bassOffer).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.bassAddress).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.curfewAddress).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.curfewAddressReview).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.curfewHours).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.licenceConditions).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.riskManagement).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.reportingInstructions).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.seriousOffenceCheck).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.onRemandCheck).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.confiscationOrderCheck).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.finalChecks).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.approval).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.createLicence).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.approvedPremisesAddress).toEqual(taskState.UNSTARTED)
     })
 
     test('should show tasks UNSTARTED when task data missing', () => {
@@ -412,28 +412,28 @@ describe('getLicenceStatus', () => {
 
       const status = getLicenceStatus(licence)
 
-      expect(status.tasks.exclusion).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.crdTime).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.suitability).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.eligibility).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.optOut).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.bassRequest).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.bassAreaCheck).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.bassOffer).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.bassAddress).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.curfewAddress).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.curfewAddressReview).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.curfewHours).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.licenceConditions).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.riskManagement).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.reportingInstructions).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.seriousOffenceCheck).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.onRemandCheck).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.confiscationOrderCheck).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.finalChecks).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.approval).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.createLicence).toEqual(taskStates.UNSTARTED)
-      expect(status.tasks.approvedPremisesAddress).toEqual(taskStates.UNSTARTED)
+      expect(status.tasks.exclusion).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.crdTime).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.suitability).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.eligibility).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.optOut).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.bassRequest).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.bassAreaCheck).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.bassOffer).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.bassAddress).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.curfewAddress).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.curfewAddressReview).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.curfewHours).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.licenceConditions).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.riskManagement).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.reportingInstructions).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.seriousOffenceCheck).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.onRemandCheck).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.confiscationOrderCheck).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.finalChecks).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.approval).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.createLicence).toEqual(taskState.UNSTARTED)
+      expect(status.tasks.approvedPremisesAddress).toEqual(taskState.UNSTARTED)
     })
 
     test('should show tasks STARTED when task data incomplete for tasks that can be STARTED', () => {
@@ -494,13 +494,13 @@ describe('getLicenceStatus', () => {
 
       const status = getLicenceStatus(licence)
 
-      expect(status.tasks.curfewAddress).toEqual(taskStates.STARTED)
-      expect(status.tasks.bassAddress).toEqual(taskStates.STARTED)
-      expect(status.tasks.curfewAddressReview).toEqual(taskStates.STARTED)
-      expect(status.tasks.licenceConditions).toEqual(taskStates.STARTED)
-      expect(status.tasks.riskManagement).toEqual(taskStates.STARTED)
-      expect(status.tasks.finalChecks).toEqual(taskStates.STARTED)
-      expect(status.tasks.approvedPremisesAddress).toEqual(taskStates.STARTED)
+      expect(status.tasks.curfewAddress).toEqual(taskState.STARTED)
+      expect(status.tasks.bassAddress).toEqual(taskState.STARTED)
+      expect(status.tasks.curfewAddressReview).toEqual(taskState.STARTED)
+      expect(status.tasks.licenceConditions).toEqual(taskState.STARTED)
+      expect(status.tasks.riskManagement).toEqual(taskState.STARTED)
+      expect(status.tasks.finalChecks).toEqual(taskState.STARTED)
+      expect(status.tasks.approvedPremisesAddress).toEqual(taskState.STARTED)
     })
 
     test('should show tasks DONE when task data complete', () => {
@@ -622,28 +622,28 @@ describe('getLicenceStatus', () => {
 
       const status = getLicenceStatus(licence)
 
-      expect(status.tasks.exclusion).toEqual(taskStates.DONE)
-      expect(status.tasks.crdTime).toEqual(taskStates.DONE)
-      expect(status.tasks.suitability).toEqual(taskStates.DONE)
-      expect(status.tasks.eligibility).toEqual(taskStates.DONE)
-      expect(status.tasks.optOut).toEqual(taskStates.DONE)
-      expect(status.tasks.bassRequest).toEqual(taskStates.DONE)
-      expect(status.tasks.bassAreaCheck).toEqual(taskStates.DONE)
-      expect(status.tasks.bassOffer).toEqual(taskStates.DONE)
-      expect(status.tasks.bassAddress).toEqual(taskStates.DONE)
-      expect(status.tasks.curfewAddress).toEqual(taskStates.DONE)
-      expect(status.tasks.curfewAddressReview).toEqual(taskStates.DONE)
-      expect(status.tasks.curfewHours).toEqual(taskStates.DONE)
-      expect(status.tasks.licenceConditions).toEqual(taskStates.DONE)
-      expect(status.tasks.riskManagement).toEqual(taskStates.DONE)
-      expect(status.tasks.reportingInstructions).toEqual(taskStates.DONE)
-      expect(status.tasks.seriousOffenceCheck).toEqual(taskStates.DONE)
-      expect(status.tasks.onRemandCheck).toEqual(taskStates.DONE)
-      expect(status.tasks.confiscationOrderCheck).toEqual(taskStates.DONE)
-      expect(status.tasks.finalChecks).toEqual(taskStates.DONE)
-      expect(status.tasks.approval).toEqual(taskStates.DONE)
-      expect(status.tasks.createLicence).toEqual(taskStates.DONE)
-      expect(status.tasks.approvedPremisesAddress).toEqual(taskStates.DONE)
+      expect(status.tasks.exclusion).toEqual(taskState.DONE)
+      expect(status.tasks.crdTime).toEqual(taskState.DONE)
+      expect(status.tasks.suitability).toEqual(taskState.DONE)
+      expect(status.tasks.eligibility).toEqual(taskState.DONE)
+      expect(status.tasks.optOut).toEqual(taskState.DONE)
+      expect(status.tasks.bassRequest).toEqual(taskState.DONE)
+      expect(status.tasks.bassAreaCheck).toEqual(taskState.DONE)
+      expect(status.tasks.bassOffer).toEqual(taskState.DONE)
+      expect(status.tasks.bassAddress).toEqual(taskState.DONE)
+      expect(status.tasks.curfewAddress).toEqual(taskState.DONE)
+      expect(status.tasks.curfewAddressReview).toEqual(taskState.DONE)
+      expect(status.tasks.curfewHours).toEqual(taskState.DONE)
+      expect(status.tasks.licenceConditions).toEqual(taskState.DONE)
+      expect(status.tasks.riskManagement).toEqual(taskState.DONE)
+      expect(status.tasks.reportingInstructions).toEqual(taskState.DONE)
+      expect(status.tasks.seriousOffenceCheck).toEqual(taskState.DONE)
+      expect(status.tasks.onRemandCheck).toEqual(taskState.DONE)
+      expect(status.tasks.confiscationOrderCheck).toEqual(taskState.DONE)
+      expect(status.tasks.finalChecks).toEqual(taskState.DONE)
+      expect(status.tasks.approval).toEqual(taskState.DONE)
+      expect(status.tasks.createLicence).toEqual(taskState.DONE)
+      expect(status.tasks.approvedPremisesAddress).toEqual(taskState.DONE)
     })
   })
 
@@ -742,7 +742,7 @@ describe('getLicenceStatus', () => {
             },
           }
           const status = getLicenceStatus(licence)
-          expect(status.tasks.curfewAddressReview).toEqual(taskStates.UNSTARTED)
+          expect(status.tasks.curfewAddressReview).toEqual(taskState.UNSTARTED)
         })
         test('should be DONE when electricity answered', () => {
           const licence = {
@@ -763,7 +763,7 @@ describe('getLicenceStatus', () => {
             },
           }
           const status = getLicenceStatus(licence)
-          expect(status.tasks.curfewAddressReview).toEqual(taskStates.DONE)
+          expect(status.tasks.curfewAddressReview).toEqual(taskState.DONE)
         })
       })
 
@@ -788,7 +788,7 @@ describe('getLicenceStatus', () => {
             },
           }
           const status = getLicenceStatus(licence)
-          expect(status.tasks.curfewAddressReview).toEqual(taskStates.DONE)
+          expect(status.tasks.curfewAddressReview).toEqual(taskState.DONE)
         })
         test('should be STARTED when consent answered', () => {
           const licence = {
@@ -809,7 +809,7 @@ describe('getLicenceStatus', () => {
             },
           }
           const status = getLicenceStatus(licence)
-          expect(status.tasks.curfewAddressReview).toEqual(taskStates.STARTED)
+          expect(status.tasks.curfewAddressReview).toEqual(taskState.STARTED)
         })
         test('should be STARTED when electricity answered', () => {
           const licence = {
@@ -830,7 +830,7 @@ describe('getLicenceStatus', () => {
             },
           }
           const status = getLicenceStatus(licence)
-          expect(status.tasks.curfewAddressReview).toEqual(taskStates.STARTED)
+          expect(status.tasks.curfewAddressReview).toEqual(taskState.STARTED)
         })
         test('should be UNSTARTED when electricity and consent not answered', () => {
           const licence = {
@@ -849,7 +849,7 @@ describe('getLicenceStatus', () => {
             },
           }
           const status = getLicenceStatus(licence)
-          expect(status.tasks.curfewAddressReview).toEqual(taskStates.UNSTARTED)
+          expect(status.tasks.curfewAddressReview).toEqual(taskState.UNSTARTED)
         })
       })
     })
@@ -867,7 +867,7 @@ describe('getLicenceStatus', () => {
 
         const status = getLicenceStatus(licence)
 
-        expect(status.tasks.bassAreaCheck).toEqual(taskStates.UNSTARTED)
+        expect(status.tasks.bassAreaCheck).toEqual(taskState.UNSTARTED)
         expect(status.decisions.bassAreaSuitable).toEqual(undefined)
       })
 
@@ -885,7 +885,7 @@ describe('getLicenceStatus', () => {
 
         const status = getLicenceStatus(licence)
 
-        expect(status.tasks.bassAreaCheck).toEqual(taskStates.STARTED)
+        expect(status.tasks.bassAreaCheck).toEqual(taskState.STARTED)
         expect(status.decisions.bassAreaSuitable).toBe(false)
       })
 
@@ -904,7 +904,7 @@ describe('getLicenceStatus', () => {
 
         const status = getLicenceStatus(licence)
 
-        expect(status.tasks.bassAreaCheck).toEqual(taskStates.DONE)
+        expect(status.tasks.bassAreaCheck).toEqual(taskState.DONE)
         expect(status.decisions.bassAreaNotSuitable).toBe(true)
       })
     })
@@ -923,7 +923,7 @@ describe('getLicenceStatus', () => {
           },
         }
         const status = getLicenceStatus(licence)
-        expect(status.tasks.approvedPremisesAddress).toEqual(taskStates.UNSTARTED)
+        expect(status.tasks.approvedPremisesAddress).toEqual(taskState.UNSTARTED)
       })
       test('should be UNSTARTED when approved premises not required', () => {
         const licence = {
@@ -942,7 +942,7 @@ describe('getLicenceStatus', () => {
           },
         }
         const status = getLicenceStatus(licence)
-        expect(status.tasks.approvedPremisesAddress).toEqual(taskStates.UNSTARTED)
+        expect(status.tasks.approvedPremisesAddress).toEqual(taskState.UNSTARTED)
       })
       test('should be STARTED if some present', () => {
         const licence = {
@@ -959,7 +959,7 @@ describe('getLicenceStatus', () => {
           },
         }
         const status = getLicenceStatus(licence)
-        expect(status.tasks.approvedPremisesAddress).toEqual(taskStates.STARTED)
+        expect(status.tasks.approvedPremisesAddress).toEqual(taskState.STARTED)
       })
       test('should be DONE when all mandatory present', () => {
         const licence = {
@@ -978,7 +978,7 @@ describe('getLicenceStatus', () => {
           },
         }
         const status = getLicenceStatus(licence)
-        expect(status.tasks.approvedPremisesAddress).toEqual(taskStates.DONE)
+        expect(status.tasks.approvedPremisesAddress).toEqual(taskState.DONE)
       })
     })
   })
@@ -1116,7 +1116,7 @@ describe('getLicenceStatus', () => {
 
         const status = getLicenceStatus(licence)
 
-        expect(status.tasks.curfewAddressReview).toEqual(taskStates.UNSTARTED)
+        expect(status.tasks.curfewAddressReview).toEqual(taskState.UNSTARTED)
       })
 
       test('should show refusal reason and caRefused in PROCESSING_CA', () => {
@@ -1281,7 +1281,7 @@ describe('getLicenceStatus', () => {
 
       const status = getLicenceStatus(licence)
 
-      expect(status.tasks.createLicence).toEqual(taskStates.UNSTARTED)
+      expect(status.tasks.createLicence).toEqual(taskState.UNSTARTED)
     })
 
     test('should show createLicence task UNSTARTED when working version higher than approved version', () => {
@@ -1296,7 +1296,7 @@ describe('getLicenceStatus', () => {
 
       const status = getLicenceStatus(licence)
 
-      expect(status.tasks.createLicence).toEqual(taskStates.UNSTARTED)
+      expect(status.tasks.createLicence).toEqual(taskState.UNSTARTED)
     })
 
     test('should show createLicence task DONE when working version is the same as approved version', () => {
@@ -1311,7 +1311,7 @@ describe('getLicenceStatus', () => {
 
       const status = getLicenceStatus(licence)
 
-      expect(status.tasks.createLicence).toEqual(taskStates.DONE)
+      expect(status.tasks.createLicence).toEqual(taskState.DONE)
     })
   })
 
@@ -1330,7 +1330,7 @@ describe('getLicenceStatus', () => {
 
       const status = getLicenceStatus(licence)
 
-      expect(status.tasks.eligibility).toEqual(taskStates.DONE)
+      expect(status.tasks.eligibility).toEqual(taskState.DONE)
     })
 
     test('should show eligibility DONE when (un)suitabililty is YES and exceptionalCircumstances is answered', () => {
@@ -1353,7 +1353,7 @@ describe('getLicenceStatus', () => {
 
       const status = getLicenceStatus(licence)
 
-      expect(status.tasks.eligibility).toEqual(taskStates.DONE)
+      expect(status.tasks.eligibility).toEqual(taskState.DONE)
     })
 
     test('should show eligibility STARTED when (un)suitabililty is YES and exceptionalCircumstances missing', () => {
@@ -1374,7 +1374,7 @@ describe('getLicenceStatus', () => {
 
       const status = getLicenceStatus(licence)
 
-      expect(status.tasks.eligibility).toEqual(taskStates.STARTED)
+      expect(status.tasks.eligibility).toEqual(taskState.STARTED)
     })
 
     test('should show eligibility STARTED when (un)suitabililty is No and excluded is No but no crdTime', () => {
@@ -1394,7 +1394,7 @@ describe('getLicenceStatus', () => {
 
       const status = getLicenceStatus(licence)
 
-      expect(status.tasks.eligibility).toEqual(taskStates.STARTED)
+      expect(status.tasks.eligibility).toEqual(taskState.STARTED)
     })
 
     test('should show eligibility DONE when suitability is No and excluded is No but and complete crdTime', () => {
@@ -1418,7 +1418,7 @@ describe('getLicenceStatus', () => {
 
       const status = getLicenceStatus(licence)
 
-      expect(status.tasks.eligibility).toEqual(taskStates.DONE)
+      expect(status.tasks.eligibility).toEqual(taskState.DONE)
     })
   })
 
@@ -1430,7 +1430,7 @@ describe('getLicenceStatus', () => {
       }
 
       const status = getLicenceStatus(licence)
-      expect(status.tasks.curfewAddress).toEqual(taskStates.DONE)
+      expect(status.tasks.curfewAddress).toEqual(taskState.DONE)
     })
 
     test('should show curfew address DONE when bass referral needed', () => {
@@ -1443,7 +1443,7 @@ describe('getLicenceStatus', () => {
       }
 
       const status = getLicenceStatus(licence)
-      expect(status.tasks.curfewAddress).toEqual(taskStates.DONE)
+      expect(status.tasks.curfewAddress).toEqual(taskState.DONE)
     })
 
     test('should show curfew address UNSTARTED when no addresses', () => {
@@ -1453,7 +1453,7 @@ describe('getLicenceStatus', () => {
       }
 
       const status = getLicenceStatus(licence)
-      expect(status.tasks.curfewAddress).toEqual(taskStates.UNSTARTED)
+      expect(status.tasks.curfewAddress).toEqual(taskState.UNSTARTED)
     })
 
     test('should show curfew address DONE when minimum fields not empty', () => {
@@ -1473,7 +1473,7 @@ describe('getLicenceStatus', () => {
       }
 
       const status = getLicenceStatus(licence)
-      expect(status.tasks.curfewAddress).toEqual(taskStates.DONE)
+      expect(status.tasks.curfewAddress).toEqual(taskState.DONE)
     })
 
     test('should show curfew address STARTED if any of minimum fields empty', () => {
@@ -1493,7 +1493,7 @@ describe('getLicenceStatus', () => {
       }
 
       const status = getLicenceStatus(licence)
-      expect(status.tasks.curfewAddress).toEqual(taskStates.STARTED)
+      expect(status.tasks.curfewAddress).toEqual(taskState.STARTED)
     })
 
     test('should show curfew address as STARTED if telephone empty and Main Occupier NOT checked', () => {
@@ -1515,7 +1515,7 @@ describe('getLicenceStatus', () => {
       }
 
       const status = getLicenceStatus(licence)
-      expect(status.tasks.curfewAddress).toEqual(taskStates.STARTED)
+      expect(status.tasks.curfewAddress).toEqual(taskState.STARTED)
     })
 
     test('should show curfew address as DONE if telephone empty and Main Occupier IS checked', () => {
@@ -1538,7 +1538,7 @@ describe('getLicenceStatus', () => {
       }
 
       const status = getLicenceStatus(licence)
-      expect(status.tasks.curfewAddress).toEqual(taskStates.DONE)
+      expect(status.tasks.curfewAddress).toEqual(taskState.DONE)
     })
   })
 })

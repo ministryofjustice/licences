@@ -1,4 +1,4 @@
-const { taskStates } = require('../services/config/taskStates')
+const { taskState } = require('../services/config/taskState')
 
 module.exports = { getAllowedTransition }
 
@@ -41,7 +41,7 @@ function canSendRoToCa(licenceStatus) {
     return false
   }
 
-  if (decisions.bassReferralNeeded && tasks.bassAreaCheck === taskStates.DONE) {
+  if (decisions.bassReferralNeeded && tasks.bassAreaCheck === taskState.DONE) {
     return true
   }
 
@@ -57,12 +57,12 @@ function canSendRoToCa(licenceStatus) {
     tasks.curfewAddressReview,
     tasks.curfewHours,
     tasks.licenceConditions,
-    decisions.approvedPremisesRequired ? taskStates.DONE : tasks.riskManagement,
+    decisions.approvedPremisesRequired ? taskState.DONE : tasks.riskManagement,
     tasks.victim,
     tasks.reportingInstructions,
   ]
 
-  return required.every((it) => it === taskStates.DONE)
+  return required.every((it) => it === taskState.DONE)
 }
 
 function canSendCaToRo(licenceStatus) {
@@ -72,10 +72,10 @@ function canSendCaToRo(licenceStatus) {
 
   if (['PROCESSING_CA', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(stage)) {
     if (bassReferralNeeded) {
-      if (licenceStatus.tasks.bassAreaCheck === taskStates.UNSTARTED) {
+      if (licenceStatus.tasks.bassAreaCheck === taskState.UNSTARTED) {
         return true
       }
-    } else if (!optedOut && !approvedPremisesRequired && tasks.curfewAddressReview === taskStates.UNSTARTED) {
+    } else if (!optedOut && !approvedPremisesRequired && tasks.curfewAddressReview === taskState.UNSTARTED) {
       return true
     }
   }
@@ -88,10 +88,10 @@ function canSendCaToRo(licenceStatus) {
 
   const required = [tasks.exclusion, tasks.crdTime, tasks.suitability, tasks.optOut, tasks.curfewAddress]
 
-  const allTaskComplete = required.every((it) => it === taskStates.DONE)
+  const allTaskComplete = required.every((it) => it === taskState.DONE)
 
   if (bassReferralNeeded) {
-    return allTaskComplete && tasks.bassReferral === taskStates.DONE
+    return allTaskComplete && tasks.bassReferral === taskState.DONE
   }
 
   return allTaskComplete
@@ -147,7 +147,7 @@ function canSendCaToDm(licenceStatus) {
   }
 
   const required = getRequiredTasks(decisions, tasks)
-  const tasksComplete = required.every((it) => it === taskStates.DONE)
+  const tasksComplete = required.every((it) => it === taskState.DONE)
 
   const addressOk =
     decisions.bassReferralNeeded || decisions.curfewAddressApproved || decisions.approvedPremisesRequired

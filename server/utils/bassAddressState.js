@@ -1,4 +1,4 @@
-const { taskStates } = require('../services/config/taskStates')
+const { taskState } = require('../services/config/taskState')
 const { getIn, isEmpty, lastItem } = require('./functionalHelpers')
 
 module.exports = { getBassAreaState, getBassState, getBassRequestState }
@@ -23,28 +23,28 @@ function getBassRequestState(licence) {
       const bassRequestCounty = getIn(licence, ['bassReferral', 'bassRequest', 'proposedCounty'])
 
       if (bassRequestTown && bassRequestCounty) {
-        return taskStates.DONE
+        return taskState.DONE
       }
 
       if (bassRequestTown || bassRequestCounty) {
-        return taskStates.STARTED
+        return taskState.STARTED
       }
 
-      return taskStates.UNSTARTED
+      return taskState.UNSTARTED
     }
 
-    return bassRequestAnswer ? taskStates.DONE : taskStates.UNSTARTED
+    return bassRequestAnswer ? taskState.DONE : taskState.UNSTARTED
   }
 }
 
 function getBassWithdrawalState(licence) {
   const { bassAreaCheck } = getBassAreaState(licence)
-  if (bassAreaCheck === taskStates.DONE) {
+  if (bassAreaCheck === taskState.DONE) {
     return { bassWithdrawn: false }
   }
 
   const { bassRequest } = getBassRequestState(licence)
-  if (bassRequest === taskStates.DONE || bassRequest === taskStates.STARTED) {
+  if (bassRequest === taskState.DONE || bassRequest === taskState.STARTED) {
     return { bassWithdrawn: false }
   }
   const bassRejections = getIn(licence, ['bassRejections'])
@@ -60,7 +60,7 @@ function getBassAreaState(licence) {
   if (specificArea === 'No') {
     const seen = getIn(licence, ['bassReferral', 'bassAreaCheck', 'bassAreaCheckSeen'])
     return {
-      bassAreaCheck: seen ? taskStates.DONE : taskStates.UNSTARTED,
+      bassAreaCheck: seen ? taskState.DONE : taskState.UNSTARTED,
     }
   }
 
@@ -80,14 +80,14 @@ function getBassAreaState(licence) {
 
 function getBassAreaCheckState(bassAreaSuitableAnswer, bassAreaReason) {
   if (!bassAreaSuitableAnswer) {
-    return taskStates.UNSTARTED
+    return taskState.UNSTARTED
   }
 
   if (bassAreaSuitableAnswer === 'No' && !bassAreaReason) {
-    return taskStates.STARTED
+    return taskState.STARTED
   }
 
-  return taskStates.DONE
+  return taskState.DONE
 }
 
 function getBassState(licence) {
@@ -100,22 +100,22 @@ function getBassState(licence) {
 }
 
 function getBassOfferState(bassAccepted) {
-  return !bassAccepted ? taskStates.UNSTARTED : taskStates.DONE
+  return !bassAccepted ? taskState.UNSTARTED : taskState.DONE
 }
 
 function getBassAddressState(licence) {
   const bassOffer = getIn(licence, ['bassReferral', 'bassOffer'])
 
   if (!bassOffer) {
-    return taskStates.UNSTARTED
+    return taskState.UNSTARTED
   }
 
   if (bassOffer.bassAccepted === 'Yes') {
     const required = ['addressTown', 'addressLine1', 'postCode']
     if (required.some((field) => !bassOffer[field])) {
-      return taskStates.STARTED
+      return taskState.STARTED
     }
   }
 
-  return taskStates.DONE
+  return taskState.DONE
 }

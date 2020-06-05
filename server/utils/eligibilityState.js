@@ -1,4 +1,4 @@
-const { taskStates, getOverallState } = require('../services/config/taskStates')
+const { taskState, getOverallState } = require('../services/config/taskState')
 const { getIn, isEmpty } = require('./functionalHelpers')
 
 module.exports = {
@@ -11,9 +11,9 @@ function getEligibilityState(licence) {
   const { suitability, unsuitable, unsuitableResult, exceptionalCircumstances } = getSuitabilityState(licence)
 
   const notEligible = excluded || insufficientTimeStop || unsuitableResult
-  const eligibility = notEligible ? taskStates.DONE : getOverallState([exclusion, crdTime, suitability])
+  const eligibility = notEligible ? taskState.DONE : getOverallState([exclusion, crdTime, suitability])
   // some things mean not eligible no matter what else, but we only know definitely eligible when all answers complete
-  const eligible = notEligible ? false : eligibility === taskStates.DONE
+  const eligible = notEligible ? false : eligibility === taskState.DONE
 
   return {
     tasks: {
@@ -40,7 +40,7 @@ function getExclusionState(licence) {
 
   return {
     excluded: excludedAnswer === 'Yes',
-    exclusion: excludedAnswer ? taskStates.DONE : taskStates.UNSTARTED,
+    exclusion: excludedAnswer ? taskState.DONE : taskState.UNSTARTED,
   }
 }
 
@@ -57,18 +57,18 @@ function getCrdTimeState(licence) {
 
   function getState() {
     if (isEmpty(getIn(licence, ['eligibility', 'crdTime']))) {
-      return taskStates.UNSTARTED
+      return taskState.UNSTARTED
     }
 
     if (decision === 'No') {
-      return taskStates.DONE
+      return taskState.DONE
     }
 
     if (isEmpty(dmApproval)) {
-      return taskStates.STARTED
+      return taskState.STARTED
     }
 
-    return taskStates.DONE
+    return taskState.DONE
   }
 }
 
@@ -85,17 +85,17 @@ function getSuitabilityState(licence) {
 
   function getState() {
     if (!unsuitableAnswer) {
-      return taskStates.UNSTARTED
+      return taskState.UNSTARTED
     }
 
     if (unsuitableAnswer === 'No') {
-      return taskStates.DONE
+      return taskState.DONE
     }
 
     if (exceptionalCircumstances) {
-      return taskStates.DONE
+      return taskState.DONE
     }
 
-    return taskStates.STARTED
+    return taskState.STARTED
   }
 }
