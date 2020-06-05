@@ -1,5 +1,5 @@
 const { licenceStages } = require('../services/config/licenceStages')
-const { taskStates } = require('../services/config/taskStates')
+const { taskState, anyStarted } = require('../services/config/taskState')
 
 module.exports = { getStatusLabel }
 
@@ -156,7 +156,7 @@ function roProcessingLabel(licenceStatus) {
   }
 
   if (licenceStatus.decisions.bassReferralNeeded) {
-    if (licenceStatus.tasks.bassAreaCheck === taskStates.UNSTARTED) {
+    if (licenceStatus.tasks.bassAreaCheck === taskState.UNSTARTED) {
       return status.notStarted
     }
 
@@ -197,7 +197,7 @@ function dmProcessingLabel(licenceStatus) {
 
 function caDecisionLabel(licenceStatus) {
   if (licenceStatus.decisions.approved) {
-    if (licenceStatus.tasks.createLicence === taskStates.DONE) {
+    if (licenceStatus.tasks.createLicence === taskState.DONE) {
       return status.licenceCreated
     }
 
@@ -209,7 +209,7 @@ function caDecisionLabel(licenceStatus) {
 
 function decisionLabel(licenceStatus) {
   if (licenceStatus.decisions.approved) {
-    if (licenceStatus.tasks.createLicence === taskStates.DONE) {
+    if (licenceStatus.tasks.createLicence === taskState.DONE) {
       return status.licenceCreated
     }
   }
@@ -235,10 +235,4 @@ function getLabel(labels, licenceStatus) {
   })
 
   return found ? found.label : null
-}
-
-function anyStarted(tasks) {
-  return tasks.some((task) => {
-    return [taskStates.STARTED, taskStates.DONE].includes(task)
-  })
 }

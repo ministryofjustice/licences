@@ -1,4 +1,4 @@
-const { taskStates } = require('../services/config/taskStates')
+const { taskState } = require('../services/config/taskState')
 const { getIn, isEmpty } = require('./functionalHelpers')
 const { isAcceptedAddress } = require('./addressHelpers')
 
@@ -14,30 +14,30 @@ function getCurfewAddressState(licence, optedOut, bassReferralNeeded, curfewAddr
 
   function getAddressState() {
     if (optedOut || bassReferralNeeded) {
-      return taskStates.DONE
+      return taskState.DONE
     }
 
     if (isEmpty(address)) {
-      return taskStates.UNSTARTED
+      return taskState.UNSTARTED
     }
 
     if (curfewAddressRejected) {
-      return taskStates.STARTED
+      return taskState.STARTED
     }
 
     const required = ['cautionedAgainstResident', 'addressLine1', 'addressTown', 'postCode']
 
     if (required.some((field) => !address[field])) {
-      return taskStates.STARTED
+      return taskState.STARTED
     }
 
     const offenderIsMainOccupier = getIn(address, ['occupier', 'isOffender']) === 'Yes'
 
     if (!offenderIsMainOccupier && !address.telephone) {
-      return taskStates.STARTED
+      return taskState.STARTED
     }
 
-    return taskStates.DONE
+    return taskState.DONE
   }
 }
 
@@ -47,7 +47,7 @@ const approvedPremisesAddressState = (licence) => {
     getIn(licence, ['bassReferral', 'approvedPremisesAddress']) ||
     {}
   if (isEmpty(approvedPremisesAddressAnswer)) {
-    return taskStates.UNSTARTED
+    return taskState.UNSTARTED
   }
 
   if (
@@ -55,10 +55,10 @@ const approvedPremisesAddressState = (licence) => {
     approvedPremisesAddressAnswer.addressTown &&
     approvedPremisesAddressAnswer.postCode
   ) {
-    return taskStates.DONE
+    return taskState.DONE
   }
 
-  return taskStates.STARTED
+  return taskState.STARTED
 }
 
 const taskCompletion = (licence) => {
@@ -67,15 +67,15 @@ const taskCompletion = (licence) => {
   const offenderIsOccupier = getIn(curfewAddress, ['occupier', 'isOffender']) === 'Yes'
 
   if (offenderIsOccupier && electricity) {
-    return taskStates.DONE
+    return taskState.DONE
   }
   if (consent && electricity) {
-    return taskStates.DONE
+    return taskState.DONE
   }
   if (consent || electricity) {
-    return taskStates.STARTED
+    return taskState.STARTED
   }
-  return taskStates.UNSTARTED
+  return taskState.UNSTARTED
 }
 
 function getCurfewAddressReviewState(licence) {
@@ -104,7 +104,7 @@ function getCurfewAddressReviewState(licence) {
 
   return {
     approvedPremisesRequired: false,
-    approvedPremisesAddress: taskStates.UNSTARTED,
+    approvedPremisesAddress: taskState.UNSTARTED,
     curfewAddressReview: taskCompletion(licence),
     curfewAddressApproved: isAcceptedAddress(addressReview, addressSuitable, offenderIsOccupier),
     addressReviewFailed: addressReview.consent === 'No' || addressReview.electricity === 'No',
