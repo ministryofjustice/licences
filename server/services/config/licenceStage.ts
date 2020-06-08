@@ -22,3 +22,6 @@ export const transitions = {
   roToCaAddressRejected: licenceStage.ELIGIBILITY,
   roToCaOptedOut: licenceStage.ELIGIBILITY,
 }
+
+export const isPostApproval = (stage: licenceStage): boolean =>
+  ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(stage)

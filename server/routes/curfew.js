@@ -3,6 +3,7 @@ const createStandardRoutes = require('./routeWorkers/standard')
 const { getPathFor } = require('../utils/routes')
 const { getIn, mergeWithRight, isYes } = require('../utils/functionalHelpers')
 const formConfig = require('./config/curfew')
+const { isPostApproval } = require('../services/config/licenceStage')
 
 module.exports = ({ licenceService, nomisPushService }) => (router, audited, { pushToNomis }) => {
   const standard = createStandardRoutes({ formConfig, licenceService, sectionName: 'curfew' })
@@ -104,8 +105,7 @@ module.exports = ({ licenceService, nomisPushService }) => (router, audited, { p
       const { action, bookingId } = req.params
       const { licence } = res.locals
 
-      const modify = ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(licence.stage)
-      const modifyAction = !action && modify ? 'modify' : action
+      const modifyAction = !action && isPostApproval(licence.stage) ? 'modify' : action
 
       standard.formPost(req, res, formName, bookingId, modifyAction)
     }
@@ -121,8 +121,7 @@ module.exports = ({ licenceService, nomisPushService }) => (router, audited, { p
 
       await licenceService.rejectProposedAddress(licence, bookingId, formName)
 
-      const modify = ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(stage)
-      const modifyAction = !action && modify ? 'modify' : action
+      const modifyAction = !action && isPostApproval(stage) ? 'modify' : action
 
       const nextPath = getPathFor({
         data: req.body,
@@ -143,8 +142,7 @@ module.exports = ({ licenceService, nomisPushService }) => (router, audited, { p
 
       await licenceService.reinstateProposedAddress(licence, bookingId)
 
-      const modify = ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(stage)
-      const modifyAction = !action && modify ? 'modify' : action
+      const modifyAction = !action && isPostApproval(stage) ? 'modify' : action
 
       const nextPath = getPathFor({
         data: req.body,

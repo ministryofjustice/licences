@@ -2,6 +2,7 @@ import { getReviewSections } from './viewModels/reviewModels'
 import { asyncMiddleware } from '../utils/middleware'
 import { getIn } from '../utils/functionalHelpers'
 import logger from '../../log'
+import { isPostApproval } from '../services/config/licenceStage'
 
 import { PrisonerService } from '../../types/licences'
 import { LicenceService } from '../services/licenceService'
@@ -42,7 +43,7 @@ export = ({
         const stage = getIn(res.locals.licence, ['stage']) || {}
         const licenceVersion = getIn(res.locals.licence, ['version']) || {}
 
-        const postApproval = ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(stage)
+        const postApproval = isPostApproval(stage)
         const showErrors = shouldValidate(req.user.role, stage, postApproval)
         const errorObject = validate(licenceStatus, showErrors, licence, stage)
 
