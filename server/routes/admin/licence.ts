@@ -2,7 +2,7 @@ import moment from 'moment'
 import setCase from 'case'
 import { unwrapResult, firstItem, sortKeys } from '../../utils/functionalHelpers'
 import transitionsForDestinations from '../../services/notifications/transitionsForDestinations'
-import getLicenceStatus from '../../utils/licenceStatus'
+import getLicenceStatus from '../../services/licence/licenceStatus'
 
 const { asyncMiddleware, authorisationMiddleware } = require('../../utils/middleware')
 

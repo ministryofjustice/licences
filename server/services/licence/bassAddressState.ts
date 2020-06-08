@@ -1,9 +1,9 @@
-const { taskState } = require('../services/config/taskState')
-const { getIn, isEmpty, lastItem } = require('./functionalHelpers')
+import { taskState } from '../config/taskState'
+import { getIn, isEmpty, lastItem } from '../../utils/functionalHelpers'
 
-module.exports = { getBassAreaState, getBassState, getBassRequestState }
+const { UNSTARTED, STARTED, DONE } = taskState
 
-function getBassRequestState(licence) {
+export function getBassRequestState(licence) {
   const bassRequestAnswer = getIn(licence, ['bassReferral', 'bassRequest', 'bassRequested'])
   const addressProposedAnswer = getIn(licence, ['proposedAddress', 'addressProposed', 'decision'])
 
@@ -23,28 +23,28 @@ function getBassRequestState(licence) {
       const bassRequestCounty = getIn(licence, ['bassReferral', 'bassRequest', 'proposedCounty'])
 
       if (bassRequestTown && bassRequestCounty) {
-        return taskState.DONE
+        return DONE
       }
 
       if (bassRequestTown || bassRequestCounty) {
-        return taskState.STARTED
+        return STARTED
       }
 
-      return taskState.UNSTARTED
+      return UNSTARTED
     }
 
-    return bassRequestAnswer ? taskState.DONE : taskState.UNSTARTED
+    return bassRequestAnswer ? DONE : UNSTARTED
   }
 }
 
 function getBassWithdrawalState(licence) {
   const { bassAreaCheck } = getBassAreaState(licence)
-  if (bassAreaCheck === taskState.DONE) {
+  if (bassAreaCheck === DONE) {
     return { bassWithdrawn: false }
   }
 
   const { bassRequest } = getBassRequestState(licence)
-  if (bassRequest === taskState.DONE || bassRequest === taskState.STARTED) {
+  if (bassRequest === DONE || bassRequest === STARTED) {
     return { bassWithdrawn: false }
   }
   const bassRejections = getIn(licence, ['bassRejections'])
@@ -54,13 +54,13 @@ function getBassWithdrawalState(licence) {
   return { bassWithdrawn, bassWithdrawalReason }
 }
 
-function getBassAreaState(licence) {
+export function getBassAreaState(licence) {
   const specificArea = getIn(licence, ['bassReferral', 'bassRequest', 'specificArea'])
 
   if (specificArea === 'No') {
     const seen = getIn(licence, ['bassReferral', 'bassAreaCheck', 'bassAreaCheckSeen'])
     return {
-      bassAreaCheck: seen ? taskState.DONE : taskState.UNSTARTED,
+      bassAreaCheck: seen ? DONE : UNSTARTED,
     }
   }
 
@@ -80,17 +80,17 @@ function getBassAreaState(licence) {
 
 function getBassAreaCheckState(bassAreaSuitableAnswer, bassAreaReason) {
   if (!bassAreaSuitableAnswer) {
-    return taskState.UNSTARTED
+    return UNSTARTED
   }
 
   if (bassAreaSuitableAnswer === 'No' && !bassAreaReason) {
-    return taskState.STARTED
+    return STARTED
   }
 
-  return taskState.DONE
+  return DONE
 }
 
-function getBassState(licence) {
+export function getBassState(licence) {
   const bassAccepted = getIn(licence, ['bassReferral', 'bassOffer', 'bassAccepted'])
   const bassOffer = getBassOfferState(bassAccepted)
   const { bassWithdrawn, bassWithdrawalReason } = getBassWithdrawalState(licence)
@@ -100,22 +100,22 @@ function getBassState(licence) {
 }
 
 function getBassOfferState(bassAccepted) {
-  return !bassAccepted ? taskState.UNSTARTED : taskState.DONE
+  return !bassAccepted ? UNSTARTED : DONE
 }
 
 function getBassAddressState(licence) {
   const bassOffer = getIn(licence, ['bassReferral', 'bassOffer'])
 
   if (!bassOffer) {
-    return taskState.UNSTARTED
+    return UNSTARTED
   }
 
   if (bassOffer.bassAccepted === 'Yes') {
     const required = ['addressTown', 'addressLine1', 'postCode']
     if (required.some((field) => !bassOffer[field])) {
-      return taskState.STARTED
+      return STARTED
     }
   }
 
-  return taskState.DONE
+  return DONE
 }

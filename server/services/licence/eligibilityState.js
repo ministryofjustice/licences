@@ -1,5 +1,5 @@
-const { taskState, getOverallState } = require('../services/config/taskState')
-const { getIn, isEmpty } = require('./functionalHelpers')
+const { taskState, getOverallState } = require('../config/taskState')
+const { getIn, isEmpty } = require('../../utils/functionalHelpers')
 
 module.exports = {
   getEligibilityState,

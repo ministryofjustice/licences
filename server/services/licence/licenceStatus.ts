@@ -1,15 +1,17 @@
-import { taskState, getOverallState } from '../services/config/taskState'
-import { licenceStages } from '../services/config/licenceStages'
-import { getIn, isEmpty, flatten } from './functionalHelpers'
+import { taskState, getOverallState } from '../config/taskState'
+import { licenceStage } from '../config/licenceStage'
+import { isEmpty, flatten } from '../../utils/functionalHelpers'
 
 import { getBassAreaState, getBassRequestState, getBassState } from './bassAddressState'
 import { getCurfewAddressReviewState, getCurfewAddressState } from './curfewAddressState'
 import { getEligibilityState } from './eligibilityState'
+import { LicenceStatus } from './licenceStatusTypes'
 
-export = function getLicenceStatus(licenceRecord) {
+export = function getLicenceStatus(licenceRecord): LicenceStatus {
   if (!licenceRecord || isEmpty(licenceRecord.licence) || !licenceRecord.stage) {
     return {
-      stage: licenceStages.UNSTARTED,
+      stage: licenceStage.UNSTARTED,
+      postApproval: false,
       decisions: {},
       tasks: {
         exclusion: taskState.UNSTARTED,
@@ -34,6 +36,7 @@ export = function getLicenceStatus(licenceRecord) {
         approval: taskState.UNSTARTED,
         createLicence: taskState.UNSTARTED,
         approvedPremisesAddress: taskState.UNSTARTED,
+        victim: taskState.UNSTARTED,
       },
     }
   }
@@ -52,7 +55,7 @@ const getInitialState = (stage, licenceRecord) => {
   const { curfewAddressApproved, addressReviewFailed } = getCurfewAddressReviewState(licence)
   const { addressUnsuitable, riskManagement } = getRiskManagementState(licence)
   const curfewAddressRejected = addressUnsuitable || addressReviewFailed
-  const { optedOut, optOut } = getOptOutState(licence)
+  const { decision: optedOut, task: optOut } = getTaskState(licence.proposedAddress?.optOut?.decision)
   const { bassReferralNeeded, bassAreaSpecified, bassRequest } = getBassRequestState(licence)
   const { bassAreaSuitable, bassAreaNotSuitable } = getBassAreaState(licence)
   const { curfewAddress, offenderIsMainOccupier } = getCurfewAddressState(
@@ -90,14 +93,14 @@ const getInitialState = (stage, licenceRecord) => {
 
 function getRequiredState(stage, licence) {
   const config = {
-    [licenceStages.ELIGIBILITY]: [],
-    [licenceStages.PROCESSING_RO]: [getRoStageState],
-    [licenceStages.PROCESSING_CA]: [getRoStageState, getCaStageState],
-    [licenceStages.APPROVAL]: [getRoStageState, getCaStageState, getApprovalStageState],
-    [licenceStages.DECIDED]: [getRoStageState, getCaStageState, getApprovalStageState],
-    [licenceStages.MODIFIED]: [getRoStageState, getCaStageState, getApprovalStageState],
-    [licenceStages.MODIFIED_APPROVAL]: [getRoStageState, getCaStageState, getApprovalStageState],
-    [licenceStages.VARY]: [getRoStageState, getCaStageState, getApprovalStageState],
+    [licenceStage.ELIGIBILITY]: [],
+    [licenceStage.PROCESSING_RO]: [getRoStageState],
+    [licenceStage.PROCESSING_CA]: [getRoStageState, getCaStageState],
+    [licenceStage.APPROVAL]: [getRoStageState, getCaStageState, getApprovalStageState],
+    [licenceStage.DECIDED]: [getRoStageState, getCaStageState, getApprovalStageState],
+    [licenceStage.MODIFIED]: [getRoStageState, getCaStageState, getApprovalStageState],
+    [licenceStage.MODIFIED_APPROVAL]: [getRoStageState, getCaStageState, getApprovalStageState],
+    [licenceStage.VARY]: [getRoStageState, getCaStageState, getApprovalStageState],
   }
 
   return config[stage].map((getStateMethod) => getStateMethod(licence))
@@ -115,8 +118,8 @@ const combiner = (acc, data) => {
 }
 
 function getApprovalStageState(licence) {
-  const approvalRelease = getIn(licence, ['approval', 'release']) || {}
-  const finalChecksRefusal = getIn(licence, ['finalChecks', 'refusal']) || {}
+  const approvalRelease = licence.approval?.release || {}
+  const finalChecksRefusal = licence.finalChecks?.refusal || {}
 
   const dmRefusalReasonText = extractDmRefusalReasonsText(approvalRelease.reason)
   const caRefusalReasonText = extractCaRefusalReasonText(finalChecksRefusal.reason)
@@ -142,15 +145,12 @@ function getApprovalStageState(licence) {
 }
 
 function getRoStageState(licence) {
-  const { riskManagementNeeded, riskManagement, awaitingRiskInformation, addressUnsuitable } = getRiskManagementState(
-    licence
-  )
-  const { victim, victimLiaisonNeeded } = getVictimLiaisonState(licence)
+  const { riskManagementNeeded, awaitingRiskInformation } = getRiskManagementState(licence)
+  const { decision: victimLiaisonNeeded, task: victim } = getTaskState(licence.victim?.victimLiaison?.decision)
   const {
     approvedPremisesRequired,
     approvedPremisesAddress,
     curfewAddressReview,
-    curfewAddressApproved,
     addressReviewFailed,
     addressWithdrawn,
   } = getCurfewAddressReviewState(licence)
@@ -164,29 +164,23 @@ function getRoStageState(licence) {
     bespokeRejected,
     bespokePending,
   } = getLicenceConditionsState(licence)
-  const { bassAreaCheck, bassAreaSuitable, bassAreaNotSuitable } = getBassAreaState(licence)
+  const { bassAreaCheck } = getBassAreaState(licence)
 
   return {
     decisions: {
       riskManagementNeeded,
       awaitingRiskInformation,
       victimLiaisonNeeded,
-      curfewAddressApproved,
       standardOnly,
       additional,
       bespoke,
       bespokeRejected,
       bespokePending,
-      bassAreaSuitable,
-      bassAreaNotSuitable,
       approvedPremisesRequired,
       addressReviewFailed,
       addressWithdrawn,
-      addressUnsuitable,
-      curfewAddressRejected: addressUnsuitable || addressReviewFailed,
     },
     tasks: {
-      riskManagement,
       victim,
       approvedPremisesAddress,
       curfewAddressReview,
@@ -199,13 +193,17 @@ function getRoStageState(licence) {
 }
 
 function getCaStageState(licence) {
-  const { seriousOffence, seriousOffenceCheck } = getSeriousOffenceCheckState(licence)
-  const { onRemand, onRemandCheck } = getOnRemandCheckState(licence)
-  const { confiscationOrder, confiscationOrderCheck } = getConfiscationOrderState(licence)
+  const { finalChecks } = licence
+
+  const { decision: seriousOffence, task: seriousOffenceCheck } = getTaskState(finalChecks?.seriousOffence?.decision)
+  const { decision: onRemand, task: onRemandCheck } = getTaskState(finalChecks?.onRemand?.decision)
+  const { decision: confiscationOrder, task: confiscationOrderCheck } = getTaskState(
+    finalChecks?.confiscationOrder?.decision
+  )
+
   const { finalChecksPass, finalChecksRefused, postponed } = getFinalChecksState(licence, seriousOffence, onRemand)
-  const finalChecks = getOverallState([seriousOffenceCheck, onRemandCheck, confiscationOrderCheck])
   const { bassAccepted, bassOffer, bassWithdrawn, bassWithdrawalReason } = getBassState(licence)
-  const finalChecksRefusal = getIn(licence, ['finalChecks', 'refusal']) || {}
+  const finalChecksRefusal = finalChecks?.refusal || {}
   const refusalReason = extractCaRefusalReasonText(finalChecksRefusal.reason)
 
   return {
@@ -226,25 +224,17 @@ function getCaStageState(licence) {
       seriousOffenceCheck,
       onRemandCheck,
       confiscationOrderCheck,
-      finalChecks,
+      finalChecks: getOverallState([seriousOffenceCheck, onRemandCheck, confiscationOrderCheck]),
       bassOffer,
     },
   }
 }
 
-function getOptOutState(licence) {
-  const optOutAnswer = getIn(licence, ['proposedAddress', 'optOut', 'decision'])
-
-  return {
-    optedOut: optOutAnswer === 'Yes',
-    optOut: optOutAnswer ? taskState.DONE : taskState.UNSTARTED,
-  }
-}
-
 function getRiskManagementState(licence) {
-  const riskManagementAnswer = getIn(licence, ['risk', 'riskManagement', 'planningActions'])
-  const awaitingInformationAnswer = getIn(licence, ['risk', 'riskManagement', 'awaitingInformation'])
-  const proposedAddressSuitable = getIn(licence, ['risk', 'riskManagement', 'proposedAddressSuitable'])
+  const riskManagement = licence.risk?.riskManagement
+  const riskManagementAnswer = riskManagement?.planningActions
+  const awaitingInformationAnswer = riskManagement?.awaitingInformation
+  const { proposedAddressSuitable } = riskManagement || {}
 
   return {
     riskManagementNeeded: riskManagementAnswer === 'Yes',
@@ -255,7 +245,7 @@ function getRiskManagementState(licence) {
   }
 
   function getState() {
-    if (!getIn(licence, ['risk', 'riskManagement'])) {
+    if (!riskManagement) {
       return taskState.UNSTARTED
     }
 
@@ -264,15 +254,6 @@ function getRiskManagementState(licence) {
     }
 
     return taskState.STARTED
-  }
-}
-
-function getVictimLiaisonState(licence) {
-  const victimLiaisonAnswer = getIn(licence, ['victim', 'victimLiaison', 'decision'])
-
-  return {
-    victimLiaisonNeeded: victimLiaisonAnswer === 'Yes',
-    victim: victimLiaisonAnswer ? taskState.DONE : taskState.UNSTARTED,
   }
 }
 
@@ -298,7 +279,7 @@ function extractCaRefusalReasonText(reason) {
 
 function getCurfewHoursState(licence) {
   return {
-    curfewHours: getIn(licence, ['curfew', 'curfewHours']) ? taskState.DONE : taskState.UNSTARTED,
+    curfewHours: licence.curfew?.curfewHours ? taskState.DONE : taskState.UNSTARTED,
   }
 }
 
@@ -308,7 +289,7 @@ function getReportingInstructionsState(licence) {
   }
 
   function getState() {
-    const reportingInstructions = getIn(licence, ['reporting', 'reportingInstructions'])
+    const reportingInstructions = licence.reporting?.reportingInstructions
 
     if (isEmpty(reportingInstructions)) {
       return taskState.UNSTARTED
@@ -324,7 +305,7 @@ function getReportingInstructionsState(licence) {
       'reportingDate',
       'reportingTime',
     ]
-    if (required.some((field) => isEmpty(getIn(reportingInstructions, [field])))) {
+    if (required.some((field) => isEmpty(reportingInstructions && reportingInstructions[field]))) {
       return taskState.STARTED
     }
 
@@ -333,7 +314,7 @@ function getReportingInstructionsState(licence) {
 }
 
 function getLicenceConditionsState(licence) {
-  if (isEmpty(getIn(licence, ['licenceConditions']))) {
+  if (isEmpty(licence.licenceConditions)) {
     return {
       standardOnly: false,
       additional: 0,
@@ -345,10 +326,10 @@ function getLicenceConditionsState(licence) {
     }
   }
 
-  const standardOnly = getIn(licence, ['licenceConditions', 'standard', 'additionalConditionsRequired']) === 'No'
+  const standardOnly = licence.licenceConditions?.standard?.additionalConditionsRequired === 'No'
 
-  const additionals = getIn(licence, ['licenceConditions', 'additional'])
-  const bespokes = getIn(licence, ['licenceConditions', 'bespoke'])
+  const additionals = licence.licenceConditions?.additional
+  const bespokes = licence.licenceConditions?.bespoke
 
   const additional = additionals ? Object.keys(additionals).length : 0
   const bespoke = bespokes ? bespokes.length : 0
@@ -372,38 +353,16 @@ function getLicenceConditionsState(licence) {
   }
 }
 
-function getSeriousOffenceCheckState(licence) {
-  const seriousOffenceAnswer = getIn(licence, ['finalChecks', 'seriousOffence', 'decision'])
-
-  return {
-    seriousOffence: seriousOffenceAnswer && seriousOffenceAnswer === 'Yes',
-    seriousOffenceCheck: seriousOffenceAnswer ? taskState.DONE : taskState.UNSTARTED,
-  }
-}
-
-function getOnRemandCheckState(licence) {
-  const onRemandAnswer = getIn(licence, ['finalChecks', 'onRemand', 'decision'])
-
-  return {
-    onRemand: onRemandAnswer && onRemandAnswer === 'Yes',
-    onRemandCheck: onRemandAnswer ? taskState.DONE : taskState.UNSTARTED,
-  }
-}
-
-function getConfiscationOrderState(licence) {
-  const confiscationOrderAnswer = getIn(licence, ['finalChecks', 'confiscationOrder', 'decision'])
-
-  return {
-    confiscationOrder: confiscationOrderAnswer && confiscationOrderAnswer === 'Yes',
-    confiscationOrderCheck: confiscationOrderAnswer ? taskState.DONE : taskState.UNSTARTED,
-  }
-}
+const getTaskState = (answer: any) => ({
+  decision: answer === 'Yes',
+  task: answer ? taskState.DONE : taskState.UNSTARTED,
+})
 
 function getFinalChecksState(licence, seriousOffence, onRemand) {
   const finalChecksPass = !(seriousOffence || onRemand)
 
-  const postponed = getIn(licence, ['finalChecks', 'postpone', 'decision']) === 'Yes'
-  const finalChecksRefused = getIn(licence, ['finalChecks', 'refusal', 'decision']) === 'Yes'
+  const postponed = licence.finalChecks?.postpone?.decision === 'Yes'
+  const finalChecksRefused = licence.finalChecks?.refusal?.decision === 'Yes'
 
   return {
     finalChecksPass,
@@ -413,11 +372,11 @@ function getFinalChecksState(licence, seriousOffence, onRemand) {
 }
 
 function isPostDecision(stage) {
-  return ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(stage)
+  return [licenceStage.DECIDED, licenceStage.MODIFIED, licenceStage.MODIFIED_APPROVAL].includes(stage)
 }
 
 function getLicenceCreatedTaskState(licenceRecord) {
-  const approvedVersion = getIn(licenceRecord, ['approved_version'])
+  const approvedVersion = licenceRecord.approved_version
 
-  return approvedVersion && licenceRecord.version === approvedVersion ? 'DONE' : 'UNSTARTED'
+  return approvedVersion && licenceRecord.version === approvedVersion ? taskState.DONE : taskState.UNSTARTED
 }

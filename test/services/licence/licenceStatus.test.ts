@@ -1,5 +1,5 @@
-import getLicenceStatus from '../../server/utils/licenceStatus'
-import { taskState } from '../../server/services/config/taskState'
+import getLicenceStatus from '../../../server/services/licence/licenceStatus'
+import { taskState } from '../../../server/services/config/taskState'
 
 describe('getLicenceStatus', () => {
   describe('overall status', () => {

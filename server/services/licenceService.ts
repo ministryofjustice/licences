@@ -1,6 +1,6 @@
 import moment from 'moment'
 import logger from '../../log'
-import { licenceStages, transitions } from './config/licenceStages'
+import { licenceStage, transitions } from './config/licenceStage'
 import recordList from './utils/recordList'
 import formValidation from './utils/formValidation'
 import { LicenceClient } from '../data/licenceClient'
@@ -86,7 +86,7 @@ export class LicenceService {
 
   createLicence({ bookingId, data = {}, stage = null }: { bookingId: number; data?: Licence; stage?: string }) {
     const varyVersion = stage === 'VARY' ? 1 : 0
-    return this.licenceClient.createLicence(bookingId, data, licenceStages[stage], 1, varyVersion)
+    return this.licenceClient.createLicence(bookingId, data, licenceStage[stage], 1, varyVersion)
   }
 
   async updateLicenceConditions(bookingId, existingLicence, newConditionsObject, postRelease = false) {
@@ -128,7 +128,6 @@ export class LicenceService {
     return this.removeAdditionalCondition(oldConditions, idToRemove)
   }
 
-  // eslint-disable-next-line class-methods-use-this
   private removeAdditionalCondition(oldConditions, idToRemove) {
     const { [idToRemove]: conditionToRemove, ...theRest } = oldConditions.additional
     logger.debug(`Deleted condition: ${conditionToRemove}`)
@@ -136,7 +135,6 @@ export class LicenceService {
     return { ...oldConditions, additional: theRest }
   }
 
-  // eslint-disable-next-line class-methods-use-this
   private removeBespokeCondition(oldConditions, idToRemove) {
     const indexToRemove = idToRemove.substr(idToRemove.indexOf('-') + 1)
 
@@ -167,11 +165,11 @@ export class LicenceService {
     }
 
     if (requiresApproval && (stage === 'DECIDED' || stage === 'MODIFIED')) {
-      return this.licenceClient.updateStage(bookingId, licenceStages.MODIFIED_APPROVAL)
+      return this.licenceClient.updateStage(bookingId, licenceStage.MODIFIED_APPROVAL)
     }
 
     if (stage === 'DECIDED') {
-      return this.licenceClient.updateStage(bookingId, licenceStages.MODIFIED)
+      return this.licenceClient.updateStage(bookingId, licenceStage.MODIFIED)
     }
     return null
   }
@@ -258,7 +256,6 @@ export class LicenceService {
     }
   }
 
-  // eslint-disable-next-line class-methods-use-this
   private getCombinedDate(dateConfig, userInput) {
     const { day, month, year } = dateConfig.splitDate
 
@@ -267,7 +264,6 @@ export class LicenceService {
     return `${userInput[day]}/${userInput[month]}/${userInput[year]}`
   }
 
-  // eslint-disable-next-line class-methods-use-this
   addSplitDateFields(rawData, formFieldsConfig) {
     return formFieldsConfig.reduce((data, field) => {
       const fieldKey = firstKey(field)
@@ -292,7 +288,6 @@ export class LicenceService {
     }, rawData)
   }
 
-  // eslint-disable-next-line class-methods-use-this
   private getFieldInfo(field, userInput) {
     const fieldName = Object.keys(field)[0]
     const fieldConfig = field[fieldName]
@@ -418,7 +413,6 @@ export class LicenceService {
     return updatedLicence
   }
 
-  // eslint-disable-next-line class-methods-use-this
   validateFormGroup({
     licence,
     stage,
@@ -499,7 +493,6 @@ export class LicenceService {
     return newLicence
   }
 
-  // eslint-disable-next-line class-methods-use-this
   addCurfewHoursInput(input) {
     if (input.daySpecificInputs === 'Yes') {
       return input
@@ -518,7 +511,6 @@ export class LicenceService {
     }, input)
   }
 
-  // eslint-disable-next-line class-methods-use-this
   validateForm(params) {
     return formValidation.validate(params)
   }

@@ -1,4 +1,4 @@
-import { licenceStages } from '../services/config/licenceStages'
+import { licenceStage } from '../services/config/licenceStage'
 import * as db from './dataAccess/db'
 import { ApprovedLicenceVersion, CaseWithApprovedVersion, CaseWithVaryVersion } from './licenceClientTypes'
 import { Licence } from './licenceTypes'
@@ -84,7 +84,7 @@ export class LicenceClient {
   createLicence(
     bookingId: number,
     licence: Licence = {},
-    stage: string = licenceStages.DEFAULT,
+    stage: string = licenceStage.DEFAULT,
     version: number = 1,
     varyVersion: number = 0
   ): Promise<number> {

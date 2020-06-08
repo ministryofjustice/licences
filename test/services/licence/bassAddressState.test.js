@@ -1,5 +1,9 @@
-const { getBassState, getBassAreaState, getBassRequestState } = require('../../server/utils/bassAddressState')
-const { taskState } = require('../../server/services/config/taskState')
+const {
+  getBassState,
+  getBassAreaState,
+  getBassRequestState,
+} = require('../../../server/services/licence/bassAddressState')
+const { taskState } = require('../../../server/services/config/taskState')
 
 describe('bass', () => {
   test('should show bassWithdrawn when current request empty and last request withdrawn', () => {
