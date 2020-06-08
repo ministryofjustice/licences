@@ -1,5 +1,5 @@
-const { getStatusLabel } = require('../../server/utils/licenceStatusLabels')
-const { licenceStages } = require('../../server/services/config/licenceStages')
+const { getStatusLabel } = require('../../../server/services/licence/licenceStatusLabels')
+const { licenceStage } = require('../../../server/services/config/licenceStage')
 
 describe('getStatusLabel', () => {
   describe('default label for unstarted licences', () => {
@@ -8,8 +8,8 @@ describe('getStatusLabel', () => {
     const examples = [
       { status: undefined, reason: 'missing' },
       { status: {}, reason: 'empty' },
-      { status: { stage: licenceStages.ELIGIBILITY, tasks: {} }, reason: 'missing decisions' },
-      { status: { stage: licenceStages.ELIGIBILITY, decisions: {} }, reason: 'missing tasks' },
+      { status: { stage: licenceStage.ELIGIBILITY, tasks: {} }, reason: 'missing decisions' },
+      { status: { stage: licenceStage.ELIGIBILITY, decisions: {} }, reason: 'missing tasks' },
     ]
 
     examples.forEach((example) => {
@@ -23,40 +23,40 @@ describe('getStatusLabel', () => {
     describe('ELIGIBILITY stage', () => {
       const examples = [
         {
-          status: { stage: licenceStages.ELIGIBILITY, decisions: {}, tasks: {} },
+          status: { stage: licenceStage.ELIGIBILITY, decisions: {}, tasks: {} },
           label: 'Not started',
         },
         {
-          status: { stage: licenceStages.ELIGIBILITY, decisions: { excluded: true }, tasks: {} },
+          status: { stage: licenceStage.ELIGIBILITY, decisions: { excluded: true }, tasks: {} },
           label: 'Not eligible',
         },
         {
-          status: { stage: licenceStages.ELIGIBILITY, decisions: { insufficientTime: true }, tasks: {} },
+          status: { stage: licenceStage.ELIGIBILITY, decisions: { insufficientTime: true }, tasks: {} },
           label: 'Not enough time',
         },
         {
           status: {
-            stage: licenceStages.ELIGIBILITY,
+            stage: licenceStage.ELIGIBILITY,
             decisions: { insufficientTimeContinue: true },
             tasks: {},
           },
           label: 'Not enough time',
         },
         {
-          status: { stage: licenceStages.ELIGIBILITY, decisions: { unsuitableResult: true }, tasks: {} },
+          status: { stage: licenceStage.ELIGIBILITY, decisions: { unsuitableResult: true }, tasks: {} },
           label: 'Presumed unsuitable',
         },
         {
-          status: { stage: licenceStages.ELIGIBILITY, decisions: { optedOut: true }, tasks: {} },
+          status: { stage: licenceStage.ELIGIBILITY, decisions: { optedOut: true }, tasks: {} },
           label: 'Opted out',
         },
         {
-          status: { stage: licenceStages.ELIGIBILITY, decisions: { bassReferralNeeded: true }, tasks: {} },
+          status: { stage: licenceStage.ELIGIBILITY, decisions: { bassReferralNeeded: true }, tasks: {} },
           label: 'Eligible',
         },
         {
           status: {
-            stage: licenceStages.ELIGIBILITY,
+            stage: licenceStage.ELIGIBILITY,
             decisions: { curfewAddressRejected: true },
             tasks: {},
           },
@@ -64,7 +64,7 @@ describe('getStatusLabel', () => {
         },
         {
           status: {
-            stage: licenceStages.ELIGIBILITY,
+            stage: licenceStage.ELIGIBILITY,
             decisions: { curfewAddressRejected: true, unsuitableResult: false },
             tasks: {},
           },
@@ -72,7 +72,7 @@ describe('getStatusLabel', () => {
         },
         {
           status: {
-            stage: licenceStages.ELIGIBILITY,
+            stage: licenceStage.ELIGIBILITY,
             decisions: { curfewAddressRejected: true, unsuitableResult: true },
             tasks: {},
           },
@@ -87,7 +87,7 @@ describe('getStatusLabel', () => {
       const examples = [
         {
           status: {
-            stage: licenceStages.ELIGIBILITY,
+            stage: licenceStage.ELIGIBILITY,
             decisions: { excluded: true, insufficientTime: true, unsuitableResult: true },
             tasks: {},
           },
@@ -95,7 +95,7 @@ describe('getStatusLabel', () => {
         },
         {
           status: {
-            stage: licenceStages.ELIGIBILITY,
+            stage: licenceStage.ELIGIBILITY,
             decisions: { insufficientTime: true, unsuitableResult: true },
             tasks: {},
           },
@@ -109,32 +109,32 @@ describe('getStatusLabel', () => {
     describe('PROCESSING_CA stage', () => {
       const examples = [
         {
-          status: { stage: licenceStages.PROCESSING_CA, decisions: {}, tasks: {} },
+          status: { stage: licenceStage.PROCESSING_CA, decisions: {}, tasks: {} },
           label: 'Address suitable',
         },
         {
-          status: { stage: licenceStages.PROCESSING_CA, decisions: { excluded: true }, tasks: {} },
+          status: { stage: licenceStage.PROCESSING_CA, decisions: { excluded: true }, tasks: {} },
           label: 'Not eligible',
         },
         {
           status: {
-            stage: licenceStages.PROCESSING_CA,
+            stage: licenceStage.PROCESSING_CA,
             decisions: { curfewAddressRejected: true },
             tasks: {},
           },
           label: 'Address not suitable',
         },
         {
-          status: { stage: licenceStages.PROCESSING_CA, decisions: { postponed: true }, tasks: {} },
+          status: { stage: licenceStage.PROCESSING_CA, decisions: { postponed: true }, tasks: {} },
           label: 'Postponed',
         },
         {
-          status: { stage: licenceStages.PROCESSING_CA, decisions: { finalChecksRefused: true }, tasks: {} },
+          status: { stage: licenceStage.PROCESSING_CA, decisions: { finalChecksRefused: true }, tasks: {} },
           label: 'Refused',
         },
         {
           status: {
-            stage: licenceStages.PROCESSING_CA,
+            stage: licenceStage.PROCESSING_CA,
             decisions: { bassReferralNeeded: true, bassWithdrawalReason: 'offer' },
             tasks: {},
           },
@@ -142,7 +142,7 @@ describe('getStatusLabel', () => {
         },
         {
           status: {
-            stage: licenceStages.PROCESSING_CA,
+            stage: licenceStage.PROCESSING_CA,
             decisions: { bassReferralNeeded: true, bassWithdrawalReason: 'request' },
             tasks: {},
           },
@@ -150,7 +150,7 @@ describe('getStatusLabel', () => {
         },
         {
           status: {
-            stage: licenceStages.PROCESSING_CA,
+            stage: licenceStage.PROCESSING_CA,
             decisions: { approvedPremisesRequired: true },
             tasks: {},
           },
@@ -165,7 +165,7 @@ describe('getStatusLabel', () => {
       const examples = [
         {
           status: {
-            stage: licenceStages.PROCESSING_CA,
+            stage: licenceStage.PROCESSING_CA,
             decisions: { excluded: true, curfewAddressApproved: 'approved', postponed: true },
             tasks: {},
           },
@@ -173,7 +173,7 @@ describe('getStatusLabel', () => {
         },
         {
           status: {
-            stage: licenceStages.PROCESSING_CA,
+            stage: licenceStage.PROCESSING_CA,
             decisions: { excluded: true, curfewAddressApproved: 'rejected' },
             tasks: {},
           },
@@ -181,7 +181,7 @@ describe('getStatusLabel', () => {
         },
         {
           status: {
-            stage: licenceStages.PROCESSING_CA,
+            stage: licenceStage.PROCESSING_CA,
             decisions: { excluded: true, curfewAddressApproved: 'rejected', finalChecksRefused: true },
             tasks: {},
           },
@@ -195,19 +195,19 @@ describe('getStatusLabel', () => {
     describe('Other stages', () => {
       const examples = [
         {
-          status: { stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: {} },
+          status: { stage: licenceStage.PROCESSING_RO, decisions: {}, tasks: {} },
           label: 'With responsible officer',
         },
         {
-          status: { stage: licenceStages.APPROVAL, decisions: {}, tasks: {} },
+          status: { stage: licenceStage.APPROVAL, decisions: {}, tasks: {} },
           label: 'With decision maker',
         },
         {
-          status: { stage: licenceStages.DECIDED, decisions: { approved: true }, tasks: {} },
+          status: { stage: licenceStage.DECIDED, decisions: { approved: true }, tasks: {} },
           label: 'Approved',
         },
         {
-          status: { stage: licenceStages.DECIDED, decisions: { refused: true }, tasks: {} },
+          status: { stage: licenceStage.DECIDED, decisions: { refused: true }, tasks: {} },
           label: 'Refused',
         },
       ]
@@ -220,12 +220,12 @@ describe('getStatusLabel', () => {
     describe('PROCESSING_RO stage', () => {
       const examples = [
         {
-          status: { stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: {} },
+          status: { stage: licenceStage.PROCESSING_RO, decisions: {}, tasks: {} },
           label: 'Not started',
         },
         {
           status: {
-            stage: licenceStages.PROCESSING_RO,
+            stage: licenceStage.PROCESSING_RO,
             decisions: {},
             tasks: { curfewAddressReview: 'UNSTARTED', reportingInstructions: 'DONE' },
           },
@@ -233,27 +233,27 @@ describe('getStatusLabel', () => {
         },
         {
           status: {
-            stage: licenceStages.PROCESSING_RO,
+            stage: licenceStage.PROCESSING_RO,
             decisions: {},
             tasks: { curfewAddressReview: 'DONE' },
           },
           label: 'In progress',
         },
         {
-          status: { stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: { curfewHours: 'STARTED' } },
+          status: { stage: licenceStage.PROCESSING_RO, decisions: {}, tasks: { curfewHours: 'STARTED' } },
           label: 'In progress',
         },
         {
-          status: { stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: { licenceConditions: 'DONE' } },
+          status: { stage: licenceStage.PROCESSING_RO, decisions: {}, tasks: { licenceConditions: 'DONE' } },
           label: 'In progress',
         },
         {
-          status: { stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: { riskManagement: 'STARTED' } },
+          status: { stage: licenceStage.PROCESSING_RO, decisions: {}, tasks: { riskManagement: 'STARTED' } },
           label: 'In progress',
         },
         {
           status: {
-            stage: licenceStages.PROCESSING_RO,
+            stage: licenceStage.PROCESSING_RO,
             decisions: {},
             tasks: { reportingInstructions: 'DONE' },
           },
@@ -261,7 +261,7 @@ describe('getStatusLabel', () => {
         },
         {
           status: {
-            stage: licenceStages.PROCESSING_RO,
+            stage: licenceStage.PROCESSING_RO,
             decisions: { bassReferralNeeded: true },
             tasks: { bassAreaCheck: 'UNSTARTED' },
           },
@@ -269,7 +269,7 @@ describe('getStatusLabel', () => {
         },
         {
           status: {
-            stage: licenceStages.PROCESSING_RO,
+            stage: licenceStage.PROCESSING_RO,
             decisions: { bassReferralNeeded: true },
             tasks: { bassAreaCheck: 'DONE' },
           },
@@ -277,7 +277,7 @@ describe('getStatusLabel', () => {
         },
         {
           status: {
-            stage: licenceStages.PROCESSING_RO,
+            stage: licenceStage.PROCESSING_RO,
             decisions: { bassReferralNeeded: true },
             tasks: { bassAreaCheck: 'STARTED' },
           },
@@ -285,7 +285,7 @@ describe('getStatusLabel', () => {
         },
         {
           status: {
-            stage: licenceStages.PROCESSING_RO,
+            stage: licenceStage.PROCESSING_RO,
             decisions: { bassReferralNeeded: true, bassAreaNotSuitable: true },
             tasks: {},
           },
@@ -293,7 +293,7 @@ describe('getStatusLabel', () => {
         },
         {
           status: {
-            stage: licenceStages.PROCESSING_RO,
+            stage: licenceStage.PROCESSING_RO,
             decisions: { approvedPremisesRequired: true },
             tasks: { approvedPremisesAddress: 'STARTED' },
           },
@@ -307,27 +307,27 @@ describe('getStatusLabel', () => {
     describe('PROCESSING_CA stage', () => {
       const examples = [
         {
-          status: { stage: licenceStages.PROCESSING_CA, decisions: { eligible: true }, tasks: {} },
+          status: { stage: licenceStage.PROCESSING_CA, decisions: { eligible: true }, tasks: {} },
           label: 'With prison',
         },
         {
-          status: { stage: licenceStages.PROCESSING_CA, decisions: { eligible: true, excluded: true }, tasks: {} },
+          status: { stage: licenceStage.PROCESSING_CA, decisions: { eligible: true, excluded: true }, tasks: {} },
           label: 'With prison',
         },
         {
           status: {
-            stage: licenceStages.PROCESSING_CA,
+            stage: licenceStage.PROCESSING_CA,
             decisions: { curfewAddressApproved: 'rejected', eligible: true },
             tasks: {},
           },
           label: 'With prison',
         },
         {
-          status: { stage: licenceStages.PROCESSING_CA, decisions: { postponed: true, eligible: true }, tasks: {} },
+          status: { stage: licenceStage.PROCESSING_CA, decisions: { postponed: true, eligible: true }, tasks: {} },
           label: 'Postponed',
         },
         {
-          status: { stage: licenceStages.PROCESSING_CA, decisions: { eligible: false }, tasks: {} },
+          status: { stage: licenceStage.PROCESSING_CA, decisions: { eligible: false }, tasks: {} },
           label: 'Not eligible',
         },
       ]
@@ -338,19 +338,19 @@ describe('getStatusLabel', () => {
     describe('Other stages', () => {
       const examples = [
         {
-          status: { stage: licenceStages.ELIGIBILITY, decisions: {}, tasks: {} },
+          status: { stage: licenceStage.ELIGIBILITY, decisions: {}, tasks: {} },
           label: 'With prison',
         },
         {
-          status: { stage: licenceStages.APPROVAL, decisions: { approved: true }, tasks: {} },
+          status: { stage: licenceStage.APPROVAL, decisions: { approved: true }, tasks: {} },
           label: 'With decision maker',
         },
         {
-          status: { stage: licenceStages.DECIDED, decisions: { approved: true }, tasks: {} },
+          status: { stage: licenceStage.DECIDED, decisions: { approved: true }, tasks: {} },
           label: 'Approved',
         },
         {
-          status: { stage: licenceStages.DECIDED, decisions: { refused: true }, tasks: {} },
+          status: { stage: licenceStage.DECIDED, decisions: { refused: true }, tasks: {} },
           label: 'Refused',
         },
       ]
@@ -363,11 +363,11 @@ describe('getStatusLabel', () => {
     describe('Approval stage', () => {
       const examples = [
         {
-          status: { stage: licenceStages.APPROVAL, decisions: {}, tasks: {} },
+          status: { stage: licenceStage.APPROVAL, decisions: {}, tasks: {} },
           label: 'Not started',
         },
         {
-          status: { stage: licenceStages.APPROVAL, decisions: { insufficientTimeStop: true }, tasks: {} },
+          status: { stage: licenceStage.APPROVAL, decisions: { insufficientTimeStop: true }, tasks: {} },
           label: 'Awaiting refusal',
         },
       ]
@@ -378,23 +378,23 @@ describe('getStatusLabel', () => {
     describe('Other stages', () => {
       const examples = [
         {
-          status: { stage: licenceStages.ELIGIBILITY, decisions: {}, tasks: {} },
+          status: { stage: licenceStage.ELIGIBILITY, decisions: {}, tasks: {} },
           label: 'With prison',
         },
         {
-          status: { stage: licenceStages.PROCESSING_RO, decisions: {}, tasks: {} },
+          status: { stage: licenceStage.PROCESSING_RO, decisions: {}, tasks: {} },
           label: 'With responsible officer',
         },
         {
-          status: { stage: licenceStages.PROCESSING_CA, decisions: {}, tasks: {} },
+          status: { stage: licenceStage.PROCESSING_CA, decisions: {}, tasks: {} },
           label: 'With prison',
         },
         {
-          status: { stage: licenceStages.DECIDED, decisions: { approved: true }, tasks: {} },
+          status: { stage: licenceStage.DECIDED, decisions: { approved: true }, tasks: {} },
           label: 'Approved',
         },
         {
-          status: { stage: licenceStages.DECIDED, decisions: { refused: true }, tasks: {} },
+          status: { stage: licenceStage.DECIDED, decisions: { refused: true }, tasks: {} },
           label: 'Refused',
         },
       ]

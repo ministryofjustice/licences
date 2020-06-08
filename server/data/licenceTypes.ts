@@ -32,7 +32,7 @@ export interface BassReferral {
     addressTown?: string
     postCode?: string
     telephone?: string
-    bassAccepted?: 'Yes' | 'Unavailable'
+    bassAccepted?: 'Yes' | 'Unavailable' | 'Unsuitable'
     bassArea?: string
     bassOfferDetails?: string
   }

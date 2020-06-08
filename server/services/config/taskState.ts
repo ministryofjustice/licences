@@ -17,3 +17,5 @@ export function getOverallState(tasks) {
 }
 
 export const anyStarted = (tasks) => tasks.some((task) => [taskState.STARTED, taskState.DONE].includes(task))
+
+export const allComplete = (required) => required.every((it) => it === taskState.DONE)

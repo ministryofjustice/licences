@@ -1,17 +1,17 @@
 import path from 'path'
 import { PrisonerService, CaService } from '../../types/licences'
 import { asyncMiddleware } from '../utils/middleware'
-import getLicenceStatus from '../utils/licenceStatus'
-import { getStatusLabel } from '../utils/licenceStatusLabels'
+import getLicenceStatus from '../services/licence/licenceStatus'
+import { getStatusLabel } from '../services/licence/licenceStatusLabels'
 
 import { isEmpty } from '../utils/functionalHelpers'
 import getTaskListModel from './viewModels/taskListModels'
 import logger from '../../log'
 import { getTasksForBlocked } from './viewModels/taskLists/caTasks'
 
-import { licenceStages } from '../services/config/licenceStages'
+import { licenceStage } from '../services/config/licenceStage'
 
-const { APPROVAL, DECIDED, ELIGIBILITY, MODIFIED, MODIFIED_APPROVAL, PROCESSING_CA, PROCESSING_RO } = licenceStages
+const { APPROVAL, DECIDED, ELIGIBILITY, MODIFIED, MODIFIED_APPROVAL, PROCESSING_CA, PROCESSING_RO } = licenceStage
 
 const READ_WRITE = 'RW'
 const READ_ONLY = 'R'

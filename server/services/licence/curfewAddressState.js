@@ -1,6 +1,6 @@
-const { taskState } = require('../services/config/taskState')
-const { getIn, isEmpty } = require('./functionalHelpers')
-const { isAcceptedAddress } = require('./addressHelpers')
+const { taskState } = require('../config/taskState')
+const { getIn, isEmpty } = require('../../utils/functionalHelpers')
+const { isAcceptedAddress } = require('../../utils/addressHelpers')
 
 module.exports = { getCurfewAddressReviewState, getCurfewAddressState }
 

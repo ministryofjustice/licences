@@ -1,5 +1,5 @@
-const { licenceStages } = require('../services/config/licenceStages')
-const { taskState, anyStarted } = require('../services/config/taskState')
+const { licenceStage } = require('../config/licenceStage')
+const { taskState, anyStarted } = require('../config/taskState')
 
 module.exports = { getStatusLabel }
 
@@ -38,7 +38,7 @@ function getStatusLabel(licenceStatus, role) {
   if (
     !licenceStatus ||
     !licenceStatus.stage ||
-    licenceStatus.stage === licenceStages.UNSTARTED ||
+    licenceStatus.stage === licenceStage.UNSTARTED ||
     !licenceStatus.decisions ||
     !licenceStatus.tasks
   ) {
@@ -50,42 +50,42 @@ function getStatusLabel(licenceStatus, role) {
 
 function statusLabels(licenceStatus, role) {
   const labels = {
-    [licenceStages.ELIGIBILITY]: {
+    [licenceStage.ELIGIBILITY]: {
       CA: caEligibilityLabel,
       RO: () => status.withPrison,
       DM: () => status.withPrison,
     },
-    [licenceStages.PROCESSING_RO]: {
+    [licenceStage.PROCESSING_RO]: {
       CA: roProcessingCaLabel,
       RO: roProcessingLabel,
       DM: () => status.withResponsibleOfficer,
     },
-    [licenceStages.PROCESSING_CA]: {
+    [licenceStage.PROCESSING_CA]: {
       CA: caProcessingLabel,
       RO: caProcessingRoLabel,
       DM: caProcessingDmLabel,
     },
-    [licenceStages.APPROVAL]: {
+    [licenceStage.APPROVAL]: {
       CA: () => status.withDecisionMaker,
       RO: () => status.withDecisionMaker,
       DM: dmProcessingLabel,
     },
-    [licenceStages.DECIDED]: {
+    [licenceStage.DECIDED]: {
       CA: caDecisionLabel,
       RO: decisionLabel,
       DM: decisionLabel,
     },
-    [licenceStages.MODIFIED]: {
+    [licenceStage.MODIFIED]: {
       CA: postApprovalLabel,
       RO: postApprovalLabel,
       DM: postApprovalLabel,
     },
-    [licenceStages.MODIFIED_APPROVAL]: {
+    [licenceStage.MODIFIED_APPROVAL]: {
       CA: postApprovalLabel,
       RO: postApprovalLabel,
       DM: postApprovalLabel,
     },
-    [licenceStages.VARY]: {
+    [licenceStage.VARY]: {
       CA: () => status.varyingLicence,
       RO: () => status.varyingLicence,
       DM: () => status.varyingLicence,

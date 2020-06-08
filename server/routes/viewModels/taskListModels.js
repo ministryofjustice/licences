@@ -1,6 +1,7 @@
 const getDmTasks = require('./taskLists/dmTasks')
 const { getRoTasksPostApproval, getRoTasks } = require('./taskLists/roTasks')
-const { getAllowedTransition } = require('../../utils/licenceStatusTransitions')
+const roTransitions = require('../../services/licence/roTransitions')
+const caTransitions = require('../../services/licence/caTransitions')
 const { getCaTasksEligibility, getCaTasksFinalChecks, getCaTasksPostApproval } = require('./taskLists/caTasks')
 const getVaryTasks = require('./taskLists/varyTasks')
 
@@ -11,7 +12,6 @@ module.exports = (
   { version = null, versionDetails = null, approvedVersion = {}, approvedVersionDetails = {}, licence = {} } = {}
 ) => {
   const { decisions, tasks, stage } = licenceStatus
-  const allowedTransition = getAllowedTransition(licenceStatus, role)
 
   if (postRelease) {
     return getVaryTasks({ version, versionDetails, approvedVersion, approvedVersionDetails, licence })({ stage })
@@ -22,6 +22,8 @@ module.exports = (
   }
 
   if (role === 'CA') {
+    const allowedTransition = caTransitions(licenceStatus)
+
     switch (stage) {
       case 'UNSTARTED':
       case 'ELIGIBILITY':
@@ -42,6 +44,8 @@ module.exports = (
   }
 
   if (role === 'RO') {
+    const allowedTransition = roTransitions(licenceStatus)
+
     switch (stage) {
       case 'ELIGIBILITY':
       case 'PROCESSING_RO':
