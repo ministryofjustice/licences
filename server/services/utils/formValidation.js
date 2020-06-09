@@ -88,20 +88,6 @@ const fieldOptions = {
       then: joi.date().format('HH:mm').required(),
       otherwise: joi.any().optional(),
     }),
-
-  // requiredReasonIf: (requiredItem = 'decision', requiredAnswer = 'Yes') =>
-  //   joi.when(requiredItem, {
-  //     is: requiredAnswer,
-  //     then: joi.valid(['addressUnsuitable', 'insufficientTime']).required(),
-  //     otherwise: joi.any().optional(),
-  //   }),
-
-  // requiredSelectionIfOutOfTime: (requiredItem = 'reason', requiredAnswer = 'insufficientTime') =>
-  //   joi.when(requiredItem, {
-  //     is: requiredAnswer,
-  //     then: joi.alternatives().try(joi.string(), joi.array().min(1)).required(),
-  //     otherwise: joi.any().optional(),
-  //   }),
 }
 
 const defaultErrorMessages = {
