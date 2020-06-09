@@ -20,7 +20,8 @@ block content
 
     div#decisionForm(class=errorObject.decision ? 'form-group-error': 'smallPaddingTop form-group')
       if errorObject.decision 
-        p#decision-error(class="error tinyPaddingBottom") Select Yes or No
+        p#decision-error(class="error tinyPaddingBottom") 
+          | #{errorObject.decision}
 
       div.multiple-choice(data-target="reasonForm")
         input#decision(type="radio" checked=decisionValue === 'Yes' name="decision" value="Yes")
@@ -30,8 +31,8 @@ block content
         div.form-group
           p Select a reason why you are refusing HDC for this offender
           if errorObject.reason 
-            p#outOfTimeReasons-error(class="error tinyPaddingBottom") Select a reason for refusing HDC
-
+            p#outOfTimeReasons-error(class="error tinyPaddingBottom")
+              | #{errorObject.reason}
           div.multiple-choice
             input#reason(type="radio" checked=reasonValue === 'addressUnsuitable' name="reason" value="addressUnsuitable")
             label(for="reason") No available address
@@ -43,8 +44,8 @@ block content
         div#outOfTimeForm(class=errorObject.outOfTimeReasons ? 'form-group-error panel': 'js-hidden panel')
           div.pure-u-1
             if errorObject.outOfTimeReasons 
-              p#outOfTimeReasons-error(class="error tinyPaddingBottom") Select reason(s) for Out of time
-
+              p#outOfTimeReasons-error(class="error tinyPaddingBottom") 
+                | #{errorObject.outOfTimeReasons}
             div.multiple-choice
               input(type='checkbox' name='outOfTimeReasons[]' id='outOfTimeReasons' value='underInvestigation' checked=outOfTimeReasonsValue.indexOf('underInvestigation') !== -1)
               label(for='outOfTimeReasons') The offender is currently under investigation for an offence committed during the current sentence and has been referred to the police/Independent Adjudicator
