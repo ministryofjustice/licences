@@ -45,46 +45,32 @@ describe('/hdc/finalChecks', () => {
     const routes = [
       {
         url: '/hdc/finalChecks/seriousOffence/1',
-        body: { bookingId: 1 },
+        body: {},
         formName: 'seriousOffence',
         nextPath: '/hdc/finalChecks/onRemand/1',
       },
       {
         url: '/hdc/finalChecks/onRemand/1',
-        body: { bookingId: 1 },
+        body: {},
         formName: 'onRemand',
         nextPath: '/hdc/finalChecks/confiscationOrder/1',
       },
       {
         url: '/hdc/finalChecks/confiscationOrder/1',
-        body: { bookingId: 1 },
+        body: {},
         formName: 'confiscationOrder',
         nextPath: '/hdc/taskList/1',
       },
       {
         url: '/hdc/finalChecks/refuse/1',
-        body: { bookingId: 1, decision: 'Yes' },
+        body: { decision: 'No' },
         fieldMap: formConfig.refuse,
-        formName: 'refusal',
-        nextPath: '/hdc/finalChecks/refusal/1',
-      },
-      {
-        url: '/hdc/finalChecks/refuse/1',
-        body: { bookingId: 1, decision: 'No' },
-        fieldMap: formConfig.refuse,
-        formName: 'refusal',
-        nextPath: '/hdc/taskList/1',
-      },
-      {
-        url: '/hdc/finalChecks/refusal/1',
-        body: { bookingId: 1, reason: 'something', outOfTimeReasons: [] },
-        fieldMap: formConfig.refusal,
         formName: 'refusal',
         nextPath: '/hdc/taskList/1',
       },
       {
         url: '/hdc/finalChecks/postpone/1',
-        body: { bookingId: 1, decision: 'Yes', postponeReason: 'something' },
+        body: { decision: 'Yes', postponeReason: 'something' },
         fieldMap: formConfig.postpone,
         formName: 'postpone',
         nextPath: '/hdc/taskList/1',
@@ -164,24 +150,37 @@ describe('/hdc/finalChecks', () => {
           .expect(302)
           .expect('Location', '/hdc/finalChecks/confiscationOrder/1')
       })
+
+      test('should redirect back to refuse page if nothing is selected and error flashed', () => {
+        const licenceService = createLicenceServiceStub()
+        licenceService.update.mockResolvedValue({ finalChecks: {} })
+        licenceService.validateForm = jest.fn().mockReturnValue({ reason: 'error' })
+        const app = createApp({ licenceServiceStub: licenceService })
+
+        return request(app)
+          .post('/hdc/finalChecks/refuse/1')
+          .send({})
+          .expect(302)
+          .expect('Location', '/hdc/finalChecks/refuse/1')
+      })
     })
 
     describe('push to nomis', () => {
       const specs = [
         {
-          type: 'postpone',
           path: '/hdc/finalChecks/postpone/1',
-          data: { finalChecks: { postpone: { decision: 'ABC', postponeReason: 'XYZ' } } },
+          data: { finalChecks: { postpone: { decision: 'Yes', postponeReason: 'XYZ' } } },
+          pushStatus: { type: 'postpone', status: 'Yes', reason: 'XYZ' },
         },
         {
-          type: 'refusal',
-          path: '/hdc/finalChecks/refusal/1',
-          data: { finalChecks: { refusal: { decision: 'ABC', reason: 'XYZ' } } },
+          path: '/hdc/finalChecks/refuse/1',
+          data: { finalChecks: { refusal: { decision: 'Yes', reason: 'addressUnsuitable' } } },
+          pushStatus: { type: 'refusal', status: 'Yes', reason: 'addressUnsuitable' },
         },
       ]
 
       specs.forEach((spec) => {
-        test(`should push ${spec.type} status to nomis`, () => {
+        test(`should push ${spec.pushStatus.type} status to nomis`, () => {
           const licenceService = createLicenceServiceStub()
           licenceService.update.mockResolvedValue(spec.data)
           const nomisPushService = createNomisPushServiceStub()
@@ -196,13 +195,13 @@ describe('/hdc/finalChecks', () => {
 
           return request(app)
             .post(spec.path)
-            .send({ decision: 'Yes' })
+            .send({ decision: 'Yes', reason: 'addressUnsuitable' })
             .expect(302)
             .expect(() => {
               expect(nomisPushService.pushStatus).toHaveBeenCalled()
               expect(nomisPushService.pushStatus).toHaveBeenCalledWith({
                 bookingId: '1',
-                data: { type: spec.type, status: 'ABC', reason: 'XYZ' },
+                data: spec.pushStatus,
                 username: 'CA_USER_TEST',
               })
             })

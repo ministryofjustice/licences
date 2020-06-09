@@ -92,22 +92,6 @@ module.exports = {
     saveSection: ['finalChecks', 'refusal'],
     fields: [{ decision: {} }, { reason: {} }, { outOfTimeReasons: {} }],
     nextPath: {
-      decisions: {
-        discriminator: 'decision',
-        Yes: '/hdc/finalChecks/refusal/',
-      },
-      path: '/hdc/taskList/',
-    },
-  },
-  refusal: {
-    pageDataMap: ['licence', 'finalChecks', 'refusal'],
-    saveSection: ['finalChecks', 'refusal'],
-    fields: [{ decision: {} }, { reason: {} }, { outOfTimeReasons: {} }],
-    nomisPush: {
-      status: ['finalChecks', 'refusal', 'decision'],
-      reason: ['finalChecks', 'refusal', 'reason'],
-    },
-    nextPath: {
       path: '/hdc/taskList/',
     },
   },
