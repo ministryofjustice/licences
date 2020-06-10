@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const fs = require('fs').promises
 const { Client } = require('pg')
-const config = require('./server/config')
+const config = require('./config')
 
 const fname = process.argv[2]
 
@@ -33,6 +33,13 @@ const writeToFile = async (json) => {
   await fh.write(json)
   return fh.close()
 }
+
+/*
+const writeToStdOut = async (json) => {
+  process.stdout.write(json)
+  process.stdout.end()
+}
+*/
 
 const doDump = async () => {
   const json = await readTable()

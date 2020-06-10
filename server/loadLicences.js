@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const fs = require('fs').promises
 const { Client } = require('pg')
-const config = require('./server/config')
+const config = require('./config')
 
 const fname = process.argv[2]
 
