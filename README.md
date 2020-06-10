@@ -129,21 +129,19 @@ npx snyk ignore --id='npm:jquery:1.12.4' --expiry='2020-04-01' --reason='Require
 And then commit generated file.
 
 # Save and restore the licences table
-There are two scripts in this directory that take and restore snapshots of the licences table.
-The scripts are called `saveLicences` and `loadLicences`.  Both scripts take database connection details from `server/config.js`
+There are two scripts in the server directory that take and restore snapshots of the licences table.
+The scripts are called `saveLicences.js` and `loadLicences.js`.  Both scripts take database connection details from `server/config.js`
 and hence from values in your `.env` file.
 
 `saveLicences` takes one argument that should be a file path (without a .json suffix). It
 reads the contents of the licences table and writes those values, as an array of JSON objects, to the named file.
 
-For example, running `./saveLicences dumps/curfewAddress` will create a `dumps/curfewAddress.json' file.
-
 `loadLicences` takes one argument that should be a path to a JSON file previously created by `saveLicences`. The path
 should include the `.json` suffix (This helps with command completion). It truncates the licences table,
 then writes every row in the JSON file into the table.
 
-For example, running `./loadLicences dumps/curfewAddress.json` will restore the licences table to the
-state stored in the json file created by the saveLicences example (if you ran that first).
+Running the command `npm link` will add these scripts to your PATH as `saveLicences` and `loadLicences`
+You can then run either of these scripts from any location that has a suitably configured `.env` file.
 
 
 
