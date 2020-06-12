@@ -24,13 +24,18 @@ const {
   getFieldName,
 } = require('../utils/functionalHelpers')
 
+interface ApprovedVersionDetails {
+  version?: number
+  vary_version?: number
+}
+
 export interface LicenceRecord {
   licence: Licence
   stage: string
   version: string
   versionDetails: { version: number; vary_version: number }
   approvedVersion: string
-  approvedVersionDetails: { version: number; vary_version: number }
+  approvedVersionDetails: ApprovedVersionDetails
 }
 
 export class LicenceService {
@@ -65,10 +70,12 @@ export class LicenceService {
         return null
       }
 
-      const approvedVersionDetails = rawVersionDetails || { version: undefined, vary_version: undefined }
+      const approvedVersionDetails: ApprovedVersionDetails = rawVersionDetails || {}
       const version = `${rawLicence.version}.${rawLicence.vary_version}`
       const versionDetails = { version: rawLicence.version, vary_version: rawLicence.vary_version }
-      const approvedVersion = `${approvedVersionDetails.version}.${approvedVersionDetails.vary_version}`
+      const approvedVersion = isEmpty(approvedVersionDetails)
+        ? ''
+        : `${approvedVersionDetails.version}.${approvedVersionDetails.vary_version}`
 
       return {
         licence,
