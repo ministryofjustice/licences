@@ -63,6 +63,22 @@ describe('licenceService', () => {
       })
     })
 
+    test('should return licence when no approved licence version', () => {
+      ;(licenceClient.getApprovedLicenceVersion as jest.Mock<Promise<any>>).mockReturnValue(undefined)
+
+      return expect(service.getLicence(123)).resolves.toEqual({
+        licence: LICENCE_SAMPLE,
+        stage: undefined,
+        version: '2.5',
+        approvedVersion: '',
+        approvedVersionDetails: {},
+        versionDetails: {
+          vary_version: 5,
+          version: 2,
+        },
+      })
+    })
+
     test('should throw if error getting licence', () => {
       ;(licenceClient.getLicence as jest.Mock<Promise<CaseWithVaryVersion>>)
         .mockReset()
