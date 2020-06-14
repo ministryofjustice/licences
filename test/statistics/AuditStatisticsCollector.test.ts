@@ -1,9 +1,12 @@
 import { AuditStatisticsCollector, Node } from '../../server/statistics/AuditStatisticsCollector'
 import { AuditRow } from '../../server/statistics/types'
+import { Path } from './Booking.test'
 
 const START = 'LICENCE_RECORD_STARTED'
 const VARY = 'VARY_NOMIS_LICENCE_CREATED'
 const PDF = 'CREATE_PDF'
+const UPDATE = 'UPDATE_SECTION'
+const SEND = 'SEND'
 
 const row = (action: string, bookingId: number, path?: string): AuditRow =>
   path ? { action, details: { bookingId, path } } : { action, details: { bookingId } }
@@ -135,6 +138,53 @@ describe('AuditStatisticsCollector', () => {
               Vary: countNode(1),
             },
           },
+        },
+      })
+    })
+  })
+
+  describe('Address choice, then send to RO', () => {
+    const CA_TO_RO = { action: SEND, details: { bookingId: 1, transitionType: 'caToRo' } }
+    const ADDRESS_CHOICE = {
+      action: UPDATE,
+      details: { bookingId: 1, path: Path.enterCurfewAddress },
+    }
+
+    const BASS_CHOICE = {
+      action: UPDATE,
+      details: { bookingId: 1, path: Path.enterBassAddress },
+    }
+
+    it('Recognises SEND, caToRo', () => {
+      collector.consumeRow(CA_TO_RO)
+      expect(collector.tree).toEqual({
+        count: 0,
+        children: {
+          'CA -> RO ()': countNode(1),
+        },
+      })
+    })
+
+    it('Includes address choice', () => {
+      collector.consumeRow(ADDRESS_CHOICE)
+      collector.consumeRow(CA_TO_RO)
+
+      expect(collector.tree).toEqual({
+        count: 0,
+        children: {
+          'CA -> RO (Address)': countNode(1),
+        },
+      })
+    })
+
+    it('Includes BASS choice', () => {
+      collector.consumeRow(BASS_CHOICE)
+      collector.consumeRow(CA_TO_RO)
+
+      expect(collector.tree).toEqual({
+        count: 0,
+        children: {
+          'CA -> RO (Bass)': countNode(1),
         },
       })
     })

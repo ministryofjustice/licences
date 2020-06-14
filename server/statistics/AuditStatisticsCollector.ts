@@ -19,10 +19,10 @@ interface BookingState {
 }
 
 enum SendEvents {
-  caToRo = 'Send CA -> RO',
-  caToDm = 'Send CA -> DM',
-  dmToCa = 'Send DM -> CA',
-  roToCa = 'Send RO -> CA',
+  caToRo = 'CA -> RO',
+  caToDm = 'CA -> DM',
+  dmToCa = 'DM -> CA',
+  roToCa = 'RO -> CA',
 }
 
 enum Actions {
@@ -46,8 +46,11 @@ export class AuditStatisticsCollector implements RowConsumer<AuditRow> {
 
   findSendEvent(details) {
     const transitionType = details?.transitionType
+    if (!transitionType) return undefined
     if (transitionType.startsWith('caToDm')) return SendEvents.caToDm
-    if (transitionType.startsWith('caToRo')) return SendEvents.caToRo
+    if (transitionType.startsWith('caToRo')) {
+      return `${SendEvents.caToRo} (${this.getBookingState(details.bookingId).booking.getAddressChoice() || ''})`
+    }
     if (transitionType.startsWith('dmToCa')) return SendEvents.dmToCa
     if (transitionType.startsWith('roToCa')) return SendEvents.roToCa
     return undefined
@@ -108,7 +111,7 @@ export class AuditStatisticsCollector implements RowConsumer<AuditRow> {
   }
 
   consumeRows(rows: Array<AuditRow>): void {
-    console.log(`Consuming ${rows.length} rows. Starts so far: ${this.tree?.children?.['Start']?.count}`)
+    console.log(`Consuming ${rows.length} rows. Starts so far: ${this.tree?.children?.['Start']?.count || 0}`)
     rows.forEach(this.consumeRow, this)
   }
 }
