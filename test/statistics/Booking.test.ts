@@ -53,4 +53,16 @@ describe('Booking', () => {
     booking.update(UPDATE_ACTION, CRD_TIME_YES)
     expect(booking.getEvent()).toEqual('Ineligible')
   })
+
+  it('ignores Ineligible events when ineligible', () => {
+    booking.update(UPDATE_ACTION, EXCLUDED_YES)
+    expect(booking.getEvent()).toEqual('Ineligible')
+
+    booking.update(UPDATE_ACTION, SUITABILITY_YES)
+    expect(booking.getEvent()).toBeUndefined()
+
+    booking.update(UPDATE_ACTION, CRD_TIME_YES)
+    expect(booking.getEvent()).toBeUndefined()
+  })
+
 })

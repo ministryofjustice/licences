@@ -6,7 +6,11 @@ export interface RowConsumer<R> {
 
 export interface AuditRow {
   action?: string
-  details?: any
+  details?: {
+    bookingId?: number
+    path?: string
+    [key: string]: any
+  }
 }
 
 export interface LicenceRow {

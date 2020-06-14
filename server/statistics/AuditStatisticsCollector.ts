@@ -18,11 +18,18 @@ interface BookingState {
   booking: Booking
 }
 
-const sendEvents = {
-  caToRo: 'Send CA -> RO',
-  caToDm: 'Send CA -> DM',
-  dmToCa: 'Send DM -> CA',
-  roToCa: 'Send RO -> CA',
+enum SendEvents {
+  caToRo = 'Send CA -> RO',
+  caToDm = 'Send CA -> DM',
+  dmToCa = 'Send DM -> CA',
+  roToCa = 'Send RO -> CA',
+}
+
+enum Actions {
+  SEND = 'SEND',
+  START = 'LICENCE_RECORD_STARTED',
+  PDF = 'CREATE_PDF',
+  VARY = 'VARY_NOMIS_LICENCE_CREATED',
 }
 
 const emptyNode = () => ({ count: 0, children: {} })
@@ -39,20 +46,22 @@ export class AuditStatisticsCollector implements RowConsumer<AuditRow> {
 
   findSendEvent(details) {
     const transitionType = details?.transitionType
-    if (transitionType.startsWith('caToDm')) return sendEvents.caToDm
-    if (transitionType.startsWith('caToRo')) return sendEvents.caToRo
-    if (transitionType.startsWith('dmToCa')) return sendEvents.dmToCa
-    if (transitionType.startsWith('roToCa')) return sendEvents.roToCa
+    if (transitionType.startsWith('caToDm')) return SendEvents.caToDm
+    if (transitionType.startsWith('caToRo')) return SendEvents.caToRo
+    if (transitionType.startsWith('dmToCa')) return SendEvents.dmToCa
+    if (transitionType.startsWith('roToCa')) return SendEvents.roToCa
     return undefined
   }
 
   findEventName(action, details): string {
     switch (action) {
-      case 'LICENCE_RECORD_STARTED':
+      case Actions.START:
         return 'Start'
-      case 'SEND':
+      case Actions.SEND:
         return this.findSendEvent(details)
-      case 'VARY_NOMIS_LICENCE_CREATE':
+      case Actions.PDF:
+        return 'PDF Licence'
+      case Actions.VARY:
         return 'Vary'
       default:
         return undefined
@@ -99,6 +108,7 @@ export class AuditStatisticsCollector implements RowConsumer<AuditRow> {
   }
 
   consumeRows(rows: Array<AuditRow>): void {
+    console.log(`Consuming ${rows.length} rows. Starts so far: ${this.tree?.children?.['Start']?.count}`)
     rows.forEach(this.consumeRow, this)
   }
 }

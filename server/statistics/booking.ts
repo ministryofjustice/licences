@@ -1,5 +1,3 @@
-import R from 'ramda'
-
 const YES = 'Yes'
 
 const INELIGIBLE = 'Ineligible'
@@ -15,16 +13,14 @@ export default class Booking {
 
   private event: string
 
+  private isIneligible(eligibility) {
+    return eligibility?.excluded === YES || eligibility?.suitability === YES || eligibility?.crdTime === YES
+  }
+
   /**
    * Only care about a booking being made ineligible. The opposite transition
    * enables other events like sending from CA to RO.
    */
-  private isIneligible() {
-    return (
-      this.eligibility?.excluded === YES || this.eligibility?.suitability === YES || this.eligibility?.crdTime === YES
-    )
-  }
-
   private updateEligibilityState(details) {
     const path = details?.path
     const decision = details?.userInput?.decision
@@ -41,13 +37,9 @@ export default class Booking {
       [formName]: decision,
     }
 
-    if (R.equals(this.eligibility, newEligibility)) return
+    if (!this.isIneligible(this.eligibility) && this.isIneligible(newEligibility)) this.event = INELIGIBLE
 
     this.eligibility = newEligibility
-
-    if (this.isIneligible()) {
-      this.event = INELIGIBLE
-    }
   }
 
   /**
@@ -57,8 +49,8 @@ export default class Booking {
    * @param details
    */
   update(action: string, details: any) {
-    if (action !== 'UPDATE_SECTION') return
     this.event = undefined
+    if (action !== 'UPDATE_SECTION') return
 
     this.updateEligibilityState(details)
   }
