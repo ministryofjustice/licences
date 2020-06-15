@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-const fs = require('fs').promises
+const fs = require('fs')
+const fsp = require('fs').promises
 const { Client } = require('pg')
 const config = require('./config')
 
@@ -16,7 +17,13 @@ const client = new Client({
   database: config.db.database,
   port: config.db.port,
   host: config.db.server,
-  ssl: config.db.sslEnabled === 'true',
+  ssl:
+    config.db.sslEnabled === 'true'
+      ? {
+          ca: fs.readFileSync('root.cert'),
+          rejectUnauthorized: false,
+        }
+      : false,
 })
 
 const readTable = async () => {
@@ -29,17 +36,10 @@ const readTable = async () => {
 }
 
 const writeToFile = async (json) => {
-  const fh = await fs.open(`${fname}.json`, 'w')
+  const fh = await fsp.open(`${fname}.json`, 'w')
   await fh.write(json)
   return fh.close()
 }
-
-/*
-const writeToStdOut = async (json) => {
-  process.stdout.write(json)
-  process.stdout.end()
-}
-*/
 
 const doDump = async () => {
   const json = await readTable()

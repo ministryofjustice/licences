@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-const fs = require('fs').promises
+const fs = require('fs')
+const fsp = require('fs').promises
 const { Client } = require('pg')
 const config = require('./config')
 
@@ -16,11 +17,17 @@ const client = new Client({
   database: config.db.database,
   port: config.db.port,
   host: config.db.server,
-  ssl: config.db.sslEnabled === 'true',
+  ssl:
+    config.db.sslEnabled === 'true'
+      ? {
+          ca: fs.readFileSync('root.cert'),
+          rejectUnauthorized: false,
+        }
+      : false,
 })
 
 const readJson = async () => {
-  const fh = await fs.open(`${fname}`, 'r')
+  const fh = await fsp.open(`${fname}`, 'r')
   const json = await fh.readFile({ encoding: 'utf-8' })
   await fh.close()
   return JSON.parse(json)
