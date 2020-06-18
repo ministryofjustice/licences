@@ -3,11 +3,13 @@
 ARG BUILD_NUMBER
 ARG GIT_REF
 
-FROM node:10-buster-slim as base
+FROM node:12-buster-slim as base
 
 LABEL maintainer="HMPPS Digital Studio <info@digital.justice.gov.uk>"
 
-ENV TZ=Europe/London
+ENV TZ=Europe/London \
+    PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+
 RUN ln -snf "/usr/share/zoneinfo/$TZ" /etc/localtime && echo "$TZ" > /etc/timezone
 
 RUN addgroup --gid 2000 --system appgroup && \
@@ -70,7 +72,10 @@ COPY --from=build --chown=appuser:appgroup \
 RUN npm ci --only=production
 
 EXPOSE 3000
-ENV NODE_ENV='production'
+
+ENV NODE_ENV='production' \
+    CHROME_EXECUTABLE='/usr/bin/google-chrome'
+
 USER 2000
 
 CMD [ "node", "server.js" ]

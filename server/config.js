@@ -170,6 +170,8 @@ module.exports = {
     overlapTimeout: get('SCHEDULED_JOBS_OVERLAP', 5000),
   },
 
+  chromeExecutable: get('CHROME_EXECUTABLE', null, { requireInProduction: true }),
+
   links: {
     exitUrl: get('EXIT_LOCATION_URL', '/', { requireInProduction: true }),
     globalSearchUrl: get('GLOBAL_SEARCH_URL', 'http://localhost:3002/global-search'),

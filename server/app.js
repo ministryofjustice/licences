@@ -103,7 +103,9 @@ module.exports = function createApp({
   // View Engine Configuration
   app.set('views', path.join(__dirname, './views'))
   app.set('view engine', 'pug')
-  app.use(pdfRenderer())
+
+  const { chromeExecutable: executablePath } = config
+  app.use(pdfRenderer({ executablePath, args: ['--no-sandbox', '--disable-setuid-sandbox'] }))
 
   // Server Configuration
   app.set('port', config.port)
