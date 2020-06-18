@@ -1,5 +1,5 @@
 import { taskState, getOverallState } from '../config/taskState'
-import { licenceStage } from '../config/licenceStage'
+import { licenceStage, isPostApproval } from '../config/licenceStage'
 import { isEmpty, flatten } from '../../utils/functionalHelpers'
 
 import { getBassAreaState, getBassRequestState, getBassState } from './bassAddressState'
@@ -50,7 +50,7 @@ const getInitialState = (stage, licenceRecord) => {
   const { licence } = licenceRecord
   const eligibilityState = getEligibilityState(licence)
 
-  const postApproval = isPostDecision(stage)
+  const postApproval = isPostApproval(stage)
 
   const { curfewAddressApproved, addressReviewFailed } = getCurfewAddressReviewState(licence)
   const { addressUnsuitable, riskManagement } = getRiskManagementState(licence)
@@ -369,10 +369,6 @@ function getFinalChecksState(licence, seriousOffence, onRemand) {
     finalChecksRefused,
     postponed,
   }
-}
-
-function isPostDecision(stage) {
-  return [licenceStage.DECIDED, licenceStage.MODIFIED, licenceStage.MODIFIED_APPROVAL].includes(stage)
 }
 
 function getLicenceCreatedTaskState(licenceRecord) {

@@ -9,7 +9,7 @@ import getTaskListModel from './viewModels/taskListModels'
 import logger from '../../log'
 import { getTasksForBlocked } from './viewModels/taskLists/caTasks'
 
-import { licenceStage } from '../services/config/licenceStage'
+import { licenceStage, isPostApproval } from '../services/config/licenceStage'
 
 const { APPROVAL, DECIDED, ELIGIBILITY, MODIFIED, MODIFIED_APPROVAL, PROCESSING_CA, PROCESSING_RO } = licenceStage
 
@@ -112,7 +112,7 @@ export = (prisonerService: PrisonerService, licenceService, audit, caService: Ca
         statusLabel,
         prisonerInfo,
         bookingId,
-        postApproval: ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(licenceStatus.stage),
+        postApproval: licenceStatus.postApproval,
       }
 
       if (
