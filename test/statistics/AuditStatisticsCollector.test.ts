@@ -160,7 +160,7 @@ describe('AuditStatisticsCollector', () => {
       expect(collector.tree).toEqual({
         count: 0,
         children: {
-          'CA -> RO ()': countNode(1),
+          'CA -> RO': countNode(1),
         },
       })
     })
