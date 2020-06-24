@@ -51,41 +51,49 @@ function getStatusLabel(licenceStatus, role) {
 function statusLabels(licenceStatus, role) {
   const labels = {
     [licenceStage.ELIGIBILITY]: {
+      PRISON: caEligibilityLabel,
       CA: caEligibilityLabel,
       RO: () => status.withPrison,
       DM: () => status.withPrison,
     },
     [licenceStage.PROCESSING_RO]: {
+      PRISON: roProcessingCaLabel,
       CA: roProcessingCaLabel,
       RO: roProcessingLabel,
       DM: () => status.withResponsibleOfficer,
     },
     [licenceStage.PROCESSING_CA]: {
+      PRISON: caProcessingLabel,
       CA: caProcessingLabel,
       RO: caProcessingRoLabel,
       DM: caProcessingDmLabel,
     },
     [licenceStage.APPROVAL]: {
+      PRISON: () => status.withDecisionMaker,
       CA: () => status.withDecisionMaker,
       RO: () => status.withDecisionMaker,
       DM: dmProcessingLabel,
     },
     [licenceStage.DECIDED]: {
+      PRISON: caDecisionLabel,
       CA: caDecisionLabel,
       RO: decisionLabel,
       DM: decisionLabel,
     },
     [licenceStage.MODIFIED]: {
+      PRISON: postApprovalLabel,
       CA: postApprovalLabel,
       RO: postApprovalLabel,
       DM: postApprovalLabel,
     },
     [licenceStage.MODIFIED_APPROVAL]: {
+      PRISON: postApprovalLabel,
       CA: postApprovalLabel,
       RO: postApprovalLabel,
       DM: postApprovalLabel,
     },
     [licenceStage.VARY]: {
+      PRISON: () => status.varyingLicence,
       CA: () => status.varyingLicence,
       RO: () => status.varyingLicence,
       DM: () => status.varyingLicence,

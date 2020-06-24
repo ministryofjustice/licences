@@ -25,22 +25,21 @@ module.exports = (nomisClientBuilder) => {
   }
 
   /**
-   * Fetch the user's roles from somewhere else, where the user is identified by a JWT token.
-   * (Why fetch the roles? Aren't they already present in 'token'? Perhaps this app doesn't bother to validate the token
-   * and so the token can't be trusted... )
-   * Extract the role codes, extract the suffix from the code (the part after the last '_' character)
-   * then remove any values that aren't in 'allowedRoles'.
-   *
-   * @param token A JWT token that we are pretending doesn't already contain the roles we're about to fetch.
    * @returns {Promise<string[]>} A sub-set of allowedRoles that have been granted to the holder of the supplied token.
    */
   async function getAllRoles(token) {
     const nomisClient = nomisClientBuilder(token)
     const allRoles = await nomisClient.getUserRoles()
 
-    return allRoles
+    const roles = allRoles
       .map((role) => role.roleCode.substring(role.roleCode.lastIndexOf('_') + 1))
       .filter((roleCode) => allowedRoles.includes(roleCode))
+
+    // CA and DM roles subsume PRISON role
+    if (roles.includes('CA') || roles.includes('DM')) {
+      return roles.filter((role) => role !== 'PRISON')
+    }
+    return roles
   }
 
   async function setRole(newRole, user) {

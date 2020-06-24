@@ -3,7 +3,7 @@ module.exports = {
     authorised: [{ role: 'BATCHLOAD' }],
   },
   '/caseList/': {
-    authorised: [{ role: 'CA' }, { role: 'RO' }, { role: 'DM' }],
+    authorised: [{ role: 'PRISON' }, { role: 'CA' }, { role: 'RO' }, { role: 'DM' }],
   },
   '/hdc/eligibility/': {
     authorised: [{ role: 'CA' }],

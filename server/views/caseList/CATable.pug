@@ -42,7 +42,12 @@ table#hdcEligiblePrisoners.caSortcolumns.largeMarginBottom
           td
             -var label = labels.ca[prisoner.status] || 'View'
 
-            if ['UNSTARTED', 'ELIGIBILITY', 'PROCESSING_CA', 'DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(prisoner.stage)
+            if (user.role === 'PRISON')
+              if (label !== 'Start now')
+                -var path = "/hdc/review/licence/" + prisoner.bookingId
+                a.button.button-secondary.fullWidth.center(href=path role="button") 'View'
+
+            else if ['UNSTARTED', 'ELIGIBILITY', 'PROCESSING_CA', 'DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(prisoner.stage)
               -var path = "/hdc/taskList/" + prisoner.bookingId
               if (['Start now', 'Continue'].includes(label))
                 a.button.button-primary.fullWidth.center(href=path role="button") #{label}

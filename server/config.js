@@ -141,7 +141,7 @@ module.exports = {
 
   roles: {
     admin: ['BATCHLOAD'],
-    user: ['CA', 'RO', 'DM'],
+    user: ['PRISON', 'CA', 'RO', 'DM'],
   },
 
   domain: get('DOMAIN', 'http://localhost:3000'),

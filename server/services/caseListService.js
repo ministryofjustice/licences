@@ -22,27 +22,30 @@ const { isEmpty } = require('../utils/functionalHelpers')
  */
 module.exports = function createCaseListService(nomisClientBuilder, roService, licenceClient, caseListFormatter) {
   async function getCaseList(username, role, token) {
-    const asyncCaseRetrievalMethod = {
-      CA: getCaDmCaseLists(token),
-      RO: getROCaseList(username, token),
-      DM: getCaDmCaseLists(token),
-    }
+    switch (role) {
+      case 'PRISON':
+      case 'CA':
+      case 'DM':
+        return getPrisonCaseList(token)
 
-    return asyncCaseRetrievalMethod[role]()
+      case 'RO':
+        return getROCaseList(username, token)
+
+      default:
+        throw Error(`Illegal state: unrecognised role ${role}`)
+    }
   }
 
-  function getCaDmCaseLists(token) {
-    return async () => {
-      const hdcEligible = await nomisClientBuilder(token).getHdcEligiblePrisoners()
-      return { hdcEligible }
-    }
+  const getPrisonCaseList = async (token) => {
+    const hdcEligible = await nomisClientBuilder(token).getHdcEligiblePrisoners()
+    return { hdcEligible }
   }
 
   /**
    * Assume username is assigned to an RO.  Look up this user in the local db (staff_ids table) and take the staff code.
    * Alternatively if a unique staff code cannot be found in this db, ask Delius for a staff code.
    */
-  const getROCaseList = (username, token) => async () => {
+  const getROCaseList = async (username, token) => {
     const staffCodeFromDb = await getStaffCodeFromDb(username)
     const staffCode = await staffCodeFromDb.orRecoverAsync(() => getStaffCodeFromDelius(username))
     const offendersForStaffCode = await staffCode.mapAsync(getOffendersForStaffCode(token))
