@@ -22,3 +22,7 @@ export interface ApprovedLicenceVersion {
   template: string
   timestamp: Date
 }
+
+export interface DeliusId {
+  staff_id: string
+}
