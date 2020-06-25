@@ -36,7 +36,7 @@ module.exports = (nomisClientBuilder) => {
       .filter((roleCode) => allowedRoles.includes(roleCode))
 
     // CA and DM roles subsume PRISON role
-    if (roles.includes('CA') || roles.includes('DM')) {
+    if (roles.includes('CA') || roles.includes('DM') || roles.includes('RO')) {
       return roles.filter((role) => role !== 'PRISON')
     }
     return roles
