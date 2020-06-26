@@ -1,5 +1,5 @@
-import Booking from './booking'
-import { AuditRow, RowConsumer } from './types'
+import Booking, { AddressChoice } from './booking'
+import { AuditRow, Event, RowConsumer } from './types'
 
 export interface Node {
   count: number
@@ -16,13 +16,6 @@ export interface Node {
 interface BookingState {
   currentNode: Node
   booking: Booking
-}
-
-enum SendEvents {
-  caToRo = 'CA -> RO',
-  caToDm = 'CA -> DM',
-  dmToCa = 'DM -> CA',
-  roToCa = 'RO -> CA',
 }
 
 enum Actions {
@@ -44,28 +37,61 @@ export class AuditStatisticsCollector implements RowConsumer<AuditRow> {
     this.tree = emptyNode()
   }
 
-  findSendEvent(details) {
+  findSendEvent(details): Event {
     const transitionType = details?.transitionType
+
     if (!transitionType) return undefined
-    if (transitionType.startsWith('caToDm')) return SendEvents.caToDm
-    if (transitionType.startsWith('caToRo')) {
-      return `${SendEvents.caToRo} (${this.getBookingState(details.bookingId).booking.getAddressChoice() || ''})`
+
+    switch (transitionType) {
+      case 'caToDm':
+        return Event.caToDm
+
+      case 'caToDmRefusal':
+        return Event.caToDmRefusal
+
+      case 'caToDmResubmit':
+        return Event.caToDmResubmit
+
+      case 'caToRo':
+        switch (this.getBookingState(details.bookingId).booking.getAddressChoice()) {
+          case AddressChoice.Address:
+            return Event.caToRoAddress
+          case AddressChoice.Bass:
+            return Event.caToRoBass
+          default:
+            return Event.caToRo
+        }
+
+      case 'dmToCa':
+        return Event.dmToCa
+
+      case 'dmToCaReturn':
+        return Event.dmToCaReturn
+
+      case 'roToCa':
+        return Event.roToCa
+
+      case 'roToCaAddressRejected':
+        return Event.roToCaAddressRejected
+      default:
+        return undefined
     }
-    if (transitionType.startsWith('dmToCa')) return SendEvents.dmToCa
-    if (transitionType.startsWith('roToCa')) return SendEvents.roToCa
-    return undefined
   }
 
-  findEventName(action, details): string {
+  findEventName(action, details): Event {
     switch (action) {
       case Actions.START:
-        return 'Start'
+        return Event.start
+
       case Actions.SEND:
         return this.findSendEvent(details)
+
       case Actions.PDF:
-        return 'PDF Licence'
+        return Event.pdfLicence
+
       case Actions.VARY:
-        return 'Vary'
+        return Event.vary
+
       default:
         return undefined
     }
@@ -89,7 +115,7 @@ export class AuditStatisticsCollector implements RowConsumer<AuditRow> {
     return node.children[eventName]
   }
 
-  addEvent(eventName, bookingId) {
+  addEvent(eventName: Event, bookingId) {
     if (!eventName) return
     const nextNode = this.childNode(this.getBookingState(bookingId).currentNode, eventName)
     nextNode.count += 1

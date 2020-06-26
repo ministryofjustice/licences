@@ -1,6 +1,6 @@
 const { asyncMiddleware } = require('../utils/middleware')
 const { getIn } = require('../utils/functionalHelpers')
-const { roles } = require('../config')
+const { isAdminRole } = require('../authentication/roles')
 
 module.exports = ({ userService }) => (router) => {
   router.get(
@@ -11,8 +11,7 @@ module.exports = ({ userService }) => (router) => {
         userService.getAllCaseLoads(req.user, res.locals.token),
       ])
 
-      const isAdmin = roles.admin.includes(req.user.role)
-      res.render(`user/admin`, { allRoles, allCaseLoads, user: req.user, isAdmin })
+      res.render(`user/admin`, { allRoles, allCaseLoads, user: req.user, isAdmin: isAdminRole(req.user.role) })
     })
   )
 

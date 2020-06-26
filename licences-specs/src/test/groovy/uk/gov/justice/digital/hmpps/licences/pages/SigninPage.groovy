@@ -7,14 +7,12 @@ class SigninPage extends Page {
 
   static url = '/login'
 
-  static password = System.getenv('USER_PASS') ?: 'licences123456'
-
   static at = {
     browser.currentUrl.contains(url)
   }
 
   static content = {
-    signInAs { user ->
+    signInAs { user, password ->
       $('form').username = user
       $('form').password = password
 

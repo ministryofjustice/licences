@@ -1,6 +1,6 @@
-const YES = 'Yes'
+import { Event } from './types'
 
-const INELIGIBLE = 'Ineligible'
+const YES = 'Yes'
 
 const ELIGIBILITY_PATTERN = '/hdc/eligibility/([a-zA-Z]+)/'
 
@@ -33,7 +33,7 @@ export default class Booking {
 
   private addressChoice?: AddressChoice
 
-  private event: string
+  private event: Event
 
   /**
    * Only care about a booking being made ineligible. The opposite transition
@@ -52,7 +52,7 @@ export default class Booking {
       [formName]: getDecision(details),
     }
 
-    if (!isIneligible(this.eligibility) && isIneligible(newEligibility)) this.event = INELIGIBLE
+    if (!isIneligible(this.eligibility) && isIneligible(newEligibility)) this.event = Event.ineligible
 
     this.eligibility = newEligibility
   }
@@ -61,7 +61,7 @@ export default class Booking {
     if (hasPathAndDecision(details, '/hdc/proposedAddress/curfewAddressChoice/')) {
       const decision = getDecision(details)
       if (this.addressChoice !== AddressChoice.OptOut && decision === AddressChoice.OptOut) {
-        this.event = AddressChoice.OptOut
+        this.event = Event.optOut
         this.addressChoice = AddressChoice.OptOut
       }
     } else if (hasPath(details, '/hdc/proposedAddress/curfewAddress/')) {
@@ -85,7 +85,7 @@ export default class Booking {
     this.updateAddressChoice(details)
   }
 
-  getEvent(): string {
+  getEvent(): Event {
     return this.event
   }
 

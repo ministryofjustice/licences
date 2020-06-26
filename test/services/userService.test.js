@@ -12,7 +12,7 @@ describe('userServiceTest', () => {
     nomisClient = {
       getUserRoles: jest.fn().mockReturnValue([
         {
-          roleCode: 'LEI_LICENCE_CA',
+          roleCode: 'LICENCE_CA',
         },
       ]),
       getUserCaseLoads: jest.fn().mockReturnValue(activeCaseLoads),
@@ -45,13 +45,13 @@ describe('userServiceTest', () => {
     test('should allow multiple roles', () => {
       nomisClient.getUserRoles.mockResolvedValue([
         {
-          roleCode: 'LEI_LICENCE_CA',
+          roleCode: 'LICENCE_CA',
         },
         {
-          roleCode: 'LEI_LICENCE_RO',
+          roleCode: 'LICENCE_RO',
         },
         {
-          roleCode: 'LEI_LICENCE_DM',
+          roleCode: 'LICENCE_DM',
         },
       ])
 
@@ -61,16 +61,16 @@ describe('userServiceTest', () => {
     test('should filter invalid roles', () => {
       nomisClient.getUserRoles.mockResolvedValue([
         {
-          roleCode: 'LEI_LICENCE_CA',
+          roleCode: 'LICENCE_CA',
         },
         {
-          roleCode: 'LEI_LICENCE_NO',
+          roleCode: 'LICENCE_NO',
         },
         {
-          roleCode: 'LEI_LICENCE_RO',
+          roleCode: 'LICENCE_RO',
         },
         {
-          roleCode: 'LEI_LICENCE_DM',
+          roleCode: 'LICENCE_DM',
         },
       ])
 

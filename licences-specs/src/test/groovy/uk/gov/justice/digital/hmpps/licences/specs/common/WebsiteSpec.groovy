@@ -36,20 +36,11 @@ class WebsiteSpec extends GebReportingSpec {
     actions.logOut()
 
     where:
-    user | userName
-    'CA' | 'Catherine Amos'
-    'RO' | 'Ryan Orton'
-    'DM' | 'Diane Matthews'
-  }
-
-  def 'Login prevented for user without licences role'() {
-
-    when: 'I log in as a Nomis user without Licences roles'
-    to SigninPage
-    signInAs('NONE')
-
-    then: 'Log in fails and I see the log in screen'
-    at SigninPage
+    user     | userName
+    'CA'     | 'Catherine Amos'
+    'RO'     | 'Ryan-Auth Orton'
+    'DM'     | 'Diane Matthews'
+    'PRISON' | 'Use Of Force Reviewer'
   }
 
   def 'User can log out'() {

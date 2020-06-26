@@ -1,59 +1,52 @@
-/**
- * @template S, E
- * @typedef {import("../utils/ResultTypes").Result<S, E>} Result
- */
-const R = require('ramda')
-const { Success, Fail } = require('../utils/Result')
-/**
- * @typedef {import("../services/roService").RoService} RoService
- * @typedef {import("../../types/delius").StaffDetails} StaffDetails
- */
+import R from 'ramda'
 
-/**
- * @typedef DeliusId
- * @property {string} staff_id
- */
+import { Fail, Success, Result } from '../utils/Result'
+import { RoService } from './roService'
+import { StaffDetails } from '../../types/delius'
+import { LicenceClient } from '../data/licenceClient'
+import { DeliusId } from '../data/licenceClientTypes'
 
 const logger = require('../../log.js')
 const { isEmpty } = require('../utils/functionalHelpers')
 
-/**
- * @param {RoService} roService
- */
-module.exports = function createCaseListService(nomisClientBuilder, roService, licenceClient, caseListFormatter) {
-  async function getCaseList(username, role, token) {
-    const asyncCaseRetrievalMethod = {
-      CA: getCaDmCaseLists(token),
-      RO: getROCaseList(username, token),
-      DM: getCaDmCaseLists(token),
-    }
+export = function createCaseListService(
+  nomisClientBuilder,
+  roService: RoService,
+  licenceClient: LicenceClient,
+  caseListFormatter
+) {
+  async function getCaseList(username, role, token): Promise<{ hdcEligible: any[]; message?: string }> {
+    switch (role) {
+      case 'PRISON':
+      case 'CA':
+      case 'DM':
+        return getPrisonCaseList(token)
 
-    return asyncCaseRetrievalMethod[role]()
+      case 'RO':
+        return getROCaseList(username, token)
+
+      default:
+        throw Error(`Illegal state: unrecognised role ${role}`)
+    }
   }
 
-  function getCaDmCaseLists(token) {
-    return async () => {
-      const hdcEligible = await nomisClientBuilder(token).getHdcEligiblePrisoners()
-      return { hdcEligible }
-    }
+  const getPrisonCaseList = async (token) => {
+    const hdcEligible = await nomisClientBuilder(token).getHdcEligiblePrisoners()
+    return { hdcEligible }
   }
 
   /**
    * Assume username is assigned to an RO.  Look up this user in the local db (staff_ids table) and take the staff code.
    * Alternatively if a unique staff code cannot be found in this db, ask Delius for a staff code.
    */
-  const getROCaseList = (username, token) => async () => {
+  const getROCaseList = async (username, token) => {
     const staffCodeFromDb = await getStaffCodeFromDb(username)
     const staffCode = await staffCodeFromDb.orRecoverAsync(() => getStaffCodeFromDelius(username))
     const offendersForStaffCode = await staffCode.mapAsync(getOffendersForStaffCode(token))
     return offendersForStaffCode.match(R.identity, (message) => ({ hdcEligible: [], message }))
   }
 
-  /**
-   * @param {string} username
-   * @returns {Promise<Result<string, string>>}
-   */
-  const getStaffCodeFromDb = async (username) => {
+  const getStaffCodeFromDb = async (username: string): Promise<Result<string, string>> => {
     const deliusIds = await licenceClient.getDeliusUserName(username)
 
     return validateDeliusIds(deliusIds)
@@ -61,11 +54,7 @@ module.exports = function createCaseListService(nomisClientBuilder, roService, l
       .map((id) => id.staff_id.toUpperCase())
   }
 
-  /**
-   * @param {string} username
-   * @returns {Promise<Result<string, string>>}
-   */
-  const getStaffCodeFromDelius = async (username) => {
+  const getStaffCodeFromDelius = async (username: string): Promise<Result<string, string>> => {
     const staffDetailsResult = await getStaffDetailsFromDelius(username)
 
     return staffDetailsResult.flatMap(({ staffCode }) =>
@@ -73,11 +62,7 @@ module.exports = function createCaseListService(nomisClientBuilder, roService, l
     )
   }
 
-  /**
-   * @param {string} username
-   * @returns {Promise<Result<StaffDetails, string>>}
-   */
-  const getStaffDetailsFromDelius = async (username) => {
+  const getStaffDetailsFromDelius = async (username: string): Promise<Result<StaffDetails, string>> => {
     const staffDetails = await roService.getStaffByUsername(username)
 
     return isEmpty(staffDetails)
@@ -85,26 +70,15 @@ module.exports = function createCaseListService(nomisClientBuilder, roService, l
       : Success(staffDetails)
   }
 
-  /**
-   * @param {DeliusId[]} deliusIds
-   * @returns {Result<DeliusId[], string>}
-   */
-  const validateDeliusIds = (deliusIds) =>
+  const validateDeliusIds = (deliusIds: DeliusId[]): Result<DeliusId[], string> =>
     !Array.isArray(deliusIds) || deliusIds.length < 1 || isEmpty(deliusIds[0].staff_id)
       ? Fail('Delius username not found for current user')
       : Success(deliusIds)
 
-  /**
-   * @param {DeliusId[]} deliusIds
-   * @returns {Result<DeliusId, string>}
-   */
-  const getDeliusId = (deliusIds) =>
+  const getDeliusId = (deliusIds: DeliusId[]): Result<DeliusId, string> =>
     deliusIds.length > 1 ? Fail('Multiple Delius usernames found for current user') : Success(deliusIds[0])
 
-  /**
-   * @type {(token: string) => (staffCode: string) => Promise<{hdcEligible : any[]}>}
-   */
-  const getOffendersForStaffCode = (token) => async (staffCode) => {
+  const getOffendersForStaffCode = (token: string) => async (staffCode: string): Promise<{ hdcEligible: any[] }> => {
     const offenders = await roService.getROPrisoners(staffCode, token)
     const hdcEligible = offenders.filter(R.path(['sentenceDetail', 'homeDetentionCurfewEligibilityDate']))
     return { hdcEligible }

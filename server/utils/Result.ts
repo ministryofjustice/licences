@@ -1,8 +1,15 @@
-/**
- * @template S, E
- * @returns {import("./ResultTypes").Result<S, E>}
- */
-const Success = (value) => ({
+export interface Result<S, E> {
+  success(): S
+  fail(): E
+  map<T>(f: (v: S) => T): Result<T, E>
+  mapAsync<T>(f: (v: S) => Promise<T>): Promise<Result<T, E>>
+  orRecoverAsync(f: () => Promise<Result<S, E>>): Promise<Result<S, E>>
+  flatMap<T>(f: (v: S) => Result<T, E>): Result<T, E>
+  match<T>(successFunction: (v: S) => T, failFunction: (v: E) => T): T
+  isSuccess(): boolean
+}
+
+export const Success = <S, E>(value: S): Result<S, E> => ({
   success() {
     return value
   },
@@ -38,11 +45,7 @@ const Success = (value) => ({
   },
 })
 
-/**
- * @template S, E
- * @returns {import("./ResultTypes").Result<S, E>}
- */
-const Fail = (error) => ({
+export const Fail = <S, E>(error: E): Result<S, E> => ({
   success() {
     throw new Error('cannot call success() on a Fail')
   },
@@ -72,13 +75,3 @@ const Fail = (error) => ({
     return false
   },
 })
-
-/**
- * @type {import("./ResultTypes").ResultFactory}
- */
-const ResultFactory = {
-  Success,
-  Fail,
-}
-
-module.exports = ResultFactory

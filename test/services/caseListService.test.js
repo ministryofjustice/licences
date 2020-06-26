@@ -102,6 +102,17 @@ describe('caseListService', () => {
     licenceClient = {
       getLicences: jest.fn().mockReturnValue([]),
       getDeliusUserName: jest.fn().mockReturnValue([{ staff_id: 'foo-username' }]),
+      deleteAll: undefined,
+      deleteAllTest: undefined,
+      getLicence: undefined,
+      getApprovedLicenceVersion: undefined,
+      createLicence: undefined,
+      updateLicence: undefined,
+      updateSection: undefined,
+      updateStage: undefined,
+      saveApprovedLicenceVersion: undefined,
+      getLicencesInStageBetweenDates: undefined,
+      getLicencesInStageBeforeDate: undefined,
     }
 
     const nomisClientBuilder = jest.fn().mockReturnValue(nomisClient)
