@@ -1,8 +1,8 @@
-const config = require('../config')
+const { isAdminRole } = require('../authentication/roles')
 
 module.exports = () => (router) => {
   router.get('/', (req, res) => {
-    if (req.user && config.roles.admin.includes(req.user.role)) {
+    if (req.user && isAdminRole(req.user.role)) {
       return res.redirect('/admin/')
     }
     return res.redirect('/caseList/active')

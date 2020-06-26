@@ -25,6 +25,10 @@ const determineAccessLevel = (licence, postRelease, role) => {
   }
 
   switch (role) {
+    case 'PRISON': {
+      return stage ? READ_ONLY : NONE
+    }
+
     case 'DM':
       switch (stage) {
         case APPROVAL:

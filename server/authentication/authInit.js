@@ -1,12 +1,12 @@
 const fiveMinutesBefore = require('../utils/fiveMinutesBefore')
-const allowedRoles = require('./roles')
+const { isApplicationRole } = require('./roles')
 const logger = require('../../log')
 
 module.exports = (userService, audit) => {
   const getUser = async (token, refreshToken, expiresIn, username) => {
     const userProfile = await userService.getUserProfile(token, refreshToken, username)
 
-    if (!allowedRoles.includes(userProfile.role)) {
+    if (!isApplicationRole(userProfile.role)) {
       throw new Error('Login error - no acceptable role')
     }
 

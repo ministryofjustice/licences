@@ -1,5 +1,5 @@
 /* eslint-disable no-param-reassign */
-const allowedRoles = require('../authentication/roles')
+const { isAuthServiceRole, isApplicationRole, applicationRoleForAuthServiceRole } = require('../authentication/roles')
 const logger = require('../../log')
 const { getIn } = require('../utils/functionalHelpers')
 
@@ -32,8 +32,9 @@ module.exports = (nomisClientBuilder) => {
     const allRoles = await nomisClient.getUserRoles()
 
     const roles = allRoles
-      .map((role) => role.roleCode.substring(role.roleCode.lastIndexOf('_') + 1))
-      .filter((roleCode) => allowedRoles.includes(roleCode))
+      .map((role) => role.roleCode)
+      .filter(isAuthServiceRole)
+      .map(applicationRoleForAuthServiceRole)
 
     // CA and DM roles subsume PRISON role
     if (roles.includes('CA') || roles.includes('DM') || roles.includes('RO')) {
@@ -43,7 +44,7 @@ module.exports = (nomisClientBuilder) => {
   }
 
   async function setRole(newRole, user) {
-    if (!allowedRoles.includes(newRole)) {
+    if (!isApplicationRole(newRole)) {
       return user
     }
 

@@ -1,3 +1,18 @@
-const config = require('../config')
+const adminRole = 'BATCHLOAD'
 
-module.exports = config.roles.admin.concat(config.roles.user)
+const roleMap = new Map()
+  .set('NOMIS_BATCHLOAD', adminRole)
+  .set('PRISON', 'PRISON')
+  .set('LICENCE_CA', 'CA')
+  .set('LICENCE_RO', 'RO')
+  .set('LICENCE_DM', 'DM')
+
+const authServiceRoles = [...roleMap.keys()]
+const applicationRoles = [...roleMap.values()]
+
+module.exports = {
+  applicationRoleForAuthServiceRole: (authServiceRole) => roleMap.get(authServiceRole),
+  isAuthServiceRole: (role) => authServiceRoles.includes(role),
+  isApplicationRole: (role) => applicationRoles.includes(role),
+  isAdminRole: (role) => adminRole === role,
+}
