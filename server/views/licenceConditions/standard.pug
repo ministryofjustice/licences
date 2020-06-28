@@ -3,6 +3,7 @@ extends ../layout
 block content
 
   - var additionalConditionsValue = data.additionalConditionsRequired || null;
+  - var licenceConditions = licenceWithReconstructedConditions.licenceConditions || {}
 
   include ../includes/backToTaskList
   include ../includes/personalDetailsSummary
@@ -18,6 +19,52 @@ block content
       ol.numberedList
         for condition in conditions
           li.midPaddingBottom #{condition.text}
+
+
+  h2.heading-large Additional conditions
+  div.pure-u-1.pure-u-md-2-3
+    - var results = false
+    ol.numberedList
+      for condition in licenceConditions
+          if condition.group !== undefined && condition.group !== 'Post-sentence supervision only' && condition.group !== 'Bespoke'
+            - results = true
+              li.midPaddingBottom 
+                for item in condition.content
+                  span  #{item.text}
+                  if item.variable
+                    span #{item.variable}
+    if results === false
+      | No additional conditions selected
+
+  h2.heading-large Post sentence supervision conditions
+  div.pure-u-1.pure-u-md-2-3
+    - var results = false
+    ol.numberedList
+      for condition in licenceConditions
+          if condition.group === 'Post-sentence supervision only' && condition.group === 'Post-sentence supervision only'
+            - results = true
+              li.midPaddingBottom 
+                for item in condition.content
+                  span  #{item.text}
+                  if item.variable
+                    span #{item.variable}
+    if results === false
+      | No post sentence supervision conditions selected
+        
+
+  h2.heading-large Bespoke conditions
+  div.pure-u-1.pure-u-md-2-3
+    - var results = false
+    ol.numberedList
+      for condition in licenceConditions
+          if condition.group === 'Bespoke' && condition.approved === 'Yes'
+            - results = true
+            li.midPaddingBottom
+              for item in condition.content
+                span  #{item.text}
+    if results === false
+      | No bespoke conditions selected
+
 
   form(method="post")
     input(type="hidden" name="_csrf" value=csrfToken)

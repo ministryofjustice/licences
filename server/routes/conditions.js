@@ -16,8 +16,17 @@ module.exports = ({ licenceService, conditionsService }) => (router, audited) =>
     const { action, bookingId } = req.params
     const conditions = conditionsService.getStandardConditions()
     const data = getIn(res.locals.licence, ['licence', 'licenceConditions', 'standard']) || {}
+    const licenceWithReconstructedConditions = conditionsService.populateLicenceWithConditions(
+      res.locals.licence.licence
+    )
 
-    res.render('licenceConditions/standard', { action, bookingId, conditions, data })
+    res.render('licenceConditions/standard', {
+      action,
+      bookingId,
+      conditions,
+      data,
+      licenceWithReconstructedConditions,
+    })
   }
 
   router.get('/additionalConditions/:bookingId', getAdditional)
