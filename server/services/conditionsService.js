@@ -199,6 +199,31 @@ module.exports = function createConditionsService({ use2019Conditions }) {
     }
   }
 
+  function getNonStandardConditions(licence) {
+    const { licenceConditions } = populateLicenceWithConditions(licence)
+    const additionalConditionsContent = []
+    const pssConditionsContent = []
+    const bespokeConditionsContent = []
+
+    if (licenceConditions.length > 0) {
+      licenceConditions.forEach((condition) => {
+        if (condition.group === 'Bespoke' && condition.approved === 'Yes') {
+          bespokeConditionsContent.push(condition.content)
+        } else if (condition.group === 'Post-sentence supervision only') {
+          pssConditionsContent.push(condition.content)
+        } else if (condition.group !== 'Bespoke' || condition.group === undefined) {
+          additionalConditionsContent.push(condition.content)
+        }
+      })
+    }
+
+    return {
+      additionalConditions: constructConditionTexts(additionalConditionsContent),
+      bespokeConditions: constructConditionTexts(bespokeConditionsContent),
+      pssConditions: constructConditionTexts(pssConditionsContent),
+    }
+  }
+
   function injectUserInputAsObject(condition, userInput, userErrors) {
     const conditionName = condition.user_input
     const conditionText = condition.text
@@ -279,6 +304,7 @@ module.exports = function createConditionsService({ use2019Conditions }) {
     createConditionsObjectForLicence,
     populateAdditionalConditionsAsObject,
     getFullTextForApprovedConditions,
+    getNonStandardConditions,
   }
 }
 
@@ -335,4 +361,17 @@ function getSubmissionForCondition(conditionId, inputtedConditions) {
   }
 
   return inputtedConditions[conditionId]
+}
+
+function constructConditionTexts(conditions) {
+  const formattedConditions = []
+  conditions.forEach((condition) => {
+    let contentText = ''
+    condition.forEach((conditionObject) => {
+      contentText += conditionObject.text || conditionObject.variable
+    })
+    formattedConditions.push({ text: contentText })
+  })
+
+  return formattedConditions
 }

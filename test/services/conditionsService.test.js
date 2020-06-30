@@ -1156,4 +1156,95 @@ describe('conditionsService', () => {
       })
     })
   })
+  describe('getNonStandardConditions', () => {
+    test('should return correctly 3 formatted contents', () => {
+      const licence = {
+        licenceConditions: {
+          additional: {
+            ATTENDSAMPLE: {
+              attendSampleDetailsName: 'The Probation Service',
+              attendSampleDetailsAddress: '1, Some Address',
+            },
+            NOCONTACTASSOCIATE: {
+              groupsOrOrganisation: 'James Smith',
+            },
+          },
+          standard: {
+            additionalConditionsRequired: 'Yes',
+          },
+          bespoke: [
+            {
+              text: 'Bespoke condition 1',
+              approved: 'Yes',
+            },
+          ],
+        },
+      }
+
+      return expect(service.getNonStandardConditions(licence)).toEqual({
+        additionalConditions: [
+          {
+            text:
+              'Not to associate with any person currently or formerly associated with James Smith without the prior approval of your supervising officer.',
+          },
+        ],
+        bespokeConditions: [{ text: 'Bespoke condition 1' }],
+        pssConditions: [
+          {
+            text:
+              'Attend The Probation Service, 1, Some Address, as reasonably required by your supervisor, to give a sample of oral fluid/urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the requirement of supervision period requiring you to be of good behaviour.',
+          },
+        ],
+      })
+    })
+
+    test('should return 3 empty arrays', () => {
+      const licence = {
+        licenceConditions: { bespoke: [], additional: {} },
+      }
+
+      return expect(service.getNonStandardConditions(licence)).toEqual({
+        additionalConditions: [],
+        bespokeConditions: [],
+        pssConditions: [],
+      })
+    })
+
+    test('should return empty array for bespoke condition if has not been approved', () => {
+      const licence = {
+        licenceConditions: {
+          bespoke: [
+            {
+              text: 'Bespoke condition text',
+              approved: 'No',
+            },
+          ],
+        },
+      }
+
+      return expect(service.getNonStandardConditions(licence)).toEqual({
+        additionalConditions: [],
+        bespokeConditions: [],
+        pssConditions: [],
+      })
+    })
+
+    test('should empty array for bespoke condition if neither Yes/No has been selected', () => {
+      const licence = {
+        licenceConditions: {
+          bespoke: [
+            {
+              text: 'Bespoke condition text',
+            },
+          ],
+        },
+      }
+
+      return expect(service.getNonStandardConditions(licence)).toEqual({
+        additionalConditions: [],
+        bespokeConditions: [],
+        pssConditions: [],
+      })
+    })
+  })
 })
