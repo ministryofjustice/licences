@@ -1185,14 +1185,14 @@ describe('conditionsService', () => {
         additionalConditions: [
           {
             text:
-              'Not to associate with any person currently or formerly associated with James Smith without the prior approval of your supervising officer.',
+              'Not to associate with any person currently or formerly associated with James Smith without the prior approval of your supervising officer',
           },
         ],
         bespokeConditions: [{ text: 'Bespoke condition 1' }],
         pssConditions: [
           {
             text:
-              'Attend The Probation Service, 1, Some Address, as reasonably required by your supervisor, to give a sample of oral fluid/urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the requirement of supervision period requiring you to be of good behaviour.',
+              'Attend The Probation Service, 1, Some Address, as reasonably required by your supervisor, to give a sample of oral fluid/urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the requirement of supervision period requiring you to be of good behaviour',
           },
         ],
       })

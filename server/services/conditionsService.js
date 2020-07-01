@@ -200,28 +200,29 @@ module.exports = function createConditionsService({ use2019Conditions }) {
   }
 
   function getNonStandardConditions(licence) {
-    const { licenceConditions } = populateLicenceWithConditions(licence)
-    const additionalConditionsContent = []
-    const pssConditionsContent = []
-    const bespokeConditionsContent = []
-
-    if (licenceConditions.length > 0) {
-      licenceConditions.forEach((condition) => {
-        if (condition.group === 'Bespoke' && condition.approved === 'Yes') {
-          bespokeConditionsContent.push(condition.content)
-        } else if (condition.group === 'Post-sentence supervision only') {
-          pssConditionsContent.push(condition.content)
-        } else if (condition.group !== 'Bespoke' || condition.group === undefined) {
-          additionalConditionsContent.push(condition.content)
-        }
-      })
+    let { licenceConditions = [] } = populateLicenceWithConditions(licence)
+    if (!Array.isArray(licenceConditions)) {
+      licenceConditions = []
     }
+
+    const allAdditionalConditions = licenceConditions.filter(
+      (condition) => condition.group !== 'Bespoke' && condition.group !== 'Post-sentence supervision only'
+    )
+    const pssConditions = licenceConditions.filter((condition) => condition.group === 'Post-sentence supervision only')
+    const bespokeConditions = licenceConditions.filter(
+      (condition) => condition.group === 'Bespoke' && condition.approved === 'Yes'
+    )
 
     return {
-      additionalConditions: constructConditionTexts(additionalConditionsContent),
-      bespokeConditions: constructConditionTexts(bespokeConditionsContent),
-      pssConditions: constructConditionTexts(pssConditionsContent),
+      additionalConditions: allAdditionalConditions.map(formatConditionsText),
+      bespokeConditions: bespokeConditions.map(formatConditionsText),
+      pssConditions: pssConditions.map(formatConditionsText),
     }
+  }
+
+  function formatConditionsText({ content }) {
+    const formattedCondition = getConditionText(content)
+    return { text: formattedCondition }
   }
 
   function injectUserInputAsObject(condition, userInput, userErrors) {
@@ -361,17 +362,4 @@ function getSubmissionForCondition(conditionId, inputtedConditions) {
   }
 
   return inputtedConditions[conditionId]
-}
-
-function constructConditionTexts(conditions) {
-  const formattedConditions = []
-  conditions.forEach((condition) => {
-    let contentText = ''
-    condition.forEach((conditionObject) => {
-      contentText += conditionObject.text || conditionObject.variable
-    })
-    formattedConditions.push({ text: contentText })
-  })
-
-  return formattedConditions
 }
