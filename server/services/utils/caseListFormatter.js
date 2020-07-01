@@ -87,7 +87,7 @@ function dateDifference(address1, address2) {
 }
 
 function addRoleSpecificDecoration(prisoner, role, licences) {
-  if (role === 'CA' || role === 'PRISON') {
+  if (role === 'CA' || role === 'READONLY') {
     return addHDCEDCountdown(prisoner)
   }
   if (role === 'RO') {

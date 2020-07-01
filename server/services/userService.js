@@ -36,9 +36,9 @@ module.exports = (nomisClientBuilder) => {
       .filter(isAuthServiceRole)
       .map(applicationRoleForAuthServiceRole)
 
-    // CA and DM roles subsume PRISON role
+    // CA,  DM and RO roles subsume READONLY role
     if (roles.includes('CA') || roles.includes('DM') || roles.includes('RO')) {
-      return roles.filter((role) => role !== 'PRISON')
+      return roles.filter((role) => role !== 'READONLY')
     }
     return roles
   }

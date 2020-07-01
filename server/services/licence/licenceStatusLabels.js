@@ -51,49 +51,49 @@ function getStatusLabel(licenceStatus, role) {
 function statusLabels(licenceStatus, role) {
   const labels = {
     [licenceStage.ELIGIBILITY]: {
-      PRISON: caEligibilityLabel,
+      READONLY: caEligibilityLabel,
       CA: caEligibilityLabel,
       RO: () => status.withPrison,
       DM: () => status.withPrison,
     },
     [licenceStage.PROCESSING_RO]: {
-      PRISON: roProcessingCaLabel,
+      READONLY: roProcessingCaLabel,
       CA: roProcessingCaLabel,
       RO: roProcessingLabel,
       DM: () => status.withResponsibleOfficer,
     },
     [licenceStage.PROCESSING_CA]: {
-      PRISON: caProcessingLabel,
+      READONLY: caProcessingLabel,
       CA: caProcessingLabel,
       RO: caProcessingRoLabel,
       DM: caProcessingDmLabel,
     },
     [licenceStage.APPROVAL]: {
-      PRISON: () => status.withDecisionMaker,
+      READONLY: () => status.withDecisionMaker,
       CA: () => status.withDecisionMaker,
       RO: () => status.withDecisionMaker,
       DM: dmProcessingLabel,
     },
     [licenceStage.DECIDED]: {
-      PRISON: caDecisionLabel,
+      READONLY: caDecisionLabel,
       CA: caDecisionLabel,
       RO: decisionLabel,
       DM: decisionLabel,
     },
     [licenceStage.MODIFIED]: {
-      PRISON: postApprovalLabel,
+      READONLY: postApprovalLabel,
       CA: postApprovalLabel,
       RO: postApprovalLabel,
       DM: postApprovalLabel,
     },
     [licenceStage.MODIFIED_APPROVAL]: {
-      PRISON: postApprovalLabel,
+      READONLY: postApprovalLabel,
       CA: postApprovalLabel,
       RO: postApprovalLabel,
       DM: postApprovalLabel,
     },
     [licenceStage.VARY]: {
-      PRISON: () => status.varyingLicence,
+      READONLY: () => status.varyingLicence,
       CA: () => status.varyingLicence,
       RO: () => status.varyingLicence,
       DM: () => status.varyingLicence,

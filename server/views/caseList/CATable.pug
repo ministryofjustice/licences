@@ -42,7 +42,7 @@ table#hdcEligiblePrisoners.caSortcolumns.largeMarginBottom
           td
             -var label = labels.ca[prisoner.status] || 'View'
 
-            if (user.role === 'PRISON')
+            if (user.role === 'READONLY')
               if (label !== 'Start now')
                 -var path = "/hdc/review/licence/" + prisoner.bookingId
                 a.button.button-secondary.fullWidth.center(href=path role="button") View

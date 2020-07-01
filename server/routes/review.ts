@@ -11,10 +11,10 @@ function shouldValidate(role, stage, postApproval) {
   return postApproval
     ? role === 'CA'
     : {
-        PRISON: [],
-        CA: ['ELIGIBILITY', 'PROCESSING_CA', 'FINAL_CHECKS'],
-        RO: ['PROCESSING_RO'],
-        DM: ['APPROVAL'],
+        READONLY: [],
+              CA: ['ELIGIBILITY', 'PROCESSING_CA', 'FINAL_CHECKS'],
+              RO: ['PROCESSING_RO'],
+              DM: ['APPROVAL'],
       }[role].includes(stage)
 }
 

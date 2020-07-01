@@ -23,7 +23,7 @@ block content
             li(class=tab === 'inactive' ? 'selected' : undefined)
               a(href="/caseList/inactive") Inactive
 
-      if (user.role === 'CA' || user.role === 'PRISON')
+      if (user.role === 'CA' || user.role === 'READONLY')
         include ./CATable
 
       if user.role === 'RO'

@@ -2,7 +2,7 @@ const adminRole = 'BATCHLOAD'
 
 const roleMap = new Map()
   .set('NOMIS_BATCHLOAD', adminRole)
-  .set('PRISON', 'PRISON')
+  .set('LICENCE_READONLY', 'READONLY')
   .set('LICENCE_CA', 'CA')
   .set('LICENCE_RO', 'RO')
   .set('LICENCE_DM', 'DM')

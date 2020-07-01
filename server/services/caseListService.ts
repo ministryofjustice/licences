@@ -17,7 +17,7 @@ export = function createCaseListService(
 ) {
   async function getCaseList(username, role, token): Promise<{ hdcEligible: any[]; message?: string }> {
     switch (role) {
-      case 'PRISON':
+      case 'READONLY':
       case 'CA':
       case 'DM':
         return getPrisonCaseList(token)

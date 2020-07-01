@@ -1,34 +1,5 @@
 version: '3.1'
 services:
-  licences:
-    image: quay.io/hmpps/licences:latest
-    networks:
-      - hmpps
-    container_name: licences
-    depends_on:
-      - licence-db
-      - licences-nomis-mocks
-      - nomis-oauth2-server
-    ports:
-      - '3000:3000'
-    healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:3000/health']
-    environment:
-      - PORT=3000
-      - DB_USER=licences
-      - DB_PASS=licences
-      - DB_SERVER=licence-db
-      - DB_NAME=licences
-      - DB_SSL_ENABLED=no
-      - NOMIS_API_URL=http://licences-nomis-mocks:8080/elite2api/api
-      - NOMIS_AUTH_URL=http://nomis-oauth2-server:9090/auth
-      - NOMIS_AUTH_EXTERNAL_URL=http://localhost:9090/auth
-      - DELIUS_API_URL=http://licences-nomis-mocks:8080/communityapi
-      - PROBATION_TEAMS_API_URL=http://licences-nomis-mocks:8080/probationteams
-      - HOST=licences.hmpps.dsd.test
-      - GLOBAL_SEARCH_URL=http://localhost:3002/global-search
-      - ENABLE_TEST_UTILS=true
-
   licences-nomis-mocks:
     image: mojdigitalstudio/licences-nomis-mocks:latest
     networks:
@@ -52,38 +23,17 @@ services:
       - POSTGRES_USER=licences
       - POSTGRES_DB=licences
 
-  nomis-oauth2-server:
-    image: quay.io/hmpps/nomis-oauth2-server:latest
+  hmpps-auth:
+    image: quay.io/hmpps/hmpps-auth:latest
     networks:
       - hmpps
-    container_name: nomis-oauth2-server
+    container_name: hmpps-auth
     ports:
       - '9090:8080'
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:8080/auth/health']
     environment:
       - SPRING_PROFILES_ACTIVE=dev
-
-  prisonstaffhub:
-    image: mojdigitalstudio/prisonstaffhub:latest
-    networks:
-      - hmpps
-    depends_on:
-      - nomis-oauth2-server
-    container_name: prisonstaffhub
-    ports:
-      - '3002:3002'
-    healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:3002/health']
-    environment:
-      - PORT=3002
-      - NODE_ENV=development
-      - REMOTE_AUTH_STRATEGY=true
-      - OAUTH_ENDPOINT_URL=http://nomis-oauth2-server:9090/auth/
-      - OAUTH_ENDPOINT_UI_URL=http://localhost:9090/auth/
-      - API_ENDPOINT_URL=http://licences-nomis-mocks:8080/elite2api/
-      - NN_ENDPOINT_URL=http://localhost:3007/
-      - LICENCES_URL=http://localhost:3000/
 
 networks:
   hmpps:
