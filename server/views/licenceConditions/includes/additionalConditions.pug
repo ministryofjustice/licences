@@ -1,0 +1,10 @@
+
+mixin additionalConditions(heading, conditions, emptyMessage)
+    h2.heading-large.midMarginBottom #{heading}
+    div.pure-u-1.pure-u-md-2-3
+        if conditions.length > 0
+            ol.numberedList
+                each condition in conditions
+                    li.midPaddingBottom #{condition.text}     
+        else 
+            p No #{emptyMessage} conditions selected

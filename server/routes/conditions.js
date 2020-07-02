@@ -14,10 +14,22 @@ module.exports = ({ licenceService, conditionsService }) => (router, audited) =>
     logger.debug('GET /standard/:bookingId')
 
     const { action, bookingId } = req.params
-    const conditions = conditionsService.getStandardConditions()
-    const data = getIn(res.locals.licence, ['licence', 'licenceConditions', 'standard']) || {}
+    const standardConditions = conditionsService.getStandardConditions()
+    const { additionalConditionsRequired } =
+      getIn(res.locals.licence, ['licence', 'licenceConditions', 'standard']) || {}
+    const { additionalConditions, pssConditions, bespokeConditions } = conditionsService.getNonStandardConditions(
+      res.locals.licence.licence
+    )
 
-    res.render('licenceConditions/standard', { action, bookingId, conditions, data })
+    res.render('licenceConditions/standard', {
+      action,
+      bookingId,
+      standardConditions,
+      additionalConditionsRequired,
+      additionalConditions,
+      pssConditions,
+      bespokeConditions,
+    })
   }
 
   router.get('/additionalConditions/:bookingId', getAdditional)

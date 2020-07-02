@@ -38,6 +38,12 @@ describe('/hdc/licenceConditions', () => {
     })
 
     conditionsServiceStub.populateLicenceWithConditions = jest.fn().mockReturnValue({ licence: {} })
+    conditionsServiceStub.getNonStandardConditions = jest.fn().mockReturnValue({
+      additionalConditions: [{ text: '' }],
+      bespokeConditions: [{ text: '' }],
+      pssConditions: [{ text: '' }],
+    })
+
     const app = createApp({ licenceService, conditionsService: conditionsServiceStub }, 'roUser')
     const routes = [
       { url: '/hdc/licenceConditions/standard/1', content: 'Not commit any offence' },
@@ -46,6 +52,82 @@ describe('/hdc/licenceConditions', () => {
     ]
 
     testFormPageGets(app, routes, licenceService)
+  })
+
+  describe('Additional licenceConditions route ', () => {
+    const licenceService = createLicenceServiceStub()
+    const conditionsServiceStub = createConditionsServiceStub()
+    conditionsServiceStub.getStandardConditions = jest.fn().mockReturnValue([{}])
+
+    test('displays the 1 additional condition selected', () => {
+      conditionsServiceStub.getNonStandardConditions = jest.fn().mockReturnValue({
+        additionalConditions: [{ text: 'Not to contact directly or indirectly' }],
+        bespokeConditions: [{ text: '' }],
+        pssConditions: [{ text: '' }],
+      })
+
+      const app = createApp({ licenceService, conditionsService: conditionsServiceStub }, 'roUser')
+      return request(app)
+        .get('/hdc/licenceConditions/standard/1')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect((res) => {
+          expect(res.text).toContain('Not to contact directly or indirectly')
+        })
+    })
+
+    test('displays the 1 PSS condition selected', () => {
+      conditionsServiceStub.getNonStandardConditions = jest.fn().mockReturnValue({
+        additionalConditions: [{ text: '' }],
+        bespokeConditions: [{ text: '' }],
+        pssConditions: [{ text: 'reasonably required by your supervisor, to give a sample' }],
+      })
+
+      const app = createApp({ licenceService, conditionsService: conditionsServiceStub }, 'roUser')
+      return request(app)
+        .get('/hdc/licenceConditions/standard/1')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect((res) => {
+          expect(res.text).toContain('reasonably required by your supervisor, to give a sample ')
+        })
+    })
+
+    test('displays the 1 approved Bespoke condition selected', () => {
+      conditionsServiceStub.getNonStandardConditions = jest.fn().mockReturnValue({
+        additionalConditions: [{ text: '' }],
+        bespokeConditions: [{ text: 'Bespoke condition - approval Yes' }],
+        pssConditions: [{ text: '' }],
+      })
+
+      const app = createApp({ licenceService, conditionsService: conditionsServiceStub }, 'roUser')
+      return request(app)
+        .get('/hdc/licenceConditions/standard/1')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect((res) => {
+          expect(res.text).toContain('Bespoke condition - approval Yes')
+        })
+    })
+
+    test('Displays appropriate message where no additional, pss or bespoke conditions selected', () => {
+      conditionsServiceStub.getNonStandardConditions = jest.fn().mockReturnValue({
+        additionalConditions: [],
+        bespokeConditions: [],
+        pssConditions: [],
+      })
+
+      const app = createApp({ licenceService, conditionsService: conditionsServiceStub }, 'roUser')
+      return request(app)
+        .get('/hdc/licenceConditions/standard/1')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect((res) => {
+          expect(res.text).toContain('No additional conditions selected')
+          expect(res.text).toContain('No post sentence supervision conditions selected')
+          expect(res.text).toContain('No bespoke conditions selected')
+        })
+    })
   })
 
   describe('POST /hdc/licenceConditions/:section/:bookingId', () => {

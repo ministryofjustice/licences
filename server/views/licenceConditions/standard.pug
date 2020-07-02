@@ -1,11 +1,11 @@
 extends ../layout
 
-block content
-
-  - var additionalConditionsValue = data.additionalConditionsRequired || null;
-
+block content 
+  include ./includes/additionalConditions
   include ../includes/backToTaskList
   include ../includes/personalDetailsSummary
+  
+  - var additionalConditionsValue = additionalConditionsRequired || null;
 
   h1.heading-large Standard licence conditions
 
@@ -16,8 +16,13 @@ block content
       p An offender must:
 
       ol.numberedList
-        for condition in conditions
+        for condition in standardConditions
           li.midPaddingBottom #{condition.text}
+
+  +additionalConditions('Additional conditions', additionalConditions, 'additional')
+  +additionalConditions('Post sentence supervision conditions', pssConditions, 'post sentence supervision')
+  +additionalConditions('Bespoke conditions', bespokeConditions, 'bespoke')
+
 
   form(method="post")
     input(type="hidden" name="_csrf" value=csrfToken)

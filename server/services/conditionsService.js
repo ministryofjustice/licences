@@ -199,6 +199,32 @@ module.exports = function createConditionsService({ use2019Conditions }) {
     }
   }
 
+  function getNonStandardConditions(licence) {
+    let { licenceConditions = [] } = populateLicenceWithConditions(licence)
+    if (!Array.isArray(licenceConditions)) {
+      licenceConditions = []
+    }
+
+    const allAdditionalConditions = licenceConditions.filter(
+      (condition) => condition.group !== 'Bespoke' && condition.group !== 'Post-sentence supervision only'
+    )
+    const pssConditions = licenceConditions.filter((condition) => condition.group === 'Post-sentence supervision only')
+    const bespokeConditions = licenceConditions.filter(
+      (condition) => condition.group === 'Bespoke' && condition.approved === 'Yes'
+    )
+
+    return {
+      additionalConditions: allAdditionalConditions.map(formatConditionsText),
+      bespokeConditions: bespokeConditions.map(formatConditionsText),
+      pssConditions: pssConditions.map(formatConditionsText),
+    }
+  }
+
+  function formatConditionsText({ content }) {
+    const formattedCondition = getConditionText(content)
+    return { text: formattedCondition }
+  }
+
   function injectUserInputAsObject(condition, userInput, userErrors) {
     const conditionName = condition.user_input
     const conditionText = condition.text
@@ -279,6 +305,7 @@ module.exports = function createConditionsService({ use2019Conditions }) {
     createConditionsObjectForLicence,
     populateAdditionalConditionsAsObject,
     getFullTextForApprovedConditions,
+    getNonStandardConditions,
   }
 }
 
