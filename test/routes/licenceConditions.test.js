@@ -42,6 +42,7 @@ describe('/hdc/licenceConditions', () => {
       additionalConditions: [{ text: '' }],
       bespokeConditions: [{ text: '' }],
       pssConditions: [{ text: '' }],
+      unapprovedBespokeConditions: [{ text: '' }],
     })
 
     const app = createApp({ licenceService, conditionsService: conditionsServiceStub }, 'roUser')
@@ -64,6 +65,7 @@ describe('/hdc/licenceConditions', () => {
         additionalConditions: [{ text: 'Not to contact directly or indirectly' }],
         bespokeConditions: [{ text: '' }],
         pssConditions: [{ text: '' }],
+        unapprovedBespokeConditions: [{ text: '' }],
       })
 
       const app = createApp({ licenceService, conditionsService: conditionsServiceStub }, 'roUser')
@@ -81,6 +83,7 @@ describe('/hdc/licenceConditions', () => {
         additionalConditions: [{ text: '' }],
         bespokeConditions: [{ text: '' }],
         pssConditions: [{ text: 'reasonably required by your supervisor, to give a sample' }],
+        unapprovedBespokeConditions: [{ text: '' }],
       })
 
       const app = createApp({ licenceService, conditionsService: conditionsServiceStub }, 'roUser')
@@ -98,6 +101,7 @@ describe('/hdc/licenceConditions', () => {
         additionalConditions: [{ text: '' }],
         bespokeConditions: [{ text: 'Bespoke condition - approval Yes' }],
         pssConditions: [{ text: '' }],
+        unapprovedBespokeConditions: [{ text: '' }],
       })
 
       const app = createApp({ licenceService, conditionsService: conditionsServiceStub }, 'roUser')
@@ -115,6 +119,7 @@ describe('/hdc/licenceConditions', () => {
         additionalConditions: [],
         bespokeConditions: [],
         pssConditions: [],
+        unapprovedBespokeConditions: [],
       })
 
       const app = createApp({ licenceService, conditionsService: conditionsServiceStub }, 'roUser')
@@ -126,6 +131,7 @@ describe('/hdc/licenceConditions', () => {
           expect(res.text).toContain('No additional conditions selected')
           expect(res.text).toContain('No post sentence supervision conditions selected')
           expect(res.text).toContain('No bespoke conditions selected')
+          expect(res.text).toContain('No unapproved bespoke conditions selected')
         })
     })
   })
