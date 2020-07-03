@@ -36,11 +36,11 @@ class TaskListGuardSpec extends GebReportingSpec {
     at expectedPage
 
     where:
-    role     || expectedPage
-    'PRISON' || CaselistPage
-    'CA'     || TaskListPage
-    'RO'     || TaskListPage
-    'DM'     || CaselistPage
+    role       || expectedPage
+    'READONLY' || CaselistPage
+    'CA'       || TaskListPage
+    'RO'       || TaskListPage
+    'DM'       || CaselistPage
   }
 
   @Unroll
@@ -56,41 +56,41 @@ class TaskListGuardSpec extends GebReportingSpec {
     at expectedPage
 
     where:
-    role     | licenceDataFilename              || expectedPage
-    'PRISON' | 'eligibility/unstarted'          || ReviewLicencePage
-    'CA'     | 'eligibility/unstarted'          || TaskListPage
-    'RO'     | 'eligibility/unstarted'          || ReviewLicencePage
-    'DM'     | 'eligibility/unstarted'          || CaselistPage
+    role       | licenceDataFilename              || expectedPage
+    'READONLY' | 'eligibility/unstarted'          || ReviewLicencePage
+    'CA'       | 'eligibility/unstarted'          || TaskListPage
+    'RO'       | 'eligibility/unstarted'          || ReviewLicencePage
+    'DM'       | 'eligibility/unstarted'          || CaselistPage
 
-    'PRISON' | 'assessment/unstarted'           || ReviewLicencePage
-    'CA'     | 'assessment/unstarted'           || ReviewLicencePage
-    'RO'     | 'assessment/unstarted'           || TaskListPage
-    'DM'     | 'assessment/unstarted'           || CaselistPage
+    'READONLY' | 'assessment/unstarted'           || ReviewLicencePage
+    'CA'       | 'assessment/unstarted'           || ReviewLicencePage
+    'RO'       | 'assessment/unstarted'           || TaskListPage
+    'DM'       | 'assessment/unstarted'           || CaselistPage
 
-    'PRISON' |'review/normal'                   || ReviewLicencePage
-    'CA'     | 'review/normal'                  || TaskListPage
-    'RO'     | 'review/normal'                  || ReviewLicencePage
-    'DM'     | 'review/normal'                  || CaselistPage
+    'READONLY' |'review/normal'                   || ReviewLicencePage
+    'CA'       | 'review/normal'                  || TaskListPage
+    'RO'       | 'review/normal'                  || ReviewLicencePage
+    'DM'       | 'review/normal'                  || CaselistPage
 
-    'PRISON' | 'finalchecks/unstarted'           || ReviewLicencePage
-    'CA'     | 'finalchecks/unstarted'          || TaskListPage
-    'RO'     | 'finalchecks/unstarted'          || ReviewLicencePage
-    'DM'     | 'finalchecks/unstarted'          || CaselistPage
+    'READONLY' | 'finalchecks/unstarted'          || ReviewLicencePage
+    'CA'       | 'finalchecks/unstarted'          || TaskListPage
+    'RO'       | 'finalchecks/unstarted'          || ReviewLicencePage
+    'DM'       | 'finalchecks/unstarted'          || CaselistPage
 
-    'PRISON' | 'decision/unstarted'             || ReviewLicencePage
-    'CA'     | 'decision/unstarted'             || ReviewLicencePage
-    'RO'     | 'decision/unstarted'             || ReviewLicencePage
-    'DM'     | 'decision/unstarted'             || TaskListPage
+    'READONLY' | 'decision/unstarted'             || ReviewLicencePage
+    'CA'       | 'decision/unstarted'             || ReviewLicencePage
+    'RO'       | 'decision/unstarted'             || ReviewLicencePage
+    'DM'       | 'decision/unstarted'             || TaskListPage
 
-    'PRISON' | 'decision/approved'              || ReviewLicencePage
-    'CA'     | 'decision/approved'              || TaskListPage
-    'RO'     | 'decision/approved'              || ReviewLicencePage
-    'DM'     | 'decision/approved'              || ReviewLicencePage
+    'READONLY' | 'decision/approved'              || ReviewLicencePage
+    'CA'       | 'decision/approved'              || TaskListPage
+    'RO'       | 'decision/approved'              || ReviewLicencePage
+    'DM'       | 'decision/approved'              || ReviewLicencePage
 
-    'PRISON' | 'postDecision/address-withdrawn' || ReviewLicencePage
-    'CA'     | 'postDecision/address-withdrawn' || TaskListPage
-    'RO'     | 'postDecision/address-withdrawn' || ReviewLicencePage
-    'DM'     | 'postDecision/address-withdrawn' || ReviewLicencePage
+    'READONLY' | 'postDecision/address-withdrawn' || ReviewLicencePage
+    'CA'       | 'postDecision/address-withdrawn' || TaskListPage
+    'RO'       | 'postDecision/address-withdrawn' || ReviewLicencePage
+    'DM'       | 'postDecision/address-withdrawn' || ReviewLicencePage
   }
 
   @Unroll
@@ -106,10 +106,10 @@ class TaskListGuardSpec extends GebReportingSpec {
     at expectedPage
 
     where:
-    role || expectedPage
-    'PRISON' || CaselistPage
-    'CA'     || CaselistPage
-    'RO'     || TaskListPage
-    'DM'     || CaselistPage
+    role       || expectedPage
+    'READONLY' || CaselistPage
+    'CA'       || CaselistPage
+    'RO'       || TaskListPage
+    'DM'       || CaselistPage
   }
 }

@@ -36,11 +36,11 @@ class WebsiteSpec extends GebReportingSpec {
     actions.logOut()
 
     where:
-    user     | userName
-    'CA'     | 'Catherine Amos'
-    'RO'     | 'Ryan-Auth Orton'
-    'DM'     | 'Diane Matthews'
-    'PRISON' | 'Use Of Force Reviewer'
+    user       | userName
+    'CA'       | 'Catherine Amos'
+    'RO'       | 'Ryan-Auth Orton'
+    'DM'       | 'Diane Matthews'
+    'READONLY' | 'Licence Read Only'
   }
 
   def 'User can log out'() {

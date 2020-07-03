@@ -11,6 +11,13 @@ executors:
         environment:
           POSTGRES_USER: licences
           POSTGRES_DB: licences
+      - image: quay.io/hmpps/hmpps-auth:latest
+        name: hmpps-auth
+        environment:
+          SPRING_PROFILES_ACTIVE: dev
+      - image: mojdigitalstudio/licences-nomis-mocks:latest
+        name: licences-nomis-mocks
+
     working_directory: ~/app
 
 jobs:
@@ -69,10 +76,10 @@ jobs:
     environment:
       DB_SSL_ENABLED: false
       ENABLE_TEST_UTILS: true
-      NOMIS_API_URL: https://licences-demo-mocks.herokuapp.com/elite2api/api
-      NOMIS_AUTH_URL: https://nomis-oauth2-server.herokuapp.com/auth
-      DELIUS_API_URL: https://licences-demo-mocks.herokuapp.com/communityapi
-      PROBATION_TEAMS_API_URL: https://licences-demo-mocks.herokuapp.com/probationteams
+      NOMIS_API_URL: http://licences-nomis-mocks:9090/elite2api/api
+      NOMIS_AUTH_URL: http://hmpps-auth:8080/auth
+      DELIUS_API_URL: http://licences-nomis-mocks:9090/communityapi
+      PROBATION_TEAMS_API_URL: http://licences-nomis-mocks:9090/probationteams
     steps:
       - checkout
       - attach_workspace:
