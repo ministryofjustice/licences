@@ -17,9 +17,12 @@ module.exports = ({ licenceService, conditionsService }) => (router, audited) =>
     const standardConditions = conditionsService.getStandardConditions()
     const { additionalConditionsRequired } =
       getIn(res.locals.licence, ['licence', 'licenceConditions', 'standard']) || {}
-    const { additionalConditions, pssConditions, bespokeConditions } = conditionsService.getNonStandardConditions(
-      res.locals.licence.licence
-    )
+    const {
+      additionalConditions,
+      pssConditions,
+      bespokeConditions,
+      unapprovedBespokeConditions,
+    } = conditionsService.getNonStandardConditions(res.locals.licence.licence)
 
     res.render('licenceConditions/standard', {
       action,
@@ -29,6 +32,7 @@ module.exports = ({ licenceService, conditionsService }) => (router, audited) =>
       additionalConditions,
       pssConditions,
       bespokeConditions,
+      unapprovedBespokeConditions,
     })
   }
 

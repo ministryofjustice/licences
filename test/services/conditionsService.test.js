@@ -1157,7 +1157,7 @@ describe('conditionsService', () => {
     })
   })
   describe('getNonStandardConditions', () => {
-    test('should return correctly 3 formatted contents', () => {
+    test('should return correctly 4 formatted contents', () => {
       const licence = {
         licenceConditions: {
           additional: {
@@ -1177,6 +1177,9 @@ describe('conditionsService', () => {
               text: 'Bespoke condition 1',
               approved: 'Yes',
             },
+            {
+              text: 'some text input but yes/no not selected',
+            },
           ],
         },
       }
@@ -1195,27 +1198,35 @@ describe('conditionsService', () => {
               'Attend The Probation Service, 1, Some Address, as reasonably required by your supervisor, to give a sample of oral fluid/urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the requirement of supervision period requiring you to be of good behaviour',
           },
         ],
+        unapprovedBespokeConditions: [{ text: 'some text input but yes/no not selected' }],
       })
     })
 
-    test('should return 3 empty arrays', () => {
+    test('should return 4 empty arrays', () => {
       const licence = {
-        licenceConditions: { bespoke: [], additional: {} },
+        licenceConditions: { bespoke: [], standard: { additionalConditionsRequired: 'Yes' }, additional: {} },
       }
 
       return expect(service.getNonStandardConditions(licence)).toEqual({
         additionalConditions: [],
         bespokeConditions: [],
         pssConditions: [],
+        unapprovedBespokeConditions: [],
       })
     })
 
-    test('should return empty array for bespoke condition if has not been approved', () => {
+    test('should return 2 unapprovedBespokeConditions if approved = No', () => {
       const licence = {
         licenceConditions: {
+          additional: {},
+          standard: { additionalConditionsRequired: 'Yes' },
           bespoke: [
             {
-              text: 'Bespoke condition text',
+              text: 'Bespoke condition text 1',
+              approved: 'No',
+            },
+            {
+              text: 'Bespoke condition text 2',
               approved: 'No',
             },
           ],
@@ -1226,12 +1237,15 @@ describe('conditionsService', () => {
         additionalConditions: [],
         bespokeConditions: [],
         pssConditions: [],
+        unapprovedBespokeConditions: [{ text: 'Bespoke condition text 1' }, { text: 'Bespoke condition text 2' }],
       })
     })
 
-    test('should empty array for bespoke condition if neither Yes/No has been selected', () => {
+    test('should return 0 bespoke conditions but 1 unapprovedBespokeConditions because approved is neither Yes/No', () => {
       const licence = {
         licenceConditions: {
+          additional: {},
+          standard: { additionalConditionsRequired: 'Yes' },
           bespoke: [
             {
               text: 'Bespoke condition text',
@@ -1244,6 +1258,7 @@ describe('conditionsService', () => {
         additionalConditions: [],
         bespokeConditions: [],
         pssConditions: [],
+        unapprovedBespokeConditions: [{ text: 'Bespoke condition text' }],
       })
     })
   })

@@ -213,10 +213,15 @@ module.exports = function createConditionsService({ use2019Conditions }) {
       (condition) => condition.group === 'Bespoke' && condition.approved === 'Yes'
     )
 
+    const unapprovedBespokeConditions = licenceConditions.filter(
+      (condition) => condition.group === 'Bespoke' && (condition.approved === 'No' || !condition.approved)
+    )
+
     return {
       additionalConditions: allAdditionalConditions.map(formatConditionsText),
       bespokeConditions: bespokeConditions.map(formatConditionsText),
       pssConditions: pssConditions.map(formatConditionsText),
+      unapprovedBespokeConditions: unapprovedBespokeConditions.map(formatConditionsText),
     }
   }
 
