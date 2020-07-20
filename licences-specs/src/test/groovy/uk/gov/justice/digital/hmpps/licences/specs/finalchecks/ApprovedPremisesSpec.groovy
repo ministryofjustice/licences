@@ -1,18 +1,12 @@
 package uk.gov.justice.digital.hmpps.licences.specs.finalchecks
 
 import geb.spock.GebReportingSpec
+import org.openqa.selenium.Keys
 import spock.lang.Shared
 import spock.lang.Stepwise
-import spock.lang.Unroll
-import uk.gov.justice.digital.hmpps.licences.modules.ApprovedPremisesModule
 import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.ApprovedPremisesAddressPage
-import uk.gov.justice.digital.hmpps.licences.pages.eligibility.BassRequestPage
-import uk.gov.justice.digital.hmpps.licences.pages.eligibility.CurfewAddressChoicePage
 import uk.gov.justice.digital.hmpps.licences.pages.finalchecks.ApprovedPremisesChoicePage
-import uk.gov.justice.digital.hmpps.licences.pages.finalchecks.BassOfferPage
-import uk.gov.justice.digital.hmpps.licences.pages.finalchecks.BassUnsuitablePage
-import uk.gov.justice.digital.hmpps.licences.pages.finalchecks.BassWithdrawnPage
 import uk.gov.justice.digital.hmpps.licences.util.Actions
 import uk.gov.justice.digital.hmpps.licences.util.TestData
 
@@ -50,9 +44,10 @@ class ApprovedPremisesSpec extends GebReportingSpec {
     approvedPremisesChoiceRadios.checked == 'ApprovedPremises'
 
     when: 'I continue'
-    find('#continueBtn').click()
+    find('#continueBtn') << Keys.ENTER
 
     then: 'I see the address details'
+
     at ApprovedPremisesAddressPage
     approvedPremises.addressForm.line1.value() == 'AP1'
     approvedPremises.addressForm.line2.value() == 'AP2'
@@ -68,7 +63,7 @@ class ApprovedPremisesSpec extends GebReportingSpec {
 
     when: 'I select opt out and continue'
     approvedPremisesChoiceRadios.checked = 'OptOut'
-    find('#continueBtn').click()
+    find('#continueBtn') <<  Keys.ENTER
 
     then: 'I see the tasklist page'
     at TaskListPage

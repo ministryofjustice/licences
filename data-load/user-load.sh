@@ -33,7 +33,7 @@ VARY_ROLE=${6?No vary role indicator specified}
 
 # Set the environment-specific hostname for the oauth2 service
 if [[ "$ENV" == "t3" ]]; then
-  HOST="https://gateway.t3.nomis-api.hmpps.dsd.io"
+  HOST="https://sign-in-dev.hmpps.service.justice.gov.uk"
 elif [[ "$ENV" == "t2" ]]; then
   HOST="https://gateway.t2.nomis-api.hmpps.dsd.io"
 else 

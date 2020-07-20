@@ -102,7 +102,7 @@ create table licence_versions
 
 The prisoner object is an OffenderSentenceDetail object in elite2Api:
 
-For reference, it looks like this: (from https://gateway.t3.nomis-api.hmpps.dsd.io/elite2api/swagger-ui.html#//offender-sentences/postOffenderSentencesBookings)
+For reference, it looks like this: (from https://api-dev.prison.service.justice.gov.uk/swagger-ui.html#//offender-sentences/postOffenderSentencesBookings)
 
 ```
 {
