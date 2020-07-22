@@ -1,5 +1,5 @@
 import Booking, { AddressChoice } from './booking'
-import { AuditRow, Event, RowConsumer } from './types'
+import { AuditRow, Event, RowConsumer, Actions } from './types'
 
 export interface Node {
   count: number
@@ -16,13 +16,6 @@ export interface Node {
 interface BookingState {
   currentNode: Node
   booking: Booking
-}
-
-enum Actions {
-  SEND = 'SEND',
-  START = 'LICENCE_RECORD_STARTED',
-  PDF = 'CREATE_PDF',
-  VARY = 'VARY_NOMIS_LICENCE_CREATED',
 }
 
 const emptyNode = () => ({ count: 0, children: {} })
