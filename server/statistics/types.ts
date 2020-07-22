@@ -4,6 +4,14 @@ export interface RowConsumer<R> {
   consumeRows(rows: Array<R>): void
 }
 
+export enum Actions {
+  SEND = 'SEND',
+  START = 'LICENCE_RECORD_STARTED',
+  PDF = 'CREATE_PDF',
+  VARY = 'VARY_NOMIS_LICENCE_CREATED',
+  UPDATE = 'UPDATE_SECTION',
+}
+
 export interface AuditRow {
   action?: string
   details?: {
@@ -20,6 +28,26 @@ export interface LicenceRow {
   template?: string
   version?: number
   vary_version?: number
+  started: Date
+}
+
+export interface PrisonLocation {
+  type: 'prison'
+  agencyId: string
+}
+
+export interface ProbationLocation {
+  type: 'probation'
+  lduCode: string
+  probationAreaCode: string
+}
+
+export interface AuditSendRow {
+  timestamp: Date
+  booking_id: number
+  source?: PrisonLocation | ProbationLocation
+  target?: PrisonLocation | ProbationLocation
+  transition_type: string
 }
 
 export enum Event {

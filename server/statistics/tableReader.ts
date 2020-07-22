@@ -1,7 +1,7 @@
 import fs from 'fs'
 import { Client } from 'pg'
 import config from '../config'
-import { AuditRow, LicenceRow, RowConsumer } from './types'
+import { AuditRow, AuditSendRow, LicenceRow, RowConsumer } from './types'
 
 const CHUNK_SIZE = 20000
 
@@ -62,7 +62,8 @@ export const licenceTableReader = new TableReader<LicenceRow>(
               l.stage,
               lv.template,
               lv.version,
-              lv.vary_version
+              lv.vary_version,
+              a1.timestamp as started  -- When the case was started
          from licences l
               left outer join licence_versions lv on l.booking_id = lv.booking_id and
                                        lv.id = (
@@ -71,7 +72,21 @@ export const licenceTableReader = new TableReader<LicenceRow>(
                                            order by lv2.version desc, lv2.vary_version desc
                                            limit 1
                                            )
+              join audit a1 on l.booking_id = cast(a1.details ->> 'bookingId' as integer) and action = 'LICENCE_RECORD_STARTED'
      order by l.id asc
-       limit $1
-      offset $2`
+        limit $1
+       offset $2`
+)
+
+export const auditTableReaderForSendEvents = new TableReader<AuditSendRow>(
+  `select cast(details ->> 'bookingId' as integer) as booking_id,
+          details #> '{ source }' as source,
+          details #> '{ target }' as target,
+          details ->> 'transitionType' as transition_type,
+          timestamp
+     from audit
+    where action = 'SEND'
+ order by timestamp asc
+    limit $1
+   offset $2`
 )
