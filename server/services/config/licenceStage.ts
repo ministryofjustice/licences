@@ -1,4 +1,4 @@
-export enum licenceStage {
+export enum LicenceStage {
   UNSTARTED = 'UNSTARTED',
   DEFAULT = 'ELIGIBILITY',
   ELIGIBILITY = 'ELIGIBILITY',
@@ -12,16 +12,16 @@ export enum licenceStage {
 }
 
 export const transitions = {
-  caToRo: licenceStage.PROCESSING_RO,
-  caToDm: licenceStage.APPROVAL,
-  caToDmResubmit: licenceStage.APPROVAL,
-  roToCa: licenceStage.PROCESSING_CA,
-  dmToCa: licenceStage.DECIDED,
-  dmToCaReturn: licenceStage.PROCESSING_CA,
-  caToDmRefusal: licenceStage.APPROVAL,
-  roToCaAddressRejected: licenceStage.ELIGIBILITY,
-  roToCaOptedOut: licenceStage.ELIGIBILITY,
+  caToRo: LicenceStage.PROCESSING_RO,
+  caToDm: LicenceStage.APPROVAL,
+  caToDmResubmit: LicenceStage.APPROVAL,
+  roToCa: LicenceStage.PROCESSING_CA,
+  dmToCa: LicenceStage.DECIDED,
+  dmToCaReturn: LicenceStage.PROCESSING_CA,
+  caToDmRefusal: LicenceStage.APPROVAL,
+  roToCaAddressRejected: LicenceStage.ELIGIBILITY,
+  roToCaOptedOut: LicenceStage.ELIGIBILITY,
 }
 
-export const isPostApproval = (stage: licenceStage): boolean =>
+export const isPostApproval = (stage: LicenceStage): boolean =>
   ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(stage)

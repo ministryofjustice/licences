@@ -1,6 +1,5 @@
-const baseJoi = require('joi')
-const dateExtend = require('joi-date-extensions')
-const postcodeExtend = require('joi-postcode')
+const baseJoi = require('joi').extend(require('@hapi/joi-date'))
+
 const moment = require('moment')
 
 const today = moment().startOf('day').format('MM-DD-YYYY')
@@ -28,20 +27,32 @@ const reportingConfig = require('../../routes/config/reporting')
 const bassConfig = require('../../routes/config/bassReferral')
 const conditionsConfig = require('../../routes/config/licenceConditions')
 
-const joi = baseJoi.extend(dateExtend).extend(postcodeExtend)
+const joi = baseJoi
+const postcode = joi
+  .string()
+  .regex(/^[a-z]{1,2}\d[a-z\d]?\s*\d[a-z]{2}$/i)
+  .description('postcode')
 
 const fieldOptions = {
   requiredString: joi.string().required(),
   optionalString: joi.string().allow('').optional(),
-  requiredYesNo: joi.valid(['Yes', 'No']).required(),
-  optionalYesNo: joi.valid(['Yes', 'No']).optional(),
+  requiredYesNo: joi.valid('Yes', 'No').required(),
+  optionalYesNo: joi.valid('Yes', 'No').optional(),
   selection: joi.alternatives().try(joi.string(), joi.array().min(1)).required(),
-  requiredTime: joi.date().format('HH:mm').required(),
+  requiredTime: joi.when(joi.ref('.'), {
+    is: '',
+    then: joi.string().required(),
+    otherwise: joi.date().format('HH:mm').required(),
+  }),
   optionalTime: joi.date().format('HH:mm').optional(),
-  requiredDate: joi.date().format('DD/MM/YYYY').min(today).required(),
+  requiredDate: joi.when(joi.ref('.'), {
+    is: '',
+    then: joi.string().required(),
+    otherwise: joi.date().format('DD/MM/YYYY').min(today).required(),
+  }),
   optionalList: joi.array().optional(),
-  requiredPostcode: joi.postcode().required(),
-  optionalPostcode: joi.postcode().allow('').optional(),
+  requiredPostcode: postcode.required(),
+  optionalPostcode: postcode.allow('').optional(),
   requiredPhone: joi
     .string()
     .regex(/^[0-9+\s]+$/)
@@ -61,7 +72,7 @@ const fieldOptions = {
   requiredYesNoIf: (requiredItem = 'decision', requiredAnswer = 'Yes') =>
     joi.when(requiredItem, {
       is: requiredAnswer,
-      then: joi.valid(['Yes', 'No']).required(),
+      then: joi.valid('Yes', 'No').required(),
       otherwise: joi.any().optional(),
     }),
   requiredStringIf: (requiredItem = 'decision', requiredAnswer = 'Yes') =>
@@ -79,7 +90,7 @@ const fieldOptions = {
   requiredPostcodeIf: (requiredItem = 'decision', requiredAnswer = 'Yes') =>
     joi.when(requiredItem, {
       is: requiredAnswer,
-      then: joi.postcode().required(),
+      then: postcode.required(),
       otherwise: joi.any().optional(),
     }),
   requiredTimeIf: (requiredItem = 'decision', requiredAnswer = 'Yes') =>
@@ -92,7 +103,7 @@ const fieldOptions = {
 
 const defaultErrorMessages = {
   requiredPhone: (errorType) =>
-    errorType === 'string.regex.base'
+    errorType === 'string.pattern.base'
       ? 'Enter a telephone number, like 01632 960 001 or 07700 900 982'
       : 'Enter a telephone number',
 
@@ -102,7 +113,9 @@ const defaultErrorMessages = {
     return 'Enter a date'
   },
 
-  requiredTime: (errorType) => (errorType === 'date.format' ? 'Enter a valid time' : 'Enter a time'),
+  requiredTime: (errorType) => {
+    return errorType === 'date.format' ? 'Enter a valid time' : 'Enter a time'
+  },
 }
 
 const validationProcedures = {
@@ -154,7 +167,7 @@ function validate({ formResponse, pageConfig, formType = 'standard', bespokeCond
   const fieldsConfig = getIn(pageConfig, ['fields'])
   const formSchema = procedure.getSchema(pageConfig, bespokeConditions)
 
-  const joiErrors = joi.validate(formResponse, formSchema, { stripUnknown: false, abortEarly: false })
+  const joiErrors = formSchema.validate(formResponse, { stripUnknown: false, abortEarly: false })
   if (!joiErrors.error) {
     return {}
   }

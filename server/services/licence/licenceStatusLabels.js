@@ -1,5 +1,5 @@
-const { licenceStage } = require('../config/licenceStage')
-const { taskState, anyStarted } = require('../config/taskState')
+const { LicenceStage } = require('../config/licenceStage')
+const { TaskState, anyStarted } = require('../config/taskState')
 
 module.exports = { getStatusLabel }
 
@@ -38,7 +38,7 @@ function getStatusLabel(licenceStatus, role) {
   if (
     !licenceStatus ||
     !licenceStatus.stage ||
-    licenceStatus.stage === licenceStage.UNSTARTED ||
+    licenceStatus.stage === LicenceStage.UNSTARTED ||
     !licenceStatus.decisions ||
     !licenceStatus.tasks
   ) {
@@ -50,49 +50,49 @@ function getStatusLabel(licenceStatus, role) {
 
 function statusLabels(licenceStatus, role) {
   const labels = {
-    [licenceStage.ELIGIBILITY]: {
+    [LicenceStage.ELIGIBILITY]: {
       READONLY: caEligibilityLabel,
       CA: caEligibilityLabel,
       RO: () => status.withPrison,
       DM: () => status.withPrison,
     },
-    [licenceStage.PROCESSING_RO]: {
+    [LicenceStage.PROCESSING_RO]: {
       READONLY: roProcessingCaLabel,
       CA: roProcessingCaLabel,
       RO: roProcessingLabel,
       DM: () => status.withResponsibleOfficer,
     },
-    [licenceStage.PROCESSING_CA]: {
+    [LicenceStage.PROCESSING_CA]: {
       READONLY: caProcessingLabel,
       CA: caProcessingLabel,
       RO: caProcessingRoLabel,
       DM: caProcessingDmLabel,
     },
-    [licenceStage.APPROVAL]: {
+    [LicenceStage.APPROVAL]: {
       READONLY: () => status.withDecisionMaker,
       CA: () => status.withDecisionMaker,
       RO: () => status.withDecisionMaker,
       DM: dmProcessingLabel,
     },
-    [licenceStage.DECIDED]: {
+    [LicenceStage.DECIDED]: {
       READONLY: caDecisionLabel,
       CA: caDecisionLabel,
       RO: decisionLabel,
       DM: decisionLabel,
     },
-    [licenceStage.MODIFIED]: {
+    [LicenceStage.MODIFIED]: {
       READONLY: postApprovalLabel,
       CA: postApprovalLabel,
       RO: postApprovalLabel,
       DM: postApprovalLabel,
     },
-    [licenceStage.MODIFIED_APPROVAL]: {
+    [LicenceStage.MODIFIED_APPROVAL]: {
       READONLY: postApprovalLabel,
       CA: postApprovalLabel,
       RO: postApprovalLabel,
       DM: postApprovalLabel,
     },
-    [licenceStage.VARY]: {
+    [LicenceStage.VARY]: {
       READONLY: () => status.varyingLicence,
       CA: () => status.varyingLicence,
       RO: () => status.varyingLicence,
@@ -164,7 +164,7 @@ function roProcessingLabel(licenceStatus) {
   }
 
   if (licenceStatus.decisions.bassReferralNeeded) {
-    if (licenceStatus.tasks.bassAreaCheck === taskState.UNSTARTED) {
+    if (licenceStatus.tasks.bassAreaCheck === TaskState.UNSTARTED) {
       return status.notStarted
     }
 
@@ -205,7 +205,7 @@ function dmProcessingLabel(licenceStatus) {
 
 function caDecisionLabel(licenceStatus) {
   if (licenceStatus.decisions.approved) {
-    if (licenceStatus.tasks.createLicence === taskState.DONE) {
+    if (licenceStatus.tasks.createLicence === TaskState.DONE) {
       return status.licenceCreated
     }
 
@@ -217,7 +217,7 @@ function caDecisionLabel(licenceStatus) {
 
 function decisionLabel(licenceStatus) {
   if (licenceStatus.decisions.approved) {
-    if (licenceStatus.tasks.createLicence === taskState.DONE) {
+    if (licenceStatus.tasks.createLicence === TaskState.DONE) {
       return status.licenceCreated
     }
   }

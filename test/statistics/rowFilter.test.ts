@@ -1,4 +1,4 @@
-import { RowFilter } from '../../server/statistics/rowFilter'
+import RowFilter from '../../server/statistics/rowFilter'
 import { RowConsumer } from '../../server/statistics/types'
 
 class SimpleConsumer<R> implements RowConsumer<R> {
@@ -10,10 +10,6 @@ class SimpleConsumer<R> implements RowConsumer<R> {
 }
 describe('RowFilter', () => {
   const nullFilter = () => true
-
-  it('Can be constructed', () => {
-    new RowFilter<object>(new SimpleConsumer(), nullFilter)
-  })
 
   it('Delegates', () => {
     const consumer = new SimpleConsumer<number>()

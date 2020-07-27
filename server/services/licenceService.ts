@@ -1,6 +1,6 @@
 import moment from 'moment'
 import logger from '../../log'
-import { licenceStage, transitions } from './config/licenceStage'
+import { LicenceStage, transitions } from './config/licenceStage'
 import recordList from './utils/recordList'
 import formValidation from './utils/formValidation'
 import { LicenceClient } from '../data/licenceClient'
@@ -93,7 +93,7 @@ export class LicenceService {
 
   createLicence({ bookingId, data = {}, stage = null }: { bookingId: number; data?: Licence; stage?: string }) {
     const varyVersion = stage === 'VARY' ? 1 : 0
-    return this.licenceClient.createLicence(bookingId, data, licenceStage[stage], 1, varyVersion)
+    return this.licenceClient.createLicence(bookingId, data, LicenceStage[stage], 1, varyVersion)
   }
 
   async updateLicenceConditions(bookingId, existingLicence, newConditionsObject, postRelease = false) {
@@ -172,11 +172,11 @@ export class LicenceService {
     }
 
     if (requiresApproval && (stage === 'DECIDED' || stage === 'MODIFIED')) {
-      return this.licenceClient.updateStage(bookingId, licenceStage.MODIFIED_APPROVAL)
+      return this.licenceClient.updateStage(bookingId, LicenceStage.MODIFIED_APPROVAL)
     }
 
     if (stage === 'DECIDED') {
-      return this.licenceClient.updateStage(bookingId, licenceStage.MODIFIED)
+      return this.licenceClient.updateStage(bookingId, LicenceStage.MODIFIED)
     }
     return null
   }

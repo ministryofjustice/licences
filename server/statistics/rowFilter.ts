@@ -3,7 +3,7 @@ import { RowConsumer } from './types'
 interface Predicate<R> {
   (value: R): boolean
 }
-export class RowFilter<R> implements RowConsumer<R> {
+export default class RowFilter<R> implements RowConsumer<R> {
   constructor(readonly delegate: RowConsumer<R>, readonly filterPredicate: Predicate<R>) {}
 
   consumeRows(rows: Array<R>): void {

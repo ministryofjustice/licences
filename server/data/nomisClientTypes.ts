@@ -1,4 +1,4 @@
-type ISO_8601_DATE_STRING = string
+type Iso8601DateString = string
 
 export interface OffenderSentence {
   bookingId: number
@@ -12,36 +12,36 @@ export interface OffenderSentence {
   facialImageId: number
   sentenceDetail: {
     bookingId: number
-    sentenceStartDate: ISO_8601_DATE_STRING
-    confirmedReleaseDate: ISO_8601_DATE_STRING
-    releaseDate: ISO_8601_DATE_STRING
+    sentenceStartDate: Iso8601DateString
+    confirmedReleaseDate: Iso8601DateString
+    releaseDate: Iso8601DateString
     nonDtoReleaseDateType: string
     additionalDaysAwarded: number
-    automaticReleaseOverrideDate: ISO_8601_DATE_STRING
-    conditionalReleaseOverrideDate: ISO_8601_DATE_STRING
-    nonParoleOverrideDate: ISO_8601_DATE_STRING
-    postRecallReleaseOverrideDate: ISO_8601_DATE_STRING
-    dtoPostRecallReleaseDateOverride: ISO_8601_DATE_STRING
-    nonDtoReleaseDate: ISO_8601_DATE_STRING
-    sentenceExpiryDate: ISO_8601_DATE_STRING
-    automaticReleaseDate: ISO_8601_DATE_STRING
-    conditionalReleaseDate: ISO_8601_DATE_STRING
-    nonParoleDate: ISO_8601_DATE_STRING
-    postRecallReleaseDate: ISO_8601_DATE_STRING
-    licenceExpiryDate: ISO_8601_DATE_STRING
-    homeDetentionCurfewEligibilityDate: ISO_8601_DATE_STRING
-    paroleEligibilityDate: ISO_8601_DATE_STRING
-    homeDetentionCurfewActualDate: ISO_8601_DATE_STRING
-    actualParoleDate: ISO_8601_DATE_STRING
-    releaseOnTemporaryLicenceDate: ISO_8601_DATE_STRING
-    earlyRemovalSchemeEligibilityDate: ISO_8601_DATE_STRING
-    earlyTermDate: ISO_8601_DATE_STRING
-    midTermDate: ISO_8601_DATE_STRING
-    lateTermDate: ISO_8601_DATE_STRING
-    topupSupervisionExpiryDate: ISO_8601_DATE_STRING
-    dtoPostRecallReleaseDate: ISO_8601_DATE_STRING
-    tariffDate: ISO_8601_DATE_STRING
-    tariffEarlyRemovalSchemeEligibilityDate: ISO_8601_DATE_STRING
-    effectiveSentenceEndDate: ISO_8601_DATE_STRING
+    automaticReleaseOverrideDate: Iso8601DateString
+    conditionalReleaseOverrideDate: Iso8601DateString
+    nonParoleOverrideDate: Iso8601DateString
+    postRecallReleaseOverrideDate: Iso8601DateString
+    dtoPostRecallReleaseDateOverride: Iso8601DateString
+    nonDtoReleaseDate: Iso8601DateString
+    sentenceExpiryDate: Iso8601DateString
+    automaticReleaseDate: Iso8601DateString
+    conditionalReleaseDate: Iso8601DateString
+    nonParoleDate: Iso8601DateString
+    postRecallReleaseDate: Iso8601DateString
+    licenceExpiryDate: Iso8601DateString
+    homeDetentionCurfewEligibilityDate: Iso8601DateString
+    paroleEligibilityDate: Iso8601DateString
+    homeDetentionCurfewActualDate: Iso8601DateString
+    actualParoleDate: Iso8601DateString
+    releaseOnTemporaryLicenceDate: Iso8601DateString
+    earlyRemovalSchemeEligibilityDate: Iso8601DateString
+    earlyTermDate: Iso8601DateString
+    midTermDate: Iso8601DateString
+    lateTermDate: Iso8601DateString
+    topupSupervisionExpiryDate: Iso8601DateString
+    dtoPostRecallReleaseDate: Iso8601DateString
+    tariffDate: Iso8601DateString
+    tariffEarlyRemovalSchemeEligibilityDate: Iso8601DateString
+    effectiveSentenceEndDate: Iso8601DateString
   }
 }

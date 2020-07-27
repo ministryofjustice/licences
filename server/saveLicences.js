@@ -7,6 +7,7 @@ const config = require('./config')
 const fname = process.argv[2]
 
 if (!fname) {
+  // eslint-disable-next-line no-console
   console.log('Provide a filename to write licences data to')
   process.exit(1)
 }

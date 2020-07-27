@@ -3,10 +3,10 @@ import moment from 'moment'
 import R from 'ramda'
 import { auditTableReaderForSendEvents, licenceTableReader } from './statistics/tableReader'
 import { LicenceStatistics, LicenceStatisticsCollector } from './statistics/LicenceStatisticsCollector'
-import { RowFilter } from './statistics/rowFilter'
+import RowFilter from './statistics/rowFilter'
 import { AuditSendRow, LicenceRow } from './statistics/types'
-import { RowCollector } from './statistics/RowCollector'
-import { SentenceSource } from './statistics/sentenceSource'
+import RowCollector from './statistics/RowCollector'
+import SentenceSource from './statistics/sentenceSource'
 import { OffenderSentence } from './data/nomisClientTypes'
 
 const CUTOFFF_DATE = moment('2020-02-03')
@@ -17,8 +17,10 @@ const hasOutcome = (s: LicenceStatistics) =>
 
 const countAgency = (agencies, agencyId) => {
   if (agencies[agencyId]) {
+    // eslint-disable-next-line no-param-reassign
     agencies[agencyId] += 1
   } else {
+    // eslint-disable-next-line no-param-reassign
     agencies[agencyId] = 1
   }
 }

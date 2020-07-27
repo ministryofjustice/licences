@@ -9,9 +9,9 @@ import getTaskListModel from './viewModels/taskListModels'
 import logger from '../../log'
 import { getTasksForBlocked } from './viewModels/taskLists/caTasks'
 
-import { licenceStage, isPostApproval } from '../services/config/licenceStage'
+import { LicenceStage } from '../services/config/licenceStage'
 
-const { APPROVAL, DECIDED, ELIGIBILITY, MODIFIED, MODIFIED_APPROVAL, PROCESSING_CA, PROCESSING_RO } = licenceStage
+const { APPROVAL, DECIDED, ELIGIBILITY, MODIFIED, MODIFIED_APPROVAL, PROCESSING_CA, PROCESSING_RO } = LicenceStage
 
 const READ_WRITE = 'RW'
 const READ_ONLY = 'R'

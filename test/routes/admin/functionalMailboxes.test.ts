@@ -82,7 +82,7 @@ describe('functionalMailboxes router', () => {
   describe('lduFmbSchema', () => {
     it('accepts valid values', () => {
       const { error, value } = validateLduFmb('ABCDEFGHIJ', 'VW_XYZ123', 'a@b.com')
-      expect(error).toBeNull()
+      expect(error).toBeUndefined()
       expect(value).toEqual({
         probationAreaCode: 'ABCDEFGHIJ',
         lduCode: 'VW_XYZ123',
@@ -92,7 +92,7 @@ describe('functionalMailboxes router', () => {
 
     it('accepts empty fmb', () => {
       const { error, value } = validateLduFmb('A', 'B', '')
-      expect(error).toBeNull()
+      expect(error).toBeUndefined()
       expect(value).toEqual({
         probationAreaCode: 'A',
         lduCode: 'B',
@@ -109,7 +109,7 @@ describe('functionalMailboxes router', () => {
     })
 
     it('reject invalid codes', () => {
-      const { error, value } = validateLduFmb('A B', 'A*B', 'abc@def.com')
+      const { error } = validateLduFmb('A B', 'A*B', 'abc@def.com')
       expect(error.details).toEqual([
         expect.objectContaining({
           message: '"probationAreaCode" with value "A B" fails to match the required pattern: /^[0-9A-Z_]{1,10}$/',

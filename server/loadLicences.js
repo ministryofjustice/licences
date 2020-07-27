@@ -7,6 +7,7 @@ const config = require('./config')
 const fname = process.argv[2]
 
 if (!fname) {
+  // eslint-disable-next-line no-console
   console.log('Provide a filename to load licences data from')
   process.exit(1)
 }
