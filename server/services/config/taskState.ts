@@ -1,21 +1,21 @@
-export enum taskState {
+export enum TaskState {
   UNSTARTED = 'UNSTARTED',
   STARTED = 'STARTED',
   DONE = 'DONE',
 }
 
 export function getOverallState(tasks) {
-  if (tasks.every((it) => it === taskState.UNSTARTED)) {
-    return taskState.UNSTARTED
+  if (tasks.every((it) => it === TaskState.UNSTARTED)) {
+    return TaskState.UNSTARTED
   }
 
-  if (tasks.every((it) => it === taskState.DONE)) {
-    return taskState.DONE
+  if (tasks.every((it) => it === TaskState.DONE)) {
+    return TaskState.DONE
   }
 
-  return taskState.STARTED
+  return TaskState.STARTED
 }
 
-export const anyStarted = (tasks) => tasks.some((task) => [taskState.STARTED, taskState.DONE].includes(task))
+export const anyStarted = (tasks) => tasks.some((task) => [TaskState.STARTED, TaskState.DONE].includes(task))
 
-export const allComplete = (required) => required.every((it) => it === taskState.DONE)
+export const allComplete = (required) => required.every((it) => it === TaskState.DONE)

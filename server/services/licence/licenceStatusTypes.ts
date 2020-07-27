@@ -1,8 +1,8 @@
-import { taskState } from '../config/taskState'
-import { licenceStage } from '../config/licenceStage'
+import { TaskState } from '../config/taskState'
+import { LicenceStage } from '../config/licenceStage'
 
 export type LicenceStatus = {
-  stage: licenceStage
+  stage: LicenceStage
   postApproval: boolean
   decisions: Decisions
   tasks: Tasks
@@ -66,27 +66,27 @@ export type Decisions = {
 }
 
 export type Tasks = {
-  exclusion?: taskState
-  crdTime?: taskState
-  suitability?: taskState
-  eligibility?: taskState
-  optOut?: taskState
-  curfewAddress?: taskState
-  bassRequest?: taskState
-  bassAreaCheck?: taskState
-  bassOffer?: taskState
-  bassAddress?: taskState
-  riskManagement?: taskState
-  curfewAddressReview?: taskState
-  curfewHours?: taskState
-  reportingInstructions?: taskState
-  licenceConditions?: taskState
-  seriousOffenceCheck?: taskState
-  onRemandCheck?: taskState
-  confiscationOrderCheck?: taskState
-  finalChecks?: taskState
-  approval?: taskState
-  createLicence?: taskState
-  approvedPremisesAddress?: taskState
-  victim?: taskState
+  exclusion?: TaskState
+  crdTime?: TaskState
+  suitability?: TaskState
+  eligibility?: TaskState
+  optOut?: TaskState
+  curfewAddress?: TaskState
+  bassRequest?: TaskState
+  bassAreaCheck?: TaskState
+  bassOffer?: TaskState
+  bassAddress?: TaskState
+  riskManagement?: TaskState
+  curfewAddressReview?: TaskState
+  curfewHours?: TaskState
+  reportingInstructions?: TaskState
+  licenceConditions?: TaskState
+  seriousOffenceCheck?: TaskState
+  onRemandCheck?: TaskState
+  confiscationOrderCheck?: TaskState
+  finalChecks?: TaskState
+  approval?: TaskState
+  createLicence?: TaskState
+  approvedPremisesAddress?: TaskState
+  victim?: TaskState
 }

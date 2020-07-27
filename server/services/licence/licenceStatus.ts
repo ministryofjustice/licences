@@ -1,5 +1,5 @@
-import { taskState, getOverallState } from '../config/taskState'
-import { licenceStage, isPostApproval } from '../config/licenceStage'
+import { TaskState, getOverallState } from '../config/taskState'
+import { LicenceStage, isPostApproval } from '../config/licenceStage'
 import { isEmpty, flatten } from '../../utils/functionalHelpers'
 
 import { getBassAreaState, getBassRequestState, getBassState } from './bassAddressState'
@@ -10,33 +10,33 @@ import { LicenceStatus } from './licenceStatusTypes'
 export = function getLicenceStatus(licenceRecord): LicenceStatus {
   if (!licenceRecord || isEmpty(licenceRecord.licence) || !licenceRecord.stage) {
     return {
-      stage: licenceStage.UNSTARTED,
+      stage: LicenceStage.UNSTARTED,
       postApproval: false,
       decisions: {},
       tasks: {
-        exclusion: taskState.UNSTARTED,
-        crdTime: taskState.UNSTARTED,
-        suitability: taskState.UNSTARTED,
-        eligibility: taskState.UNSTARTED,
-        optOut: taskState.UNSTARTED,
-        curfewAddress: taskState.UNSTARTED,
-        bassRequest: taskState.UNSTARTED,
-        bassAreaCheck: taskState.UNSTARTED,
-        bassOffer: taskState.UNSTARTED,
-        bassAddress: taskState.UNSTARTED,
-        riskManagement: taskState.UNSTARTED,
-        curfewAddressReview: taskState.UNSTARTED,
-        curfewHours: taskState.UNSTARTED,
-        reportingInstructions: taskState.UNSTARTED,
-        licenceConditions: taskState.UNSTARTED,
-        seriousOffenceCheck: taskState.UNSTARTED,
-        onRemandCheck: taskState.UNSTARTED,
-        confiscationOrderCheck: taskState.UNSTARTED,
-        finalChecks: taskState.UNSTARTED,
-        approval: taskState.UNSTARTED,
-        createLicence: taskState.UNSTARTED,
-        approvedPremisesAddress: taskState.UNSTARTED,
-        victim: taskState.UNSTARTED,
+        exclusion: TaskState.UNSTARTED,
+        crdTime: TaskState.UNSTARTED,
+        suitability: TaskState.UNSTARTED,
+        eligibility: TaskState.UNSTARTED,
+        optOut: TaskState.UNSTARTED,
+        curfewAddress: TaskState.UNSTARTED,
+        bassRequest: TaskState.UNSTARTED,
+        bassAreaCheck: TaskState.UNSTARTED,
+        bassOffer: TaskState.UNSTARTED,
+        bassAddress: TaskState.UNSTARTED,
+        riskManagement: TaskState.UNSTARTED,
+        curfewAddressReview: TaskState.UNSTARTED,
+        curfewHours: TaskState.UNSTARTED,
+        reportingInstructions: TaskState.UNSTARTED,
+        licenceConditions: TaskState.UNSTARTED,
+        seriousOffenceCheck: TaskState.UNSTARTED,
+        onRemandCheck: TaskState.UNSTARTED,
+        confiscationOrderCheck: TaskState.UNSTARTED,
+        finalChecks: TaskState.UNSTARTED,
+        approval: TaskState.UNSTARTED,
+        createLicence: TaskState.UNSTARTED,
+        approvedPremisesAddress: TaskState.UNSTARTED,
+        victim: TaskState.UNSTARTED,
       },
     }
   }
@@ -81,7 +81,7 @@ const getInitialState = (stage, licenceRecord) => {
       addressUnsuitable,
     },
     tasks: {
-      createLicence: postApproval ? getLicenceCreatedTaskState(licenceRecord) : taskState.UNSTARTED,
+      createLicence: postApproval ? getLicenceCreatedTaskState(licenceRecord) : TaskState.UNSTARTED,
       ...eligibilityState.tasks,
       optOut,
       bassRequest,
@@ -93,14 +93,14 @@ const getInitialState = (stage, licenceRecord) => {
 
 function getRequiredState(stage, licence) {
   const config = {
-    [licenceStage.ELIGIBILITY]: [],
-    [licenceStage.PROCESSING_RO]: [getRoStageState],
-    [licenceStage.PROCESSING_CA]: [getRoStageState, getCaStageState],
-    [licenceStage.APPROVAL]: [getRoStageState, getCaStageState, getApprovalStageState],
-    [licenceStage.DECIDED]: [getRoStageState, getCaStageState, getApprovalStageState],
-    [licenceStage.MODIFIED]: [getRoStageState, getCaStageState, getApprovalStageState],
-    [licenceStage.MODIFIED_APPROVAL]: [getRoStageState, getCaStageState, getApprovalStageState],
-    [licenceStage.VARY]: [getRoStageState, getCaStageState, getApprovalStageState],
+    [LicenceStage.ELIGIBILITY]: [],
+    [LicenceStage.PROCESSING_RO]: [getRoStageState],
+    [LicenceStage.PROCESSING_CA]: [getRoStageState, getCaStageState],
+    [LicenceStage.APPROVAL]: [getRoStageState, getCaStageState, getApprovalStageState],
+    [LicenceStage.DECIDED]: [getRoStageState, getCaStageState, getApprovalStageState],
+    [LicenceStage.MODIFIED]: [getRoStageState, getCaStageState, getApprovalStageState],
+    [LicenceStage.MODIFIED_APPROVAL]: [getRoStageState, getCaStageState, getApprovalStageState],
+    [LicenceStage.VARY]: [getRoStageState, getCaStageState, getApprovalStageState],
   }
 
   return config[stage].map((getStateMethod) => getStateMethod(licence))
@@ -137,7 +137,7 @@ function getApprovalStageState(licence) {
       decisionComments: approvalRelease.reasonForDecision ? approvalRelease.reasonForDecision.trim() : null,
     },
     tasks: {
-      approval: isEmpty(approvalRelease.decision) ? taskState.UNSTARTED : taskState.DONE,
+      approval: isEmpty(approvalRelease.decision) ? TaskState.UNSTARTED : TaskState.DONE,
       bassOffer,
       bassAddress,
     },
@@ -246,14 +246,14 @@ function getRiskManagementState(licence) {
 
   function getState() {
     if (!riskManagement) {
-      return taskState.UNSTARTED
+      return TaskState.UNSTARTED
     }
 
     if (riskManagementAnswer && awaitingInformationAnswer && proposedAddressSuitable) {
-      return taskState.DONE
+      return TaskState.DONE
     }
 
-    return taskState.STARTED
+    return TaskState.STARTED
   }
 }
 
@@ -279,7 +279,7 @@ function extractCaRefusalReasonText(reason) {
 
 function getCurfewHoursState(licence) {
   return {
-    curfewHours: licence.curfew?.curfewHours ? taskState.DONE : taskState.UNSTARTED,
+    curfewHours: licence.curfew?.curfewHours ? TaskState.DONE : TaskState.UNSTARTED,
   }
 }
 
@@ -292,7 +292,7 @@ function getReportingInstructionsState(licence) {
     const reportingInstructions = licence.reporting?.reportingInstructions
 
     if (isEmpty(reportingInstructions)) {
-      return taskState.UNSTARTED
+      return TaskState.UNSTARTED
     }
 
     const required = [
@@ -306,10 +306,10 @@ function getReportingInstructionsState(licence) {
       'reportingTime',
     ]
     if (required.some((field) => isEmpty(reportingInstructions && reportingInstructions[field]))) {
-      return taskState.STARTED
+      return TaskState.STARTED
     }
 
-    return taskState.DONE
+    return TaskState.DONE
   }
 }
 
@@ -322,7 +322,7 @@ function getLicenceConditionsState(licence) {
       bespokeRejected: 0,
       bespokePending: 0,
       totalCount: 0,
-      licenceConditions: taskState.UNSTARTED,
+      licenceConditions: TaskState.UNSTARTED,
     }
   }
 
@@ -349,13 +349,13 @@ function getLicenceConditionsState(licence) {
     bespokeRejected,
     bespokePending,
     totalCount,
-    licenceConditions: standardOnly || totalCount > 0 ? taskState.DONE : taskState.STARTED,
+    licenceConditions: standardOnly || totalCount > 0 ? TaskState.DONE : TaskState.STARTED,
   }
 }
 
 const getTaskState = (answer: any) => ({
   decision: answer === 'Yes',
-  task: answer ? taskState.DONE : taskState.UNSTARTED,
+  task: answer ? TaskState.DONE : TaskState.UNSTARTED,
 })
 
 function getFinalChecksState(licence, seriousOffence, onRemand) {
@@ -374,5 +374,5 @@ function getFinalChecksState(licence, seriousOffence, onRemand) {
 function getLicenceCreatedTaskState(licenceRecord) {
   const approvedVersion = licenceRecord.approved_version
 
-  return approvedVersion && licenceRecord.version === approvedVersion ? taskState.DONE : taskState.UNSTARTED
+  return approvedVersion && licenceRecord.version === approvedVersion ? TaskState.DONE : TaskState.UNSTARTED
 }

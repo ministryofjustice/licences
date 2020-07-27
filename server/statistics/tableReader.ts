@@ -30,6 +30,7 @@ export class TableReader<R> {
 
   private async doReadTable(consumer) {
     let startRow = 0
+    // eslint-disable-next-line no-constant-condition
     while (true) {
       // eslint-disable-next-line no-await-in-loop
       const result = await this.client.query(this.sql, [CHUNK_SIZE, startRow])

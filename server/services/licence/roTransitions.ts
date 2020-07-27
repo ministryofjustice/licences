@@ -1,6 +1,6 @@
-import { taskState, allComplete } from '../config/taskState'
+import { TaskState, allComplete } from '../config/taskState'
 import { LicenceStatus } from './licenceStatusTypes'
-import { licenceStage } from '../config/licenceStage'
+import { LicenceStage } from '../config/licenceStage'
 
 export = function getAllowedTransition(licenceStatus: LicenceStatus) {
   if (!licenceStatus) {
@@ -17,11 +17,11 @@ export = function getAllowedTransition(licenceStatus: LicenceStatus) {
 function canSendRoToCa(licenceStatus: LicenceStatus) {
   const { tasks, stage, decisions } = licenceStatus
 
-  if (stage !== licenceStage.PROCESSING_RO) {
+  if (stage !== LicenceStage.PROCESSING_RO) {
     return false
   }
 
-  if (decisions.bassReferralNeeded && tasks.bassAreaCheck === taskState.DONE) {
+  if (decisions.bassReferralNeeded && tasks.bassAreaCheck === TaskState.DONE) {
     return true
   }
 
@@ -37,7 +37,7 @@ function canSendRoToCa(licenceStatus: LicenceStatus) {
     tasks.curfewAddressReview,
     tasks.curfewHours,
     tasks.licenceConditions,
-    decisions.approvedPremisesRequired ? taskState.DONE : tasks.riskManagement,
+    decisions.approvedPremisesRequired ? TaskState.DONE : tasks.riskManagement,
     tasks.victim,
     tasks.reportingInstructions,
   ])

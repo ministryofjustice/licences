@@ -37,12 +37,15 @@ const probationTeamFmbSchema = Joi.object({
 })
 
 export const validateLduFmb = (probationAreaCode, lduCode, functionalMailbox) =>
-  Joi.validate({ probationAreaCode, lduCode, functionalMailbox }, lduFmbSchema, { abortEarly: false })
+  lduFmbSchema.validate({ probationAreaCode, lduCode, functionalMailbox }, { abortEarly: false })
 
 export const validateProbationTeamFmb = (probationAreaCode, lduCode, teamCode, functionalMailbox) =>
-  Joi.validate({ probationAreaCode, lduCode, teamCode, functionalMailbox }, probationTeamFmbSchema, {
-    abortEarly: false,
-  })
+  probationTeamFmbSchema.validate(
+    { probationAreaCode, lduCode, teamCode, functionalMailbox },
+    {
+      abortEarly: false,
+    }
+  )
 
 export const functionalMailboxRouter = (functionalMailboxService: FunctionalMailboxService) => (router) => {
   router.use(authorisationMiddleware)

@@ -1,6 +1,6 @@
 import { RowConsumer } from './types'
 
-export class RowCollector<T> implements RowConsumer<T> {
+export default class RowCollector<T> implements RowConsumer<T> {
   rows: T[] = []
 
   consumeRows(chunk: Array<T>): void {

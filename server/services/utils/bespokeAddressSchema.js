@@ -1,8 +1,6 @@
-const baseJoi = require('joi')
-const dateExtend = require('joi-date-extensions')
-const postcodeExtend = require('joi-postcode')
+const baseJoi = require('joi').extend(require('@hapi/joi-date'))
 
-const joi = baseJoi.extend(dateExtend).extend(postcodeExtend)
+const joi = baseJoi
 
 module.exports = {
   curfewAddressSchema: joi
@@ -11,7 +9,11 @@ module.exports = {
       addressLine1: joi.string().required(),
       addressLine2: joi.string().allow('').optional(),
       addressTown: joi.string().required(),
-      postCode: joi.postcode().required(),
+      postCode: joi
+        .string()
+        .regex(/^[a-z]{1,2}\d[a-z\d]?\s*\d[a-z]{2}$/i)
+        .description('postcode')
+        .required(),
       telephone: joi.when('occupier.isOffender', {
         is: joi.not('Yes'),
         then: joi
@@ -43,9 +45,9 @@ module.exports = {
           then: joi.string().required(),
           otherwise: joi.any().optional(),
         }),
-        isOffender: joi.valid(['Yes', 'No']).optional(),
+        isOffender: joi.valid('Yes', 'No').optional(),
       }),
-      cautionedAgainstResident: joi.valid(['Yes', 'No']).required(),
+      cautionedAgainstResident: joi.valid('Yes', 'No').required(),
       residentOffenceDetails: joi.when('cautionedAgainstResident', {
         is: 'Yes',
         then: joi.string().required(),
@@ -56,11 +58,11 @@ module.exports = {
 
   // complex structure due to cascading requirements
   addressReviewSchema: joi.object().keys({
-    consent: joi.valid(['Yes', 'No']).required(),
+    consent: joi.valid('Yes', 'No').required(),
 
     electricity: joi.when('consent', {
       is: 'Yes',
-      then: joi.valid(['Yes', 'No']).required(),
+      then: joi.valid('Yes', 'No').required(),
       otherwise: joi.any().optional(),
     }),
 
@@ -68,7 +70,7 @@ module.exports = {
       is: 'Yes',
       then: joi.when('electricity', {
         is: 'Yes',
-        then: joi.valid(['Yes', 'No']).required(),
+        then: joi.valid('Yes', 'No').required(),
         otherwise: joi.any().optional(),
       }),
       otherwise: joi.any().optional(),
@@ -78,13 +80,13 @@ module.exports = {
   }),
 
   addressReviewSchemaOffenderIsOccupier: joi.object().keys({
-    consent: joi.valid(['Yes', 'No']).optional(),
+    consent: joi.valid('Yes', 'No').optional(),
 
-    electricity: joi.valid(['Yes', 'No']).required(),
+    electricity: joi.valid('Yes', 'No').required(),
 
     homeVisitConducted: joi.when('electricity', {
       is: 'Yes',
-      then: joi.valid(['Yes', 'No']).required(),
+      then: joi.valid('Yes', 'No').required(),
       otherwise: joi.any().optional(),
     }),
 

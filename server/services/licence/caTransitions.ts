@@ -1,9 +1,9 @@
 import { LicenceStatus, Decisions, Tasks } from './licenceStatusTypes'
-import { licenceStage } from '../config/licenceStage'
+import { LicenceStage } from '../config/licenceStage'
 
-const { taskState, allComplete } = require('../config/taskState')
+const { TaskState, allComplete } = require('../config/taskState')
 
-const { DECIDED, ELIGIBILITY, MODIFIED, MODIFIED_APPROVAL, PROCESSING_CA } = licenceStage
+const { DECIDED, ELIGIBILITY, MODIFIED, MODIFIED_APPROVAL, PROCESSING_CA } = LicenceStage
 
 export = function getCaTransitions(licenceStatus: LicenceStatus) {
   if (!licenceStatus) {
@@ -31,10 +31,10 @@ function canSendCaToRo(licenceStatus: LicenceStatus) {
 
   if ([PROCESSING_CA, MODIFIED, MODIFIED_APPROVAL].includes(stage)) {
     if (bassReferralNeeded) {
-      if (licenceStatus.tasks.bassAreaCheck === taskState.UNSTARTED) {
+      if (licenceStatus.tasks.bassAreaCheck === TaskState.UNSTARTED) {
         return true
       }
-    } else if (!optedOut && !approvedPremisesRequired && tasks.curfewAddressReview === taskState.UNSTARTED) {
+    } else if (!optedOut && !approvedPremisesRequired && tasks.curfewAddressReview === TaskState.UNSTARTED) {
       return true
     }
   }

@@ -2,7 +2,7 @@
 import moment from 'moment'
 import { licenceTableReader } from './statistics/tableReader'
 import { LicenceStatisticsCollector } from './statistics/LicenceStatisticsCollector'
-import { RowFilter } from './statistics/rowFilter'
+import RowFilter from './statistics/rowFilter'
 import { LicenceRow } from './statistics/types'
 
 const CUTOFFF_DATE = moment('2020-02-03')

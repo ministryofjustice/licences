@@ -1,6 +1,6 @@
 import { LicenceStatistics, LicenceStatisticsCollector } from '../../server/statistics/LicenceStatisticsCollector'
 import { LicenceRow } from '../../server/statistics/types'
-import { licenceStage } from '../../server/services/config/licenceStage'
+import { LicenceStage } from '../../server/services/config/licenceStage'
 
 let collector: LicenceStatisticsCollector
 
@@ -30,7 +30,7 @@ const INITIAL_STATE: LicenceStatistics = Object.freeze({
 const DEFAULT_ROW: LicenceRow = Object.freeze({
   licence: {},
   booking_id: 1,
-  stage: licenceStage.ELIGIBILITY,
+  stage: LicenceStage.ELIGIBILITY,
   started: new Date(),
 })
 

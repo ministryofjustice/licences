@@ -6,6 +6,7 @@ import { d3hierarchy } from './statistics/d3adapter'
 const collectAuditStatistics = async () => {
   const collector = new AuditStatisticsCollector()
   await auditTableReader.consumeTable(collector)
+  // eslint-disable-next-line no-console
   console.log(JSON.stringify(d3hierarchy(collector.tree)))
 }
 

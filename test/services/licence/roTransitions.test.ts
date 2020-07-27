@@ -1,20 +1,20 @@
 import getAllowedTransition from '../../../server/services/licence/roTransitions'
-import { taskState } from '../../../server/services/config/taskState'
-import { licenceStage } from '../../../server/services/config/licenceStage'
+import { TaskState } from '../../../server/services/config/taskState'
+import { LicenceStage } from '../../../server/services/config/licenceStage'
 
 describe('getAllowedTransition', () => {
   describe('RO to CA', () => {
     test('should allow RO to CA for RO when all RO tasks done', () => {
       const status = {
-        stage: licenceStage.PROCESSING_RO,
+        stage: LicenceStage.PROCESSING_RO,
         postApproval: true,
         tasks: {
-          curfewAddressReview: taskState.DONE,
-          curfewHours: taskState.DONE,
-          licenceConditions: taskState.DONE,
-          riskManagement: taskState.DONE,
-          victim: taskState.DONE,
-          reportingInstructions: taskState.DONE,
+          curfewAddressReview: TaskState.DONE,
+          curfewHours: TaskState.DONE,
+          licenceConditions: TaskState.DONE,
+          riskManagement: TaskState.DONE,
+          victim: TaskState.DONE,
+          reportingInstructions: TaskState.DONE,
         },
         decisions: {},
       }
@@ -25,15 +25,15 @@ describe('getAllowedTransition', () => {
 
     test('should allow RO to CA for RO if risk not done when approved premises', () => {
       const status = {
-        stage: licenceStage.PROCESSING_RO,
+        stage: LicenceStage.PROCESSING_RO,
         postApproval: true,
         tasks: {
-          curfewAddressReview: taskState.DONE,
-          curfewHours: taskState.DONE,
-          licenceConditions: taskState.DONE,
-          riskManagement: taskState.UNSTARTED,
-          victim: taskState.DONE,
-          reportingInstructions: taskState.DONE,
+          curfewAddressReview: TaskState.DONE,
+          curfewHours: TaskState.DONE,
+          licenceConditions: TaskState.DONE,
+          riskManagement: TaskState.UNSTARTED,
+          victim: TaskState.DONE,
+          reportingInstructions: TaskState.DONE,
         },
         decisions: {
           approvedPremisesRequired: true,
@@ -46,15 +46,15 @@ describe('getAllowedTransition', () => {
 
     test('should not allow RO to CA for RO if risk not done when not approved premises', () => {
       const status = {
-        stage: licenceStage.PROCESSING_RO,
+        stage: LicenceStage.PROCESSING_RO,
         postApproval: true,
         tasks: {
-          curfewAddressReview: taskState.DONE,
-          curfewHours: taskState.DONE,
-          licenceConditions: taskState.DONE,
-          riskManagement: taskState.UNSTARTED,
-          victim: taskState.DONE,
-          reportingInstructions: taskState.DONE,
+          curfewAddressReview: TaskState.DONE,
+          curfewHours: TaskState.DONE,
+          licenceConditions: TaskState.DONE,
+          riskManagement: TaskState.UNSTARTED,
+          victim: TaskState.DONE,
+          reportingInstructions: TaskState.DONE,
         },
         decisions: {
           approvedPremisesRequired: false,
@@ -67,14 +67,14 @@ describe('getAllowedTransition', () => {
 
     test('should not allow RO to CA for RO when any RO tasks not done', () => {
       const status = {
-        stage: licenceStage.PROCESSING_RO,
+        stage: LicenceStage.PROCESSING_RO,
         postApproval: true,
         tasks: {
-          curfewAddressReview: taskState.DONE,
-          curfewHours: taskState.DONE,
-          licenceConditions: taskState.DONE,
-          riskManagement: taskState.UNSTARTED,
-          reportingInstructions: taskState.DONE,
+          curfewAddressReview: TaskState.DONE,
+          curfewHours: TaskState.DONE,
+          licenceConditions: TaskState.DONE,
+          riskManagement: TaskState.UNSTARTED,
+          reportingInstructions: TaskState.DONE,
         },
         decisions: {},
       }
@@ -85,14 +85,14 @@ describe('getAllowedTransition', () => {
 
     test('should allow RO to CA for RO when address rejected even when other tasks not done', () => {
       const status = {
-        stage: licenceStage.PROCESSING_RO,
+        stage: LicenceStage.PROCESSING_RO,
         postApproval: true,
         tasks: {
-          curfewAddressReview: taskState.DONE,
-          curfewHours: taskState.UNSTARTED,
-          licenceConditions: taskState.UNSTARTED,
-          riskManagement: taskState.UNSTARTED,
-          reportingInstructions: taskState.UNSTARTED,
+          curfewAddressReview: TaskState.DONE,
+          curfewHours: TaskState.UNSTARTED,
+          licenceConditions: TaskState.UNSTARTED,
+          riskManagement: TaskState.UNSTARTED,
+          reportingInstructions: TaskState.UNSTARTED,
         },
         decisions: {
           curfewAddressRejected: true,
@@ -105,14 +105,14 @@ describe('getAllowedTransition', () => {
 
     test('should allow RO to CA for RO when opted out even when other tasks not done', () => {
       const status = {
-        stage: licenceStage.PROCESSING_RO,
+        stage: LicenceStage.PROCESSING_RO,
         postApproval: true,
         tasks: {
-          curfewAddressReview: taskState.DONE,
-          curfewHours: taskState.UNSTARTED,
-          licenceConditions: taskState.UNSTARTED,
-          riskManagement: taskState.UNSTARTED,
-          reportingInstructions: taskState.UNSTARTED,
+          curfewAddressReview: TaskState.DONE,
+          curfewHours: TaskState.UNSTARTED,
+          licenceConditions: TaskState.UNSTARTED,
+          riskManagement: TaskState.UNSTARTED,
+          reportingInstructions: TaskState.UNSTARTED,
         },
         decisions: {
           optedOut: true,
@@ -125,15 +125,15 @@ describe('getAllowedTransition', () => {
 
     test('should allow RO to CA for RO when bass area rejected even when other tasks not done', () => {
       const status = {
-        stage: licenceStage.PROCESSING_RO,
+        stage: LicenceStage.PROCESSING_RO,
         postApproval: true,
         tasks: {
-          curfewAddressReview: taskState.DONE,
-          bassAreaCheck: taskState.DONE,
-          curfewHours: taskState.UNSTARTED,
-          licenceConditions: taskState.UNSTARTED,
-          riskManagement: taskState.UNSTARTED,
-          reportingInstructions: taskState.UNSTARTED,
+          curfewAddressReview: TaskState.DONE,
+          bassAreaCheck: TaskState.DONE,
+          curfewHours: TaskState.UNSTARTED,
+          licenceConditions: TaskState.UNSTARTED,
+          riskManagement: TaskState.UNSTARTED,
+          reportingInstructions: TaskState.UNSTARTED,
         },
         decisions: {
           bassReferralNeeded: true,
@@ -146,14 +146,14 @@ describe('getAllowedTransition', () => {
 
     test('should not allow RO to CA for RO when address undecided', () => {
       const status = {
-        stage: licenceStage.PROCESSING_RO,
+        stage: LicenceStage.PROCESSING_RO,
         postApproval: true,
         tasks: {
-          curfewAddressReview: taskState.DONE,
-          curfewHours: taskState.UNSTARTED,
-          licenceConditions: taskState.UNSTARTED,
-          riskManagement: taskState.UNSTARTED,
-          reportingInstructions: taskState.UNSTARTED,
+          curfewAddressReview: TaskState.DONE,
+          curfewHours: TaskState.UNSTARTED,
+          licenceConditions: TaskState.UNSTARTED,
+          riskManagement: TaskState.UNSTARTED,
+          reportingInstructions: TaskState.UNSTARTED,
         },
         decisions: {},
       }

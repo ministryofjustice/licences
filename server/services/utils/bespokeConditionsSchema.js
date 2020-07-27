@@ -1,8 +1,6 @@
-const baseJoi = require('joi')
-const dateExtend = require('joi-date-extensions')
-const postcodeExtend = require('joi-postcode')
+const baseJoi = require('joi').extend(require('@hapi/joi-date'))
 
-const joi = baseJoi.extend(dateExtend).extend(postcodeExtend)
+const joi = baseJoi
 const moment = require('moment')
 
 const today = moment().startOf('day').format('MM-DD-YYYY')
@@ -64,7 +62,7 @@ module.exports = joi.object({
     reportingDaily: joi.when('reportingTime', {
       is: '',
       then: joi.string().required(),
-      otherwise: joi.valid(['']).optional(),
+      otherwise: joi.valid('').optional(),
     }),
     reportingFrequency: joi.string().required(),
   }),
