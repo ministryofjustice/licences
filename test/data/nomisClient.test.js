@@ -38,19 +38,19 @@ describe('nomisClient', () => {
 
   describe('getBooking', () => {
     test('should return data from api', () => {
-      fakeNomis.get(`/bookings/1`).reply(200, { key: 'value' })
+      fakeNomis.get(`/api/bookings/1`).reply(200, { key: 'value' })
 
       return expect(nomisClient.getBooking('1')).resolves.toEqual({ key: 'value' })
     })
 
     test('should reject if api fails', () => {
-      fakeNomis.get(`/bookings/1`).thrice().reply(500)
+      fakeNomis.get(`/api/bookings/1`).thrice().reply(500)
 
       return expect(nomisClient.getBooking('1')).rejects.toStrictEqual(Error('Internal Server Error'))
     })
 
     test('handling 400', () => {
-      fakeNomis.get(`/bookings/1`).times(3).reply(400, { error: 'some-reason' })
+      fakeNomis.get(`/api/bookings/1`).times(3).reply(400, { error: 'some-reason' })
 
       return expect(nomisClient.getBooking('1')).rejects.toStrictEqual(Error('Bad Request'))
     })
@@ -65,7 +65,7 @@ describe('nomisClient', () => {
     })
 
     test('should return data from api', async () => {
-      fakeNomis.get(`/offender-sentences?offenderNo=1&offenderNo=2`).reply(200, [record(1), record(2)])
+      fakeNomis.get(`/api/offender-sentences?offenderNo=1&offenderNo=2`).reply(200, [record(1), record(2)])
 
       const result = await nomisClient.getOffenderSentencesByNomisId(['1', '2'])
       const ids = result.map(({ id }) => id)
@@ -76,12 +76,12 @@ describe('nomisClient', () => {
       const batchSize = 3
 
       fakeNomis
-        .get(`/offender-sentences?offenderNo=1&offenderNo=2&offenderNo=3`)
+        .get(`/api/offender-sentences?offenderNo=1&offenderNo=2&offenderNo=3`)
         .reply(200, [record(1), record(2), record(3)])
       fakeNomis
-        .get(`/offender-sentences?offenderNo=4&offenderNo=5&offenderNo=6`)
+        .get(`/api/offender-sentences?offenderNo=4&offenderNo=5&offenderNo=6`)
         .reply(200, [record(4), record(5), record(6)])
-      fakeNomis.get(`/offender-sentences?offenderNo=7&offenderNo=8`).reply(200, [record(7), record(8)])
+      fakeNomis.get(`/api/offender-sentences?offenderNo=7&offenderNo=8`).reply(200, [record(7), record(8)])
 
       const result = await nomisClient.getOffenderSentencesByNomisId(
         ['1', '2', '3', '4', '5', '6', '7', '8'],
@@ -95,13 +95,13 @@ describe('nomisClient', () => {
 
   describe('getBookingByOffenderNumber', () => {
     test('should return data from api', () => {
-      fakeNomis.get(`/bookings/offenderNo/ABC123D`).reply(200, { key: 'value' })
+      fakeNomis.get(`/api/bookings/offenderNo/ABC123D`).reply(200, { key: 'value' })
 
       return expect(nomisClient.getBookingByOffenderNumber('ABC123D')).resolves.toEqual({ key: 'value' })
     })
 
     test('should reject if api fails', () => {
-      fakeNomis.get(`/bookings/offenderNo/ABC123D`).thrice().reply(500)
+      fakeNomis.get(`/api/bookings/offenderNo/ABC123D`).thrice().reply(500)
 
       return expect(nomisClient.getBookingByOffenderNumber('ABC123D')).rejects.toStrictEqual(
         Error('Internal Server Error')
@@ -111,13 +111,13 @@ describe('nomisClient', () => {
 
   describe('getImageInfo', () => {
     test('should return data from api', () => {
-      fakeNomis.get(`/images/1`).reply(200, { key: 'value' })
+      fakeNomis.get(`/api/images/1`).reply(200, { key: 'value' })
 
       return expect(nomisClient.getImageInfo('1')).resolves.toEqual({ key: 'value' })
     })
 
     test('should reject if api fails', () => {
-      fakeNomis.get(`/images/1`).thrice().reply(500)
+      fakeNomis.get(`/api/images/1`).thrice().reply(500)
 
       return expect(nomisClient.getImageInfo('1')).rejects.toStrictEqual(Error('Internal Server Error'))
     })
@@ -125,26 +125,26 @@ describe('nomisClient', () => {
 
   describe('getImageData', () => {
     test('should return a buffer', () => {
-      fakeNomis.get(`/images/1/data`).reply(200, Buffer.from([0, 1, 2, 3, 4]), { 'Content-Type': 'image/jpeg' })
+      fakeNomis.get(`/api/images/1/data`).reply(200, Buffer.from([0, 1, 2, 3, 4]), { 'Content-Type': 'image/jpeg' })
 
       return expect(nomisClient.getImageData('1')).resolves.toEqual(Buffer.from([0, 1, 2, 3, 4]))
     })
 
     test('should throw if not found', () => {
-      fakeNomis.get(`/images/1/data`).reply(404)
+      fakeNomis.get(`/api/images/1/data`).reply(404)
 
       return expect(nomisClient.getImageData('1')).rejects.toStrictEqual(Error('Not Found'))
     })
 
     test('should throw if api fails', () => {
-      fakeNomis.get(`/images/1/data`).thrice().reply(500)
+      fakeNomis.get(`/api/images/1/data`).thrice().reply(500)
 
       return expect(nomisClient.getImageData('1')).rejects.toStrictEqual(Error('Internal Server Error'))
     })
   })
 
   describe('getHdcEligiblePrisoners', () => {
-    const url = '/offender-sentences/home-detention-curfew-candidates'
+    const url = '/api/offender-sentences/home-detention-curfew-candidates'
 
     test('should return data from api', () => {
       fakeNomis.get(url).reply(200, [
@@ -322,13 +322,13 @@ describe('nomisClient', () => {
 
   describe('getAliases', () => {
     test('should return data from api', () => {
-      fakeNomis.get(`/bookings/1/aliases`).reply(200, { key: 'value' })
+      fakeNomis.get(`/api/bookings/1/aliases`).reply(200, { key: 'value' })
 
       return expect(nomisClient.getAliases('1')).resolves.toEqual({ key: 'value' })
     })
 
     test('should reject if api fails', () => {
-      fakeNomis.get(`/bookings/1/aliases`).thrice().reply(500)
+      fakeNomis.get(`/api/bookings/1/aliases`).thrice().reply(500)
 
       return expect(nomisClient.getAliases('1')).rejects.toStrictEqual(Error('Internal Server Error'))
     })
@@ -336,13 +336,13 @@ describe('nomisClient', () => {
 
   describe('getIdentifiers', () => {
     test('should return data from api', () => {
-      fakeNomis.get(`/bookings/1/identifiers`).reply(200, [{ key: '1' }, { key: '2' }])
+      fakeNomis.get(`/api/bookings/1/identifiers`).reply(200, [{ key: '1' }, { key: '2' }])
 
       return expect(nomisClient.getIdentifiers('1')).resolves.toEqual([{ key: '1' }, { key: '2' }])
     })
 
     test('should reject if api fails', () => {
-      fakeNomis.get(`/bookings/1/identifiers`).thrice().reply(500)
+      fakeNomis.get(`/api/bookings/1/identifiers`).thrice().reply(500)
 
       return expect(nomisClient.getIdentifiers('1')).rejects.toStrictEqual(Error('Internal Server Error'))
     })
@@ -350,13 +350,13 @@ describe('nomisClient', () => {
 
   describe('getMainOffence', () => {
     test('should return data from api', () => {
-      fakeNomis.get(`/bookings/1/mainOffence`).reply(200, { key: 'value' })
+      fakeNomis.get(`/api/bookings/1/mainOffence`).reply(200, { key: 'value' })
 
       return expect(nomisClient.getMainOffence('1')).resolves.toEqual({ key: 'value' })
     })
 
     test('should reject if api fails', () => {
-      fakeNomis.get(`/bookings/1/mainOffence`).thrice().reply(500)
+      fakeNomis.get(`/api/bookings/1/mainOffence`).thrice().reply(500)
 
       return expect(nomisClient.getMainOffence('1')).rejects.toStrictEqual(Error('Internal Server Error'))
     })
@@ -364,13 +364,13 @@ describe('nomisClient', () => {
 
   describe('getEstablishment', () => {
     test('should return data from api', () => {
-      fakeNomis.get(`/agencies/prison/1`).reply(200, { key: 'value' })
+      fakeNomis.get(`/api/agencies/prison/1`).reply(200, { key: 'value' })
 
       return expect(nomisClient.getEstablishment('1')).resolves.toEqual({ key: 'value' })
     })
 
     test('should reject if api fails', () => {
-      fakeNomis.get(`/agencies/prison/1`).thrice().reply(500)
+      fakeNomis.get(`/api/agencies/prison/1`).thrice().reply(500)
 
       return expect(nomisClient.getEstablishment('1')).rejects.toStrictEqual(Error('Internal Server Error'))
     })
@@ -390,7 +390,7 @@ describe('nomisClient', () => {
     })
 
     test('should not try to refresh twice in a row', () => {
-      fakeNomis.get(`/agencies/prison/1`).reply(401).get(`/agencies/prison/1`).reply(401, { response: 'this' })
+      fakeNomis.get(`/api/agencies/prison/1`).reply(401).get(`/api/agencies/prison/1`).reply(401, { response: 'this' })
 
       return expect(nomisClient.getEstablishment('1')).rejects.toStrictEqual(unauthorisedError())
     })
@@ -399,7 +399,7 @@ describe('nomisClient', () => {
   describe('getOffenderSentencesByBookingId', () => {
     test('should return data from api', () => {
       fakeNomis
-        .post(`/offender-sentences/bookings`, ['1'])
+        .post(`/api/offender-sentences/bookings`, ['1'])
         .reply(200, [{ sentenceDetail: { conditionalReleaseDate: 'a' } }])
 
       return expect(nomisClient.getOffenderSentencesByBookingId(['1'])).resolves.toEqual([
@@ -416,7 +416,7 @@ describe('nomisClient', () => {
 
     test('should return data from api without release dates if disabled', () => {
       fakeNomis
-        .post(`/offender-sentences/bookings`, ['1'])
+        .post(`/api/offender-sentences/bookings`, ['1'])
         .reply(200, [{ sentenceDetail: { conditionalReleaseDate: 'a' } }])
 
       return expect(nomisClient.getOffenderSentencesByBookingId(['1'], false)).resolves.toEqual([
@@ -429,7 +429,7 @@ describe('nomisClient', () => {
     })
 
     test('should reject if api fails', () => {
-      fakeNomis.post(`/offender-sentences/bookings`, ['1']).reply(500)
+      fakeNomis.post(`/api/offender-sentences/bookings`, ['1']).reply(500)
 
       return expect(nomisClient.getOffenderSentencesByBookingId(['1'])).rejects.toStrictEqual(
         Error('Internal Server Error')
@@ -481,13 +481,13 @@ describe('nomisClient', () => {
 
   describe('getUserCaseLoads', () => {
     test('should return data from api', () => {
-      fakeNomis.get('/users/me/caseLoads').reply(200, { username: 'result' })
+      fakeNomis.get('/api/users/me/caseLoads').reply(200, { username: 'result' })
 
       return expect(nomisClient.getUserCaseLoads()).resolves.toEqual({ username: 'result' })
     })
 
     test('should reject if api fails', () => {
-      fakeNomis.get('/users/me/caseLoads').thrice().reply(500)
+      fakeNomis.get('/api/users/me/caseLoads').thrice().reply(500)
 
       return expect(nomisClient.getUserCaseLoads()).rejects.toStrictEqual(Error('Internal Server Error'))
     })
@@ -495,7 +495,7 @@ describe('nomisClient', () => {
 
   describe('putActiveCaseLoad', () => {
     test('should return data from api', () => {
-      fakeNomis.put('/users/me/activeCaseLoad').reply(200, {})
+      fakeNomis.put('/api/users/me/activeCaseLoad').reply(200, {})
 
       /* The PUT request returns '{}'.  Why? It doesn't serve any purpose.
        * The current implementation of restClientBuilder.putResource doesn't return any value (and we don't care anyway)
@@ -505,7 +505,7 @@ describe('nomisClient', () => {
     })
 
     test('should reject if api fails', () => {
-      fakeNomis.put('/users/me/activeCaseLoad').thrice().reply(500)
+      fakeNomis.put('/api/users/me/activeCaseLoad').thrice().reply(500)
 
       return expect(nomisClient.putActiveCaseLoad('id')).rejects.toStrictEqual(Error('Internal Server Error'))
     })
@@ -526,7 +526,7 @@ describe('nomisClient', () => {
 
     test('should inject bookingId into api endpoint', async () => {
       fakeNomis
-        .put('/offender-sentences/booking/aaa/home-detention-curfews/latest/approval-status', {
+        .put('/api/offender-sentences/booking/aaa/home-detention-curfews/latest/approval-status', {
           approvalStatus: 'status',
           refusedReason: 'reason',
           date: '2018-05-31',
@@ -540,7 +540,7 @@ describe('nomisClient', () => {
 
     test('should pass in the status and date but no reason if not specified', async () => {
       fakeNomis
-        .put('/offender-sentences/booking/aaa/home-detention-curfews/latest/approval-status', {
+        .put('/api/offender-sentences/booking/aaa/home-detention-curfews/latest/approval-status', {
           approvalStatus: 'status',
           date: '2018-05-31',
         })
@@ -553,7 +553,7 @@ describe('nomisClient', () => {
 
     test('should pass in the status, reason, and date', async () => {
       fakeNomis
-        .put('/offender-sentences/booking/aaa/home-detention-curfews/latest/approval-status', {
+        .put('/api/offender-sentences/booking/aaa/home-detention-curfews/latest/approval-status', {
           approvalStatus: 'status',
           refusedReason: 'reason',
           date: '2018-05-31',
@@ -580,7 +580,7 @@ describe('nomisClient', () => {
     })
 
     test('should inject bookingId into api endpoint', async () => {
-      fakeNomis.put('/offender-sentences/booking/aaa/home-detention-curfews/latest/checks-passed').reply(200)
+      fakeNomis.put('/api/offender-sentences/booking/aaa/home-detention-curfews/latest/checks-passed').reply(200)
 
       const result = await nomisClient.putChecksPassed({ bookingId: 'aaa', passed: true })
       expect(result).toBeUndefined()
@@ -589,7 +589,7 @@ describe('nomisClient', () => {
 
     test('should pass in passed value and date', async () => {
       fakeNomis
-        .put('/offender-sentences/booking/aaa/home-detention-curfews/latest/checks-passed', {
+        .put('/api/offender-sentences/booking/aaa/home-detention-curfews/latest/checks-passed', {
           passed: true,
           date: '2018-05-31',
         })

@@ -257,9 +257,9 @@ module.exports = function createApp({
   })
 
   const health = healthFactory({
-    elite2: `${config.nomis.apiUrl.replace('/api', '')}/ping`,
-    auth: `${config.nomis.authUrl}/ping`,
-    delius: `${config.delius.apiUrl}/ping`,
+    elite2: `${config.nomis.apiUrl}/health/ping`,
+    auth: `${config.nomis.authUrl}/health/ping`,
+    delius: `${config.delius.apiUrl}/health/ping`,
     probationTeams: `${config.probationTeams.apiUrl}/health/ping`,
   })
 

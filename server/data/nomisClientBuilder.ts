@@ -79,7 +79,7 @@ function addReleaseDate(prisoner) {
 export = (token) => {
   const tokenSource = constantTokenSource(token)
 
-  const nomisRestClient = buildRestClient(tokenSource, apiUrl, 'Elite 2 API', {
+  const nomisRestClient = buildRestClient(tokenSource, apiUrl, 'Prison API', {
     agent: agentOptions,
     timeout: timeoutSpec,
   })
@@ -96,57 +96,57 @@ export = (token) => {
 
   return {
     getBooking(bookingId) {
-      return nomisRestClient.getResource(`/bookings/${bookingId}`)
+      return nomisRestClient.getResource(`/api/bookings/${bookingId}`)
     },
 
     getBookingByOffenderNumber(offenderNo) {
-      return nomisRestClient.getResource(`/bookings/offenderNo/${offenderNo}`)
+      return nomisRestClient.getResource(`/api/bookings/offenderNo/${offenderNo}`)
     },
 
     getAliases(bookingId) {
-      return nomisRestClient.getResource(`/bookings/${bookingId}/aliases`)
+      return nomisRestClient.getResource(`/api/bookings/${bookingId}/aliases`)
     },
 
     getIdentifiers(bookingId) {
-      return nomisRestClient.getResource(`/bookings/${bookingId}/identifiers`)
+      return nomisRestClient.getResource(`/api/bookings/${bookingId}/identifiers`)
     },
 
     getMainOffence(bookingId) {
-      return nomisRestClient.getResource(`/bookings/${bookingId}/mainOffence`)
+      return nomisRestClient.getResource(`/api/bookings/${bookingId}/mainOffence`)
     },
 
     getImageInfo(imageId) {
-      return nomisRestClient.getResource(`/images/${imageId}`)
+      return nomisRestClient.getResource(`/api/images/${imageId}`)
     },
 
     async getHdcEligiblePrisoners() {
-      const path = `/offender-sentences/home-detention-curfew-candidates`
       const headers = { 'Page-Limit': 10000 }
 
-      const prisoners = await nomisRestClient.getResource(path, headers)
+      const prisoners = await nomisRestClient.getResource(
+        `/api/offender-sentences/home-detention-curfew-candidates`,
+        headers
+      )
       return prisoners.map(addReleaseDatesToPrisoner)
     },
 
     async getOffenderSentencesByNomisId(nomisIds, batchSize = 50) {
-      const path = `/offender-sentences`
       if (isEmpty(nomisIds)) {
         return []
       }
 
       const prisoners = await batchRequests(nomisIds, batchSize, (batch) => {
         const query = { offenderNo: batch }
-        return nomisRestClient.getResource(path, { 'Page-Limit': batchSize }, query)
+        return nomisRestClient.getResource(`/api/offender-sentences`, { 'Page-Limit': batchSize }, query)
       })
 
       return prisoners.map(addReleaseDatesToPrisoner)
     },
 
     async getOffenderSentencesByBookingId(bookingIds, addReleaseDates = true) {
-      const path = `/offender-sentences/bookings`
       const headers = { 'Page-Limit': 10000 }
       const body = [].concat(bookingIds)
 
-      const prisoners = await nomisRestClient.postResource(path, body, headers)
+      const prisoners = await nomisRestClient.postResource(`/api/offender-sentences/bookings`, body, headers)
 
       if (!addReleaseDates) {
         return prisoners
@@ -156,7 +156,7 @@ export = (token) => {
     },
 
     async getImageData(id) {
-      const image = await nomisRestClient.getResource(`/images/${id}/data`)
+      const image = await nomisRestClient.getResource(`/api/images/${id}/data`)
       if (image) {
         return image
       }
@@ -164,7 +164,7 @@ export = (token) => {
     },
 
     getEstablishment(agencyLocationId) {
-      return nomisRestClient.getResource(`/agencies/prison/${agencyLocationId}`)
+      return nomisRestClient.getResource(`/api/agencies/prison/${agencyLocationId}`)
     },
 
     getUserInfo(userName) {
@@ -180,18 +180,18 @@ export = (token) => {
     },
 
     getUserCaseLoads() {
-      return nomisRestClient.getResource(`/users/me/caseLoads`)
+      return nomisRestClient.getResource(`/api/users/me/caseLoads`)
     },
 
     putActiveCaseLoad(caseLoadId) {
-      return nomisRestClient.putResource(`/users/me/activeCaseLoad`, { caseLoadId })
+      return nomisRestClient.putResource(`/api/users/me/activeCaseLoad`, { caseLoadId })
     },
 
     async putApprovalStatus(bookingId, { approvalStatus, refusedReason }) {
-      const path = `/offender-sentences/booking/${bookingId}/home-detention-curfews/latest/approval-status`
-      const body = { approvalStatus, refusedReason, date: moment().format('YYYY-MM-DD') }
-
-      return nomisRestClient.putResource(path, body)
+      return nomisRestClient.putResource(
+        `/api/offender-sentences/booking/${bookingId}/home-detention-curfews/latest/approval-status`,
+        { approvalStatus, refusedReason, date: moment().format('YYYY-MM-DD') }
+      )
     },
 
     async putChecksPassed({ bookingId, passed }) {
@@ -199,14 +199,14 @@ export = (token) => {
         throw new Error(`Missing required input parameter 'passed'`)
       }
 
-      const path = `/offender-sentences/booking/${bookingId}/home-detention-curfews/latest/checks-passed`
+      const path = `/api/offender-sentences/booking/${bookingId}/home-detention-curfews/latest/checks-passed`
       const body = { passed, date: moment().format('YYYY-MM-DD') }
 
       return nomisRestClient.putResource(path, body)
     },
 
     getRecentMovements(offenderNo) {
-      const path = `/movements/offenders`
+      const path = `/api/movements/offenders`
       const headers = { 'Page-Limit': 10000 }
       return nomisRestClient.postResource(path, [offenderNo], headers)
     },
