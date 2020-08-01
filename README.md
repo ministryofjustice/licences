@@ -1,6 +1,6 @@
 # Licences Application UI.
 
-[![CircleCI](https://circleci.com/gh/ministryofjustice/licences/tree/master.svg?style=svg)](https://circleci.com/gh/ministryofjustice/licences)
+[![CircleCI](https://circleci.com/gh/ministryofjustice/licences/tree/main.svg?style=svg)](https://circleci.com/gh/ministryofjustice/licences)
 [![Known Vulnerabilities](https://snyk.io/test/github/ministryofjustice/licences/badge.svg)](https://snyk.io/test/github/ministryofjustice/licences)
 
 # Get Started
@@ -18,7 +18,9 @@ $ npm install
 
 2. Supply environment variables. The required environment variables are defined in server/config.js.
 
-3) Start the server
+These can be overridden by putting entries in a `.env` file.
+
+3. Start the server
 
 ```
 $ npm run start
@@ -30,9 +32,10 @@ Or, for development, build css and restart server on file changes:
 $ npm run start:dev
 ```
 
-To run locally you also need the database, the Nomis API mocks, and the auth server. These can all be started by running
+To run locally you also need the database, mock server, and the auth server. These can all be started by running
 
 ```
+npm run start-mocks
 docker-compose up
 ```
 

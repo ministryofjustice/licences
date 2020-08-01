@@ -15,9 +15,7 @@ executors:
         name: hmpps-auth
         environment:
           SPRING_PROFILES_ACTIVE: dev
-      - image: mojdigitalstudio/licences-nomis-mocks:latest
-        name: licences-nomis-mocks
-
+          SERVER_PORT: 9090
     working_directory: ~/app
 
 jobs:
@@ -76,14 +74,18 @@ jobs:
     environment:
       DB_SSL_ENABLED: false
       ENABLE_TEST_UTILS: true
-      NOMIS_API_URL: http://licences-nomis-mocks:9090/elite2api/api
-      NOMIS_AUTH_URL: http://hmpps-auth:8080/auth
-      DELIUS_API_URL: http://licences-nomis-mocks:9090/communityapi
-      PROBATION_TEAMS_API_URL: http://licences-nomis-mocks:9090/probationteams
+      NOMIS_API_URL: http://localhost:8080/elite2api
+      NOMIS_AUTH_URL: http://hmpps-auth:9090/auth
+      DELIUS_API_URL: http://localhost:8080/communityapi
+      PROBATION_TEAMS_API_URL: http://localhost:8080/probationteams
     steps:
       - checkout
       - attach_workspace:
           at: ~/app
+      - run:
+          name: Run the mock server.
+          command: npm run start-mocks
+          background: true
       - run:
           name: Run the node app.
           command: npm start
