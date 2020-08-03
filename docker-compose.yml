@@ -1,15 +1,5 @@
 version: '3.1'
 services:
-  licences-nomis-mocks:
-    image: mojdigitalstudio/licences-nomis-mocks:latest
-    networks:
-      - hmpps
-    container_name: licences-nomis-mocks
-    ports:
-      - '8080:9090'
-    healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:9090/elite2api/health']
-
   licence-db:
     image: postgres
     networks:
