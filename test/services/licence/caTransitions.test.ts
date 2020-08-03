@@ -1,20 +1,20 @@
 import getAllowedTransition from '../../../server/services/licence/caTransitions'
-import { taskState } from '../../../server/services/config/taskState'
-import { licenceStage } from '../../../server/services/config/licenceStage'
+import { TaskState } from '../../../server/services/config/taskState'
+import { LicenceStage } from '../../../server/services/config/licenceStage'
 
 describe('getAllowedTransition', () => {
   describe('CA to RO', () => {
     test('should allow CA to RO in the ELIGIBILITY stage when all CA tasks done and decisions OK', () => {
       const status = {
-        stage: licenceStage.ELIGIBILITY,
+        stage: LicenceStage.ELIGIBILITY,
         postApproval: false,
         tasks: {
-          exclusion: taskState.DONE,
-          crdTime: taskState.DONE,
-          suitability: taskState.DONE,
-          optOut: taskState.DONE,
-          curfewAddress: taskState.DONE,
-          finalChecks: taskState.DONE,
+          exclusion: TaskState.DONE,
+          crdTime: TaskState.DONE,
+          suitability: TaskState.DONE,
+          optOut: TaskState.DONE,
+          curfewAddress: TaskState.DONE,
+          finalChecks: TaskState.DONE,
         },
         decisions: {
           postponed: null,
@@ -30,16 +30,16 @@ describe('getAllowedTransition', () => {
 
     test('should not allow CA to RO in the ELIGIBILITY stage when HDC has been opted out', () => {
       const status = {
-        stage: licenceStage.ELIGIBILITY,
+        stage: LicenceStage.ELIGIBILITY,
         postApproval: false,
         tasks: {
-          exclusion: taskState.DONE,
-          crdTime: taskState.DONE,
-          suitability: taskState.DONE,
-          optOut: taskState.DONE,
-          bassReferral: taskState.DONE,
-          curfewAddress: taskState.DONE,
-          finalChecks: taskState.DONE,
+          exclusion: TaskState.DONE,
+          crdTime: TaskState.DONE,
+          suitability: TaskState.DONE,
+          optOut: TaskState.DONE,
+          bassReferral: TaskState.DONE,
+          curfewAddress: TaskState.DONE,
+          finalChecks: TaskState.DONE,
         },
         decisions: {
           optedOut: true,
@@ -52,16 +52,16 @@ describe('getAllowedTransition', () => {
 
     test('should not allow CA to RO in the ELIGIBILITY stage when address has been rejected', () => {
       const status = {
-        stage: licenceStage.ELIGIBILITY,
+        stage: LicenceStage.ELIGIBILITY,
         postApproval: false,
         tasks: {
-          exclusion: taskState.DONE,
-          crdTime: taskState.DONE,
-          suitability: taskState.DONE,
-          optOut: taskState.DONE,
-          bassReferral: taskState.DONE,
-          curfewAddress: taskState.DONE,
-          finalChecks: taskState.DONE,
+          exclusion: TaskState.DONE,
+          crdTime: TaskState.DONE,
+          suitability: TaskState.DONE,
+          optOut: TaskState.DONE,
+          bassReferral: TaskState.DONE,
+          curfewAddress: TaskState.DONE,
+          finalChecks: TaskState.DONE,
         },
         decisions: {
           curfewAddressApproved: false,
@@ -74,16 +74,16 @@ describe('getAllowedTransition', () => {
 
     test('should not allow CA to RO in the ELIGIBILITY stage when ineligible', () => {
       const status = {
-        stage: licenceStage.ELIGIBILITY,
+        stage: LicenceStage.ELIGIBILITY,
         postApproval: false,
         tasks: {
-          exclusion: taskState.DONE,
-          crdTime: taskState.DONE,
-          suitability: taskState.DONE,
-          optOut: taskState.DONE,
-          bassReferral: taskState.DONE,
-          curfewAddress: taskState.DONE,
-          finalChecks: taskState.DONE,
+          exclusion: TaskState.DONE,
+          crdTime: TaskState.DONE,
+          suitability: TaskState.DONE,
+          optOut: TaskState.DONE,
+          bassReferral: TaskState.DONE,
+          curfewAddress: TaskState.DONE,
+          finalChecks: TaskState.DONE,
         },
         decisions: {
           postponed: null,
@@ -99,12 +99,12 @@ describe('getAllowedTransition', () => {
 
     test('should allow CA to RO in the PROCESSING_CA for BASS when BASS area check not done', () => {
       const status = {
-        stage: licenceStage.PROCESSING_CA,
+        stage: LicenceStage.PROCESSING_CA,
         postApproval: false,
         tasks: {
-          curfewAddress: taskState.UNSTARTED,
-          bassOffer: taskState.DONE,
-          bassAreaCheck: taskState.UNSTARTED,
+          curfewAddress: TaskState.UNSTARTED,
+          bassOffer: TaskState.DONE,
+          bassAreaCheck: TaskState.UNSTARTED,
         },
         decisions: {
           bassReferralNeeded: true,
@@ -118,15 +118,15 @@ describe('getAllowedTransition', () => {
 
     test('should allow CA to RO when address review has not been started', () => {
       const status = {
-        stage: licenceStage.PROCESSING_CA,
+        stage: LicenceStage.PROCESSING_CA,
         postApproval: false,
         tasks: {
-          exclusion: taskState.DONE,
-          crdTime: taskState.DONE,
-          suitability: taskState.DONE,
-          optOut: taskState.DONE,
-          curfewAddress: taskState.DONE,
-          curfewAddressReview: taskState.UNSTARTED,
+          exclusion: TaskState.DONE,
+          crdTime: TaskState.DONE,
+          suitability: TaskState.DONE,
+          optOut: TaskState.DONE,
+          curfewAddress: TaskState.DONE,
+          curfewAddressReview: TaskState.UNSTARTED,
         },
         decisions: {
           postponed: null,
@@ -142,10 +142,10 @@ describe('getAllowedTransition', () => {
 
     test('should allow CA to RO when address has been withdrawn and a new address added in Post-decision', () => {
       const status = {
-        stage: licenceStage.MODIFIED,
+        stage: LicenceStage.MODIFIED,
         postApproval: false,
         tasks: {
-          curfewAddressReview: taskState.UNSTARTED,
+          curfewAddressReview: TaskState.UNSTARTED,
         },
         decisions: {},
       }
@@ -158,16 +158,16 @@ describe('getAllowedTransition', () => {
   describe('CA to DM', () => {
     test('should allow CA to DM in the PROCESSING_CA stage when all CA tasks done and decisions OK', () => {
       const status = {
-        stage: licenceStage.PROCESSING_CA,
+        stage: LicenceStage.PROCESSING_CA,
         postApproval: false,
         tasks: {
-          exclusion: taskState.DONE,
-          crdTime: taskState.DONE,
-          suitability: taskState.DONE,
-          optOut: taskState.DONE,
-          bassReferral: taskState.DONE,
-          curfewAddress: taskState.DONE,
-          finalChecks: taskState.DONE,
+          exclusion: TaskState.DONE,
+          crdTime: TaskState.DONE,
+          suitability: TaskState.DONE,
+          optOut: TaskState.DONE,
+          bassReferral: TaskState.DONE,
+          curfewAddress: TaskState.DONE,
+          finalChecks: TaskState.DONE,
         },
         decisions: {
           postponed: null,
@@ -183,14 +183,14 @@ describe('getAllowedTransition', () => {
 
     test('should not allow CA to DM in the PROCESSING_CA when any CA tasks not done and decisions not OK', () => {
       const status = {
-        stage: licenceStage.PROCESSING_CA,
+        stage: LicenceStage.PROCESSING_CA,
         postApproval: false,
         tasks: {
-          exclusion: taskState.DONE,
-          crdTime: taskState.DONE,
-          suitability: taskState.UNSTARTED,
-          optOut: taskState.DONE,
-          bassReferral: taskState.DONE,
+          exclusion: TaskState.DONE,
+          crdTime: TaskState.DONE,
+          suitability: TaskState.UNSTARTED,
+          optOut: TaskState.DONE,
+          bassReferral: TaskState.DONE,
         },
         decisions: {
           postponed: null,
@@ -206,12 +206,12 @@ describe('getAllowedTransition', () => {
 
     test('should allow CA to DM in the PROCESSING_CA for BASS when only BASS offer and final checks tasks done', () => {
       const status = {
-        stage: licenceStage.PROCESSING_CA,
+        stage: LicenceStage.PROCESSING_CA,
         postApproval: false,
         tasks: {
-          curfewAddress: taskState.UNSTARTED,
-          bassOffer: taskState.DONE,
-          finalChecks: taskState.DONE,
+          curfewAddress: TaskState.UNSTARTED,
+          bassOffer: TaskState.DONE,
+          finalChecks: TaskState.DONE,
         },
         decisions: {
           bassReferralNeeded: true,
@@ -225,16 +225,16 @@ describe('getAllowedTransition', () => {
 
     test('should allow CA to DM refusal when eligible and insufficient time', () => {
       const status = {
-        stage: licenceStage.ELIGIBILITY,
+        stage: LicenceStage.ELIGIBILITY,
         postApproval: false,
         tasks: {
-          exclusion: taskState.DONE,
-          crdTime: taskState.DONE,
-          suitability: taskState.DONE,
-          optOut: taskState.DONE,
-          bassReferral: taskState.DONE,
-          curfewAddress: taskState.DONE,
-          finalChecks: taskState.DONE,
+          exclusion: TaskState.DONE,
+          crdTime: TaskState.DONE,
+          suitability: TaskState.DONE,
+          optOut: TaskState.DONE,
+          bassReferral: TaskState.DONE,
+          curfewAddress: TaskState.DONE,
+          finalChecks: TaskState.DONE,
         },
         decisions: {
           insufficientTimeStop: true,
@@ -248,16 +248,16 @@ describe('getAllowedTransition', () => {
 
     test('should allow CA to DM refusal when ineligble but insufficientTimeStop', () => {
       const status = {
-        stage: licenceStage.ELIGIBILITY,
+        stage: LicenceStage.ELIGIBILITY,
         postApproval: false,
         tasks: {
-          exclusion: taskState.DONE,
-          crdTime: taskState.DONE,
-          suitability: taskState.DONE,
-          optOut: taskState.DONE,
-          bassReferral: taskState.DONE,
-          curfewAddress: taskState.DONE,
-          finalChecks: taskState.DONE,
+          exclusion: TaskState.DONE,
+          crdTime: TaskState.DONE,
+          suitability: TaskState.DONE,
+          optOut: TaskState.DONE,
+          bassReferral: TaskState.DONE,
+          curfewAddress: TaskState.DONE,
+          finalChecks: TaskState.DONE,
         },
         decisions: {
           insufficientTimeStop: true,
@@ -271,16 +271,16 @@ describe('getAllowedTransition', () => {
 
     test('should not allow CA to DM refusal if ineligible without', () => {
       const status = {
-        stage: licenceStage.ELIGIBILITY,
+        stage: LicenceStage.ELIGIBILITY,
         postApproval: false,
         tasks: {
-          exclusion: taskState.DONE,
-          crdTime: taskState.DONE,
-          suitability: taskState.DONE,
-          optOut: taskState.DONE,
-          bassReferral: taskState.DONE,
-          curfewAddress: taskState.DONE,
-          finalChecks: taskState.DONE,
+          exclusion: TaskState.DONE,
+          crdTime: TaskState.DONE,
+          suitability: TaskState.DONE,
+          optOut: TaskState.DONE,
+          bassReferral: TaskState.DONE,
+          curfewAddress: TaskState.DONE,
+          finalChecks: TaskState.DONE,
         },
         decisions: {
           eligible: null,
@@ -294,16 +294,16 @@ describe('getAllowedTransition', () => {
 
     test('should not allow CA to DM refusal if already refused by ca', () => {
       const status = {
-        stage: licenceStage.PROCESSING_CA,
+        stage: LicenceStage.PROCESSING_CA,
         postApproval: false,
         tasks: {
-          exclusion: taskState.DONE,
-          crdTime: taskState.DONE,
-          suitability: taskState.DONE,
-          optOut: taskState.DONE,
-          bassReferral: taskState.DONE,
-          curfewAddress: taskState.DONE,
-          finalChecks: taskState.DONE,
+          exclusion: TaskState.DONE,
+          crdTime: TaskState.DONE,
+          suitability: TaskState.DONE,
+          optOut: TaskState.DONE,
+          bassReferral: TaskState.DONE,
+          curfewAddress: TaskState.DONE,
+          finalChecks: TaskState.DONE,
         },
         decisions: {
           curfewAddressApproved: false,
@@ -318,16 +318,16 @@ describe('getAllowedTransition', () => {
 
     test('should allow CA to DM refusal if curfew address is rejected', () => {
       const status = {
-        stage: licenceStage.ELIGIBILITY,
+        stage: LicenceStage.ELIGIBILITY,
         postApproval: true,
         tasks: {
-          exclusion: taskState.DONE,
-          crdTime: taskState.DONE,
-          suitability: taskState.DONE,
-          optOut: taskState.DONE,
-          bassReferral: taskState.DONE,
-          curfewAddress: taskState.DONE,
-          finalChecks: taskState.DONE,
+          exclusion: TaskState.DONE,
+          crdTime: TaskState.DONE,
+          suitability: TaskState.DONE,
+          optOut: TaskState.DONE,
+          bassReferral: TaskState.DONE,
+          curfewAddress: TaskState.DONE,
+          finalChecks: TaskState.DONE,
         },
         decisions: {
           eligible: true,
@@ -341,7 +341,7 @@ describe('getAllowedTransition', () => {
 
     test('should allow CA to DM refusal if BASS area is rejected - POST_APPROVAL', () => {
       const status = {
-        stage: licenceStage.MODIFIED,
+        stage: LicenceStage.MODIFIED,
         postApproval: true,
         tasks: {},
         decisions: {
@@ -357,7 +357,7 @@ describe('getAllowedTransition', () => {
 
     test('should allow CA to DM refusal if BASS outcome is Unsuitable - POST_APPROVAL', () => {
       const status = {
-        stage: licenceStage.MODIFIED,
+        stage: LicenceStage.MODIFIED,
         postApproval: true,
         tasks: {},
         decisions: {
@@ -374,7 +374,7 @@ describe('getAllowedTransition', () => {
 
     test('should allow CA to DM refusal if BASS outcome is Unavailable - POST_APPROVAL', () => {
       const status = {
-        stage: licenceStage.MODIFIED,
+        stage: LicenceStage.MODIFIED,
         postApproval: true,
         tasks: {},
         decisions: {
@@ -391,7 +391,7 @@ describe('getAllowedTransition', () => {
 
     test('should allow CA to DM refusal if address is not rejected - POST_APPROVAL', () => {
       const status = {
-        stage: licenceStage.MODIFIED,
+        stage: LicenceStage.MODIFIED,
         postApproval: true,
         tasks: {},
         decisions: {
@@ -405,7 +405,7 @@ describe('getAllowedTransition', () => {
 
     test('should allow CA to DM refusal if BASS is withdrawn', () => {
       const status = {
-        stage: licenceStage.PROCESSING_CA,
+        stage: LicenceStage.PROCESSING_CA,
         postApproval: true,
         tasks: {},
         decisions: {
@@ -421,15 +421,15 @@ describe('getAllowedTransition', () => {
 
     test('should not allow CA to DM when HDC refused', () => {
       const status = {
-        stage: licenceStage.PROCESSING_CA,
+        stage: LicenceStage.PROCESSING_CA,
         postApproval: true,
         tasks: {
-          exclusion: taskState.DONE,
-          crdTime: taskState.DONE,
-          suitability: taskState.DONE,
-          optOut: taskState.DONE,
-          curfewAddress: taskState.DONE,
-          finalChecks: taskState.DONE,
+          exclusion: TaskState.DONE,
+          crdTime: TaskState.DONE,
+          suitability: TaskState.DONE,
+          optOut: TaskState.DONE,
+          curfewAddress: TaskState.DONE,
+          finalChecks: TaskState.DONE,
         },
         decisions: {
           postponed: null,
@@ -445,7 +445,7 @@ describe('getAllowedTransition', () => {
 
     test('should allow CA to DM refusal when address has been withdrawn', () => {
       const status = {
-        stage: licenceStage.PROCESSING_CA,
+        stage: LicenceStage.PROCESSING_CA,
         postApproval: true,
         tasks: {},
         decisions: {
@@ -459,7 +459,7 @@ describe('getAllowedTransition', () => {
 
     test('should allow CA to DM refusal when address has been withdrawn (but no new address added) in Post-decision', () => {
       const status = {
-        stage: licenceStage.MODIFIED,
+        stage: LicenceStage.MODIFIED,
         postApproval: true,
         tasks: {},
         decisions: {
@@ -473,9 +473,9 @@ describe('getAllowedTransition', () => {
 
     test('should allow CA to DM when approved premises', () => {
       const status = {
-        stage: licenceStage.PROCESSING_CA,
+        stage: LicenceStage.PROCESSING_CA,
         postApproval: true,
-        tasks: { finalChecks: taskState.DONE, approvedPremisesAddress: taskState.DONE },
+        tasks: { finalChecks: TaskState.DONE, approvedPremisesAddress: TaskState.DONE },
         decisions: { approvedPremisesRequired: true },
       }
 

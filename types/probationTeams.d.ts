@@ -1,5 +1,3 @@
-import { Ldu } from './delius'
-
 export interface ProbationTeamDto {
   functionalMailbox?: string
 }

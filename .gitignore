@@ -30,3 +30,4 @@ out
 test-results/
 licences\.iml
 licence-specs/src/*.iml
+**/.project

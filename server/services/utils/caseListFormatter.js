@@ -3,7 +3,7 @@ const { getIn } = require('../../utils/functionalHelpers')
 const { formatObjectForView } = require('./formatForView')
 const getLicenceStatus = require('../licence/licenceStatus')
 const { getStatusLabel } = require('../licence/licenceStatusLabels')
-const { licenceStage } = require('../config/licenceStage')
+const { LicenceStage } = require('../config/licenceStage')
 
 module.exports = function createCaseListFormatter(licenceClient) {
   async function formatCaseList(hdcEligibleReleases, role) {
@@ -34,7 +34,7 @@ function getStatus(prisoner, licences, role) {
   })
 
   if (!licenceForPrisoner) {
-    return { stage: licenceStage.UNSTARTED, status: 'Not started', activeCase: true }
+    return { stage: LicenceStage.UNSTARTED, status: 'Not started', activeCase: true }
   }
 
   const licenceStatus = getLicenceStatus(licenceForPrisoner)

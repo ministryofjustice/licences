@@ -3,7 +3,7 @@ const {
   getBassAreaState,
   getBassRequestState,
 } = require('../../../server/services/licence/bassAddressState')
-const { taskState } = require('../../../server/services/config/taskState')
+const { TaskState } = require('../../../server/services/config/taskState')
 
 describe('bass', () => {
   test('should show bassWithdrawn when current request empty and last request withdrawn', () => {
@@ -103,7 +103,7 @@ describe('bass', () => {
 
     const state = getBassAreaState(licence)
 
-    expect(state.bassAreaCheck).toBe(taskState.DONE)
+    expect(state.bassAreaCheck).toBe(TaskState.DONE)
   })
 
   test('should show bassAreaCheck unstarted for no specific are only when not seen by RO', () => {
@@ -126,7 +126,7 @@ describe('bass', () => {
 
     const state = getBassAreaState(licence)
 
-    expect(state.bassAreaCheck).toBe(taskState.UNSTARTED)
+    expect(state.bassAreaCheck).toBe(TaskState.UNSTARTED)
   })
 
   describe('bassRequest task', () => {
@@ -137,7 +137,7 @@ describe('bass', () => {
           bassRequested: 'Yes',
           specificArea: 'No',
         },
-        outcome: taskState.DONE,
+        outcome: TaskState.DONE,
       },
       {
         description: 'Specific area Yes',
@@ -145,14 +145,14 @@ describe('bass', () => {
           bassRequested: 'Yes',
           specificArea: 'Yes',
         },
-        outcome: taskState.UNSTARTED,
+        outcome: TaskState.UNSTARTED,
       },
       {
         description: 'Specific area unanswered',
         bassRequest: {
           bassRequested: 'Yes',
         },
-        outcome: taskState.UNSTARTED,
+        outcome: TaskState.UNSTARTED,
       },
       {
         description: 'Specific area Yes with partial answers',
@@ -161,7 +161,7 @@ describe('bass', () => {
           specificArea: 'Yes',
           proposedCounty: 'something',
         },
-        outcome: taskState.STARTED,
+        outcome: TaskState.STARTED,
       },
     ]
 

@@ -1,7 +1,7 @@
-import { taskState } from '../config/taskState'
+import { TaskState } from '../config/taskState'
 import { getIn, isEmpty, lastItem } from '../../utils/functionalHelpers'
 
-const { UNSTARTED, STARTED, DONE } = taskState
+const { UNSTARTED, STARTED, DONE } = TaskState
 
 export function getBassRequestState(licence) {
   const bassRequestAnswer = getIn(licence, ['bassReferral', 'bassRequest', 'bassRequested'])
