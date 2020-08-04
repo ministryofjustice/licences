@@ -1,7 +1,7 @@
 const { asyncMiddleware, authorisationMiddleware } = require('../../utils/middleware')
 const { firstItem } = require('../../utils/functionalHelpers')
 
-module.exports = ({ userAdminService }) => (router, audited) => {
+module.exports = ({ userAdminService, signInService, migrationService }) => (router, audited) => {
   router.use(authorisationMiddleware)
 
   router.get(
@@ -36,6 +36,62 @@ module.exports = ({ userAdminService }) => (router, audited) => {
       const userInput = firstItem(req.flash('userInput')) || null
 
       return res.render('admin/users/roUserDetails', { roUser, errors, userInput })
+    })
+  )
+
+  router.get(
+    '/migrate/:nomisId',
+    asyncMiddleware(async (req, res) => {
+      const { nomisId } = req.params
+
+      const token = await signInService.getClientCredentialsTokens(req.user.username)
+      const results = await migrationService.getStaffDetails(token.token, nomisId)
+
+      const errors = firstItem(req.flash('errors')) || {}
+      const userInput = firstItem(req.flash('userInput')) || null
+      return res.render('admin/users/migrate', { ...results, errors, userInput })
+    })
+  )
+
+  router.get(
+    '/migrate',
+    asyncMiddleware(async (req, res) => {
+      const { limit, offset } = req.query
+      const token = await signInService.getClientCredentialsTokens(req.user.username)
+      const results = await migrationService.getAll(token.token, {
+        limit: limit ? parseInt(limit, 10) : 20,
+        offset: offset ? parseInt(offset, 20) : 0,
+      })
+      return res.json(results)
+    })
+  )
+
+  router.post(
+    '/assign-role/:nomisId',
+    asyncMiddleware(async (req, res) => {
+      const { nomisId } = req.params
+      await migrationService.addRoRole(nomisId)
+      return res.redirect(`/admin/roUsers/migrate/${nomisId}`)
+    })
+  )
+
+  router.post(
+    '/disable-auth/:nomisId',
+    asyncMiddleware(async (req, res) => {
+      const { nomisId } = req.params
+      const token = await signInService.getClientCredentialsTokens(req.user.username)
+      await migrationService.disableAuthAccount(token.token, nomisId)
+      return res.redirect(`/admin/roUsers/migrate/${nomisId}`)
+    })
+  )
+
+  router.post(
+    '/enable-auth/:nomisId',
+    asyncMiddleware(async (req, res) => {
+      const { nomisId } = req.params
+      const token = await signInService.getClientCredentialsTokens(req.user.username)
+      await migrationService.enableAuthAccount(token.token, nomisId)
+      return res.redirect(`/admin/roUsers/migrate/${nomisId}`)
     })
   )
 

@@ -1,8 +1,8 @@
-const request = require('supertest')
-const { mockAudit } = require('../../mockClients')
-const { startRoute } = require('../../supertestSetup')
-const { createUserAdminServiceStub } = require('../../mockServices')
-const createAdminRoute = require('../../../server/routes/admin/users')
+import request from 'supertest'
+import { mockAudit } from '../../mockClients'
+import { startRoute } from '../../supertestSetup'
+import { createUserAdminServiceStub, createSignInServiceStub } from '../../mockServices'
+import createAdminRoute from '../../../server/routes/admin/users'
 
 const user1 = {
   nomisId: 'user1',
@@ -20,10 +20,19 @@ const user2 = {
 
 describe('/admin', () => {
   let userAdminService
+  let migrationService
+  let signInService
 
   beforeEach(() => {
     userAdminService = createUserAdminServiceStub()
-
+    migrationService = {
+      getStaffDetails: jest.fn(),
+      addRoRole: jest.fn(),
+      enableAuthAccount: jest.fn(),
+      disableAuthAccount: jest.fn(),
+      getAll: jest.fn(),
+    }
+    signInService = createSignInServiceStub()
     userAdminService.findRoUsers.mockReset()
     userAdminService.getRoUsers.mockReset()
     userAdminService.getRoUser.mockReset()
@@ -40,7 +49,14 @@ describe('/admin', () => {
   })
 
   const createApp = (user, audit = mockAudit()) =>
-    startRoute(createAdminRoute({ userAdminService }), '/admin/roUsers', user, 'USER_MANAGEMENT', null, audit)
+    startRoute(
+      createAdminRoute({ userAdminService, signInService, migrationService }),
+      '/admin/roUsers',
+      user,
+      'USER_MANAGEMENT',
+      null,
+      audit
+    )
 
   describe('GET /admin/roUsers', () => {
     test('calls user service and renders HTML output', () => {
@@ -357,6 +373,119 @@ describe('/admin', () => {
     test('should throw if submitted by non-authorised user', () => {
       const app = createApp('roUser')
       return request(app).get('/admin/roUsers/verify?nomisUserName=USER_NAME').expect(403)
+    })
+  })
+
+  describe('GET /admin/roUsers/migrate/:nomisId', () => {
+    test('calls migration service and renders HTML output', () => {
+      migrationService.getStaffDetails.mockResolvedValue({ licenceUser: {}, flags: [] })
+      const app = createApp('batchUser')
+      return request(app)
+        .get('/admin/roUsers/migrate/RO_USER')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect((res) => {
+          expect(migrationService.getStaffDetails).toHaveBeenCalledWith('system-token', 'RO_USER')
+          expect(res.text).toContain('Migrate User')
+        })
+    })
+
+    test('should throw if submitted by non-authorised user', () => {
+      const app = createApp('roUser')
+      return request(app).get('/admin/roUsers/migrate/RO_USER').expect(403)
+    })
+  })
+
+  describe('GET /admin/roUsers/migrate', () => {
+    test('calls migration service and renders json with default pagination', () => {
+      migrationService.getAll.mockResolvedValue([])
+      const app = createApp('batchUser')
+      return request(app)
+        .get('/admin/roUsers/migrate')
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .expect((res) => {
+          expect(migrationService.getAll).toHaveBeenCalledWith('system-token', { limit: 20, offset: 0 })
+          expect(res.body).toStrictEqual([])
+        })
+    })
+
+    test('calls migration service and renders json, overiding pagination', () => {
+      migrationService.getAll.mockResolvedValue([])
+      const app = createApp('batchUser')
+      return request(app)
+        .get('/admin/roUsers/migrate?limit=5&offset=8')
+        .expect(200)
+        .expect('Content-Type', /json/)
+        .expect((res) => {
+          expect(migrationService.getAll).toHaveBeenCalledWith('system-token', { limit: 5, offset: 8 })
+          expect(res.body).toStrictEqual([])
+        })
+    })
+
+    test('should throw if submitted by non-authorised user', () => {
+      const app = createApp('roUser')
+      return request(app).get('/admin/roUsers/migrate').expect(403)
+    })
+  })
+
+  describe('POST /admin/roUsers/assign-role/:nomisId', () => {
+    test('calls assign roles and redirects', () => {
+      migrationService.getStaffDetails.mockResolvedValue({ licenceUser: {}, flags: [] })
+      const app = createApp('batchUser')
+      return request(app)
+        .post('/admin/roUsers/assign-role/RO_USER')
+        .expect(302)
+        .expect('Content-Type', /text/)
+        .expect('Location', '/admin/roUsers/migrate/RO_USER')
+        .expect(() => {
+          expect(migrationService.addRoRole).toHaveBeenCalledWith('RO_USER')
+        })
+    })
+
+    test('should throw if submitted by non-authorised user', () => {
+      const app = createApp('roUser')
+      return request(app).post('/admin/roUsers/assign-role/RO_USER').expect(403)
+    })
+  })
+
+  describe('POST /admin/roUsers/disable-auth/:nomisId', () => {
+    test('calls disable auth account and redirects', () => {
+      migrationService.getStaffDetails.mockResolvedValue({ licenceUser: {}, flags: [] })
+      const app = createApp('batchUser')
+      return request(app)
+        .post('/admin/roUsers/disable-auth/RO_USER')
+        .expect(302)
+        .expect('Content-Type', /text/)
+        .expect('Location', '/admin/roUsers/migrate/RO_USER')
+        .expect(() => {
+          expect(migrationService.disableAuthAccount).toHaveBeenCalledWith('system-token', 'RO_USER')
+        })
+    })
+
+    test('should throw if submitted by non-authorised user', () => {
+      const app = createApp('roUser')
+      return request(app).post('/admin/roUsers/disable-auth/RO_USER').expect(403)
+    })
+  })
+
+  describe('POST /admin/roUsers/enable-auth/:nomisId', () => {
+    test('calls enable auth account and redirects', () => {
+      migrationService.getStaffDetails.mockResolvedValue({ licenceUser: {}, flags: [] })
+      const app = createApp('batchUser')
+      return request(app)
+        .post('/admin/roUsers/disable-auth/RO_USER')
+        .expect(302)
+        .expect('Content-Type', /text/)
+        .expect('Location', '/admin/roUsers/migrate/RO_USER')
+        .expect(() => {
+          expect(migrationService.disableAuthAccount).toHaveBeenCalledWith('system-token', 'RO_USER')
+        })
+    })
+
+    test('should throw if submitted by non-authorised user', () => {
+      const app = createApp('roUser')
+      return request(app).post('/admin/roUsers/disable-auth/RO_USER').expect(403)
     })
   })
 })

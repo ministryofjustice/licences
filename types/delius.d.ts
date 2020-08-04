@@ -98,4 +98,5 @@ export interface DeliusClient {
   getAllLdusForProbationArea: (probationAreaCode: string) => Promise<Page<Ldu>>
   getAllTeamsForLdu: (probationAreaCode: string, lduCode: string) => Promise<Page<ProbationTeam>>
   addResponsibleOfficerRole: (username: string) => Promise<void>
+  getUser: (username: string) => Promise<any>
 }

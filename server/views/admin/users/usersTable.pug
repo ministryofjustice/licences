@@ -8,6 +8,7 @@ table#hdcEligiblePrisoners.largeMarginBottom
       th In SSO
       th
       th
+      th
   tbody
     if roUsers && roUsers.length > 0
       each roUser, index in roUsers
@@ -33,3 +34,6 @@ table#hdcEligiblePrisoners.largeMarginBottom
           td.delete
             a.button.button-secondary.fullWidth.center(href="/admin/roUsers/delete/" + roUser.nomisId role="button")
               | Delete
+          td.migrate
+            a.button.button-secondary.fullWidth.center(href="/admin/roUsers/migrate/" + roUser.nomisId role="button")
+              | Migrate

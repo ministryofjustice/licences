@@ -1,18 +1,19 @@
 const db = require('./dataAccess/db')
 
 module.exports = {
-  async getRoUsers() {
-    const query = {
-      text: 'select * from staff_ids order by nomis_id asc',
-    }
+  async getRoUsers(page) {
+    const query = page
+      ? {
+          text: 'select * from staff_ids order by nomis_id asc limit $1 offset $2',
+          values: [page.limit, page.offset],
+        }
+      : {
+          text: 'select * from staff_ids order by nomis_id asc',
+        }
 
     const { rows } = await db.query(query)
 
-    if (rows) {
-      return rows.map(convertPropertyNames)
-    }
-
-    return []
+    return rows.map(convertPropertyNames)
   },
 
   async getCasesRequiringRo() {

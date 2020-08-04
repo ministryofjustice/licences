@@ -451,6 +451,62 @@ describe('nomisClient', () => {
     })
   })
 
+  describe('getAuthUser', () => {
+    test('should return data from api', () => {
+      fakeAuth.get('/api/authuser/userName').reply(200, { username: 'result' })
+
+      return expect(nomisClient.getAuthUser('userName')).resolves.toEqual({ username: 'result' })
+    })
+
+    test('should reject if api fails', () => {
+      fakeAuth.get('/api/authuser/userName').thrice().reply(500)
+
+      return expect(nomisClient.getAuthUser('userName')).rejects.toStrictEqual(Error('Internal Server Error'))
+    })
+  })
+
+  describe('getAuthUserRoles', () => {
+    test('should return data from api', () => {
+      fakeAuth.get('/api/authuser/userName/roles').reply(200, ['RO_LICENCES'])
+
+      return expect(nomisClient.getAuthUserRoles('userName')).resolves.toEqual(['RO_LICENCES'])
+    })
+
+    test('should reject if api fails', () => {
+      fakeAuth.get('/api/authuser/userName/roles').thrice().reply(500)
+
+      return expect(nomisClient.getAuthUserRoles('userName')).rejects.toStrictEqual(Error('Internal Server Error'))
+    })
+  })
+
+  describe('disableAuthUser', () => {
+    test('should return data from api', () => {
+      fakeAuth.put('/api/authuser/userName/disable').reply(200)
+
+      return expect(nomisClient.disableAuthUser('userName')).resolves.toBeUndefined()
+    })
+
+    test('should reject if api fails', () => {
+      fakeAuth.put('/api/authuser/userName/disable').reply(500)
+
+      return expect(nomisClient.disableAuthUser('userName')).rejects.toStrictEqual(Error('Internal Server Error'))
+    })
+  })
+
+  describe('enableAuthUser', () => {
+    test('should return data from api', () => {
+      fakeAuth.put('/api/authuser/userName/enable').reply(200)
+
+      return expect(nomisClient.enableAuthUser('userName')).resolves.toBeUndefined()
+    })
+
+    test('should reject if api fails', () => {
+      fakeAuth.put('/api/authuser/userName/enable').reply(500)
+
+      return expect(nomisClient.enableAuthUser('userName')).rejects.toStrictEqual(Error('Internal Server Error'))
+    })
+  })
+
   describe('getLoggedInUserInfo', () => {
     test('should return data from api', () => {
       fakeAuth.get('/api/user/me').reply(200, { username: 'result' })

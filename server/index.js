@@ -20,6 +20,7 @@ const { createLicenceService } = require('./services/licenceService')
 const { createPrisonerService } = require('./services/prisonerService')
 const createConditionsService = require('./services/conditionsService')
 const createCaseListService = require('./services/caseListService')
+const MigrationService = require('./services/migrationService').default
 const createPdfService = require('./services/pdfService')
 const createFormService = require('./services/formService')
 const createReportingService = require('./services/reportingService')
@@ -83,6 +84,7 @@ const userAdminService = createUserAdminService(nomisClientBuilder, userClient, 
 const userService = createUserService(nomisClientBuilder)
 const deadlineService = createDeadlineService(licenceClient)
 const roContactDetailsService = createRoContactDetailsService(userAdminService, roService, probationTeamsClient)
+const migrationService = new MigrationService(deliusClient, userAdminService, nomisClientBuilder)
 
 const notificationSender = createNotificationSender(notifyClient, audit, config.notifications.notifyKey)
 const roNotificationSender = createRoNotificationSender(notificationSender, config)
@@ -152,6 +154,7 @@ const app = createApp({
   lduService,
   functionalMailboxService,
   roNotificationHandler,
+  migrationService,
 })
 
 module.exports = app

@@ -1,0 +1,103 @@
+extends ../../layout
+include ../../includes/errorBannerWithDetail
+
+block content
+
+  -var inputs = userInput ? userInput : roUser ? roUser : {}
+
+  div.back-link-container.smallPaddingTop
+    a#back.link-back(href="javascript: window.history.back();") Back
+  +errorBannerWithDetail(errors, [
+    { field: 'nomisId' },
+    { field: 'deliusId' }
+  ])
+
+  h2.heading-large
+    | Migrate User
+    
+  div.pure-g.largePaddingBottom
+    div.purge-g  
+        div.pure-u-1-2
+            h3.heading-medium Licence record
+            div.pure-u-1-3 Name
+            div.pure-u-2-3.bold #{licenceUser.first} #{licenceUser.last} 
+
+            div.pure-u-1-3 Delius staff code
+            div.pure-u-2-3.bold #{licenceUser.deliusId}
+
+            div.pure-u-1-3 Auth username
+            div.pure-u-2-3.bold #{licenceUser.nomisId}
+
+            div.pure-u-1-3 Email
+            div.pure-u-2-3.bold #{licenceUser.email}
+
+            div.pure-u-1-3 Org Email
+            div.pure-u-2-3.bold #{licenceUser.orgEmail}
+
+        div.pure-u-1-2
+          h3.heading-medium Delius record
+          if deliusUser
+            div.pure-u-1-3 Name
+            div.pure-u-2-3.bold #{deliusUser.staff.forenames} #{deliusUser.staff.surname} 
+
+            div.pure-u-1-3 Delius staff code
+            div.pure-u-2-3.bold #{deliusUser.staffCode}
+            
+            if !flags.includes('UNLINKED_ACCOUNT')
+                div.pure-u-1-3 Delius username
+                div.pure-u-2-3.bold #{deliusUser.username}
+
+                div.pure-u-1-3 Email
+                div.pure-u-2-3.bold #{deliusUser.email}
+
+                div.pure-u-1-3 Enabled
+                div.pure-u-2-3.bold #{!flags.includes('DISABLED_IN_DELIUS')}
+
+                div.pure-u-1-3 RO role present
+                div.pure-u-2-3.bold #{!flags.includes('REQUIRES_RO_ROLE')}
+
+            div.pure-u-1-3 Linked account
+            div.pure-u-2-3.bold #{!flags.includes('UNLINKED_ACCOUNT')}
+          else
+            p Missing user with username: 
+              span.bold #{licenceUser.deliusId}
+
+  div.pure-g.largePaddingBottom
+      div.pure-u-1-2
+          h3.heading-medium Auth record
+          if authUser
+            div.pure-u-1-3 Name
+            div.pure-u-2-3.bold #{authUser.firstName} #{authUser.lastName} 
+
+            div.pure-u-1-3 Auth username
+            div.pure-u-2-3.bold #{authUser.username}
+
+            div.pure-u-1-3 Email
+            div.pure-u-2-3.bold #{authUser.email}
+
+            div.pure-u-1-3 Enabled
+            div.pure-u-2-3.bold #{authUser.enabled}
+
+            div.pure-u-1-3 Last logged in
+            div.pure-u-2-3.bold #{authUser.lastLoggedIn}
+
+            div.pure-u-1-3 Roles
+            div.pure-u-2-3.bold #{authUser.roles}
+          else
+            p Missing user with username: 
+              span.bold #{licenceUser.nomisId}
+      div.pure-u-1-2
+        h3.heading-medium Actions
+        div
+          form(method='POST', action='/admin/roUsers/assign-role/' + licenceUser.nomisId)
+              input(type="hidden" name="_csrf" value=csrfToken)
+              if flags.includes('REQUIRES_RO_ROLE')
+                  input#continueBtn.requiredButton.button.smallMarginTop(type="submit" value="Assign RO role" formaction='/admin/roUsers/assign-role/' + licenceUser.nomisId)
+              if !flags.includes('DISABLED_IN_AUTH')
+                  input#continueBtn.requiredButton.button.smallMarginTop(type="submit" value="Disable auth account" formaction='/admin/roUsers/disable-auth/' + licenceUser.nomisId) 
+              if flags.includes('DISABLED_IN_AUTH')
+                  input#continueBtn.requiredButton.button.smallMarginTop(type="submit" value="Enable auth account" formaction='/admin/roUsers/enable-auth/' + licenceUser.nomisId) 
+          
+        div
+            a#backBtn.requiredButton.button.button-secondary.smallMarginTop(href="javascript: window.history.back();" role="button") Cancel
+

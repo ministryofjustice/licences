@@ -180,4 +180,12 @@ describe('deliusClient', () => {
       return expect(deliusClient.addResponsibleOfficerRole('bobUser')).resolves.toBeUndefined()
     })
   })
+
+  describe('getUser', () => {
+    test('should return data from api', () => {
+      fakeDelius.get(`/users/bobUser/details`).reply(200, { username: 'aaa' })
+
+      return expect(deliusClient.getUser('bobUser')).resolves.toStrictEqual({ username: 'aaa' })
+    })
+  })
 })

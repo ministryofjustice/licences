@@ -43,5 +43,9 @@ export const createDeliusClient = (restClient): DeliusClient => {
         // Do nothing
       }
     },
+
+    async getUser(username) {
+      return restClient.getResource(`/users/${username}/details`)
+    },
   }
 }

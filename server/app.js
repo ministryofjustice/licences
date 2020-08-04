@@ -89,6 +89,7 @@ module.exports = function createApp({
   lduService,
   functionalMailboxService,
   roNotificationHandler,
+  migrationService,
 }) {
   const app = express()
 
@@ -344,7 +345,10 @@ module.exports = function createApp({
   )
   app.use('/caseList/', secureRoute(caseListRouter({ caseListService })))
   app.use('/admin/', secureRoute(adminRouter()))
-  app.use('/admin/roUsers/', secureRoute(userAdminRouter({ userAdminService }), { auditKey: 'USER_MANAGEMENT' }))
+  app.use(
+    '/admin/roUsers/',
+    secureRoute(userAdminRouter({ userAdminService, signInService, migrationService }), { auditKey: 'MAINTENANCE' })
+  )
   app.use('/admin/mailboxes/', secureRoute(mailboxesAdminRouter({ configClient })))
   app.use('/admin/jobs/', secureRoute(jobsAdminRouter({ jobSchedulerService })))
   app.use('/admin/delius/', secureRoute(deliusAdminRouter(roService)))

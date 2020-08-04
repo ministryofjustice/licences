@@ -38,6 +38,7 @@ export const mockDeliusClient: () => DeliusClientMock = () => ({
   getROPrisoners: jest.fn(),
   getStaffDetailsByStaffCode: jest.fn(),
   getStaffDetailsByUsername: jest.fn(),
+  getUser: jest.fn(),
 })
 
 export interface ProbationTeamsClientMock extends ProbationTeamsClient {
