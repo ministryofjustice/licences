@@ -171,6 +171,22 @@ export = (token) => {
       return oauthRestClient.getResource(`/api/user/${userName}`)
     },
 
+    getAuthUser(username) {
+      return oauthRestClient.getResource(`/api/authuser/${username}`)
+    },
+
+    getAuthUserRoles(username) {
+      return oauthRestClient.getResource(`/api/authuser/${username}/roles`)
+    },
+
+    disableAuthUser(username) {
+      return oauthRestClient.putResource(`/api/authuser/${username}/disable`, {})
+    },
+
+    enableAuthUser(username) {
+      return oauthRestClient.putResource(`/api/authuser/${username}/enable`, {})
+    },
+
     getLoggedInUserInfo(): Promise<Profile> {
       return oauthRestClient.getResource(`/api/user/me`)
     },

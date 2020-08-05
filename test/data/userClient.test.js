@@ -26,17 +26,27 @@ describe('userClient', () => {
   const standardResponse = { rows: [{ user1, user2 }] }
 
   beforeEach(() => {
-    db.query = jest.fn().mockReturnValue(standardResponse)
+    db.query = jest.fn().mockResolvedValue(standardResponse)
   })
 
   describe('getRoUsers', () => {
     test('should call query', () => {
       userClient.getRoUsers()
-      expect(db.query).toHaveBeenCalled()
+      expect(db.query).toHaveBeenCalledWith({
+        text: 'select * from staff_ids order by nomis_id asc',
+      })
+    })
+
+    test('can do paged query', () => {
+      userClient.getRoUsers({ limit: 20, offset: 0 })
+      expect(db.query).toHaveBeenCalledWith({
+        text: 'select * from staff_ids order by nomis_id asc limit $1 offset $2',
+        values: [20, 0],
+      })
     })
 
     test('should return empty if no matches', async () => {
-      db.query = jest.fn().mockReturnValue({})
+      db.query.mockResolvedValue({ rows: [] })
       const result = await userClient.getRoUsers()
       expect(db.query).toHaveBeenCalled()
       expect(result).toEqual([])

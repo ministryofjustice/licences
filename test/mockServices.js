@@ -71,6 +71,8 @@ const createRoServiceStub = () => ({
   getROPrisoners: jest.fn(),
   getStaffByUsername: jest.fn(),
   findResponsibleOfficerByOffenderNo: jest.fn(),
+  getStaffDetailsFromDelius: jest.fn(),
+  addRoRole: jest.fn(),
 })
 
 const createUserAdminServiceStub = () => ({
