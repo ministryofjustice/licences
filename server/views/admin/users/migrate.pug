@@ -92,11 +92,14 @@ block content
           form(method='POST', action='/admin/roUsers/assign-role/' + licenceUser.nomisId)
               input(type="hidden" name="_csrf" value=csrfToken)
               if flags.includes('REQUIRES_RO_ROLE')
-                  input#continueBtn.requiredButton.button.smallMarginTop(type="submit" value="Assign RO role" formaction='/admin/roUsers/assign-role/' + licenceUser.nomisId)
+                  div
+                    input#continueBtn.requiredButton.button.smallMarginTop(type="submit" value="Assign RO role" formaction='/admin/roUsers/assign-role/' + licenceUser.nomisId)
               if !flags.includes('DISABLED_IN_AUTH')
-                  input#continueBtn.requiredButton.button.smallMarginTop(type="submit" value="Disable auth account" formaction='/admin/roUsers/disable-auth/' + licenceUser.nomisId) 
+                  div
+                    input#continueBtn.requiredButton.button.smallMarginTop(type="submit" value="Disable auth account" formaction='/admin/roUsers/disable-auth/' + licenceUser.nomisId) 
               if flags.includes('DISABLED_IN_AUTH')
-                  input#continueBtn.requiredButton.button.smallMarginTop(type="submit" value="Enable auth account" formaction='/admin/roUsers/enable-auth/' + licenceUser.nomisId) 
+                  div
+                    input#continueBtn.requiredButton.button.smallMarginTop(type="submit" value="Enable auth account" formaction='/admin/roUsers/enable-auth/' + licenceUser.nomisId) 
           
         div
             a#backBtn.requiredButton.button.button-secondary.smallMarginTop(href="javascript: window.history.back();" role="button") Cancel

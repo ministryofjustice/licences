@@ -60,7 +60,7 @@ module.exports = ({ userAdminService, signInService, migrationService }) => (rou
       const token = await signInService.getClientCredentialsTokens(req.user.username)
       const results = await migrationService.getAll(token.token, {
         limit: limit ? parseInt(limit, 10) : 20,
-        offset: offset ? parseInt(offset, 20) : 0,
+        offset: offset ? parseInt(offset, 10) : 0,
       })
       return res.json(results)
     })

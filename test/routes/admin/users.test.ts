@@ -414,11 +414,11 @@ describe('/admin', () => {
       migrationService.getAll.mockResolvedValue([])
       const app = createApp('batchUser')
       return request(app)
-        .get('/admin/roUsers/migrate?limit=5&offset=8')
+        .get('/admin/roUsers/migrate?limit=5&offset=800')
         .expect(200)
         .expect('Content-Type', /json/)
         .expect((res) => {
-          expect(migrationService.getAll).toHaveBeenCalledWith('system-token', { limit: 5, offset: 8 })
+          expect(migrationService.getAll).toHaveBeenCalledWith('system-token', { limit: 5, offset: 800 })
           expect(res.body).toStrictEqual([])
         })
     })
