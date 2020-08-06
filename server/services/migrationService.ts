@@ -16,6 +16,7 @@ export const enum Flag {
   REQUIRES_RO_ROLE = 'REQUIRES_RO_ROLE',
   MISSING_AUTH_USER = 'MISSING_AUTH_USER',
   MISSING_DELIUS_USER = 'MISSING_DELIUS_USER',
+  AUTH_CANNOT_LOAD = 'AUTH_CANNOT_LOAD',
 }
 
 export default class MigrationService {
@@ -49,13 +50,21 @@ export default class MigrationService {
     const isLinked = Boolean(deliusStaffDetails && deliusStaffDetails.username)
 
     const deliusUser = isLinked && (await this.getUserFromDelius(deliusStaffDetails.username))
-    const authUser = await this.getStaffDetailsFromAuth(token, nomisUsername)
 
-    const flags = this.getFlags(deliusUser, authUser, licenceUser, deliusStaffDetails)
+    let authUser
+    let failedToLoadAuth = false
+
+    try {
+      authUser = await this.getStaffDetailsFromAuth(token, nomisUsername)
+    } catch (error) {
+      failedToLoadAuth = true
+    }
+
+    const flags = this.getFlags(deliusUser, authUser, licenceUser, deliusStaffDetails, failedToLoadAuth)
     return { licenceUser, deliusUser: deliusStaffDetails, authUser, flags }
   }
 
-  private getFlags(deliusUser, authUser, licenceUser, deliusStaffDetails) {
+  private getFlags(deliusUser, authUser, licenceUser, deliusStaffDetails, failedToLoadAuth: boolean) {
     const deliusRoles = deliusUser ? deliusUser.roles : []
     const hasRoRole = deliusRoles.map((r) => r.name).includes(config.delius.responsibleOfficerRoleId)
 
@@ -72,10 +81,11 @@ export default class MigrationService {
       ...(deliusUser && !hasRoRole ? [Flag.REQUIRES_RO_ROLE] : []),
       ...(deliusUser && !deliusUser.enabled ? [Flag.DISABLED_IN_DELIUS] : []),
       ...(authUser && !authUser.enabled ? [Flag.DISABLED_IN_AUTH] : []),
-      ...(!authUser ? [Flag.MISSING_AUTH_USER] : []),
+      ...(!authUser && !failedToLoadAuth ? [Flag.MISSING_AUTH_USER] : []),
       ...(multipleAuthRoles ? [Flag.MULTIPLE_NOMIS_ROLES] : []),
       ...(differentEmail ? [Flag.EMAIL_MISMATCH] : []),
       ...(differentUsernames ? [Flag.USERNAME_MISMATCH] : []),
+      ...(failedToLoadAuth ? [Flag.AUTH_CANNOT_LOAD] : []),
     ]
   }
 

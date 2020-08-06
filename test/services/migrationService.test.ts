@@ -208,4 +208,31 @@ describe('MigrationService', () => {
       },
     })
   })
+
+  test('get staff details, error calling auth', async () => {
+    userAdminService.getRoUser.mockResolvedValue({ deliusId: 123, nomisId: 'user-1', email: 'user@gov.uk' })
+
+    nomisClient.getAuthUser.mockRejectedValue(Error('bang!'))
+    deliusClient.getStaffDetailsByStaffCode.mockResolvedValue({ username: 'user-1', email: 'user@gov.uk' })
+    deliusClient.getUser.mockResolvedValue({
+      roles: [{ name: delius.responsibleOfficerRoleId }],
+      enabled: true,
+    })
+
+    const result = await migrationService.getStaffDetails('user-1')
+
+    expect(result).toStrictEqual({
+      authUser: undefined,
+      deliusUser: {
+        username: 'user-1',
+        email: 'user@gov.uk',
+      },
+      flags: [Flag.AUTH_CANNOT_LOAD],
+      licenceUser: {
+        deliusId: 123,
+        nomisId: 'user-1',
+        email: 'user@gov.uk',
+      },
+    })
+  })
 })
