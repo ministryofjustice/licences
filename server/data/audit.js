@@ -14,6 +14,7 @@ const keys = [
   'LICENCE_SEARCH',
   'LOCATIONS',
   'FUNCTIONAL_MAILBOX',
+  'MIGRATION',
 ]
 
 /**

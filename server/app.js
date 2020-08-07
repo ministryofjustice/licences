@@ -347,7 +347,7 @@ module.exports = function createApp({
   app.use('/admin/', secureRoute(adminRouter()))
   app.use(
     '/admin/roUsers/',
-    secureRoute(userAdminRouter({ userAdminService, signInService, migrationService }), { auditKey: 'MAINTENANCE' })
+    secureRoute(userAdminRouter({ userAdminService, signInService, migrationService }), { auditKey: 'MIGRATION' })
   )
   app.use('/admin/mailboxes/', secureRoute(mailboxesAdminRouter({ configClient })))
   app.use('/admin/jobs/', secureRoute(jobsAdminRouter({ jobSchedulerService })))
