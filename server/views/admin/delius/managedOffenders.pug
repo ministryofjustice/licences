@@ -22,7 +22,8 @@ block content
             th First name
             th Last name
         tbody
-          each offender in offenders
+          - var prisoners = offenders
+          each offender in prisoners
             tr
               td #{offender.bookingId}
               td #{offender.offenderNo}
