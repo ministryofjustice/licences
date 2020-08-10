@@ -33,14 +33,14 @@ describe('userClient', () => {
     test('should call query', () => {
       userClient.getRoUsers()
       expect(db.query).toHaveBeenCalledWith({
-        text: 'select * from staff_ids order by nomis_id asc',
+        text: 'select * from v_staff_ids order by nomis_id asc',
       })
     })
 
     test('can do paged query', () => {
       userClient.getRoUsers({ limit: 20, offset: 0 })
       expect(db.query).toHaveBeenCalledWith({
-        text: 'select * from staff_ids order by nomis_id asc limit $1 offset $2',
+        text: 'select * from v_staff_ids order by nomis_id asc limit $1 offset $2',
         values: [20, 0],
       })
     })
@@ -163,7 +163,7 @@ describe('userClient', () => {
 
   describe('deleteRoUser', () => {
     test('should pass in the correct sql and params', async () => {
-      const expectedClause = 'delete from staff_ids where nomis_id = $1'
+      const expectedClause = 'delete from v_staff_ids where nomis_id = $1'
 
       await userClient.deleteRoUser('nomisId')
 
@@ -206,7 +206,7 @@ describe('userClient', () => {
 
   describe('findRoUsers', () => {
     test('should pass in the correct sql and params with wildcard searchterm', async () => {
-      const expectedSelectClause = 'select * from staff_ids'
+      const expectedSelectClause = 'select * from v_staff_ids'
 
       const expectedWhereClauses = [
         'upper(nomis_id) like upper($1) or',

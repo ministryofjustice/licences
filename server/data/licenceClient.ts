@@ -133,7 +133,7 @@ export class LicenceClient {
   // eslint-disable-next-line class-methods-use-this
   async getDeliusUserName(nomisUserName): Promise<DeliusId[]> {
     const query = {
-      text: 'select staff_id from staff_ids where upper(nomis_id) = upper($1)',
+      text: 'select staff_id from v_staff_ids where upper(nomis_id) = upper($1)',
       values: [nomisUserName],
     }
 
