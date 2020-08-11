@@ -4,11 +4,11 @@ module.exports = {
   async getRoUsers(page) {
     const query = page
       ? {
-          text: 'select * from staff_ids order by nomis_id asc limit $1 offset $2',
+          text: 'select * from v_staff_ids order by nomis_id asc limit $1 offset $2',
           values: [page.limit, page.offset],
         }
       : {
-          text: 'select * from staff_ids order by nomis_id asc',
+          text: 'select * from v_staff_ids order by nomis_id asc',
         }
 
     const { rows } = await db.query(query)
@@ -32,7 +32,7 @@ module.exports = {
 
   async getRoUser(nomisId) {
     const query = {
-      text: 'select * from staff_ids where upper(nomis_id) = upper($1)',
+      text: 'select * from v_staff_ids where upper(nomis_id) = upper($1)',
       values: [nomisId],
     }
 
@@ -47,7 +47,7 @@ module.exports = {
 
   async getRoUserByDeliusId(deliusId) {
     const query = {
-      text: 'select * from staff_ids where upper(staff_id) = upper($1)',
+      text: 'select * from v_staff_ids where upper(staff_id) = upper($1)',
       values: [deliusId],
     }
 
@@ -74,8 +74,8 @@ module.exports = {
     onboarded
   ) {
     const query = {
-      text: `update staff_ids 
-                    set nomis_id = $2, staff_id = $3, first_name = $4, last_name = $5, 
+      text: `update v_staff_ids
+                    set nomis_id = $2, staff_id = $3, first_name = $4, last_name = $5,
                     organisation = $6, job_role = $7, email = $8, org_email = $9, telephone = $10, auth_onboarded = $11
                     where nomis_id = $1`,
       values: [
@@ -98,7 +98,7 @@ module.exports = {
 
   async deleteRoUser(nomisId) {
     const query = {
-      text: 'delete from staff_ids where nomis_id = $1',
+      text: 'delete from v_staff_ids where nomis_id = $1',
       values: [nomisId],
     }
 
@@ -107,7 +107,7 @@ module.exports = {
 
   async addRoUser(nomisId, deliusId, first, last, organisation, jobRole, email, orgEmail, telephone, onboarded) {
     const query = {
-      text: `insert into staff_ids
+      text: `insert into v_staff_ids
                 (nomis_id, staff_id, first_name, last_name, organisation, job_role, email, org_email, telephone, auth_onboarded)
                 values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
       values: [nomisId, deliusId, first, last, organisation, jobRole, email, orgEmail, telephone, onboarded],
@@ -118,9 +118,9 @@ module.exports = {
 
   async findRoUsers(searchTerm) {
     const query = {
-      text: `select * from staff_ids 
-                where 
-                    upper(nomis_id) like upper($1) or 
+      text: `select * from v_staff_ids
+                where
+                    upper(nomis_id) like upper($1) or
                     upper(staff_id) like upper($1) or
                     upper(first_name) like upper($1) or
                     upper(last_name) like upper($1) or
