@@ -62,7 +62,9 @@ export class AuditStatisticsCollector implements RowConsumer<AuditRow> {
         return Event.dmToCaReturn
 
       case 'roToCa':
-        return Event.roToCa
+        return this.getBookingState(details.bookingId).booking.getApprovedPremises()
+          ? Event.roToCaApprovedPremises
+          : Event.roToCa
 
       case 'roToCaAddressRejected':
         return Event.roToCaAddressRejected
