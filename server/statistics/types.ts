@@ -68,6 +68,7 @@ export enum Event {
 
   roToCa = 'RO -> CA',
   roToCaAddressRejected = 'RO -> CA (Rej)',
+  roToCaApprovedPremises = 'RO -> CA (AP)',
 
   pdfLicence = 'PDF Licence',
 

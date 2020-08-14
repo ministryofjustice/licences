@@ -33,6 +33,8 @@ export default class Booking {
 
   private addressChoice?: AddressChoice
 
+  private approvedPremises?: boolean
+
   private event: Event
 
   /**
@@ -68,6 +70,30 @@ export default class Booking {
       this.addressChoice = AddressChoice.Address
     } else if (hasPath(details, '/hdc/bassReferral/bassRequest/')) {
       this.addressChoice = AddressChoice.Bass
+    } else if (hasPath(details, '/hdc/bassReferral/bassAreaCheck')) {
+      if (details?.userInput?.bassAreaCheckSeen === 'true') {
+        switch (details?.userInput?.approvedPremisesRequiredYesNo) {
+          case 'Yes':
+            this.approvedPremises = true
+            break
+          case 'No':
+            this.approvedPremises = false
+            break
+          default:
+            break
+        }
+      }
+    } else if (hasPath(details, '/hdc/curfew/approvedPremises')) {
+      switch (details?.userInput?.required) {
+        case 'Yes':
+          this.approvedPremises = true
+          break
+        case 'No':
+          this.approvedPremises = false
+          break
+        default:
+          break
+      }
     }
   }
 
@@ -91,5 +117,9 @@ export default class Booking {
 
   getAddressChoice(): AddressChoice {
     return this.addressChoice
+  }
+
+  getApprovedPremises(): boolean {
+    return this.approvedPremises === true
   }
 }
