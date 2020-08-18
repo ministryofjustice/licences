@@ -163,7 +163,7 @@ describe('userClient', () => {
 
   describe('deleteRoUser', () => {
     test('should pass in the correct sql and params', async () => {
-      const expectedClause = 'delete from v_staff_ids where nomis_id = $1'
+      const expectedClause = 'update v_staff_ids set deleted = true where nomis_id = $1'
 
       await userClient.deleteRoUser('nomisId')
 

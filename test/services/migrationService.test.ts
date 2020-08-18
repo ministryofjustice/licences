@@ -156,6 +156,41 @@ describe('MigrationService', () => {
     })
   })
 
+  test('get staff details, mismatches missing delius email', async () => {
+    userAdminService.getRoUser.mockResolvedValue({ deliusId: 123, nomisId: 'user-1', email: 'user@gov.uk' })
+
+    nomisClient.getAuthUser.mockResolvedValue({ username: 'user-1', enabled: true })
+
+    deliusClient.getStaffDetailsByStaffCode.mockResolvedValue({
+      username: 'delius-user',
+      staffCode: 'AA123',
+    })
+    deliusClient.getUser.mockResolvedValue({
+      roles: [],
+      enabled: true,
+    })
+
+    const result = await migrationService.getStaffDetails('user-1')
+
+    expect(result).toStrictEqual({
+      authUser: {
+        enabled: true,
+        roles: [],
+        username: 'user-1',
+      },
+      deliusUser: {
+        staffCode: 'AA123',
+        username: 'delius-user',
+      },
+      flags: [Flag.REQUIRES_RO_ROLE, Flag.EMAIL_MISMATCH, Flag.USERNAME_MISMATCH],
+      licenceUser: {
+        deliusId: 123,
+        email: 'user@gov.uk',
+        nomisId: 'user-1',
+      },
+    })
+  })
+
   test('get staff details, missing accounts in auth and delius', async () => {
     userAdminService.getRoUser.mockResolvedValue({ deliusId: 123, nomisId: 'user-1', email: 'user@gov.uk' })
 
@@ -177,11 +212,15 @@ describe('MigrationService', () => {
     })
   })
 
-  test('get staff details, multiple RO roles', async () => {
+  test('get staff details, needs vary role', async () => {
     userAdminService.getRoUser.mockResolvedValue({ deliusId: 123, nomisId: 'user-1', email: 'user@gov.uk' })
 
     nomisClient.getAuthUser.mockResolvedValue({ username: 'user-1', enabled: true })
-    nomisClient.getAuthUserRoles.mockResolvedValue([{ roleCode: 'LICENCES_RO' }, { roleCode: 'LICENCES_CA' }])
+    nomisClient.getAuthUserRoles.mockResolvedValue([
+      { roleCode: 'LICENCES_RO' },
+      { roleCode: 'LICENCE_VARY' },
+      { roleCode: 'GLOBAL_SEARCH' },
+    ])
     deliusClient.getStaffDetailsByStaffCode.mockResolvedValue({ username: 'user-1', email: 'user@gov.uk' })
     deliusClient.getUser.mockResolvedValue({
       roles: [{ name: delius.responsibleOfficerRoleId }],
@@ -193,14 +232,14 @@ describe('MigrationService', () => {
     expect(result).toStrictEqual({
       authUser: {
         enabled: true,
-        roles: ['LICENCES_RO', 'LICENCES_CA'],
+        roles: ['LICENCES_RO', 'LICENCE_VARY', 'GLOBAL_SEARCH'],
         username: 'user-1',
       },
       deliusUser: {
         username: 'user-1',
         email: 'user@gov.uk',
       },
-      flags: [Flag.MULTIPLE_NOMIS_ROLES],
+      flags: [Flag.REQUIRES_VARY_ROLE],
       licenceUser: {
         deliusId: 123,
         nomisId: 'user-1',

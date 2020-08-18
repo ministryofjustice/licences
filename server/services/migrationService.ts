@@ -17,6 +17,7 @@ export const enum Flag {
   MISSING_AUTH_USER = 'MISSING_AUTH_USER',
   MISSING_DELIUS_USER = 'MISSING_DELIUS_USER',
   AUTH_CANNOT_LOAD = 'AUTH_CANNOT_LOAD',
+  REQUIRES_VARY_ROLE = 'REQUIRES_VARY_ROLE',
 }
 
 export default class MigrationService {
@@ -68,11 +69,11 @@ export default class MigrationService {
     const deliusRoles = deliusUser ? deliusUser.roles : []
     const hasRoRole = deliusRoles.map((r) => r.name).includes(config.delius.responsibleOfficerRoleId)
 
-    const multipleAuthRoles = authUser && authUser.roles.length > 1
+    const hasVaryRole = authUser?.roles.includes('LICENCE_VARY')
 
     const isLinked = deliusStaffDetails && deliusStaffDetails.username
 
-    const differentEmail = isLinked && licenceUser.email !== deliusStaffDetails.email
+    const differentEmail = isLinked && licenceUser.email.toLowerCase() !== deliusStaffDetails?.email?.toLowerCase()
     const differentUsernames = isLinked && authUser && authUser.username !== deliusStaffDetails.username
 
     return [
@@ -82,7 +83,7 @@ export default class MigrationService {
       ...(deliusUser && !deliusUser.enabled ? [Flag.DISABLED_IN_DELIUS] : []),
       ...(authUser && !authUser.enabled ? [Flag.DISABLED_IN_AUTH] : []),
       ...(!authUser && !failedToLoadAuth ? [Flag.MISSING_AUTH_USER] : []),
-      ...(multipleAuthRoles ? [Flag.MULTIPLE_NOMIS_ROLES] : []),
+      ...(hasVaryRole ? [Flag.REQUIRES_VARY_ROLE] : []),
       ...(differentEmail ? [Flag.EMAIL_MISMATCH] : []),
       ...(differentUsernames ? [Flag.USERNAME_MISMATCH] : []),
       ...(failedToLoadAuth ? [Flag.AUTH_CANNOT_LOAD] : []),

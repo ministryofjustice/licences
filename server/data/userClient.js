@@ -98,7 +98,7 @@ module.exports = {
 
   async deleteRoUser(nomisId) {
     const query = {
-      text: 'delete from v_staff_ids where nomis_id = $1',
+      text: 'update v_staff_ids set deleted = true where nomis_id = $1',
       values: [nomisId],
     }
 
