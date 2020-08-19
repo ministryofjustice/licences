@@ -71,12 +71,13 @@ module.exports = {
     email,
     orgEmail,
     telephone,
-    onboarded
+    onboarded,
+    deliusUsername
   ) {
     const query = {
       text: `update v_staff_ids
                     set nomis_id = $2, staff_id = $3, first_name = $4, last_name = $5,
-                    organisation = $6, job_role = $7, email = $8, org_email = $9, telephone = $10, auth_onboarded = $11
+                    organisation = $6, job_role = $7, email = $8, org_email = $9, telephone = $10, auth_onboarded = $11, delius_username = $12
                     where nomis_id = $1`,
       values: [
         originalNomisId,
@@ -90,6 +91,7 @@ module.exports = {
         orgEmail,
         telephone,
         onboarded,
+        deliusUsername,
       ],
     }
 
@@ -105,12 +107,36 @@ module.exports = {
     return db.query(query)
   },
 
-  async addRoUser(nomisId, deliusId, first, last, organisation, jobRole, email, orgEmail, telephone, onboarded) {
+  async addRoUser(
+    nomisId,
+    deliusId,
+    first,
+    last,
+    organisation,
+    jobRole,
+    email,
+    orgEmail,
+    telephone,
+    onboarded,
+    deliusUsername
+  ) {
     const query = {
       text: `insert into v_staff_ids
-                (nomis_id, staff_id, first_name, last_name, organisation, job_role, email, org_email, telephone, auth_onboarded)
-                values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
-      values: [nomisId, deliusId, first, last, organisation, jobRole, email, orgEmail, telephone, onboarded],
+                (nomis_id, staff_id, first_name, last_name, organisation, job_role, email, org_email, telephone, auth_onboarded, delius_username)
+                values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+      values: [
+        nomisId,
+        deliusId,
+        first,
+        last,
+        organisation,
+        jobRole,
+        email,
+        orgEmail,
+        telephone,
+        onboarded,
+        deliusUsername,
+      ],
     }
 
     return db.query(query)
@@ -148,6 +174,7 @@ function convertPropertyNames(user) {
     ? {
         nomisId: user.nomis_id,
         deliusId: user.staff_id,
+        deliusUsername: user.delius_username,
         first: user.first_name,
         last: user.last_name,
         organisation: user.organisation,

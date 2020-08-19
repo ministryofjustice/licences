@@ -174,15 +174,15 @@ describe('licenceClient', () => {
     })
   })
 
-  describe('getDeliusUserName', () => {
+  describe('getDeliusIds', () => {
     test('should call db.query', () => {
-      licenceClient.getDeliusUserName(5)
+      licenceClient.getDeliusIds(5)
       expect(db.query).toHaveBeenCalled()
     })
 
     test('should pass in the correct params and do case-insensitive search', async () => {
       const expectedClause = 'where upper(nomis_id) = upper($1)'
-      await licenceClient.getDeliusUserName(5)
+      await licenceClient.getDeliusIds(5)
 
       const { text, values } = db.query.mock.calls[0][0]
       expect(text).toContain(expectedClause)

@@ -84,7 +84,7 @@ describe('roService', () => {
     test('should return empty array when staff member not found in delius', async () => {
       deliusClient.getROPrisoners.mockResolvedValue(undefined)
       const result = await service.getROPrisoners(123, 'token')
-      expect(result).toEqual([])
+      expect(result).toEqual(null)
     })
   })
 

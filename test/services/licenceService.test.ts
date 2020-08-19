@@ -30,7 +30,7 @@ describe('licenceService', () => {
       deleteAll: undefined,
       deleteAllTest: undefined,
       getLicences: undefined,
-      getDeliusUserName: undefined,
+      getDeliusIds: undefined,
       saveApprovedLicenceVersion: undefined,
       getLicencesInStageBetweenDates: undefined,
       getLicencesInStageBeforeDate: undefined,

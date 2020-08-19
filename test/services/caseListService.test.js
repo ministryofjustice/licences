@@ -101,7 +101,7 @@ describe('caseListService', () => {
 
     licenceClient = {
       getLicences: jest.fn().mockReturnValue([]),
-      getDeliusUserName: jest.fn().mockReturnValue([{ staff_id: 'foo-username' }]),
+      getDeliusIds: jest.fn().mockReturnValue([{ staffCode: 'foo-username' }]),
       deleteAll: undefined,
       deleteAllTest: undefined,
       getLicence: undefined,
@@ -310,14 +310,43 @@ describe('caseListService', () => {
         expect(roService.getROPrisoners).toHaveBeenCalled()
       })
 
-      test('should call getDeliusUserName without capitalising username', async () => {
-        licenceClient.getDeliusUserName.mockResolvedValue(undefined)
+      test('should call getROPrisoners when staff not found in delius', async () => {
+        roService.getROPrisoners.mockResolvedValueOnce(null)
+        await service.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
+        expect(roService.getROPrisoners).toHaveBeenCalled()
+      })
+
+      test('should call getROPrisoners when staff not found in delius but has fallback', async () => {
+        licenceClient.getDeliusIds.mockResolvedValue([{ staffCode: 'delius_id', deliusUsername: 'deliusUser' }])
+        roService.getStaffByUsername.mockResolvedValue({ staffCode: 'ABC123' })
+
+        roService.getROPrisoners.mockResolvedValueOnce(null).mockResolvedValueOnce(roPrisoners)
+
+        await service.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
+
+        expect(roService.getROPrisoners).toHaveBeenCalledWith('DELIUS_ID', 'token')
+        expect(roService.getROPrisoners).toHaveBeenCalledWith('ABC123', 'token')
+      })
+
+      test('should call getROPrisoners when staff not found in delius and fallback not found', async () => {
+        licenceClient.getDeliusIds.mockResolvedValue([{ staffCode: 'delius_id', deliusUsername: 'deliusUser' }])
+        roService.getStaffByUsername.mockResolvedValue(null)
+
+        roService.getROPrisoners.mockResolvedValueOnce(null)
+
+        return expect(service.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)).rejects.toStrictEqual(
+          Error('Staff details not found in Delius for username: deliusUser')
+        )
+      })
+
+      test('should call getDeliusIds without capitalising username', async () => {
+        licenceClient.getDeliusIds.mockResolvedValue(undefined)
         await service.getHdcCaseList(ROUser.token, 'aAaA', ROUser.role)
-        expect(licenceClient.getDeliusUserName).toHaveBeenCalledWith('aAaA')
+        expect(licenceClient.getDeliusIds).toHaveBeenCalledWith('aAaA')
       })
 
       test('should use uppercase delius username when calling roService', async () => {
-        licenceClient.getDeliusUserName.mockResolvedValue([{ staff_id: 'delius_id' }])
+        licenceClient.getDeliusIds.mockResolvedValue([{ staffCode: 'delius_id' }])
         await service.getHdcCaseList(ROUser.token, 'user', ROUser.role)
         expect(roService.getROPrisoners).toHaveBeenCalled()
         expect(roService.getROPrisoners).toHaveBeenCalledWith('DELIUS_ID', ROUser.token)
@@ -330,27 +359,27 @@ describe('caseListService', () => {
       })
 
       test('should return empty array and explanation message if no delius user name found locally or in delius', async () => {
-        licenceClient.getDeliusUserName.mockResolvedValue(undefined)
+        licenceClient.getDeliusIds.mockResolvedValue(undefined)
         roService.getStaffByUsername.mockResolvedValue(undefined)
         const result = await service.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
         expect(result).toEqual({ hdcEligible: [], message: 'Staff details not found in Delius for username: 123' })
       })
 
       test('should return empty array and explanation message if too many delius user names found and username not found in Delius', async () => {
-        licenceClient.getDeliusUserName.mockResolvedValue([{ staff_id: '1' }, { staff_id: '2' }])
+        licenceClient.getDeliusIds.mockResolvedValue([{ staffCode: '1' }, { staffCode: '2' }])
         roService.getStaffByUsername.mockResolvedValue(undefined)
         const result = await service.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
         expect(result).toEqual({ hdcEligible: [], message: 'Staff details not found in Delius for username: 123' })
       })
 
       test('delius interaction throws', () => {
-        licenceClient.getDeliusUserName.mockResolvedValue(undefined)
+        licenceClient.getDeliusIds.mockResolvedValue(undefined)
         roService.getStaffByUsername = jest.fn().mockRejectedValue('Delius went bang!')
         return expect(service.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)).rejects.not.toBeNull()
       })
 
       test("staff details found in Delius, but there's no staff code", async () => {
-        licenceClient.getDeliusUserName.mockResolvedValue(undefined)
+        licenceClient.getDeliusIds.mockResolvedValue(undefined)
         roService.getStaffByUsername.mockResolvedValue({
           username: '123',
           email: 'email',

@@ -141,7 +141,8 @@ describe('userClient', () => {
         'email',
         'orgEmail',
         'phone',
-        'onboarded'
+        'onboarded',
+        'deliusUsername'
       )
 
       const call = db.query.mock.calls[0][0]
@@ -157,6 +158,7 @@ describe('userClient', () => {
         'orgEmail',
         'phone',
         'onboarded',
+        'deliusUsername',
       ])
     })
   })
@@ -185,7 +187,8 @@ describe('userClient', () => {
         'email',
         'orgEmail',
         'phone',
-        'onboarded'
+        'onboarded',
+        'deliusUsername'
       )
 
       const call = db.query.mock.calls[0][0]
@@ -200,6 +203,7 @@ describe('userClient', () => {
         'orgEmail',
         'phone',
         'onboarded',
+        'deliusUsername',
       ])
     })
   })

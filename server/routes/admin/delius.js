@@ -22,7 +22,7 @@ module.exports = (roService) => (router) => {
     asyncMiddleware(async (req, res) => {
       const { staffCode } = req.body
       logger.info('managedOffenders for', staffCode)
-      const offenders = await roService.getROPrisoners(staffCode, res.locals.token)
+      const offenders = (await roService.getROPrisoners(staffCode, res.locals.token)) || []
       logger.info(offenders)
 
       res.render('admin/delius/managedOffenders', { offenders })

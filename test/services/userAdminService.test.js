@@ -104,10 +104,11 @@ describe('userAdminService', () => {
         orgEmail: 9,
         telephone: 10,
         onboarded: 11,
+        deliusUsername: 12,
       })
 
       expect(userClient.updateRoUser).toHaveBeenCalled()
-      expect(userClient.updateRoUser).toHaveBeenCalledWith('nomisId', 1, 3, 4, 5, 6, 7, 8, 9, 10, 11)
+      expect(userClient.updateRoUser).toHaveBeenCalledWith('nomisId', 1, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
     })
   })
 

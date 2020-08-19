@@ -1,6 +1,6 @@
 import { LicenceStage } from '../services/config/licenceStage'
 import * as db from './dataAccess/db'
-import { ApprovedLicenceVersion, CaseWithApprovedVersion, CaseWithVaryVersion, DeliusId } from './licenceClientTypes'
+import { ApprovedLicenceVersion, CaseWithApprovedVersion, CaseWithVaryVersion, DeliusIds } from './licenceClientTypes'
 import { Licence } from './licenceTypes'
 
 async function updateVersion(bookingId, postRelease = false): Promise<void> {
@@ -131,9 +131,10 @@ export class LicenceClient {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  async getDeliusUserName(nomisUserName): Promise<DeliusId[]> {
+  async getDeliusIds(nomisUserName): Promise<DeliusIds[]> {
     const query = {
-      text: 'select staff_id from v_staff_ids where upper(nomis_id) = upper($1)',
+      text:
+        'select staff_id "staffCode", delius_username "deliusUsername" from v_staff_ids where upper(nomis_id) = upper($1)',
       values: [nomisUserName],
     }
 
