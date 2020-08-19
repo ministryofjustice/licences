@@ -23,6 +23,7 @@ export interface ApprovedLicenceVersion {
   timestamp: Date
 }
 
-export interface DeliusId {
-  staff_id: string
+export interface DeliusIds {
+  staffCode: string
+  deliusUsername?: string
 }

@@ -16,7 +16,7 @@ const { NO_OFFENDER_NUMBER, NO_COM_ASSIGNED, STAFF_NOT_PRESENT } = require('./se
 module.exports = function createRoService(deliusClient, nomisClientBuilder) {
   async function getROPrisonersFromDelius(staffCode) {
     try {
-      return (await deliusClient.getROPrisoners(staffCode)) || []
+      return await deliusClient.getROPrisoners(staffCode)
     } catch (error) {
       logger.error(`Problem retrieving RO prisoners for: ${staffCode}`, error.stack)
       throw error
@@ -46,6 +46,10 @@ module.exports = function createRoService(deliusClient, nomisClientBuilder) {
     async getROPrisoners(staffCode, token) {
       const nomisClient = nomisClientBuilder(token)
       const requiredPrisoners = await getROPrisonersFromDelius(staffCode)
+      if (!requiredPrisoners) {
+        return null
+      }
+
       const requiredIDs = requiredPrisoners
         .filter((prisoner) => prisoner.nomsNumber)
         .map((prisoner) => prisoner.nomsNumber)

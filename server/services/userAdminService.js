@@ -10,6 +10,7 @@ module.exports = function createUserService(nomisClientBuilder, userClient, prob
     originalNomisId,
     {
       nomisId,
+      deliusUsername,
       originalDeliusId,
       deliusId,
       first,
@@ -50,7 +51,8 @@ module.exports = function createUserService(nomisClientBuilder, userClient, prob
       email,
       orgEmail,
       telephone,
-      onboarded
+      onboarded,
+      deliusUsername
     )
   }
 
