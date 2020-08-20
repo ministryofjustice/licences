@@ -1,0 +1,42 @@
+extends ../../layout
+include ../../includes/errorBannerWithDetail
+
+block content
+
+  div.back-link-container.smallPaddingTop
+    a#back.link-back(href="/admin/manage-roles") Back
+  +errorBannerWithDetail(errors, [
+    { field: 'deliusUsername' }
+  ])
+
+  h2.heading-large
+    | Roles for username: #{deliusUsername} 
+
+  h3.heading-medium
+    | Current Roles:
+  
+  if currentRoles.length > 0
+    table#list.largeMarginBottom
+      thead
+        tr
+          th.sortable Role
+      tbody
+          each role in currentRoles
+            tr
+              td
+                | #{role}
+  else
+    p No delius roles present               
+
+  if Object.keys(rolesToSelect).length !== 0
+    form(method='POST', action='/admin/manage-roles/' + deliusUsername + '/roles' )
+      div.pure-u-1.pure-u-sm-2-5
+        div.form-group
+          label.form-label(for="selectRole") Select role
+          select.form-control#selectRole(name="role")
+            option(value="" disabled selected) -- select --
+            for role, code in rolesToSelect
+              option(value=code) #{role}
+          
+          input(type="hidden" name="_csrf" value=csrfToken)
+          input#continueBtn.requiredButton.button.smallMarginTop(type="submit" value="Add role")

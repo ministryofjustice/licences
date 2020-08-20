@@ -67,8 +67,10 @@ module.exports = {
       freeSocketTimeout: 30000,
     },
     apiPrefix: get('DELIUS_API_PREFIX', '/api'),
-    // this refers to the 'HDC Digital Update' RBAC which is mapped to LICENCE_RO in the auth server
+    // this refers to the 'HDC Digital Update' RBAC which is mapped to LICENCE_RO and GLOBAL_SEARCH in the auth server
     responsibleOfficerRoleId: get('DELIUS_RO_ROLE_ID', 'LHDCBT002'),
+    // this refers to the 'HDC Digital Update' RBAC which is mapped to LICENCE_RO, GLOBAL_SEARCH and LICENCE_VARY in the auth server
+    responsibleOfficerVaryRoleId: get('DELIUS_RO_VARY_ROLE_ID', 'LHDCBT003'),
   },
 
   probationTeams: {

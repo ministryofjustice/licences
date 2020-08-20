@@ -96,6 +96,21 @@ export default class MigrationService {
     await this.deliusClient.addResponsibleOfficerRole(deliusRo.username)
   }
 
+  public async addDeliusRole(deliusUsername: string, role: string) {
+    await this.deliusClient.addRole(deliusUsername, role)
+  }
+
+  public async getDeliusRoles(deliusUsername): Promise<string[]> {
+    const user = await this.getUserFromDelius(deliusUsername)
+    if (!user) {
+      return null
+    }
+    const deliusRoles = user.roles || []
+    return deliusRoles
+      .map((r) => r.name)
+      .filter((r) => [config.delius.responsibleOfficerRoleId, config.delius.responsibleOfficerVaryRoleId].includes(r))
+  }
+
   public async disableAuthAccount(token, nomisUsername) {
     const nomisClient = this.nomisClientBuilder(token)
     await nomisClient.disableAuthUser(nomisUsername)

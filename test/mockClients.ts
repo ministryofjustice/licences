@@ -31,6 +31,7 @@ export interface DeliusClientMock extends DeliusClient {
 
 export const mockDeliusClient: () => DeliusClientMock = () => ({
   addResponsibleOfficerRole: jest.fn(),
+  addRole: jest.fn(),
   getAllLdusForProbationArea: jest.fn(),
   getAllOffenderManagers: jest.fn(),
   getAllProbationAreas: jest.fn(),

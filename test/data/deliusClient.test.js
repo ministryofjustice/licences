@@ -169,8 +169,6 @@ describe('deliusClient', () => {
     test('should return data from api', () => {
       fakeDelius.put(`/users/bobUser/roles/${config.delius.responsibleOfficerRoleId}`).reply(200)
 
-      // The only place where addResponsibleOfficerRole is used is in roNotificationHandler.assignDeliusRoRole
-      // The assignDeliusRoRole function ignores the return value.
       return expect(deliusClient.addResponsibleOfficerRole('bobUser')).resolves.toBeUndefined()
     })
 
@@ -178,6 +176,20 @@ describe('deliusClient', () => {
       fakeDelius.put(`/users/bobUser/roles/${config.delius.responsibleOfficerRoleId}`).reply(500)
 
       return expect(deliusClient.addResponsibleOfficerRole('bobUser')).resolves.toBeUndefined()
+    })
+  })
+
+  describe('addRole', () => {
+    test('should return data from api', () => {
+      fakeDelius.put(`/users/bobUser/roles/CODE-1`).reply(200)
+
+      return expect(deliusClient.addRole('bobUser', 'CODE-1')).resolves.toBeUndefined()
+    })
+
+    test('should ignore errors', () => {
+      fakeDelius.put(`/users/bobUser/roles/CODE-1`).reply(500)
+
+      return expect(deliusClient.addRole('bobUser', 'CODE-1')).resolves.toBeUndefined()
     })
   })
 
