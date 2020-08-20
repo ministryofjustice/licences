@@ -130,6 +130,7 @@ module.exports = function createUserService(nomisClientBuilder, userClient, prob
     getRoUserByDeliusId: userClient.getRoUserByDeliusId,
     deleteRoUser: userClient.deleteRoUser,
     findRoUsers: userClient.findRoUsers,
+    getRoUserByDeliusUsername: userClient.getRoUserByDeliusUsername,
     getFunctionalMailbox,
   }
 }

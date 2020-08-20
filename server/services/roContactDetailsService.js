@@ -24,23 +24,25 @@ const logIfMissing = (val, message) => {
  */
 module.exports = function createRoContactDetailsService(userAdminService, roService, probationTeamsClient) {
   /**
-   * @param {ResponsibleOfficer} deliusRo
-   * @return {Promise<ResponsibleOfficerAndContactDetails>}
+   * @typedef DeliusContactDetails
+   * @property {string} email
+   * @property {string} username
+   * @property {string} functionalMailbox
+   * @property {boolean} isUnlinkedAccount
+   * @property {string} organisation
+   *
+  
+  /**
+   * @param {any} locallyStoredRo
+   * @return {DeliusContactDetails}
    */
-  async function getLocallyStoredContactDetails(deliusRo) {
-    const { deliusId } = deliusRo
-    const ro = await userAdminService.getRoUserByDeliusId(deliusId)
-
-    if (!ro) {
-      return null
-    }
-    const { email, orgEmail, organisation } = ro
+  function extractContactDetails(locallyStoredRo) {
+    const { email, orgEmail, organisation, deliusId } = locallyStoredRo
     logIfMissing(orgEmail, `Missing orgEmail for RO: ${deliusId}`)
     logIfMissing(email, `Missing email for RO: ${deliusId}`)
     logIfMissing(organisation, `Missing organisation for RO: ${deliusId}`)
 
     return {
-      ...deliusRo,
       isUnlinkedAccount: false,
       username: undefined,
       email,
@@ -50,24 +52,25 @@ module.exports = function createRoContactDetailsService(userAdminService, roServ
   }
 
   /**
-   * @typedef DeliusContactDetails
-   * @property {string} email
-   * @property {string} username
-   * @property {string} functionalMailbox
-   * @property {boolean} isUnlinkedAccount
-   *
-   * @param {string} deliusId
-   * @param {string} probationAreaCode
-   * @param {string} lduCode
-   * @param {string} teamCode
+   * @param {ResponsibleOfficer} ro
    * @returns {Promise<Error| DeliusContactDetails>}
    */
-  async function getContactDetailsFromDelius(deliusId, probationAreaCode, lduCode, teamCode) {
+  async function getContactDetailsFromDelius(ro) {
+    const { deliusId, probationAreaCode, lduCode, lduDescription, teamCode } = ro
     logger.info(`looking up staff by code: ${deliusId}`)
     const [staff, error] = unwrapResult(await roService.getStaffByCode(deliusId))
     if (error) {
       return error
     }
+
+    // Check that we don't have a mapping for the delius username locally
+    if (staff.username) {
+      const localRo = await userAdminService.getRoUserByDeliusUsername(staff.username)
+      if (localRo) {
+        return { ...extractContactDetails(localRo), username: staff.username }
+      }
+    }
+
     const functionalMailbox = await probationTeamsClient.getFunctionalMailbox({
       probationAreaCode,
       lduCode,
@@ -82,6 +85,7 @@ module.exports = function createRoContactDetailsService(userAdminService, roServ
       username: staff.username,
       email: staff.email,
       functionalMailbox,
+      organisation: `${lduDescription} (${lduCode})`,
     }
   }
 
@@ -93,20 +97,13 @@ module.exports = function createRoContactDetailsService(userAdminService, roServ
         return error
       }
 
-      const localContactDetails = await getLocallyStoredContactDetails(deliusRo)
+      const localRo = await userAdminService.getRoUserByDeliusId(deliusRo.deliusId)
 
-      if (localContactDetails) {
-        return localContactDetails
+      if (localRo) {
+        return { ...deliusRo, ...extractContactDetails(localRo) }
       }
 
-      const [deliusContactDetails, staffLookupError] = unwrapResult(
-        await getContactDetailsFromDelius(
-          deliusRo.deliusId,
-          deliusRo.probationAreaCode,
-          deliusRo.lduCode,
-          deliusRo.teamCode
-        )
-      )
+      const [deliusContactDetails, staffLookupError] = unwrapResult(await getContactDetailsFromDelius(deliusRo))
 
       if (staffLookupError) {
         return staffLookupError
@@ -114,11 +111,7 @@ module.exports = function createRoContactDetailsService(userAdminService, roServ
 
       return {
         ...deliusRo,
-        isUnlinkedAccount: deliusContactDetails.isUnlinkedAccount,
-        email: deliusContactDetails.email,
-        username: deliusContactDetails.username,
-        functionalMailbox: deliusContactDetails.functionalMailbox,
-        organisation: `${deliusRo.lduDescription} (${deliusRo.lduCode})`,
+        ...deliusContactDetails,
       }
     },
 

@@ -44,6 +44,7 @@ describe('/contact', () => {
 
     userAdminService = {
       getRoUserByDeliusId: jest.fn().mockReturnValue(undefined),
+      getRoUserByDeliusUsername: jest.fn().mockReturnValue(undefined),
       getFunctionalMailbox: jest.fn().mockReturnValue('abc@def.com'),
     }
 
@@ -103,6 +104,38 @@ describe('/contact', () => {
           expect(res.text).toContain('ro@email.com')
           expect(res.text).toContain('The Org')
           expect(res.text).toContain('org@email.com')
+
+          expect(userAdminService.getRoUserByDeliusId).toBeCalledWith('DELIUS_ID')
+          expect(userAdminService.getRoUserByDeliusUsername).not.toBeCalled()
+        })
+    })
+
+    test('should display RO details, from local store, when mapped username in delius', () => {
+      userAdminService.getRoUserByDeliusId.mockResolvedValueOnce(null)
+
+      userAdminService.getRoUserByDeliusUsername.mockResolvedValueOnce({
+        first: 'first',
+        last: 'last',
+        jobRole: 'JR',
+        email: 'ro@email.com',
+        deliusUsername: 'DELIUS_USER',
+        telephone: '01234567890',
+        organisation: 'The Org',
+        orgEmail: 'org@email.com',
+      })
+
+      return request(app)
+        .get('/contact/123456')
+        .expect(200)
+        .expect((res) => {
+          expect(res.text).toContain('first last')
+          expect(res.text).toContain('JR')
+          expect(res.text).toContain('ro@email.com')
+          expect(res.text).toContain('The Org')
+          expect(res.text).toContain('org@email.com')
+
+          expect(userAdminService.getRoUserByDeliusId).toBeCalledWith('DELIUS_ID')
+          expect(userAdminService.getRoUserByDeliusUsername).toBeCalledWith('username')
         })
     })
 

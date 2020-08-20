@@ -11,6 +11,7 @@ describe('roContactDetailsService', () => {
   beforeEach(() => {
     userAdminService = {
       getRoUserByDeliusId: jest.fn(),
+      getRoUserByDeliusUsername: jest.fn(),
     }
     roService = createRoServiceStub()
     roService.findResponsibleOfficer.mockResolvedValue({
@@ -121,6 +122,38 @@ describe('roContactDetailsService', () => {
       })
       expect(userAdminService.getRoUserByDeliusId).toHaveBeenCalledWith('delius-1')
       expect(roService.getStaffByCode).toHaveBeenCalledWith('delius-1')
+    })
+
+    test('unmatched staff code but has delius username', async () => {
+      const fullContactInfo = {
+        email: 'ro@ro.email',
+        orgEmail: 'admin@ro.email',
+        organisation: 'NPS Dewsbury (Kirklees and Wakefield)',
+      }
+
+      userAdminService.getRoUserByDeliusId = jest.fn().mockReturnValue(null)
+      roService.getStaffByCode.mockResolvedValue({ email: 'deliusRo@ro.email.com', username: 'delius-user-1' })
+      userAdminService.getRoUserByDeliusUsername = jest.fn().mockReturnValue(fullContactInfo)
+
+      const result = await service.getResponsibleOfficerWithContactDetails(1, 'token-1')
+
+      expect(result).toEqual({
+        deliusId: 'delius-1',
+        email: 'ro@ro.email',
+        functionalMailbox: 'admin@ro.email',
+        organisation: 'NPS Dewsbury (Kirklees and Wakefield)',
+        isUnlinkedAccount: false,
+        lduCode: 'SHF-1',
+        lduDescription: 'Sheffield',
+        probationAreaCode: 'PA1',
+        probationAreaDescription: 'Probation Area 1',
+        teamCode: 'TEAM_CODE',
+        teamDescription: 'The Team',
+        username: 'delius-user-1',
+      })
+      expect(userAdminService.getRoUserByDeliusId).toHaveBeenCalledWith('delius-1')
+      expect(roService.getStaffByCode).toHaveBeenCalledWith('delius-1')
+      expect(userAdminService.getRoUserByDeliusUsername).toHaveBeenCalledWith('delius-user-1')
     })
 
     test('no staff record local, linked user found in delius', async () => {

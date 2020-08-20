@@ -12,6 +12,13 @@ const { unwrapResult } = require('../utils/functionalHelpers')
  * @returns {function(*): *}
  */
 module.exports = (userAdminService, roService, signInService) => (router) => {
+  const getFunctionalMailBox = async (ro) =>
+    ro &&
+    ro.probationAreaCode &&
+    ro.lduCode &&
+    ro.teamCode &&
+    userAdminService.getFunctionalMailbox(ro.probationAreaCode, ro.lduCode, ro.teamCode)
+
   router.get(
     '/:theBookingId',
     asyncMiddleware(async (req, res) => {
@@ -25,21 +32,20 @@ module.exports = (userAdminService, roService, signInService) => (router) => {
         return res.render('contact/ro', { contact })
       }
 
-      const functionalMailbox =
-        ro &&
-        ro.probationAreaCode &&
-        ro.lduCode &&
-        ro.teamCode &&
-        (await userAdminService.getFunctionalMailbox(ro.probationAreaCode, ro.lduCode, ro.teamCode))
-
       const staffDetailsResult = ro && ro.deliusId && (await roService.getStaffByCode(ro.deliusId))
       const [staffDetails] = unwrapResult(staffDetailsResult)
-      const email = staffDetails && staffDetails.email
+
+      if (staffDetails && staffDetails.username) {
+        const contactByUsername = await userAdminService.getRoUserByDeliusUsername(staffDetails.username)
+        if (contactByUsername) {
+          return res.render('contact/ro', { contact: contactByUsername })
+        }
+      }
 
       return res.render('contact/deliusRo', {
         ro,
-        functionalMailbox,
-        email,
+        functionalMailbox: await getFunctionalMailBox(ro),
+        email: staffDetails && staffDetails.email,
       })
     })
   )
