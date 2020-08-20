@@ -90,7 +90,7 @@ const getOfferAction = ({ decisions, tasks }) => {
     return change('/hdc/bassReferral/bassOffer/', 'bass-address')
   }
 
-  if (bassAreaCheck === 'DONE' && approvedPremisesRequired === true) {
+  if (approvedPremisesRequired === true) {
     return viewEdit('/hdc/bassReferral/approvedPremisesChoice/')
   }
 

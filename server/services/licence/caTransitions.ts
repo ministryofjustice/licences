@@ -31,7 +31,7 @@ function canSendCaToRo(licenceStatus: LicenceStatus) {
 
   if ([PROCESSING_CA, MODIFIED, MODIFIED_APPROVAL].includes(stage)) {
     if (bassReferralNeeded) {
-      if (licenceStatus.tasks.bassAreaCheck === TaskState.UNSTARTED) {
+      if (!approvedPremisesRequired && licenceStatus.tasks.bassAreaCheck === TaskState.UNSTARTED) {
         return true
       }
     } else if (!optedOut && !approvedPremisesRequired && tasks.curfewAddressReview === TaskState.UNSTARTED) {
