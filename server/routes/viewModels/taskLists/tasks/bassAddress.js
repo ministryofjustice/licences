@@ -86,12 +86,12 @@ const getOfferAction = ({ decisions, tasks }) => {
   const { bassWithdrawn, approvedPremisesRequired } = decisions
   const { bassAreaCheck, bassOffer, optOut, curfewAddress, bassRequest } = tasks
 
-  if (bassWithdrawn) {
-    return change('/hdc/bassReferral/bassOffer/', 'bass-address')
+  if (approvedPremisesRequired === true) {
+    return viewEdit('/hdc/bassReferral/approvedPremisesChoice/', 'approved-premises-choice')
   }
 
-  if (approvedPremisesRequired === true) {
-    return viewEdit('/hdc/bassReferral/approvedPremisesChoice/')
+  if (bassWithdrawn) {
+    return change('/hdc/bassReferral/bassOffer/', 'bass-address')
   }
 
   if (bassAreaCheck === 'DONE') {

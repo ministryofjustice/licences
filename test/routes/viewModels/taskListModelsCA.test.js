@@ -134,6 +134,7 @@ describe('TaskList models', () => {
       href: '/hdc/bassReferral/approvedPremisesChoice/',
       text: 'View/Edit',
       type: 'btn-secondary',
+      dataQa: 'approved-premises-choice',
     },
   }
 
