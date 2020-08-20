@@ -116,6 +116,46 @@ describe('getAllowedTransition', () => {
       expect(allowed).toBe('caToRo')
     })
 
+    test('Should be any transitions when in the PROCESSING_CA for BASS when BASS area check not done, but approved premises required', () => {
+      const status = {
+        stage: LicenceStage.PROCESSING_CA,
+        postApproval: false,
+        tasks: {
+          curfewAddress: TaskState.UNSTARTED,
+          bassOffer: TaskState.DONE,
+          bassAreaCheck: TaskState.UNSTARTED,
+        },
+        decisions: {
+          bassReferralNeeded: true,
+          approvedPremisesRequired: true,
+        },
+      }
+
+      const allowed = getAllowedTransition(status)
+
+      expect(allowed).toBeNull()
+    })
+
+    test('Should be any transitions when in the MODIFIED stage for BASS when BASS area check not done, but approved premises required', () => {
+      const status = {
+        stage: LicenceStage.MODIFIED,
+        postApproval: true,
+        tasks: {
+          curfewAddress: TaskState.UNSTARTED,
+          bassOffer: TaskState.DONE,
+          bassAreaCheck: TaskState.UNSTARTED,
+        },
+        decisions: {
+          bassReferralNeeded: true,
+          approvedPremisesRequired: true,
+        },
+      }
+
+      const allowed = getAllowedTransition(status)
+
+      expect(allowed).toBeNull()
+    })
+
     test('should allow CA to RO when address review has not been started', () => {
       const status = {
         stage: LicenceStage.PROCESSING_CA,
