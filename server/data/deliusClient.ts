@@ -1,5 +1,6 @@
 import { DeliusClient } from '../../types/delius'
 import config from '../config'
+import user from '../routes/user'
 
 // eslint-disable-next-line import/prefer-default-export
 export const createDeliusClient = (restClient): DeliusClient => {
@@ -37,8 +38,12 @@ export const createDeliusClient = (restClient): DeliusClient => {
     },
 
     async addResponsibleOfficerRole(username) {
+      await this.addRole(username, config.delius.responsibleOfficerRoleId)
+    },
+
+    async addRole(username, code) {
       try {
-        await restClient.putResource(`/users/${username}/roles/${config.delius.responsibleOfficerRoleId}`, '')
+        await restClient.putResource(`/users/${username}/roles/${code}`, '')
       } catch (error) {
         // Do nothing
       }
