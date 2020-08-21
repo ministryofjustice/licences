@@ -60,6 +60,21 @@ module.exports = {
     return null
   },
 
+  async getRoUserByDeliusUsername(username) {
+    const query = {
+      text: 'select * from v_staff_ids where upper(delius_username) = upper($1)',
+      values: [username],
+    }
+
+    const { rows } = await db.query(query)
+
+    if (rows[0]) {
+      return convertPropertyNames(rows[0])
+    }
+
+    return null
+  },
+
   async updateRoUser(
     originalNomisId,
     nomisId,

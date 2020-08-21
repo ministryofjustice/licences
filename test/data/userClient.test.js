@@ -128,6 +128,17 @@ describe('userClient', () => {
     })
   })
 
+  describe('getRoUserByDeliusUsername', () => {
+    test('should pass in the correct sql', async () => {
+      db.query.mockReturnValue({ rows: [{}] })
+      await userClient.getRoUserByDeliusUsername('user-1')
+
+      const { text, values } = db.query.mock.calls[0][0]
+      expect(text).toContain('select * from v_staff_ids where upper(delius_username) = upper($1)')
+      expect(values).toEqual(['user-1'])
+    })
+  })
+
   describe('updateRoUser', () => {
     test('should pass in the correct sql and params', async () => {
       await userClient.updateRoUser(
