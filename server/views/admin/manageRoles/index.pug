@@ -1,0 +1,21 @@
+extends ../../layout
+include ../../includes/errorBannerWithDetail
+
+block content
+
+  div.back-link-container.smallPaddingTop
+    a#back.link-back(href="javascript: window.history.back();") Back
+  +errorBannerWithDetail(errors, [
+    { field: 'deliusUsername' }
+  ])
+
+  h2.heading-large
+    | View roles for Delius username
+    
+  div.pure-g.largePaddingBottom
+      div.pure-u-1-2
+        div
+          form(method='POST', action='/admin/manage-roles')
+              input(type="hidden" name="_csrf" value=csrfToken)
+              input(name="deliusUsername" value=deliusUsername autofocus aria-label="Delius username" class=errors.deliusUsername ? "form-control form-control-error" : "form-control")
+              input#continueBtn.requiredButton.button.smallMarginTop(type="submit" value="Search")

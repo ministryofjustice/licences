@@ -22,6 +22,7 @@ describe('MigrationService', () => {
 
     deliusClient = {
       addResponsibleOfficerRole: jest.fn(),
+      addRole: jest.fn(),
       getStaffDetailsByStaffCode: jest.fn(),
       getUser: jest.fn(),
     }
@@ -50,11 +51,40 @@ describe('MigrationService', () => {
     test('should call add role on delius client', async () => {
       userAdminService.getRoUser.mockResolvedValue({ deliusId: 123 })
       deliusClient.getStaffDetailsByStaffCode.mockResolvedValue({ username: 'delius-user' })
-      deliusClient.addResponsibleOfficerRole.mockResolvedValue(null)
 
       await migrationService.addRoRole('USER')
       expect(deliusClient.getStaffDetailsByStaffCode).toHaveBeenCalledWith(123)
       expect(deliusClient.addResponsibleOfficerRole).toHaveBeenCalledWith('delius-user')
+    })
+  })
+
+  describe('addDeliusRole', () => {
+    test('should call add role on delius client', async () => {
+      await migrationService.addDeliusRole('delius-user', 'role-1')
+      expect(deliusClient.addRole).toHaveBeenCalledWith('delius-user', 'role-1')
+    })
+  })
+
+  describe('getDeliusRoles', () => {
+    test('get roles filters out non HDC roles', async () => {
+      deliusClient.getUser.mockResolvedValue({
+        roles: [
+          { name: delius.responsibleOfficerRoleId },
+          { name: delius.responsibleOfficerVaryRoleId },
+          { name: 'other-role' },
+        ],
+      })
+
+      const result = await migrationService.getDeliusRoles('user-1')
+
+      expect(result).toStrictEqual([delius.responsibleOfficerRoleId, delius.responsibleOfficerVaryRoleId])
+    })
+    test('get roles when missing user', async () => {
+      deliusClient.getUser.mockResolvedValue(null)
+
+      const result = await migrationService.getDeliusRoles('user-1')
+
+      expect(result).toStrictEqual(null)
     })
   })
 
