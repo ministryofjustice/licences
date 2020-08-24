@@ -119,93 +119,125 @@ describe('bass address task', () => {
 
 describe('bass offer', () => {
   describe('getLabel', () => {
-    test('should return Bass area rejected if bassAreaNotSuitable = true', () => {
-      expect(
-        bassAddress.ca.standard({
-          decisions: { bassAreaNotSuitable: true },
-          tasks: {},
-        }).label
-      ).toBe('BASS area rejected')
+    describe('standard', () => {
+      test('should return Bass area rejected if bassAreaNotSuitable = true', () => {
+        expect(
+          bassAddress.ca.standard({
+            decisions: { bassAreaNotSuitable: true },
+            tasks: {},
+          }).label
+        ).toBe('BASS area rejected')
+      })
+
+      test('should return BASS offer withdrawn if bassWithdrawalReason = offer', () => {
+        expect(
+          bassAddress.ca.standard({
+            decisions: { bassWithdrawn: true, bassWithdrawalReason: 'offer' },
+            tasks: {},
+          }).label
+        ).toBe('BASS offer withdrawn')
+      })
+
+      test('should return BASS offer withdrawn if bassWithdrawalReason != offer', () => {
+        expect(
+          bassAddress.ca.standard({
+            decisions: { bassWithdrawn: true, bassWithdrawalReason: 'something else' },
+            tasks: {},
+          }).label
+        ).toBe('BASS request withdrawn')
+      })
     })
 
-    test('should return BASS offer withdrawn if bassWithdrawalReason = offer', () => {
-      expect(
-        bassAddress.ca.standard({
-          decisions: { bassWithdrawn: true, bassWithdrawalReason: 'offer' },
-          tasks: {},
-        }).label
-      ).toBe('BASS offer withdrawn')
-    })
+    describe('postApproval', () => {
+      test('should return offer made if bassOffer = DONE && bassAccepted = Yes', () => {
+        expect(
+          bassAddress.ca.postApproval({
+            decisions: { bassAccepted: 'Yes' },
+            tasks: { bassOffer: 'DONE' },
+          }).label
+        ).toBe('Offer made')
+      })
 
-    test('should return BASS offer withdrawn if bassWithdrawalReason != offer', () => {
-      expect(
-        bassAddress.ca.standard({
-          decisions: { bassWithdrawn: true, bassWithdrawalReason: 'something else' },
-          tasks: {},
-        }).label
-      ).toBe('BASS request withdrawn')
-    })
+      test('should return Not suitable for BASS if bassOffer = DONE && bassAccepted === Unsuitable', () => {
+        expect(
+          bassAddress.ca.postApproval({
+            decisions: { bassAccepted: 'Unsuitable' },
+            tasks: { bassOffer: 'DONE' },
+          }).label
+        ).toBe('WARNING||Not suitable for BASS')
+      })
 
-    test('should return offer made if bassOffer = DONE && bassAccepted = Yes', () => {
-      expect(
-        bassAddress.ca.postApproval({
-          decisions: { bassAccepted: 'Yes' },
-          tasks: { bassOffer: 'DONE' },
-        }).label
-      ).toBe('Offer made')
-    })
+      test('should return Address not available if bassOffer = DONE && bassAccepted !== Unsuitable or Yes', () => {
+        expect(
+          bassAddress.ca.postApproval({
+            decisions: { bassAccepted: 'Something else' },
+            tasks: { bassOffer: 'DONE' },
+          }).label
+        ).toBe('WARNING||Address not available')
+      })
 
-    test('should return Not suitable for BASS if bassOffer = DONE && bassAccepted === Unsuitable', () => {
-      expect(
-        bassAddress.ca.postApproval({
-          decisions: { bassAccepted: 'Unsuitable' },
-          tasks: { bassOffer: 'DONE' },
-        }).label
-      ).toBe('WARNING||Not suitable for BASS')
-    })
+      test('should return Not completed if bassAreaCheck == DONE && bassAreaSuitable', () => {
+        expect(
+          bassAddress.ca.postApproval({
+            decisions: { bassAreaSuitable: true },
+            tasks: { bassAreaCheck: 'DONE' },
+          }).label
+        ).toBe('Not completed')
+      })
 
-    test('should return Address not available if bassOffer = DONE && bassAccepted !== Unsuitable or Yes', () => {
-      expect(
-        bassAddress.ca.postApproval({
-          decisions: { bassAccepted: 'Something else' },
-          tasks: { bassOffer: 'DONE' },
-        }).label
-      ).toBe('WARNING||Address not available')
-    })
+      test('should return BASS referral requested if bassAreaCheck == DONE && !bassAreaSuitable', () => {
+        expect(
+          bassAddress.ca.postApproval({
+            decisions: { bassAreaSuitable: false },
+            tasks: { bassOffer: 'UNSTARTED' },
+          }).label
+        ).toBe('BASS referral requested')
+      })
 
-    test('should return Not completed if bassAreaCheck == DONE && bassAreaSuitable', () => {
-      expect(
-        bassAddress.ca.postApproval({
-          decisions: { bassAreaSuitable: true },
-          tasks: { bassAreaCheck: 'DONE' },
-        }).label
-      ).toBe('Not completed')
-    })
-
-    test('should return BASS referral requested if bassAreaCheck == DONE && !bassAreaSuitable', () => {
-      expect(
-        bassAddress.ca.postApproval({
-          decisions: { bassAreaSuitable: false },
-          tasks: { bassOffer: 'UNSTARTED' },
-        }).label
-      ).toBe('BASS referral requested')
-    })
-
-    test('should return BASS referral requested if !bassAreaNotSuitable, !bassWithdrawn, bassOffer !== DONE, bassAreaCheck !== DONE', () => {
-      expect(
-        bassAddress.ca.postApproval({
-          decisions: { bassAreaNotSuitable: false, bassWithdrawn: false },
-          tasks: { bassOffer: 'UNSTARTED', bassAreaCheck: 'UNSTARTED' },
-        }).label
-      ).toBe('BASS referral requested')
+      test('should return BASS referral requested if !bassAreaNotSuitable, !bassWithdrawn, bassOffer !== DONE, bassAreaCheck !== DONE', () => {
+        expect(
+          bassAddress.ca.postApproval({
+            decisions: { bassAreaNotSuitable: false, bassWithdrawn: false },
+            tasks: { bassOffer: 'UNSTARTED', bassAreaCheck: 'UNSTARTED' },
+          }).label
+        ).toBe('BASS referral requested')
+      })
     })
   })
 
   describe('getAction', () => {
+    test('Should link to approved premises choice if approved premises required regardless of anything else #1', () => {
+      expect(
+        bassAddress.ca.postApproval({
+          decisions: { bassWithdrawn: true, approvedPremisesRequired: true },
+          tasks: {},
+        }).action
+      ).toEqual({
+        text: 'View/Edit',
+        href: '/hdc/bassReferral/approvedPremisesChoice/',
+        type: 'btn-secondary',
+        dataQa: 'approved-premises-choice',
+      })
+    })
+
+    test('Should link to approved premises choice if approved premises required regardless of anything else #2', () => {
+      expect(
+        bassAddress.ca.postApproval({
+          decisions: { bassWithdrawn: false, approvedPremisesRequired: true },
+          tasks: {},
+        }).action
+      ).toEqual({
+        text: 'View/Edit',
+        href: '/hdc/bassReferral/approvedPremisesChoice/',
+        type: 'btn-secondary',
+        dataQa: 'approved-premises-choice',
+      })
+    })
+
     test('should link to bass offer if bassWithdrawn', () => {
       expect(
         bassAddress.ca.postApproval({
-          decisions: { bassWithdrawn: true },
+          decisions: { bassWithdrawn: true, approvedPremisesRequired: false },
           tasks: {},
         }).action
       ).toEqual({
@@ -219,7 +251,7 @@ describe('bass offer', () => {
     test('should show btn to bassOffer if checks: DONE && bassOffer: UNSTARTED', () => {
       expect(
         bassAddress.ca.postApproval({
-          decisions: { bassWithdrawn: false },
+          decisions: { bassWithdrawn: false, approvedPremisesRequired: false },
           tasks: { bassAreaCheck: 'DONE', bassOffer: 'UNSTARTED' },
         }).action
       ).toEqual({
@@ -232,7 +264,7 @@ describe('bass offer', () => {
     test('should show change link to bassOffer if checks: DONE && bassOffer: DONE', () => {
       expect(
         bassAddress.ca.postApproval({
-          decisions: { bassWithdrawn: false },
+          decisions: { bassWithdrawn: false, approvedPremisesRequired: false },
           tasks: { bassAreaCheck: 'DONE', bassOffer: 'DONE' },
         }).action
       ).toEqual({
@@ -246,7 +278,7 @@ describe('bass offer', () => {
     test('should show continue btn to bassOffer if checks: DONE && bassOffer: !DONE || UNSTARTED', () => {
       expect(
         bassAddress.ca.postApproval({
-          decisions: { bassWithdrawn: false },
+          decisions: { bassWithdrawn: false, approvedPremisesRequired: false },
           tasks: { bassAreaCheck: 'DONE', bassOffer: 'SOMETHING' },
         }).action
       ).toEqual({
@@ -259,7 +291,7 @@ describe('bass offer', () => {
     test('should go to 3 way choice if checks: !DONE && !bassWithdrawn && optout, curfewAddress, bassRequest == UNSTARTED', () => {
       expect(
         bassAddress.ca.postApproval({
-          decisions: { bassWithdrawn: false },
+          decisions: { bassWithdrawn: false, approvedPremisesRequired: false },
           tasks: {
             bassAreaCheck: 'SOMETHING',
             optOut: 'UNSTARTED',
@@ -278,7 +310,7 @@ describe('bass offer', () => {
     test('should link to 3 way choice if checks: !DONE && !bassWithdrawn && optout, curfewAddress, bassRequest == DONE', () => {
       expect(
         bassAddress.ca.postApproval({
-          decisions: { bassWithdrawn: false },
+          decisions: { bassWithdrawn: false, approvedPremisesRequired: false },
           tasks: { bassAreaCheck: 'SOMETHING', optOut: 'DONE', curfewAddress: 'DONE', bassRequest: 'DONE' },
         }).action
       ).toEqual({
@@ -292,7 +324,7 @@ describe('bass offer', () => {
     test('should continue to 3 way choice if checks: !DONE && !bassWithdrawn && any optout, curfewAddress, bassRequest != DONE', () => {
       expect(
         bassAddress.ca.postApproval({
-          decisions: { bassWithdrawn: false },
+          decisions: { bassWithdrawn: false, approvedPremisesRequired: false },
           tasks: {
             bassAreaCheck: 'SOMETHING',
             optOut: 'UNSTARTED',
