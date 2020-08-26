@@ -78,6 +78,7 @@ jobs:
       NOMIS_AUTH_URL: http://hmpps-auth:9090/auth
       DELIUS_API_URL: http://localhost:8080/communityapi
       PROBATION_TEAMS_API_URL: http://localhost:8080/probationteams
+      TOKENVERIFICATION_API_ENABLED: false
     steps:
       - checkout
       - attach_workspace:
