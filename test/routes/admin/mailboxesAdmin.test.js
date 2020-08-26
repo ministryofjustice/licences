@@ -13,6 +13,7 @@ const { mockAudit } = require('../../mockClients')
 
 const standardRouter = require('../../../server/routes/routeWorkers/standardRouter')
 const createAdminRoute = require('../../../server/routes/admin/mailboxes')
+const NullTokenVerifier = require('../../../server/authentication/tokenverifier/NullTokenVerifier')
 
 describe('/admin', () => {
   let configClient
@@ -244,7 +245,14 @@ function createApp(configClient, user) {
   const signInService = createSignInServiceStub()
   const audit = mockAudit()
 
-  const baseRouter = standardRouter({ licenceService, prisonerService, audit, signInService, config: null })
+  const baseRouter = standardRouter({
+    licenceService,
+    prisonerService,
+    audit,
+    signInService,
+    tokenVerifier: new NullTokenVerifier(),
+    config: null,
+  })
   const route = baseRouter(createAdminRoute({ configClient }))
 
   return appSetup(route, user, '/admin/mailboxes/')

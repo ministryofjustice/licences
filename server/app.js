@@ -68,6 +68,7 @@ const version = moment.now().toString()
 const { production } = config
 
 module.exports = function createApp({
+  tokenVerifier,
   signInService,
   licenceService,
   prisonerService,
@@ -329,7 +330,7 @@ module.exports = function createApp({
     })(req, res, next)
   })
 
-  const secureRoute = standardRouter({ licenceService, prisonerService, audit, signInService, config })
+  const secureRoute = standardRouter({ licenceService, prisonerService, audit, signInService, tokenVerifier, config })
 
   app.use((req, res, next) => {
     res.locals.tagManagerKey = config.tagManagerKey

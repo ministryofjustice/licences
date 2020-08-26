@@ -6,6 +6,7 @@ const cookieSession = require('cookie-session')
 const flash = require('connect-flash')
 const pdfRenderer = require('@ministryofjustice/express-template-to-pdf')
 const { mockAudit } = require('./mockClients')
+const NullTokenVerifier = require('../server/authentication/tokenverifier/NullTokenVerifier')
 
 const { createSignInServiceStub, createPrisonerServiceStub, createLicenceServiceStub } = require('./mockServices')
 const standardRouter = require('../server/routes/routeWorkers/standardRouter')
@@ -106,12 +107,12 @@ const startRoute = (route, urlPath, user, auditKey, config, audit = mockAudit())
   const signInService = createSignInServiceStub()
   const prisonerService = createPrisonerServiceStub()
   const licenceService = createLicenceServiceStub()
-
   const baseRouter = standardRouter({
     licenceService,
     prisonerService,
     audit,
     signInService,
+    tokenVerifier: new NullTokenVerifier(),
     config,
   })
   const builtRoute = baseRouter(route, { auditKey })

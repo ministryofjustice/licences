@@ -12,6 +12,7 @@ const {
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/approval')
 const formConfig = require('../../server/routes/config/approval')
+const NullTokenVerifier = require('../../server/authentication/tokenverifier/NullTokenVerifier')
 
 const prisonerInfoResponse = {
   bookingId: 1,
@@ -212,6 +213,7 @@ function createApp(
     prisonerService,
     audit,
     signInService,
+    tokenVerifier: new NullTokenVerifier(),
     config,
   })
   const route = baseRouter(createRoute({ licenceService, prisonerService, nomisPushService }))

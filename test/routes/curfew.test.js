@@ -12,6 +12,7 @@ const {
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/curfew')
 const formConfig = require('../../server/routes/config/curfew')
+const NullTokenVerifier = require('../../server/authentication/tokenverifier/NullTokenVerifier')
 
 describe('/hdc/curfew', () => {
   describe('curfew routes', () => {
@@ -617,6 +618,7 @@ function createApp(
     prisonerService,
     audit,
     signInService,
+    tokenVerifier: new NullTokenVerifier(),
     config,
   })
   const route = baseRouter(createRoute({ licenceService, nomisPushService }))

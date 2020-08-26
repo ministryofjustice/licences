@@ -12,6 +12,7 @@ const {
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createPdfRouter = require('../../server/routes/pdf')
+const NullTokenVerifier = require('../../server/authentication/tokenverifier/NullTokenVerifier')
 
 const valuesWithMissing = {
   values: {
@@ -364,7 +365,14 @@ function createApp(
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()
 
-  const baseRouter = standardRouter({ licenceService, prisonerService, audit, signInService, config: null })
+  const baseRouter = standardRouter({
+    licenceService,
+    prisonerService,
+    audit,
+    signInService,
+    tokenVerifier: new NullTokenVerifier(),
+    config: null,
+  })
   const route = baseRouter(createPdfRouter({ pdfService: pdfServiceStub, prisonerService }), {
     auditKey: 'CREATE_PDF',
   })

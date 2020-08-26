@@ -11,6 +11,7 @@ const {
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/taskList')
+const NullTokenVerifier = require('../../server/authentication/tokenverifier/NullTokenVerifier')
 
 const prisonerInfoResponse = {
   bookingId: 1,
@@ -713,7 +714,14 @@ function createApp({ licenceServiceStub, prisonerServiceStub, caServiceStub, aud
   const signInService = createSignInServiceStub()
   const caService = caServiceStub || createCaServiceStub
 
-  const baseRouter = standardRouter({ licenceService, prisonerService, audit, signInService, config: null })
+  const baseRouter = standardRouter({
+    licenceService,
+    prisonerService,
+    audit,
+    signInService,
+    tokenVerifier: new NullTokenVerifier(),
+    config: null,
+  })
   const route = baseRouter(createRoute(prisonerService, licenceService, audit, caService), { licenceRequired: false })
 
   return appSetup(route, user, '/taskList/')

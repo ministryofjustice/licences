@@ -23,7 +23,38 @@ services:
     healthcheck:
       test: ['CMD', 'curl', '-f', 'http://localhost:8080/auth/health']
     environment:
-      - SPRING_PROFILES_ACTIVE=dev
+      SPRING_PROFILES_ACTIVE: dev,token-verification
+      TOKENVERIFICATION_ENDPOINT_URL: "http://token-verification-api:8080"
+      DELIUS_ENABLED: "false"
+
+  token-verification-api:
+    image: quay.io/hmpps/token-verification-api:latest
+    networks:
+      - hmpps
+      - token-backend
+    container_name: token-verification-api
+    depends_on:
+      - token-verification-api-db
+      - hmpps-auth
+    ports:
+      - "8100:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health/ping"]
+    environment:
+      SPRING_PROFILES_ACTIVE: local-redis
+      SPRING_REDIS_HOST: token-verification-api-db
+      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: "http://hmpps-auth:8080/auth/.well-known/jwks.json"
+
+  token-verification-api-db:
+    image: redis
+    networks:
+      - token-backend
+    container_name: token-verification-api-db
+    restart: always
+    ports:
+      - '6379:6379'
 
 networks:
   hmpps:
+  token-backend:
+    internal: true
