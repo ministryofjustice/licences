@@ -22,7 +22,7 @@ jobs:
   build:
     executor:
       name: hmpps/node
-      tag: 12-buster-browsers
+      tag: 12.18.2-buster-browsers
     steps:
       - checkout
       - run:
@@ -60,7 +60,7 @@ jobs:
   unit_test:
     executor:
       name: hmpps/node
-      tag: 12-buster-browsers
+      tag: 12.18.2-buster-browsers
     steps:
       - checkout
       - restore_cache:
