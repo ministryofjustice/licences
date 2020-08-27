@@ -102,7 +102,7 @@ module.exports = {
       maxFreeSockets: 10,
       freeSocketTimeout: 30000,
     },
-    enabled: get('TOKENVERIFICATION_API_ENABLED', true),
+    enabled: get('TOKENVERIFICATION_API_ENABLED', 'true') === 'true',
   },
 
   https: production,
