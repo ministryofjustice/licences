@@ -7,6 +7,7 @@ const { createPrisonerServiceStub, createLicenceServiceStub, createSignInService
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/sent')
+const NullTokenVerifier = require('../../server/authentication/tokenverifier/NullTokenVerifier')
 
 describe('GET sent', () => {
   const prisonerService = createPrisonerServiceStub()
@@ -122,7 +123,14 @@ function createApp({ licenceServiceStub = null, prisonerServiceStub = null }, us
   const signInService = createSignInServiceStub()
   const audit = mockAudit()
 
-  const baseRouter = standardRouter({ licenceService, prisonerService, audit, signInService, config: null })
+  const baseRouter = standardRouter({
+    licenceService,
+    prisonerService,
+    audit,
+    signInService,
+    tokenVerifier: new NullTokenVerifier(),
+    config: null,
+  })
   const route = baseRouter(createRoute({ prisonerService }))
 
   return appSetup(route, user, '/hdc/sent/')
@@ -141,7 +149,14 @@ function createAppForResubmission({ prisonerServiceStub }, user, stage, licence)
     licence,
   })
 
-  const baseRouter = standardRouter({ licenceService, prisonerService, audit, signInService, config: null })
+  const baseRouter = standardRouter({
+    licenceService,
+    prisonerService,
+    audit,
+    signInService,
+    tokenVerifier: new NullTokenVerifier(),
+    config: null,
+  })
   const route = baseRouter(
     createRoute({
       prisonerService,

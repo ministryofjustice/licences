@@ -14,6 +14,7 @@ const { mockAudit } = require('../mockClients')
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/address')
 const formConfig = require('../../server/routes/config/proposedAddress')
+const NullTokenVerifier = require('../../server/authentication/tokenverifier/NullTokenVerifier')
 
 describe('/hdc/proposedAddress', () => {
   describe('proposed address routes', () => {
@@ -325,6 +326,7 @@ function createApp({ licenceServiceStub = null, nomisPushServiceStub = null }, u
     prisonerService,
     audit,
     signInService,
+    tokenVerifier: new NullTokenVerifier(),
     config,
   })
   const route = baseRouter(createRoute({ licenceService, nomisPushService }))

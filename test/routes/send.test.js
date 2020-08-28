@@ -7,6 +7,7 @@ const { createLicenceServiceStub, createPrisonerServiceStub, createSignInService
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/send')
 const transitionsForDestinations = require('../../server/services/notifications/transitionsForDestinations')
+const NullTokenVerifier = require('../../server/authentication/tokenverifier/NullTokenVerifier')
 
 describe('send', () => {
   let notificationService
@@ -293,7 +294,14 @@ function createApp({ prisonerServiceStub = null, notificationServiceStub = null 
   const signInService = createSignInServiceStub()
   const audit = mockAudit()
 
-  const baseRouter = standardRouter({ licenceService, prisonerService, audit, signInService, config: null })
+  const baseRouter = standardRouter({
+    licenceService,
+    prisonerService,
+    audit,
+    signInService,
+    tokenVerifier: new NullTokenVerifier(),
+    config: null,
+  })
   const route = baseRouter(
     createRoute({
       prisonerService,
@@ -322,7 +330,14 @@ function createAppForReconsideration(
     licence,
   })
 
-  const baseRouter = standardRouter({ licenceService, prisonerService, audit, signInService, config: null })
+  const baseRouter = standardRouter({
+    licenceService,
+    prisonerService,
+    audit,
+    signInService,
+    tokenVerifier: new NullTokenVerifier(),
+    config: null,
+  })
   const route = baseRouter(
     createRoute({
       prisonerService,

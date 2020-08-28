@@ -7,6 +7,7 @@ const { createPrisonerServiceStub, createLicenceServiceStub, createSignInService
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/bassReferral')
 const formConfig = require('../../server/routes/config/bassReferral')
+const NullTokenVerifier = require('../../server/authentication/tokenverifier/NullTokenVerifier')
 
 describe('/hdc/bassReferral', () => {
   describe('CA', () => {
@@ -337,6 +338,7 @@ function createApp({ licenceServiceStub }, user) {
     prisonerService,
     audit,
     signInService,
+    tokenVerifier: new NullTokenVerifier(),
     config: null,
   })
   const route = baseRouter(createRoute({ licenceService, nomisPushService: null }))

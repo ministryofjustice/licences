@@ -91,6 +91,20 @@ module.exports = {
     },
   },
 
+  tokenVerification: {
+    url: get('TOKENVERIFICATION_API_URL', 'http://localhost:8100', { requireInProduction: true }),
+    timeout: {
+      response: get('TOKENVERIFICATION_TIMEOUT_RESPONSE', 10000),
+      deadline: get('TOKENVERIFICATION_TIMEOUT_DEADLINE', 10000),
+    },
+    agent: {
+      maxSockets: 100,
+      maxFreeSockets: 10,
+      freeSocketTimeout: 30000,
+    },
+    enabled: get('TOKENVERIFICATION_API_ENABLED', 'true') === 'true',
+  },
+
   https: production,
   staticResourceCacheDuration: 365 * oneDay,
 

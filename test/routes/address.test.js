@@ -1,6 +1,7 @@
 const request = require('supertest')
 const { appSetup } = require('../supertestSetup')
 const { mockAudit } = require('../mockClients')
+const NullTokenVerifier = require('../../server/authentication/tokenverifier/NullTokenVerifier')
 
 const {
   createPrisonerServiceStub,
@@ -96,6 +97,7 @@ function createApp({ licenceServiceStub, prisonerServiceStub = null, nomisPushSe
     prisonerService,
     audit,
     signInService,
+    tokenVerifier: new NullTokenVerifier(),
     config,
   })
   const route = baseRouter(createRoute({ licenceService, nomisPushService }))

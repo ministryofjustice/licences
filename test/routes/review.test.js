@@ -13,6 +13,7 @@ const {
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/review')
+const NullTokenVerifier = require('../../server/authentication/tokenverifier/NullTokenVerifier')
 
 const prisonerService = createPrisonerServiceStub()
 const conditionsService = createConditionsServiceStub()
@@ -296,6 +297,7 @@ function createApp(user) {
     prisonerService,
     audit,
     signInService,
+    tokenVerifier: new NullTokenVerifier(),
     config: null,
   })
   const route = baseRouter(createRoute({ licenceService, conditionsService, prisonerService }))

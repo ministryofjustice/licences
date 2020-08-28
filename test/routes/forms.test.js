@@ -4,6 +4,7 @@ const { appSetup } = require('../supertestSetup')
 const { createSignInServiceStub } = require('../mockServices')
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/forms')
+const NullTokenVerifier = require('../../server/authentication/tokenverifier/NullTokenVerifier')
 
 describe('/forms/', () => {
   let licenceService
@@ -234,6 +235,7 @@ describe('/forms/', () => {
       prisonerService,
       signInService,
       audit: null,
+      tokenVerifier: new NullTokenVerifier(),
       config: null,
     })
     const route = baseRouter(createRoute({ formService }))

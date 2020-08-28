@@ -5,6 +5,7 @@ const { createPrisonerServiceStub, createLicenceServiceStub } = require('../mock
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/user')
+const NullTokenVerifier = require('../../server/authentication/tokenverifier/NullTokenVerifier')
 
 describe('/user', () => {
   let userService
@@ -161,6 +162,7 @@ describe('/user', () => {
       signInService,
       prisonerService,
       audit,
+      tokenVerifier: new NullTokenVerifier(),
       config: null,
     })
     const route = baseRouter(createRoute({ userService }))

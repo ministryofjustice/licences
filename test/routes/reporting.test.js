@@ -1,9 +1,8 @@
 const request = require('supertest')
 const { mockAudit } = require('../mockClients')
 const { appSetup } = require('../supertestSetup')
-
+const NullTokenVerifier = require('../../server/authentication/tokenverifier/NullTokenVerifier')
 const { createPrisonerServiceStub, createLicenceServiceStub, createSignInServiceStub } = require('../mockServices')
-
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/reporting')
 const formConfig = require('../../server/routes/config/reporting')
@@ -123,6 +122,7 @@ function createApp({ licenceServiceStub }, user) {
     prisonerService,
     audit,
     signInService,
+    tokenVerifier: new NullTokenVerifier(),
     config: null,
   })
   const route = baseRouter(createRoute({ licenceService }))

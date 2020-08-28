@@ -12,6 +12,7 @@ const {
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/finalChecks')
 const formConfig = require('../../server/routes/config/finalChecks')
+const NullTokenVerifier = require('../../server/authentication/tokenverifier/NullTokenVerifier')
 
 describe('/hdc/finalChecks', () => {
   describe('routes', () => {
@@ -248,6 +249,7 @@ function createApp({ licenceServiceStub = null, nomisPushServiceStub = null }, u
     prisonerService,
     audit,
     signInService,
+    tokenVerifier: new NullTokenVerifier(),
     config,
   })
   const route = baseRouter(createRoute({ licenceService, nomisPushService }))

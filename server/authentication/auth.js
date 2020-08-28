@@ -1,12 +1,13 @@
 const passport = require('passport')
 const OauthStrategy = require('passport-oauth2').Strategy
+const querystring = require('querystring')
 const strategies = require('./authInit')
 const config = require('../config')
 const { generateOauthClientToken } = require('./oauth')
 
-const authenticationMiddleware = (signInService) => {
+const authenticationMiddleware = (signInService, tokenVerifier) => {
   return async (req, res, next) => {
-    if (req.isAuthenticated()) {
+    if (req.isAuthenticated() && (await tokenVerifier.verify(res.locals.user.token))) {
       const { role, username, token } = req.user
       if (role !== 'RO') {
         res.locals.token = token
@@ -17,10 +18,9 @@ const authenticationMiddleware = (signInService) => {
       return next()
     }
 
-    // stash target url in session to return to
-    req.session.returnTo = req.originalUrl
-    const redirectPath = '/login'
-    return res.redirect(redirectPath)
+    req.logout()
+    const query = querystring.stringify({ returnTo: req.originalUrl })
+    return res.redirect(`/login?${query}`)
   }
 }
 

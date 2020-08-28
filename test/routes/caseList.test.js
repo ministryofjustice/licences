@@ -10,6 +10,7 @@ const {
 } = require('../mockServices')
 
 const caseListResponse = require('../stubs/caseListResponse')
+const NullTokenVerifier = require('../../server/authentication/tokenverifier/NullTokenVerifier')
 
 caseListServiceStub.getHdcCaseList.mockResolvedValue(caseListResponse)
 
@@ -49,7 +50,14 @@ function createApp(user) {
   const signInService = createSignInServiceStub()
   const audit = mockAudit()
 
-  const baseRouter = standardRouter({ licenceService, prisonerService, audit, signInService, config: null })
+  const baseRouter = standardRouter({
+    licenceService,
+    prisonerService,
+    audit,
+    signInService,
+    tokenVerifier: new NullTokenVerifier(),
+    config: null,
+  })
   const route = baseRouter(createCaseListRoute({ caseListService: caseListServiceStub }))
 
   return appSetup(route, user, '/caselist/')

@@ -7,6 +7,7 @@ const { createPrisonerServiceStub, createLicenceServiceStub, createSignInService
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/vary')
 const formConfig = require('../../server/routes/config/vary')
+const NullTokenVerifier = require('../../server/authentication/tokenverifier/NullTokenVerifier')
 
 describe('/hdc/vary', () => {
   describe('vary routes', () => {
@@ -281,6 +282,7 @@ function createApp({ licenceServiceStub, audit = mockAudit() }, user) {
     prisonerService,
     audit,
     signInService,
+    tokenVerifier: new NullTokenVerifier(),
     config: null,
   })
   const route = baseRouter(createRoute({ licenceService, prisonerService }))
