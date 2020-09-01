@@ -81,16 +81,16 @@ function statusLabels(licenceStatus, role) {
       DM: decisionLabel,
     },
     [LicenceStage.MODIFIED]: {
-      READONLY: postApprovalLabel,
-      CA: postApprovalLabel,
-      RO: postApprovalLabel,
-      DM: postApprovalLabel,
+      READONLY: caDecisionLabel,
+      CA: caDecisionLabel,
+      RO: decisionLabel,
+      DM: decisionLabel,
     },
     [LicenceStage.MODIFIED_APPROVAL]: {
-      READONLY: postApprovalLabel,
-      CA: postApprovalLabel,
-      RO: postApprovalLabel,
-      DM: postApprovalLabel,
+      READONLY: caDecisionLabel,
+      CA: caDecisionLabel,
+      RO: decisionLabel,
+      DM: decisionLabel,
     },
     [LicenceStage.VARY]: {
       READONLY: () => status.varyingLicence,
@@ -204,15 +204,19 @@ function dmProcessingLabel(licenceStatus) {
 }
 
 function caDecisionLabel(licenceStatus) {
-  if (licenceStatus.decisions.approved) {
-    if (licenceStatus.tasks.createLicence === TaskState.DONE) {
+  const { decisions, tasks } = licenceStatus
+
+  if (decisions.postponed) return status.postponed
+
+  if (decisions.approved) {
+    if (tasks.createLicence === TaskState.DONE) {
       return status.licenceCreated
     }
-
     return status.approved
   }
 
-  return decisionLabel(licenceStatus)
+  if (decisions.refused) return status.refused
+  return status.notComplete
 }
 
 function decisionLabel(licenceStatus) {
@@ -228,12 +232,6 @@ function decisionLabel(licenceStatus) {
   ]
 
   return getLabel(labels, licenceStatus) || status.notComplete
-}
-
-function postApprovalLabel(licenceStatus) {
-  const labels = [{ decision: 'refused', label: status.refused }]
-
-  return getLabel(labels, licenceStatus) || status.licenceCreated
 }
 
 function getLabel(labels, licenceStatus) {

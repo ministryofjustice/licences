@@ -55,6 +55,6 @@ const labels = {
   dm: {
     'Not started': 'Start now',
     'Awaiting refusal': 'Start now',
-    Postponed: 'Change',
+    Postponed: 'View',
   },
 }
