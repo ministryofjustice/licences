@@ -176,7 +176,6 @@
   },
   "bin": {
     "loadLicences": "./server/loadLicences.js",
-    "saveLicences": "./server/saveLicences.js",
-    "collectStatistics": "./dist/server/collectStatistics.js"
+    "saveLicences": "./server/saveLicences.js"
   }
 }
