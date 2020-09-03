@@ -100,7 +100,7 @@
     "@ministryofjustice/express-template-to-pdf": "^2.1.0",
     "adm-zip": "^0.4.16",
     "agentkeepalive": "^4.1.3",
-    "applicationinsights": "^1.8.2",
+    "applicationinsights": "^1.8.5",
     "applicationinsights-native-metrics": "0.0.5",
     "body-parser": "^1.19.0",
     "case": "^1.6.3",

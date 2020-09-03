@@ -23,6 +23,7 @@ const config = require('./config')
 const healthFactory = require('./services/healthcheck')
 
 const logger = require('../log.js')
+const appInsights = require('../azure-appinsights')
 const auth = require('./authentication/auth')
 
 const defaultRouter = require('./routes/default')
@@ -200,29 +201,31 @@ module.exports = function createApp({
   // Don't cache dynamic resources
   app.use(noCache())
 
-  // Request logging
-  app.use(
-    expressWinston.logger({
-      winstonInstance: logger,
-      meta: true,
-      dynamicMeta(req, res) {
-        const meta = {
-          userEmail: req.user ? req.user.username : null,
-          requestId: req.id,
-          sessionTag: req.user ? req.user.sessionTag : null,
-        }
+  // Request logging, but only if not using application insights (which logs requests itself)
+  if (!appInsights) {
+    app.use(
+      expressWinston.logger({
+        winstonInstance: logger,
+        meta: true,
+        dynamicMeta(req, res) {
+          const meta = {
+            userEmail: req.user ? req.user.username : null,
+            requestId: req.id,
+            sessionTag: req.user ? req.user.sessionTag : null,
+          }
 
-        if (res._headers.location) {
-          meta.res_header_location = res._headers.location
-        }
+          if (res._headers.location) {
+            meta.res_header_location = res._headers.location
+          }
 
-        return meta
-      },
-      colorize: true,
-      requestWhitelist: ['url', 'method', 'originalUrl', 'query', 'body'],
-      ignoredRoutes: ['/health', '/ping', '/favicon.ico'],
-    })
-  )
+          return meta
+        },
+        colorize: true,
+        requestWhitelist: ['url', 'method', 'originalUrl', 'query', 'body'],
+        ignoredRoutes: ['/health', '/ping', '/favicon.ico'],
+      })
+    )
+  }
 
   app.use(flash())
 

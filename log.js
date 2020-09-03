@@ -29,7 +29,8 @@ const format =
 
 const logger = winston.createLogger({
   format,
-  transports: [new winston.transports.Console({ level: 'info', handleExceptions: true })],
+  // No transports when Application Insights is enabled because App Insights automatically logs calls to the winston API.
+  transports: appInsights ? [] : [new winston.transports.Console({ level: 'info', handleExceptions: true })],
 })
 
 if (appInsights) {
