@@ -717,6 +717,91 @@ describe('TaskList models', () => {
       ])
     })
 
+    test('should return list of tasks for standard route - postponed', () => {
+      expect(
+        taskListModel(
+          'CA',
+          false,
+          {
+            decisions: {
+              eligible: true,
+              curfewAddressApproved: true,
+              bassReferralNeeded: false,
+              bassWithdrawn: false,
+              bassExcluded: false,
+              bassAccepted: null,
+              optedOut: false,
+              dmRefused: false,
+              excluded: false,
+              postponed: true,
+            },
+            tasks: {
+              bassAreaCheck: 'UNSTARTED',
+              bassOffer: 'UNSTARTED',
+            },
+            stage: 'DECIDED',
+          },
+          {}
+        )
+      ).toEqual([
+        eligibilitySummary,
+        proposedCurfewAddressEdit,
+        riskManagement,
+        victimLiasion,
+        curfewHours,
+        additionalConditionsEdit,
+        reportingInstructions,
+        reviewCase,
+        {
+          ...postponeOrRefuse,
+          action: { ...postponeOrRefuse.action, text: 'Resume' },
+          label: 'HDC application postponed',
+        },
+        refuse,
+        resubmit,
+      ])
+    })
+
+    test('should return bass tasks if required', () => {
+      expect(
+        taskListModel(
+          'CA',
+          false,
+          {
+            decisions: {
+              eligible: true,
+              curfewAddressApproved: true,
+              bassReferralNeeded: true,
+              bassWithdrawn: false,
+              bassExcluded: false,
+              bassAccepted: 'Unavailable',
+              optedOut: false,
+              dmRefused: false,
+              excluded: false,
+            },
+            tasks: {
+              bassAreaCheck: 'UNSTARTED',
+              bassOffer: 'DONE',
+            },
+            stage: 'MODIFIED',
+          },
+          {}
+        )
+      ).toEqual([
+        eligibilitySummary,
+        bassAddressNoAddress,
+        riskManagement,
+        victimLiasion,
+        curfewHours,
+        additionalConditionsEdit,
+        reportingInstructions,
+        reviewCase,
+        postponeOrRefuse,
+        refuse,
+        submitDecisionMakerRefusal,
+      ])
+    })
+
     test('should return bass tasks if required', () => {
       expect(
         taskListModel(
