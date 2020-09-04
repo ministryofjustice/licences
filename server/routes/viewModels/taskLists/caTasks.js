@@ -105,14 +105,15 @@ module.exports = {
 
   getCaTasksPostApproval: (stage) => ({ decisions, tasks, allowedTransition }) => {
     const {
-      curfewAddressApproved,
-      approvedPremisesRequired,
       addressUnsuitable,
-      eligible,
-      bassReferralNeeded,
+      approvedPremisesRequired,
       bassAccepted,
+      bassReferralNeeded,
       bassWithdrawn,
+      curfewAddressApproved,
       dmRefused,
+      eligible,
+      postponed,
     } = decisions
 
     const { bassOffer } = tasks
@@ -148,7 +149,7 @@ module.exports = {
       [resubmitToDm, !['caToDm', 'caToDmRefusal', 'caToRo'].includes(allowedTransition) && dmRefused !== undefined],
       [
         createLicence.ca,
-        validAddress && !['caToDm', 'caToDmRefusal', 'caToRo'].includes(allowedTransition) && !dmRefused,
+        validAddress && !['caToDm', 'caToDmRefusal', 'caToRo'].includes(allowedTransition) && !dmRefused && !postponed,
       ],
     ])
   },
