@@ -2,15 +2,8 @@ const appInsights = require('./azure-appinsights')
 // eslint-disable-next-line import/order
 const winston = require('winston')
 
-const { combine, colorize, simple, timestamp, json, prettyPrint } = winston.format
+const { combine, simple, timestamp, json, prettyPrint } = winston.format
 const { flattenMeta } = require('./server/misc')
-
-winston.addColors({
-  error: 'red',
-  warn: 'yellow',
-  info: 'green',
-  debug: 'grey',
-})
 
 const flattened = winston.format((meta) => {
   const { message, level, timestamp: ts, ...rest } = meta
@@ -24,7 +17,7 @@ const flattened = winston.format((meta) => {
 
 const format =
   process.env.NODE_ENV === 'test'
-    ? combine(timestamp(), colorize(), simple(), prettyPrint())
+    ? combine(timestamp(), simple(), prettyPrint())
     : combine(timestamp(), flattened(), json())
 
 const logger = winston.createLogger({
