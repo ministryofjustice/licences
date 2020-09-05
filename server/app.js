@@ -1,5 +1,4 @@
 /* eslint-disable no-underscore-dangle */
-const expressWinston = require('express-winston')
 const addRequestId = require('express-request-id')()
 const moment = require('moment')
 
@@ -200,29 +199,21 @@ module.exports = function createApp({
   // Don't cache dynamic resources
   app.use(noCache())
 
-  // Request logging
-  app.use(
-    expressWinston.logger({
-      winstonInstance: logger,
-      meta: true,
-      dynamicMeta(req, res) {
-        const meta = {
-          userEmail: req.user ? req.user.username : null,
-          requestId: req.id,
-          sessionTag: req.user ? req.user.sessionTag : null,
-        }
+  const excludedPaths = new RegExp('^/public|^/assets|^/health|^/ping|^/favicon.ico')
+  app.use((req, res, next) => {
+    if (excludedPaths.test(req.path)) {
+      return next()
+    }
 
-        if (res._headers.location) {
-          meta.res_header_location = res._headers.location
-        }
-
-        return meta
-      },
-      colorize: true,
-      requestWhitelist: ['url', 'method', 'originalUrl', 'query', 'body'],
-      ignoredRoutes: ['/health', '/ping', '/favicon.ico'],
+    logger.log({
+      message: 'Request',
+      level: 'info',
+      path: req.path,
+      username: req.user && req.user.username,
+      role: req.user && req.user.role,
     })
-  )
+    return next()
+  })
 
   app.use(flash())
 
