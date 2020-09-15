@@ -21,7 +21,7 @@ export interface RestClientConfig {
 
 const NOT_FOUND = 404
 
-interface TokenSource {
+export interface TokenSource {
   (): Promise<string>
 }
 
