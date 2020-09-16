@@ -24,6 +24,8 @@ import { buildRestClient, clientCredentialsTokenSource, TokenSource } from './da
 import createSignInService from './authentication/signInService'
 import config from './config'
 
+const writeStdOut = (data) => new Promise((resolve) => process.stdout.write(data, () => resolve()))
+
 /**
  * Always return the first token retrieved from the wrapped TokenSource.
  * Sufficient for a script that will complete within the cached token's expiry time.
@@ -53,31 +55,33 @@ const getUser = (username) => oauthRestClient.getResource(`/api/authuser/${usern
 
 const updateUser = async (username, disableUser: boolean) => {
   if (username) {
-    try {
-      await (disableUser ? disableAuthUser(username) : enableAuthUser(username))
-      return getUser(username)
-    } catch (error) {
-      // Carry on...
-    }
+    await (disableUser ? disableAuthUser(username) : enableAuthUser(username))
+    return getUser(username)
   }
   return undefined
 }
 
-const updateUsers = (usernames: string[], disableUsers = true) =>
-  usernames.reduce(
-    (promise, username) =>
-      promise
-        .then(() => updateUser(username, disableUsers))
-        .then((data) => new Promise((resolve) => process.stdout.write(`${JSON.stringify(data)}\n`, () => resolve()))),
-    Promise.resolve()
-  )
+const updateUsers = async (usernames: string[], disableUsers = true) => {
+  // eslint-disable-next-line no-restricted-syntax
+  for (const username of usernames) {
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      const user = await updateUser(username, disableUsers)
+      // eslint-disable-next-line no-await-in-loop
+      await writeStdOut(`${JSON.stringify(user)}\n`)
+    } catch (error) {
+      // eslint-disable-next-line no-await-in-loop
+      await writeStdOut(`Caught error while updating user '${username}': ${JSON.stringify(error)}\n`)
+    }
+  }
+}
 
-const consumeInputBuffer = (buffer) => {
+const consumeInputBuffer = async (buffer) => {
   const usernames = buffer.toString().split('\n')
   const disableUsers = !process.argv[1].includes('enableUsers')
-  updateUsers(usernames, disableUsers)
-    .then(() => process.stdout.write('Done\n'))
-    .then(() => process.exit(0))
+  await updateUsers(usernames, disableUsers)
+  await writeStdOut('Done\n')
+  process.exit(0)
 }
 
 process.stdin.pipe(concat(consumeInputBuffer))
