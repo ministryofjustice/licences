@@ -1,34 +1,39 @@
-const request = require('supertest')
+import { mocked } from 'ts-jest/utils'
+import request from 'supertest'
+import { RoService } from '../../server/services/roService'
+import { createSignInServiceStub } from '../mockServices'
+import { startRoute } from '../supertestSetup'
+import createContactRoute from '../../server/routes/contact'
 
-const { startRoute } = require('../supertestSetup')
-
-const { createRoServiceStub, createSignInServiceStub } = require('../mockServices')
-
-const createContactRoute = require('../../server/routes/contact')
+jest.mock('../../server/services/roService')
 
 let app
 
 describe('/contact', () => {
   let userAdminService
-  let roService
+  let roService: RoService
   let signInService
 
   beforeEach(() => {
-    roService = createRoServiceStub()
-    roService.findResponsibleOfficer.mockReturnValue({
+    roService = new RoService(undefined, undefined)
+    mocked(roService).findResponsibleOfficer.mockResolvedValue({
       deliusId: 'DELIUS_ID',
+      staffIdentifier: 1,
+      name: 'Ro Name',
+      nomsNumber: undefined,
       teamCode: 'TEAM_CODE',
       teamDescription: 'The Team',
       lduCode: 'ABC123',
       lduDescription: 'LDU Description',
-      name: 'Ro Name',
-      probationAreaDescription: 'PA Description',
       probationAreaCode: 'PA_CODE',
+      probationAreaDescription: 'PA Description',
+      isAllocated: true,
     })
-    roService.getStaffByCode.mockReturnValue({
+    mocked(roService).getStaffByStaffIdentifier.mockResolvedValue({
       username: 'username',
       email: '123456@somewhere.com',
       staffCode: 'DELIUS_ID',
+      staffIdentifier: 1,
       staff: { forenames: 'RO', surname: 'Name' },
       teams: [
         {
@@ -140,7 +145,7 @@ describe('/contact', () => {
     })
 
     test('should handle absence of RO details (local and delius)', () => {
-      roService.findResponsibleOfficer.mockResolvedValue({ message: 'message', code: 'ERROR_CODE' })
+      mocked(roService).findResponsibleOfficer.mockResolvedValue({ message: 'message', code: 'ERROR_CODE' })
 
       return request(app)
         .get('/contact/123456')

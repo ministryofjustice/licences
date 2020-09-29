@@ -1,20 +1,39 @@
-const createCaService = require('../../server/services/caService')
-const { createRoServiceStub } = require('../mockServices')
+import { mocked } from 'ts-jest/utils'
+import createCaService from '../../server/services/caService'
+import { RoService } from '../../server/services/roService'
+import type { ResponsibleOfficer } from '../../types/licences'
 
-let roService
-let caService
-/** @type {any} */
-let lduActiveClient
+jest.mock('../../server/services/roService')
 
-const responsibleOfficer = {
+const mockRoServiceConstructor = mocked(RoService, true)
+
+const responsibleOfficer: ResponsibleOfficer = {
+  deliusId: undefined,
+  lduDescription: undefined,
+  name: undefined,
+  nomsNumber: undefined,
+  probationAreaCode: undefined,
+  probationAreaDescription: undefined,
+  staffIdentifier: 1,
+  teamCode: undefined,
+  teamDescription: undefined,
   isAllocated: true,
   lduCode: 'ldu-123',
 }
 
 describe('caService', () => {
+  let roService
+  let mockRoService
+  let caService
+  /** @type {any} */
+  let lduActiveClient
+
   beforeEach(() => {
-    roService = createRoServiceStub()
-    roService.findResponsibleOfficer.mockResolvedValue(responsibleOfficer)
+    mockRoServiceConstructor.mockClear()
+
+    roService = new RoService(undefined, undefined)
+    mockRoService = mocked(roService, true)
+    mockRoService.findResponsibleOfficer.mockResolvedValue(responsibleOfficer)
     lduActiveClient = { isLduPresent: jest.fn() }
 
     caService = createCaService(roService, lduActiveClient)

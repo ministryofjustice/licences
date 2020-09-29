@@ -24,6 +24,6 @@ export interface ApprovedLicenceVersion {
 }
 
 export interface DeliusIds {
-  staffCode: string
+  staffIdentifier?: number
   deliusUsername?: string
 }

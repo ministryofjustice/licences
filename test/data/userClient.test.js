@@ -1,6 +1,6 @@
 jest.mock('../../server/data/dataAccess/db')
 
-const userClient = require('../../server/data/userClient')
+const { userClient } = require('../../server/data/userClient')
 /** @type {any} */
 const db = require('../../server/data/dataAccess/db')
 
@@ -26,7 +26,7 @@ describe('userClient', () => {
   const standardResponse = { rows: [{ user1, user2 }] }
 
   beforeEach(() => {
-    db.query = jest.fn().mockResolvedValue(standardResponse)
+    db.query.mockResolvedValue(standardResponse)
   })
 
   describe('getRoUsers', () => {
@@ -59,7 +59,7 @@ describe('userClient', () => {
     }
 
     beforeEach(() => {
-      db.query = jest.fn().mockReturnValue(cases)
+      db.query.mockReturnValue(cases)
     })
 
     test('should call query', () => {
@@ -74,7 +74,7 @@ describe('userClient', () => {
     })
 
     test('should return empty if no results', async () => {
-      db.query = jest.fn().mockReturnValue({})
+      db.query.mockReturnValue({})
       const results = await userClient.getCasesRequiringRo()
       expect(db.query).toHaveBeenCalled()
       expect(results).toEqual([])
@@ -97,32 +97,32 @@ describe('userClient', () => {
     })
 
     test('should return empty if no matches', async () => {
-      db.query = jest.fn().mockReturnValue({})
+      db.query.mockReturnValue({})
       const result = await userClient.getRoUser('id')
       expect(db.query).toHaveBeenCalled()
       expect(result).toBe(null)
     })
   })
 
-  describe('getRoUserByDeliusId', () => {
+  describe('getRoUserByStaffIdentifier', () => {
     test('should call query', () => {
-      userClient.getRoUserByDeliusId('id')
+      userClient.getRoUserByStaffIdentifier(1)
       expect(db.query).toHaveBeenCalled()
     })
 
     test('should pass in the correct params and do case-insensitive search', async () => {
-      const expectedClause = 'where upper(staff_id) = upper($1)'
+      const expectedClause = 'where staff_identifier = $1'
 
-      await userClient.getRoUserByDeliusId('id')
+      await userClient.getRoUserByStaffIdentifier(1)
 
       const { text, values } = db.query.mock.calls[0][0]
       expect(text).toContain(expectedClause)
-      expect(values).toEqual(['id'])
+      expect(values).toEqual([1])
     })
 
     test('should return empty if no matches', async () => {
-      db.query = jest.fn().mockReturnValue({})
-      const result = await userClient.getRoUserByDeliusId('id')
+      db.query.mockReturnValue({})
+      const result = await userClient.getRoUserByStaffIdentifier(1)
       expect(db.query).toHaveBeenCalled()
       expect(result).toBe(null)
     })
@@ -141,36 +141,10 @@ describe('userClient', () => {
 
   describe('updateRoUser', () => {
     test('should pass in the correct sql and params', async () => {
-      await userClient.updateRoUser(
-        'nomisId',
-        'newNomisId',
-        'newDeliusId',
-        'first',
-        'last',
-        'org',
-        'role',
-        'email',
-        'orgEmail',
-        'phone',
-        'onboarded',
-        'deliusUsername'
-      )
+      await userClient.updateRoUser('nomisId', 1)
 
       const call = db.query.mock.calls[0][0]
-      expect(call.values).toEqual([
-        'nomisId',
-        'newNomisId',
-        'newDeliusId',
-        'first',
-        'last',
-        'org',
-        'role',
-        'email',
-        'orgEmail',
-        'phone',
-        'onboarded',
-        'deliusUsername',
-      ])
+      expect(call.values).toEqual(['nomisId', 1])
     })
   })
 
@@ -183,39 +157,6 @@ describe('userClient', () => {
       const { text, values } = db.query.mock.calls[0][0]
       expect(text).toContain(expectedClause)
       expect(values).toEqual(['nomisId'])
-    })
-  })
-
-  describe('addRoUser', () => {
-    test('should pass in the correct sql and params', async () => {
-      await userClient.addRoUser(
-        'nomisId',
-        'deliusId',
-        'first',
-        'last',
-        'org',
-        'role',
-        'email',
-        'orgEmail',
-        'phone',
-        'onboarded',
-        'deliusUsername'
-      )
-
-      const call = db.query.mock.calls[0][0]
-      expect(call.values).toEqual([
-        'nomisId',
-        'deliusId',
-        'first',
-        'last',
-        'org',
-        'role',
-        'email',
-        'orgEmail',
-        'phone',
-        'onboarded',
-        'deliusUsername',
-      ])
     })
   })
 
@@ -246,7 +187,7 @@ describe('userClient', () => {
     })
 
     test('should return empty if no matches', async () => {
-      db.query = jest.fn().mockReturnValue({})
+      db.query.mockReturnValue({})
       const result = await userClient.findRoUsers('id')
       expect(db.query).toHaveBeenCalled()
       expect(result).toEqual([])

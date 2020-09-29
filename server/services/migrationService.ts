@@ -1,4 +1,5 @@
-import { DeliusClient } from './roService'
+import { DeliusClient } from '../data/deliusClient'
+import UserAdminService from './userAdminService'
 import logger from '../../log'
 import config from '../config'
 
@@ -23,7 +24,7 @@ export const enum Flag {
 export default class MigrationService {
   constructor(
     private readonly deliusClient: DeliusClient,
-    private readonly userAdminService,
+    private readonly userAdminService: UserAdminService,
     private readonly nomisClientBuilder
   ) {}
 
@@ -46,8 +47,8 @@ export default class MigrationService {
   }
 
   async enrich(token: string, licenceUser: any) {
-    const { nomisId: nomisUsername } = licenceUser
-    const deliusStaffDetails = await this.deliusClient.getStaffDetailsByStaffCode(licenceUser.deliusId)
+    const { nomisId: nomisUsername, staffIdentifier } = licenceUser
+    const deliusStaffDetails = await this.deliusClient.getStaffDetailsByStaffIdentifier(staffIdentifier)
     const isLinked = Boolean(deliusStaffDetails && deliusStaffDetails.username)
 
     const deliusUser = isLinked && (await this.getUserFromDelius(deliusStaffDetails.username))
@@ -92,7 +93,7 @@ export default class MigrationService {
 
   public async addRoRole(nomisUsername) {
     const roUser = await this.userAdminService.getRoUser(nomisUsername)
-    const deliusRo = await this.getStaffByCode(roUser.deliusId)
+    const deliusRo = await this.getStaffByIdentifier(roUser.staffIdentifier)
     await this.deliusClient.addResponsibleOfficerRole(deliusRo.username)
   }
 
@@ -121,11 +122,11 @@ export default class MigrationService {
     await nomisClient.enableAuthUser(nomisUsername)
   }
 
-  private async getStaffByCode(staffCode) {
+  private async getStaffByIdentifier(staffIdentifier) {
     try {
-      return await this.deliusClient.getStaffDetailsByStaffCode(staffCode)
+      return await this.deliusClient.getStaffDetailsByStaffIdentifier(staffIdentifier)
     } catch (error) {
-      logger.warn(`Problem retrieving staff member from delius for code: ${staffCode}`, error.stack)
+      logger.warn(`Problem retrieving staff member from delius for identifier: ${staffIdentifier}`, error.stack)
       return null
     }
   }

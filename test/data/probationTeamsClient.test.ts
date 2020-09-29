@@ -2,7 +2,7 @@ import nock from 'nock'
 
 import config from '../../server/config'
 import { buildRestClient, clientCredentialsTokenSource } from '../../server/data/restClientBuilder'
-import { createProbationTeamsClient } from '../../server/data/probationTeamsClient'
+import { ProbationTeamsClient } from '../../server/data/probationTeamsClient'
 
 const LDU_ID = Object.freeze({ probationAreaCode: 'AREA_CODE', lduCode: 'LDU_CODE' })
 
@@ -30,7 +30,7 @@ describe('probationTeamsClient', () => {
         agent: config.probationTeams.agent,
       }
     )
-    probationTeamsClient = createProbationTeamsClient(restClient)
+    probationTeamsClient = new ProbationTeamsClient(restClient)
   })
 
   afterEach(() => {

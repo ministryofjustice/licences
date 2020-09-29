@@ -1,10 +1,15 @@
-const createReminderService = require('../../server/services/reminderService')
-const { createPrisonerServiceStub } = require('../mockServices')
+import { mocked } from 'ts-jest/utils'
+import createReminderService from '../../server/services/reminderService'
+import { createPrisonerServiceStub } from '../mockServices'
+import { RoContactDetailsService } from '../../server/services/roContactDetailsService'
+import { ResponsibleOfficerAndContactDetails } from '../../types/licences'
+
+jest.mock('../../server/services/roContactDetailsService')
 
 describe('reminderService', () => {
   let service
   let prisonerService
-  let roContactDetailsService
+  let roContactDetailsService: RoContactDetailsService
   let deadlineService
   let roNotificationSender
 
@@ -14,10 +19,10 @@ describe('reminderService', () => {
     prisonerService = createPrisonerServiceStub()
     prisonerService.getEstablishmentForPrisoner.mockReturnValue({ premise: 'HMP Blah', agencyId: 'LT1' })
 
-    roContactDetailsService = {
-      getFunctionalMailBox: jest.fn(),
-      getResponsibleOfficerWithContactDetails: jest.fn().mockReturnValue({ deliusId: 'code-1' }),
-    }
+    roContactDetailsService = new RoContactDetailsService(undefined, undefined, undefined)
+    mocked(roContactDetailsService).getResponsibleOfficerWithContactDetails.mockResolvedValue({
+      staffIdentifier: 1,
+    } as ResponsibleOfficerAndContactDetails)
 
     deadlineService = {
       getDueInDays: jest.fn().mockReturnValue([{ booking_id: 1, transition_date: transitionDate }]),
@@ -122,7 +127,7 @@ describe('reminderService', () => {
         bookingId: 2,
         notificationType: 'RO_OVERDUE',
         prison: 'HMP Blah',
-        responsibleOfficer: { deliusId: 'code-1' },
+        responsibleOfficer: { staffIdentifier: 1 },
         sendingUserName: 'NOTIFICATION_SERVICE',
         transitionDate: '2019-01-01 12:00:00',
       })
@@ -131,7 +136,7 @@ describe('reminderService', () => {
         bookingId: 3,
         notificationType: 'RO_OVERDUE',
         prison: 'HMP Blah',
-        responsibleOfficer: { deliusId: 'code-1' },
+        responsibleOfficer: { staffIdentifier: 1 },
         sendingUserName: 'NOTIFICATION_SERVICE',
         transitionDate: '2019-01-01 12:00:00',
       })
@@ -140,7 +145,7 @@ describe('reminderService', () => {
         bookingId: 1,
         notificationType: 'RO_DUE',
         prison: 'HMP Blah',
-        responsibleOfficer: { deliusId: 'code-1' },
+        responsibleOfficer: { staffIdentifier: 1 },
         sendingUserName: 'NOTIFICATION_SERVICE',
         transitionDate: '2019-01-01 12:00:00',
       })
@@ -149,7 +154,7 @@ describe('reminderService', () => {
         bookingId: 1,
         notificationType: 'RO_TWO_DAYS',
         prison: 'HMP Blah',
-        responsibleOfficer: { deliusId: 'code-1' },
+        responsibleOfficer: { staffIdentifier: 1 },
         sendingUserName: 'NOTIFICATION_SERVICE',
         transitionDate: '2019-01-01 12:00:00',
       })
@@ -167,7 +172,10 @@ describe('reminderService', () => {
     })
 
     test('should continue trying all other notifications even after a failure', async () => {
-      roContactDetailsService.getResponsibleOfficerWithContactDetails.mockRejectedValue(new Error('error message'))
+      mocked(roContactDetailsService).getResponsibleOfficerWithContactDetails.mockRejectedValue({
+        message: 'error message',
+        code: 'meh',
+      })
       await service.notifyRoReminders('token')
 
       expect(deadlineService.getOverdue).toHaveBeenCalled()
@@ -178,7 +186,10 @@ describe('reminderService', () => {
     })
 
     test('should continue trying all other notifications even after an error happens when searching for offender details', async () => {
-      roContactDetailsService.getResponsibleOfficerWithContactDetails.mockResolvedValue({ message: 'some-error' })
+      mocked(roContactDetailsService).getResponsibleOfficerWithContactDetails.mockResolvedValue({
+        message: 'some-error',
+        code: 'some code',
+      })
       await service.notifyRoReminders('token')
 
       expect(deadlineService.getOverdue).toHaveBeenCalled()

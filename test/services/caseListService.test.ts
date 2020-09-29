@@ -1,14 +1,26 @@
-const createCaseListService = require('../../server/services/caseListService')
-const createCaseListFormatter = require('../../server/services/utils/caseListFormatter')
-const { createRoServiceStub } = require('../mockServices')
+import { mocked } from 'ts-jest/utils'
+import moment from 'moment'
+import createCaseListService from '../../server/services/caseListService'
+import createCaseListFormatter from '../../server/services/utils/caseListFormatter'
+import { RoService } from '../../server/services/roService'
+import { LicenceClient } from '../../server/data/licenceClient'
+import { StaffDetails } from '../../server/data/deliusClient'
+import { CaseWithApprovedVersion, DeliusIds } from '../../server/data/licenceClientTypes'
+
+jest.mock('../../server/services/roService')
+jest.mock('../../server/data/licenceClient')
+
+const mockRoService = mocked(RoService, true)
+const mockLicenceClient = mocked(LicenceClient, true)
 
 describe('caseListService', () => {
   let nomisClient
-  let service
-  let licenceClient
-  let roService
+  let caseListService
+  let licenceClient: LicenceClient
+  let roService: RoService
 
   const roPrisoners = [{ bookingId: 'A' }, { bookingId: 'B' }, { bookingId: 'C' }]
+
   const hdcEligiblePrisoners = [
     {
       bookingId: 0,
@@ -68,13 +80,34 @@ describe('caseListService', () => {
     role: 'RO',
   }
 
+  // Not sure that delius can return staff details without a staff identifier...
+  const staffDetailsNoStaffIdentifier = {
+    username: 'username',
+    email: 'email',
+    staffCode: 'ABC123',
+    staff: { forenames: 'user', surname: 'name' },
+    teams: [],
+  } as StaffDetails
+
+  const staffDetails: StaffDetails = {
+    ...staffDetailsNoStaffIdentifier,
+    staffIdentifier: 2,
+  }
+
+  const deliusId1: DeliusIds = { staffIdentifier: 1, deliusUsername: 'deliusUser' }
+  const deliusId2: DeliusIds = { staffIdentifier: 2, deliusUsername: 'deliusUser2' }
+
   beforeEach(() => {
+    mockRoService.mockClear()
+    mockLicenceClient.mockClear()
+
     nomisClient = {
       getHdcEligiblePrisoners: jest.fn(),
     }
 
-    roService = createRoServiceStub()
-    roService.getROPrisoners.mockReturnValue([
+    roService = new RoService(undefined, undefined)
+
+    mocked(roService).getROPrisonersForStaffIdentifier.mockResolvedValue([
       {
         bookingId: 0,
         offenderNo: 'A12345',
@@ -91,41 +124,22 @@ describe('caseListService', () => {
       },
     ])
 
-    roService.getStaffByUsername.mockReturnValue({
-      username: 'username',
-      email: 'email',
-      staffCode: 'ABC123',
-      staff: { forenames: 'user', surname: 'name' },
-      teams: [],
-    })
+    mocked(roService).getStaffByUsername.mockResolvedValue(staffDetails)
 
-    licenceClient = {
-      getLicences: jest.fn().mockReturnValue([]),
-      getDeliusIds: jest.fn().mockReturnValue([{ staffCode: 'foo-username' }]),
-      deleteAll: undefined,
-      deleteAllTest: undefined,
-      getLicence: undefined,
-      getApprovedLicenceVersion: undefined,
-      createLicence: undefined,
-      updateLicence: undefined,
-      updateSection: undefined,
-      updateStage: undefined,
-      saveApprovedLicenceVersion: undefined,
-      getLicencesInStageBetweenDates: undefined,
-      getLicencesInStageBeforeDate: undefined,
-    }
+    licenceClient = new LicenceClient()
+    mocked(licenceClient).getLicences.mockResolvedValue([])
 
     const nomisClientBuilder = jest.fn().mockReturnValue(nomisClient)
     const caseListFormatter = createCaseListFormatter(licenceClient)
 
-    service = createCaseListService(nomisClientBuilder, roService, licenceClient, caseListFormatter)
+    caseListService = createCaseListService(nomisClientBuilder, roService, licenceClient, caseListFormatter)
   })
 
   describe('getHdcCaseList', () => {
     test('should format dates', async () => {
       nomisClient.getHdcEligiblePrisoners.mockResolvedValue(hdcEligiblePrisoners)
 
-      const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, user.role)
+      const { hdcEligible } = await caseListService.getHdcCaseList(user.token, user.username, user.role)
 
       expect(hdcEligible[0].sentenceDetail.homeDetentionCurfewEligibilityDate).toBe('07/09/2017')
       expect(hdcEligible[0].sentenceDetail.effectiveConditionalReleaseDate).toBe('16/12/2017')
@@ -133,33 +147,33 @@ describe('caseListService', () => {
 
     test('should capitalise names', async () => {
       nomisClient.getHdcEligiblePrisoners.mockResolvedValue(hdcEligiblePrisoners)
-      const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, user.role)
+      const { hdcEligible } = await caseListService.getHdcCaseList(user.token, user.username, user.role)
       expect(hdcEligible[0].firstName).toBe('Mark')
       expect(hdcEligible[0].lastName).toBe('Andrews')
     })
 
     test('should add a status to the prisoners', async () => {
       nomisClient.getHdcEligiblePrisoners.mockResolvedValue(hdcEligiblePrisoners)
-      const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, user.role)
+      const { hdcEligible } = await caseListService.getHdcCaseList(user.token, user.username, user.role)
       expect(hdcEligible[0].status).toBe('Not started')
     })
 
     test('should add a processing stage to the prisoners', async () => {
       nomisClient.getHdcEligiblePrisoners.mockResolvedValue(hdcEligiblePrisoners)
-      const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, user.role)
+      const { hdcEligible } = await caseListService.getHdcCaseList(user.token, user.username, user.role)
       expect(hdcEligible[0].stage).toBe('UNSTARTED')
     })
 
     test('should return empty array and message if no results', () => {
       nomisClient.getHdcEligiblePrisoners.mockResolvedValue([])
-      return expect(service.getHdcCaseList(user.token, user.username, user.role)).resolves.toEqual(
+      return expect(caseListService.getHdcCaseList(user.token, user.username, user.role)).resolves.toEqual(
         noEligibleCasesResponse
       )
     })
 
     test('should return empty array if null returned', () => {
       nomisClient.getHdcEligiblePrisoners.mockResolvedValue(null)
-      return expect(service.getHdcCaseList(user.token, user.username, user.role)).resolves.toEqual(
+      return expect(caseListService.getHdcCaseList(user.token, user.username, user.role)).resolves.toEqual(
         noEligibleCasesResponse
       )
     })
@@ -178,20 +192,20 @@ describe('caseListService', () => {
       })
 
       test('should call getHdcEligiblePrisoners from nomisClient', () => {
-        service.getHdcCaseList(user.token, user.username, user.role)
+        caseListService.getHdcCaseList(user.token, user.username, user.role)
         expect(nomisClient.getHdcEligiblePrisoners).toHaveBeenCalled()
         expect(nomisClient.getHdcEligiblePrisoners).toHaveBeenCalledWith()
       })
 
       test('should return eligible prisoners', async () => {
         nomisClient.getHdcEligiblePrisoners.mockResolvedValue(hdcEligiblePrisoners)
-        const result = await service.getHdcCaseList(user.token, user.username, user.role)
+        const result = await caseListService.getHdcCaseList(user.token, user.username, user.role)
         expect(result.hdcEligible).toEqual(formattedPrisoners)
       })
 
       test('should return message when no eligible prisoners', async () => {
         nomisClient.getHdcEligiblePrisoners.mockResolvedValue([])
-        const result = await service.getHdcCaseList(user.token, user.username, user.role)
+        const result = await caseListService.getHdcCaseList(user.token, user.username, user.role)
         expect(result).toEqual({ hdcEligible: [], message: 'No HDC cases' })
       })
 
@@ -207,7 +221,7 @@ describe('caseListService', () => {
             },
           ])
 
-          const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, user.role)
+          const { hdcEligible } = await caseListService.getHdcCaseList(user.token, user.username, user.role)
           expect(hdcEligible[0].due).toEqual({ text: '1 day', overdue: false })
         })
 
@@ -222,7 +236,7 @@ describe('caseListService', () => {
             },
           ])
 
-          const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, user.role)
+          const { hdcEligible } = await caseListService.getHdcCaseList(user.token, user.username, user.role)
           expect(hdcEligible[0].due).toEqual({ text: '0 days', overdue: false })
         })
 
@@ -237,7 +251,7 @@ describe('caseListService', () => {
             },
           ])
 
-          const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, user.role)
+          const { hdcEligible } = await caseListService.getHdcCaseList(user.token, user.username, user.role)
           expect(hdcEligible[0].due).toEqual({ text: '1 day overdue', overdue: true })
         })
 
@@ -252,7 +266,7 @@ describe('caseListService', () => {
             },
           ])
 
-          const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, user.role)
+          const { hdcEligible } = await caseListService.getHdcCaseList(user.token, user.username, user.role)
           expect(hdcEligible[0].due).toEqual({ text: '2 weeks', overdue: false })
         })
 
@@ -267,7 +281,7 @@ describe('caseListService', () => {
             },
           ])
 
-          const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, user.role)
+          const { hdcEligible } = await caseListService.getHdcCaseList(user.token, user.username, user.role)
           expect(hdcEligible[0].due).toEqual({ text: '13 days', overdue: false })
         })
 
@@ -282,7 +296,7 @@ describe('caseListService', () => {
             },
           ])
 
-          const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, user.role)
+          const { hdcEligible } = await caseListService.getHdcCaseList(user.token, user.username, user.role)
           expect(hdcEligible[0].due).toEqual({ text: '7 months', overdue: false })
         })
 
@@ -297,103 +311,79 @@ describe('caseListService', () => {
             },
           ])
 
-          const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, user.role)
+          const { hdcEligible } = await caseListService.getHdcCaseList(user.token, user.username, user.role)
           expect(hdcEligible[0].due).toEqual({ text: '2 years', overdue: false })
         })
       })
     })
 
     describe('when user is a RO', () => {
-      test('should call getROPrisoners', async () => {
-        roService.getROPrisoners.mockResolvedValue(roPrisoners)
-        await service.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
-        expect(roService.getROPrisoners).toHaveBeenCalled()
+      test('should call getROPrisonersForStaffIdentifier', async () => {
+        mocked(roService).getROPrisonersForStaffIdentifier.mockResolvedValue(roPrisoners)
+        mocked(licenceClient).getDeliusIds.mockResolvedValue([deliusId1])
+        await caseListService.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
+        expect(roService.getROPrisonersForStaffIdentifier).toHaveBeenCalled()
       })
 
-      test('should call getROPrisoners when staff not found in delius', async () => {
-        roService.getROPrisoners.mockResolvedValueOnce(null)
-        await service.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
-        expect(roService.getROPrisoners).toHaveBeenCalled()
-      })
-
-      test('should call getROPrisoners when staff not found in delius but has fallback', async () => {
-        licenceClient.getDeliusIds.mockResolvedValue([{ staffCode: 'delius_id', deliusUsername: 'deliusUser' }])
-        roService.getStaffByUsername.mockResolvedValue({ staffCode: 'ABC123' })
-
-        roService.getROPrisoners.mockResolvedValueOnce(null).mockResolvedValueOnce(roPrisoners)
-
-        await service.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
-
-        expect(roService.getROPrisoners).toHaveBeenCalledWith('DELIUS_ID', 'token')
-        expect(roService.getROPrisoners).toHaveBeenCalledWith('ABC123', 'token')
-      })
-
-      test('should call getROPrisoners when staff not found in delius and fallback not found', async () => {
-        licenceClient.getDeliusIds.mockResolvedValue([{ staffCode: 'delius_id', deliusUsername: 'deliusUser' }])
-        roService.getStaffByUsername.mockResolvedValue(null)
-
-        roService.getROPrisoners.mockResolvedValueOnce(null)
-
-        return expect(service.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)).rejects.toStrictEqual(
-          Error('Staff details not found in Delius for username: deliusUser')
-        )
+      test('should call getROPrisonersForStaffIdentifier when staff not found in delius', async () => {
+        mocked(roService).getROPrisonersForStaffIdentifier.mockResolvedValueOnce(null)
+        await caseListService.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
+        expect(roService.getROPrisonersForStaffIdentifier).toHaveBeenCalled()
       })
 
       test('should call getDeliusIds without capitalising username', async () => {
-        licenceClient.getDeliusIds.mockResolvedValue(undefined)
-        await service.getHdcCaseList(ROUser.token, 'aAaA', ROUser.role)
+        mocked(licenceClient).getDeliusIds.mockResolvedValue([])
+        await caseListService.getHdcCaseList(ROUser.token, 'aAaA', ROUser.role)
         expect(licenceClient.getDeliusIds).toHaveBeenCalledWith('aAaA')
       })
 
       test('should use uppercase delius username when calling roService', async () => {
-        licenceClient.getDeliusIds.mockResolvedValue([{ staffCode: 'delius_id' }])
-        await service.getHdcCaseList(ROUser.token, 'user', ROUser.role)
-        expect(roService.getROPrisoners).toHaveBeenCalled()
-        expect(roService.getROPrisoners).toHaveBeenCalledWith('DELIUS_ID', ROUser.token)
+        mocked(licenceClient).getDeliusIds.mockResolvedValue([deliusId1])
+        await caseListService.getHdcCaseList(ROUser.token, 'user', ROUser.role)
+        expect(roService.getROPrisonersForStaffIdentifier).toHaveBeenCalled()
+        expect(roService.getROPrisonersForStaffIdentifier).toHaveBeenCalledWith(1, ROUser.token)
       })
 
       test('should return empty array and explanation message if no eligible releases found', async () => {
-        roService.getROPrisoners.mockResolvedValue([])
-        const result = await service.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
+        mocked(roService).getROPrisonersForStaffIdentifier.mockResolvedValue([])
+        const result = await caseListService.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
         expect(result).toEqual({ hdcEligible: [], message: 'No HDC cases' })
       })
 
       test('should return empty array and explanation message if no delius user name found locally or in delius', async () => {
-        licenceClient.getDeliusIds.mockResolvedValue(undefined)
-        roService.getStaffByUsername.mockResolvedValue(undefined)
-        const result = await service.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
+        mocked(licenceClient).getDeliusIds.mockResolvedValue([])
+        mocked(roService).getStaffByUsername.mockResolvedValue(null)
+        const result = await caseListService.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
         expect(result).toEqual({ hdcEligible: [], message: 'Staff details not found in Delius for username: 123' })
       })
 
       test('should return empty array and explanation message if too many delius user names found and username not found in Delius', async () => {
-        licenceClient.getDeliusIds.mockResolvedValue([{ staffCode: '1' }, { staffCode: '2' }])
-        roService.getStaffByUsername.mockResolvedValue(undefined)
-        const result = await service.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
+        mocked(licenceClient).getDeliusIds.mockResolvedValue([deliusId1, deliusId2])
+        mocked(roService).getStaffByUsername.mockResolvedValue(null)
+        const result = await caseListService.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
         expect(result).toEqual({ hdcEligible: [], message: 'Staff details not found in Delius for username: 123' })
       })
 
       test('delius interaction throws', () => {
-        licenceClient.getDeliusIds.mockResolvedValue(undefined)
-        roService.getStaffByUsername = jest.fn().mockRejectedValue('Delius went bang!')
-        return expect(service.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)).rejects.not.toBeNull()
+        mocked(licenceClient).getDeliusIds.mockResolvedValue([])
+        mocked(roService).getStaffByUsername.mockRejectedValue('Delius went bang!')
+        return expect(caseListService.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)).rejects.not.toBeNull()
       })
 
-      test("staff details found in Delius, but there's no staff code", async () => {
-        licenceClient.getDeliusIds.mockResolvedValue(undefined)
-        roService.getStaffByUsername.mockResolvedValue({
-          username: '123',
-          email: 'email',
-          staff: { forenames: 'user', surname: 'name' },
-          teams: [],
+      test("staff details found in Delius, but there's no staff identifier. Not sure this is possible...", async () => {
+        mocked(licenceClient).getDeliusIds.mockResolvedValue([])
+        mocked(roService).getStaffByUsername.mockResolvedValue(staffDetailsNoStaffIdentifier)
+        const result = await caseListService.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
+        expect(result).toEqual({
+          hdcEligible: [],
+          message: 'Delius did not supply a staff identifier for username 123',
         })
-        const result = await service.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
-        expect(result).toEqual({ hdcEligible: [], message: 'Delius did not supply a staff code for username 123' })
       })
 
       describe('days since case received', () => {
         const offender1 = {
           name: 'offender1',
-          bookingId: 'a',
+          bookingId: 1,
           sentenceDetail: {
             homeDetentionCurfewEligibilityDate: '2017-09-14',
             conditionalReleaseDate: '2017-12-15',
@@ -402,7 +392,7 @@ describe('caseListService', () => {
         }
         const offender2 = {
           name: 'offender2',
-          bookingId: 'b',
+          bookingId: 2,
           sentenceDetail: {
             homeDetentionCurfewEligibilityDate: '2017-10-07',
             conditionalReleaseDate: '2017-12-15',
@@ -423,81 +413,85 @@ describe('caseListService', () => {
         })
 
         test('should add Today to those received today', async () => {
-          roService.getROPrisoners.mockResolvedValue([offender1])
-          licenceClient.getLicences.mockResolvedValue([
-            { booking_id: 'a', transition_date: '2018-05-31 15:23:39.530927', stage: 'PROCESSING_RO' },
+          mocked(roService).getROPrisonersForStaffIdentifier.mockResolvedValue([offender1])
+          mocked(licenceClient).getLicences.mockResolvedValue([
+            {
+              booking_id: 1,
+              transition_date: moment('2018-05-31 15:23:39').toDate(),
+              stage: 'PROCESSING_RO',
+            } as CaseWithApprovedVersion,
           ])
 
-          const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, 'RO')
+          const { hdcEligible } = await caseListService.getHdcCaseList(user.token, user.username, 'RO')
           expect(hdcEligible[0].received).toEqual({ text: 'Today', days: '0' })
         })
 
         test('should add the number of days until hdced', async () => {
-          roService.getROPrisoners.mockResolvedValue([offender1])
-          licenceClient.getLicences.mockResolvedValue([
-            { booking_id: 'a', transition_date: '2018-05-20 15:23:39.530927', stage: 'PROCESSING_RO' },
-          ])
+          mocked(roService).getROPrisonersForStaffIdentifier.mockResolvedValue([offender1])
+          mocked(licenceClient).getLicences.mockResolvedValue([
+            { booking_id: 1, transition_date: moment('2018-05-20 15:23:39').toDate(), stage: 'PROCESSING_RO' },
+          ] as CaseWithApprovedVersion[])
 
-          const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, 'RO')
+          const { hdcEligible } = await caseListService.getHdcCaseList(user.token, user.username, 'RO')
           expect(hdcEligible[0].received).toEqual({ text: '10 days ago', days: '10' })
         })
 
         test('should not add the number of days if not in PROCESSING_RO', async () => {
-          roService.getROPrisoners.mockResolvedValue([offender1])
-          licenceClient.getLicences.mockResolvedValue([
-            { booking_id: 'a', transition_date: '2018-05-16 15:23:39.530927', stage: 'MODIFIED' },
-          ])
+          mocked(roService).getROPrisonersForStaffIdentifier.mockResolvedValue([offender1])
+          mocked(licenceClient).getLicences.mockResolvedValue([
+            { booking_id: 1, transition_date: moment('2018-05-16 15:23:39').toDate(), stage: 'MODIFIED' },
+          ] as CaseWithApprovedVersion[])
 
-          const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, 'RO')
+          const { hdcEligible } = await caseListService.getHdcCaseList(user.token, user.username, 'RO')
           expect(hdcEligible[0].received).toBeUndefined()
         })
 
         test('should order on days since received first', async () => {
-          roService.getROPrisoners.mockResolvedValue([offender1, offender2])
-          licenceClient.getLicences.mockResolvedValue([
-            { booking_id: 'a', transition_date: '2018-05-20 15:23:39.530927', stage: 'PROCESSING_RO' },
-            { booking_id: 'b', transition_date: '2018-05-18 15:23:39.530927', stage: 'PROCESSING_RO' },
-          ])
+          mocked(roService).getROPrisonersForStaffIdentifier.mockResolvedValue([offender1, offender2])
+          mocked(licenceClient).getLicences.mockResolvedValue([
+            { booking_id: 1, transition_date: moment('2018-05-20 15:23:39').toDate(), stage: 'PROCESSING_RO' },
+            { booking_id: 2, transition_date: moment('2018-05-18 15:23:39').toDate(), stage: 'PROCESSING_RO' },
+          ] as CaseWithApprovedVersion[])
 
-          const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, 'RO')
-          expect(hdcEligible[0].bookingId).toBe('b')
-          expect(hdcEligible[1].bookingId).toBe('a')
+          const { hdcEligible } = await caseListService.getHdcCaseList(user.token, user.username, 'RO')
+          expect(hdcEligible[0].bookingId).toBe(2)
+          expect(hdcEligible[1].bookingId).toBe(1)
         })
 
         test('should order on days since received first', async () => {
-          roService.getROPrisoners.mockResolvedValue([offender1, offender2])
-          licenceClient.getLicences.mockResolvedValue([
-            { booking_id: 'a', transition_date: '2018-05-17 15:23:39.530927', stage: 'PROCESSING_RO' },
-            { booking_id: 'b', transition_date: '2018-05-18 15:23:39.530927', stage: 'PROCESSING_RO' },
-          ])
+          mocked(roService).getROPrisonersForStaffIdentifier.mockResolvedValue([offender1, offender2])
+          mocked(licenceClient).getLicences.mockResolvedValue([
+            { booking_id: 1, transition_date: moment('2018-05-17 15:23:39').toDate(), stage: 'PROCESSING_RO' },
+            { booking_id: 2, transition_date: moment('2018-05-18 15:23:39').toDate(), stage: 'PROCESSING_RO' },
+          ] as CaseWithApprovedVersion[])
 
-          const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, 'RO')
-          expect(hdcEligible[0].bookingId).toBe('a')
-          expect(hdcEligible[1].bookingId).toBe('b')
+          const { hdcEligible } = await caseListService.getHdcCaseList(user.token, user.username, 'RO')
+          expect(hdcEligible[0].bookingId).toBe(1)
+          expect(hdcEligible[1].bookingId).toBe(2)
         })
 
         test('should prioritise those with received date', async () => {
-          roService.getROPrisoners.mockResolvedValue([offender1, offender2])
-          licenceClient.getLicences.mockResolvedValue([
-            { booking_id: 'a', transition_date: '2018-05-17 15:23:39.530927', stage: 'MODIFIED' },
-            { booking_id: 'b', transition_date: '2018-05-18 15:23:39.530927', stage: 'PROCESSING_RO' },
-          ])
+          mocked(roService).getROPrisonersForStaffIdentifier.mockResolvedValue([offender1, offender2])
+          mocked(licenceClient).getLicences.mockResolvedValue([
+            { booking_id: 1, transition_date: moment('2018-05-17 15:23:39').toDate(), stage: 'MODIFIED' },
+            { booking_id: 2, transition_date: moment('2018-05-18 15:23:39').toDate(), stage: 'PROCESSING_RO' },
+          ] as CaseWithApprovedVersion[])
 
-          const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, 'RO')
-          expect(hdcEligible[0].bookingId).toBe('b')
-          expect(hdcEligible[1].bookingId).toBe('a')
+          const { hdcEligible } = await caseListService.getHdcCaseList(user.token, user.username, 'RO')
+          expect(hdcEligible[0].bookingId).toBe(2)
+          expect(hdcEligible[1].bookingId).toBe(1)
         })
 
         test('should sort by release date if neither have received date', async () => {
-          roService.getROPrisoners.mockResolvedValue([offender2, offender1])
-          licenceClient.getLicences.mockResolvedValue([
-            { booking_id: 'a', transition_date: '2018-05-17 15:23:39.530927', stage: 'MODIFIED' },
-            { booking_id: 'b', transition_date: '2018-05-18 15:23:39.530927', stage: 'MODIFIED' },
-          ])
+          mocked(roService).getROPrisonersForStaffIdentifier.mockResolvedValue([offender2, offender1])
+          mocked(licenceClient).getLicences.mockResolvedValue([
+            { booking_id: 1, transition_date: moment('2018-05-17 15:23:39').toDate(), stage: 'MODIFIED' },
+            { booking_id: 2, transition_date: moment('2018-05-18 15:23:39').toDate(), stage: 'MODIFIED' },
+          ] as CaseWithApprovedVersion[])
 
-          const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, 'RO')
-          expect(hdcEligible[0].bookingId).toBe('a')
-          expect(hdcEligible[1].bookingId).toBe('b')
+          const { hdcEligible } = await caseListService.getHdcCaseList(user.token, user.username, 'RO')
+          expect(hdcEligible[0].bookingId).toBe(1)
+          expect(hdcEligible[1].bookingId).toBe(2)
         })
       })
     })
@@ -549,7 +543,7 @@ describe('caseListService', () => {
       test('should order by homeDetentionCurfewEligibilityDate first', async () => {
         nomisClient.getHdcEligiblePrisoners.mockResolvedValue([offender3, offender1, offender2])
 
-        const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, user.role)
+        const { hdcEligible } = await caseListService.getHdcCaseList(user.token, user.username, user.role)
 
         expect(hdcEligible[0].name).toBe('offender1')
         expect(hdcEligible[1].name).toBe('offender2')
@@ -559,7 +553,7 @@ describe('caseListService', () => {
       test('should order by releaseDate second', async () => {
         nomisClient.getHdcEligiblePrisoners.mockResolvedValue([offender5, offender4, offender3])
 
-        const { hdcEligible } = await service.getHdcCaseList(user.token, user.username, user.role)
+        const { hdcEligible } = await caseListService.getHdcCaseList(user.token, user.username, user.role)
 
         expect(hdcEligible[0].name).toBe('offender3')
         expect(hdcEligible[1].name).toBe('offender4')
@@ -588,7 +582,7 @@ describe('caseListService', () => {
           { sentenceDetail: { homeDetentionCurfewEligibilityDate: 'a' } },
         ])
         const nomisClientBuilder = jest.fn().mockReturnValue(nomisClient)
-        service = createCaseListService(nomisClientBuilder, roService, licenceClient, caseListFormatter)
+        caseListService = createCaseListService(nomisClientBuilder, roService, licenceClient, caseListFormatter)
       })
 
       describe('By stage', () => {
@@ -596,7 +590,7 @@ describe('caseListService', () => {
           test('should not filter any statuses out', () => {
             caseListFormatter.formatCaseList.mockResolvedValue(caseListAllStatuses)
 
-            return expect(service.getHdcCaseList(user.token, user.username, 'CA', 'active')).resolves.toEqual({
+            return expect(caseListService.getHdcCaseList(user.token, user.username, 'CA', 'active')).resolves.toEqual({
               hdcEligible: caseListAllStatuses,
             })
           })
@@ -606,7 +600,7 @@ describe('caseListService', () => {
           test('should filter any statuses out', () => {
             caseListFormatter.formatCaseList.mockResolvedValue(caseListAllStatuses)
 
-            return expect(service.getHdcCaseList(user.token, user.username, 'RO', 'active')).resolves.toEqual({
+            return expect(caseListService.getHdcCaseList(user.token, user.username, 'RO', 'active')).resolves.toEqual({
               hdcEligible: [
                 { stage: 'PROCESSING_RO', activeCase: true },
                 { stage: 'PROCESSING_CA', activeCase: true },
@@ -624,7 +618,7 @@ describe('caseListService', () => {
           test('should filter any statuses out', () => {
             caseListFormatter.formatCaseList.mockResolvedValue(caseListAllStatuses)
 
-            return expect(service.getHdcCaseList(user.token, user.username, 'DM', 'active')).resolves.toEqual({
+            return expect(caseListService.getHdcCaseList(user.token, user.username, 'DM', 'active')).resolves.toEqual({
               hdcEligible: [
                 { stage: 'APPROVAL', activeCase: true },
                 { stage: 'DECIDED', activeCase: true },
@@ -650,7 +644,7 @@ describe('caseListService', () => {
         test('should remove inactive statuses when tab is active', () => {
           caseListFormatter.formatCaseList.mockResolvedValue(allStatuses)
 
-          return expect(service.getHdcCaseList(user.token, user.username, 'CA', 'active')).resolves.toEqual({
+          return expect(caseListService.getHdcCaseList(user.token, user.username, 'CA', 'active')).resolves.toEqual({
             hdcEligible: [
               {
                 stage: 'ELIGIBILITY',
@@ -664,7 +658,7 @@ describe('caseListService', () => {
         test('should remove active statuses when tab is inactive', () => {
           caseListFormatter.formatCaseList.mockResolvedValue(allStatuses)
 
-          return expect(service.getHdcCaseList(user.token, user.username, 'CA', 'inactive')).resolves.toEqual({
+          return expect(caseListService.getHdcCaseList(user.token, user.username, 'CA', 'inactive')).resolves.toEqual({
             hdcEligible: [{ stage: 'ELIGIBILITY', status: 'Refused', activeCase: false }],
           })
         })

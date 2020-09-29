@@ -1,7 +1,8 @@
-import { StaffDetails, ProbationAreaSummary } from './delius'
+import { ProbationAreaSummary } from '../server/data/deliusClient'
 
-interface ResponsibleOfficer {
+export interface ResponsibleOfficer {
   deliusId: string
+  staffIdentifier: number
   name: string
   nomsNumber: string
   teamCode: string
@@ -13,7 +14,7 @@ interface ResponsibleOfficer {
   isAllocated: boolean
 }
 
-interface ResponsibleOfficerAndContactDetails extends ResponsibleOfficer {
+export interface ResponsibleOfficerAndContactDetails extends ResponsibleOfficer {
   /** This officer's user and staff record are not linked in delius, false if unknown */
   isUnlinkedAccount: boolean
   /** email and delius username, will be null if unlinked account and not stored locally */
@@ -24,23 +25,15 @@ interface ResponsibleOfficerAndContactDetails extends ResponsibleOfficer {
   functionalMailbox?: string
 }
 
-interface Error {
+export interface Error {
   message: string
   code: string
 }
 
-type Result<T> = T | Error
+export type Result<T> = T | Error
 
 export type ResponsibleOfficerResult = Result<ResponsibleOfficer>
 export type ResponsibleOfficerAndContactDetailsResult = Result<ResponsibleOfficerAndContactDetails>
-
-export interface RoService {
-  getStaffByCode: (staffCode: string) => Promise<Result<StaffDetails>>
-  getStaffByUsername: (username: string) => Promise<StaffDetails>
-  getROPrisoners: (deliusStaffCode: string, token: string) => Promise<any>
-  findResponsibleOfficer: (bookingId: number, token: string) => Promise<ResponsibleOfficerResult>
-  findResponsibleOfficerByOffenderNo: (offenderNumber: string) => Promise<ResponsibleOfficerResult>
-}
 
 export interface RoContactDetailsService {
   getFunctionalMailBox: (deliusId: string) => Promise<string>

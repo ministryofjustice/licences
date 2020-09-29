@@ -1,7 +1,7 @@
 const { asyncMiddleware } = require('../utils/middleware')
 const { unwrapResult } = require('../utils/functionalHelpers')
 /**
- * @typedef {import("../../types/licences").RoService} RoService
+ * @typedef {import("../services/roService").RoService} RoService
  * @typedef {import("../../types/licences").ResponsibleOfficerResult} ResponsibleOfficerResult
  * @typedef {import("../../types/licences").ResponsibleOfficer} ResponsibleOfficer
  */
@@ -27,12 +27,13 @@ module.exports = (userAdminService, roService, signInService) => (router) => {
       const token = await signInService.getClientCredentialsTokens(req.user.username)
       const [ro] = unwrapResult(await roService.findResponsibleOfficer(theBookingId, token.token))
 
-      const contact = ro && ro.deliusId && (await userAdminService.getRoUserByDeliusId(ro.deliusId))
+      const contact = ro && ro.staffIdentifier && (await userAdminService.getRoUserByDeliusId(ro.deliusId))
       if (contact) {
         return res.render('contact/ro', { contact })
       }
 
-      const staffDetailsResult = ro && ro.deliusId && (await roService.getStaffByCode(ro.deliusId))
+      const staffDetailsResult =
+        ro && ro.staffIdentifier && (await roService.getStaffByStaffIdentifier(ro.staffIdentifier))
       const [staffDetails] = unwrapResult(staffDetailsResult)
 
       if (staffDetails && staffDetails.username) {

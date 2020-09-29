@@ -5,7 +5,7 @@
 /**
  * @typedef {import("../../types/licences").Error} Error
  * @typedef {import("../../types/licences").CaService} CaService
- * @typedef {import("../../types/licences").RoService} RoService
+ * @typedef {import("./roService").RoService} RoService
  *  @typedef {import("../data/activeLduClient")} ActiveLduClient
  */
 

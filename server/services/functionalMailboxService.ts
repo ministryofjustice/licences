@@ -1,13 +1,36 @@
 import * as R from 'ramda'
+
 import {
-  LduIdentifer,
-  LduMap,
-  LduWithTeams,
   LocalDeliveryUnitDto,
-  ProbationTeamIdentifier,
   ProbationTeamsClient,
-} from '../../types/probationTeams'
-import { DeliusClient, Ldu, ProbationArea, ProbationTeam } from '../../types/delius'
+  LduIdentifier,
+  ProbationTeamIdentifier,
+} from '../data/probationTeamsClient'
+import { DeliusClient, Ldu, ProbationArea, ProbationTeam } from '../data/deliusClient'
+
+export interface LduMap {
+  [code: string]: {
+    description?: string
+    functionalMailbox?: string
+  }
+}
+
+export interface LdusWithTeamsMap {
+  [code: string]: LduWithTeams
+}
+
+export interface LduWithTeams {
+  description?: string
+  functionalMailbox?: string
+  probationTeams: ProbationTeamMap
+}
+
+export interface ProbationTeamMap {
+  [code: string]: {
+    description?: string
+    functionalMailbox?: string
+  }
+}
 
 export const mergeLduData = (
   ldus: Ldu[],
@@ -85,7 +108,7 @@ export class FunctionalMailboxService {
     }
   }
 
-  updateLduFunctionalMailbox = async (userName: string, identifier: LduIdentifer, functionalMailbox: string) => {
+  updateLduFunctionalMailbox = async (userName: string, identifier: LduIdentifier, functionalMailbox: string) => {
     if (functionalMailbox) {
       await this.probationTeamsClient.setLduFunctionalMailbox(identifier, functionalMailbox)
       await this.auditUpdateLduFmb(userName, identifier, functionalMailbox)
@@ -109,10 +132,10 @@ export class FunctionalMailboxService {
     }
   }
 
-  private auditUpdateLduFmb = (user: string, identifier: LduIdentifer, functionalMailbox: string) =>
+  private auditUpdateLduFmb = (user: string, identifier: LduIdentifier, functionalMailbox: string) =>
     this.audit.record('FUNCTIONAL_MAILBOX', user, { operation: 'UPDATE', identifier, functionalMailbox })
 
-  private auditDeleteLduFmb = (user: string, identifier: LduIdentifer) =>
+  private auditDeleteLduFmb = (user: string, identifier: LduIdentifier) =>
     this.audit.record('FUNCTIONAL_MAILBOX', user, { operation: 'DELETE', identifier })
 
   private auditUpdateTeamFmb = async (user: string, identifier: ProbationTeamIdentifier, functionalMailbox: string) =>

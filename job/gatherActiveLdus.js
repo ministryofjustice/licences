@@ -6,12 +6,12 @@ const { unwrapResult } = require('../server/utils/functionalHelpers')
 
 const nomisClientBuilder = require('../server/data/nomisClientBuilder')
 const createSignInService = require('../server/authentication/signInService')
-const { createDeliusClient } = require('../server/data/deliusClient')
-const createRoService = require('../server/services/roService')
+const { DeliusClient } = require('../server/data/deliusClient')
+const { RoService } = require('../server/services/roService')
 
 const signInService = createSignInService()
-const deliusClient = createDeliusClient(signInService)
-const roService = createRoService(deliusClient, nomisClientBuilder)
+const deliusClient = new DeliusClient(signInService)
+const roService = new RoService(deliusClient, nomisClientBuilder)
 
 const getBookingIds = async () => {
   const query = {

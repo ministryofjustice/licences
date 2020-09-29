@@ -20,9 +20,9 @@ module.exports = (roService) => (router) => {
   router.post(
     '/managedOffenders/',
     asyncMiddleware(async (req, res) => {
-      const { staffCode } = req.body
-      logger.info('managedOffenders for', staffCode)
-      const offenders = (await roService.getROPrisoners(staffCode, res.locals.token)) || []
+      const { staffIdentifier } = req.body
+      logger.info('managedOffenders for', staffIdentifier)
+      const offenders = (await roService.getROPrisonersForStaffIdentifier(staffIdentifier, res.locals.token)) || []
       logger.info(offenders)
 
       res.render('admin/delius/managedOffenders', { offenders })
@@ -46,7 +46,7 @@ module.exports = (roService) => (router) => {
     asyncMiddleware(async (req, res) => {
       const { value, type } = req.body
 
-      const staffDetails = type === 'STAFF_CODE' ? await staffByCode(value) : await staffByUsername(value)
+      const staffDetails = type === 'STAFF_CODE' ? await getStaffByStaffIdentifier(value) : await staffByUsername(value)
 
       logger.info('Found staff:', staffDetails)
 
@@ -64,9 +64,9 @@ module.exports = (roService) => (router) => {
     return roService.findResponsibleOfficerByOffenderNo(offenderNo)
   }
 
-  async function staffByCode(code) {
-    logger.info('staff for code', code)
-    return roService.getStaffByCode(code)
+  async function getStaffByStaffIdentifier(identifier) {
+    logger.info('staff for identifier', identifier)
+    return roService.getStaffByStaffIdentifier(identifier)
   }
 
   async function staffByUsername(username) {
