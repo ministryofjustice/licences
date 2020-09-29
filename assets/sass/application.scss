@@ -453,3 +453,5 @@ input[type="time"] {
   @extend %container-shared;
   background-color: $mellow-red-25;
 }
+
+.default-text { color: $grey-1; font-style: italic; }

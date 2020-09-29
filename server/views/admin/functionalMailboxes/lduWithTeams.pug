@@ -32,7 +32,7 @@ block content
         input(type="hidden" name="_csrf" value=csrfToken)
 
         div.form-group
-          label.form-label(for="functionalMailbox") Functional Mailbox
+          label.form-label(for="functionalMailbox") Default functional mailbox
             input.form-control.smallMarginTop(id="functionalMailbox" type="text" name="functionalMailbox" value=functionalMailbox)
         div.inlineButtons
           input.requiredButton.button(type="submit" value="Update")
@@ -46,7 +46,7 @@ block content
             tr
             th Description
             th Code
-            th Functional Mailbox
+            th Functional mailbox
           tbody
             each team in probationTeams
               tr
@@ -60,9 +60,12 @@ block content
                     input(type="hidden" name="_csrf" value=csrfToken)
                     div.pure-g
                       div.pure-u-3-4
-                        input.form-control(id="functionalMailbox" type="text" name="functionalMailbox" value=team.functionalMailbox)
+                        - var isDefault = functionalMailbox && !team.functionalMailbox
+                        input.form-control(id="functionalMailbox" class='functionalMailbox ' + (isDefault ? 'default-text' : '') isDefaulttype="text" name="functionalMailbox" value=team.functionalMailbox || functionalMailbox)
                       div.pure-u-1-4.padLeftRight15
                         input.requiredButton.button(type="submit" value="Update")
       else
         h2.heading-medium No Probation Teams
 
+block append scripts
+  script(src="/public/javascripts/manageFunctionalMailboxes.js?" + version)
