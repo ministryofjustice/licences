@@ -61,7 +61,7 @@ export = class UserAdminService {
   }
 
   findRoUsers(searchTerm) {
-    this.userClient.findRoUsers(searchTerm)
+    return this.userClient.findRoUsers(searchTerm)
   }
 
   getRoUserByDeliusUsername(username) {

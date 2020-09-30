@@ -47,10 +47,10 @@ export default class MigrationService {
   }
 
   async enrich(token: string, licenceUser: any) {
-    const { nomisId: nomisUsername, staffIdentifier } = licenceUser
-    const deliusStaffDetails = await this.deliusClient.getStaffDetailsByStaffIdentifier(staffIdentifier)
-    const isLinked = Boolean(deliusStaffDetails && deliusStaffDetails.username)
+    const { nomisId: nomisUsername } = licenceUser
+    const deliusStaffDetails = await this.getDeliusStaffDetails(licenceUser)
 
+    const isLinked = Boolean(deliusStaffDetails && deliusStaffDetails.username)
     const deliusUser = isLinked && (await this.getUserFromDelius(deliusStaffDetails.username))
 
     let authUser
@@ -64,6 +64,26 @@ export default class MigrationService {
 
     const flags = this.getFlags(deliusUser, authUser, licenceUser, deliusStaffDetails, failedToLoadAuth)
     return { licenceUser, deliusUser: deliusStaffDetails, authUser, flags }
+  }
+
+  private async getDeliusStaffDetails(licenceUser) {
+    const { staffIdentifier, deliusId } = licenceUser
+    if (staffIdentifier)
+      try {
+        return await this.deliusClient.getStaffDetailsByStaffIdentifier(staffIdentifier)
+      } catch (error) {
+        logger.warn(`Problem retrieving staff member from delius for staff identifier: ${staffIdentifier}`, error.stack)
+      }
+    else if (deliusId) {
+      try {
+        return await this.deliusClient.getStaffDetailsByStaffCode(deliusId)
+      } catch (error) {
+        logger.warn(`Problem retrieving staff member from delius for staff code: ${deliusId}`, error.stack)
+      }
+    } else {
+      logger.warn('Unable to retrieve staff member from delius: No staff code or identifier available')
+    }
+    return null
   }
 
   private getFlags(deliusUser, authUser, licenceUser, deliusStaffDetails, failedToLoadAuth: boolean) {

@@ -10,7 +10,7 @@ describe('MigrationService', () => {
   let userAdminService
   let nomisClient
   const nomisClientBuilder = jest.fn()
-  let migrationService
+  let migrationService: MigrationService
 
   beforeEach(() => {
     nomisClient = {
@@ -89,8 +89,8 @@ describe('MigrationService', () => {
   })
 
   describe('getStaffDetails', () => {
-    test('get staff details, no flags', async () => {
-      userAdminService.getRoUser.mockResolvedValue({ deliusId: 123, nomisId: 'user-1', email: 'user@gov.uk' })
+    test('get staff details by staff identifier', async () => {
+      userAdminService.getRoUser.mockResolvedValue({ staffIdentifier: 123, nomisId: 'user-1', email: 'user@gov.uk' })
 
       nomisClient.getAuthUser.mockResolvedValue({ username: 'user-1', enabled: true })
 
@@ -103,7 +103,7 @@ describe('MigrationService', () => {
         enabled: true,
       })
 
-      const result = await migrationService.getStaffDetails('user-1')
+      const result = await migrationService.getStaffDetails('token', 'user-1')
 
       expect(result).toStrictEqual({
         authUser: {
@@ -117,7 +117,42 @@ describe('MigrationService', () => {
         },
         flags: [],
         licenceUser: {
-          deliusId: 123,
+          staffIdentifier: 123,
+          nomisId: 'user-1',
+          email: 'user@gov.uk',
+        },
+      })
+    })
+
+    test('get staff details by staff code', async () => {
+      userAdminService.getRoUser.mockResolvedValue({ deliusId: 'ABC', nomisId: 'user-1', email: 'user@gov.uk' })
+
+      nomisClient.getAuthUser.mockResolvedValue({ username: 'user-1', enabled: true })
+
+      mocked(deliusClient).getStaffDetailsByStaffCode.mockResolvedValue({
+        username: 'user-1',
+        email: 'user@gov.uk',
+      } as StaffDetails)
+      mocked(deliusClient).getUser.mockResolvedValue({
+        roles: [{ name: delius.responsibleOfficerRoleId }],
+        enabled: true,
+      })
+
+      const result = await migrationService.getStaffDetails('token', 'user-1')
+
+      expect(result).toStrictEqual({
+        authUser: {
+          enabled: true,
+          roles: [],
+          username: 'user-1',
+        },
+        deliusUser: {
+          username: 'user-1',
+          email: 'user@gov.uk',
+        },
+        flags: [],
+        licenceUser: {
+          deliusId: 'ABC',
           nomisId: 'user-1',
           email: 'user@gov.uk',
         },
@@ -125,13 +160,18 @@ describe('MigrationService', () => {
     })
 
     test('get staff details, unlinked user', async () => {
-      userAdminService.getRoUser.mockResolvedValue({ deliusId: 123, nomisId: 'user-1', email: 'user@gov.uk' })
+      userAdminService.getRoUser.mockResolvedValue({
+        deliusId: 'ABC',
+        staffIdentifier: 123,
+        nomisId: 'user-1',
+        email: 'user@gov.uk',
+      })
 
       nomisClient.getAuthUser.mockResolvedValue({ username: 'user-1', enabled: true })
 
       mocked(deliusClient).getStaffDetailsByStaffIdentifier.mockResolvedValue({ staffIdentifier: 1 } as StaffDetails)
 
-      const result = await migrationService.getStaffDetails('user-1')
+      const result = await migrationService.getStaffDetails('token', 'user-1')
 
       expect(result).toStrictEqual({
         authUser: {
@@ -144,7 +184,8 @@ describe('MigrationService', () => {
         },
         flags: [Flag.UNLINKED_ACCOUNT],
         licenceUser: {
-          deliusId: 123,
+          deliusId: 'ABC',
+          staffIdentifier: 123,
           email: 'user@gov.uk',
           nomisId: 'user-1',
         },
@@ -152,7 +193,12 @@ describe('MigrationService', () => {
     })
 
     test('get staff details, mismatched details without RO role', async () => {
-      userAdminService.getRoUser.mockResolvedValue({ deliusId: 123, nomisId: 'user-1', email: 'user@gov.uk' })
+      userAdminService.getRoUser.mockResolvedValue({
+        deliusId: 'ABC',
+        staffIdentifier: 1,
+        nomisId: 'user-1',
+        email: 'user@gov.uk',
+      })
 
       nomisClient.getAuthUser.mockResolvedValue({ username: 'user-1', enabled: true })
 
@@ -166,7 +212,7 @@ describe('MigrationService', () => {
         enabled: true,
       })
 
-      const result = await migrationService.getStaffDetails('user-1')
+      const result = await migrationService.getStaffDetails('token', 'user-1')
 
       expect(result).toStrictEqual({
         authUser: {
@@ -181,7 +227,8 @@ describe('MigrationService', () => {
         },
         flags: [Flag.REQUIRES_RO_ROLE, Flag.EMAIL_MISMATCH, Flag.USERNAME_MISMATCH],
         licenceUser: {
-          deliusId: 123,
+          deliusId: 'ABC',
+          staffIdentifier: 1,
           email: 'user@gov.uk',
           nomisId: 'user-1',
         },
@@ -190,7 +237,12 @@ describe('MigrationService', () => {
   })
 
   test('get staff details, mismatches missing delius email', async () => {
-    userAdminService.getRoUser.mockResolvedValue({ deliusId: 123, nomisId: 'user-1', email: 'user@gov.uk' })
+    userAdminService.getRoUser.mockResolvedValue({
+      deliusId: 'ABC',
+      staffIdentifier: 1,
+      nomisId: 'user-1',
+      email: 'user@gov.uk',
+    })
 
     nomisClient.getAuthUser.mockResolvedValue({ username: 'user-1', enabled: true })
 
@@ -203,7 +255,7 @@ describe('MigrationService', () => {
       enabled: true,
     })
 
-    const result = await migrationService.getStaffDetails('user-1')
+    const result = await migrationService.getStaffDetails('token', 'user-1')
 
     expect(result).toStrictEqual({
       authUser: {
@@ -217,7 +269,8 @@ describe('MigrationService', () => {
       },
       flags: [Flag.REQUIRES_RO_ROLE, Flag.EMAIL_MISMATCH, Flag.USERNAME_MISMATCH],
       licenceUser: {
-        deliusId: 123,
+        deliusId: 'ABC',
+        staffIdentifier: 1,
         email: 'user@gov.uk',
         nomisId: 'user-1',
       },
@@ -225,20 +278,20 @@ describe('MigrationService', () => {
   })
 
   test('get staff details, missing accounts in auth and delius', async () => {
-    userAdminService.getRoUser.mockResolvedValue({ deliusId: 123, nomisId: 'user-1', email: 'user@gov.uk' })
+    userAdminService.getRoUser.mockResolvedValue({ deliusId: 'ABC', nomisId: 'user-1', email: 'user@gov.uk' })
 
     nomisClient.getAuthUser.mockResolvedValue(null)
 
-    mocked(deliusClient).getStaffDetailsByStaffIdentifier.mockResolvedValue(null)
+    mocked(deliusClient).getStaffDetailsByStaffCode.mockResolvedValue(null)
 
-    const result = await migrationService.getStaffDetails('user-1')
+    const result = await migrationService.getStaffDetails('token', 'user-1')
 
     expect(result).toStrictEqual({
       authUser: null,
       deliusUser: null,
       flags: [Flag.MISSING_DELIUS_USER, Flag.MISSING_AUTH_USER],
       licenceUser: {
-        deliusId: 123,
+        deliusId: 'ABC',
         email: 'user@gov.uk',
         nomisId: 'user-1',
       },
@@ -246,7 +299,12 @@ describe('MigrationService', () => {
   })
 
   test('get staff details, needs vary role', async () => {
-    userAdminService.getRoUser.mockResolvedValue({ deliusId: 123, nomisId: 'user-1', email: 'user@gov.uk' })
+    userAdminService.getRoUser.mockResolvedValue({
+      deliusId: 'ABC',
+      staffIdentifier: 1,
+      nomisId: 'user-1',
+      email: 'user@gov.uk',
+    })
 
     nomisClient.getAuthUser.mockResolvedValue({ username: 'user-1', enabled: true })
     nomisClient.getAuthUserRoles.mockResolvedValue([
@@ -263,7 +321,7 @@ describe('MigrationService', () => {
       enabled: true,
     })
 
-    const result = await migrationService.getStaffDetails('user-1')
+    const result = await migrationService.getStaffDetails('token', 'user-1')
 
     expect(result).toStrictEqual({
       authUser: {
@@ -277,7 +335,8 @@ describe('MigrationService', () => {
       },
       flags: [Flag.REQUIRES_VARY_ROLE],
       licenceUser: {
-        deliusId: 123,
+        deliusId: 'ABC',
+        staffIdentifier: 1,
         nomisId: 'user-1',
         email: 'user@gov.uk',
       },
@@ -285,7 +344,12 @@ describe('MigrationService', () => {
   })
 
   test('get staff details, error calling auth', async () => {
-    userAdminService.getRoUser.mockResolvedValue({ deliusId: 123, nomisId: 'user-1', email: 'user@gov.uk' })
+    userAdminService.getRoUser.mockResolvedValue({
+      deliusId: 'ABC',
+      staffIdentifier: 1,
+      nomisId: 'user-1',
+      email: 'user@gov.uk',
+    })
 
     nomisClient.getAuthUser.mockRejectedValue(Error('bang!'))
     mocked(deliusClient).getStaffDetailsByStaffIdentifier.mockResolvedValue({
@@ -297,7 +361,7 @@ describe('MigrationService', () => {
       enabled: true,
     })
 
-    const result = await migrationService.getStaffDetails('user-1')
+    const result = await migrationService.getStaffDetails('token', 'user-1')
 
     expect(result).toStrictEqual({
       authUser: undefined,
@@ -307,7 +371,8 @@ describe('MigrationService', () => {
       },
       flags: [Flag.AUTH_CANNOT_LOAD],
       licenceUser: {
-        deliusId: 123,
+        deliusId: 'ABC',
+        staffIdentifier: 1,
         nomisId: 'user-1',
         email: 'user@gov.uk',
       },
