@@ -2,7 +2,7 @@ import R from 'ramda'
 
 import { Fail, Success, Result } from '../utils/Result'
 import { RoService } from './roService'
-import { StaffDetails } from '../../types/delius'
+import { StaffDetails } from '../data/deliusClient'
 import { LicenceClient } from '../data/licenceClient'
 import { DeliusIds } from '../data/licenceClientTypes'
 
@@ -36,8 +36,8 @@ export = function createCaseListService(
   }
 
   /**
-   * Assume username is assigned to an RO.  Look up this user in the local db (staff_ids table) and take the staff code.
-   * Alternatively if a unique staff code cannot be found in this db, ask Delius for a staff code.
+   * Assume username is assigned to an RO.  Look up this user in the local db (staff_ids table) and take the staff identifier.
+   * Alternatively if a unique staff identifier cannot be found in this db, ask Delius for a staff identifier.
    */
   const getROCaseList = async (username, token) => {
     const idsFromLocalDB = await getIdsFromDb(username)
@@ -48,20 +48,16 @@ export = function createCaseListService(
 
   const getIdsFromDb = async (username: string): Promise<Result<DeliusIds, string>> => {
     const deliusIds = await licenceClient.getDeliusIds(username)
-
-    return validateDeliusIds(deliusIds)
-      .flatMap(getDeliusId)
-      .map(({ staffCode, deliusUsername }) => ({
-        staffCode: staffCode.toUpperCase(),
-        deliusUsername,
-      }))
+    return validateDeliusIds(deliusIds).flatMap(getDeliusId)
   }
 
   const getIdsFromDelius = async (username: string): Promise<Result<DeliusIds, string>> => {
     const staffDetailsResult = await getStaffDetailsFromDelius(username)
 
-    return staffDetailsResult.flatMap(({ staffCode }) =>
-      isEmpty(staffCode) ? Fail(`Delius did not supply a staff code for username ${username}`) : Success({ staffCode })
+    return staffDetailsResult.flatMap(({ staffIdentifier }) =>
+      isEmpty(staffIdentifier)
+        ? Fail(`Delius did not supply a staff identifier for username ${username}`)
+        : Success({ staffIdentifier })
     )
   }
 
@@ -73,18 +69,8 @@ export = function createCaseListService(
       : Success(staffDetails)
   }
 
-  const getFallbackStaffCode = async (deliusUsername: string): Promise<string> => {
-    const idResult = await getIdsFromDelius(deliusUsername)
-    if (!idResult.isSuccess()) {
-      throw new Error(idResult.fail())
-    }
-    const id = idResult.success()
-    logger.info(`found fallback id`, id)
-    return id.staffCode
-  }
-
   const validateDeliusIds = (deliusIds: DeliusIds[]): Result<DeliusIds[], string> =>
-    !Array.isArray(deliusIds) || deliusIds.length < 1 || isEmpty(deliusIds[0].staffCode)
+    !Array.isArray(deliusIds) || deliusIds.length < 1 || isEmpty(deliusIds[0].staffIdentifier)
       ? Fail('Delius username not found for current user')
       : Success(deliusIds)
 
@@ -92,15 +78,9 @@ export = function createCaseListService(
     deliusIds.length > 1 ? Fail('Multiple Delius usernames found for current user') : Success(deliusIds[0])
 
   const getOffendersForIds = (token: string) => async ({
-    staffCode,
-    deliusUsername,
+    staffIdentifier,
   }: DeliusIds): Promise<{ hdcEligible: any[] }> => {
-    let offenders = await roService.getROPrisoners(staffCode, token)
-
-    if (!offenders && deliusUsername) {
-      const fallbackStaffCode = await getFallbackStaffCode(deliusUsername)
-      offenders = await roService.getROPrisoners(fallbackStaffCode, token)
-    }
+    const offenders = await roService.getROPrisonersForStaffIdentifier(staffIdentifier, token)
 
     const hdcEligible = (offenders || []).filter(R.path(['sentenceDetail', 'homeDetentionCurfewEligibilityDate']))
     return { hdcEligible }

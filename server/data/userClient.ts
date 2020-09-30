@@ -1,7 +1,22 @@
-const db = require('./dataAccess/db')
+import * as db from './dataAccess/db'
 
-module.exports = {
-  async getRoUsers(page) {
+export interface RoUser {
+  nomisId: string
+  deliusId: string
+  deliusUsername?: string
+  first?: string
+  last?: string
+  organisation?: string
+  jobRole?: string
+  email?: string
+  orgEmail?: string
+  telephone?: string
+  onboarded: boolean
+  staffIdentifier: number
+}
+
+export const userClient = {
+  async getRoUsers(page?): Promise<Array<RoUser>> {
     const query = page
       ? {
           text: 'select * from v_staff_ids order by nomis_id asc limit $1 offset $2',
@@ -16,7 +31,7 @@ module.exports = {
     return rows.map(convertPropertyNames)
   },
 
-  async getCasesRequiringRo() {
+  async getCasesRequiringRo(): Promise<Array<number>> {
     const query = {
       text: `select booking_id from licences where stage in ('ELIGIBILITY', 'PROCESSING_RO')`,
     }
@@ -30,7 +45,7 @@ module.exports = {
     return []
   },
 
-  async getRoUser(nomisId) {
+  async getRoUser(nomisId): Promise<RoUser | null> {
     const query = {
       text: 'select * from v_staff_ids where upper(nomis_id) = upper($1)',
       values: [nomisId],
@@ -45,10 +60,10 @@ module.exports = {
     return null
   },
 
-  async getRoUserByDeliusId(deliusId) {
+  async getRoUserByStaffIdentifier(staffIdentifier: number): Promise<RoUser | null> {
     const query = {
-      text: 'select * from v_staff_ids where upper(staff_id) = upper($1)',
-      values: [deliusId],
+      text: 'select * from v_staff_ids where staff_identifier = $1',
+      values: [staffIdentifier],
     }
 
     const { rows } = await db.query(query)
@@ -60,7 +75,7 @@ module.exports = {
     return null
   },
 
-  async getRoUserByDeliusUsername(username) {
+  async getRoUserByDeliusUsername(username): Promise<RoUser | null> {
     const query = {
       text: 'select * from v_staff_ids where upper(delius_username) = upper($1)',
       values: [username],
@@ -75,39 +90,12 @@ module.exports = {
     return null
   },
 
-  async updateRoUser(
-    originalNomisId,
-    nomisId,
-    deliusId,
-    first,
-    last,
-    organisation,
-    jobRole,
-    email,
-    orgEmail,
-    telephone,
-    onboarded,
-    deliusUsername
-  ) {
+  async updateRoUser(originalNomisId: string, staffIdentifier: number) {
     const query = {
       text: `update v_staff_ids
-                    set nomis_id = $2, staff_id = $3, first_name = $4, last_name = $5,
-                    organisation = $6, job_role = $7, email = $8, org_email = $9, telephone = $10, auth_onboarded = $11, delius_username = $12
+                    set staff_identifier = $2
                     where nomis_id = $1`,
-      values: [
-        originalNomisId,
-        nomisId,
-        deliusId,
-        first,
-        last,
-        organisation,
-        jobRole,
-        email,
-        orgEmail,
-        telephone,
-        onboarded,
-        deliusUsername,
-      ],
+      values: [originalNomisId, staffIdentifier],
     }
 
     return db.query(query)
@@ -122,42 +110,7 @@ module.exports = {
     return db.query(query)
   },
 
-  async addRoUser(
-    nomisId,
-    deliusId,
-    first,
-    last,
-    organisation,
-    jobRole,
-    email,
-    orgEmail,
-    telephone,
-    onboarded,
-    deliusUsername
-  ) {
-    const query = {
-      text: `insert into v_staff_ids
-                (nomis_id, staff_id, first_name, last_name, organisation, job_role, email, org_email, telephone, auth_onboarded, delius_username)
-                values($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
-      values: [
-        nomisId,
-        deliusId,
-        first,
-        last,
-        organisation,
-        jobRole,
-        email,
-        orgEmail,
-        telephone,
-        onboarded,
-        deliusUsername,
-      ],
-    }
-
-    return db.query(query)
-  },
-
-  async findRoUsers(searchTerm) {
+  async findRoUsers(searchTerm): Promise<Array<RoUser>> {
     const query = {
       text: `select * from v_staff_ids
                 where
@@ -184,7 +137,7 @@ module.exports = {
   },
 }
 
-function convertPropertyNames(user) {
+function convertPropertyNames(user): RoUser | null {
   return user
     ? {
         nomisId: user.nomis_id,
@@ -198,6 +151,7 @@ function convertPropertyNames(user) {
         orgEmail: user.org_email,
         telephone: user.telephone,
         onboarded: user.auth_onboarded,
+        staffIdentifier: user.staff_identifier,
       }
     : null
 }

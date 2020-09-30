@@ -2,7 +2,7 @@ const nock = require('nock')
 
 const config = require('../../server/config')
 const { buildRestClient, clientCredentialsTokenSource } = require('../../server/data/restClientBuilder')
-const { createDeliusClient } = require('../../server/data/deliusClient')
+const { DeliusClient } = require('../../server/data/deliusClient')
 
 describe('deliusClient', () => {
   let fakeDelius
@@ -20,7 +20,7 @@ describe('deliusClient', () => {
       'Delius community API',
       { timeout: config.delius.timeout, agent: config.delius.agent }
     )
-    deliusClient = createDeliusClient(restClient)
+    deliusClient = new DeliusClient(restClient)
   })
 
   afterEach(() => {
@@ -30,21 +30,23 @@ describe('deliusClient', () => {
   describe('deliusClient', () => {
     test('should throw error on GET when no token', () => {
       signInService.getAnonymousClientCredentialsTokens.mockReturnValue(null)
-      return expect(deliusClient.getROPrisoners('1')).rejects.toThrow('Error obtaining OAuth token')
+      return expect(deliusClient.getROPrisonersByStaffIdentifier(1)).rejects.toThrow('Error obtaining OAuth token')
     })
   })
 
-  describe('getStaffByStaffCode', () => {
+  describe('getStaffBystaffIdentifier', () => {
     test('should return data from api', () => {
-      fakeDelius.get(`/staff/staffCode/1`).reply(200, { key: 'value' })
+      fakeDelius.get(`/staff/staffIdentifier/1`).reply(200, { key: 'value' })
 
-      return expect(deliusClient.getStaffDetailsByStaffCode('1')).resolves.toStrictEqual({ key: 'value' })
+      return expect(deliusClient.getStaffDetailsByStaffIdentifier(1)).resolves.toStrictEqual({ key: 'value' })
     })
 
     test('should reject if api fails', () => {
-      fakeDelius.get(`/staff/staffCode/1`).thrice().reply(500, '1')
+      fakeDelius.get(`/staff/staffIdentifier/1`).thrice().reply(500, '1')
 
-      return expect(deliusClient.getStaffDetailsByStaffCode('1')).rejects.toStrictEqual(Error('Internal Server Error'))
+      return expect(deliusClient.getStaffDetailsByStaffIdentifier(1)).rejects.toStrictEqual(
+        Error('Internal Server Error')
+      )
     })
   })
 
@@ -64,15 +66,17 @@ describe('deliusClient', () => {
 
   describe('getROPrisoners', () => {
     test('should return data from api', () => {
-      fakeDelius.get(`/staff/staffCode/1/managedOffenders`).reply(200, { key: 'value' })
+      fakeDelius.get(`/staff/staffIdentifier/1/managedOffenders`).reply(200, { key: 'value' })
 
-      return expect(deliusClient.getROPrisoners('1')).resolves.toStrictEqual({ key: 'value' })
+      return expect(deliusClient.getROPrisonersByStaffIdentifier(1)).resolves.toStrictEqual({ key: 'value' })
     })
 
     test('should reject if api fails', () => {
-      fakeDelius.get(`/staff/staffCode/1/managedOffenders`).thrice().reply(500)
+      fakeDelius.get(`/staff/staffIdentifier/1/managedOffenders`).thrice().reply(500)
 
-      return expect(deliusClient.getROPrisoners('1')).rejects.toStrictEqual(Error('Internal Server Error'))
+      return expect(deliusClient.getROPrisonersByStaffIdentifier(1)).rejects.toStrictEqual(
+        Error('Internal Server Error')
+      )
     })
   })
 

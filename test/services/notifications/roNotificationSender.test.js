@@ -64,6 +64,7 @@ describe('sendRoNotifications', () => {
 
       const responsibleOfficer = {
         deliusId: 'delius-1',
+        staffIdentifier: 1,
         name: 'name-1',
         nomsNumber: 'NOM-1',
         lduCode: 'LDU-1',

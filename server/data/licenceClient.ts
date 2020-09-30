@@ -134,7 +134,7 @@ export class LicenceClient {
   async getDeliusIds(nomisUserName): Promise<DeliusIds[]> {
     const query = {
       text:
-        'select staff_id "staffCode", delius_username "deliusUsername" from v_staff_ids where upper(nomis_id) = upper($1)',
+        'select staff_identifier "staffIdentifier", delius_username "deliusUsername" from v_staff_ids where upper(nomis_id) = upper($1)',
       values: [nomisUserName],
     }
 

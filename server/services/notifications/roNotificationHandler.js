@@ -3,11 +3,11 @@
  * @typedef {import("../../../types/licences").Result<T>} Result
  */
 /**
- * @typedef {import("../../../types/licences").RoContactDetailsService} RoContactDetailsService
+ * @typedef {import("../../services/roContactDetailsService").RoContactDetailsService} RoContactDetailsService
  * @typedef {import("../../../types/licences").RoNotificationSender} RoNotificationSender
  * @typedef {import("../../../types/licences").PrisonerService} PrisonerService
  * @typedef {import("../../../types/licences").WarningClient} WarningClient
- * @typedef {import("../../../types/delius").DeliusClient} DeliusClient
+ * @typedef {import("../../data/deliusClient").DeliusClient} DeliusClient
  * @typedef {import("../../../types/licences").Error} Error
  * @typedef {import("../../../types/licences").ResponsibleOfficerAndContactDetails} ResponsibleOfficerAndContactDetails
  */

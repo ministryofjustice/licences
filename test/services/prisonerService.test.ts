@@ -1,5 +1,7 @@
-const { createPrisonerService } = require('../../server/services/prisonerService')
-const { createRoServiceStub } = require('../mockServices')
+import { createPrisonerService } from '../../server/services/prisonerService'
+import { RoService } from '../../server/services/roService'
+
+jest.mock('../../server/services/roService')
 
 describe('prisonerDetailsService', () => {
   let nomisClientMock
@@ -28,8 +30,16 @@ describe('prisonerDetailsService', () => {
     offences: 'Robbery, conspiracy to rob',
     com: {
       deliusId: 'delius1',
+      staffIdentifier: 1,
       name: 'Comfirst Comlast',
-      message: null,
+      nomsNumber: undefined,
+      teamCode: undefined,
+      teamDescription: undefined,
+      lduCode: undefined,
+      lduDescription: undefined,
+      probationAreaCode: undefined,
+      probationAreaDescription: undefined,
+      isAllocated: undefined,
     },
     agencyLocationId: 'ABC',
     CRO: 'CRO001',
@@ -37,11 +47,19 @@ describe('prisonerDetailsService', () => {
     middleName: 'Middle',
   }
   const recentMovementsResponse = [{ movementType: 'REL', fromAgency: 'RELEASING AGENCY' }]
-  const responsibleOfficerResponse = {
+  const responsibleOfficerResponse = Promise.resolve({
     deliusId: 'delius1',
+    staffIdentifier: 1,
     name: 'Comfirst Comlast',
-    message: null,
-  }
+    nomsNumber: undefined,
+    teamCode: undefined,
+    teamDescription: undefined,
+    lduCode: undefined,
+    lduDescription: undefined,
+    probationAreaCode: undefined,
+    probationAreaDescription: undefined,
+    isAllocated: undefined,
+  })
 
   beforeEach(() => {
     nomisClientMock = {
@@ -55,7 +73,7 @@ describe('prisonerDetailsService', () => {
       getRecentMovements: jest.fn().mockReturnValue(recentMovementsResponse),
     }
     const nomisClientBuilder = jest.fn().mockReturnValue(nomisClientMock)
-    roService = createRoServiceStub()
+    roService = new RoService(undefined, undefined)
     roService.findResponsibleOfficer.mockReturnValue(responsibleOfficerResponse)
 
     service = createPrisonerService(nomisClientBuilder, roService)

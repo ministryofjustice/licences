@@ -4,7 +4,7 @@ const logger = require('../../log')
 /**
  * @typedef {import("../../types/licences").LduService} LduService
  * @typedef {import("../../types/licences").ActiveLduClient} ActiveLduClient
- * @typedef {import("../../types/delius").DeliusClient} DeliusClient
+ * @typedef {import("../data/deliusClient").DeliusClient} DeliusClient
  */
 
 /**
