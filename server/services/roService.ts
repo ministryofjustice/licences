@@ -23,7 +23,7 @@ export class RoService {
       const result = await this.deliusClient.getStaffDetailsByStaffIdentifier(staffIdentifier)
       return result || { code: STAFF_NOT_PRESENT, message: `Staff does not exist in delius: ${staffIdentifier}` }
     } catch (error) {
-      logger.error(`Problem retrieving staff member for code: ${staffIdentifier}`, error.stack)
+      logger.error(`Problem retrieving staff member for staff identifier: ${staffIdentifier}`, error.stack)
       throw error
     }
   }
