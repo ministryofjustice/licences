@@ -27,7 +27,8 @@ module.exports = (userAdminService, roService, signInService) => (router) => {
       const token = await signInService.getClientCredentialsTokens(req.user.username)
       const [ro] = unwrapResult(await roService.findResponsibleOfficer(theBookingId, token.token))
 
-      const contact = ro && ro.staffIdentifier && (await userAdminService.getRoUserByDeliusId(ro.deliusId))
+      const contact =
+        ro && ro.staffIdentifier && (await userAdminService.getRoUserByStaffIdentifier(ro.staffIdentifier))
       if (contact) {
         return res.render('contact/ro', { contact })
       }

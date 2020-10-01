@@ -42,8 +42,8 @@ export = function createCaseListService(
   const getROCaseList = async (username, token) => {
     const idsFromLocalDB = await getIdsFromDb(username)
     const ids = await idsFromLocalDB.orRecoverAsync(() => getIdsFromDelius(username))
-    const offendersForStaffCode = await ids.mapAsync(getOffendersForIds(token))
-    return offendersForStaffCode.match(R.identity, (message) => ({ hdcEligible: [], message }))
+    const offenders = await ids.mapAsync(getOffendersForIds(token))
+    return offenders.match(R.identity, (message) => ({ hdcEligible: [], message }))
   }
 
   const getIdsFromDb = async (username: string): Promise<Result<DeliusIds, string>> => {

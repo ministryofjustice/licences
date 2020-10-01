@@ -46,7 +46,8 @@ module.exports = (roService) => (router) => {
     asyncMiddleware(async (req, res) => {
       const { value, type } = req.body
 
-      const staffDetails = type === 'STAFF_CODE' ? await getStaffByStaffIdentifier(value) : await staffByUsername(value)
+      const staffDetails =
+        type === 'STAFF_IDENTIFIER' ? await getStaffByStaffIdentifier(value) : await staffByUsername(value)
 
       logger.info('Found staff:', staffDetails)
 

@@ -4,13 +4,16 @@ import { RoService } from '../../server/services/roService'
 import { createSignInServiceStub } from '../mockServices'
 import { startRoute } from '../supertestSetup'
 import createContactRoute from '../../server/routes/contact'
+import UserAdminService from '../../server/services/userAdminService'
+import { RoUser } from '../../server/data/userClient'
 
 jest.mock('../../server/services/roService')
+jest.mock('../../server/services/userAdminService')
 
 let app
 
 describe('/contact', () => {
-  let userAdminService
+  let userAdminService: UserAdminService
   let roService: RoService
   let signInService
 
@@ -18,7 +21,7 @@ describe('/contact', () => {
     roService = new RoService(undefined, undefined)
     mocked(roService).findResponsibleOfficer.mockResolvedValue({
       deliusId: 'DELIUS_ID',
-      staffIdentifier: 1,
+      staffIdentifier: 999,
       name: 'Ro Name',
       nomsNumber: undefined,
       teamCode: 'TEAM_CODE',
@@ -33,7 +36,7 @@ describe('/contact', () => {
       username: 'username',
       email: '123456@somewhere.com',
       staffCode: 'DELIUS_ID',
-      staffIdentifier: 1,
+      staffIdentifier: 999,
       staff: { forenames: 'RO', surname: 'Name' },
       teams: [
         {
@@ -47,11 +50,7 @@ describe('/contact', () => {
       ],
     })
 
-    userAdminService = {
-      getRoUserByDeliusId: jest.fn().mockReturnValue(undefined),
-      getRoUserByDeliusUsername: jest.fn().mockReturnValue(undefined),
-      getFunctionalMailbox: jest.fn().mockReturnValue('abc@def.com'),
-    }
+    userAdminService = new UserAdminService(undefined, undefined, undefined)
 
     signInService = createSignInServiceStub()
 
@@ -67,13 +66,14 @@ describe('/contact', () => {
         .expect(() => {
           expect(roService.findResponsibleOfficer).toHaveBeenCalled()
           expect(roService.findResponsibleOfficer).toHaveBeenCalledWith('123456', 'system-token')
-          expect(userAdminService.getRoUserByDeliusId).toHaveBeenCalled()
-          expect(userAdminService.getRoUserByDeliusId).toHaveBeenCalledWith('DELIUS_ID')
-          expect(userAdminService.getFunctionalMailbox).toHaveBeenCalledWith('PA_CODE', 'ABC123', 'TEAM_CODE')
+          expect(mocked(userAdminService).getRoUserByStaffIdentifier).toHaveBeenCalled()
+          expect(mocked(userAdminService).getRoUserByStaffIdentifier).toHaveBeenCalledWith(999)
+          expect(mocked(userAdminService).getFunctionalMailbox).toHaveBeenCalledWith('PA_CODE', 'ABC123', 'TEAM_CODE')
         })
     })
 
     test('should display RO details (from delius)', () => {
+      mocked(userAdminService).getFunctionalMailbox.mockResolvedValue('abc@def.com')
       return request(app)
         .get('/contact/123456')
         .expect(200)
@@ -82,6 +82,7 @@ describe('/contact', () => {
           expect(res.text).toContain('LDU Description')
           expect(res.text).toContain('Ro Name')
           expect(res.text).toContain('DELIUS_ID')
+          expect(res.text).toContain('999')
           expect(res.text).toContain('PA Description')
           expect(res.text).toContain('PA_CODE')
           expect(res.text).toContain('abc@def.com')
@@ -90,7 +91,7 @@ describe('/contact', () => {
     })
 
     test('should display RO details (from local store)', () => {
-      userAdminService.getRoUserByDeliusId.mockResolvedValue({
+      mocked(userAdminService).getRoUserByStaffIdentifier.mockResolvedValue({
         first: 'first',
         last: 'last',
         jobRole: 'JR',
@@ -98,7 +99,8 @@ describe('/contact', () => {
         telephone: '01234567890',
         organisation: 'The Org',
         orgEmail: 'org@email.com',
-      })
+        staffIdentifier: 999,
+      } as RoUser)
 
       return request(app)
         .get('/contact/123456')
@@ -110,15 +112,15 @@ describe('/contact', () => {
           expect(res.text).toContain('The Org')
           expect(res.text).toContain('org@email.com')
 
-          expect(userAdminService.getRoUserByDeliusId).toBeCalledWith('DELIUS_ID')
+          expect(userAdminService.getRoUserByStaffIdentifier).toBeCalledWith(999)
           expect(userAdminService.getRoUserByDeliusUsername).not.toBeCalled()
         })
     })
 
     test('should display RO details, from local store, when mapped username in delius', () => {
-      userAdminService.getRoUserByDeliusId.mockResolvedValueOnce(null)
+      mocked(userAdminService).getRoUserByStaffIdentifier.mockResolvedValueOnce(null)
 
-      userAdminService.getRoUserByDeliusUsername.mockResolvedValueOnce({
+      mocked(userAdminService).getRoUserByDeliusUsername.mockResolvedValueOnce({
         first: 'first',
         last: 'last',
         jobRole: 'JR',
@@ -127,7 +129,7 @@ describe('/contact', () => {
         telephone: '01234567890',
         organisation: 'The Org',
         orgEmail: 'org@email.com',
-      })
+      } as RoUser)
 
       return request(app)
         .get('/contact/123456')
@@ -139,8 +141,8 @@ describe('/contact', () => {
           expect(res.text).toContain('The Org')
           expect(res.text).toContain('org@email.com')
 
-          expect(userAdminService.getRoUserByDeliusId).toBeCalledWith('DELIUS_ID')
-          expect(userAdminService.getRoUserByDeliusUsername).toBeCalledWith('username')
+          expect(mocked(userAdminService).getRoUserByStaffIdentifier).toBeCalledWith(999)
+          expect(mocked(userAdminService).getRoUserByDeliusUsername).toBeCalledWith('username')
         })
     })
 
