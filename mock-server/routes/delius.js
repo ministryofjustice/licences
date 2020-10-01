@@ -151,6 +151,7 @@ router.get('/offenders/nomsNumber/:nomsNumber/allOffenderManagers', (req, res) =
       isResponsibleOfficer: true,
       staff: { forenames: 'Ryan', surname: 'Orton' },
       staffCode: 'DELIUS_ID',
+      staffId: 999,
       team: teamC01T04,
       probationArea: { code: 'ABC', description: 'ABC probation area' },
     },

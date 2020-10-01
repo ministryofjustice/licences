@@ -176,6 +176,7 @@ describe('roNotificationHandler', () => {
       const responsibleOfficer = {
         name: 'Jo Smith',
         deliusId: 'STAFF-1',
+        staffIdentifier: 1,
         lduCode: 'code-1',
         lduDescription: 'lduDescription-1',
         nomsNumber: 'AAAA12',
@@ -198,7 +199,7 @@ describe('roNotificationHandler', () => {
       expect(warningClient.raiseWarning).toHaveBeenCalledWith(
         bookingId,
         STAFF_NOT_LINKED,
-        `RO with delius staff code: 'STAFF-1' and name: 'Jo Smith', responsible for managing: 'AAAA12', has unlinked staff record in delius`
+        `RO with delius staff code: 'STAFF-1', staff identifier: '1' and name: 'Jo Smith', responsible for managing: 'AAAA12', has unlinked staff record in delius`
       )
 
       expect(roNotificationSender.sendNotifications).toHaveBeenCalledWith({

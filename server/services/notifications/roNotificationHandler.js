@@ -34,12 +34,12 @@ module.exports = function createRoNotificationHandler(
   eventPublisher
 ) {
   /** Need to alert staff to link the records manually otherwise we won't be able to access the RO's email address from their user record and so won't be able to notify them  */
-  async function raiseUnlinkedAccountWarning(bookingId, { deliusId, name, nomsNumber }) {
+  async function raiseUnlinkedAccountWarning(bookingId, { deliusId, staffIdentifier, name, nomsNumber }) {
     logger.info(`Staff and user records not linked in delius: ${deliusId}`)
     await warningClient.raiseWarning(
       bookingId,
       STAFF_NOT_LINKED,
-      `RO with delius staff code: '${deliusId}' and name: '${name}', responsible for managing: '${nomsNumber}', has unlinked staff record in delius`
+      `RO with delius staff code: '${deliusId}', staff identifier: '${staffIdentifier}' and name: '${name}', responsible for managing: '${nomsNumber}', has unlinked staff record in delius`
     )
   }
 

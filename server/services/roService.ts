@@ -90,7 +90,7 @@ function toResponsibleOfficer(
   const {
     staff: { forenames, surname },
     staffCode,
-    staffIdentifier,
+    staffId,
     isUnallocated,
     team: { localDeliveryUnit, code, description },
     probationArea,
@@ -100,7 +100,7 @@ function toResponsibleOfficer(
     name,
     isAllocated: !isUnallocated,
     deliusId: staffCode,
-    staffIdentifier,
+    staffIdentifier: staffId,
     nomsNumber: offenderNumber,
     teamCode: code,
     teamDescription: description,

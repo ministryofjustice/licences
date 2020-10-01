@@ -135,7 +135,7 @@ describe('roService', () => {
           isResponsibleOfficer: true,
           staff: { forenames: 'Jo', surname: 'Smith' },
           staffCode: 'CODE-1',
-          staffIdentifier: 1,
+          staffId: 1,
           isUnallocated: false,
           team: {
             localDeliveryUnit: { code: 'LDU-1', description: 'LDU-1 Description' },

@@ -64,7 +64,7 @@ export interface ProbationArea {
 
 export interface CommunityOrPrisonOffenderManager {
   staffCode: string
-  staffIdentifier: number
+  staffId: number
   isResponsibleOfficer: boolean
   isPrisonOffenderManager: boolean
   isUnallocated: boolean

@@ -15,9 +15,9 @@ block content
         div.pure-u-2-3.midPaddingBottom
           div.pure-g.u-paddingBottom
             div.pure-u-1
-              label.form-label(for="staffCode") Delius staff code
+              label.form-label(for="staffIdentifier") Delius staff identifier
             div.pure-u-sm-5-12
-              input.form-control(id="staffCode" type="text" name="staffCode")
+              input.form-control(id="staffIdentifier" type="text" name="staffIdentifier")
             div.pure-u-sm-1-6.sm-PadLeftRight15
               input.requiredButton.button(type="submit" value="Search")
             div.pure-u-sm-5-12
@@ -53,7 +53,7 @@ block content
 
         div.pure-u-2-3.midPaddingBottom
           div.pure-g.u-paddingBottom
-            div.pure-u-1.midPaddingBottom Search by Staff Code or username
+            div.pure-u-1.midPaddingBottom Search by Staff Identifier or username
             div.pure-u-sm-5-12.sm-PadLeftRight15
               label.form-label(for="type") Type
             div.pure-u-sm-5-12
@@ -61,7 +61,7 @@ block content
             div.pure-u-sm-1-6
             div.pure-u-sm-5-12.sm-PadLeftRight15
               select.form-control(id="type" name="type")
-                option(value="STAFF_CODE" selected) Staff code
+                option(value="STAFF_IDENTIFIER" selected) Staff identifier
                 option(value="USERNAME" ) Username
             div.pure-u-sm-5-12.sm-PadLeftRight15
               input.form-control(id="value" type="text" name="value")
