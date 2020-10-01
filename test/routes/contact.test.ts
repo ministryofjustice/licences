@@ -5,7 +5,7 @@ import { createSignInServiceStub } from '../mockServices'
 import { startRoute } from '../supertestSetup'
 import createContactRoute from '../../server/routes/contact'
 import UserAdminService from '../../server/services/userAdminService'
-import { RoUser } from "../../server/data/userClient";
+import { RoUser } from '../../server/data/userClient'
 
 jest.mock('../../server/services/roService')
 jest.mock('../../server/services/userAdminService')
