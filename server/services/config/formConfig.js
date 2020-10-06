@@ -23,6 +23,7 @@ module.exports = {
       'CURFEW_ADDRESS',
       'CURFEW_TELEPHONE',
       'SENT_HDCED',
+      'SENT_HDCAD',
       'SENT_CRD',
     ],
     cancel_agency_notification: [...headerFields, 'CURFEW_HOURS', 'CURFEW_ADDRESS', 'SENT_HDCED', 'SENT_CRD'],

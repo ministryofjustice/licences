@@ -300,7 +300,11 @@ describe('formService', () => {
         },
       }
       const prisoner = {
-        sentenceDetail: { homeDetentionCurfewEligibilityDate: 'Not a date', releaseDate: '32/13/100' },
+        sentenceDetail: {
+          homeDetentionCurfewEligibilityDate: 'Not a date',
+          releaseDate: '32/13/100',
+          homeDetentionCurfewActualDate: '',
+        },
       }
 
       const expectedData = {
@@ -309,6 +313,38 @@ describe('formService', () => {
         OFF_NAME: '',
         OFF_NOMS: '',
         SENT_CRD: '32/13/100',
+        SENT_HDCAD: '',
+        SENT_HDCED: 'Not a date',
+        CURFEW_ADDRESS: 'line1\nline2\ntown\npostcode',
+        CURFEW_FIRST: '',
+        CURFEW_HOURS: '',
+        CURFEW_TELEPHONE: '0123456789',
+      }
+
+      const data = await service.getTemplateData('agency_notification', licence, prisoner)
+      expect(data).toEqual(expectedData)
+    })
+    test('get HDCAD date', async () => {
+      const licence = {
+        proposedAddress: {
+          curfewAddress: { ...address, telephone: '0123456789' },
+        },
+      }
+      const prisoner = {
+        sentenceDetail: {
+          homeDetentionCurfewEligibilityDate: 'Not a date',
+          releaseDate: '32/13/100',
+          homeDetentionCurfewActualDate: '15/10/2019',
+        },
+      }
+
+      const expectedData = {
+        CREATION_DATE: creationDate,
+        EST_PREMISE: '',
+        OFF_NAME: '',
+        OFF_NOMS: '',
+        SENT_CRD: '32/13/100',
+        SENT_HDCAD: '15th October 2019',
         SENT_HDCED: 'Not a date',
         CURFEW_ADDRESS: 'line1\nline2\ntown\npostcode',
         CURFEW_FIRST: '',

@@ -69,6 +69,7 @@ module.exports = function createFormService(pdfFormatter, conditionsService, pri
       OFF_NOMS: () => getValue(prisoner, ['offenderNo']),
       EST_PREMISE: () => getValue(prisoner, ['agencyLocationDesc']),
       SENT_HDCED: () => getDateValue(prisoner, ['sentenceDetail', 'homeDetentionCurfewEligibilityDate']),
+      SENT_HDCAD: () => getDateValue(prisoner, ['sentenceDetail', 'homeDetentionCurfewActualDate']),
       SENT_CRD: () => getDateValue(prisoner, ['sentenceDetail', 'releaseDate']),
       CURFEW_ADDRESS: () => getCurfewAddress(pdfFormatter.pickCurfewAddress(selectPathsFrom(licence))),
       CURFEW_TELEPHONE: () => getCurfewTelephone(pdfFormatter.pickCurfewAddress(selectPathsFrom(licence))),
