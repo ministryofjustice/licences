@@ -42,6 +42,15 @@ describe('GET /caseList', () => {
         expect(res.text).toContain('href="/" data-qa="exit-to-dps-link"')
       })
   })
+  test('displays Feedback and support link', () => {
+    return request(app)
+      .get('/caselist/active')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect((res) => {
+        expect(res.text).toContain('href="https://support-dev.hmpps.service.justice.gov.uk/feedback-and-support">')
+      })
+  })
 })
 
 function createApp(user) {

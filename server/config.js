@@ -186,5 +186,9 @@ module.exports = {
   links: {
     exitUrl: get('EXIT_LOCATION_URL', '/', { requireInProduction: true }),
     globalSearchUrl: get('GLOBAL_SEARCH_URL', 'http://localhost:3002/global-search'),
+    feedbackAndSupportUrl: get(
+      'FEEDBACK_SUPPORT_URL',
+      'https://support-dev.hmpps.service.justice.gov.uk/feedback-and-support'
+    ),
   },
 }

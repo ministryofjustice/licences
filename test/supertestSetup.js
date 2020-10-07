@@ -10,6 +10,7 @@ const NullTokenVerifier = require('../server/authentication/tokenverifier/NullTo
 
 const { createSignInServiceStub, createPrisonerServiceStub, createLicenceServiceStub } = require('./mockServices')
 const standardRouter = require('../server/routes/routeWorkers/standardRouter')
+const { links } = require('../server/config')
 
 function testFormPageGets(app, routes, licenceServiceStub) {
   describe('licence exists for bookingId', () => {
@@ -76,6 +77,8 @@ const users = {
 }
 const appSetup = (route, user = 'caUser', prefix = '') => {
   const app = express()
+
+  app.locals.feedbackAndSupportUrl = links.feedbackAndSupportUrl
 
   app.set('views', path.join(__dirname, '../server/views'))
   app.set('view engine', 'pug')

@@ -33,3 +33,4 @@ env:
   EXIT_LOCATION_URL: "https://digital-dev.prison.service.justice.gov.uk/"
   TOKENVERIFICATION_API_URL: https://token-verification-api-dev.prison.service.justice.gov.uk
   TOKENVERIFICATION_API_ENABLED: true
+  FEEDBACK_SUPPORT_URL: "https://support-dev.hmpps.service.justice.gov.uk/feedback-and-support"
