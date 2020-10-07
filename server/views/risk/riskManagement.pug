@@ -83,8 +83,6 @@ block content
             input(type="hidden" name='nonDisclosableInformationDetails'    id='nonDisclosableInformationDetails'    value=data.nonDisclosableInformationDetails)
             +readOnlyNonDisclosableInformation(data)
 
-        include ../includes/roModificationWarning
-
         if (action === 'change')
           include ../includes/formSubmit
         else

@@ -72,8 +72,6 @@ block content
                   span.error-message #{errorObject.reportingTime}
               input#reportingTime(class=errorObject.reportingTime ? "form-control-error form-control midMarginBottom": "midMarginBottom form-control" name="reportingTime" type="time" value=data.reportingTime)
 
-    include ../includes/roModificationWarning
-
     if (action === 'change')
       include ../includes/formSubmit
     else
