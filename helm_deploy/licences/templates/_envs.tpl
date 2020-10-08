@@ -127,6 +127,9 @@ env:
   - name: TOKENVERIFICATION_API_ENABLED
     value: {{ .Values.env.TOKENVERIFICATION_API_ENABLED | quote }}
 
+  - name: FEEDBACK_SUPPORT_URL
+    value: {{ .Values.env.FEEDBACK_SUPPORT_URL | quote }}
+
   - name: NODE_ENV
     value: production
 
@@ -136,4 +139,5 @@ env:
   - name: DOMAIN
     value: https://{{ .Values.ingress.host }}
 
+    
 {{- end -}}

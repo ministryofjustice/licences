@@ -323,10 +323,8 @@ module.exports = function createApp({
 
   const secureRoute = standardRouter({ licenceService, prisonerService, audit, signInService, tokenVerifier, config })
 
-  app.use((req, res, next) => {
-    res.locals.tagManagerKey = config.tagManagerKey
-    next()
-  })
+  app.locals.tagManagerKey = config.tagManagerKey
+  app.locals.feedbackAndSupportUrl = config.links.feedbackAndSupportUrl
 
   app.use('/', secureRoute(defaultRouter()))
 
