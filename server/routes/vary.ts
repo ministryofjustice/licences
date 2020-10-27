@@ -1,10 +1,11 @@
-/**
- * @typedef {import("../services/prisonerService").PrisonerService} PrisonerService
- */
-const { asyncMiddleware } = require('../utils/middleware')
-const createStandardRoutes = require('./routeWorkers/standard')
-const { pickBy, getFieldName, isEmpty, firstItem, getIn, lastItem } = require('../utils/functionalHelpers')
-const formConfig = require('./config/vary')
+import { asyncMiddleware } from '../utils/middleware'
+import createStandardRoutes from './routeWorkers/standard'
+import { firstItem, getFieldName, getIn, isEmpty, lastItem, pickBy, selectPathsFrom } from '../utils/functionalHelpers'
+import formConfig from './config/vary'
+import { LicenceService } from '../services/licenceService'
+import { PrisonerService } from '../../types/licences'
+import { Licence } from '../data/licenceTypes'
+import { pickCurfewAddress } from '../services/utils/pdfFormatter'
 
 const expectedFieldsForForm = {
   address: ['addressLine1', 'addressLine2', 'addressTown', 'postCode', 'telephone'],
@@ -19,11 +20,29 @@ const expectedFieldsForForm = {
 }
 
 /**
- * @param {object} args
- * @param {any} args.licenceService
- * @param {PrisonerService} args.prisonerService
+ * The data for the varyAddress form can come from one of four locations within the licence object.
+ * The pickCurfewAddress function from the pdfFormatter module returns the address that will be printed on a PDF licence.
  */
-module.exports = ({ licenceService, prisonerService }) => (router, audited) => {
+function extractFormData(formName: string, licence: Licence, licencePosition: string[]) {
+  if (formName === 'varyAddress') {
+    return pickCurfewAddress(selectPathsFrom(licence))
+  }
+  return getIn(licence, licencePosition)
+}
+
+function mapFromLicenceDataToFormData(licence: Licence, formName: string, licencePosition: string[]) {
+  const formData = extractFormData(formName, licence, licencePosition)
+  return renameKeysForForm(formData, formName) || {}
+}
+
+// eslint-disable-next-line import/prefer-default-export
+export const varyRouter = ({
+  licenceService,
+  prisonerService,
+}: {
+  licenceService: LicenceService
+  prisonerService: PrisonerService
+}) => (router, audited) => {
   const standard = createStandardRoutes({ formConfig, licenceService, sectionName: 'vary' })
 
   router.get(
@@ -31,7 +50,7 @@ module.exports = ({ licenceService, prisonerService }) => (router, audited) => {
     asyncMiddleware(async (req, res) => {
       const { bookingId } = req.params
       // page should only be viewed if no licence
-      if (res.locals.licenceStatus.tasks.curfewAddress !== 'UNSTARTED') {
+      if (res.locals?.licenceStatus?.tasks?.curfewAddress !== 'UNSTARTED') {
         return res.redirect(`/hdc/taskList/${bookingId}`)
       }
 
@@ -84,8 +103,7 @@ module.exports = ({ licenceService, prisonerService }) => (router, audited) => {
     const errorObject = firstItem(req.flash('errors')) || {}
     const userInput =
       firstItem(req.flash('userInput')) ||
-      renameKeysForForm(getIn(res.locals.licence, ['licence', ...licencePosition]), formName) ||
-      {}
+      mapFromLicenceDataToFormData(res.locals?.licence?.licence, formName, licencePosition)
 
     res.render(`vary/${formName}`, {
       errorObject,
@@ -95,6 +113,7 @@ module.exports = ({ licenceService, prisonerService }) => (router, audited) => {
   }
 
   router.get('/address/:bookingId', getVaryForm('varyAddress', ['proposedAddress', 'curfewAddress']))
+
   router.get(
     '/reportingAddress/:bookingId',
     getVaryForm('varyReportingAddress', ['reporting', 'reportingInstructions'])
@@ -143,9 +162,14 @@ module.exports = ({ licenceService, prisonerService }) => (router, audited) => {
 
 function renameKeysForForm(licenceObject, formName) {
   // some vary form field names are not the same as their licence field name
-  if (isEmpty(licenceObject) || formName !== 'varyReportingAddress') {
+  if (isEmpty(licenceObject)) {
     return licenceObject
   }
+
+  if (formName !== 'varyReportingAddress') {
+    return licenceObject
+  }
+
   return expectedFieldsForForm.reportingAddress.reduce((userInput, uiKey) => {
     const formFieldConfig = formConfig.licenceDetails.fields.find((field) => getFieldName(field) === uiKey)
     const licenceFieldName = lastItem(formFieldConfig[uiKey].licencePosition)

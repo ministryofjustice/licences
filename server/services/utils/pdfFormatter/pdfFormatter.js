@@ -7,7 +7,7 @@ const config = require('../../../config')
 
 const DEFAULT_PLACEHOLDER = 'N/A'
 
-module.exports = { formatPdfData, DEFAULT_PLACEHOLDER, pickCurfewAddress, getConditionText }
+module.exports = { formatPdfData, DEFAULT_PLACEHOLDER, pickCurfewAddress, pickCurfewAddressPath, getConditionText }
 
 function formatPdfData(
   templateName,
@@ -69,25 +69,28 @@ function valueOrPlaceholder(dataSelector, placeholder, templateName) {
 }
 
 function pickCurfewAddress(licencePathSelector) {
+  return licencePathSelector(pickCurfewAddressPath(licencePathSelector))
+}
+
+function pickCurfewAddressPath(licencePathSelector) {
   const approvedPremisesRequired =
     licencePathSelector(['curfew', 'approvedPremises', 'required']) ||
     licencePathSelector(['bassReferral', 'bassAreaCheck', 'approvedPremisesRequiredYesNo'])
 
   if (approvedPremisesRequired === 'Yes') {
-    return (
-      licencePathSelector(['curfew', 'approvedPremisesAddress']) ||
-      licencePathSelector(['bassReferral', 'approvedPremisesAddress'])
-    )
+    return licencePathSelector(['curfew', 'approvedPremisesAddress'])
+      ? ['curfew', 'approvedPremisesAddress']
+      : ['bassReferral', 'approvedPremisesAddress']
   }
 
   const bassRequested = licencePathSelector(['bassReferral', 'bassRequest', 'bassRequested'])
   const bassAccepted = licencePathSelector(['bassReferral', 'bassOffer', 'bassAccepted'])
 
   if (bassRequested === 'Yes' && bassAccepted === 'Yes') {
-    return licencePathSelector(['bassReferral', 'bassOffer'])
+    return ['bassReferral', 'bassOffer']
   }
 
-  return licencePathSelector(['proposedAddress', 'curfewAddress'])
+  return ['proposedAddress', 'curfewAddress']
 }
 
 function getConditionsForConfig(licencePathSelector, templateName, configName) {
