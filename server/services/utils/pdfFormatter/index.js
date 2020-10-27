@@ -1,3 +1,3 @@
-const { formatPdfData, DEFAULT_PLACEHOLDER, pickCurfewAddress } = require('./pdfFormatter')
+const { formatPdfData, DEFAULT_PLACEHOLDER, pickCurfewAddress, pickCurfewAddressPath } = require('./pdfFormatter')
 
-module.exports = { formatPdfData, DEFAULT_PLACEHOLDER, pickCurfewAddress }
+module.exports = { formatPdfData, DEFAULT_PLACEHOLDER, pickCurfewAddress, pickCurfewAddressPath }

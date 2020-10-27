@@ -1,3 +1,4 @@
+import * as R from 'ramda'
 import moment from 'moment'
 import logger from '../../log'
 import { LicenceStage, transitions } from './config/licenceStage'
@@ -6,6 +7,9 @@ import formValidation from './utils/formValidation'
 import { LicenceClient } from '../data/licenceClient'
 import { ApprovedLicenceVersion, CaseWithVaryVersion } from '../data/licenceClientTypes'
 import { Licence } from '../data/licenceTypes'
+
+import { pickCurfewAddressPath } from './utils/pdfFormatter'
+import { selectPathsFrom } from '../utils/functionalHelpers'
 
 const {
   getIn,
@@ -36,6 +40,22 @@ export interface LicenceRecord {
   versionDetails: { version: number; vary_version: number }
   approvedVersion: string
   approvedVersionDetails: ApprovedVersionDetails
+}
+
+export function adaptFieldConfigToSelectWorkingAddress(existingLicence, fieldConfigs) {
+  const curfewAddressPath = pickCurfewAddressPath(selectPathsFrom(existingLicence))
+
+  const modifiedFieldConfigs = R.clone(fieldConfigs).map((fieldConfig) => {
+    const fieldName = Object.keys(fieldConfig)[0]
+    const { licencePosition } = fieldConfig[fieldName]
+    if (licencePosition[0] === 'proposedAddress' && licencePosition[1] === 'curfewAddress') {
+      const modifiedLicencePosition = R.clone(curfewAddressPath)
+      modifiedLicencePosition.push(licencePosition[2])
+      return R.assocPath([fieldName, 'licencePosition'], modifiedLicencePosition, R.clone(fieldConfig))
+    }
+    return fieldConfig
+  })
+  return modifiedFieldConfigs
 }
 
 export class LicenceService {
@@ -485,8 +505,9 @@ export class LicenceService {
 
   async createLicenceFromFlatInput(input, bookingId, existingLicence, pageConfig, postRelease = false) {
     const inputWithCurfewHours = this.addCurfewHoursInput(input)
+    const fieldConfig = adaptFieldConfigToSelectWorkingAddress(existingLicence, pageConfig.fields)
 
-    const newLicence = pageConfig.fields.reduce((licence, field) => {
+    const newLicence = fieldConfig.reduce((licence, field) => {
       const fieldName = getFieldName(field)
       const inputPosition = field[fieldName].licencePosition
 

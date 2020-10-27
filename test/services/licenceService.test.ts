@@ -1,9 +1,14 @@
-import { createLicenceService, LicenceService } from '../../server/services/licenceService'
+import {
+  createLicenceService,
+  LicenceService,
+  adaptFieldConfigToSelectWorkingAddress,
+} from '../../server/services/licenceService'
 import varyConfig from '../../server/routes/config/vary'
 import formValidation from '../../server/services/utils/formValidation'
 import { LicenceClient } from '../../server/data/licenceClient'
 import { CaseWithVaryVersion } from '../../server/data/licenceClientTypes'
 import { Licence } from '../../server/data/licenceTypes'
+import { licenceDetails } from '../../server/routes/config/vary'
 
 jest.mock('../../server/services/utils/formValidation')
 
@@ -1820,6 +1825,80 @@ describe('licenceService', () => {
       return expect(service.createLicenceFromFlatInput(input, '1', {}, varyConfig.licenceDetails)).resolves.toEqual(
         output
       )
+    })
+  })
+
+  describe('adaptFieldConfigToSelectWorkingAddress', () => {
+    it('leaves config untouched by default', () => {
+      expect(adaptFieldConfigToSelectWorkingAddress({}, licenceDetails.fields)).toEqual(licenceDetails.fields)
+    })
+
+    it('adapts to curfew address approved premises', () => {
+      const licence: Licence = {
+        proposedAddress: {
+          curfewAddress: {
+            addressLine1: 'addressLine1',
+          },
+        },
+        curfew: {
+          approvedPremises: { required: 'Yes' },
+          approvedPremisesAddress: { addressLine1: 'addressLine1' },
+        },
+      }
+      expect(
+        adaptFieldConfigToSelectWorkingAddress(licence, licenceDetails.fields)[0].addressLine1.licencePosition
+      ).toEqual(['curfew', 'approvedPremisesAddress', 'addressLine1'])
+    })
+
+    it('adapts to bass address', () => {
+      const licence: Licence = {
+        proposedAddress: {
+          curfewAddress: {
+            addressLine1: 'addressLine1',
+          },
+        },
+        curfew: {
+          approvedPremises: { required: 'No' },
+          approvedPremisesAddress: { addressLine1: 'addressLine1' },
+        },
+        bassReferral: {
+          bassRequest: {
+            bassRequested: 'Yes',
+          },
+          bassOffer: {
+            bassAccepted: 'Yes',
+          },
+          bassAreaCheck: {
+            approvedPremisesRequiredYesNo: 'No',
+          },
+          approvedPremisesAddress: { addressLine1: 'addressLine1' },
+        },
+      }
+      expect(
+        adaptFieldConfigToSelectWorkingAddress(licence, licenceDetails.fields)[0].addressLine1.licencePosition
+      ).toEqual(['bassReferral', 'bassOffer', 'addressLine1'])
+    })
+
+    it('adapts to bass address approved premises', () => {
+      const licence: Licence = {
+        proposedAddress: {
+          curfewAddress: {
+            addressLine1: 'addressLine1',
+          },
+        },
+        curfew: {
+          approvedPremises: { required: 'Yes' },
+        },
+        bassReferral: {
+          bassAreaCheck: {
+            approvedPremisesRequiredYesNo: 'Yes',
+          },
+          approvedPremisesAddress: { addressLine1: 'addressLine1' },
+        },
+      }
+      expect(
+        adaptFieldConfigToSelectWorkingAddress(licence, licenceDetails.fields)[0].addressLine1.licencePosition
+      ).toEqual(['bassReferral', 'approvedPremisesAddress', 'addressLine1'])
     })
   })
 })
