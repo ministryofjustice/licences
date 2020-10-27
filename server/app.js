@@ -61,7 +61,7 @@ const reviewRouter = require('./routes/review')
 const reportingRouter = require('./routes/reporting')
 const riskRouter = require('./routes/risk')
 const victimRouter = require('./routes/victim')
-const varyRouter = require('./routes/vary')
+const { varyRouter } = require('./routes/vary')
 
 const version = moment.now().toString()
 const { production } = config

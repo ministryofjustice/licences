@@ -3,12 +3,11 @@ import {
   LicenceService,
   adaptFieldConfigToSelectWorkingAddress,
 } from '../../server/services/licenceService'
-import varyConfig from '../../server/routes/config/vary'
+import * as varyConfig from '../../server/routes/config/vary'
 import formValidation from '../../server/services/utils/formValidation'
 import { LicenceClient } from '../../server/data/licenceClient'
 import { CaseWithVaryVersion } from '../../server/data/licenceClientTypes'
 import { Licence } from '../../server/data/licenceTypes'
-import { licenceDetails } from '../../server/routes/config/vary'
 
 jest.mock('../../server/services/utils/formValidation')
 
@@ -1830,7 +1829,9 @@ describe('licenceService', () => {
 
   describe('adaptFieldConfigToSelectWorkingAddress', () => {
     it('leaves config untouched by default', () => {
-      expect(adaptFieldConfigToSelectWorkingAddress({}, licenceDetails.fields)).toEqual(licenceDetails.fields)
+      expect(adaptFieldConfigToSelectWorkingAddress({}, varyConfig.licenceDetails.fields)).toEqual(
+        varyConfig.licenceDetails.fields
+      )
     })
 
     it('adapts to curfew address approved premises', () => {
@@ -1846,7 +1847,8 @@ describe('licenceService', () => {
         },
       }
       expect(
-        adaptFieldConfigToSelectWorkingAddress(licence, licenceDetails.fields)[0].addressLine1.licencePosition
+        adaptFieldConfigToSelectWorkingAddress(licence, varyConfig.licenceDetails.fields)[0].addressLine1
+          .licencePosition
       ).toEqual(['curfew', 'approvedPremisesAddress', 'addressLine1'])
     })
 
@@ -1875,7 +1877,8 @@ describe('licenceService', () => {
         },
       }
       expect(
-        adaptFieldConfigToSelectWorkingAddress(licence, licenceDetails.fields)[0].addressLine1.licencePosition
+        adaptFieldConfigToSelectWorkingAddress(licence, varyConfig.licenceDetails.fields)[0].addressLine1
+          .licencePosition
       ).toEqual(['bassReferral', 'bassOffer', 'addressLine1'])
     })
 
@@ -1897,7 +1900,8 @@ describe('licenceService', () => {
         },
       }
       expect(
-        adaptFieldConfigToSelectWorkingAddress(licence, licenceDetails.fields)[0].addressLine1.licencePosition
+        adaptFieldConfigToSelectWorkingAddress(licence, varyConfig.licenceDetails.fields)[0].addressLine1
+          .licencePosition
       ).toEqual(['bassReferral', 'approvedPremisesAddress', 'addressLine1'])
     })
   })

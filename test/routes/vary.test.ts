@@ -4,8 +4,11 @@ import { mockAudit } from '../mockClients'
 import { appSetup, testFormPageGets } from '../supertestSetup'
 import { createPrisonerServiceStub, createSignInServiceStub } from '../mockServices'
 import standardRouter from '../../server/routes/routeWorkers/standardRouter'
-import createRoute from '../../server/routes/vary'
-const formConfig = require('../../server/routes/config/vary')
+
+import { varyRouter } from '../../server/routes/vary'
+
+import formConfig from '../../server/routes/config/vary'
+
 import NullTokenVerifier from '../../server/authentication/tokenverifier/NullTokenVerifier'
 import { LicenceRecord, LicenceService } from '../../server/services/licenceService'
 
@@ -239,7 +242,7 @@ describe('/hdc/vary', () => {
           expect(licenceService.createLicenceFromFlatInput).toHaveBeenCalledWith(
             { bookingId: 1, addressLine1: 'this' },
             1,
-            { },
+            {},
             formConfig.licenceDetails,
             true
           )
@@ -276,7 +279,7 @@ describe('POST /hdc/vary/', () => {
       const licenceService = new LicenceService(undefined)
       const audit = mockAudit()
 
-      mocked(licenceService).getLicence.mockResolvedValue({ licence: { vary: { evidence: {} } }} as LicenceRecord)
+      mocked(licenceService).getLicence.mockResolvedValue({ licence: { vary: { evidence: {} } } } as LicenceRecord)
       mocked(licenceService).update.mockResolvedValue({ vary: { evidence: {} } })
       const app = createApp({ licenceServiceStub: licenceService, audit }, 'roUser')
 
@@ -308,7 +311,7 @@ function createApp({ licenceServiceStub, audit = mockAudit() }, user) {
     tokenVerifier: new NullTokenVerifier(),
     config: null,
   })
-  const route = baseRouter(createRoute({ licenceService, prisonerService }))
+  const route = baseRouter(varyRouter({ licenceService, prisonerService }))
 
   return appSetup(route, user, '/hdc/vary')
 }

@@ -35,7 +35,8 @@ function mapFromLicenceDataToFormData(licence: Licence, formName: string, licenc
   return renameKeysForForm(formData, formName) || {}
 }
 
-export = ({
+// eslint-disable-next-line import/prefer-default-export
+export const varyRouter = ({
   licenceService,
   prisonerService,
 }: {
