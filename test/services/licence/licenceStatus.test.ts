@@ -1054,6 +1054,36 @@ describe('getLicenceStatus', () => {
         expect(status.decisions.approvedPremisesRequired).toBe(true)
       })
 
+      test('should show address review APPROVED when consent, electricity and curfewAddressApproved are Yes', () => {
+        const licence = {
+          stage: 'PROCESSING_CA',
+          licence: {
+            proposedAddress: {
+              curfewAddress: {
+                addressLine1: 'address',
+              },
+            },
+            curfew: {
+              curfewHours: 'anything',
+              curfewAddressReview: {
+                consent: 'Yes',
+                electricity: 'Yes',
+                homeVisitConducted: 'No',
+              },
+            },
+            risk: {
+              riskManagement: {
+                proposedAddressSuitable: 'Yes',
+              },
+            },
+          },
+        }
+
+        const status = getLicenceStatus(licence)
+
+        expect(status.decisions.curfewAddressApproved).toBe(true)
+      })
+
       test('should show address review WITHDRAWN when in rejections list', () => {
         const licence = {
           stage: 'PROCESSING_CA',
