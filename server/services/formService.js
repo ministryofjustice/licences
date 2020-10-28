@@ -2,7 +2,7 @@
  * @typedef {import("../services/prisonerService").PrisonerService} PrisonerService
  */
 const moment = require('moment')
-const { isEmpty, getIn, mergeWithRight, selectPathsFrom } = require('../utils/functionalHelpers')
+const { isEmpty, getIn, mergeWithRight } = require('../utils/functionalHelpers')
 const {
   pdf: {
     forms: { formsDateFormat },
@@ -71,8 +71,8 @@ module.exports = function createFormService(pdfFormatter, conditionsService, pri
       SENT_HDCED: () => getDateValue(prisoner, ['sentenceDetail', 'homeDetentionCurfewEligibilityDate']),
       SENT_HDCAD: () => getDateValue(prisoner, ['sentenceDetail', 'homeDetentionCurfewActualDate']),
       SENT_CRD: () => getDateValue(prisoner, ['sentenceDetail', 'releaseDate']),
-      CURFEW_ADDRESS: () => getCurfewAddress(pdfFormatter.pickCurfewAddress(selectPathsFrom(licence))),
-      CURFEW_TELEPHONE: () => getCurfewTelephone(pdfFormatter.pickCurfewAddress(selectPathsFrom(licence))),
+      CURFEW_ADDRESS: () => getCurfewAddress(pdfFormatter.pickCurfewAddress(licence)),
+      CURFEW_TELEPHONE: () => getCurfewTelephone(pdfFormatter.pickCurfewAddress(licence)),
       REFUSAL_REASON: () => getRefusalReason(licence),
       INELIGIBLE_REASON: () => getIneligibleReason(licence),
       UNSUITABLE_REASON: () => getUnsuitableReason(licence),

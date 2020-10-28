@@ -1,9 +1,10 @@
 const R = require('ramda')
 const moment = require('moment')
 const romanise = require('romannumerals')
-const { isEmpty, mergeWithRight, selectPathsFrom } = require('../../../utils/functionalHelpers')
+const { isEmpty, mergeWithRight, selectPathsFrom, isYes } = require('../../../utils/functionalHelpers')
 const pdfData = require('../../config/pdfData')
 const config = require('../../../config')
+const { bassApprovedPremisesRequired, curfewApprovedPremisesRequired } = require('../../licence/curfewAddressState')
 
 const DEFAULT_PLACEHOLDER = 'N/A'
 
@@ -21,7 +22,7 @@ function formatPdfData(
   const pssconditions = getConditionsForConfig(licencePathSelector, templateName, 'PSSCONDITIONS')
   const photo = image ? image.toString('base64') : null
   const taggingCompany = { telephone: config.pdf.licences.taggingCompanyTelephone }
-  const curfewAddress = pickCurfewAddress(licencePathSelector)
+  const curfewAddress = pickCurfewAddress(licence)
 
   const allData = {
     licence,
@@ -68,25 +69,22 @@ function valueOrPlaceholder(dataSelector, placeholder, templateName) {
   )
 }
 
-function pickCurfewAddress(licencePathSelector) {
-  return licencePathSelector(pickCurfewAddressPath(licencePathSelector))
+function pickCurfewAddress(licence) {
+  return selectPathsFrom(licence)(pickCurfewAddressPath(licence))
 }
 
-function pickCurfewAddressPath(licencePathSelector) {
-  const approvedPremisesRequired =
-    licencePathSelector(['curfew', 'approvedPremises', 'required']) ||
-    licencePathSelector(['bassReferral', 'bassAreaCheck', 'approvedPremisesRequiredYesNo'])
-
-  if (approvedPremisesRequired === 'Yes') {
-    return licencePathSelector(['curfew', 'approvedPremisesAddress'])
-      ? ['curfew', 'approvedPremisesAddress']
-      : ['bassReferral', 'approvedPremisesAddress']
+function pickCurfewAddressPath(licence) {
+  if (curfewApprovedPremisesRequired(licence) && !bassApprovedPremisesRequired(licence)) {
+    return ['curfew', 'approvedPremisesAddress']
+  }
+  if (bassApprovedPremisesRequired(licence)) {
+    return ['bassReferral', 'approvedPremisesAddress']
   }
 
-  const bassRequested = licencePathSelector(['bassReferral', 'bassRequest', 'bassRequested'])
-  const bassAccepted = licencePathSelector(['bassReferral', 'bassOffer', 'bassAccepted'])
+  const bassRequested = isYes(licence, ['bassReferral', 'bassRequest', 'bassRequested'])
+  const bassAccepted = isYes(licence, ['bassReferral', 'bassOffer', 'bassAccepted'])
 
-  if (bassRequested === 'Yes' && bassAccepted === 'Yes') {
+  if (bassRequested && bassAccepted) {
     return ['bassReferral', 'bassOffer']
   }
 
