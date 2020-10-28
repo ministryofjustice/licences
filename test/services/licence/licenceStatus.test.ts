@@ -984,68 +984,68 @@ describe('getLicenceStatus', () => {
   })
 
   describe('PROCESSING_CA', () => {
-
     describe('final checks address review', () => {
       test('should show approved premises required for bug DCS-650', () => {
         const licence = {
           stage: 'PROCESSING_CA',
           licence: {
-            "risk": {
-              "riskManagement": {
-                "planningActions": "No",
-                "unsuitableReason": "",
-                "awaitingInformation": "No",
-                "riskManagementDetails": "Having contacted the Approved Premises, it is clear that an Approved Premises place cannot be put in place in time for a HDC release or 10 prior.",
-                "proposedAddressSuitable": "No",
-                "nonDisclosableInformation": "No",
-                "nonDisclosableInformationDetails": ""
-              }
+            risk: {
+              riskManagement: {
+                planningActions: 'No',
+                unsuitableReason: '',
+                awaitingInformation: 'No',
+                riskManagementDetails:
+                  'Having contacted the Approved Premises, it is clear that an Approved Premises place cannot be put in place in time for a HDC release or 10 prior.',
+                proposedAddressSuitable: 'No',
+                nonDisclosableInformation: 'No',
+                nonDisclosableInformationDetails: '',
+              },
             },
-            "curfew": {
-              "approvedPremises": {
-                "required": "No"
-              }
+            curfew: {
+              approvedPremises: {
+                required: 'No',
+              },
             },
-            "eligibility": {
-              "crdTime": {
-                "decision": "No"
+            eligibility: {
+              crdTime: {
+                decision: 'No',
               },
-              "excluded": {
-                "decision": "No"
+              excluded: {
+                decision: 'No',
               },
-              "suitability": {
-                "decision": "No"
-              }
+              suitability: {
+                decision: 'No',
+              },
             },
-            "bassReferral": {
-              "bassRequest": {
-                "proposedTown": "TAMESIDE",
-                "specificArea": "Yes",
-                "bassRequested": "Yes",
-                "proposedCounty": "TAMESIDE",
-                "additionalInformation": "PLEASE COMPLETE AS AP AS PER EMAIL"
+            bassReferral: {
+              bassRequest: {
+                proposedTown: 'TAMESIDE',
+                specificArea: 'Yes',
+                bassRequested: 'Yes',
+                proposedCounty: 'TAMESIDE',
+                additionalInformation: 'PLEASE COMPLETE AS AP AS PER EMAIL',
               },
-              "bassAreaCheck": {
-                "bassAreaReason": "",
-                "bassAreaCheckSeen": "true",
-                "approvedPremisesRequiredYesNo": "Yes"
+              bassAreaCheck: {
+                bassAreaReason: '',
+                bassAreaCheckSeen: 'true',
+                approvedPremisesRequiredYesNo: 'Yes',
               },
-              "approvedPremisesAddress": {
-                "postCode": "BB2 2HL",
-                "telephone": "01254 59060",
-                "addressTown": "Blackburn",
-                "addressLine1": "Haworth House Approved Premises",
-                "addressLine2": "St Peter's Street"
-              }
+              approvedPremisesAddress: {
+                postCode: 'BB2 2HL',
+                telephone: '01254 59060',
+                addressTown: 'Blackburn',
+                addressLine1: 'Haworth House Approved Premises',
+                addressLine2: "St Peter's Street",
+              },
             },
-            "proposedAddress": {
-              "optOut": {
-                "decision": "No"
+            proposedAddress: {
+              optOut: {
+                decision: 'No',
               },
-              "addressProposed": {
-                "decision": "No"
-              }
-            }
+              addressProposed: {
+                decision: 'No',
+              },
+            },
           },
         }
 
