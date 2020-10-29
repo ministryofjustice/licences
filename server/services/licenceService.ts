@@ -7,9 +7,7 @@ import formValidation from './utils/formValidation'
 import { LicenceClient } from '../data/licenceClient'
 import { ApprovedLicenceVersion, CaseWithVaryVersion } from '../data/licenceClientTypes'
 import { Licence } from '../data/licenceTypes'
-
 import { pickCurfewAddressPath } from './utils/pdfFormatter'
-import { selectPathsFrom } from '../utils/functionalHelpers'
 
 const {
   getIn,
@@ -43,7 +41,7 @@ export interface LicenceRecord {
 }
 
 export function adaptFieldConfigToSelectWorkingAddress(existingLicence, fieldConfigs) {
-  const curfewAddressPath = pickCurfewAddressPath(selectPathsFrom(existingLicence))
+  const curfewAddressPath = pickCurfewAddressPath(existingLicence)
 
   const modifiedFieldConfigs = R.clone(fieldConfigs).map((fieldConfig) => {
     const fieldName = Object.keys(fieldConfig)[0]

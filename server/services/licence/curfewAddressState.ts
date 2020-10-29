@@ -1,10 +1,8 @@
 const { TaskState } = require('../config/taskState')
-const { getIn, isEmpty } = require('../../utils/functionalHelpers')
+const { getIn, isEmpty, isYes } = require('../../utils/functionalHelpers')
 const { isAcceptedAddress } = require('../../utils/addressHelpers')
 
-module.exports = { getCurfewAddressReviewState, getCurfewAddressState }
-
-function getCurfewAddressState(licence, optedOut, bassReferralNeeded, curfewAddressRejected) {
+export function getCurfewAddressState(licence, optedOut, bassReferralNeeded, curfewAddressRejected) {
   const address = getIn(licence, ['proposedAddress', 'curfewAddress']) || {}
 
   return {
@@ -41,11 +39,24 @@ function getCurfewAddressState(licence, optedOut, bassReferralNeeded, curfewAddr
   }
 }
 
+export const curfewApprovedPremisesRequired = (licence) => isYes(licence, ['curfew', 'approvedPremises', 'required'])
+
+export const bassApprovedPremisesRequired = (licence) =>
+  isYes(licence, ['bassReferral', 'bassAreaCheck', 'approvedPremisesRequiredYesNo'])
+
+function getApprovedPremisesAddressAnswer(licence) {
+  if (curfewApprovedPremisesRequired(licence) && !bassApprovedPremisesRequired(licence)) {
+    return getIn(licence, ['curfew', 'approvedPremisesAddress'])
+  }
+  if (bassApprovedPremisesRequired(licence)) {
+    return getIn(licence, ['bassReferral', 'approvedPremisesAddress'])
+  }
+  return {}
+}
+
 const approvedPremisesAddressState = (licence) => {
-  const approvedPremisesAddressAnswer =
-    getIn(licence, ['curfew', 'approvedPremisesAddress']) ||
-    getIn(licence, ['bassReferral', 'approvedPremisesAddress']) ||
-    {}
+  const approvedPremisesAddressAnswer = getApprovedPremisesAddressAnswer(licence)
+
   if (isEmpty(approvedPremisesAddressAnswer)) {
     return TaskState.UNSTARTED
   }
@@ -78,13 +89,10 @@ const taskCompletion = (licence) => {
   return TaskState.UNSTARTED
 }
 
-function getCurfewAddressReviewState(licence) {
-  const approvedPremisesRequiredAnswer =
-    getIn(licence, ['curfew', 'approvedPremises', 'required']) ||
-    getIn(licence, ['bassReferral', 'bassAreaCheck', 'approvedPremisesRequiredYesNo']) ||
-    {}
+export function getCurfewAddressReviewState(licence) {
+  const approvedPremisesRequired = curfewApprovedPremisesRequired(licence) || bassApprovedPremisesRequired(licence)
 
-  if (approvedPremisesRequiredAnswer === 'Yes') {
+  if (approvedPremisesRequired) {
     const approvedAddressTaskState = approvedPremisesAddressState(licence)
     return {
       approvedPremisesRequired: true,

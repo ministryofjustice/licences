@@ -324,6 +324,7 @@ describe('formService', () => {
       const data = await service.getTemplateData('agency_notification', licence, prisoner)
       expect(data).toEqual(expectedData)
     })
+
     test('get HDCAD date', async () => {
       const licence = {
         proposedAddress: {
