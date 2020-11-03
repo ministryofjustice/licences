@@ -1,6 +1,8 @@
 include ./itemAndError
--var address = data.curfew && data.curfew.approvedPremisesAddress || data.bassReferral && data.bassReferral.approvedPremisesAddress ||{}
--var errors = errorObject.curfew && errorObject.curfew.approvedPremisesAddress || errorObject.bassReferral && errorObject.bassReferral.approvedPremisesAddress ||{}
+-var bassApprovedPremisesRequired = data.bassReferral && data.bassReferral.bassAreaCheck && data.bassReferral.bassAreaCheck.approvedPremisesRequiredYesNo === 'Yes'
+
+-var address = !bassApprovedPremisesRequired && data.curfew && data.curfew.approvedPremisesAddress || data.bassReferral && data.bassReferral.approvedPremisesAddress ||{}
+-var errors = !bassApprovedPremisesRequired && errorObject.curfew && errorObject.curfew.approvedPremisesAddress || errorObject.bassReferral && errorObject.bassReferral.approvedPremisesAddress ||{}
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
   div.pure-u-1-2
