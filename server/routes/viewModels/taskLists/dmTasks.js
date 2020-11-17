@@ -30,7 +30,7 @@ const insufficientTimeStopTaskList = (licenceStatus) =>
 
 const standardTaskList = (licenceStatus) => {
   const {
-    decisions: { approvedPremisesRequired, bassReferralNeeded, confiscationOrder },
+    decisions: { approvedPremisesRequired, bassReferralNeeded },
   } = licenceStatus
   return tasklist(licenceStatus, [
     [bassAddress.view, bassReferralNeeded],
@@ -41,7 +41,6 @@ const standardTaskList = (licenceStatus) => {
     [additionalConditions.view],
     [reportingInstructions.view],
     [finalChecks.view],
-    [postpone, confiscationOrder],
     [returnToCa],
     [makeFinalDecision.standard],
   ])
