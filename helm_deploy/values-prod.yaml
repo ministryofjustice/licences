@@ -10,7 +10,7 @@ image:
 
 ingress:
   enabled: true
-  enable_allow_list: true
+  enable_allowlist: true
   host: licences.prison.service.justice.gov.uk
   cert_secret: licences-cert
   path: /
@@ -33,7 +33,7 @@ env:
   TOKENVERIFICATION_API_ENABLED: true
   FEEDBACK_SUPPORT_URL: "https://support.hmpps.service.justice.gov.uk/feedback-and-support"
 
-allow_list:
+allowlist:
   office: "217.33.148.210/32"
   quantum: "62.25.109.197/32"
   quantum_alt: "212.137.36.230/32"
@@ -44,7 +44,7 @@ allow_list:
   j5-phones-1: "35.177.125.252/32"
   j5-phones-2: "35.177.137.160/32"
   sodexo-northumberland: "88.98.48.10/32"
-  thameside-private-prison: "217.22.14.151/32"
+  serco: "217.22.14.0/24"
   durham-tees-valley: "51.179.197.1/32"
   oakwood-1: "217.161.76.187/32"
   oakwood-2: "217.161.76.195/32"
