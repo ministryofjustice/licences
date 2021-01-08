@@ -85,11 +85,12 @@ module.exports = ({ formService }) => (router) => {
           { ...pageData, ...curfewData, port },
           { filename, pdfOptions }
         )
+
         logger.info(`Returning rendered PDF for form '${templateName}'`)
         return pdf
       } catch (e) {
         logger.warn(`Caught an exception while rendering form ${templateName}: ${e}`)
-        return null
+        throw e
       }
     })
   )

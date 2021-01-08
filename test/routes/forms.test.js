@@ -75,6 +75,15 @@ describe('/forms/', () => {
         })
     })
 
+    test('handles error and does not hang forever ', () => {
+      app = createApp('caUser')
+      formService.getTemplateData.mockImplementation(() => {
+        throw new Error('an error message')
+      })
+
+      return request(app).get('/hdc/forms/eligible/1').expect(500)
+    })
+
     test('should throw if a non CA tries to access the page', () => {
       app = createApp('dmUser')
 
