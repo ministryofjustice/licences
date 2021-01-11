@@ -97,7 +97,6 @@
   },
   "dependencies": {
     "@hapi/joi-date": "^2.0.1",
-    "@ministryofjustice/express-template-to-pdf": "^2.1.0",
     "adm-zip": "^0.4.16",
     "agentkeepalive": "^4.1.3",
     "applicationinsights": "^1.8.5",
@@ -136,6 +135,7 @@
     "pg-format": "^1.0.4",
     "poll-endpoint-for": "0.0.7",
     "pug": "^3.0.0",
+    "puppeteer": "^5.4.2",
     "querystring": "^0.2.0",
     "ramda": "^0.27.0",
     "request": "^2.88.2",
@@ -150,6 +150,7 @@
   "devDependencies": {
     "@types/jest": "26.0.15",
     "@types/node": "14.14.5",
+    "@types/puppeteer": "^5.4.2",
     "@typescript-eslint/eslint-plugin": "^3.7.0",
     "@typescript-eslint/parser": "^3.7.0",
     "concurrently": "^5.2.0",

@@ -4,7 +4,7 @@ const path = require('path')
 const bodyParser = require('body-parser')
 const cookieSession = require('cookie-session')
 const flash = require('connect-flash')
-const pdfRenderer = require('@ministryofjustice/express-template-to-pdf')
+const pdfRenderer = require('../server/utils/renderPdf')
 const { mockAudit } = require('./mockClients')
 const NullTokenVerifier = require('../server/authentication/tokenverifier/NullTokenVerifier')
 
