@@ -27,7 +27,7 @@ function render(req, res, next, puppeteerOptions) {
 }
 
 export = function pdfRenderer(
-  puppeteerOptions: LaunchOptions = { args: ['--no-sandbox', '--disable-setuid-sandbox'] }
+  puppeteerOptions: LaunchOptions = { args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'] }
 ) {
   return (req, res, next) => {
     res.renderPDF = render(req, res, next, puppeteerOptions)
