@@ -1,47 +1,5 @@
-version: '3.8'
+version: '3.1'
 services:
-  licences:
-    build: .
-
-    networks:
-      - hmpps
-    container_name: licences
-    restart: always
-    depends_on:
-      - licence-db
-    ports:
-      - '3000:3000'
-    environment:
-      NODE_ENV: "test"
-      ENABLE_TEST_UTILS: "true"
-      DB_SSL_ENABLED: "false"
-      NOMIS_AUTH_URL: "http://hmpps-auth:8080/auth"
-      NOMIS_AUTH_EXTERNAL_URL: "http://localhost:9090/auth"
-      TOKENVERIFICATION_API_URL: "http://token-verification-api:8080"
-      NOMIS_API_URL: "http://stubs:8080/elite2api"
-      DELIUS_API_URL: "http://stubs:8080/communityapi"
-      PROBATION_TEAMS_API_URL: "http://stubs:8080/probationteams"
-      PORT: "3000"
-      DB_USER: "licences"
-      DB_PASS: "licences"
-      DB_SERVER: "licence-db"
-      API_CLIENT_ID: "licences"
-      API_CLIENT_SECRET: "clientsecret"
-      ADMIN_API_CLIENT_ID: "licencesadmin"
-      ADMIN_API_CLIENT_SECRET: "clientsecret"
-
-  stubs:
-    build: .
-    command: npm run start-mocks
-    networks:
-      - hmpps
-    container_name: stubs
-    restart: always
-    ports:
-      - '3001:8080'
-    environment:
-      NODE_ENV: "dev"
-
   licence-db:
     image: postgres
     networks:
@@ -63,7 +21,7 @@ services:
     ports:
       - '9090:8080'
     healthcheck:
-      test: [ 'CMD', 'curl', '-f', 'http://localhost:8080/auth/health' ]
+      test: ['CMD', 'curl', '-f', 'http://localhost:8080/auth/health']
     environment:
       SPRING_PROFILES_ACTIVE: dev,token-verification
       TOKENVERIFICATION_ENDPOINT_URL: "http://token-verification-api:8080"
@@ -81,7 +39,7 @@ services:
     ports:
       - "8100:8080"
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8080/health/ping" ]
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health/ping"]
     environment:
       SPRING_PROFILES_ACTIVE: local-redis
       SPRING_REDIS_HOST: token-verification-api-db
