@@ -1,4 +1,5 @@
 import puppeteer, { LaunchOptions } from 'puppeteer'
+import logger from '../../log'
 
 async function send(puppeteerOptions, res, options, html) {
   res.header('Content-Type', 'application/pdf')
@@ -6,12 +7,17 @@ async function send(puppeteerOptions, res, options, html) {
   res.header('Content-Disposition', `inline; filename=${options.filename}`)
 
   const browser = await puppeteer.launch(puppeteerOptions)
-  const page = await browser.newPage()
-  await page.setContent(html)
-  const pdf = await page.pdf(options.pdfOptions)
-  await browser.close()
-
-  res.send(pdf)
+  try {
+    const page = await browser.newPage()
+    await page.setContent(html)
+    const pdf = await page.pdf(options.pdfOptions)
+    res.send(pdf)
+  } catch (e) {
+    logger.warn(e)
+    throw e
+  } finally {
+    await browser.close()
+  }
 }
 
 // eslint-disable-next-line no-unused-vars

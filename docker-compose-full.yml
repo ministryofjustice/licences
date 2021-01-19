@@ -1,13 +1,19 @@
-# Builds a docker image for licences
-# runs the containers from docker-compose.yml, a container for the licences image and an additional container
-# for the licences image that overrides the default command to run the stubs.
+# An extension of docker-compose.yml
 #
-# Can also be used with a tweak to run pre-built licences images of course
+# Builds a docker image for licences
+# Runs the containers from docker-compose.yml, a container for the licences image and an additional container
+# for the licences image that overrides the default command to run the stubs.
 #
 version: '3.8'
 services:
   licences:
+#    image: quay.io/hmpps/licences:2021-01-05.13367.84d8749
+#    image: quay.io/hmpps/licences:2020-11-24.13298.8099492
     build: .
+    deploy:
+      resources:
+        limits:
+          memory: 150M
     networks:
       - hmpps
     container_name: licences
