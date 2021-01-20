@@ -8,7 +8,7 @@
     "npm": "^6.4.1"
   },
   "scripts": {
-    "copy-views": "cp -R server/views/ dist/server/views/",
+    "copy-views": "cp -R server/views/ dist/server/views/ && cp -R mock-server/routes/images dist/mock-server/routes",
     "watch-views": "nodemon --watch server/views -e pug -x npm run copy-views",
     "watch-ts": "tsc -w",
     "watch-node": "DEBUG=gov-starter-server* nodemon --watch dist/ dist/server.js",
