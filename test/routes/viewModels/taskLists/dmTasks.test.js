@@ -81,7 +81,6 @@ describe('dmTasks', () => {
         'Additional conditions',
         'Reporting instructions',
         'Review case',
-        'Postpone',
         'Return to prison case admin',
         'Final decision',
       ])

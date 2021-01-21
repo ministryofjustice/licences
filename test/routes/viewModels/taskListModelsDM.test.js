@@ -279,38 +279,5 @@ describe('TaskList models', () => {
         finalDecision,
       ])
     })
-
-    test('should display postponement if confiscationOrder is true', () => {
-      expect(
-        taskListModel(
-          'DM',
-          false,
-          {
-            decisions: {
-              insufficientTimeStop: false,
-              bassReferralNeeded: true,
-              addressWithdrawn: false,
-              curfewAddressRejected: false,
-              curfewAddressApproved: false,
-              confiscationOrder: true,
-            },
-            tasks: {},
-            stage: 'APPROVAL',
-          },
-          {}
-        )
-      ).toEqual([
-        bassAddress,
-        riskManagement,
-        victimLiasion,
-        curfewHours,
-        additionalConditions,
-        reportingInstructions,
-        reviewCaseConfiscationOrder,
-        postpone,
-        returnPCA,
-        finalDecision,
-      ])
-    })
   })
 })
