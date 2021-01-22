@@ -3,11 +3,12 @@ const addRequestId = require('express-request-id')()
 const moment = require('moment')
 
 const bodyParser = require('body-parser')
-const cookieSession = require('cookie-session')
-const cookieParser = require('cookie-parser')
 const express = require('express')
 const path = require('path')
 const flash = require('connect-flash')
+const redis = require('redis')
+const session = require('express-session')
+const ConnectRedis = require('connect-redis')
 
 const helmet = require('helmet')
 const noCache = require('nocache')
@@ -128,16 +129,22 @@ module.exports = function createApp({
 
   app.use(addRequestId)
 
+  const client = redis.createClient({
+    port: config.redis.port,
+    password: config.redis.password,
+    host: config.redis.host,
+    tls: config.redis.tls_enabled === 'true' ? {} : false,
+  })
+
+  const RedisStore = ConnectRedis(session)
   app.use(
-    cookieSession({
-      name: 'session',
-      keys: [config.sessionSecret],
-      maxAge: 60 * 60 * 1000,
-      secure: config.https,
-      httpOnly: true,
-      signed: true,
-      overwrite: true,
-      sameSite: 'lax',
+    session({
+      store: new RedisStore({ client }),
+      cookie: { secure: config.https, sameSite: 'lax', maxAge: config.session.expiryMinutes * 60 * 1000 },
+      secret: config.session.secret,
+      resave: false, // redis implements touch so shouldn't need this
+      saveUninitialized: false,
+      rolling: true,
     })
   )
 
@@ -152,8 +159,7 @@ module.exports = function createApp({
     app.use('/utils/', utilsRouter())
   }
 
-  app.use(cookieParser())
-  app.use(csurf({ cookie: { secure: config.https, httpOnly: true } }))
+  app.use(csurf())
 
   // Resource Delivery Configuration
   app.use(compression())

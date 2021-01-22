@@ -24,7 +24,7 @@ import { buildRestClient, clientCredentialsTokenSource, TokenSource } from './da
 import createSignInService from './authentication/signInService'
 import config from './config'
 
-const writeStdOut = (data) => new Promise((resolve) => process.stdout.write(data, () => resolve()))
+const writeStdOut = (data) => new Promise<void>((resolve) => process.stdout.write(data, () => resolve()))
 
 /**
  * Always return the first token retrieved from the wrapped TokenSource.

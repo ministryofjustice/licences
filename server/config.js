@@ -29,6 +29,13 @@ module.exports = {
     port: get('DB_PORT', 5432),
   },
 
+  redis: {
+    host: process.env.REDIS_HOST,
+    port: process.env.REDIS_PORT || 6379,
+    password: process.env.REDIS_AUTH_TOKEN,
+    tls_enabled: get('REDIS_TLS_ENABLED', 'false'),
+  },
+
   nomis: {
     apiUrl: get('NOMIS_API_URL', 'http://localhost:8080/elite2api'),
     authUrl: get('NOMIS_AUTH_URL', 'http://localhost:9090/auth'),
@@ -108,7 +115,10 @@ module.exports = {
   https: production,
   staticResourceCacheDuration: 365 * oneDay,
 
-  sessionSecret: get('SESSION_SECRET', 'licences-insecure-default-session', { requireInProduction: true }),
+  session: {
+    secret: get('SESSION_SECRET', 'licences-insecure-default-session', { requireInProduction: true }),
+    expiryMinutes: get('WEB_SESSION_TIMEOUT_IN_MINUTES', '120', true),
+  },
 
   pdf: {
     licences: {
