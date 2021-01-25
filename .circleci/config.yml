@@ -16,6 +16,9 @@ executors:
         environment:
           SPRING_PROFILES_ACTIVE: dev
           SERVER_PORT: 9090
+      - image: bitnami/redis:5.0
+        environment:
+          ALLOW_EMPTY_PASSWORD: 'yes'
     working_directory: ~/app
 
 jobs:
