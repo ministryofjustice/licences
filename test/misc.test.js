@@ -37,15 +37,15 @@ describe('misc', () => {
     })
 
     test('copes with string', () => {
-      expect(flattenMeta('some vile thing')).toEqual({ '0': 'some vile thing' })
+      expect(flattenMeta('some vile thing')).toEqual({ 0: 'some vile thing' })
     })
 
     test('copes with strings', () => {
-      expect(flattenMeta('some vile thing', 'another one!')).toEqual({ '0': 'some vile thing', '1': 'another one!' })
+      expect(flattenMeta('some vile thing', 'another one!')).toEqual({ 0: 'some vile thing', 1: 'another one!' })
     })
 
     test('copes with arrays', () => {
-      expect(flattenMeta([1, 2, 3])).toEqual({ '0': 1, '1': 2, '2': 3 })
+      expect(flattenMeta([1, 2, 3])).toEqual({ 0: 1, 1: 2, 2: 3 })
     })
 
     test('copes with arrays of objects', () => {

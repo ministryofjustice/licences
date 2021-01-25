@@ -139,5 +139,19 @@ env:
   - name: DOMAIN
     value: https://{{ .Values.ingress.host }}
 
-    
+  - name: REDIS_HOST
+    valueFrom:
+      secretKeyRef:
+        name: licences-elasticache-redis
+        key: primary_endpoint_address
+
+  - name: REDIS_AUTH_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: licences-elasticache-redis
+        key: auth_token
+
+  - name: REDIS_TLS_ENABLED
+    value: {{ .Values.env.REDIS_TLS_ENABLED }}
+    value: "true"
 {{- end -}}
