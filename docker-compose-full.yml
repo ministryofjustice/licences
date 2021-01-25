@@ -40,6 +40,7 @@ services:
       API_CLIENT_SECRET: "clientsecret"
       ADMIN_API_CLIENT_ID: "licencesadmin"
       ADMIN_API_CLIENT_SECRET: "clientsecret"
+      REDIS_HOST: "licence-redis"
 
   stubs:
     build: .
