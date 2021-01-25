@@ -62,9 +62,9 @@ const staffDetailsByStaffCode = {
 */
 
 const staffDetailsByStaffIdentifier = {
-  '1': AUTH_RO_USER_TEST,
-  '2': RO_USER_TEST,
-  '3': RO_USER,
+  1: AUTH_RO_USER_TEST,
+  2: RO_USER_TEST,
+  3: RO_USER,
 }
 
 const router = express.Router()
