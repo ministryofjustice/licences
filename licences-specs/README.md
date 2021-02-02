@@ -15,10 +15,17 @@ The following environment variables are used
 
 - LICENCES_URI - root URI for the Licences application. Defaults to `http://localhost:3000`
 
-The Licences application must be running at Licences_URI, and must be connected to a database and a nomis api or
-suitable mocks, eg mojdigitalstudio/licences-nomis-mocks, and an oauth server eg quay.io/hmpps/nomis-oauth2-server.
+The Licences application must be running at Licences_URI, and must be connected to a database, prisonApi
+and an oauth server eg quay.io/hmpps/nomis-oauth2-server.
 
-eg you can use docker-compose up to start everything
+An easy way to do this is to run start-mocks and the application hence the 3 commands you require are:
+
+```
+npm run start-mocks
+docker-compose up
+npm run start:dev
+```
+
 
 ## Execution
 
