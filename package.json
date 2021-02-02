@@ -97,7 +97,7 @@
   },
   "dependencies": {
     "@hapi/joi-date": "^2.0.1",
-    "adm-zip": "^0.5.1",
+    "adm-zip": "0.5.2",
     "agentkeepalive": "^4.1.3",
     "applicationinsights": "1.8.9",
     "applicationinsights-native-metrics": "0.0.5",
@@ -128,7 +128,7 @@
     "moment": "2.29.1",
     "moment-business-days": "^1.2.0",
     "nocache": "^2.1.0",
-    "node-schedule": "^1.3.2",
+    "node-schedule": "1.3.3",
     "notifications-node-client": "^4.9.0",
     "passport": "^0.4.1",
     "passport-oauth2": "^1.5.0",
