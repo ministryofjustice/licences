@@ -55,24 +55,42 @@ const users = {
       description: '---',
     },
     activeCaseLoadId: 'caseLoadId',
+    authSource: 'nomis',
   },
   roUser: {
     name: 'ro last',
     username: 'RO_USER',
     token: 'token',
     role: 'RO',
+    authSource: 'auth',
+  },
+  nomisRoUser: {
+    name: 'ro last',
+    username: 'NOMIS_RO_USER',
+    token: 'token',
+    role: 'RO',
+    authSource: 'nomis',
   },
   dmUser: {
     name: 'dm last',
     username: 'DM_USER',
     token: 'token',
     role: 'DM',
+    authSource: 'nomis',
   },
   batchUser: {
     name: 'nb last',
     username: 'NOMIS_BATCHLOAD',
     token: 'token',
     role: 'BATCHLOAD',
+    authSource: 'nomis',
+  },
+  authBatchUser: {
+    name: 'nb last',
+    username: 'AUTH_BATCHLOAD',
+    token: 'token',
+    role: 'BATCHLOAD',
+    authSource: 'auth',
   },
 }
 const appSetup = (route, user = 'caUser', prefix = '') => {

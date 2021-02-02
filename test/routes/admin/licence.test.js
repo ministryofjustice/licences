@@ -139,7 +139,13 @@ describe('/licences/', () => {
             bookingId: '1',
             token: 'system-token',
             transition: { notificationType: 'RO_NEW', sender: 'CA', receiver: 'RO', type: 'caToRo' },
-            user: { name: 'nb last', role: 'BATCHLOAD', token: 'token', username: 'NOMIS_BATCHLOAD' },
+            user: {
+              name: 'nb last',
+              role: 'BATCHLOAD',
+              token: 'token',
+              username: 'NOMIS_BATCHLOAD',
+              authSource: 'nomis',
+            },
           })
         })
     })

@@ -15,4 +15,5 @@ module.exports = {
   isAuthServiceRole: (role) => authServiceRoles.includes(role),
   isApplicationRole: (role) => applicationRoles.includes(role),
   isAdminRole: (role) => adminRole === role,
+  hasNomisAuthSource: (user) => user && user.authSource === 'nomis',
 }

@@ -1,6 +1,7 @@
 const logger = require('../../log')
 const { asyncMiddleware, authorisationMiddleware } = require('../utils/middleware')
 const { links } = require('../config')
+const { hasNomisAuthSource } = require('../authentication/roles')
 
 module.exports = ({ caseListService }) => (router) => {
   router.use(authorisationMiddleware)
@@ -25,6 +26,7 @@ module.exports = ({ caseListService }) => (router) => {
         tab: req.params.tab,
         globalSearchUrl: `${links.globalSearchUrl}?referrer=licences`,
         exitUrl: links.exitUrl,
+        showExitUrl: hasNomisAuthSource(req.user),
       })
     })
   )

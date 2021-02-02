@@ -25,4 +25,5 @@ block content
         a(href='/admin/functionalMailboxes/probationAreas') Manage functional mailboxes
 
       div.pure-u-1.sm-padTop55
-        a.link(href=exitUrl data-qa='exit-to-dps-link') Exit to Digital Prison Services
+        if showExitUrl
+          a.link(href=exitUrl data-qa='exit-to-dps-link') Exit to Digital Prison Services
