@@ -10,11 +10,7 @@ describe('userServiceTest', () => {
 
   beforeEach(() => {
     nomisClient = {
-      getUserRoles: jest.fn().mockReturnValue([
-        {
-          roleCode: 'LICENCE_CA',
-        },
-      ]),
+      getUserRoles: jest.fn().mockReturnValue([{ roleCode: 'LICENCE_CA' }, { roleCode: 'PRISON' }]),
       getUserCaseLoads: jest.fn().mockReturnValue(activeCaseLoads),
       putActiveCaseLoad: jest.fn().mockReturnValue({}),
       getLoggedInUserInfo: jest.fn().mockReturnValue({}),
@@ -29,6 +25,7 @@ describe('userServiceTest', () => {
         username: 'un',
         activeCaseLoadId: 'this',
         role: 'CA',
+        isPrisonUser: true,
         activeCaseLoad: {
           caseLoadId: 'this',
           currentlyActive: true,
@@ -38,24 +35,19 @@ describe('userServiceTest', () => {
   })
 
   describe('getAllRoles', () => {
-    test('should return the roles as an array', () => {
-      return expect(service.getAllRoles(user)).resolves.toEqual(['CA'])
+    test('should return roles and prison users status ', () => {
+      return expect(service.getAllRoles(user)).resolves.toEqual({ roles: ['CA'], isPrisonUser: true })
     })
 
     test('should allow multiple roles', () => {
       nomisClient.getUserRoles.mockResolvedValue([
-        {
-          roleCode: 'LICENCE_CA',
-        },
-        {
-          roleCode: 'LICENCE_RO',
-        },
-        {
-          roleCode: 'LICENCE_DM',
-        },
+        { roleCode: 'LICENCE_CA' },
+        { roleCode: 'LICENCE_RO' },
+        { roleCode: 'LICENCE_DM' },
+        { roleCode: 'PRISON' },
       ])
 
-      return expect(service.getAllRoles(user)).resolves.toEqual(['CA', 'RO', 'DM'])
+      return expect(service.getAllRoles(user)).resolves.toEqual({ roles: ['CA', 'RO', 'DM'], isPrisonUser: true })
     })
 
     test('should filter invalid roles', () => {
@@ -74,7 +66,7 @@ describe('userServiceTest', () => {
         },
       ])
 
-      return expect(service.getAllRoles(user)).resolves.toEqual(['CA', 'RO', 'DM'])
+      return expect(service.getAllRoles(user)).resolves.toEqual({ roles: ['CA', 'RO', 'DM'], isPrisonUser: false })
     })
   })
 

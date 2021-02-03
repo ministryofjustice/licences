@@ -144,7 +144,7 @@ describe('/licences/', () => {
               role: 'BATCHLOAD',
               token: 'token',
               username: 'NOMIS_BATCHLOAD',
-              authSource: 'nomis',
+              isPrisonUser: true,
             },
           })
         })

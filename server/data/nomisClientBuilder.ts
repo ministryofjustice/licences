@@ -191,7 +191,7 @@ export = (token) => {
       return oauthRestClient.getResource(`/api/user/me`)
     },
 
-    getUserRoles(): Promise<Role> {
+    getUserRoles(): Promise<[Role]> {
       return oauthRestClient.getResource(`/api/user/me/roles`)
     },
 

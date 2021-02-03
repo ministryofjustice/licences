@@ -7,7 +7,10 @@ module.exports = (nomisClientBuilder) => {
   async function getUserProfile(token, refreshToken, username) {
     const nomisClient = nomisClientBuilder(token)
 
-    const [profile, roles] = await Promise.all([nomisClient.getLoggedInUserInfo(), getAllRoles(token)])
+    const [profile, { roles, isPrisonUser }] = await Promise.all([
+      nomisClient.getLoggedInUserInfo(),
+      getAllRoles(token),
+    ])
 
     logger.info(`User profile success - username: ${username}`)
 
@@ -19,13 +22,14 @@ module.exports = (nomisClientBuilder) => {
       ...profile,
       username,
       role: roles[0],
+      isPrisonUser,
       activeCaseLoad,
       activeCaseLoadId,
     }
   }
 
   /**
-   * @returns {Promise<string[]>} A sub-set of allowedRoles that have been granted to the holder of the supplied token.
+   * @returns {Promise<{ roles: string[], isPrisonUser: boolean }>} A sub-set of allowedRoles that have been granted to the holder of the supplied token.
    */
   async function getAllRoles(token) {
     const nomisClient = nomisClientBuilder(token)
@@ -36,11 +40,16 @@ module.exports = (nomisClientBuilder) => {
       .filter(isAuthServiceRole)
       .map(applicationRoleForAuthServiceRole)
 
+    const isPrisonUser = allRoles.some((role) => role.roleCode === 'PRISON')
+
     // CA,  DM and RO roles subsume READONLY role
     if (roles.includes('CA') || roles.includes('DM') || roles.includes('RO')) {
-      return roles.filter((role) => role !== 'READONLY')
+      return {
+        roles: roles.filter((role) => role !== 'READONLY'),
+        isPrisonUser,
+      }
     }
-    return roles
+    return { roles, isPrisonUser }
   }
 
   async function setRole(newRole, user) {

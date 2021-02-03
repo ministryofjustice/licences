@@ -1,6 +1,5 @@
 const { authorisationMiddleware } = require('../../utils/middleware')
 const { links } = require('../../config')
-const { hasNomisAuthSource } = require('../../authentication/roles')
 
 module.exports = () => (router) => {
   router.use(authorisationMiddleware)
@@ -8,7 +7,7 @@ module.exports = () => (router) => {
   router.get('/', (req, res) => {
     return res.render('admin/index', {
       exitUrl: links.exitUrl,
-      showExitUrl: hasNomisAuthSource(req.user),
+      showExitUrl: req.user && req.user.isPrisonUser,
     })
   })
 
