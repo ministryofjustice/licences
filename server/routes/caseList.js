@@ -25,6 +25,7 @@ module.exports = ({ caseListService }) => (router) => {
         tab: req.params.tab,
         globalSearchUrl: `${links.globalSearchUrl}?referrer=licences`,
         exitUrl: links.exitUrl,
+        showExitUrl: req.user && req.user.isPrisonUser,
       })
     })
   )

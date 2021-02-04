@@ -5,7 +5,10 @@ module.exports = () => (router) => {
   router.use(authorisationMiddleware)
 
   router.get('/', (req, res) => {
-    return res.render('admin/index', { exitUrl: links.exitUrl })
+    return res.render('admin/index', {
+      exitUrl: links.exitUrl,
+      showExitUrl: req.user && req.user.isPrisonUser,
+    })
   })
 
   return router
