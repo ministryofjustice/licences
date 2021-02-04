@@ -28,6 +28,10 @@ env:
         name: dps-rds-instance-output
         key: database_password
 
+  - name: DB_SSL_ENABLED
+    value: {{ .Values.env.DB_SSL_ENABLED }}
+    value: "true"
+
   - name: APPINSIGHTS_INSTRUMENTATIONKEY
     valueFrom:
       secretKeyRef:
