@@ -13,7 +13,7 @@ module.exports = {
       config.db.sslEnabled === 'true'
         ? {
             ca: fs.readFileSync('root.cert'),
-            rejectUnauthorized: true,
+            rejectUnauthorized: config.production,
           }
         : false,
   },
