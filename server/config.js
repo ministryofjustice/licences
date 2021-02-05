@@ -25,7 +25,7 @@ module.exports = {
     password: get('DB_PASS', 'licences'),
     server: get('DB_SERVER', 'localhost'),
     database: get('DB_NAME', 'licences'),
-    sslEnabled: get('DB_SSL_ENABLED', 'true'),
+    sslEnabled: get('DB_SSL_ENABLED', 'false'),
     port: get('DB_PORT', 5432),
   },
 

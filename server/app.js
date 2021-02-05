@@ -1,4 +1,6 @@
 /* eslint-disable no-underscore-dangle */
+const fs = require('fs')
+
 const addRequestId = require('express-request-id')()
 const moment = require('moment')
 
@@ -133,7 +135,13 @@ module.exports = function createApp({
     port: config.redis.port,
     password: config.redis.password,
     host: config.redis.host,
-    tls: config.redis.tls_enabled === 'true' ? {} : false,
+    tls:
+      config.redis.tls_enabled === 'true'
+        ? {
+            ca: fs.readFileSync('root.cert'),
+            rejectUnauthorized: config.production,
+          }
+        : false,
   })
 
   const RedisStore = ConnectRedis(session)

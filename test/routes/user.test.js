@@ -13,7 +13,7 @@ describe('/user', () => {
 
   beforeEach(() => {
     userService = {
-      getAllRoles: jest.fn().mockReturnValue(['CA', 'RO']),
+      getAllRoles: jest.fn().mockReturnValue({ roles: ['CA', 'RO'], isPrisonUser: true }),
       getAllCaseLoads: jest.fn().mockResolvedValue([
         { caseLoadId: '1', description: 'a' },
         { caseLoadId: '2', description: 'b' },
