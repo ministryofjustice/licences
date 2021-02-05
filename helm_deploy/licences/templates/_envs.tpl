@@ -29,7 +29,6 @@ env:
         key: database_password
 
   - name: DB_SSL_ENABLED
-    value: {{ .Values.env.DB_SSL_ENABLED }}
     value: "true"
 
   - name: APPINSIGHTS_INSTRUMENTATIONKEY
@@ -156,6 +155,5 @@ env:
         key: auth_token
 
   - name: REDIS_TLS_ENABLED
-    value: {{ .Values.env.REDIS_TLS_ENABLED }}
     value: "true"
 {{- end -}}
