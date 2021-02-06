@@ -138,7 +138,6 @@ module.exports = function createApp({
     tls:
       config.redis.tls_enabled === 'true'
         ? {
-            ca: fs.readFileSync('root.cert'),
             rejectUnauthorized: config.production,
           }
         : false,
