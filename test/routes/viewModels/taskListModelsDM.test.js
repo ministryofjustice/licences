@@ -43,11 +43,6 @@ describe('TaskList models', () => {
     label: 'Not completed',
     action: { type: 'btn-secondary', href: '/hdc/review/finalChecks/', text: 'View' },
   }
-  const reviewCaseConfiscationOrder = {
-    title: 'Review case',
-    label: 'WARNING||The offender is subject to a confiscation order',
-    action: { type: 'btn-secondary', href: '/hdc/review/finalChecks/', text: 'View' },
-  }
 
   const proposedCurfewAddress = {
     title: 'Proposed curfew address',
@@ -89,12 +84,6 @@ describe('TaskList models', () => {
     title: 'Final decision',
     label: 'Not started',
     action: { href: '/hdc/approval/refuseReason/', text: 'Refuse HDC', type: 'btn' },
-  }
-
-  const postpone = {
-    title: 'Postpone',
-    label: 'Use this to indicate that the process is postponed if a confiscation order is in place',
-    action: { href: '/hdc/finalChecks/postpone/', text: 'Postpone', type: 'btn', dataQa: 'postpone' },
   }
 
   describe('dmTasks', () => {

@@ -133,7 +133,7 @@ export class AuditStatisticsCollector implements RowConsumer<AuditRow> {
 
   consumeRows(rows: Array<AuditRow>): void {
     // eslint-disable-next-line no-console
-    console.log(`Consuming ${rows.length} rows. Starts so far: ${this.tree?.children?.['Start']?.count || 0}`)
+    console.log(`Consuming ${rows.length} rows. Starts so far: ${this.tree?.children?.Start?.count || 0}`)
     rows.forEach(this.consumeRow, this)
   }
 }

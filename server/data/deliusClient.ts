@@ -110,7 +110,7 @@ export interface Page<T> {
 export class DeliusClient {
   constructor(readonly restClient) {}
 
-  getStaffDetailsByStaffCode(staffCode) {
+  getStaffDetailsByStaffCode(staffCode): Promise<any> {
     return this.restClient.getResource(`/staff/staffCode/${staffCode}`)
   }
 
