@@ -1,3 +1,4 @@
+/** @type {any} */
 const jwtDecode = require('jwt-decode')
 const hdcDemoCandidates = require('../stubs/hdcDemoCandidates')
 const hdcTestCandidates = require('../stubs/hdcTestCandidates')

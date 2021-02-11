@@ -1,5 +1,5 @@
 import type { ProbationTeamsClient } from '../data/probationTeamsClient'
-import { RoUser, userClient as UserClient } from '../data/userClient'
+import { userClient as UserClient } from '../data/userClient'
 
 export = class UserAdminService {
   constructor(

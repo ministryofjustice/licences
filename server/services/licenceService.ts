@@ -114,7 +114,7 @@ export class LicenceService {
     return this.licenceClient.createLicence(bookingId, data, LicenceStage[stage], 1, varyVersion)
   }
 
-  async updateLicenceConditions(bookingId, existingLicence, newConditionsObject, postRelease = false) {
+  async updateLicenceConditions(bookingId, existingLicence, newConditionsObject, postRelease = false): Promise<any> {
     try {
       const existingLicenceConditions = getIn(existingLicence, ['licence', 'licenceConditions'])
       const licenceConditions = { ...existingLicenceConditions, ...newConditionsObject }
@@ -125,20 +125,20 @@ export class LicenceService {
 
       await this.updateModificationStage(bookingId, existingLicence.stage, { requiresApproval: true })
 
-      return this.licenceClient.updateSection('licenceConditions', bookingId, licenceConditions, postRelease)
+      return await this.licenceClient.updateSection('licenceConditions', bookingId, licenceConditions, postRelease)
     } catch (error) {
       logger.error('Error during updateAdditionalConditions', error.stack)
       throw error
     }
   }
 
-  async deleteLicenceCondition(bookingId, existingLicence, conditionId) {
+  async deleteLicenceCondition(bookingId, existingLicence, conditionId): Promise<any> {
     try {
       const existingLicenceConditions = getIn(existingLicence, ['licence', 'licenceConditions'])
 
       const newConditions = this.removeCondition(existingLicenceConditions, conditionId)
 
-      return this.licenceClient.updateSection('licenceConditions', bookingId, newConditions)
+      return await this.licenceClient.updateSection('licenceConditions', bookingId, newConditions)
     } catch (error) {
       logger.error('Error during updateAdditionalConditions', error.stack)
       throw error

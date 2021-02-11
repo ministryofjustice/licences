@@ -3,9 +3,11 @@ traces
 | where cloud_RoleName == "licences"
 | where message startswith "Blocking case for booking:"
 | where message !contains "staff"
-| project Blocked=extract('Ldu:.*$', 0, message)
-| distinct Blocked
-| sort by Blocked asc
+| project timestamp, 
+    PROBATION_AREA=extract("Probation Area: '(.*)'.*$", 1, message), 
+    LDU=extract("Ldu: '(.*?)'.*$", 1, message),
+    BOOKING_ID=extract("booking: '(\\d+)'.*$", 1, message)
+| order by timestamp asc
 
 // Blocked bookings - Staff not allocated
 traces
