@@ -1,4 +1,4 @@
-FROM node:14-buster as builder
+FROM node:14.15-buster as builder
 
 ARG BUILD_NUMBER
 ARG GIT_REF
@@ -24,7 +24,7 @@ RUN PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true npm ci --no-audit && \
 
 RUN npm prune --production
 
-FROM node:14-buster-slim
+FROM node:14.15-buster-slim
 LABEL maintainer="HMPPS Digital Studio <info@digital.justice.gov.uk>"
 
 RUN apt-get update && \
