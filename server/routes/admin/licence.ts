@@ -14,7 +14,7 @@ export = (licenceService, signInService, prisonerService, audit, roNotificationH
     user: event.user,
     action: setCase.sentence(event.action),
     type: event.action,
-    timestamp: moment(event.timestamp).format('dddd Do MMMM HH:mm:ss'),
+    timestamp: moment(event.timestamp).format('DD/MM/YYYY HH:mm:ss'),
     details: event.details,
     detailsJson: JSON.stringify(event.details, null, 4),
   })
