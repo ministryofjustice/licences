@@ -63,12 +63,22 @@ class WebsiteSpec extends GebReportingSpec {
 
     then: 'I see health status OK'
 
-    def json = driver.pageSource - ' xmlns="http://www.w3.org/1999/xhtml"' - '<html><head></head><body><pre style="word-wrap: break-word; white-space: pre-wrap;">'
+    def json = (
+      driver.pageSource
+        - ' xmlns="http://www.w3.org/1999/xhtml"'
+        - '<html><head></head><body><pre style="word-wrap: break-word; white-space: pre-wrap;">'
+    ) - '</pre></body></html>'
+
     def response = new JsonSlurper().parseText(json)
 
     response.uptime > 0.0
     response.name == "Licences"
     !response.version.isEmpty()
-    response.api == [elite2: 'UP', auth: 'UP', delius: 'UP', probationTeams: 'UP']
+    response.api == [
+      elite2        : 'UP',
+      auth          : 'UP',
+      delius        : 'UP',
+      probationTeams: 'UP'
+    ]
   }
 }
