@@ -1,6 +1,5 @@
 package uk.gov.justice.digital.hmpps.licences.util
 
-import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import spock.lang.Shared
 
