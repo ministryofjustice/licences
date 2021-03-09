@@ -7,8 +7,6 @@
 version: '3.8'
 services:
   licences:
-#    image: quay.io/hmpps/licences:2021-01-05.13367.84d8749
-#    image: quay.io/hmpps/licences:2020-11-24.13298.8099492
     build: .
     deploy:
       resources:
@@ -29,9 +27,9 @@ services:
       NOMIS_AUTH_URL: "http://hmpps-auth:8080/auth"
       NOMIS_AUTH_EXTERNAL_URL: "http://localhost:9090/auth"
       TOKENVERIFICATION_API_URL: "http://token-verification-api:8080"
-      NOMIS_API_URL: "http://stubs:8080/elite2api"
-      DELIUS_API_URL: "http://stubs:8080/communityapi"
-      PROBATION_TEAMS_API_URL: "http://stubs:8080/probationteams"
+      NOMIS_API_URL: "http://stubs:3000/elite2api"
+      DELIUS_API_URL: "http://stubs:3000/communityapi"
+      PROBATION_TEAMS_API_URL: "http://stubs:3000/probationteams"
       PORT: "3000"
       DB_USER: "licences"
       DB_PASS: "licences"
@@ -49,8 +47,6 @@ services:
       - hmpps
     container_name: stubs
     restart: always
-    ports:
-      - '3001:8080'
     environment:
       NODE_ENV: "dev"
 
@@ -74,8 +70,6 @@ services:
     container_name: licence-redis
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
-    ports:
-      - '6379:6379'
 
   hmpps-auth:
     image: quay.io/hmpps/hmpps-auth:latest
@@ -100,8 +94,6 @@ services:
     depends_on:
       - token-verification-api-db
       - hmpps-auth
-    ports:
-      - "8100:8080"
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8080/health/ping" ]
     environment:
@@ -115,8 +107,6 @@ services:
       - token-backend
     container_name: token-verification-api-db
     restart: always
-    ports:
-      - '6379:6379'
 
 networks:
   hmpps:
