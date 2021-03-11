@@ -1,7 +1,7 @@
-import puppeteer, { LaunchOptions, ChromeArgOptions, BrowserOptions } from 'puppeteer'
+import puppeteer, { LaunchOptions, BrowserLaunchArgumentOptions, BrowserConnectOptions } from 'puppeteer'
 import logger from '../../log'
 
-type PuppeteerOptions = LaunchOptions & ChromeArgOptions & BrowserOptions
+type PuppeteerOptions = LaunchOptions & BrowserLaunchArgumentOptions & BrowserConnectOptions
 
 async function send(puppeteerOptions, res, options, html) {
   res.header('Content-Type', 'application/pdf')
