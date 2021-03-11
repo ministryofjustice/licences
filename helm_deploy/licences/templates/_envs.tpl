@@ -136,9 +136,6 @@ env:
   - name: NODE_ENV
     value: production
 
-  - name: ENABLE_TEST_UTILS
-    value: "true"
-
   - name: DOMAIN
     value: https://{{ .Values.ingress.host }}
 
