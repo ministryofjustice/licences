@@ -32,17 +32,12 @@ RUN apt-get update && \
 
 # Install latest chrome dev package libs so that the bundled version of Chromium installed by Puppeteer will work
 # https://github.com/GoogleChrome/puppeteer/blob/master/docs/troubleshooting.md#running-puppeteer-in-docker
-#RUN apt-get update \
-#    && apt-get install -y wget gnupg \
-#    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-#    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
-#    && apt-get update \
-#    && apt-get install -y google-chrome-stable libxss1 dumb-init --no-install-recommends \
-#    && apt-get autoremove -y \
-#    && rm -rf /var/lib/apt/lists/*
-
 RUN apt-get update \
-    && apt-get install -y chromium=88.0.4324.182-1~deb10u1 libxss1 dumb-init procps --no-install-recommends \
+    && apt-get install -y wget gnupg \
+    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
+    && apt-get update \
+    && apt-get install -y google-chrome-stable libxss1 dumb-init --no-install-recommends \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
@@ -79,7 +74,7 @@ ENV PORT=3000
 EXPOSE 3000
 
 ENV NODE_ENV='production' \
-    CHROME_EXECUTABLE='/usr/bin/chromium'
+    CHROME_EXECUTABLE='/usr/bin/google-chrome'
 
 USER 2000
 
