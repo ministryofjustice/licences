@@ -1,4 +1,4 @@
-import puppeteer, { LaunchOptions, BrowserOptions, ChromeArgOptions } from 'puppeteer'
+import puppeteer, { LaunchOptions, ChromeArgOptions, BrowserOptions } from 'puppeteer'
 import logger from '../../log'
 
 type PuppeteerOptions = LaunchOptions & ChromeArgOptions & BrowserOptions
