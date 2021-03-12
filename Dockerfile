@@ -1,4 +1,4 @@
-FROM node:14.15-buster as builder
+FROM node:14.16-buster as builder
 
 ARG BUILD_NUMBER
 ARG GIT_REF
@@ -24,14 +24,18 @@ RUN PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true npm ci --no-audit && \
 
 RUN npm prune --production
 
-FROM node:14.15-buster-slim
+FROM node:14.16-buster-slim
 LABEL maintainer="HMPPS Digital Studio <info@digital.justice.gov.uk>"
 
 RUN apt-get update && \
     apt-get upgrade -y
 
 RUN apt-get update \
-    && apt-get install -y chromium=88.0.4324.182-1~deb10u1 libxss1 dumb-init --no-install-recommends \
+    && apt-get install -y wget gnupg \
+    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
+    && apt-get update \
+    && apt-get install -y google-chrome-stable libxss1 dumb-init procps --no-install-recommends \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
@@ -68,7 +72,7 @@ ENV PORT=3000
 EXPOSE 3000
 
 ENV NODE_ENV='production' \
-    CHROME_EXECUTABLE='/usr/bin/chromium'
+    CHROME_EXECUTABLE='/usr/bin/google-chrome'
 
 USER 2000
 
