@@ -1,6 +1,11 @@
 const request = require('supertest')
 
-const { createPrisonerServiceStub, createLicenceServiceStub, createSignInServiceStub } = require('../../mockServices')
+const {
+  createPrisonerServiceStub,
+  createLicenceServiceStub,
+  createSignInServiceStub,
+  createNomisPushServiceStub,
+} = require('../../mockServices')
 const { startRoute } = require('../../supertestSetup')
 
 const createAdminRoute = require('../../../server/routes/admin/licence')
@@ -10,8 +15,12 @@ describe('/licences/', () => {
   let roNotificationHandler
   const licenceService = createLicenceServiceStub()
   const prisonerService = createPrisonerServiceStub()
+  const nomisPushService = createNomisPushServiceStub()
+  const flash = jest.fn()
 
   beforeEach(() => {
+    flash.mockReset()
+    flash.mockReturnValue([])
     audit = {
       getEventsForBooking: jest.fn().mockReturnValue([
         {
@@ -28,6 +37,7 @@ describe('/licences/', () => {
         action: 'NOTIFY',
         details: { notifications: [{}, {}, {}], notificationType: 'RO_NEW' },
       }),
+      record: jest.fn(),
     }
     roNotificationHandler = {
       sendRoEmail: jest.fn(),
@@ -156,11 +166,90 @@ describe('/licences/', () => {
     })
   })
 
+  describe('GET reset', () => {
+    it('should call prisoner service', () => {
+      prisonerService.getPrisonerDetails.mockReturnValue({ com: { name: 'Jim' } })
+      const app = createApp('batchUser')
+      return request(app)
+        .get('/admin/licences/events/1/reset-licence')
+        .expect(200)
+        .expect((res) => {
+          expect(prisonerService.getPrisonerDetails).toHaveBeenCalledWith('1', 'system-token')
+        })
+    })
+
+    it('should render errors', () => {
+      prisonerService.getPrisonerDetails.mockReturnValue({ com: { name: 'Jim' } })
+      flash.mockReturnValue([{ reset: 'some value' }])
+
+      const app = createApp('batchUser')
+      return request(app)
+        .get('/admin/licences/events/1/reset-licence')
+        .expect(200)
+        .expect((res) => {
+          expect(res.text).toContain('There is a problem')
+        })
+    })
+    it('should render prisoner name', () => {
+      prisonerService.getPrisonerDetails.mockReturnValue({ com: { name: 'Jimmy Smith' } })
+      const app = createApp('batchUser')
+      return request(app)
+        .get('/admin/licences/events/1/reset-licence')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect((res) => {
+          expect(res.text).toContain('Jimmy Smith')
+        })
+    })
+  })
+  describe('POST reset', () => {
+    it('should call resetLicence, audit.record and nomis.resetHDC', async () => {
+      const app = createApp('batchUser')
+      return request(app)
+        .post('/admin/licences/events/100/reset-licence')
+        .send({ reset: 'Yes' })
+        .expect(302)
+        .expect('Location', '/admin/licences/100')
+        .expect(() => {
+          expect(licenceService.resetLicence).toHaveBeenCalledWith('100')
+          expect(audit.record).toHaveBeenCalledWith('RESET', 'NOMIS_BATCHLOAD', { bookingId: '100' })
+          expect(nomisPushService.resetHDC).toHaveBeenCalledWith('100', 'NOMIS_BATCHLOAD')
+        })
+    })
+
+    it('should render audit record page', async () => {
+      const app = createApp('batchUser')
+      return request(app)
+        .post('/admin/licences/events/100/reset-licence')
+        .send({ reset: 'Yes' })
+        .expect(302)
+        .expect('Location', '/admin/licences/100')
+    })
+    it('should redirect back to itself', async () => {
+      const app = createApp('batchUser')
+      return request(app)
+        .post('/admin/licences/events/100/reset-licence')
+        .send({ reset: undefined })
+        .expect(302)
+        .expect('Location', '/admin/licences/events/100/reset-licence')
+    })
+  })
+
   const createApp = (user) =>
     startRoute(
-      createAdminRoute(licenceService, createSignInServiceStub(), prisonerService, audit, roNotificationHandler),
+      createAdminRoute(
+        licenceService,
+        createSignInServiceStub(),
+        prisonerService,
+        audit,
+        roNotificationHandler,
+        nomisPushService
+      ),
       '/admin/licences',
       user,
-      'ACTIVE_LDUS'
+      'ACTIVE_LDUS',
+      undefined,
+      undefined,
+      flash
     )
 })

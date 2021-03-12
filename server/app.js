@@ -365,7 +365,9 @@ module.exports = function createApp({
   )
   app.use(
     '/admin/licences/',
-    secureRoute(licenceRouter(licenceService, signInService, prisonerService, audit, roNotificationHandler))
+    secureRoute(
+      licenceRouter(licenceService, signInService, prisonerService, audit, roNotificationHandler, nomisPushService)
+    )
   )
   app.use('/admin/functionalMailboxes', secureRoute(functionalMailboxRouter(functionalMailboxService)))
 

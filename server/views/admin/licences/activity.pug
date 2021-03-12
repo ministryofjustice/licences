@@ -6,6 +6,8 @@ mixin detail(type, details)
         + updateSection(details)
     when 'NOTIFY'
         + notify(details)
+    when 'RESET'
+        | Licence has been reset
     default
         | &nbsp;   
 
@@ -66,10 +68,13 @@ div.borderBottom.paddingBottom
       p
         span
           a(href='/admin/licences/' + bookingId + '/raw') View raw
-    if licence && licence.stage === 'PROCESSING_RO'      
-      div.pure-u-1.pure-u-md-1-2
+    div.pure-u-1.pure-u-md-1-2
+        if licence && licence.stage === 'PROCESSING_RO'      
+            div.alignRight
+                a.button.smallMarginBottom(href='/admin/licences/' + bookingId + '/notifyRo') Notify RO of case handover
+                 
         div.alignRight
-          a.button(href='/admin/licences/' + bookingId + '/notifyRo') Notify RO of case handover
+            a.button(id='reset-licence'  href='/admin/licences/events/' + bookingId + '/reset-licence') Reset licence
 
   table.largeMarginBottom
     thead

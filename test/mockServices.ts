@@ -27,6 +27,7 @@ export const createLicenceServiceStub = () => ({
   rejectBass: jest.fn(),
   withdrawBass: jest.fn(),
   reinstateBass: jest.fn(),
+  resetLicence: jest.fn(),
 })
 
 export const createLduServiceStub = () => ({
@@ -97,6 +98,7 @@ export const caseListServiceStub = {
 export const createNomisPushServiceStub = () => ({
   pushStatus: jest.fn(),
   pushChecksPassed: jest.fn(),
+  resetHDC: jest.fn(),
 })
 
 export const createCaServiceStub = {

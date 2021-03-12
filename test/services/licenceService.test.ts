@@ -8,6 +8,7 @@ import formValidation from '../../server/services/utils/formValidation'
 import { LicenceClient } from '../../server/data/licenceClient'
 import { CaseWithVaryVersion } from '../../server/data/licenceClientTypes'
 import { Licence } from '../../server/data/licenceTypes'
+import { LicenceStage } from '../../server/services/config/licenceStage'
 
 jest.mock('../../server/services/utils/formValidation')
 
@@ -1903,6 +1904,17 @@ describe('licenceService', () => {
         adaptFieldConfigToSelectWorkingAddress(licence, varyConfig.licenceDetails.fields)[0].addressLine1
           .licencePosition
       ).toEqual(['bassReferral', 'approvedPremisesAddress', 'addressLine1'])
+    })
+  })
+  describe('resetLicence', () => {
+    it('should call updateClient', () => {
+      service.resetLicence(100, false)
+      expect(licenceClient.updateLicence).toBeCalledWith(100, {}, false)
+    })
+
+    it('should call updateStage', () => {
+      service.resetLicence(100, false)
+      expect(licenceClient.updateStage).toBeCalledWith(100, LicenceStage.ELIGIBILITY)
     })
   })
 })

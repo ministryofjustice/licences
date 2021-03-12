@@ -243,6 +243,18 @@ export class LicenceService {
     }
   }
 
+  resetLicence(bookingId, postRelease = false) {
+    try {
+      Promise.all([
+        this.licenceClient.updateLicence(bookingId, {}, postRelease),
+        this.licenceClient.updateStage(bookingId, LicenceStage.ELIGIBILITY),
+      ])
+    } catch (error) {
+      logger.error('Error during licence reset', error.stack)
+      throw error
+    }
+  }
+
   private answersFromMapReducer(userInput) {
     return (answersAccumulator, field) => {
       const { fieldName, answerIsRequired, innerFields, inputIsList, inputIsSplitDate } = this.getFieldInfo(

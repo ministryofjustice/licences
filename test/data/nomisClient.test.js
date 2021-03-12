@@ -662,4 +662,26 @@ describe('nomisClient', () => {
       )
     })
   })
+  describe('resetHDC', () => {
+    test('successful reset', async () => {
+      fakeNomis.delete('/api/offender-sentences/booking/100/home-detention-curfews/latest/checks-passed').reply(204)
+
+      const result = await nomisClient.resetHDC(100)
+      expect(result).toBeUndefined()
+      expect(fakeNomis.isDone()).toBeTruthy()
+    })
+
+    test('trying to reset a non-existant booking', async () => {
+      fakeNomis.delete('/api/offender-sentences/booking/100/home-detention-curfews/latest/checks-passed').reply(404)
+
+      const result = await nomisClient.resetHDC(100)
+      expect(result).toBeUndefined()
+      expect(fakeNomis.isDone()).toBeTruthy()
+    })
+
+    test('a server error occurs', async () => {
+      fakeNomis.delete('/api/offender-sentences/booking/100/home-detention-curfews/latest/checks-passed').reply(500)
+      return expect(nomisClient.resetHDC(100)).rejects.toThrow('Internal Server Error')
+    })
+  })
 })

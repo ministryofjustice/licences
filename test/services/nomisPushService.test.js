@@ -13,6 +13,7 @@ describe('nomisPushService', () => {
     nomisClientMock = {
       putApprovalStatus: jest.fn(),
       putChecksPassed: jest.fn(),
+      resetHDC: jest.fn(),
     }
     nomisClientBuilder = jest.fn().mockReturnValue(nomisClientMock)
     signInService = {
@@ -261,6 +262,18 @@ describe('nomisPushService', () => {
       await expect(service.pushChecksPassed({ bookingId, passed: true, username })).rejects.toThrow(
         'Nomis Push Conflict'
       )
+    })
+  })
+
+  describe('resetHDC', () => {
+    it('should call nomisClient', async () => {
+      await service.resetHDC(bookingId)
+      expect(nomisClientMock.resetHDC).toBeCalledWith('1')
+    })
+
+    test('should throw error if API gives 409', async () => {
+      nomisClientMock.resetHDC.mockRejectedValue({ status: 409 })
+      await expect(service.resetHDC(bookingId, username)).rejects.toThrow('Nomis Push Conflict')
     })
   })
 })

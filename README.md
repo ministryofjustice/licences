@@ -39,6 +39,10 @@ npm run start-mocks
 docker-compose up
 ```
 
+If you get a ‘You are not authorised to access this application’ when trying to run the app locally, 
+Then login as NOMIS_BATCHLOAD user and go to ‘manage locations’ and then 'ABC probation area (ABC)' and ensure it is ticked. 
+
+
 4. Visit [localhost:3000](http://localhost:3000/)
 
 ## Developer Commands

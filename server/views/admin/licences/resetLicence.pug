@@ -1,0 +1,30 @@
+extends ../../layout
+include ../../includes/errorBannerWithDetailObject
+
+block content
+  include ../../includes/back
+
+  +errorBannerWithDetail(errorObject)
+
+  h1.heading-large Are you sure you want to reset the licence?
+
+  include ../../taskList/prisonerDetails
+
+  form(method="post")
+    input(type="hidden" name="_csrf" value=csrfToken)
+
+    div.form-group.inline.largeMarginTop(class=errorObject.reset ? "form-group form-group-error inline" : "form-group inline")
+      h2.heading-medium Select Yes or No
+      if errorObject.reset
+        span.block.error-message.smallMarginBottom Select Yes or No
+      div.multiple-choice(data-target="resetLicence")
+        input#reset(type="radio" name="reset" value="Yes")
+        label(for="reset") Yes
+      div.multiple-choice
+        input(type="radio" name="reset" value="No")
+        label(for="resetNo") No
+
+    div.paddingBottom
+      div.pure-u-1.pure-u-md-1-2
+        input.requiredButton.button(type="submit" value="Confirm")
+        
