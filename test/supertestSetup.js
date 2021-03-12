@@ -3,7 +3,7 @@ const express = require('express')
 const path = require('path')
 const bodyParser = require('body-parser')
 const cookieSession = require('cookie-session')
-const flash = require('connect-flash')
+// const flash = require('connect-flash')
 const pdfRenderer = require('../server/utils/renderPdf')
 const { mockAudit } = require('./mockClients')
 const NullTokenVerifier = require('../server/authentication/tokenverifier/NullTokenVerifier')
@@ -93,7 +93,7 @@ const users = {
     isPrisonUser: false,
   },
 }
-const appSetup = (route, user = 'caUser', prefix = '') => {
+const appSetup = (route, user = 'caUser', prefix = '', flash = jest.fn().mockReturnValue([])) => {
   const app = express()
 
   app.locals.feedbackAndSupportUrl = links.feedbackAndSupportUrl
@@ -104,11 +104,12 @@ const appSetup = (route, user = 'caUser', prefix = '') => {
   const userObj = users[user]
   app.use((req, res, next) => {
     req.user = userObj
+    req.flash = flash
     res.locals.user = userObj
     next()
   })
   app.use(cookieSession({ keys: [''] }))
-  app.use(flash())
+  // app.use(flash())
   app.use(pdfRenderer())
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({ extended: false }))
@@ -124,7 +125,15 @@ const appSetup = (route, user = 'caUser', prefix = '') => {
   return app
 }
 
-const startRoute = (route, urlPath, user, auditKey, config, audit = mockAudit()) => {
+const startRoute = (
+  route,
+  urlPath,
+  user,
+  auditKey,
+  config,
+  audit = mockAudit(),
+  flash = jest.fn().mockReturnValue([])
+) => {
   const signInService = createSignInServiceStub()
   const prisonerService = createPrisonerServiceStub()
   const licenceService = createLicenceServiceStub()
@@ -137,7 +146,7 @@ const startRoute = (route, urlPath, user, auditKey, config, audit = mockAudit())
     config,
   })
   const builtRoute = baseRouter(route, { auditKey })
-  return appSetup(builtRoute, user, urlPath)
+  return appSetup(builtRoute, user, urlPath, flash)
 }
 
 module.exports = {

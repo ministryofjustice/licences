@@ -6,7 +6,9 @@ import getLicenceStatus from '../../services/licence/licenceStatus'
 
 const { asyncMiddleware, authorisationMiddleware } = require('../../utils/middleware')
 
-export = (licenceService, signInService, prisonerService, audit, roNotificationHandler) => (router) => {
+export = (licenceService, signInService, prisonerService, audit, roNotificationHandler, nomisPushService) => (
+  router
+) => {
   router.use(authorisationMiddleware)
 
   const formatEvent = (event) => ({
@@ -70,6 +72,40 @@ export = (licenceService, signInService, prisonerService, audit, roNotificationH
       const systemToken = await signInService.getClientCredentialsTokens(req.user.username)
       const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, systemToken.token)
       return res.render('admin/licences/notify', { bookingId, licence, prisonerInfo })
+    })
+  )
+
+  router.get(
+    '/events/:abookingId/reset-licence',
+    asyncMiddleware(async (req, res) => {
+      const bookingId = req.params.abookingId
+      const systemToken = await signInService.getClientCredentialsTokens(req.user.username)
+      const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, systemToken.token)
+      const flash = req.flash('errorObject')
+      const errorObject = flash[0] || {}
+
+      res.render('admin/licences/resetLicence', { prisonerInfo, errorObject })
+    })
+  )
+
+  router.post(
+    '/events/:abookingId/reset-licence',
+    asyncMiddleware(async (req, res) => {
+      const bookingId = req.params.abookingId
+      const { reset } = req.body
+      const { username } = req.user
+
+      if (!reset) {
+        req.flash('errorObject', { reset: 'Select Yes or No' })
+        return res.redirect(`/admin/licences/events/${bookingId}/reset-licence`)
+      }
+
+      if (reset === 'Yes') {
+        await licenceService.resetLicence(bookingId)
+        await audit.record('RESET', username, { bookingId })
+        await nomisPushService.resetHDC(bookingId, username)
+      }
+      return res.redirect(`/admin/licences/${bookingId}`)
     })
   )
 

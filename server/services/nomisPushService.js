@@ -43,9 +43,26 @@ module.exports = (nomisClientBuilder, signInService) => {
     }
   }
 
+  async function resetHDC(bookingId, username) {
+    const systemTokens = await signInService.getClientCredentialsTokens(username)
+    const nomisClient = nomisClientBuilder(systemTokens.token)
+
+    logger.info(`Resetting checks passed to null for bookingId: ${bookingId}`)
+    try {
+      return await nomisClient.resetHDC(bookingId)
+    } catch (error) {
+      if (error.status === 409) {
+        logger.error(`409 CONFLICT when deleting checks passed for booking id: ${bookingId}`)
+        throw nomisPushError('Checks passed could not be deleted')
+      }
+      throw error
+    }
+  }
+
   return {
     pushStatus,
     pushChecksPassed,
+    resetHDC,
   }
 }
 

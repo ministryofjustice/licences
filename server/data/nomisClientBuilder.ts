@@ -221,6 +221,11 @@ export = (token) => {
       return nomisRestClient.putResource(path, body)
     },
 
+    async resetHDC(bookingId: number): Promise<void> {
+      const path = `/api/offender-sentences/booking/${bookingId}/home-detention-curfews/latest/checks-passed`
+      return nomisRestClient.deleteResource(path)
+    },
+
     getRecentMovements(offenderNo) {
       const path = `/api/movements/offenders`
       const headers = { 'Page-Limit': 10000 }
