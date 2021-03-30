@@ -21,6 +21,8 @@ describe('/forms/', () => {
     CREATION_DATE: '25th June 2019',
     SENT_HDCED: '23rd August 2019',
     SENT_CRD: '15th October 2019',
+    CURFEW_HOURS: { daySpecificInputs: 'Yes' },
+    CURFEW_FIRST: { firstNightFrom: '' },
   }
   const prisoner = {
     lastName: 'LAST',
@@ -234,6 +236,30 @@ describe('/forms/', () => {
       expect(pdfText).toContain('DOB01/01/2001')
       expect(pdfText).toContain('STANDARD CONDITION')
       expect(pdfText).toContain('ADDITIONAL CONDITION')
+    })
+    test('Generates a PDF of licence_variation form - acquisitive question text appears in the output', async () => {
+      app = createApp('roUser')
+
+      const res = await request(app).get('/hdc/forms/licence_variation/1')
+
+      const pdf = await pdfParse(res.body)
+      const pdfText = pdf.text.replace(/([\t\n])/gm, ' ')
+
+      expect(pdfText).toContain(
+        'Is the prisoner partaking in the Acquisitive Crime project with a mandatory trail monitoring   condition? Yes No'
+      )
+    })
+    test('Generates a PDF of agency_notification form - acquisitive question text appears in the output', async () => {
+      app = createApp('roUser')
+
+      const res = await request(app).get('/hdc/forms/agency_notification/1')
+
+      const pdf = await pdfParse(res.body)
+      const pdfText = pdf.text.replace(/([\t\n])/gm, ' ')
+
+      expect(pdfText).toContain(
+        'Is the prisoner partaking in the Acquisitive Crime project with a mandatory trail monitoring   condition? Yes No'
+      )
     })
   })
 
