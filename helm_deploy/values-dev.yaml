@@ -19,7 +19,7 @@ env:
   DOMAIN:
   NOMIS_API_URL: "https://api-dev.prison.service.justice.gov.uk"
   NOMIS_AUTH_URL: "https://sign-in-dev.hmpps.service.justice.gov.uk/auth"
-  GLOBAL_SEARCH_URL: "https://whereabouts-dev.prison.service.justice.gov.uk/global-search"
+  GLOBAL_SEARCH_URL: "https://digital-dev.prison.service.justice.gov.uk/global-search"
   AUTH_STRATEGY: "oauth"
   PUSH_TO_NOMIS: "yes"
   REMINDERS_SCHEDULE_RO: "0 1 * * 1-5"
