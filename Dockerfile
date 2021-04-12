@@ -1,18 +1,23 @@
-FROM node:14.15-buster as builder
+FROM node:14.16-buster-slim as base
+
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y curl wget gnupg sudo libxss1 dumb-init fonts-ipafont-gothic fonts-wqy-zenhei fonts-thai-tlwg fonts-kacst fonts-freefont-ttf && \
+    wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add - && \
+    sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' && \
+    apt-get update && \
+    apt-get install -y google-chrome-beta  --no-install-recommends && \
+    apt-get autoremove -y && \
+    rm -rf /var/lib/apt/lists/*
+
+FROM base as builder
 
 ARG BUILD_NUMBER
 ARG GIT_REF
 
-RUN apt-get update && \
-    apt-get upgrade -y
-
 WORKDIR /app
 
-RUN apt-get install -y curl
-
-RUN curl https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem \
-    > /app/root.cert
-
+RUN curl https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem > /app/root.cert
 
 COPY . .
 
@@ -20,23 +25,14 @@ RUN PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true npm ci --no-audit && \
     npm run build && \
     export BUILD_NUMBER=${BUILD_NUMBER:-1_0_0} && \
     export GIT_REF=${GIT_REF:-dummy} && \
-    npm run record-build-info
+    npm run record-build-info && \
+    npm prune --production
 
-RUN npm prune --production
-
-FROM node:14.15-buster-slim
+FROM base as release
 LABEL maintainer="HMPPS Digital Studio <info@digital.justice.gov.uk>"
 
-RUN apt-get update && \
-    apt-get upgrade -y
-
-RUN apt-get update \
-    && apt-get install -y chromium=88.0.4324.182-1~deb10u1 libxss1 dumb-init --no-install-recommends \
-    && apt-get autoremove -y \
-    && rm -rf /var/lib/apt/lists/*
-
 RUN addgroup --gid 2000 --system appgroup && \
-    adduser --uid 2000 --system appuser --gid 2000
+    adduser  --uid 2000 --system appuser --gid 2000
 
 ENV TZ=Europe/London
 RUN ln -snf "/usr/share/zoneinfo/$TZ" /etc/localtime && echo "$TZ" > /etc/timezone
@@ -68,7 +64,7 @@ ENV PORT=3000
 EXPOSE 3000
 
 ENV NODE_ENV='production' \
-    CHROME_EXECUTABLE='/usr/bin/chromium'
+    CHROME_EXECUTABLE='/usr/bin/google-chrome'
 
 USER 2000
 
