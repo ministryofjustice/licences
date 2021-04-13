@@ -1,4 +1,4 @@
-FROM node:14.16-buster-slim as base
+FROM node:14.16-buster-slim as sharedbase
 
 RUN apt-get update && \
     apt-get upgrade -y && \
@@ -10,7 +10,7 @@ RUN apt-get update && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
-FROM base as builder
+FROM sharedbase as builder
 
 ARG BUILD_NUMBER
 ARG GIT_REF
@@ -28,7 +28,7 @@ RUN PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true npm ci --no-audit && \
     npm run record-build-info && \
     npm prune --production
 
-FROM base as release
+FROM sharedbase as release
 LABEL maintainer="HMPPS Digital Studio <info@digital.justice.gov.uk>"
 
 RUN addgroup --gid 2000 --system appgroup && \
