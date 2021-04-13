@@ -1,4 +1,31 @@
-FROM node:14.16-buster-slim as sharedbase
+FROM node:14.16-buster-slim as builder
+
+ARG BUILD_NUMBER
+ARG GIT_REF
+
+RUN apt-get update && \
+    apt-get upgrade -y
+
+WORKDIR /app
+
+RUN apt-get install -y curl
+
+RUN curl https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem \
+    > /app/root.cert
+
+
+COPY . .
+
+RUN PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true npm ci --no-audit && \
+    npm run build && \
+    export BUILD_NUMBER=${BUILD_NUMBER:-1_0_0} && \
+    export GIT_REF=${GIT_REF:-dummy} && \
+    npm run record-build-info
+
+RUN npm prune --production
+
+FROM node:14.16-buster-slim
+LABEL maintainer="HMPPS Digital Studio <info@digital.justice.gov.uk>"
 
 RUN apt-get update && \
     apt-get upgrade -y && \
@@ -10,29 +37,8 @@ RUN apt-get update && \
     apt-get autoremove -y && \
     rm -rf /var/lib/apt/lists/*
 
-FROM sharedbase as builder
-
-ARG BUILD_NUMBER
-ARG GIT_REF
-
-WORKDIR /app
-
-RUN curl https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem > /app/root.cert
-
-COPY . .
-
-RUN PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true npm ci --no-audit && \
-    npm run build && \
-    export BUILD_NUMBER=${BUILD_NUMBER:-1_0_0} && \
-    export GIT_REF=${GIT_REF:-dummy} && \
-    npm run record-build-info && \
-    npm prune --production
-
-FROM sharedbase as release
-LABEL maintainer="HMPPS Digital Studio <info@digital.justice.gov.uk>"
-
 RUN addgroup --gid 2000 --system appgroup && \
-    adduser  --uid 2000 --system appuser --gid 2000
+    adduser --uid 2000 --system appuser --gid 2000
 
 ENV TZ=Europe/London
 RUN ln -snf "/usr/share/zoneinfo/$TZ" /etc/localtime && echo "$TZ" > /etc/timezone
