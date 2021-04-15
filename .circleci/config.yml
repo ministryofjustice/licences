@@ -5,6 +5,14 @@ orbs:
   browser-tools: circleci/browser-tools@1.1.1
 
 executors:
+  javascript-integration-tests:
+    docker:
+      - image: thecodingmachine/gotenberg:6
+        user: gotenberg
+        environment:
+          DEFAULT_LISTEN_PORT: 3001
+  working_directory: ~/app
+
   integration-tests:
     docker:
       - image: cimg/node:14.15-browsers
@@ -21,10 +29,6 @@ executors:
       - image: bitnami/redis:5.0
         environment:
           ALLOW_EMPTY_PASSWORD=yes
-      - image: thecodingmachine/gotenberg:6
-        name: gotenberg
-        environment:
-          DEFAULT_LISTEN_PORT: 3001
     working_directory: ~/app
 
 jobs:
@@ -79,6 +83,18 @@ jobs:
       - store_artifacts:
           path: test-results/unit-test-reports.html
 
+  javascript_integration_test:
+    executor: javascript-integration-tests
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/app
+      - run:
+          name: Run Javascript Integration Tests
+          command: npm run integrationTest
+      - store_artifacts:
+          path: test-results/unit-test-reports.html
+
   integration_test:
     executor: integration-tests
     environment:
@@ -115,9 +131,6 @@ jobs:
       - restore_cache:
           key: gradle-cache-{{ checksum "licences-specs/build.gradle" }}
       - run:
-          name: Run Javascript Integration Tests
-          command: npm run integrationTest
-      - run:
           name: Run Integration Tests
           command: ./gradlew mockTest --info
       - save_cache:
@@ -128,8 +141,6 @@ jobs:
           key: gradle-cache-{{ checksum "licences-specs/build.gradle" }}
           paths:
             - /home/circleci/.gradle/caches
-      - store_artifacts:
-          path: test-results/unit-test-reports.html
       - store_artifacts:
           path: licences-specs/build/reports
           destination: integration/spock
@@ -148,6 +159,9 @@ workflows:
           tags:
             ignore: /.*/
       - unit_test:
+          requires:
+            - build
+      - javascript_integration_test:
           requires:
             - build
       - integration_test:
