@@ -115,8 +115,8 @@ jobs:
       - restore_cache:
           key: gradle-cache-{{ checksum "licences-specs/build.gradle" }}
       - run:
-          name: Run javascript Integration Tests
-          command: npm run integrationTests
+          name: Run Javascript Integration Tests
+          command: npm run integrationTest
       - run:
           name: Run Integration Tests
           command: ./gradlew mockTest --info
