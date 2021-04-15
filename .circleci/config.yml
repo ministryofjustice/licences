@@ -7,6 +7,7 @@ orbs:
 executors:
   javascript-integration-tests:
     docker:
+      - image: cimg/node:14.15-browsers
       - image: thecodingmachine/gotenberg:6
         user: gotenberg
         environment:
