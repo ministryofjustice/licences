@@ -6,7 +6,7 @@ const standardRouter = require('../../server/routes/routeWorkers/standardRouter'
 const createRoute = require('../../server/routes/forms')
 const NullTokenVerifier = require('../../server/authentication/tokenverifier/NullTokenVerifier')
 
-describe('/forms/', () => {
+describe.skip('/forms/', () => {
   let licenceService
   let prisonerService
   let formService

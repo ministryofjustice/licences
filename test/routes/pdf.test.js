@@ -42,7 +42,7 @@ const valuesWithoutMissing = {
   missing: {},
 }
 
-describe('PDF:', () => {
+describe.skip('PDF:', () => {
   const prisonerServiceStub = createPrisonerServiceStub()
   const licenceServiceStub = createLicenceServiceStub()
   const pdfServiceStub = createPdfServiceStub()

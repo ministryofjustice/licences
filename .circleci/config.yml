@@ -21,6 +21,8 @@ executors:
       - image: bitnami/redis:5.0
         environment:
           ALLOW_EMPTY_PASSWORD=yes
+      - image: thecodingmachine/gotenberg:6
+        name: gotenberg
     working_directory: ~/app
 
 jobs:
@@ -85,6 +87,8 @@ jobs:
       DELIUS_API_URL: http://localhost:8080/communityapi
       PROBATION_TEAMS_API_URL: http://localhost:8080/probationteams
       TOKENVERIFICATION_API_ENABLED: false
+      GOTENBERG_API_URL: http://gotenberg:3000
+      HDC_URL: http://host.docker.internal:3000
     steps:
       - browser-tools/install-browser-tools
       - checkout
