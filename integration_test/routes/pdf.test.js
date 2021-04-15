@@ -1,14 +1,14 @@
 const request = require('supertest')
 const pdfParse = require('pdf-parse')
-const { mockAudit } = require('../mockClients')
-const { appSetup } = require('../supertestSetup')
+const { mockAudit } = require('../../test/mockClients')
+const { appSetup } = require('../../test/supertestSetup')
 
 const {
   createPdfServiceStub,
   createPrisonerServiceStub,
   createLicenceServiceStub,
   createSignInServiceStub,
-} = require('../mockServices')
+} = require('../../test/mockServices')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createPdfRouter = require('../../server/routes/pdf')
@@ -42,7 +42,7 @@ const valuesWithoutMissing = {
   missing: {},
 }
 
-describe.skip('PDF:', () => {
+describe('PDF:', () => {
   const prisonerServiceStub = createPrisonerServiceStub()
   const licenceServiceStub = createLicenceServiceStub()
   const pdfServiceStub = createPdfServiceStub()

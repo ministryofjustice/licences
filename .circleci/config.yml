@@ -23,6 +23,8 @@ executors:
           ALLOW_EMPTY_PASSWORD=yes
       - image: thecodingmachine/gotenberg:6
         name: gotenberg
+        environment:
+          DEFAULT_LISTEN_PORT: 3001
     working_directory: ~/app
 
 jobs:
@@ -87,8 +89,8 @@ jobs:
       DELIUS_API_URL: http://localhost:8080/communityapi
       PROBATION_TEAMS_API_URL: http://localhost:8080/probationteams
       TOKENVERIFICATION_API_ENABLED: false
-      GOTENBERG_API_URL: http://gotenberg:3000
-      HDC_URL: http://host.docker.internal:3000
+      GOTENBERG_API_URL: http://localhost:3001
+      HDC_URL: http://localhost:3000
     steps:
       - browser-tools/install-browser-tools
       - checkout
@@ -113,6 +115,9 @@ jobs:
       - restore_cache:
           key: gradle-cache-{{ checksum "licences-specs/build.gradle" }}
       - run:
+          name: Run javascript Integration Tests
+          command: npm run integrationTests
+      - run:
           name: Run Integration Tests
           command: ./gradlew mockTest --info
       - save_cache:
@@ -123,6 +128,8 @@ jobs:
           key: gradle-cache-{{ checksum "licences-specs/build.gradle" }}
           paths:
             - /home/circleci/.gradle/caches
+      - store_artifacts:
+          path: test-results/unit-test-reports.html
       - store_artifacts:
           path: licences-specs/build/reports
           destination: integration/spock

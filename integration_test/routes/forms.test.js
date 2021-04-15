@@ -1,12 +1,12 @@
 const pdfParse = require('pdf-parse')
 const request = require('supertest')
-const { appSetup } = require('../supertestSetup')
-const { createSignInServiceStub } = require('../mockServices')
+const { appSetup } = require('../../test/supertestSetup')
+const { createSignInServiceStub } = require('../../test/mockServices')
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/forms')
 const NullTokenVerifier = require('../../server/authentication/tokenverifier/NullTokenVerifier')
 
-describe.skip('/forms/', () => {
+describe('/forms/', () => {
   let licenceService
   let prisonerService
   let formService

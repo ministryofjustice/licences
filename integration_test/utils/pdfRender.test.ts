@@ -6,7 +6,7 @@ import pdfParse from 'pdf-parse'
 import pdfRenderer from '../../server/utils/renderPdf'
 import { GotenbergClient } from '../../server/data/gotenbergClient'
 
-describe.skip('pdfRenderer', () => {
+describe('pdfRenderer', () => {
   let app
 
   beforeEach(() => {

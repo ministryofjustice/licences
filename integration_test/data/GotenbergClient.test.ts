@@ -2,7 +2,7 @@ import pdfParse from 'pdf-parse'
 
 import { GotenbergClient } from '../../server/data/gotenbergClient'
 
-describe.skip('Gotenberg API', () => {
+describe('Gotenberg API', () => {
   const client = new GotenbergClient('http://localhost:3001')
   describe('renderPdf from string', () => {
     it('should render', async () => {
