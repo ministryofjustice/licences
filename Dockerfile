@@ -1,10 +1,10 @@
-FROM node:14.16-buster as common
-
-RUN apt-get update && \
-    apt-get upgrade -y
+FROM node:14.16-buster as builder
 
 ARG BUILD_NUMBER
 ARG GIT_REF
+
+RUN apt-get update && \
+    apt-get upgrade -y
 
 WORKDIR /app
 
@@ -22,8 +22,11 @@ RUN npm ci --no-audit && \
 
 RUN npm prune --production
 
-FROM node:14.16-buster-slim as release
+FROM node:14.16-buster-slim
 LABEL maintainer="HMPPS Digital Studio <info@digital.justice.gov.uk>"
+
+RUN apt-get update && \
+    apt-get upgrade -y
 
 RUN addgroup --gid 2000 --system appgroup && \
     adduser --uid 2000 --system appuser --gid 2000
@@ -32,7 +35,9 @@ ENV TZ=Europe/London
 RUN ln -snf "/usr/share/zoneinfo/$TZ" /etc/localtime && echo "$TZ" > /etc/timezone
 
 # Create app directory
-RUN mkdir /app && chown appuser:appgroup /app
+RUN mkdir /app && \
+    chown appuser:appgroup /app
+
 USER 2000
 WORKDIR /app
 
