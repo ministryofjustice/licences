@@ -153,4 +153,10 @@ env:
 
   - name: REDIS_TLS_ENABLED
     value: "true"
+
+  - name: HDC_URL
+    value: "http://licences:80"
+
+  - name: GOTENBERG_API_URL
+    value: "http://licences-gotenberg:3000"
 {{- end -}}
