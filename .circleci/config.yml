@@ -183,10 +183,10 @@ workflows:
           env: "dev"
           context:
             - hmpps-common-vars
-          filters:
-            branches:
-              only:
-                - main
+#          filters:
+#            branches:
+#              only:
+#                - main
           requires:
             - helm_lint
             - unit_test
