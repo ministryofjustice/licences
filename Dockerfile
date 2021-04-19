@@ -1,9 +1,8 @@
-FROM node:14.16-buster-slim as common
+FROM node:14.16-buster as common
 
 RUN apt-get update && \
     apt-get upgrade -y
 
-FROM common as builder
 ARG BUILD_NUMBER
 ARG GIT_REF
 
@@ -23,7 +22,7 @@ RUN npm ci --no-audit && \
 
 RUN npm prune --production
 
-FROM common as release
+FROM node:14.16-buster-slim as release
 LABEL maintainer="HMPPS Digital Studio <info@digital.justice.gov.uk>"
 
 RUN addgroup --gid 2000 --system appgroup && \
