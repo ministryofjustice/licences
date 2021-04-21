@@ -24,7 +24,7 @@ services:
       - '6379:6379'
 
   gotenberg:
-    image: thecodingmachine/gotenberg:6
+    image: thecodingmachine/gotenberg:6.4.3
     networks:
       - hmpps
     container_name: gotenberg
