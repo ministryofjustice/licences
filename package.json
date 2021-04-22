@@ -17,7 +17,8 @@
     "start": "node dist/server.js",
     "start:dev": "npm run build && concurrently -k -p \"[{name}]\" -n \"Views,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-views\" \"npm run watch-ts\" \"npm run watch-node\"",
     "start-mocks": "node mock-server/start.js",
-    "test": "jest --runInBand",
+    "test": "jest --runInBand --testPathPattern=/test/.*",
+    "integrationTest": "jest --runInBand --testPathPattern=/integration_test/.*",
     "lint": "eslint .",
     "typecheck": "tsc",
     "record-build-info": "node ./bin/record-build-info",
@@ -64,7 +65,8 @@
       "server/**/*.{ts,js,jsx,mjs}"
     ],
     "testMatch": [
-      "<rootDir>/test/**/?(*.)(spec|test).{ts,js,jsx,mjs}"
+      "<rootDir>/test/**/?(*.)(spec|test).{ts,js,jsx,mjs}",
+      "<rootDir>/integration_test/**/?(*.)(spec|test).{ts,js,jsx,mjs}"
     ],
     "testEnvironment": "node",
     "reporters": [
@@ -132,7 +134,6 @@
     "pg-format": "^1.0.4",
     "poll-endpoint-for": "0.0.7",
     "pug": "3.0.2",
-    "puppeteer": "7.1.0",
     "querystring": "^0.2.1",
     "ramda": "^0.27.1",
     "redis": "3.0.2",
@@ -148,7 +149,6 @@
   "devDependencies": {
     "@types/jest": "26.0.20",
     "@types/node": "14.14.31",
-    "@types/puppeteer": "^5.4.3",
     "@typescript-eslint/eslint-plugin": "^4.15.1",
     "@typescript-eslint/parser": "^4.15.1",
     "concurrently": "^6.0.0",

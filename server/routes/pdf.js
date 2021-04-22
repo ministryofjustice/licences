@@ -7,7 +7,7 @@ const { templates, templatesForNewOffence } = require('./config/pdf')
 const versionInfo = require('../utils/versionInfo')
 const { firstItem, getIn, isEmpty } = require('../utils/functionalHelpers')
 const {
-  port,
+  gotenberg: { hdcUrl },
   pdf: {
     licences: { pdfOptions },
   },
@@ -153,14 +153,14 @@ module.exports = ({ pdfService, prisonerService }) => (router, audited) => {
       const pdfData = await pdfService.getPdfLicenceData(bookingId, updatedDecoratedLicence, token)
 
       const filename = `${pdfData.values.OFF_NOMS}.pdf`
-      const headerTemplate = getHeader(pdfData)
-      const footerTemplate = getFooter(pdfData, templateName)
+      const headerHtml = getHeader(pdfData)
+      const footerHtml = getFooter(pdfData, templateName)
       const qualifiedTemplateName = `${postRelease ? 'vary_' : ''}${templateName}`
 
       return res.renderPDF(
         `licences/${qualifiedTemplateName}`,
-        { port, ...pdfData.values },
-        { filename, pdfOptions: { ...pdfOptions, headerTemplate, footerTemplate } }
+        { hdcUrl, ...pdfData.values },
+        { filename, pdfOptions: { headerHtml, footerHtml, ...pdfOptions } }
       )
     })
   )

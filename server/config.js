@@ -98,6 +98,25 @@ module.exports = {
     },
   },
 
+  gotenberg: {
+    apiUrl: get('GOTENBERG_API_URL', 'http://localhost:3001'),
+    /*
+     The HTML documents sent to Gotenberg for PDF conversion contain links to css files served by the HDC service.
+     HDC_URL should be the base url inserted into the CSS links so that Gotenberg can fetch these CSS files.
+
+     If you're running Gotenberg in a docker container on a mac, and running the licences service on the host (the mac)
+     then the Gotenberg container will find the licences service at host.docker.internal.  This is a standard Docker feature.
+
+     You can check this using curl or ping from within a handy container:
+
+     docker run --rm -it alpine sh
+     ping host.docker.internal
+     curl http://host.docker.internal:3000
+
+     */
+    hdcUrl: get('HDC_URL', 'http://host.docker.internal:3000'),
+  },
+
   tokenVerification: {
     url: get('TOKENVERIFICATION_API_URL', 'http://localhost:8100', { requireInProduction: true }),
     timeout: {
@@ -124,14 +143,10 @@ module.exports = {
     licences: {
       taggingCompanyTelephone: get('TAGGING_CO_PHONE', '0800 137 291'),
       pdfOptions: {
-        format: 'A4',
-        margin: {
-          top: '80px',
-          bottom: '70px',
-          left: '50px',
-          right: '30px',
-        },
-        displayHeaderFooter: true,
+        marginTop: '0.8',
+        marginBottom: '0.7',
+        marginLeft: '0.55',
+        marginRight: '0.35',
       },
     },
     forms: {
@@ -154,13 +169,10 @@ module.exports = {
         licence_variation: 'Licence variation',
       },
       pdfOptions: {
-        format: 'A4',
-        margin: {
-          top: '80px',
-          bottom: '70px',
-          left: '50px',
-          right: '30px',
-        },
+        marginTop: '0.8',
+        marginBottom: '0.7',
+        marginLeft: '0.55',
+        marginRight: '0.35',
       },
     },
   },
@@ -190,8 +202,6 @@ module.exports = {
     autostart: get('SCHEDULED_JOBS_AUTOSTART', 'no') === 'yes',
     overlapTimeout: get('SCHEDULED_JOBS_OVERLAP', 5000),
   },
-
-  chromeExecutable: get('CHROME_EXECUTABLE', null, { requireInProduction: true }),
 
   links: {
     exitUrl: get('EXIT_LOCATION_URL', '/', { requireInProduction: true }),

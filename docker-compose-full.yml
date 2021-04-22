@@ -8,6 +8,7 @@ version: '3.8'
 services:
   licences:
     build: .
+#    image: quay.io/hmpps/licences:latest
     deploy:
       resources:
         limits:
@@ -30,6 +31,8 @@ services:
       NOMIS_API_URL: "http://stubs:3000/elite2api"
       DELIUS_API_URL: "http://stubs:3000/communityapi"
       PROBATION_TEAMS_API_URL: "http://stubs:3000/probationteams"
+      HDC_URL: "http://licences:3000"
+      GOTENBERG_API_URL: "http://gotenberg:3000"
       PORT: "3000"
       DB_USER: "licences"
       DB_PASS: "licences"
@@ -70,6 +73,15 @@ services:
     container_name: licence-redis
     environment:
       - ALLOW_EMPTY_PASSWORD=yes
+
+  gotenberg:
+    image: thecodingmachine/gotenberg:6.4.3
+    networks:
+      - hmpps
+    container_name: gotenberg
+    restart: always
+    healthcheck:
+      test: [ 'CMD', 'curl', '-f', 'http://localhost:3001/ping' ]
 
   hmpps-auth:
     image: quay.io/hmpps/hmpps-auth:latest

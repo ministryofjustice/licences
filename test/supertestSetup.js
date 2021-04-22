@@ -9,6 +9,7 @@ const NullTokenVerifier = require('../server/authentication/tokenverifier/NullTo
 
 const { createSignInServiceStub, createPrisonerServiceStub, createLicenceServiceStub } = require('./mockServices')
 const standardRouter = require('../server/routes/routeWorkers/standardRouter')
+const { GotenbergClient } = require('../server/data/gotenbergClient')
 const { links } = require('../server/config')
 
 function testFormPageGets(app, routes, licenceServiceStub) {
@@ -108,8 +109,7 @@ const appSetup = (route, user = 'caUser', prefix = '', flash = jest.fn().mockRet
     next()
   })
   app.use(cookieSession({ keys: [''] }))
-  // app.use(flash())
-  app.use(pdfRenderer())
+  app.use(pdfRenderer(new GotenbergClient('http://localhost:3001')))
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({ extended: false }))
   app.use(prefix, route)

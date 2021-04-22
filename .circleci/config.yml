@@ -5,9 +5,18 @@ orbs:
   browser-tools: circleci/browser-tools@1.1.1
 
 executors:
+  javascript-integration-tests:
+    docker:
+      - image: cimg/node:14.16-browsers
+      - image: thecodingmachine/gotenberg:6
+        user: gotenberg
+        environment:
+          DEFAULT_LISTEN_PORT: 3001
+    working_directory: ~/app
+
   integration-tests:
     docker:
-      - image: cimg/node:14.15-browsers
+      - image: cimg/node:14.16-browsers
       - image: circleci/postgres:10.13-ram
         environment:
           POSTGRES_USER: licences
@@ -27,7 +36,7 @@ jobs:
   build:
     executor:
       name: hmpps/node
-      tag: 14.15-browsers
+      tag: 14.16-browsers
     steps:
       - checkout
       - restore_cache:
@@ -62,7 +71,7 @@ jobs:
   unit_test:
     executor:
       name: hmpps/node
-      tag: 14.15-browsers
+      tag: 14.16-browsers
     steps:
       - checkout
       - restore_cache:
@@ -70,6 +79,20 @@ jobs:
       - run:
           name: unit tests
           command: npm run test
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: test-results/unit-test-reports.html
+
+  javascript_integration_test:
+    executor: javascript-integration-tests
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/app
+      - run:
+          name: Javascript Integration Tests
+          command: npm run integrationTest
       - store_test_results:
           path: test-results
       - store_artifacts:
@@ -85,6 +108,8 @@ jobs:
       DELIUS_API_URL: http://localhost:8080/communityapi
       PROBATION_TEAMS_API_URL: http://localhost:8080/probationteams
       TOKENVERIFICATION_API_ENABLED: false
+      GOTENBERG_API_URL: http://localhost:3001
+      HDC_URL: http://localhost:3000
     steps:
       - browser-tools/install-browser-tools
       - checkout
@@ -137,6 +162,9 @@ workflows:
           tags:
             ignore: /.*/
       - unit_test:
+          requires:
+            - build
+      - javascript_integration_test:
           requires:
             - build
       - integration_test:

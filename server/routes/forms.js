@@ -3,6 +3,7 @@ const logger = require('../../log.js')
 const { asyncMiddleware } = require('../utils/middleware')
 const {
   port,
+  gotenberg: { hdcUrl },
   pdf: {
     forms: { formTemplates, formsDateFormat, pdfOptions },
   },
@@ -41,7 +42,7 @@ module.exports = ({ formService }) => (router) => {
         {}
       return res.renderPDF(
         'forms/curfewAddress',
-        { ...pageData, approvedPremisesAddress, port, completionDate },
+        { ...pageData, approvedPremisesAddress, hdcUrl, port, completionDate },
         { filename, pdfOptions }
       )
     })
@@ -82,7 +83,7 @@ module.exports = ({ formService }) => (router) => {
         const filename = `${prisoner.offenderNo}.pdf`
         const pdf = res.renderPDF(
           `forms/${templateName}`,
-          { ...pageData, ...curfewData, port },
+          { ...pageData, ...curfewData, hdcUrl },
           { filename, pdfOptions }
         )
 

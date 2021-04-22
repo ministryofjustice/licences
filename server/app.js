@@ -64,6 +64,7 @@ const reviewRouter = require('./routes/review')
 const reportingRouter = require('./routes/reporting')
 const riskRouter = require('./routes/risk')
 const victimRouter = require('./routes/victim')
+const { GotenbergClient } = require('./data/gotenbergClient')
 const { varyRouter } = require('./routes/vary')
 
 const version = moment.now().toString()
@@ -109,8 +110,7 @@ module.exports = function createApp({
   app.set('views', path.join(__dirname, './views'))
   app.set('view engine', 'pug')
 
-  const { chromeExecutable: executablePath } = config
-  app.use(pdfRenderer({ executablePath, args: ['--no-sandbox', '--disable-setuid-sandbox'] }))
+  app.use(pdfRenderer(new GotenbergClient(config.gotenberg.apiUrl)))
 
   // Server Configuration
   app.set('port', config.port)
