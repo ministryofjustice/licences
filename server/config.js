@@ -143,10 +143,10 @@ module.exports = {
     licences: {
       taggingCompanyTelephone: get('TAGGING_CO_PHONE', '0800 137 291'),
       pdfOptions: {
-        marginTop: '0.9',
+        marginTop: '0.8',
         marginBottom: '0.7',
-        marginLeft: '0.6',
-        marginRight: '0.6',
+        marginLeft: '0.55',
+        marginRight: '0.35',
       },
     },
     forms: {
@@ -169,10 +169,10 @@ module.exports = {
         licence_variation: 'Licence variation',
       },
       pdfOptions: {
-        marginTop: '0.9',
+        marginTop: '0.8',
         marginBottom: '0.7',
-        marginLeft: '0.6',
-        marginRight: '0.6',
+        marginLeft: '0.55',
+        marginRight: '0.35',
       },
     },
   },
