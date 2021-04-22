@@ -7,7 +7,7 @@ orbs:
 executors:
   javascript-integration-tests:
     docker:
-      - image: cimg/node:14.15-browsers
+      - image: cimg/node:14.16-browsers
       - image: thecodingmachine/gotenberg:6
         user: gotenberg
         environment:
@@ -16,7 +16,7 @@ executors:
 
   integration-tests:
     docker:
-      - image: cimg/node:14.15-browsers
+      - image: cimg/node:14.16-browsers
       - image: circleci/postgres:10.13-ram
         environment:
           POSTGRES_USER: licences
@@ -36,7 +36,7 @@ jobs:
   build:
     executor:
       name: hmpps/node
-      tag: 14.15-browsers
+      tag: 14.16-browsers
     steps:
       - checkout
       - restore_cache:
@@ -71,7 +71,7 @@ jobs:
   unit_test:
     executor:
       name: hmpps/node
-      tag: 14.15-browsers
+      tag: 14.16-browsers
     steps:
       - checkout
       - restore_cache:
