@@ -2,7 +2,7 @@ import { CommunityOrPrisonOffenderManager, DeliusClient, StaffDetails } from '..
 import { ResponsibleOfficer, ResponsibleOfficerResult, Result } from '../../types/licences'
 
 const setCase = require('case')
-const logger = require('../../log.js')
+const logger = require('../../log')
 const { NO_OFFENDER_NUMBER, NO_COM_ASSIGNED, STAFF_NOT_PRESENT } = require('./serviceErrors')
 
 // eslint-disable-next-line import/prefer-default-export

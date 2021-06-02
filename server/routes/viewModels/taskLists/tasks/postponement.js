@@ -8,20 +8,22 @@ const getLabel = (postponed, confiscationOrder) => {
   return "Postpone the case if you're waiting for information on risk management"
 }
 
-const task = (title) => ({ decisions }) => {
-  const { postponed, confiscationOrder } = decisions
+const task =
+  (title) =>
+  ({ decisions }) => {
+    const { postponed, confiscationOrder } = decisions
 
-  return {
-    title,
-    label: getLabel(postponed, confiscationOrder),
-    action: {
-      text: postponed ? 'Resume' : 'Postpone',
-      href: '/hdc/finalChecks/postpone/',
-      type: 'btn',
-      dataQa: 'postpone',
-    },
+    return {
+      title,
+      label: getLabel(postponed, confiscationOrder),
+      action: {
+        text: postponed ? 'Resume' : 'Postpone',
+        href: '/hdc/finalChecks/postpone/',
+        type: 'btn',
+        dataQa: 'postpone',
+      },
+    }
   }
-}
 
 module.exports = {
   postpone: task('Postpone'),

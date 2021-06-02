@@ -8,7 +8,7 @@
  * @typedef {import("../../types/licences").ResponsibleOfficerAndContactDetails} ResponsibleOfficerAndContactDetails
  * @typedef {import("../services/notifications/roNotificationSender").RoNotificationSender} RoNotificationSender
  */
-const logger = require('../../log.js')
+const logger = require('../../log')
 const { isEmpty, unwrapResult } = require('../utils/functionalHelpers')
 const { NOTIFICATION_DATA_NOT_FOUND } = require('./serviceErrors')
 

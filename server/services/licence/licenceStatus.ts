@@ -156,14 +156,8 @@ function getRoStageState(licence) {
   } = getCurfewAddressReviewState(licence)
   const { curfewHours } = getCurfewHoursState(licence)
   const { reportingInstructions } = getReportingInstructionsState(licence)
-  const {
-    licenceConditions,
-    standardOnly,
-    additional,
-    bespoke,
-    bespokeRejected,
-    bespokePending,
-  } = getLicenceConditionsState(licence)
+  const { licenceConditions, standardOnly, additional, bespoke, bespokeRejected, bespokePending } =
+    getLicenceConditionsState(licence)
   const { bassAreaCheck } = getBassAreaState(licence)
 
   return {

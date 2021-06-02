@@ -13,8 +13,7 @@ module.exports = {
 
   async getMailboxes(establishment, role) {
     const query = {
-      text:
-        'select id, email, establishment, role, name from notifications_config where establishment = $1 and role = $2  order by establishment ASC',
+      text: 'select id, email, establishment, role, name from notifications_config where establishment = $1 and role = $2  order by establishment ASC',
       values: [establishment, role],
     }
 

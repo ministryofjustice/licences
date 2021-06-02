@@ -3,89 +3,91 @@ const createStandardRoutes = require('./routeWorkers/standard')
 const { getIn, mergeWithRight, omit, isEmpty, isYes } = require('../utils/functionalHelpers')
 const formConfig = require('./config/proposedAddress')
 
-module.exports = ({ licenceService, nomisPushService }) => (router, audited, { pushToNomis }) => {
-  const standard = createStandardRoutes({ formConfig, licenceService, sectionName: 'proposedAddress' })
+module.exports =
+  ({ licenceService, nomisPushService }) =>
+  (router, audited, { pushToNomis }) => {
+    const standard = createStandardRoutes({ formConfig, licenceService, sectionName: 'proposedAddress' })
 
-  router.get('/curfewAddressChoice/:action/:bookingId', asyncMiddleware(getChoice))
-  router.get('/curfewAddressChoice/:bookingId', asyncMiddleware(getChoice))
+    router.get('/curfewAddressChoice/:action/:bookingId', asyncMiddleware(getChoice))
+    router.get('/curfewAddressChoice/:bookingId', asyncMiddleware(getChoice))
 
-  function getChoice(req, res) {
-    const { bookingId } = req.params
-    const { licence } = res.locals
-    const data = { decision: getCurfewAddressChoice(getIn(licence, ['licence'])) }
-    const viewData = { data, errorObject: {}, bookingId }
-
-    return res.render('proposedAddress/curfewAddressChoice', viewData)
-  }
-
-  router.post(
-    '/curfewAddressChoice/:bookingId',
-    audited,
-    asyncMiddleware(async (req, res) => {
+    function getChoice(req, res) {
       const { bookingId } = req.params
-      const { decision } = req.body
       const { licence } = res.locals
+      const data = { decision: getCurfewAddressChoice(getIn(licence, ['licence'])) }
+      const viewData = { data, errorObject: {}, bookingId }
 
-      const bassReferral = getBassReferralContent(decision, licence)
+      return res.render('proposedAddress/curfewAddressChoice', viewData)
+    }
 
-      const proposedAddress = getIn(licence, ['licence', 'proposedAddress'])
-      const newProposedAddress = mergeWithRight(proposedAddress, proposedAddressContents[decision])
+    router.post(
+      '/curfewAddressChoice/:bookingId',
+      audited,
+      asyncMiddleware(async (req, res) => {
+        const { bookingId } = req.params
+        const { decision } = req.body
+        const { licence } = res.locals
 
-      await Promise.all([
-        licenceService.updateSection('proposedAddress', bookingId, newProposedAddress),
-        licenceService.updateSection('bassReferral', bookingId, bassReferral),
-      ])
+        const bassReferral = getBassReferralContent(decision, licence)
 
-      if (pushToNomis && decision === 'OptOut') {
-        await nomisPushService.pushStatus({
-          bookingId,
-          data: { type: 'optOut', status: 'Yes' },
-          username: req.user.username,
-        })
-      }
+        const proposedAddress = getIn(licence, ['licence', 'proposedAddress'])
+        const newProposedAddress = mergeWithRight(proposedAddress, proposedAddressContents[decision])
 
-      const nextPath = formConfig.curfewAddressChoice.nextPath[decision] || `/hdc/taskList/`
+        await Promise.all([
+          licenceService.updateSection('proposedAddress', bookingId, newProposedAddress),
+          licenceService.updateSection('bassReferral', bookingId, bassReferral),
+        ])
 
-      return res.redirect(`${nextPath}${bookingId}`)
-    })
-  )
+        if (pushToNomis && decision === 'OptOut') {
+          await nomisPushService.pushStatus({
+            bookingId,
+            data: { type: 'optOut', status: 'Yes' },
+            username: req.user.username,
+          })
+        }
 
-  router.post(
-    '/rejected/:bookingId',
-    audited,
-    asyncMiddleware(async (req, res) => {
-      const { enterAlternative, bookingId } = req.body
-      const { licence } = res.locals.licence
+        const nextPath = formConfig.curfewAddressChoice.nextPath[decision] || `/hdc/taskList/`
 
-      const validationErrors =
-        licenceService.validateForm({
-          formResponse: req.body,
-          pageConfig: formConfig.rejected,
-        }) || {}
+        return res.redirect(`${nextPath}${bookingId}`)
+      })
+    )
 
-      const errorObject = omit(['_csrf', 'bookingId'], validationErrors)
+    router.post(
+      '/rejected/:bookingId',
+      audited,
+      asyncMiddleware(async (req, res) => {
+        const { enterAlternative, bookingId } = req.body
+        const { licence } = res.locals.licence
 
-      if (!isEmpty(errorObject)) {
-        req.flash('errors', errorObject)
-        return res.redirect(`/hdc/proposedAddress/rejected/${bookingId}`)
-      }
+        const validationErrors =
+          licenceService.validateForm({
+            formResponse: req.body,
+            pageConfig: formConfig.rejected,
+          }) || {}
 
-      if (enterAlternative === 'Yes') {
-        await licenceService.rejectProposedAddress(licence, bookingId)
-      }
+        const errorObject = omit(['_csrf', 'bookingId'], validationErrors)
 
-      const nextPath = formConfig.rejected.nextPath.decisions[enterAlternative]
-      return res.redirect(`${nextPath}${bookingId}`)
-    })
-  )
+        if (!isEmpty(errorObject)) {
+          req.flash('errors', errorObject)
+          return res.redirect(`/hdc/proposedAddress/rejected/${bookingId}`)
+        }
 
-  router.get('/:formName/:action/:bookingId', asyncMiddleware(standard.get))
-  router.get('/:formName/:bookingId', asyncMiddleware(standard.get))
-  router.post('/:formName/:action/:bookingId', audited, asyncMiddleware(standard.post))
-  router.post('/:formName/:bookingId', audited, asyncMiddleware(standard.post))
+        if (enterAlternative === 'Yes') {
+          await licenceService.rejectProposedAddress(licence, bookingId)
+        }
 
-  return router
-}
+        const nextPath = formConfig.rejected.nextPath.decisions[enterAlternative]
+        return res.redirect(`${nextPath}${bookingId}`)
+      })
+    )
+
+    router.get('/:formName/:action/:bookingId', asyncMiddleware(standard.get))
+    router.get('/:formName/:bookingId', asyncMiddleware(standard.get))
+    router.post('/:formName/:action/:bookingId', audited, asyncMiddleware(standard.post))
+    router.post('/:formName/:bookingId', audited, asyncMiddleware(standard.post))
+
+    return router
+  }
 
 function getCurfewAddressChoice(licence) {
   if (isYes(licence, ['proposedAddress', 'optOut', 'decision'])) {

@@ -24,7 +24,7 @@ const pdfRenderer = require('./utils/renderPdf')
 const config = require('./config')
 const healthFactory = require('./services/healthcheck')
 
-const logger = require('../log.js')
+const logger = require('../log')
 const auth = require('./authentication/auth')
 
 const defaultRouter = require('./routes/default')

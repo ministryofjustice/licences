@@ -2,7 +2,7 @@
  * @typedef {import("../../../types/licences").RoNotificationSender} RoNotificationSender
  */
 const moment = require('moment')
-const logger = require('../../../log.js')
+const logger = require('../../../log')
 const { isEmpty } = require('../../utils/functionalHelpers')
 const { getRoCaseDueDate, getRoNewCaseDueDate } = require('../../utils/dueDates')
 

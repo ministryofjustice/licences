@@ -401,8 +401,7 @@ describe('pdfFormatter', () => {
   test('should format conditions text with commas and spaces', () => {
     const content = [
       {
-        text:
-          'To comply with any requirements specified by your supervising officer for the purpose of ensuring that you address your ',
+        text: 'To comply with any requirements specified by your supervising officer for the purpose of ensuring that you address your ',
       },
       { variable: ['anger', 'debt', 'offending behaviour'] },
       { text: ' problems at the ' },
@@ -420,8 +419,7 @@ describe('pdfFormatter', () => {
   test('should contain single selection from  abuseAndBehaviours', () => {
     const content = [
       {
-        text:
-          'To comply with any requirements specified by your supervising officer for the purpose of ensuring that you address your ',
+        text: 'To comply with any requirements specified by your supervising officer for the purpose of ensuring that you address your ',
       },
       { variable: ['drug abuse'] },
       { text: ' problems at the Misuse Support Services' },
@@ -436,8 +434,7 @@ describe('pdfFormatter', () => {
   test('should contain multiple selection from abuseAndBehaviours', () => {
     const content = [
       {
-        text:
-          'To comply with any requirements specified by your supervising officer for the purpose of ensuring that you address your ',
+        text: 'To comply with any requirements specified by your supervising officer for the purpose of ensuring that you address your ',
       },
       { variable: ['alcohol abuse', 'drug abuse'] },
       { text: ' problems at the Misuse Support Services' },

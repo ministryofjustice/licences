@@ -9,7 +9,7 @@
  *  @typedef {import("../data/activeLduClient")} ActiveLduClient
  */
 
-const logger = require('../../log.js')
+const logger = require('../../log')
 const { unwrapResult } = require('../utils/functionalHelpers')
 const { NO_OFFENDER_NUMBER, LDU_INACTIVE, NO_COM_ASSIGNED, COM_NOT_ALLOCATED } = require('./serviceErrors')
 

@@ -2,7 +2,7 @@ const superagent = require('superagent')
 /** @type {any} */
 const Agent = require('agentkeepalive')
 const { HttpsAgent } = require('agentkeepalive')
-const logger = require('../../log.js')
+const logger = require('../../log')
 
 const agentOptions = {
   maxSockets: 100,

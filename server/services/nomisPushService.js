@@ -1,4 +1,4 @@
-const logger = require('../../log.js')
+const logger = require('../../log')
 const { getIn } = require('../utils/functionalHelpers')
 const { statusValues, statusReasonValues } = require('./config/approvalStatuses')
 const { nomisPushError } = require('../utils/errors')

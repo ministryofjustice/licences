@@ -865,8 +865,7 @@ describe('conditionsService', () => {
             variable: null,
           },
           {
-            text:
-              '.<br /><br />(This does not apply where the contact is not on purpose and could not be reasonably avoided during daily life).',
+            text: '.<br /><br />(This does not apply where the contact is not on purpose and could not be reasonably avoided during daily life).',
           },
           {
             variable: undefined,
@@ -909,8 +908,7 @@ describe('conditionsService', () => {
             variable: 'and/or some department name',
           },
           {
-            text:
-              '.<br /><br />(This does not apply where the contact is not on purpose and could not be reasonably avoided during daily life).',
+            text: '.<br /><br />(This does not apply where the contact is not on purpose and could not be reasonably avoided during daily life).',
           },
           {
             variable: undefined,
@@ -953,8 +951,7 @@ describe('conditionsService', () => {
             error: '[MASSIVE ERROR]',
           },
           {
-            text:
-              '.<br /><br />(This does not apply where the contact is not on purpose and could not be reasonably avoided during daily life).',
+            text: '.<br /><br />(This does not apply where the contact is not on purpose and could not be reasonably avoided during daily life).',
           },
           {
             variable: undefined,
@@ -1187,15 +1184,13 @@ describe('conditionsService', () => {
       return expect(service.getNonStandardConditions(licence)).toEqual({
         additionalConditions: [
           {
-            text:
-              'Not to associate with any person currently or formerly associated with James Smith without the prior approval of your supervising officer',
+            text: 'Not to associate with any person currently or formerly associated with James Smith without the prior approval of your supervising officer',
           },
         ],
         bespokeConditions: [{ text: 'Bespoke condition 1' }],
         pssConditions: [
           {
-            text:
-              'Attend The Probation Service, 1, Some Address, as reasonably required by your supervisor, to give a sample of oral fluid/urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the requirement of supervision period requiring you to be of good behaviour',
+            text: 'Attend The Probation Service, 1, Some Address, as reasonably required by your supervisor, to give a sample of oral fluid/urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the requirement of supervision period requiring you to be of good behaviour',
           },
         ],
         unapprovedBespokeConditions: [{ text: 'some text input but yes/no not selected' }],

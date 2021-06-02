@@ -14,7 +14,7 @@ const {
   ineligibleReasonlabels,
   unsuitableReasonlabels,
 } = require('./config/formConfig')
-const logger = require('../../log.js')
+const logger = require('../../log')
 
 /**
  * @param {PrisonerService} prisonerService

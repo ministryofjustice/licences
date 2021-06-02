@@ -1,3 +1,4 @@
+/** @type {any} */
 const knex = require('knex')
 const logger = require('./log')
 const app = require('./server/index')

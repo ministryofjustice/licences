@@ -3,22 +3,24 @@ const { asyncMiddleware } = require('../utils/middleware')
 const createStandardRoutes = require('./routeWorkers/standard')
 const { isEmpty } = require('../utils/functionalHelpers')
 
-module.exports = ({ licenceService, nomisPushService }) => (router, audited, config) => {
-  const standard = createStandardRoutes({
-    formConfig,
-    licenceService,
-    sectionName: 'finalChecks',
-    nomisPushService,
-    config,
-  })
+module.exports =
+  ({ licenceService, nomisPushService }) =>
+  (router, audited, config) => {
+    const standard = createStandardRoutes({
+      formConfig,
+      licenceService,
+      sectionName: 'finalChecks',
+      nomisPushService,
+      config,
+    })
 
-  router.post('/refuse/:bookingId', audited, asyncMiddleware(postRefusal(licenceService, nomisPushService)))
+    router.post('/refuse/:bookingId', audited, asyncMiddleware(postRefusal(licenceService, nomisPushService)))
 
-  router.get('/:formName/:bookingId', asyncMiddleware(standard.get))
-  router.post('/:formName/:bookingId', audited, asyncMiddleware(standard.post))
+    router.get('/:formName/:bookingId', asyncMiddleware(standard.get))
+    router.post('/:formName/:bookingId', audited, asyncMiddleware(standard.post))
 
-  return router
-}
+    return router
+  }
 
 function postRefusal(licenceService, nomisPushService) {
   async function post(req, res) {

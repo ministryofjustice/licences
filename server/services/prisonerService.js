@@ -3,7 +3,7 @@
  * @typedef {import("../../types/licences").PrisonerService} PrisonerService
  * @typedef {import('../../types/licences').Destination} Destination
  */
-const logger = require('../../log.js')
+const logger = require('../../log')
 const { formatObjectForView } = require('./utils/formatForView')
 const { getIn, unwrapResultOrThrow } = require('../utils/functionalHelpers')
 
