@@ -22,7 +22,7 @@ describe('GET /forms', () => {
   })
 
   test('gets ms-word version of agency_notification form', () => {
-    request(app)
+    return request(app)
       .get('/forms/agency_notification/1')
       .expect(200)
       .expect('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document')
