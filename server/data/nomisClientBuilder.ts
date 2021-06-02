@@ -56,12 +56,8 @@ function addEffectiveAutomaticReleaseDate(prisoner) {
 }
 
 function addReleaseDate(prisoner) {
-  const {
-    automaticReleaseDate,
-    automaticReleaseOverrideDate,
-    conditionalReleaseDate,
-    conditionalReleaseOverrideDate,
-  } = prisoner.sentenceDetail
+  const { automaticReleaseDate, automaticReleaseOverrideDate, conditionalReleaseDate, conditionalReleaseOverrideDate } =
+    prisoner.sentenceDetail
 
   const releaseDate = findFirstValid([
     conditionalReleaseOverrideDate,

@@ -6,7 +6,7 @@ import { StaffDetails } from '../data/deliusClient'
 import { LicenceClient } from '../data/licenceClient'
 import { DeliusIds } from '../data/licenceClientTypes'
 
-const logger = require('../../log.js')
+const logger = require('../../log')
 const { isEmpty } = require('../utils/functionalHelpers')
 
 export = function createCaseListService(
@@ -77,14 +77,14 @@ export = function createCaseListService(
   const getDeliusId = (deliusIds: DeliusIds[]): Result<DeliusIds, string> =>
     deliusIds.length > 1 ? Fail('Multiple Delius usernames found for current user') : Success(deliusIds[0])
 
-  const getOffendersForIds = (token: string) => async ({
-    staffIdentifier,
-  }: DeliusIds): Promise<{ hdcEligible: any[] }> => {
-    const offenders = await roService.getROPrisonersForStaffIdentifier(staffIdentifier, token)
+  const getOffendersForIds =
+    (token: string) =>
+    async ({ staffIdentifier }: DeliusIds): Promise<{ hdcEligible: any[] }> => {
+      const offenders = await roService.getROPrisonersForStaffIdentifier(staffIdentifier, token)
 
-    const hdcEligible = (offenders || []).filter(R.path(['sentenceDetail', 'homeDetentionCurfewEligibilityDate']))
-    return { hdcEligible }
-  }
+      const hdcEligible = (offenders || []).filter(R.path(['sentenceDetail', 'homeDetentionCurfewEligibilityDate']))
+      return { hdcEligible }
+    }
 
   function neededForRole(prisoner, role) {
     const interestedStatuses = {

@@ -12,7 +12,7 @@
  * @typedef {import("../../../types/licences").ResponsibleOfficerAndContactDetails} ResponsibleOfficerAndContactDetails
  */
 const { sendingUserName } = require('../../utils/userProfile')
-const logger = require('../../../log.js')
+const logger = require('../../../log')
 const { isEmpty, unwrapResult } = require('../../utils/functionalHelpers')
 const { STAFF_NOT_LINKED, MISSING_PRISON } = require('../serviceErrors')
 

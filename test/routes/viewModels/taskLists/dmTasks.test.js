@@ -1,4 +1,4 @@
-const dmTasks = require('../../../../server/routes/viewModels/taskLists/dmTasks.js')
+const dmTasks = require('../../../../server/routes/viewModels/taskLists/dmTasks')
 
 describe('dmTasks', () => {
   const tasks = {}

@@ -2,36 +2,38 @@ const logger = require('../../log')
 const { asyncMiddleware, authorisationMiddleware } = require('../utils/middleware')
 const { links } = require('../config')
 
-module.exports = ({ caseListService }) => (router) => {
-  router.use(authorisationMiddleware)
-  router.get('/', (req, res) => res.redirect('/caseList/active'))
+module.exports =
+  ({ caseListService }) =>
+  (router) => {
+    router.use(authorisationMiddleware)
+    router.get('/', (req, res) => res.redirect('/caseList/active'))
 
-  router.get(
-    '/:tab',
-    asyncMiddleware(async (req, res) => {
-      logger.debug('GET /caseList')
+    router.get(
+      '/:tab',
+      asyncMiddleware(async (req, res) => {
+        logger.debug('GET /caseList')
 
-      const { hdcEligible, message } = await caseListService.getHdcCaseList(
-        res.locals.token,
-        req.user.username,
-        req.user.role,
-        req.params.tab
-      )
+        const { hdcEligible, message } = await caseListService.getHdcCaseList(
+          res.locals.token,
+          req.user.username,
+          req.user.role,
+          req.params.tab
+        )
 
-      return res.render('caseList/index', {
-        hdcEligible,
-        message,
-        labels,
-        tab: req.params.tab,
-        globalSearchUrl: `${links.globalSearchUrl}?referrer=licences`,
-        exitUrl: links.exitUrl,
-        showExitUrl: req.user && req.user.isPrisonUser,
+        return res.render('caseList/index', {
+          hdcEligible,
+          message,
+          labels,
+          tab: req.params.tab,
+          globalSearchUrl: `${links.globalSearchUrl}?referrer=licences`,
+          exitUrl: links.exitUrl,
+          showExitUrl: req.user && req.user.isPrisonUser,
+        })
       })
-    })
-  )
+    )
 
-  return router
-}
+    return router
+  }
 
 const labels = {
   ca: {

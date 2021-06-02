@@ -2,7 +2,7 @@
  * @typedef {import("../../services/prisonerService").PrisonerService} PrisonerService
  */
 const R = require('ramda')
-const logger = require('../../../log.js')
+const logger = require('../../../log')
 const { getIn, isEmpty } = require('../../utils/functionalHelpers')
 
 /**

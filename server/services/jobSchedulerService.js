@@ -1,7 +1,7 @@
 const schedule = require('node-schedule')
 const moment = require('moment')
 const config = require('../config')
-const logger = require('../../log.js')
+const logger = require('../../log')
 const createJobUtils = require('./jobs/jobUtils')
 
 module.exports = function createJobSchedulerService(

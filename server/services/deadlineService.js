@@ -1,4 +1,4 @@
-const logger = require('../../log.js')
+const logger = require('../../log')
 const { getRoOverdueCasesDate, getRoDueCasesDates } = require('../utils/dueDates')
 
 const roleStages = {

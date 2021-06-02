@@ -1,4 +1,4 @@
-const logger = require('../../../log.js')
+const logger = require('../../../log')
 
 module.exports = function createNotificationJobs(reminderService, signInService) {
   async function roReminders() {

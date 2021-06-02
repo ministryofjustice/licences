@@ -103,54 +103,62 @@ module.exports = {
     ])
   },
 
-  getCaTasksPostApproval: (stage) => ({ decisions, tasks, allowedTransition }) => {
-    const {
-      addressUnsuitable,
-      approvedPremisesRequired,
-      bassAccepted,
-      bassReferralNeeded,
-      bassWithdrawn,
-      curfewAddressApproved,
-      dmRefused,
-      eligible,
-      postponed,
-    } = decisions
+  getCaTasksPostApproval:
+    (stage) =>
+    ({ decisions, tasks, allowedTransition }) => {
+      const {
+        addressUnsuitable,
+        approvedPremisesRequired,
+        bassAccepted,
+        bassReferralNeeded,
+        bassWithdrawn,
+        curfewAddressApproved,
+        dmRefused,
+        eligible,
+        postponed,
+      } = decisions
 
-    const { bassOffer } = tasks
+      const { bassOffer } = tasks
 
-    const bassExcluded = ['Unavailable', 'Unsuitable'].includes(bassAccepted)
-    const bassOfferMade = bassReferralNeeded && bassOffer === 'DONE' && !bassWithdrawn && !bassExcluded
+      const bassExcluded = ['Unavailable', 'Unsuitable'].includes(bassAccepted)
+      const bassOfferMade = bassReferralNeeded && bassOffer === 'DONE' && !bassWithdrawn && !bassExcluded
 
-    const validAddress = approvedPremisesRequired || curfewAddressApproved || bassOfferMade
+      const validAddress = approvedPremisesRequired || curfewAddressApproved || bassOfferMade
 
-    const context = { decisions, tasks, stage, allowedTransition }
+      const context = { decisions, tasks, stage, allowedTransition }
 
-    if (!eligible) {
-      return tasklist(context, [[eligibilitySummaryTask, validAddress], [informOffenderTask]])
-    }
+      if (!eligible) {
+        return tasklist(context, [[eligibilitySummaryTask, validAddress], [informOffenderTask]])
+      }
 
-    return tasklist(context, [
-      [eligibilitySummaryTask, validAddress],
-      [curfewAddress, allowedTransition === 'caToRo'],
-      [bassAddress.ca.standard, bassReferralNeeded && allowedTransition !== 'caToRo'],
-      [proposedAddress.ca.postApproval, !bassReferralNeeded && allowedTransition !== 'caToRo'],
-      [riskManagement.edit, !approvedPremisesRequired && (curfewAddressApproved || bassOfferMade || addressUnsuitable)],
-      [victimLiaison.edit, validAddress],
-      [curfewHours.edit, validAddress],
-      [additionalConditions.edit, validAddress],
-      [reportingInstructions.edit, validAddress],
-      [finalChecks.review, validAddress],
-      [postponeOrRefuse, validAddress && !dmRefused],
-      [refuseHdc, !dmRefused],
-      [submitToDm.approval, allowedTransition === 'caToDm'],
-      [submitToDm.refusal, allowedTransition === 'caToDmRefusal'],
-      [submitBassReview, allowedTransition === 'caToRo'],
-      [submitAddressReview, !bassReferralNeeded && allowedTransition === 'caToRo'],
-      [resubmitToDm, !['caToDm', 'caToDmRefusal', 'caToRo'].includes(allowedTransition) && dmRefused !== undefined],
-      [
-        createLicence.ca,
-        validAddress && !['caToDm', 'caToDmRefusal', 'caToRo'].includes(allowedTransition) && !dmRefused && !postponed,
-      ],
-    ])
-  },
+      return tasklist(context, [
+        [eligibilitySummaryTask, validAddress],
+        [curfewAddress, allowedTransition === 'caToRo'],
+        [bassAddress.ca.standard, bassReferralNeeded && allowedTransition !== 'caToRo'],
+        [proposedAddress.ca.postApproval, !bassReferralNeeded && allowedTransition !== 'caToRo'],
+        [
+          riskManagement.edit,
+          !approvedPremisesRequired && (curfewAddressApproved || bassOfferMade || addressUnsuitable),
+        ],
+        [victimLiaison.edit, validAddress],
+        [curfewHours.edit, validAddress],
+        [additionalConditions.edit, validAddress],
+        [reportingInstructions.edit, validAddress],
+        [finalChecks.review, validAddress],
+        [postponeOrRefuse, validAddress && !dmRefused],
+        [refuseHdc, !dmRefused],
+        [submitToDm.approval, allowedTransition === 'caToDm'],
+        [submitToDm.refusal, allowedTransition === 'caToDmRefusal'],
+        [submitBassReview, allowedTransition === 'caToRo'],
+        [submitAddressReview, !bassReferralNeeded && allowedTransition === 'caToRo'],
+        [resubmitToDm, !['caToDm', 'caToDmRefusal', 'caToRo'].includes(allowedTransition) && dmRefused !== undefined],
+        [
+          createLicence.ca,
+          validAddress &&
+            !['caToDm', 'caToDmRefusal', 'caToRo'].includes(allowedTransition) &&
+            !dmRefused &&
+            !postponed,
+        ],
+      ])
+    },
 }

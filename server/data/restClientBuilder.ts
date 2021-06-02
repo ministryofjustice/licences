@@ -25,20 +25,24 @@ export interface TokenSource {
   (): Promise<string>
 }
 
-export const constantTokenSource = (token): TokenSource => async () => {
-  if (!token) {
-    throw Error('Unauthorised access')
+export const constantTokenSource =
+  (token): TokenSource =>
+  async () => {
+    if (!token) {
+      throw Error('Unauthorised access')
+    }
+    return token
   }
-  return token
-}
 
-export const clientCredentialsTokenSource = (signInService, oauthServiceName: string): TokenSource => async () => {
-  const token = await signInService.getAnonymousClientCredentialsTokens(oauthServiceName)
-  if (!token?.token) {
-    throw Error(`Error obtaining OAuth token`)
+export const clientCredentialsTokenSource =
+  (signInService, oauthServiceName: string): TokenSource =>
+  async () => {
+    const token = await signInService.getAnonymousClientCredentialsTokens(oauthServiceName)
+    if (!token?.token) {
+      throw Error(`Error obtaining OAuth token`)
+    }
+    return token.token
   }
-  return token.token
-}
 
 /**
  * Configure and return a REST api client.  This is used by the REST API facades within this module.

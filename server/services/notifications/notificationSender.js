@@ -1,5 +1,5 @@
 const templates = require('../config/notificationTemplates')
-const logger = require('../../../log.js')
+const logger = require('../../../log')
 const { isEmpty } = require('../../utils/functionalHelpers')
 
 module.exports = function createNotificationSender(notifyClient, audit, notifyKey) {
