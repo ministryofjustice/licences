@@ -203,7 +203,12 @@ module.exports = function createApp({
   app.locals.asset_path = '/public/'
 
   function addTemplateVariables(req, res, next) {
-    res.locals.user = req.user
+    res.locals = {
+      ...res.locals,
+      user: req.user,
+      currentUrlPath: req.baseUrl + req.path,
+      hostname: req.hostname,
+    }
     next()
   }
 
