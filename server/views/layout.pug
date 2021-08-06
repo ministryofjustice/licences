@@ -72,7 +72,11 @@ html(lang="en")
     main.app-container(role="main")
       include ./includes/notice
       block content
-
+    
+    div(class="feedback-banner-container")
+      div(class="feedback-banner")
+        a(href="https://eu.surveymonkey.com/r/GYB8Y9Q?source=" + hostname + currentUrlPath class="govuk-link govuk-link--inverse" target="_blank" rel="noopener noreferrer") Give feedback on this service
+    
     footer(class="group js-footer", id="footer", role="contentinfo")
       div(class="hdc-footer-wrapper")
         p#sm-feedback

@@ -455,3 +455,19 @@ input[type="time"] {
 }
 
 .default-text { color: $grey-1; font-style: italic; }
+
+.feedback-banner-container {
+  max-width: 1170px;
+  padding-left: 15px;
+  padding-right: 15px;
+  margin: 0 auto;
+}
+
+.feedback-banner {
+  background: rgb(31,112,184);
+  padding: 20px 30px;
+
+  a {
+    color: $white;
+  }
+}

@@ -62,6 +62,21 @@ class CommonCaselistSpec extends GebReportingSpec {
     'DM' | 'decision/unstarted'
   }
 
+  @Unroll
+  def 'Shows feedback survey banner for #user'() {
+
+    when: 'I view the case list'
+    actions.logIn(user)
+    via CaselistPage
+
+    then: 'I see the feedback survey banner'
+    feedbackBanner.text().contains('Give feedback on this service')
+    feedbackBanner.attr('href').contains('https://eu.surveymonkey.com/r/GYB8Y9Q?source=localhost/caseList/active')
+
+    where:
+    user << ['CA', 'DM', 'RO']
+  }
+
   def 'Inactive cases are displayed under inactive tab'() {
 
     given: 'a licence exists in an inactive state'
