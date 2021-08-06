@@ -32,6 +32,8 @@ class CaselistPage extends Page {
     paginateNext(required: false) { $('#pagination a.next') }
     paginatePrev(required: false) { $('#pagination a.prev') }
     paginationText(required: false) { $('#paginationInfo') }
+
+    feedbackBanner { $('.feedback-banner-container a') }
   }
 
 }
