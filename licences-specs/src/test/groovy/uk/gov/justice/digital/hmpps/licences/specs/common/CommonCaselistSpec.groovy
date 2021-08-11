@@ -112,4 +112,20 @@ class CommonCaselistSpec extends GebReportingSpec {
     where:
     user << ['CA', 'DM']
   }
+
+  def 'View button is visible for RO_READONLY'() {
+
+    when: 'I view the case list and I an RO with READONLY access'
+    actions.logIn(user)
+    testData.loadLicence(sample)
+    via CaselistPage
+
+    then: 'I see a view button next to any cases'
+    viewButton.text().contains('View')
+
+
+    where:
+    user | sample
+    'RO_READONLY' | 'assessment/unstarted'
+  }
 }

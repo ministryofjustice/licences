@@ -64,6 +64,13 @@ const users = {
     role: 'RO',
     isPrisonUser: false,
   },
+  roUserReadOnly: {
+    name: 'ro readonly',
+    username: 'RO_USER_READONLY_TEST',
+    token: 'token',
+    role: 'RO_READONLY',
+    isPrisonUser: false,
+  },
   nomisRoUser: {
     name: 'ro last',
     username: 'NOMIS_RO_USER',

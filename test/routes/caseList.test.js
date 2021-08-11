@@ -55,6 +55,18 @@ describe('GET /caseList', () => {
         expect(res.text).not.toContain('href="/" data-qa="exit-to-dps-link"')
       })
   })
+  test('renders the RO READONLY caselist', () => {
+    app = createApp('roUserReadOnly')
+
+    return request(app)
+      .get('/caselist/active')
+      .expect(200)
+      .expect('Content-Type', /html/)
+      .expect((res) => {
+        expect(res.text).toContain('id="hdcEligiblePrisoners">')
+        expect(res.text).not.toContain('href="/" data-qa="exit-to-dps-link"')
+      })
+  })
 
   test('renders the RO caselist page with exit-to-dps-link for NOMIS RO users', () => {
     app = createApp('nomisRoUser')
