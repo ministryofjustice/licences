@@ -2,9 +2,9 @@ extends ../layout
 
 block content
   div.pure-g
-    div.pure-u-1.smallMarginTop
+    div.pure-u-1.smallMarginTop.back-link-container
       if showExitUrl
-        a.link(href=exitUrl data-qa='exit-to-dps-link') Exit to Digital Prison Services
+        a.link-back(href=exitUrl data-qa='exit-to-dps-link') Digital Prison Services
 
     if user.role === 'RO'
       div.pure-u-1.searchLink.alignRight.sm-padTop55.u-paddingTop
