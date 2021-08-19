@@ -2,6 +2,7 @@
 const { isAuthServiceRole, isApplicationRole, applicationRoleForAuthServiceRole } = require('../authentication/roles')
 const logger = require('../../log')
 const { getIn } = require('../utils/functionalHelpers')
+const { forenameToInitial } = require('../utils/userProfile')
 
 module.exports = (nomisClientBuilder) => {
   async function getUserProfile(token, refreshToken, username) {
@@ -26,6 +27,7 @@ module.exports = (nomisClientBuilder) => {
       activeCaseLoad,
       activeCaseLoadId,
       caseLoads,
+      displayNameInitial: `${forenameToInitial(profile.name)}`,
     }
   }
 
