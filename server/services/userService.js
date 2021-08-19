@@ -14,8 +14,8 @@ module.exports = (nomisClientBuilder) => {
 
     logger.info(`User profile success - username: ${username}`)
 
-    const activeCaseLoads = await nomisClient.getUserCaseLoads()
-    const activeCaseLoad = activeCaseLoads.find((cl) => cl.currentlyActive)
+    const caseLoads = await nomisClient.getUserCaseLoads()
+    const activeCaseLoad = caseLoads.find((cl) => cl.currentlyActive)
     const activeCaseLoadId = getIn(activeCaseLoad, ['caseLoadId'])
 
     return {
@@ -25,7 +25,7 @@ module.exports = (nomisClientBuilder) => {
       isPrisonUser,
       activeCaseLoad,
       activeCaseLoadId,
-      activeCaseLoads,
+      caseLoads,
     }
   }
 

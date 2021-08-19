@@ -73,13 +73,16 @@ html(lang="en")
       include ./includes/notice
 
       div(class="change-location")
-        if user.activeCaseLoad && !user.activeCaseLoad.description.includes('---')
+        - var hasActiveCaseload = user.activeCaseLoad && !user.activeCaseLoad.description.includes('---')
+        - var hasMultipleCaseloads = user.caseLoads && user.caseLoads.length > 1
+
+        if hasActiveCaseload
           span(class="change-location__location" data-qa="active-location") #{user.activeCaseLoad.description}
 
-        if user.activeCaseLoads && user.activeCaseLoads.length > 1
+        if hasMultipleCaseloads
           a(class="change-location__link" href="/user" data-qa="change-location-link") Change your location
 
-      if user.activeCaseLoad && !user.activeCaseLoad.description.includes('---') ||  user.activeCaseLoads && user.activeCaseLoads.length > 1
+      if hasActiveCaseload || hasMultipleCaseloads
         hr(class="smallMarginBottom smallMarginTop")
       
       block content
