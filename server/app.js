@@ -208,11 +208,21 @@ module.exports = function createApp({
       user: req.user,
       currentUrlPath: req.baseUrl + req.path,
       hostname: req.hostname,
+      authUrl: config.nomis.authUrl,
+      apiClientId: config.nomis.apiClientId,
     }
     next()
   }
 
   app.use(addTemplateVariables)
+
+  function addreturnURL(req, res, next) {
+    const returnUrl = `${req.protocol}://${req.get('host')}${req.originalUrl}`
+    res.locals.returnUrl = encodeURIComponent(returnUrl)
+    next()
+  }
+
+  app.use(addreturnURL)
 
   // Don't cache dynamic resources
   app.use(noCache())

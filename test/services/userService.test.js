@@ -13,7 +13,7 @@ describe('userServiceTest', () => {
       getUserRoles: jest.fn().mockReturnValue([{ roleCode: 'LICENCE_CA' }, { roleCode: 'PRISON' }]),
       getUserCaseLoads: jest.fn().mockReturnValue(activeCaseLoads),
       putActiveCaseLoad: jest.fn().mockReturnValue({}),
-      getLoggedInUserInfo: jest.fn().mockReturnValue({}),
+      getLoggedInUserInfo: jest.fn().mockReturnValue({ name: 'User Name' }),
     }
     const nomisClientBuilder = jest.fn().mockReturnValue(nomisClient)
     service = createUserService(nomisClientBuilder)
@@ -24,6 +24,8 @@ describe('userServiceTest', () => {
       return expect(service.getUserProfile('t', 'rt', 'un')).resolves.toEqual({
         username: 'un',
         activeCaseLoadId: 'this',
+        name: 'User Name',
+        displayNameInitial: 'U. Name',
         role: 'CA',
         isPrisonUser: true,
         activeCaseLoad: {

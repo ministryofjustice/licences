@@ -1,50 +1,125 @@
-#global-header {
-    color: white;
+#header {
+    padding-top: 15px;
+    padding-bottom : 15px;
+    margin: 0 auto;
+    background-color: #0b0c0c;
 
     a {
         color: white;
+    }
+
+    .header__container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        max-width: 1170px;
+        margin-right: 15px;
+        margin-left: 15px;
+    }
+
+    @media (min-width: 40.0625em) {
+        .header__container {
+            margin: 0 auto;
+        } 
+    }
+    
+    .header__logo {
+        margin-right: 10px;
+        position: relative;
+        top: -2px;
+        fill: $white;
+    }
+
+    .header__title {
+        padding-right: 15px;
+        display: flex;
+        align-items: center;
+    }
+    
+    .header__title__organisation-name {
+        margin-right: 10px;
+        font-size: 24px;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+    }
+    
+    .header__title__service-name {
+        display: none;
+        font-size: 24px;
+    
+        @include media(desktop) {
+            display: inline-block
+        }
+    }
+
+    .header__link {
+        color: white;
         text-decoration: none;
     }
-
-    .header-wrapper {
-        max-width: 1170px;
-        padding-top: 0px;
-        padding-bottom: 0px;
+    
+    
+    .header__link:link, :visited, :active {
+        color: white;
+        text-decoration: none;
+    }
+    
+    .header__link:hover {
+        text-decoration: underline;
+    }
+    
+    .header__link:focus {
+        color: black;
     }
 
-    .header-logo {
-        display: flex;
-        align-items: center;
+    .header__link__sub-text {
+        font-size: 16px;
+        display: none;
 
-        span {
-            font-size: xx-large;
-            margin-right: 20px;
-            margin-left: 20px;
+        @include media(tablet) {
+            display: block
         }
     }
 
-    #logo.hmppslogo {
+    .header__navigation {
         display: flex;
-        align-items: center;
-        font-size: 26px;
-        background: url($path+'/hmpps_logo_small.png') no-repeat;
-        background-size: 54px 48px;
-        background-position: 0 0;
-        line-height: normal;
-        margin-top: 3px;
-        padding-left: 65px;
-        height: 50px;
-    }
+        flex-direction: column;
+        align-items: flex-end;
+        list-style: none;
+        margin: 0;
+        padding: 0;
 
-    #header-user {
-        float: right;
-        color: $white;
-        background-color: $govuk-blue;
-        div {
-            float: left;
-            &:not(:last-child){
-                border-right: solid white 1px;
-            }
+        @include media(tablet) {
+            flex-direction: row;
+            align-items: center;
         }
     }
+
+    .header__navigation__item {
+        font-size: 19px;
+        margin-bottom: 5px;
+        text-align: right;
+
+        a {
+            display: inline-block
+        }
+
+        @include media(tablet) {
+            margin-right: 15px;
+            padding-right: 15px;
+            margin-bottom: 0;
+            border-right: 1px solid white;
+        }
+    }
+
+    .header__navigation__item:last-child {
+        margin-right: 0;
+        border-right: 0;
+        padding-right: 0;
+    }
+
+    @media print {
+        display: none; 
+    }
+    
 }
