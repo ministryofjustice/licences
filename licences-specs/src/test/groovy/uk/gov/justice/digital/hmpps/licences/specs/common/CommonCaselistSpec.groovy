@@ -112,4 +112,37 @@ class CommonCaselistSpec extends GebReportingSpec {
     where:
     user << ['CA', 'DM']
   }
+
+  def 'Change location link and location are visible'() {
+
+    when: 'I go to the case list page'
+    actions.logIn(user)
+    via CaselistPage
+
+    then: 'I can see the Change location link'
+    changeLocationLink.text() == 'Change your location'
+
+    and: 'I can see the active location'
+    activeLocation.text() == 'Belmarsh'
+
+    where:
+    user << ['CA', 'DM', 'RO_USER']
+  }
+
+  def 'Change location page is presented'() {
+
+    when: 'I go to the case list page'
+    actions.logIn(user)
+
+    via CaselistPage
+    then: 'And I click Change location link'
+    changeLocationLink.click()
+
+    and: 'I am taken to the Change location page'
+     $('h2').text() == 'Change location'
+
+    where:
+    user << ['CA', 'DM', 'RO_USER']
+  }
+
 }

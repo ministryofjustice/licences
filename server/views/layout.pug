@@ -71,6 +71,17 @@ html(lang="en")
 
     main.app-container(role="main")
       include ./includes/notice
+
+      div(class="change-location")
+        if user.activeCaseLoad && !user.activeCaseLoad.description.includes('---')
+          span(class="change-location__location" data-qa="active-location") #{user.activeCaseLoad.description}
+
+        if user.activeCaseLoads && user.activeCaseLoads.length > 1
+          a(class="change-location__link" href="/user" data-qa="change-location-link") Change your location
+
+      if user.activeCaseLoad && !user.activeCaseLoad.description.includes('---') ||  user.activeCaseLoads && user.activeCaseLoads.length > 1
+        hr(class="smallMarginBottom smallMarginTop")
+      
       block content
     
     div(class="feedback-banner-container")

@@ -13,6 +13,7 @@ class Actions {
     'CA_MULTI': [username: 'CA_USER_MULTI', password: 'licences123456'],
     'RO'      : [username: 'AUTH_RO_USER_TEST', password: 'password123456'],
     'RO_MULTI': [username: 'RO_USER_MULTI', password: 'licences123456'],
+    'RO_USER' : [username: 'RO_USER_TEST', password: 'licences123456'],
     'DM'      : [username: 'DM_USER_TEST', password: 'licences123456'],
     'DM_MULTI': [username: 'DM_USER_MULTI', password: 'licences123456'],
     'NONE'    : [username: 'NONE', password: 'licences123456'],

@@ -7,26 +7,7 @@ block content
       if isAdmin
         include ../includes/backToHome
       else
-        include ../includes/backToCaseList
-
-    header.pure-u-1
-      h1.heading-medium
-        | User details
-
-    div.pure-u-1.pure-u-sm-2-5.largePaddingBottom
-      table
-        tbody
-          tr
-            td Name
-            td #{user.name}
-          tr
-            td Role
-            td #{user.role}
-
-          if user.activeCaseLoad
-            tr
-              td Active case load
-              td #{user.activeCaseLoad.description}
+        include ../includes/back
 
   - var showCaseLoads = !isAdmin && allCaseLoads.length > 1
   if allRoles.length > 1 || showCaseLoads
@@ -35,32 +16,30 @@ block content
       input(type="hidden" name="_csrf" value=csrfToken)
       input(type="hidden" name="bookingId" value=bookingId || '')
 
-      div.pure-g.borderTop
+      h2.pure-u-1.heading-large
+        | Change location
 
-        h2.pure-u-1.heading-medium
-          | Edit settings
+      if allRoles.length > 1
 
-        if allRoles.length > 1
+        div.pure-u-1.pure-u-sm-2-5
+          div.form-group
+            label.form-label(for="selectRole") Select role
+            select.form-control#selectRole(name="role")
+              option(value="" disabled selected) -- select --
+              for role in allRoles
+                option(value=role, selected=role === user.role) #{role}
 
-          div.pure-u-1.pure-u-sm-2-5
-            div.form-group
-              label.form-label(for="selectRole") Select role
-              select.form-control#selectRole(name="role")
-                option(value="" disabled selected) -- select --
-                for role in allRoles
-                  option(value=role, selected=role === user.role) #{role}
+        div.pure-u-1.pure-u-sm-1-5
 
-          div.pure-u-1.pure-u-sm-1-5
+      if showCaseLoads
 
-        if showCaseLoads
-
-          div.pure-u-1.pure-u-sm-2-5
-            div.form-group
-              label.form-label(for="selectCaseLoad") Select active case load
-              select.form-control#selectCaseLoad(name="caseLoadId")
-                option(value="" disabled selected) -- select --
-                for caseLoad in allCaseLoads
-                  option(value=caseLoad.caseLoadId, selected=caseLoad.caseLoadId === user.activeCaseLoadId) #{caseLoad.description}
+        div.pure-u-1.pure-u-sm-2-5
+          div.form-group
+            label.form-label(for="selectCaseLoad") Select location
+            select.form-control#selectCaseLoad(name="caseLoadId")
+              option(value="" disabled selected) -- select --
+              for caseLoad in allCaseLoads
+                option(value=caseLoad.caseLoadId, selected=caseLoad.caseLoadId === user.activeCaseLoadId) #{caseLoad.description}
 
       div.pure-u-1.inlineButtons.paddingBottom.largeMarginTop
         input#continueBtn.requiredButton.button.midMarginBottom(type="submit" value="Submit")

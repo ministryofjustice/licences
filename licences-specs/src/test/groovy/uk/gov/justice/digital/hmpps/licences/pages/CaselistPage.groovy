@@ -34,6 +34,8 @@ class CaselistPage extends Page {
     paginationText(required: false) { $('#paginationInfo') }
 
     feedbackBanner { $('.feedback-banner-container a') }
+    changeLocationLink(required: false) { $('a[data-qa="change-location-link"]')}
+    activeLocation(required: false) { $('span[data-qa="active-location"]')}
   }
 
 }

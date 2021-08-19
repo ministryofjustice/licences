@@ -30,6 +30,7 @@ describe('userServiceTest', () => {
           caseLoadId: 'this',
           currentlyActive: true,
         },
+        activeCaseLoads: [{ caseLoadId: 'this', currentlyActive: true }, { caseLoadId: 'that' }],
       })
     })
   })
