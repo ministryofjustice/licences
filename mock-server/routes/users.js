@@ -128,6 +128,7 @@ router.get('/me/caseLoads', (req, res) => {
       description: 'Belmarsh',
       type: 'string',
       caseloadFunction: 'string',
+      currentlyActive: true,
     },
   ])
 })

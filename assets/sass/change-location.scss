@@ -1,0 +1,23 @@
+.change-location {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  padding-top: 15px;
+  font-size: 19px;
+
+  &__location {
+    font-size: 1.187em;
+    line-height: 1.3157894737;
+    font-weight: bold;
+    margin-right: 15px;
+  }
+
+  &__link {
+    font-size: 1.187em;
+    line-height: 1.3157894737;
+  }
+
+  @media print {
+    display: none;
+  }
+}
