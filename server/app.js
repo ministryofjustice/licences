@@ -216,13 +216,13 @@ module.exports = function createApp({
 
   app.use(addTemplateVariables)
 
-  function addreturnURL(req, res, next) {
+  function addReturnURL(req, res, next) {
     const returnUrl = `${req.protocol}://${req.get('host')}${req.originalUrl}`
     res.locals.returnUrl = encodeURIComponent(returnUrl)
     next()
   }
 
-  app.use(addreturnURL)
+  app.use(addReturnURL)
 
   // Don't cache dynamic resources
   app.use(noCache())
