@@ -17,7 +17,9 @@ environments {
     driver = {
       ChromeOptions options = new ChromeOptions()
       options.addArguments('headless')
-      new ChromeDriver(options)
+      def d = new ChromeDriver(options)
+      d.manage().window().setSize(new Dimension(1920, 1080))
+      d
     }
   }
 }
@@ -27,9 +29,7 @@ driver = {
   ChromeOptions options = new ChromeOptions()
   options.addArguments('headless')
 //  options.addArguments('chrome')
-  def d = new ChromeDriver(options)
-  d.manage().window().setSize(new Dimension(1920, 1080))
-  d
+  new ChromeDriver(options)
 }
 
 baseUrl = System.getenv('LICENCES_URI') ?: "http://localhost:3000/"
