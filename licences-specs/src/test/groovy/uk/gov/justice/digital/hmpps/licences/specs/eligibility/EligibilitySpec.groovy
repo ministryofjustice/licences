@@ -109,6 +109,7 @@ class EligibilitySpec extends GebReportingSpec {
 
     when: 'I select new exclusion options and save'
     excludedRadios.checked = 'No'
+    waitFor { continueBtn.present }
     continueBtn.click()
     at EligibilitySuitabilityPage
 
