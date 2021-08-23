@@ -26,6 +26,5 @@ class EligibilityExclusionPage extends Page {
       $("input", number, name: "reason[]").module(Checkbox)
     }
 
-    continueBtn { $('#continueBtn')}
   }
 }

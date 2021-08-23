@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.licences.specs.finalchecks
 
 import geb.spock.GebReportingSpec
+import org.openqa.selenium.JavascriptExecutor
 import spock.lang.Shared
 import spock.lang.Stepwise
 import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
@@ -17,6 +18,8 @@ class FinalChecksSpec extends GebReportingSpec {
   TestData testData = new TestData()
   @Shared
   Actions actions = new Actions()
+  JavascriptExecutor js = (JavascriptExecutor) driver;
+
 
   def setupSpec() {
     actions.logIn('CA')
@@ -72,6 +75,8 @@ class FinalChecksSpec extends GebReportingSpec {
 
     when: 'I choose a value and continue'
     onRemandRadios.checked = 'No'
+
+    js.executeScript("window.scrollBy(0,document.body.scrollHeight)")
     find('#continueBtn').click()
 
     then: 'I see the confiscation order page'
@@ -85,6 +90,8 @@ class FinalChecksSpec extends GebReportingSpec {
 
     when: 'I choose a value and continue'
     confiscationOrderRadios.checked = 'No'
+
+    js.executeScript("window.scrollBy(0,document.body.scrollHeight)")
     find('#continueBtn').click()
 
     then: 'I see the task list'

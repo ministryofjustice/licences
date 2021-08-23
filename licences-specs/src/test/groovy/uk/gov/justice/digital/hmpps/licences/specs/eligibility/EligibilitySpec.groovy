@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.licences.specs.eligibility
 
 import geb.spock.GebReportingSpec
+import org.openqa.selenium.JavascriptExecutor
 import spock.lang.Shared
 import spock.lang.Stepwise
 import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
@@ -19,6 +20,7 @@ class EligibilitySpec extends GebReportingSpec {
   TestData testData = new TestData()
   @Shared
   Actions actions = new Actions()
+  JavascriptExecutor js = (JavascriptExecutor) driver;
 
   def setupSpec() {
     testData.loadLicence('eligibility/unstarted')
@@ -109,7 +111,10 @@ class EligibilitySpec extends GebReportingSpec {
 
     when: 'I select new exclusion options and save'
     excludedRadios.checked = 'No'
-    continueBtn.click()
+
+    js.executeScript("window.scrollBy(0,document.body.scrollHeight)")
+    find('#continueBtn').click()
+
     at EligibilitySuitabilityPage
 
     and: 'I select new suitability options and save'
@@ -156,6 +161,8 @@ class EligibilitySpec extends GebReportingSpec {
 
     when: 'I choose not excluded'
     excludedRadios.checked = 'No'
+
+    js.executeScript("window.scrollBy(0,document.body.scrollHeight)")
     find('#continueBtn').click()
 
     and: 'I choose unsuitable'
@@ -169,6 +176,8 @@ class EligibilitySpec extends GebReportingSpec {
 
     when: 'I choose an answer'
     exceptionalCircumstancesRadios.checked = 'Yes'
+
+    js.executeScript("window.scrollBy(0,document.body.scrollHeight)")
     find('#continueBtn').click()
 
     then: 'I am taken to the crd time page'
@@ -176,6 +185,8 @@ class EligibilitySpec extends GebReportingSpec {
 
     when: 'I choose an answer'
     crdTimeRadios.checked = 'No'
+
+    js.executeScript("window.scrollBy(0,document.body.scrollHeight)")
     find('#continueBtn').click()
 
     then: 'I am taken to the task list'
