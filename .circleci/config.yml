@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  hmpps: ministryofjustice/hmpps@3.10
+  hmpps: ministryofjustice/hmpps@3.11
   browser-tools: circleci/browser-tools@1.1.1
 
 executors:
@@ -221,7 +221,7 @@ workflows:
   security:
     triggers:
       - schedule:
-          cron: "0 6 * * 1-5"
+          cron: "11 3 * * 1-5"
           filters:
             branches:
               only:
