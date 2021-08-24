@@ -1,3 +1,8 @@
+function forenameToInitial(name) {
+  if (!name) return null
+  return `${name.charAt(0)}. ${name.split(' ').pop()}`
+}
+
 module.exports = {
   /*
    * Extract the given name for a user. Expects a 'user' object - the object returned in the
@@ -6,4 +11,5 @@ module.exports = {
    * So, if 'name' is a string use that, otherwise fall back to using username.
    */
   sendingUserName: (user) => (typeof user.name === 'string' && user.name) || user.username,
+  forenameToInitial,
 }

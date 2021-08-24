@@ -32,15 +32,15 @@ class WebsiteSpec extends GebReportingSpec {
     to CaselistPage
 
     then: 'my user name is shown'
-    header.user.contains(userName)
+    header.user.contains(displayName)
     actions.logOut()
 
     where:
-    user       | userName
-    'CA'       | 'Catherine Amos'
-    'RO'       | 'Ryan-Auth Orton'
-    'DM'       | 'Diane Matthews'
-    'READONLY' | 'Licence Read Only'
+    user       | displayName
+    'CA'       | 'C. Amos'
+    'RO'       | 'R. Orton'
+    'DM'       | 'D. Matthews'
+    'READONLY' | 'L. Only'
   }
 
   def 'User can log out'() {

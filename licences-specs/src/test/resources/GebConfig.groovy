@@ -1,3 +1,4 @@
+import org.openqa.selenium.Dimension
 import org.openqa.selenium.chrome.ChromeDriver
 import org.openqa.selenium.chrome.ChromeOptions
 
@@ -16,7 +17,9 @@ environments {
     driver = {
       ChromeOptions options = new ChromeOptions()
       options.addArguments('headless')
-      new ChromeDriver(options)
+      def d = new ChromeDriver(options)
+      d.manage().window().setSize(new Dimension(1920, 1080))
+      d
     }
   }
 }
