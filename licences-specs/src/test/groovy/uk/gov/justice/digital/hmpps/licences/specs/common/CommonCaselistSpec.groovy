@@ -145,4 +145,18 @@ class CommonCaselistSpec extends GebReportingSpec {
     user << ['CA', 'DM', 'RO_USER']
   }
 
+  def 'Change location link displays correct text - user has multiple roles'() {
+
+    when: 'I go to the case list page'
+    actions.logIn(user)
+    via CaselistPage
+
+    then: 'I can see the Change location link'
+    changeLocationLink.text() == 'Change your role or location'
+
+    where:
+    user << ['CA_RO_DM']
+  }
+
+
 }
