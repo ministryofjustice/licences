@@ -22,6 +22,7 @@ module.exports = (nomisClientBuilder) => {
     return {
       ...profile,
       username,
+      roles,
       role: roles[0],
       isPrisonUser,
       activeCaseLoad,
