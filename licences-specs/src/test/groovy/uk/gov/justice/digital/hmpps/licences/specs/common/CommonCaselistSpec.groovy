@@ -139,7 +139,7 @@ class CommonCaselistSpec extends GebReportingSpec {
     changeLocationLink.click()
 
     and: 'I am taken to the Change location page'
-     $('h2').text() == 'Change location'
+     $('h2').text() == 'Change your location'
 
     where:
     user << ['CA', 'DM', 'RO_USER']

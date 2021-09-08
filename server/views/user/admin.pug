@@ -10,6 +10,8 @@ block content
         include ../includes/back
 
   - var showCaseLoads = !isAdmin && allCaseLoads.length > 1
+  - var pageTitle = allRoles && allRoles.length > 1 ? "Change your role or location" : "Change your location"
+
   if allRoles.length > 1 || showCaseLoads
 
     form(method="post")
@@ -17,7 +19,7 @@ block content
       input(type="hidden" name="bookingId" value=bookingId || '')
 
       h2.pure-u-1.heading-large
-        | Change location
+        | #{pageTitle}
 
       if allRoles.length > 1
 
