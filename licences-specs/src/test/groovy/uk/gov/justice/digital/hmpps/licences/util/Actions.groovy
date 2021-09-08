@@ -8,6 +8,7 @@ import uk.gov.justice.digital.hmpps.licences.pages.CaselistPage
 class Actions {
 
   def users = [
+    'CA_RO_DM': [username: 'CA_RO_DM_USER', password: 'password123456'],
     'READONLY': [username: 'LICENCE_READONLY_TEST', password: 'password123456'],
     'CA'      : [username: 'CA_USER_TEST', password: 'licences123456'],
     'CA_MULTI': [username: 'CA_USER_MULTI', password: 'licences123456'],

@@ -10,7 +10,9 @@ describe('userServiceTest', () => {
 
   beforeEach(() => {
     nomisClient = {
-      getUserRoles: jest.fn().mockReturnValue([{ roleCode: 'LICENCE_CA' }, { roleCode: 'PRISON' }]),
+      getUserRoles: jest
+        .fn()
+        .mockReturnValue([{ roleCode: 'LICENCE_CA' }, { roleCode: 'LICENCE_DM' }, { roleCode: 'PRISON' }]),
       getUserCaseLoads: jest.fn().mockReturnValue(activeCaseLoads),
       putActiveCaseLoad: jest.fn().mockReturnValue({}),
       getLoggedInUserInfo: jest.fn().mockReturnValue({ name: 'User Name' }),
@@ -20,13 +22,14 @@ describe('userServiceTest', () => {
   })
 
   describe('getUserProfile', () => {
-    test('should return an object with the profile, first role and active case load', () => {
+    test('should return an object with the profile, first role, all roles and active case load', () => {
       return expect(service.getUserProfile('t', 'rt', 'un')).resolves.toEqual({
         username: 'un',
         activeCaseLoadId: 'this',
         name: 'User Name',
         displayNameInitial: 'U. Name',
         role: 'CA',
+        roles: ['CA', 'DM'],
         isPrisonUser: true,
         activeCaseLoad: {
           caseLoadId: 'this',
@@ -39,7 +42,7 @@ describe('userServiceTest', () => {
 
   describe('getAllRoles', () => {
     test('should return roles and prison users status ', () => {
-      return expect(service.getAllRoles(user)).resolves.toEqual({ roles: ['CA'], isPrisonUser: true })
+      return expect(service.getAllRoles(user)).resolves.toEqual({ roles: ['CA', 'DM'], isPrisonUser: true })
     })
 
     test('should allow multiple roles', () => {
