@@ -46,7 +46,7 @@ mixin assignedTo(val)
   case val
     when 'PROCESSING_RO'
     when 'VARY'
-       | Responsible Officer
+       | Community Offender Manager
     when 'APPROVAL'
     when 'MODIFIED_APPROVAL'
        | Decision Maker
@@ -71,7 +71,7 @@ div.borderBottom.paddingBottom
     div.pure-u-1.pure-u-md-1-2
         if licence && licence.stage === 'PROCESSING_RO'      
             div.alignRight
-                a.button.smallMarginBottom(href='/admin/licences/' + bookingId + '/notifyRo') Notify RO of case handover
+                a.button.smallMarginBottom(href='/admin/licences/' + bookingId + '/notifyRo') Notify COM of case handover
                  
         div.alignRight
             a.button(id='reset-licence'  href='/admin/licences/events/' + bookingId + '/reset-licence') Reset licence

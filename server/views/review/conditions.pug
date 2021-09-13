@@ -9,7 +9,7 @@ block content
   div.largePaddingBottom
     if data.licenceConditions && data.licenceConditions.length > 0
       h2.heading-medium Additional conditions
-      p The additional conditions that have been added by the RO are displayed below..
+      p The additional conditions that have been added by the COM are displayed below..
       div.borderBottomLight
       - var allowEdit = (user.role !== 'DM') ? 'editable' : ''
       +additionalConditions(allowEdit)

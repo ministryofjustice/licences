@@ -67,7 +67,7 @@ describe('/licences/', () => {
         .expect(200)
         .expect('Content-Type', /html/)
         .expect((res) => {
-          expect(res.text).toContain('Notify RO of case handover')
+          expect(res.text).toContain('Notify COM of case handover')
         })
     })
 
@@ -126,7 +126,7 @@ describe('/licences/', () => {
         .expect(200)
         .expect('Content-Type', /html/)
         .expect((res) => {
-          expect(res.text).toContain('Notify Responsible officer')
+          expect(res.text).toContain('Notify Community Offender Manager')
         })
     })
 
