@@ -197,7 +197,7 @@ describe('licenceStatusLabels', () => {
         const examples = [
           {
             status: { stage: LicenceStage.PROCESSING_RO, decisions: {}, tasks: {} },
-            label: 'With responsible officer',
+            label: 'With community offender manager',
           },
           {
             status: { stage: LicenceStage.APPROVAL, decisions: {}, tasks: {} },
@@ -437,7 +437,7 @@ describe('licenceStatusLabels', () => {
           },
           {
             status: { stage: LicenceStage.PROCESSING_RO, decisions: {}, tasks: {} },
-            label: 'With responsible officer',
+            label: 'With community offender manager',
           },
           {
             status: { stage: LicenceStage.PROCESSING_CA, decisions: {}, tasks: {} },

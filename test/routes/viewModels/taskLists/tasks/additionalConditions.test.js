@@ -55,7 +55,7 @@ describe('additional conditions task', () => {
           decisions: { bespokeRejected: 1 },
           tasks: { licenceConditions: 'DONE' },
         }).label
-      ).toBe('WARNING||Some bespoke conditions were rejected. Remove these and inform the responsible officer.')
+      ).toBe('WARNING||Some bespoke conditions were rejected. Remove these and inform the community offender manager.')
     })
 
     test('should return pending action message if bespoke conditions have not been approved', () => {

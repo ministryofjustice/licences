@@ -6,7 +6,7 @@ block content
     a#back.link-back(href="/admin/delius") Back
 
     if ro.message
-      h2 Error retrieving responsible officer from delius: #{staffDetails.message}
+      h2 Error retrieving community offender manager from delius: #{staffDetails.message}
     else
       div.pure-g.pure-u-1.paddingTop
         form(method='POST' action='/admin/delius/managedOffenders')

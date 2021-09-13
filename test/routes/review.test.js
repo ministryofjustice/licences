@@ -154,7 +154,7 @@ describe('/review/', () => {
         .expect(200)
         .expect('Content-Type', /html/)
         .expect((res) => {
-          expect(res.text).toContain('The case is ready to send to the responsible officer for address checks')
+          expect(res.text).toContain('The case is ready to send to the community offender manager for address checks')
           expect(res.text).not.toContain('class="error-summary"')
         })
     })

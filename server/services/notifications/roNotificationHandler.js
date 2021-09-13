@@ -52,7 +52,9 @@ module.exports = function createRoNotificationHandler(
    */
   async function assignDeliusRoRole(bookingId, responsibleOfficer) {
     if (responsibleOfficer.username) {
-      logger.info(`Assigning responsible officer role to ${responsibleOfficer.username} for booking id: ${bookingId}`)
+      logger.info(
+        `Assigning community offender manager role to ${responsibleOfficer.username} for booking id: ${bookingId}`
+      )
       await deliusClient.addResponsibleOfficerRole(responsibleOfficer.username)
     }
   }
