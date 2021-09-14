@@ -14,9 +14,9 @@ block content
 
   h2.heading-large
     if roUser
-      | Edit RO user
+      | Edit COM user
     else
-      | Add RO user
+      | Add COM user
 
   form#reportingForm(method='POST')
     input(type="hidden" name="_csrf" value=csrfToken)

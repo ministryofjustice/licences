@@ -5,11 +5,11 @@ block content
   div.back-link-container.smallPaddingTop
     a#back.link-back(href="/admin/locations/probation-areas") Back
 
-  h1.heading-large Local delivery units for #{probationArea.description}
+  h1.heading-large Local admin units for #{probationArea.description}
   h2.heading-small #{msg}
   
   if !probationArea.ldus[0]
-    h2.heading-medium No local delivery units currently assigned to #{probationArea.description}
+    h2.heading-medium No local admin units currently assigned to #{probationArea.description}
 
   form(method="post")
     input(type="hidden" name="_csrf" value=csrfToken)

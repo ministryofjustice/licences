@@ -15,7 +15,7 @@ const status = {
   postponed: { statusLabel: 'Postponed', activeCase: true },
   addressSuitable: { statusLabel: 'Address suitable', activeCase: true },
   withPrison: { statusLabel: 'With prison', activeCase: true },
-  withResponsibleOfficer: { statusLabel: 'With responsible officer', activeCase: true },
+  withResponsibleOfficer: { statusLabel: 'With community offender manager', activeCase: true },
   withDecisionMaker: { statusLabel: 'With decision maker', activeCase: true },
   varyingLicence: { statusLabel: 'Varying licence', activeCase: true },
   awaitingRefusal: { statusLabel: 'Awaiting refusal', activeCase: true },

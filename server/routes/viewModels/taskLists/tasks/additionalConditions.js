@@ -11,7 +11,7 @@ const getLabel = ({ decisions, tasks }, role) => {
 
     const bespokeConditionsText =
       role === 'CA'
-        ? 'Some bespoke conditions were rejected. Remove these and inform the responsible officer.'
+        ? 'Some bespoke conditions were rejected. Remove these and inform the community offender manager.'
         : 'Some bespoke conditions have not been approved. Contact Public Protection Casework Section and ask them to review these.'
 
     const unapproved = bespokeRejected > 0 ? bespokeConditionsText : ''
