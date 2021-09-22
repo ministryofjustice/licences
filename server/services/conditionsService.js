@@ -3,8 +3,8 @@ const { formatConditionsInput } = require('./utils/conditionsFormatter')
 const { getIn, isEmpty, interleave } = require('../utils/functionalHelpers')
 const { getAdditionalConditionsConfig, standardConditions, multiFields } = require('./config/conditionsConfig')
 
-module.exports = function createConditionsService({ use2019Conditions }) {
-  const additionalConditions = getAdditionalConditionsConfig(use2019Conditions)
+module.exports = function createConditionsService() {
+  const additionalConditions = getAdditionalConditionsConfig()
 
   function getFullTextForApprovedConditions(licence) {
     const standardConditionsText = standardConditions.map((it) => it.text.replace(/\.+$/, ''))
