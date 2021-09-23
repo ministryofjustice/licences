@@ -1,6 +1,0 @@
-div.pure-g
-  div.pure-u-1
-    label(for='do_not_go_premises_address') Name / type of premises / address / road
-    textarea(name='do_not_go_premises_address' id='do_not_go_premises_address' class='form-control' rows='4')
-      if condition.user_submission && condition.user_submission.do_not_go_premises_address
-        | #{condition.user_submission.do_not_go_premises_address}

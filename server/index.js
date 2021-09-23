@@ -53,7 +53,7 @@ const tokenVerifierFactory = require('./authentication/tokenverifier/tokenVerifi
 
 const signInService = createSignInService()
 const licenceService = createLicenceService(licenceClient)
-const conditionsService = createConditionsService(config)
+const conditionsService = createConditionsService()
 
 const deliusClient = new DeliusClient(
   buildRestClient(

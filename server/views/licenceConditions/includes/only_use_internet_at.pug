@@ -1,6 +1,0 @@
-div.pure-g
-  div.pure-u-1
-    label(for='only_use_internet_at_location') Location
-    textarea(name='only_use_internet_at_location' id='only_use_internet_at_location' class='form-control' rows='4')
-      if condition.user_submission && condition.user_submission.only_use_internet_at_location
-        | #{condition.user_submission.only_use_internet_at_location}
