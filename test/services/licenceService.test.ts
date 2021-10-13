@@ -6,7 +6,7 @@ import {
 import * as varyConfig from '../../server/routes/config/vary'
 import formValidation from '../../server/services/utils/formValidation'
 import { LicenceClient } from '../../server/data/licenceClient'
-import { CaseWithVaryVersion } from '../../server/data/licenceClientTypes'
+import { CaseWithVaryVersion, Case } from '../../server/data/licenceClientTypes'
 import { Licence } from '../../server/data/licenceTypes'
 import { LicenceStage } from '../../server/services/config/licenceStage'
 
@@ -152,7 +152,7 @@ describe('licenceService', () => {
         licence: {
           licenceConditions: { standard: { additionalConditionsRequired: 'Yes' } },
         },
-      }
+      } as CaseWithVaryVersion
 
       await service.updateLicenceConditions(
         'ab1',
@@ -186,7 +186,7 @@ describe('licenceService', () => {
             bespoke: [{ text: 'bespoke' }],
           },
         },
-      }
+      } as Case
 
       await service.updateLicenceConditions('ab1', existingLicence, {
         additional: { NOCONTACTPRISONER: {} },
@@ -198,14 +198,14 @@ describe('licenceService', () => {
 
     test('should throw if error updating licence', () => {
       ;(licenceClient.updateSection as jest.Mock<Promise<void>>).mockRejectedValue(Error('dead'))
-      return expect(service.updateLicenceConditions(123, standardLicence, ['Scotland Street'])).rejects.not.toBeNull()
+      return expect(service.updateLicenceConditions(123, standardLicence, {})).rejects.not.toBeNull()
     })
 
     describe('post approval modifications', () => {
       test('should change stage to MODIFIED_APPROVAL when updates occur', async () => {
-        const existingLicence = { stage: 'DECIDED', licence: { a: 'b' } }
+        const existingLicence = { stage: 'DECIDED', licence: {} } as Case
         await service.updateLicenceConditions('ab1', existingLicence, {
-          additionalConditions: 'NOCONTACTPRISONER',
+          additional: { NOCONTACTPRISONER: '' },
         })
 
         expect(licenceClient.updateStage).toHaveBeenCalled()
@@ -213,9 +213,9 @@ describe('licenceService', () => {
       })
 
       test('should change stage to MODIFIED_APPROVAL when updates occur in MODIFIED stage', async () => {
-        const existingLicence = { stage: 'MODIFIED', licence: { a: 'b' } }
+        const existingLicence = { stage: 'MODIFIED', licence: {} } as Case
         await service.updateLicenceConditions('ab1', existingLicence, {
-          additionalConditions: 'NOCONTACTPRISONER',
+          additional: { NOCONTACTPRISONER: '' },
         })
 
         expect(licenceClient.updateStage).toHaveBeenCalled()
@@ -223,9 +223,9 @@ describe('licenceService', () => {
       })
 
       test('should not change stage if not DECIDED', async () => {
-        const existingLicence = { stage: 'PROCESSING_RO', licence: { a: 'b' } }
+        const existingLicence = { stage: 'PROCESSING_RO', licence: {} } as Case
         await service.updateLicenceConditions('ab1', existingLicence, {
-          additionalConditions: 'NOCONTACTPRISONER',
+          additional: { NOCONTACTPRISONER: '' },
         })
 
         expect(licenceClient.updateStage).not.toHaveBeenCalled()
@@ -234,10 +234,10 @@ describe('licenceService', () => {
       test('should not change stage if no changes', async () => {
         const existingLicence = {
           stage: 'PROCESSING_RO',
-          licence: { licenceConditions: { additionalConditions: { additional: { key: 'var' } } } },
-        }
+          licence: { licenceConditions: { additional: { NOCONTACTPRISONER: '' } } },
+        } as Case
         await service.updateLicenceConditions('ab1', existingLicence, {
-          additionalConditions: 'NOCONTACTPRISONER',
+          additional: { NOCONTACTPRISONER: '' },
         })
 
         expect(licenceClient.updateStage).not.toHaveBeenCalled()

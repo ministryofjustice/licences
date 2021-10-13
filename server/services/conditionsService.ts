@@ -1,9 +1,9 @@
-const moment = require('moment')
-const { formatConditionsInput } = require('./utils/conditionsFormatter')
-const { getIn, isEmpty, interleave } = require('../utils/functionalHelpers')
-const { getAdditionalConditionsConfig, standardConditions, multiFields } = require('./config/conditionsConfig')
+import moment from 'moment'
+import { formatConditionsInput } from './utils/conditionsFormatter'
+import { getIn, isEmpty, interleave } from '../utils/functionalHelpers'
+import { getAdditionalConditionsConfig, standardConditions, multiFields } from './config/conditionsConfig'
 
-module.exports = function createConditionsService() {
+export default function createConditionsService() {
   const additionalConditions = getAdditionalConditionsConfig()
 
   function getFullTextForApprovedConditions(licence) {
@@ -302,15 +302,22 @@ module.exports = function createConditionsService() {
   const orderForView = (requiredOrder) => (a, b) => requiredOrder.indexOf(a) - requiredOrder.indexOf(b)
 
   return {
+    // condition routes / review routes / pdf generation
+    populateLicenceWithConditions,
+
+    // form generation
+    getFullTextForApprovedConditions,
+
+    // condition routes
+    createConditionsObjectForLicence,
+    getNonStandardConditions,
+    formatConditionInputs,
     getStandardConditions,
     getAdditionalConditions,
-    formatConditionInputs,
-    populateLicenceWithConditions,
-    populateLicenceWithApprovedConditions,
-    createConditionsObjectForLicence,
+
+    // public only for testing
     populateAdditionalConditionsAsObject,
-    getFullTextForApprovedConditions,
-    getNonStandardConditions,
+    populateLicenceWithApprovedConditions,
   }
 }
 

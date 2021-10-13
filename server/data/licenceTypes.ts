@@ -109,41 +109,45 @@ export interface FinalChecks {
   seriousOffence?: { decision?: YesNo }
 }
 
+export type BespokeCondition = { approved?: string; text?: string }
+
+export type AdditionalConditions = {
+  ATTENDALL?: any
+  ATTENDDEPENDENCY?: any
+  ATTENDDEPENDENCYINDRUGSSECTION?: any
+  ATTENDSAMPLE?: any
+  COMPLYREQUIREMENTS?: any
+  CONFINEADDRESS?: any
+  DRUG_TESTING?: any
+  EXCLUSIONADDRESS?: any
+  EXCLUSIONAREA?: any
+  HOMEVISITS?: any
+  INTIMATERELATIONSHIP?: any
+  NOCAMERAPHONE?: any
+  NOCHILDRENSAREA?: any
+  NOCOMMUNICATEVICTIM?: any
+  NOCONTACTASSOCIATE?: any
+  NOCONTACTNAMED?: any
+  NOCONTACTPRISONER?: any
+  NOINTERNET?: any
+  NORESIDE?: any
+  NOTIFYPASSPORT?: any
+  NOTIFYRELATIONSHIP?: any
+  NOUNSUPERVISEDCONTACT?: any
+  NOWORKWITHAGE?: any
+  ONEPHONE?: any
+  REMAINADDRESS?: any
+  REPORTTO?: any
+  SURRENDERPASSPORT?: any
+  USAGEHISTORY?: any
+  VEHICLEDETAILS?: any
+}
+
 export interface LicenceConditions {
-  additional?: {
-    ATTENDALL?: any
-    ATTENDDEPENDENCY?: any
-    ATTENDDEPENDENCYINDRUGSSECTION?: any
-    ATTENDSAMPLE?: any
-    COMPLYREQUIREMENTS?: any
-    CONFINEADDRESS?: any
-    DRUG_TESTING?: any
-    EXCLUSIONADDRESS?: any
-    EXCLUSIONAREA?: any
-    HOMEVISITS?: any
-    INTIMATERELATIONSHIP?: any
-    NOCAMERAPHONE?: any
-    NOCHILDRENSAREA?: any
-    NOCOMMUNICATEVICTIM?: any
-    NOCONTACTASSOCIATE?: any
-    NOCONTACTNAMED?: any
-    NOCONTACTPRISONER?: any
-    NOINTERNET?: any
-    NORESIDE?: any
-    NOTIFYPASSPORT?: any
-    NOTIFYRELATIONSHIP?: any
-    NOUNSUPERVISEDCONTACT?: any
-    NOWORKWITHAGE?: any
-    ONEPHONE?: any
-    REMAINADDRESS?: any
-    REPORTTO?: any
-    SURRENDERPASSPORT?: any
-    USAGEHISTORY?: any
-    VEHICLEDETAILS?: any
-  }
-  bespoke?: Array<{ approved?: string; text?: string }>
+  additional?: AdditionalConditions
+  bespoke?: Array<BespokeCondition>
   conditionsSummary?: { additionalConditionsJustification?: string }
-  standard?: { additionalConditionsRequired?: string }
+  standard?: { additionalConditionsRequired?: YesNo }
 }
 
 export interface CurfewAddress {
