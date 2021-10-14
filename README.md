@@ -81,7 +81,6 @@ For the database:
 Other
 
 - ENABLE_TEST_UTILS=true to enable test utils such as resetting DB
-- 2019_CONDITIONS=yes turns on the new licence conditions
 - PUSH_TO_NOMIS=yes to send approval status updates to nomis
 
 # AWS database access

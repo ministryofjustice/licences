@@ -1,11 +1,10 @@
-const createConditionsService = require('../../server/services/conditionsService')
-const { standardConditions } = require('../../server/services/config/conditionsConfig')
-const { getAdditionalConditionsConfig } = require('../../server/services/config/conditionsConfig')
-const {
+import createConditionsService from '../../server/services/conditionsService'
+import { standardConditions } from '../../server/services/config/conditionsConfig'
+import {
   additionalConditionsObject,
   additionalConditionsObjectNoResideSelected,
   additionalConditionsObjectDateSelected,
-} = require('../stubs/conditions')
+} from '../stubs/conditions'
 
 describe('conditionsService', () => {
   let service

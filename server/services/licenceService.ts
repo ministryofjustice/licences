@@ -5,8 +5,8 @@ import { LicenceStage, transitions } from './config/licenceStage'
 import recordList from './utils/recordList'
 import formValidation from './utils/formValidation'
 import { LicenceClient } from '../data/licenceClient'
-import { ApprovedLicenceVersion, CaseWithVaryVersion } from '../data/licenceClientTypes'
-import { Licence } from '../data/licenceTypes'
+import { ApprovedLicenceVersion, Case, CaseWithVaryVersion } from '../data/licenceClientTypes'
+import { Licence, LicenceConditions } from '../data/licenceTypes'
 import { pickCurfewAddressPath } from './utils/pdfFormatter'
 
 const {
@@ -114,9 +114,14 @@ export class LicenceService {
     return this.licenceClient.createLicence(bookingId, data, LicenceStage[stage], 1, varyVersion)
   }
 
-  async updateLicenceConditions(bookingId, existingLicence, newConditionsObject, postRelease = false): Promise<any> {
+  async updateLicenceConditions(
+    bookingId,
+    existingLicence: Case,
+    newConditionsObject: LicenceConditions,
+    postRelease = false
+  ): Promise<any> {
     try {
-      const existingLicenceConditions = getIn(existingLicence, ['licence', 'licenceConditions'])
+      const existingLicenceConditions = existingLicence?.licence?.licenceConditions
       const licenceConditions = { ...existingLicenceConditions, ...newConditionsObject }
 
       if (equals(existingLicenceConditions, licenceConditions)) {
