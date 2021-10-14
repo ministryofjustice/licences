@@ -1,30 +1,18 @@
 /* eslint-disable max-len */
-module.exports = {
-  standardConditions: [
-    {
-      text: 'Be of good behaviour and not behave in a way which undermines the purpose of the licence period.',
-    },
-    {
-      text: 'Not commit any offence.',
-    },
-    {
-      text: 'Keep in touch with the supervising officer in accordance with instructions given by the supervising officer.',
-    },
-    {
-      text: 'Receive visits from the supervising officer in accordance with instructions given by the supervising officer.',
-    },
-    {
-      text: 'Reside permanently at an address approved by the supervising officer and obtain the prior permission of the supervising officer for any stay of one or more nights at a different address.',
-    },
-    {
-      text: 'Not undertake work, or a particular type of work, unless it is approved by the supervising officer and notify the supervising officer in advance of any proposal to undertake work or a particular type of work.',
-    },
-    {
-      text: 'Not travel outside the United Kingdom, the Channel Islands or the Isle of Man except with the prior permission of your supervising officer or for the purposes of immigration deportation or removal.',
-    },
-  ],
 
-  getAdditionalConditionsConfig: () => [
+type ConditionVersion = 'V1' | 'V2'
+
+type ConditionMetadata = {
+  id: string
+  text: string
+  user_input: string
+  field_position: Record<string, number>
+  group_name: string
+  subgroup_name: string
+}
+
+const additionalConditions: Record<ConditionVersion, ConditionMetadata[]> = {
+  V1: [
     {
       id: 'NOCONTACTPRISONER',
       text: 'Not to contact directly or indirectly any person who is a serving or remand offender or detained in State custody, without the prior approval of your supervising officer.',
@@ -109,7 +97,7 @@ module.exports = {
       text: 'Not to undertake work or other organised activity which will involve a person under the age of [INSERT AGE], either on a paid or unpaid basis without the prior approval of your supervising officer.',
       user_input: 'noWorkWithAge',
       field_position: {
-        noWorkWithAge: '0',
+        noWorkWithAge: 0,
       },
       group_name: 'People, contact and relationships',
       subgroup_name: 'Children',
@@ -150,8 +138,8 @@ module.exports = {
       text: 'To comply with any requirements specified by your supervising officer for the purpose of ensuring that you address your [alcohol abuse / drug abuse / sexual behaviour / violent behaviour / gambling / solvent abuse / anger / debt / prolific behaviour/ offending behaviour] problems at the [NAME OF COURSE / CENTRE].',
       user_input: 'courseOrCentre',
       field_position: {
-        abuseAndBehaviours: '0',
-        courseOrCentre: '1',
+        abuseAndBehaviours: 0,
+        courseOrCentre: 1,
       },
       group_name: 'Drugs, health and behaviour',
       subgroup_name: null,
@@ -161,8 +149,8 @@ module.exports = {
       text: 'Attend all appointments arranged for you with [INSERT NAME], a [PSYCHIATRIST / PSYCHOLOGIST / MEDICAL PRACTITIONER] and co-operate fully with any care or treatment they recommend.',
       user_input: 'appointmentName',
       field_position: {
-        appointmentName: '0',
-        appointmentProfession: '1',
+        appointmentName: 0,
+        appointmentProfession: 1,
       },
       group_name: 'Drugs, health and behaviour',
       subgroup_name: null,
@@ -172,7 +160,7 @@ module.exports = {
       text: 'Receive home visits from [INSERT NAME] Mental Health Worker.',
       user_input: 'mentalHealthName',
       field_position: {
-        mentalHealthName: '0',
+        mentalHealthName: 0,
       },
       group_name: 'Drugs, health and behaviour',
       subgroup_name: null,
@@ -182,10 +170,10 @@ module.exports = {
       text: 'Confine yourself to remain at [CURFEW ADDRESS] initially from [START OF CURFEW HOURS] until [END OF CURFEW HOURS] each day, and, thereafter, for such a period as may be reasonably notified to you by your supervising officer; and comply with such arrangements as may be reasonably put in place and notified to you by your supervising officer so as to allow for your whereabouts and your compliance with your curfew requirement be monitored [WHETHER BY ELECTRONIC MEANS INVOLVING YOUR WEARING AN ELECTRONIC TAG OR OTHERWISE].',
       user_input: 'curfewDetails',
       field_position: {
-        curfewTo: '2',
-        curfewFrom: '1',
-        curfewAddress: '0',
-        curfewTagRequired: '3',
+        curfewTo: 2,
+        curfewFrom: 1,
+        curfewAddress: 0,
+        curfewTagRequired: 3,
       },
       group_name: 'Curfew and reporting',
       subgroup_name: null,
@@ -195,9 +183,9 @@ module.exports = {
       text: 'Confine yourself to an address approved by your supervising officer between the hours of [TIME] and [TIME] daily unless otherwise authorised by your supervising officer.  This condition will be reviewed by your supervising officer on a [WEEKLY / MONTHLY / ETC] basis and may be amended or removed if it is felt that the level of risk that you present has reduced appropriately.',
       user_input: 'confinedDetails',
       field_position: {
-        confinedTo: '0',
-        confinedFrom: '1',
-        confinedReviewFrequency: '2',
+        confinedTo: 0,
+        confinedFrom: 1,
+        confinedReviewFrequency: 2,
       },
       group_name: 'Curfew and reporting',
       subgroup_name: null,
@@ -207,10 +195,10 @@ module.exports = {
       text: 'Report to staff at [NAME OF APPROVED PREMISES / POLICE STATION] at [TIME / DAILY], unless otherwise authorised by your supervising officer.  This condition will be reviewed by your supervising officer on a [WEEKLY / MONTHLY / ETC] basis and may be amended or removed if it is felt that the level of risk you present has reduced appropriately.',
       user_input: 'reportingDetails',
       field_position: {
-        reportingTime: '1',
-        reportingDaily: '2',
-        reportingAddress: '0',
-        reportingFrequency: '3',
+        reportingTime: 1,
+        reportingDaily: 2,
+        reportingAddress: 0,
+        reportingFrequency: 3,
       },
       group_name: 'Curfew and reporting',
       subgroup_name: null,
@@ -254,7 +242,7 @@ module.exports = {
       text: 'Not to enter [NAME/TYPE OF PREMISES / ADDRESS / ROAD] without the prior approval of your supervising officer.',
       user_input: 'noEnterPlace',
       field_position: {
-        noEnterPlace: '0',
+        noEnterPlace: 0,
       },
       group_name: 'Exclusion',
       subgroup_name: null,
@@ -264,7 +252,7 @@ module.exports = {
       text: 'Not to enter the area of [CLEARLY SPECIFIED AREA], as defined by the attached map without the prior approval of your supervising officer.',
       user_input: 'exclusionArea',
       field_position: {
-        exclusionArea: '0',
+        exclusionArea: 0,
       },
       group_name: 'Exclusion',
       subgroup_name: null,
@@ -360,23 +348,87 @@ module.exports = {
       subgroup_name: null,
     },
   ],
+  V2: [
+    {
+      id: 'NOCONTACTPRISONERV2',
+      text: 'Not to contact directly or indirectly any person who is a serving or remand offender or detained in State custody, without the prior approval of your supervising officer.',
+      user_input: null,
+      field_position: null,
+      group_name: 'People, contact and relationships',
+      subgroup_name: 'Person or group',
+    },
+    {
+      id: 'NOCONTACTASSOCIATEV2',
+      text: 'Not to associate with any person currently or formerly associated with [NAME OR DESCRIBE SPECIFIC GROUPS OR ORGANISATIONS] without the prior approval of your supervising officer.',
+      user_input: 'groupsOrOrganisations',
+      field_position: {
+        groupsOrOrganisation: 0,
+      },
+      group_name: 'People, contact and relationships',
+      subgroup_name: 'Person or group',
+    },
+    {
+      id: 'NOCONTACTSEXOFFENDERV2',
+      text: 'Not to contact or associate with a known sex offender other than when compelled by attendance at a Treatment Programme or when residing at Approved Premises without the prior approval of your supervising officer.',
+      user_input: null,
+      field_position: null,
+      group_name: 'People, contact and relationships',
+      subgroup_name: 'Person or group',
+    },
+    {
+      id: 'INTIMATERELATIONSHIPV2',
+      text: 'Notify your supervising officer of any developing intimate relationships with [WOMEN / MEN / WOMEN OR MEN].',
+      user_input: 'intimateGender',
+      field_position: {
+        intimateGender: 0,
+      },
+      group_name: 'People, contact and relationships',
+      subgroup_name: 'Person or group',
+    },
+  ],
+}
 
-  multiFields: {
-    appointmentDetails: {
-      fields: ['appointmentAddress', 'appointmentDate', 'appointmentTime'],
-      joining: [' on ', ' at '],
-    },
-    appointmentDetailsInDrugsSection: {
-      fields: ['appointmentAddressInDrugsSection', 'appointmentDateInDrugsSection', 'appointmentTimeInDrugsSection'],
-      joining: [' on ', ' at '],
-    },
-    attendSampleDetails: {
-      fields: ['attendSampleDetailsName', 'attendSampleDetailsAddress'],
-      joining: [', '],
-    },
-    drug_testing: {
-      fields: ['drug_testing_name', 'drug_testing_address'],
-      joining: [', '],
-    },
+export const standardConditions = [
+  {
+    text: 'Be of good behaviour and not behave in a way which undermines the purpose of the licence period.',
+  },
+  {
+    text: 'Not commit any offence.',
+  },
+  {
+    text: 'Keep in touch with the supervising officer in accordance with instructions given by the supervising officer.',
+  },
+  {
+    text: 'Receive visits from the supervising officer in accordance with instructions given by the supervising officer.',
+  },
+  {
+    text: 'Reside permanently at an address approved by the supervising officer and obtain the prior permission of the supervising officer for any stay of one or more nights at a different address.',
+  },
+  {
+    text: 'Not undertake work, or a particular type of work, unless it is approved by the supervising officer and notify the supervising officer in advance of any proposal to undertake work or a particular type of work.',
+  },
+  {
+    text: 'Not travel outside the United Kingdom, the Channel Islands or the Isle of Man except with the prior permission of your supervising officer or for the purposes of immigration deportation or removal.',
+  },
+]
+
+export const getAdditionalConditionsConfig = (version: ConditionVersion) => additionalConditions[version]
+
+export const multiFields = {
+  appointmentDetails: {
+    fields: ['appointmentAddress', 'appointmentDate', 'appointmentTime'],
+    joining: [' on ', ' at '],
+  },
+  appointmentDetailsInDrugsSection: {
+    fields: ['appointmentAddressInDrugsSection', 'appointmentDateInDrugsSection', 'appointmentTimeInDrugsSection'],
+    joining: [' on ', ' at '],
+  },
+  attendSampleDetails: {
+    fields: ['attendSampleDetailsName', 'attendSampleDetailsAddress'],
+    joining: [', '],
+  },
+  drug_testing: {
+    fields: ['drug_testing_name', 'drug_testing_address'],
+    joining: [', '],
   },
 }

@@ -4,8 +4,6 @@ import { getIn, isEmpty, interleave } from '../utils/functionalHelpers'
 import { getAdditionalConditionsConfig, standardConditions, multiFields } from './config/conditionsConfig'
 
 export default function createConditionsService() {
-  const additionalConditions = getAdditionalConditionsConfig()
-
   function getFullTextForApprovedConditions(licence) {
     const standardConditionsText = standardConditions.map((it) => it.text.replace(/\.+$/, ''))
 
@@ -50,6 +48,7 @@ export default function createConditionsService() {
 
   function getAdditionalConditions(licence = null) {
     const licenceAdditionalConditions = getIn(licence, ['licenceConditions', 'additional'])
+    const additionalConditions = getAdditionalConditionsConfig('V1')
     if (licenceAdditionalConditions) {
       return additionalConditions
         .map(populateFromSavedLicence(licenceAdditionalConditions))
@@ -60,7 +59,7 @@ export default function createConditionsService() {
   }
 
   function formatConditionInputs(requestBody) {
-    const selectedConditionsConfig = additionalConditions.filter((condition) =>
+    const selectedConditionsConfig = getAdditionalConditionsConfig('V1').filter((condition) =>
       requestBody.additionalConditions.includes(condition.id)
     )
 
@@ -86,7 +85,7 @@ export default function createConditionsService() {
     }
 
     const conditionIdsSelected = Object.keys(licenceAdditionalConditions)
-    const selectedConditionsConfig = additionalConditions.filter((condition) =>
+    const selectedConditionsConfig = getAdditionalConditionsConfig('V1').filter((condition) =>
       conditionIdsSelected.includes(condition.id)
     )
 
@@ -113,7 +112,9 @@ export default function createConditionsService() {
     }
 
     const conditionIds = additional.additionalConditions
-    const selectedConditionsConfig = additionalConditions.filter((condition) => conditionIds.includes(condition.id))
+    const selectedConditionsConfig = getAdditionalConditionsConfig('V1').filter((condition) =>
+      conditionIds.includes(condition.id)
+    )
     const additionalConditionsObject = createAdditionalConditionsObject(selectedConditionsConfig, additional)
 
     return { additional: { ...additionalConditionsObject }, bespoke }
@@ -149,7 +150,7 @@ export default function createConditionsService() {
     const getObjectForAdditional = createAdditionalMethod(rawLicence, selectedConditionsConfig, inputErrors)
 
     const populatedAdditional = Object.keys(additional)
-      .sort(orderForView(additionalConditions.map((condition) => condition.id)))
+      .sort(orderForView(getAdditionalConditionsConfig('V1').map((condition) => condition.id)))
       .map(getObjectForAdditional)
 
     const populatedBespoke = bespoke ? bespoke.map(getObjectForBespoke) : []
