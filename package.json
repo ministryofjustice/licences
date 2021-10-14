@@ -128,7 +128,7 @@
     "node-schedule": "^2.0.0",
     "notifications-node-client": "^5.1.0",
     "passport": "^0.4.1",
-    "passport-oauth2": "^1.6.0",
+    "passport-oauth2": "^1.6.1",
     "path": "^0.12.7",
     "pg": "8.7.1",
     "pg-format": "^1.0.4",
