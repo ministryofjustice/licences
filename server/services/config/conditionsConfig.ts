@@ -351,7 +351,7 @@ const additionalConditions: Record<ConditionVersion, ConditionMetadata[]> = {
   V2: [
     {
       id: 'NOCONTACTPRISONERV2',
-      text: 'Not to contact directly or indirectly any person who is a serving or remand offender or detained in State custody, without the prior approval of your supervising officer.',
+      text: 'V2 Not to contact directly or indirectly any person who is a serving or remand offender or detained in State custody, without the prior approval of your supervising officer.',
       user_input: null,
       field_position: null,
       group_name: 'People, contact and relationships',
@@ -359,7 +359,7 @@ const additionalConditions: Record<ConditionVersion, ConditionMetadata[]> = {
     },
     {
       id: 'NOCONTACTASSOCIATEV2',
-      text: 'Not to associate with any person currently or formerly associated with [NAME OR DESCRIBE SPECIFIC GROUPS OR ORGANISATIONS] without the prior approval of your supervising officer.',
+      text: 'V2 Not to associate with any person currently or formerly associated with [NAME OR DESCRIBE SPECIFIC GROUPS OR ORGANISATIONS] without the prior approval of your supervising officer.',
       user_input: 'groupsOrOrganisations',
       field_position: {
         groupsOrOrganisation: 0,
@@ -369,26 +369,30 @@ const additionalConditions: Record<ConditionVersion, ConditionMetadata[]> = {
     },
     {
       id: 'NOCONTACTSEXOFFENDERV2',
-      text: 'Not to contact or associate with a known sex offender other than when compelled by attendance at a Treatment Programme or when residing at Approved Premises without the prior approval of your supervising officer.',
+      text: 'V2 Not to contact or associate with a known sex offender other than when compelled by attendance at a Treatment Programme or when residing at Approved Premises without the prior approval of your supervising officer.',
       user_input: null,
       field_position: null,
       group_name: 'People, contact and relationships',
       subgroup_name: 'Person or group',
     },
     {
-      id: 'INTIMATERELATIONSHIPV2',
-      text: 'Notify your supervising officer of any developing intimate relationships with [WOMEN / MEN / WOMEN OR MEN].',
-      user_input: 'intimateGender',
+      id: 'V2ATTENDDEPENDENCY',
+      text: 'V2 Attend [INSERT APPOINTMENT TIME DATE AND ADDRESS], as directed, to address your dependency on, or propensity to misuse, a controlled drug.',
+      user_input: 'appointmentDetails',
       field_position: {
-        intimateGender: 0,
+        appointmentDate: 0,
+        appointmentTime: 1,
+        appointmentAddress: 2,
       },
-      group_name: 'People, contact and relationships',
-      subgroup_name: 'Person or group',
+      group_name: 'Post-sentence supervision only',
+      subgroup_name: null,
     },
   ],
 }
 
-export const standardConditions = [
+export type StandardCondition = { text: string }
+
+export const standardConditions: StandardCondition[] = [
   {
     text: 'Be of good behaviour and not behave in a way which undermines the purpose of the licence period.',
   },
