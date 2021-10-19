@@ -2,13 +2,14 @@ import moment from 'moment'
 import { formatConditionsInput } from './utils/conditionsFormatter'
 import { getIn, isEmpty, interleave } from '../utils/functionalHelpers'
 import { getAdditionalConditionsConfig, standardConditions, multiFields } from './config/conditionsConfig'
+import { AdditionalConditions, Licence } from '../data/licenceTypes'
 
 export default function createConditionsService() {
-  function getFullTextForApprovedConditions(licence) {
+  function getFullTextForApprovedConditions(licence: Licence) {
     const standardConditionsText = standardConditions.map((it) => it.text.replace(/\.+$/, ''))
 
     // could be undefined, 'No' or 'Yes'
-    const standardOnly = getIn(licence, ['licenceConditions', 'standard', 'additionalConditionsRequired']) !== 'Yes'
+    const standardOnly = licence?.licenceConditions?.standard?.additionalConditionsRequired !== 'Yes'
 
     if (standardOnly) {
       return { standardConditions: standardConditionsText, additionalConditions: [] }
@@ -46,8 +47,8 @@ export default function createConditionsService() {
     return standardConditions
   }
 
-  function getAdditionalConditions(licence = null) {
-    const licenceAdditionalConditions = getIn(licence, ['licenceConditions', 'additional'])
+  function getAdditionalConditions(licence: Licence = null) {
+    const licenceAdditionalConditions = licence?.licenceConditions?.additional
     const additionalConditions = getAdditionalConditionsConfig('V1')
     if (licenceAdditionalConditions) {
       return additionalConditions
@@ -66,18 +67,18 @@ export default function createConditionsService() {
     return formatConditionsInput(requestBody, selectedConditionsConfig)
   }
 
-  function populateLicenceWithApprovedConditions(licence) {
+  function populateLicenceWithApprovedConditions(licence: Licence) {
     return populateLicenceWithConditions(licence, null, true)
   }
 
-  function populateLicenceWithConditions(licence, errors = {}, approvedOnly = false) {
+  function populateLicenceWithConditions(licence: Licence, errors = {}, approvedOnly = false) {
     // could be undefined, 'No' or 'Yes'
-    if (getIn(licence, ['licenceConditions', 'standard', 'additionalConditionsRequired']) !== 'Yes') {
+    if (licence?.licenceConditions?.standard?.additionalConditionsRequired !== 'Yes') {
       return licence
     }
 
-    const licenceAdditionalConditions = getIn(licence, ['licenceConditions', 'additional'])
-    const bespokeConditions = getIn(licence, ['licenceConditions', 'bespoke']) || []
+    const licenceAdditionalConditions = licence?.licenceConditions?.additional
+    const bespokeConditions = licence?.licenceConditions?.bespoke || []
     const conditionsOnLicence = !isEmpty(licenceAdditionalConditions) || bespokeConditions.length > 0
 
     if (!conditionsOnLicence) {
@@ -89,12 +90,7 @@ export default function createConditionsService() {
       conditionIdsSelected.includes(condition.id)
     )
 
-    const abuseAndBehavioursConditions = getIn(licence, [
-      'licenceConditions',
-      'additional',
-      'COMPLYREQUIREMENTS',
-      'abuseAndBehaviours',
-    ])
+    const abuseAndBehavioursConditions = licence?.licenceConditions?.additional?.COMPLYREQUIREMENTS?.abuseAndBehaviours
 
     if (Array.isArray(abuseAndBehavioursConditions)) {
       Object.assign(
@@ -135,18 +131,15 @@ export default function createConditionsService() {
   }
 
   function populateAdditionalConditionsAsObject(
-    rawLicence,
+    rawLicence: Licence,
     selectedConditionsConfig,
     inputErrors = {},
     approvedOnly = false
   ) {
     const { additional, bespoke } = rawLicence.licenceConditions
 
-    const additionalConditionsJustification = getIn(rawLicence, [
-      'licenceConditions',
-      'conditionsSummary',
-      'additionalConditionsJustification',
-    ])
+    const additionalConditionsJustification =
+      rawLicence?.licenceConditions?.conditionsSummary?.additionalConditionsJustification
     const getObjectForAdditional = createAdditionalMethod(rawLicence, selectedConditionsConfig, inputErrors)
 
     const populatedAdditional = Object.keys(additional)
@@ -165,11 +158,11 @@ export default function createConditionsService() {
     }
   }
 
-  function createAdditionalMethod(rawLicence, selectedConditions, inputErrors) {
+  function createAdditionalMethod(rawLicence: Licence, selectedConditions, inputErrors) {
     return (condition) => {
       const selectedCondition = selectedConditions.find((selected) => String(selected.id) === String(condition))
-      const userInput = getIn(rawLicence, ['licenceConditions', 'additional', condition])
-      const userErrors = getIn(inputErrors, [condition])
+      const userInput = rawLicence?.licenceConditions?.additional?.[condition]
+      const userErrors = inputErrors?.[condition]
       const content = getContentForCondition(selectedCondition, userInput, userErrors)
 
       return {
@@ -178,6 +171,7 @@ export default function createConditionsService() {
         subgroup: selectedCondition.subgroup_name,
         id: selectedCondition.id,
         inputRequired: !!selectedCondition.user_input,
+        approved: undefined,
       }
     }
   }
@@ -335,7 +329,7 @@ function splitIntoGroupedObject(conditionObject, condition) {
   return { ...conditionObject, [groupName]: newGroup }
 }
 
-function populateFromSavedLicence(inputtedConditions) {
+function populateFromSavedLicence(inputtedConditions: AdditionalConditions) {
   const populatedConditionIds = Object.keys(inputtedConditions)
 
   return (condition) => {
@@ -346,7 +340,7 @@ function populateFromSavedLicence(inputtedConditions) {
   }
 }
 
-function getSubmissionForCondition(conditionId, inputtedConditions) {
+function getSubmissionForCondition(conditionId, inputtedConditions: AdditionalConditions) {
   if (isEmpty(inputtedConditions[conditionId])) {
     return {}
   }

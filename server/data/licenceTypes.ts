@@ -116,7 +116,7 @@ export type AdditionalConditions = {
   ATTENDDEPENDENCY?: any
   ATTENDDEPENDENCYINDRUGSSECTION?: any
   ATTENDSAMPLE?: any
-  COMPLYREQUIREMENTS?: any
+  COMPLYREQUIREMENTS?: { abuseAndBehaviours: any }
   CONFINEADDRESS?: any
   DRUG_TESTING?: any
   EXCLUSIONADDRESS?: any
