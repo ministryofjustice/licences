@@ -2,7 +2,19 @@ const { merge } = require('../../utils/functionalHelpers')
 
 const ALWAYS_REQUIRED = ['additionalConditions', 'bookingId']
 
-module.exports = { formatConditionsInput }
+module.exports = { formatConditionsInput, formatConditionsText, getConditionText }
+
+function formatConditionsText({ content }) {
+  const formattedCondition = getConditionText(content)
+  return { text: formattedCondition }
+}
+
+function getConditionText(content) {
+  return content
+    .map(({ text, variable }) => text || variable)
+    .join('')
+    .replace(/\.+$/, '')
+}
 
 function formatConditionsInput(inputObject, selectedConditionsConfig) {
   const conditionsFieldsRequired = selectedConditionsConfig.reduce(getSelectedFieldNamesReducer, [])

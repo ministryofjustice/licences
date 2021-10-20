@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { formatConditionsInput } from './utils/conditionsFormatter'
+import { formatConditionsInput, getConditionText, formatConditionsText } from './utils/conditionsFormatter'
 import { getIn, isEmpty, interleave } from '../utils/functionalHelpers'
 import { getAdditionalConditionsConfig, standardConditions, multiFields } from './config/conditionsConfig'
 import { AdditionalConditions, Licence } from '../data/licenceTypes'
@@ -34,13 +34,6 @@ export default function createConditionsService() {
       standardConditions: standardConditionsText,
       additionalConditions: additionalConditionsText,
     }
-  }
-
-  function getConditionText(content) {
-    return content
-      .map(({ text, variable }) => text || variable)
-      .join('')
-      .replace(/\.+$/, '')
   }
 
   function getStandardConditions() {
@@ -218,11 +211,6 @@ export default function createConditionsService() {
       pssConditions: pssConditions.map(formatConditionsText),
       unapprovedBespokeConditions: unapprovedBespokeConditions.map(formatConditionsText),
     }
-  }
-
-  function formatConditionsText({ content }) {
-    const formattedCondition = getConditionText(content)
-    return { text: formattedCondition }
   }
 
   function injectUserInputAsObject(condition, userInput, userErrors) {
