@@ -151,10 +151,34 @@ describe('/hdc/licenceConditions', () => {
         nextPath: '/hdc/taskList/1',
         formName: 'standard',
       },
+      {
+        url: '/hdc/licenceConditions/standard/1',
+        body: { bookingId: 1 },
+        nextPath: '/hdc/taskList/1',
+        formName: 'standard',
+      },
+      {
+        url: '/hdc/licenceConditions/standard/change/1',
+        body: { additionalConditionsRequired: 'Yes', bookingId: 1 },
+        nextPath: '/hdc/licenceConditions/additionalConditions/change/1',
+        formName: 'standard',
+      },
+      {
+        url: '/hdc/licenceConditions/standard/change/1',
+        body: { additionalConditionsRequired: 'No', bookingId: 1 },
+        nextPath: '/hdc/review/licenceDetails/1',
+        formName: 'standard',
+      },
+      {
+        url: '/hdc/licenceConditions/standard/change/1',
+        body: { bookingId: 1 },
+        nextPath: '/hdc/review/licenceDetails/1',
+        formName: 'standard',
+      },
     ]
 
     routes.forEach((route) => {
-      test(`renders the correct path '${route.nextPath}' page`, () => {
+      test(`redirects to '${route.nextPath}' page for ${route.url}`, () => {
         const licenceService = createLicenceServiceStub()
         const app = createApp({ licenceService, conditionsService }, 'roUser')
 
