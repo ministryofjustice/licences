@@ -176,6 +176,15 @@ export class LicenceClient {
     const { rows } = await db.query(query)
     return rows
   }
+
+  async setConditionsVersion(bookingId: number, conditionVersion: number): Promise<void> {
+    const query = {
+      text: `update licences l set conditions_version = $1 where booking_id = $2`,
+      values: [conditionVersion, bookingId],
+    }
+
+    await db.query(query)
+  }
 }
 
 export const licenceClient = new LicenceClient()

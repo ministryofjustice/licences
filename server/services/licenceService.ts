@@ -565,6 +565,10 @@ export class LicenceService {
   saveApprovedLicenceVersion(bookingId, template) {
     return this.licenceClient.saveApprovedLicenceVersion(bookingId, template)
   }
+
+  setConditionsVersion(bookingId: number, conditionVersion: number) {
+    return this.licenceClient.setConditionsVersion(bookingId, conditionVersion)
+  }
 }
 
 export function createLicenceService(licenceClient: LicenceClient) {

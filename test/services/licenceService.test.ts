@@ -39,6 +39,7 @@ describe('licenceService', () => {
       saveApprovedLicenceVersion: undefined,
       getLicencesInStageBetweenDates: undefined,
       getLicencesInStageBeforeDate: undefined,
+      setConditionsVersion: jest.fn(),
     }
     service = createLicenceService(licenceClient)
   })
@@ -1915,6 +1916,13 @@ describe('licenceService', () => {
     it('should call updateStage', () => {
       service.resetLicence(100, false)
       expect(licenceClient.updateStage).toBeCalledWith(100, LicenceStage.ELIGIBILITY)
+    })
+  })
+
+  describe('set conditions version', () => {
+    it('should call setConditionsVersion', () => {
+      service.setConditionsVersion(100, 1)
+      expect(licenceClient.setConditionsVersion).toBeCalledWith(100, 1)
     })
   })
 })

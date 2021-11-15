@@ -2,7 +2,7 @@ import moment from 'moment'
 import { formatConditionsInput, getConditionText, formatConditionsText } from './utils/conditionsFormatter'
 import { isEmpty } from '../utils/functionalHelpers'
 import * as builder from './licenceWithConditionsBuilder'
-import { getAdditionalConditionsConfig, standardConditions } from './config/conditionsConfig'
+import { getAdditionalConditionsConfig, standardConditions, CURRENT_CONDITION_VERSION } from './config/conditionsConfig'
 import { AdditionalConditions, Licence } from '../data/licenceTypes'
 
 export default function createConditionsService() {
@@ -43,7 +43,7 @@ export default function createConditionsService() {
 
   function getAdditionalConditions(licence: Licence = null) {
     const licenceAdditionalConditions = licence?.licenceConditions?.additional
-    const additionalConditions = getAdditionalConditionsConfig('V1')
+    const additionalConditions = getAdditionalConditionsConfig(CURRENT_CONDITION_VERSION)
     if (licenceAdditionalConditions) {
       return additionalConditions
         .map(populateFromSavedLicence(licenceAdditionalConditions))
@@ -54,7 +54,7 @@ export default function createConditionsService() {
   }
 
   function formatConditionInputs(requestBody) {
-    const selectedConditionsConfig = getAdditionalConditionsConfig('V1').filter((condition) =>
+    const selectedConditionsConfig = getAdditionalConditionsConfig(CURRENT_CONDITION_VERSION).filter((condition) =>
       requestBody.additionalConditions.includes(condition.id)
     )
 
@@ -67,7 +67,7 @@ export default function createConditionsService() {
     }
 
     const conditionIds = additional.additionalConditions
-    const selectedConditionsConfig = getAdditionalConditionsConfig('V1').filter((condition) =>
+    const selectedConditionsConfig = getAdditionalConditionsConfig(CURRENT_CONDITION_VERSION).filter((condition) =>
       conditionIds.includes(condition.id)
     )
     const additionalConditionsObject = createAdditionalConditionsObject(selectedConditionsConfig, additional)
