@@ -1,18 +1,18 @@
-const request = require('supertest')
-const { mockAudit } = require('../mockClients')
-const { appSetup, testFormPageGets } = require('../supertestSetup')
+import request from 'supertest'
+import { mockAudit } from '../mockClients'
+import { appSetup, testFormPageGets } from '../supertestSetup'
 
-const {
+import {
   createPrisonerServiceStub,
   createLicenceServiceStub,
   createConditionsServiceStub,
   createSignInServiceStub,
-} = require('../mockServices')
+} from '../mockServices'
 
-const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
-const createRoute = require('../../server/routes/conditions')
-const formConfig = require('../../server/routes/config/licenceConditions')
-const NullTokenVerifier = require('../../server/authentication/tokenverifier/NullTokenVerifier')
+import standardRouter from '../../server/routes/routeWorkers/standardRouter'
+import createRoute from '../../server/routes/conditions'
+import formConfig from '../../server/routes/config/licenceConditions'
+import NullTokenVerifier from '../../server/authentication/tokenverifier/NullTokenVerifier'
 
 describe('/hdc/licenceConditions', () => {
   let conditionsService
