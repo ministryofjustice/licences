@@ -22,6 +22,8 @@ ingress:
   host: licences.prison.service.justice.gov.uk
   cert_secret: licences-cert
   path: /
+  annotations:
+    external-dns.alpha.kubernetes.io/set-identifier: licences-licences-prod-blue
 
 env:
   NOMIS_API_URL: "https://api.prison.service.justice.gov.uk"
