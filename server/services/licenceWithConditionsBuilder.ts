@@ -1,5 +1,5 @@
 import { getIn, isEmpty, interleave } from '../utils/functionalHelpers'
-import { getAdditionalConditionsConfig, multiFields } from './config/conditionsConfig'
+import { getAdditionalConditionsConfig, multiFields, CURRENT_CONDITION_VERSION } from './config/conditionsConfig'
 import { Licence } from '../data/licenceTypes'
 
 export function populateLicenceWithApprovedConditions(licence: Licence) {
@@ -21,7 +21,7 @@ export function populateLicenceWithConditions(licence: Licence, errors = {}, app
   }
 
   const conditionIdsSelected = Object.keys(licenceAdditionalConditions)
-  const selectedConditionsConfig = getAdditionalConditionsConfig('V1').filter((condition) =>
+  const selectedConditionsConfig = getAdditionalConditionsConfig(CURRENT_CONDITION_VERSION).filter((condition) =>
     conditionIdsSelected.includes(condition.id)
   )
 
@@ -51,7 +51,7 @@ export function populateAdditionalConditionsAsObject(
   const getObjectForAdditional = createAdditionalMethod(rawLicence, selectedConditionsConfig, inputErrors)
 
   const populatedAdditional = Object.keys(additional)
-    .sort(orderForView(getAdditionalConditionsConfig('V1').map((condition) => condition.id)))
+    .sort(orderForView(getAdditionalConditionsConfig(CURRENT_CONDITION_VERSION).map((condition) => condition.id)))
     .map(getObjectForAdditional)
 
   const populatedBespoke = bespoke ? bespoke.map(getObjectForBespoke) : []

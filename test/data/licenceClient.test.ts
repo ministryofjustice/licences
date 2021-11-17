@@ -304,4 +304,15 @@ describe('licenceClient', () => {
       expect(values).toEqual(expectedParameters)
     })
   })
+
+  describe('setConditionsVersion', () => {
+    test('should pass in the correct parameters', async () => {
+      await licenceClient.setConditionsVersion(10001, 2)
+
+      expect(db.query).toHaveBeenCalledWith({
+        text: 'update licences l set conditions_version = $1 where booking_id = $2',
+        values: [2, 10001],
+      })
+    })
+  })
 })
