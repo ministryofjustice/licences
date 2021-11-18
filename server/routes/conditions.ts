@@ -35,6 +35,35 @@ export default ({ licenceService, conditionsService }: { licenceService: Licence
       })
     }
 
+    router.post('/standard/:bookingId', audited, asyncMiddleware(postStandard))
+    router.post('/standard/:action/:bookingId', audited, asyncMiddleware(postStandard))
+
+    async function postStandard(req, res) {
+      logger.debug('POST /standard/')
+      const { bookingId, action } = req.params
+      const isChange = action === 'change'
+
+      licenceService.update({
+        bookingId,
+        originalLicence: res.locals.licence,
+        config: formConfig.standard,
+        userInput: req.body,
+        licenceSection: 'licenceConditions',
+        formName: 'standard',
+        postRelease: res.locals.postRelease,
+      })
+
+      if (req.body.additionalConditionsRequired === 'Yes') {
+        return res.redirect(
+          isChange
+            ? `/hdc/licenceConditions/additionalConditions/change/${bookingId}`
+            : `/hdc/licenceConditions/additionalConditions/${bookingId}`
+        )
+      }
+
+      return res.redirect(isChange ? `/hdc/review/licenceDetails/${bookingId}` : `/hdc/taskList/${bookingId}`)
+    }
+
     router.get('/additionalConditions/:bookingId', getAdditional)
     router.get('/additionalConditions/:action/:bookingId', getAdditional)
 

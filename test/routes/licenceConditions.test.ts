@@ -1,6 +1,8 @@
 import request from 'supertest'
 import { mockAudit } from '../mockClients'
 import { appSetup, testFormPageGets } from '../supertestSetup'
+// eslint-disable-next-line import/no-extraneous-dependencies
+import 'iconv-lite/encodings'
 
 import {
   createPrisonerServiceStub,
@@ -235,30 +237,30 @@ describe('/hdc/licenceConditions', () => {
         return request(app).post(route.url).send(route.body).expect(403)
       })
     })
+  })
 
-    test(`passes postRelease true if agencyLocationId is out`, () => {
-      const licenceService = createLicenceServiceStub()
-      const prisonerService = createPrisonerServiceStub()
-      prisonerService.getPrisonerPersonalDetails.mockResolvedValue({ agencyLocationId: 'out' })
-      const app = createApp({ licenceService, conditionsService, prisonerService }, 'roUser')
+  test(`passes postRelease true if agencyLocationId is out`, async () => {
+    const licenceService = createLicenceServiceStub()
+    const prisonerService = createPrisonerServiceStub()
+    prisonerService.getPrisonerPersonalDetails.mockResolvedValue({ agencyLocationId: 'out' })
+    const app = createApp({ licenceService, conditionsService, prisonerService }, 'roUser')
 
-      return request(app)
-        .post('/hdc/licenceConditions/standard/1')
-        .send({ additionalConditionsRequired: 'Yes', bookingId: 1 })
-        .expect(302)
-        .expect(() => {
-          expect(licenceService.update).toHaveBeenCalled()
-          expect(licenceService.update).toHaveBeenCalledWith({
-            bookingId: '1',
-            originalLicence: { licence: { key: 'value' } },
-            config: formConfig.standard,
-            userInput: { additionalConditionsRequired: 'Yes', bookingId: 1 },
-            licenceSection: 'licenceConditions',
-            formName: 'standard',
-            postRelease: true,
-          })
+    await request(app)
+      .post('/hdc/licenceConditions/standard/1')
+      .send({ additionalConditionsRequired: 'Yes', bookingId: 1 })
+      .expect(302)
+      .expect(() => {
+        expect(licenceService.update).toHaveBeenCalled()
+        expect(licenceService.update).toHaveBeenCalledWith({
+          bookingId: '1',
+          originalLicence: { licence: { key: 'value' } },
+          config: formConfig.standard,
+          userInput: { additionalConditionsRequired: 'Yes', bookingId: 1 },
+          licenceSection: 'licenceConditions',
+          formName: 'standard',
+          postRelease: true,
         })
-    })
+      })
   })
 
   describe('POST /additionalConditions/:bookingId/delete/:conditionId', () => {
