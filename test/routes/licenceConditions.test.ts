@@ -1,8 +1,6 @@
 import request from 'supertest'
 import { mockAudit } from '../mockClients'
 import { appSetup, testFormPageGets } from '../supertestSetup'
-// eslint-disable-next-line import/no-extraneous-dependencies
-import 'iconv-lite/encodings'
 
 import {
   createPrisonerServiceStub,
@@ -182,6 +180,10 @@ describe('/hdc/licenceConditions', () => {
     routes.forEach((route) => {
       test(`redirects to '${route.nextPath}' page for ${route.url}`, () => {
         const licenceService = createLicenceServiceStub()
+        licenceService.getLicence.mockResolvedValue({
+          licence: { key: 'value' },
+          versionDetails: { conditions_version: 1 },
+        })
         const app = createApp({ licenceService, conditionsService }, 'roUser')
 
         return request(app)
@@ -192,7 +194,7 @@ describe('/hdc/licenceConditions', () => {
             expect(licenceService.update).toHaveBeenCalled()
             expect(licenceService.update).toHaveBeenCalledWith({
               bookingId: '1',
-              originalLicence: { licence: { key: 'value' } },
+              originalLicence: { licence: { key: 'value' }, versionDetails: { conditions_version: 1 } },
               config: formConfig[route.formName],
               userInput: route.body,
               licenceSection: 'licenceConditions',
@@ -206,7 +208,11 @@ describe('/hdc/licenceConditions', () => {
 
       test(`renders the correct path '${route.nextPath}' page when ca in post approval`, () => {
         const licenceService = createLicenceServiceStub()
-        licenceService.getLicence.mockResolvedValue({ stage: 'DECIDED', licence: { key: 'value' } })
+        licenceService.getLicence.mockResolvedValue({
+          stage: 'DECIDED',
+          licence: { key: 'value' },
+          versionDetails: { conditions_version: 1 },
+        })
         const app = createApp({ licenceService, conditionsService }, 'caUser')
 
         return request(app)
@@ -217,7 +223,13 @@ describe('/hdc/licenceConditions', () => {
             expect(licenceService.update).toHaveBeenCalled()
             expect(licenceService.update).toHaveBeenCalledWith({
               bookingId: '1',
-              originalLicence: { licence: { key: 'value' }, stage: 'DECIDED' },
+              originalLicence: {
+                licence: { key: 'value' },
+                stage: 'DECIDED',
+                versionDetails: {
+                  conditions_version: 1,
+                },
+              },
               config: formConfig[route.formName],
               userInput: route.body,
               licenceSection: 'licenceConditions',
@@ -237,30 +249,83 @@ describe('/hdc/licenceConditions', () => {
         return request(app).post(route.url).send(route.body).expect(403)
       })
     })
-  })
 
-  test(`passes postRelease true if agencyLocationId is out`, async () => {
-    const licenceService = createLicenceServiceStub()
-    const prisonerService = createPrisonerServiceStub()
-    prisonerService.getPrisonerPersonalDetails.mockResolvedValue({ agencyLocationId: 'out' })
-    const app = createApp({ licenceService, conditionsService, prisonerService }, 'roUser')
-
-    await request(app)
-      .post('/hdc/licenceConditions/standard/1')
-      .send({ additionalConditionsRequired: 'Yes', bookingId: 1 })
-      .expect(302)
-      .expect(() => {
-        expect(licenceService.update).toHaveBeenCalled()
-        expect(licenceService.update).toHaveBeenCalledWith({
-          bookingId: '1',
-          originalLicence: { licence: { key: 'value' } },
-          config: formConfig.standard,
-          userInput: { additionalConditionsRequired: 'Yes', bookingId: 1 },
-          licenceSection: 'licenceConditions',
-          formName: 'standard',
-          postRelease: true,
+    describe('setting conditon version', () => {
+      test(`sets conditions version if not previously set and additional conditions selected`, () => {
+        const licenceService = createLicenceServiceStub()
+        licenceService.getLicence.mockResolvedValue({
+          licence: { key: 'value' },
+          versionDetails: { conditions_version: undefined },
         })
+        const app = createApp({ licenceService, conditionsService }, 'roUser')
+
+        return request(app)
+          .post('/hdc/licenceConditions/standard/2')
+          .send({ additionalConditionsRequired: 'Yes', bookingId: 1 })
+          .expect(302)
+          .expect(() => {
+            expect(licenceService.setConditionsVersion).toHaveBeenCalledWith(2, 1)
+          })
       })
+
+      test(`sets conditions version if not previously set and no additional conditions selected`, () => {
+        const licenceService = createLicenceServiceStub()
+        licenceService.getLicence.mockResolvedValue({
+          licence: { key: 'value' },
+          versionDetails: { conditions_version: undefined },
+        })
+        const app = createApp({ licenceService, conditionsService }, 'roUser')
+
+        return request(app)
+          .post('/hdc/licenceConditions/standard/2')
+          .send({ additionalConditionsRequired: 'No', bookingId: 1 })
+          .expect(302)
+          .expect(() => {
+            expect(licenceService.setConditionsVersion).toHaveBeenCalledWith(2, 1)
+          })
+      })
+
+      test(`sets conditions version if not previously set and no option selected`, () => {
+        const licenceService = createLicenceServiceStub()
+        licenceService.getLicence.mockResolvedValue({
+          licence: { key: 'value' },
+          versionDetails: { conditions_version: undefined },
+        })
+        const app = createApp({ licenceService, conditionsService }, 'roUser')
+
+        return request(app)
+          .post('/hdc/licenceConditions/standard/2')
+          .send({ bookingId: 1 })
+          .expect(302)
+          .expect(() => {
+            expect(licenceService.setConditionsVersion).toHaveBeenCalledWith(2, 1)
+          })
+      })
+    })
+
+    test(`passes postRelease true if agencyLocationId is out`, async () => {
+      const licenceService = createLicenceServiceStub()
+      const prisonerService = createPrisonerServiceStub()
+      prisonerService.getPrisonerPersonalDetails.mockResolvedValue({ agencyLocationId: 'out' })
+      const app = createApp({ licenceService, conditionsService, prisonerService }, 'roUser')
+
+      await request(app)
+        .post('/hdc/licenceConditions/standard/1')
+        .send({ additionalConditionsRequired: 'Yes', bookingId: 1 })
+        .expect(302)
+        .expect(() => {
+          expect(licenceService.update).toHaveBeenCalled()
+          expect(licenceService.update).toHaveBeenCalledWith({
+            bookingId: '1',
+            originalLicence: { licence: { key: 'value' } },
+            config: formConfig.standard,
+            userInput: { additionalConditionsRequired: 'Yes', bookingId: 1 },
+            licenceSection: 'licenceConditions',
+            formName: 'standard',
+            postRelease: true,
+          })
+        })
+    })
   })
 
   describe('POST /additionalConditions/:bookingId/delete/:conditionId', () => {

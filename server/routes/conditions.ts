@@ -1,4 +1,5 @@
 import { LicenceService } from '../services/licenceService'
+import { CURRENT_CONDITION_VERSION } from '../services/config/conditionsConfig'
 
 const { asyncMiddleware } = require('../utils/middleware')
 const createStandardRoutes = require('./routeWorkers/standard')
@@ -43,7 +44,7 @@ export default ({ licenceService, conditionsService }: { licenceService: Licence
       const { bookingId, action } = req.params
       const isChange = action === 'change'
 
-      licenceService.update({
+      await licenceService.update({
         bookingId,
         originalLicence: res.locals.licence,
         config: formConfig.standard,
@@ -52,6 +53,12 @@ export default ({ licenceService, conditionsService }: { licenceService: Licence
         formName: 'standard',
         postRelease: res.locals.postRelease,
       })
+
+      const conditionsVersion = res.locals.licence.versionDetails?.conditions_version
+
+      if (!conditionsVersion) {
+        await licenceService.setConditionsVersion(Number(bookingId), CURRENT_CONDITION_VERSION)
+      }
 
       if (req.body.additionalConditionsRequired === 'Yes') {
         return res.redirect(
