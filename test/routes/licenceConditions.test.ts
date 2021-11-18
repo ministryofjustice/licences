@@ -1,18 +1,18 @@
-const request = require('supertest')
-const { mockAudit } = require('../mockClients')
-const { appSetup, testFormPageGets } = require('../supertestSetup')
+import request from 'supertest'
+import { mockAudit } from '../mockClients'
+import { appSetup, testFormPageGets } from '../supertestSetup'
 
-const {
+import {
   createPrisonerServiceStub,
   createLicenceServiceStub,
   createConditionsServiceStub,
   createSignInServiceStub,
-} = require('../mockServices')
+} from '../mockServices'
 
-const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
-const createRoute = require('../../server/routes/conditions')
-const formConfig = require('../../server/routes/config/licenceConditions')
-const NullTokenVerifier = require('../../server/authentication/tokenverifier/NullTokenVerifier')
+import standardRouter from '../../server/routes/routeWorkers/standardRouter'
+import createRoute from '../../server/routes/conditions'
+import formConfig from '../../server/routes/config/licenceConditions'
+import NullTokenVerifier from '../../server/authentication/tokenverifier/NullTokenVerifier'
 
 describe('/hdc/licenceConditions', () => {
   let conditionsService
@@ -151,10 +151,34 @@ describe('/hdc/licenceConditions', () => {
         nextPath: '/hdc/taskList/1',
         formName: 'standard',
       },
+      {
+        url: '/hdc/licenceConditions/standard/1',
+        body: { bookingId: 1 },
+        nextPath: '/hdc/taskList/1',
+        formName: 'standard',
+      },
+      {
+        url: '/hdc/licenceConditions/standard/change/1',
+        body: { additionalConditionsRequired: 'Yes', bookingId: 1 },
+        nextPath: '/hdc/licenceConditions/additionalConditions/change/1',
+        formName: 'standard',
+      },
+      {
+        url: '/hdc/licenceConditions/standard/change/1',
+        body: { additionalConditionsRequired: 'No', bookingId: 1 },
+        nextPath: '/hdc/review/licenceDetails/1',
+        formName: 'standard',
+      },
+      {
+        url: '/hdc/licenceConditions/standard/change/1',
+        body: { bookingId: 1 },
+        nextPath: '/hdc/review/licenceDetails/1',
+        formName: 'standard',
+      },
     ]
 
     routes.forEach((route) => {
-      test(`renders the correct path '${route.nextPath}' page`, () => {
+      test(`redirects to '${route.nextPath}' page for ${route.url}`, () => {
         const licenceService = createLicenceServiceStub()
         const app = createApp({ licenceService, conditionsService }, 'roUser')
 

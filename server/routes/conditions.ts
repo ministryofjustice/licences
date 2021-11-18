@@ -1,11 +1,12 @@
+import { LicenceService } from '../services/licenceService'
+
 const { asyncMiddleware } = require('../utils/middleware')
 const createStandardRoutes = require('./routeWorkers/standard')
 const logger = require('../../log')
 const { getIn } = require('../utils/functionalHelpers')
 const formConfig = require('./config/licenceConditions')
 
-module.exports =
-  ({ licenceService, conditionsService }) =>
+export default ({ licenceService, conditionsService }: { licenceService: LicenceService; conditionsService: any }) =>
   (router, audited) => {
     const standard = createStandardRoutes({ formConfig, licenceService, sectionName: 'licenceConditions' })
 
