@@ -5,7 +5,7 @@ export interface Case {
   booking_id: number
   stage: string
   version: number
-  conditions_version: number
+  additional_conditions_version: number
 }
 
 export interface CaseWithApprovedVersion extends Case {

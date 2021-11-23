@@ -310,7 +310,7 @@ describe('licenceClient', () => {
       await licenceClient.setConditionsVersion(10001, 2)
 
       expect(db.query).toHaveBeenCalledWith({
-        text: 'update licences l set conditions_version = $1 where booking_id = $2',
+        text: 'update licences l set additional_conditions_version = $1 where booking_id = $2',
         values: [2, 10001],
       })
     })

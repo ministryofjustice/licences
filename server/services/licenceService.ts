@@ -35,7 +35,7 @@ export interface LicenceRecord {
   licence: Licence
   stage: string
   version: string
-  versionDetails: { version: number; vary_version: number; conditions_version: number }
+  versionDetails: { version: number; vary_version: number; additional_conditions_version: number }
   approvedVersion: string
   approvedVersionDetails: ApprovedVersionDetails
 }
@@ -93,7 +93,7 @@ export class LicenceService {
       const versionDetails = {
         version: rawLicence.version,
         vary_version: rawLicence.vary_version,
-        conditions_version: rawLicence.conditions_version,
+        additional_conditions_version: rawLicence.additional_conditions_version,
       }
       const approvedVersion = isEmpty(approvedVersionDetails)
         ? ''
