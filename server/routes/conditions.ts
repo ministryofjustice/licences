@@ -1,4 +1,5 @@
 import { LicenceService } from '../services/licenceService'
+import { CURRENT_CONDITION_VERSION } from '../services/config/conditionsConfig'
 
 const { asyncMiddleware } = require('../utils/middleware')
 const createStandardRoutes = require('./routeWorkers/standard')
@@ -33,6 +34,41 @@ export default ({ licenceService, conditionsService }: { licenceService: Licence
         bespokeConditions,
         unapprovedBespokeConditions,
       })
+    }
+
+    router.post('/standard/:bookingId', audited, asyncMiddleware(postStandard))
+    router.post('/standard/:action/:bookingId', audited, asyncMiddleware(postStandard))
+
+    async function postStandard(req, res) {
+      logger.debug('POST /standard/')
+      const { bookingId, action } = req.params
+      const isChange = action === 'change'
+
+      await licenceService.update({
+        bookingId,
+        originalLicence: res.locals.licence,
+        config: formConfig.standard,
+        userInput: req.body,
+        licenceSection: 'licenceConditions',
+        formName: 'standard',
+        postRelease: res.locals.postRelease,
+      })
+
+      const conditionsVersion = res.locals.licence.versionDetails?.conditions_version
+
+      if (!conditionsVersion) {
+        await licenceService.setConditionsVersion(Number(bookingId), CURRENT_CONDITION_VERSION)
+      }
+
+      if (req.body.additionalConditionsRequired === 'Yes') {
+        return res.redirect(
+          isChange
+            ? `/hdc/licenceConditions/additionalConditions/change/${bookingId}`
+            : `/hdc/licenceConditions/additionalConditions/${bookingId}`
+        )
+      }
+
+      return res.redirect(isChange ? `/hdc/review/licenceDetails/${bookingId}` : `/hdc/taskList/${bookingId}`)
     }
 
     router.get('/additionalConditions/:bookingId', getAdditional)

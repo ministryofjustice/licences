@@ -50,7 +50,7 @@ export class LicenceClient {
   // eslint-disable-next-line class-methods-use-this
   async getLicence(bookingId: number): Promise<CaseWithVaryVersion> {
     const query = {
-      text: `select licence, booking_id, stage, version, vary_version from licences where booking_id = $1`,
+      text: `select licence, booking_id, stage, version, vary_version, conditions_version from licences where booking_id = $1`,
       values: [bookingId],
     }
 
