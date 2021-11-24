@@ -182,7 +182,7 @@ describe('/hdc/licenceConditions', () => {
         const licenceService = createLicenceServiceStub()
         licenceService.getLicence.mockResolvedValue({
           licence: { key: 'value' },
-          versionDetails: { conditions_version: 1 },
+          versionDetails: { additional_conditions_version: 1 },
         })
         const app = createApp({ licenceService, conditionsService }, 'roUser')
 
@@ -194,7 +194,7 @@ describe('/hdc/licenceConditions', () => {
             expect(licenceService.update).toHaveBeenCalled()
             expect(licenceService.update).toHaveBeenCalledWith({
               bookingId: '1',
-              originalLicence: { licence: { key: 'value' }, versionDetails: { conditions_version: 1 } },
+              originalLicence: { licence: { key: 'value' }, versionDetails: { additional_conditions_version: 1 } },
               config: formConfig[route.formName],
               userInput: route.body,
               licenceSection: 'licenceConditions',
@@ -211,7 +211,7 @@ describe('/hdc/licenceConditions', () => {
         licenceService.getLicence.mockResolvedValue({
           stage: 'DECIDED',
           licence: { key: 'value' },
-          versionDetails: { conditions_version: 1 },
+          versionDetails: { additional_conditions_version: 1 },
         })
         const app = createApp({ licenceService, conditionsService }, 'caUser')
 
@@ -227,7 +227,7 @@ describe('/hdc/licenceConditions', () => {
                 licence: { key: 'value' },
                 stage: 'DECIDED',
                 versionDetails: {
-                  conditions_version: 1,
+                  additional_conditions_version: 1,
                 },
               },
               config: formConfig[route.formName],
@@ -294,7 +294,7 @@ describe('/hdc/licenceConditions', () => {
         const licenceService = createLicenceServiceStub()
         licenceService.getLicence.mockResolvedValue({
           licence: { key: 'value' },
-          versionDetails: { conditions_version: 1 },
+          versionDetails: { additional_conditions_version: 1 },
         })
         conditionsService.createConditionsObjectForLicence.mockReturnValue({})
         const app = createApp({ licenceService, conditionsService }, 'roUser')
@@ -306,7 +306,7 @@ describe('/hdc/licenceConditions', () => {
           .expect((res) => {
             expect(licenceService.updateLicenceConditions).toHaveBeenCalledWith(
               1,
-              { licence: { key: 'value' }, versionDetails: { conditions_version: 1 } },
+              { licence: { key: 'value' }, versionDetails: { additional_conditions_version: 1 } },
               {},
               false
             )
@@ -320,7 +320,7 @@ describe('/hdc/licenceConditions', () => {
         const licenceService = createLicenceServiceStub()
         licenceService.getLicence.mockResolvedValue({
           licence: { key: 'value' },
-          versionDetails: { conditions_version: undefined },
+          versionDetails: { additional_conditions_version: undefined },
         })
         const app = createApp({ licenceService, conditionsService }, 'roUser')
 
@@ -337,7 +337,7 @@ describe('/hdc/licenceConditions', () => {
         const licenceService = createLicenceServiceStub()
         licenceService.getLicence.mockResolvedValue({
           licence: { key: 'value' },
-          versionDetails: { conditions_version: undefined },
+          versionDetails: { additional_conditions_version: undefined },
         })
         const app = createApp({ licenceService, conditionsService }, 'roUser')
 
