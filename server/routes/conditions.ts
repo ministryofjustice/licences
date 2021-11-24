@@ -54,12 +54,6 @@ export default ({ licenceService, conditionsService }: { licenceService: Licence
         postRelease: res.locals.postRelease,
       })
 
-      const conditionsVersion = res.locals.licence.versionDetails?.conditions_version
-
-      if (!conditionsVersion) {
-        await licenceService.setConditionsVersion(Number(bookingId), CURRENT_CONDITION_VERSION)
-      }
-
       if (req.body.additionalConditionsRequired === 'Yes') {
         return res.redirect(
           isChange
@@ -105,7 +99,6 @@ export default ({ licenceService, conditionsService }: { licenceService: Licence
       const { bookingId, additionalConditions, bespokeDecision, bespokeConditions } = req.body
       const { action } = req.params
       const destination = action ? `${action}/${bookingId}` : bookingId
-
       const bespoke = (bespokeDecision === 'Yes' && bespokeConditions.filter((condition) => condition.text)) || []
       const additional = additionalConditions ? conditionsService.formatConditionInputs(req.body) : {}
       const newConditionsObject = conditionsService.createConditionsObjectForLicence(additional, bespoke)
@@ -116,6 +109,12 @@ export default ({ licenceService, conditionsService }: { licenceService: Licence
         newConditionsObject,
         res.locals.postRelease
       )
+
+      const conditionsVersion = res.locals.licence.versionDetails?.additional_conditions_version
+
+      if (!conditionsVersion) {
+        await licenceService.setConditionsVersion(Number(bookingId), CURRENT_CONDITION_VERSION)
+      }
 
       res.redirect(`/hdc/licenceConditions/conditionsSummary/${destination}`)
     }

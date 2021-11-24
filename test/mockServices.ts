@@ -44,6 +44,7 @@ export const createConditionsServiceStub = () => ({
   formatConditionInputs: jest.fn(),
   populateLicenceWithConditions: jest.fn().mockReturnValue({}),
   getNonStandardConditions: jest.fn(),
+  createConditionsObjectForLicence: jest.fn(),
 })
 
 export const createPrisonerServiceStub = () => ({

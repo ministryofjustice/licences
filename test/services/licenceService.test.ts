@@ -26,7 +26,7 @@ describe('licenceService', () => {
         stage: undefined,
         version: 2,
         vary_version: 5,
-        conditions_version: 3,
+        additional_conditions_version: 3,
       }),
       createLicence: jest.fn() as jest.Mock<Promise<number>>,
       updateSection: jest.fn() as jest.Mock<Promise<void>>,
@@ -66,7 +66,7 @@ describe('licenceService', () => {
         versionDetails: {
           vary_version: 5,
           version: 2,
-          conditions_version: 3,
+          additional_conditions_version: 3,
         },
       })
     })
@@ -83,7 +83,7 @@ describe('licenceService', () => {
         versionDetails: {
           vary_version: 5,
           version: 2,
-          conditions_version: 3,
+          additional_conditions_version: 3,
         },
       })
     })
