@@ -20,6 +20,7 @@ ingress:
   enabled: true
   enable_allowlist: false
   host: licences-dev.prison.service.justice.gov.uk
+  contextColour: green
   cert_secret: licences-cert
   path: /
   annotations:
