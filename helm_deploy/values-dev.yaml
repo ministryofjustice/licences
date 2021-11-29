@@ -23,7 +23,7 @@ ingress:
   cert_secret: licences-cert
   path: /
   annotations:
-    external-dns.alpha.kubernetes.io/set-identifier: licences-licences-dev-blue
+    external-dns.alpha.kubernetes.io/set-identifier: licences-licences-dev-green
 
 
 env:
