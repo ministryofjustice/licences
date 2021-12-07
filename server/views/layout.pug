@@ -71,20 +71,20 @@ html(lang="en")
 
     main.app-container(role="main")
       include ./includes/notice
+      if user
+        div(class="change-location")
+          - var hasActiveCaseload = user.activeCaseLoad && !user.activeCaseLoad.description.includes('---')
+          - var hasMultipleCaseloads = user.caseLoads && user.caseLoads.length > 1
+          - var locationLinkText = user.roles && user.roles.length > 1 ? "Change your role or location" : "Change your location"
 
-      div(class="change-location")
-        - var hasActiveCaseload = user.activeCaseLoad && !user.activeCaseLoad.description.includes('---')
-        - var hasMultipleCaseloads = user.caseLoads && user.caseLoads.length > 1
-        - var locationLinkText = user.roles && user.roles.length > 1 ? "Change your role or location" : "Change your location"
+          if hasActiveCaseload
+            span(class="change-location__location" data-qa="active-location") #{user.activeCaseLoad.description}
 
-        if hasActiveCaseload
-          span(class="change-location__location" data-qa="active-location") #{user.activeCaseLoad.description}
+          if hasMultipleCaseloads
+            a(class="change-location__link" href="/user" data-qa="change-location-link") #{locationLinkText}
 
-        if hasMultipleCaseloads
-          a(class="change-location__link" href="/user" data-qa="change-location-link") #{locationLinkText}
-
-      if hasActiveCaseload || hasMultipleCaseloads
-        hr(class="smallMarginBottom smallMarginTop")
+        if hasActiveCaseload || hasMultipleCaseloads
+          hr(class="smallMarginBottom smallMarginTop")
       
       block content
     
