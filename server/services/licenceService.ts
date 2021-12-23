@@ -5,7 +5,7 @@ import { LicenceStage, transitions } from './config/licenceStage'
 import recordList from './utils/recordList'
 import formValidation from './utils/formValidation'
 import { LicenceClient } from '../data/licenceClient'
-import { ApprovedLicenceVersion, Case, CaseWithVaryVersion } from '../data/licenceClientTypes'
+import { Case } from '../data/licenceClientTypes'
 import { Licence, LicenceConditions } from '../data/licenceTypes'
 import { pickCurfewAddressPath } from './utils/pdfFormatter'
 
@@ -74,7 +74,7 @@ export class LicenceService {
 
   async getLicence(bookingId: number): Promise<LicenceRecord> {
     try {
-      const [rawLicence, rawVersionDetails] = await Promise.all<CaseWithVaryVersion, ApprovedLicenceVersion>([
+      const [rawLicence, rawVersionDetails] = await Promise.all([
         this.licenceClient.getLicence(bookingId),
         this.licenceClient.getApprovedLicenceVersion(bookingId),
       ])

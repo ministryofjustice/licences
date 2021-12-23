@@ -1,4 +1,3 @@
-import { mocked } from 'ts-jest/utils'
 import request from 'supertest'
 import { RoService } from '../../server/services/roService'
 import { createSignInServiceStub } from '../mockServices'
@@ -19,7 +18,7 @@ describe('/contact', () => {
 
   beforeEach(() => {
     roService = new RoService(undefined, undefined)
-    mocked(roService).findResponsibleOfficer.mockResolvedValue({
+    ;(jest as any).mocked(roService).findResponsibleOfficer.mockResolvedValue({
       deliusId: 'DELIUS_ID',
       staffIdentifier: 999,
       name: 'Ro Name',
@@ -32,7 +31,7 @@ describe('/contact', () => {
       probationAreaDescription: 'PA Description',
       isAllocated: true,
     })
-    mocked(roService).getStaffByStaffIdentifier.mockResolvedValue({
+    ;(jest as any).mocked(roService).getStaffByStaffIdentifier.mockResolvedValue({
       username: 'username',
       email: '123456@somewhere.com',
       staffCode: 'DELIUS_ID',
@@ -66,14 +65,18 @@ describe('/contact', () => {
         .expect(() => {
           expect(roService.findResponsibleOfficer).toHaveBeenCalled()
           expect(roService.findResponsibleOfficer).toHaveBeenCalledWith('123456', 'system-token')
-          expect(mocked(userAdminService).getRoUserByStaffIdentifier).toHaveBeenCalled()
-          expect(mocked(userAdminService).getRoUserByStaffIdentifier).toHaveBeenCalledWith(999)
-          expect(mocked(userAdminService).getFunctionalMailbox).toHaveBeenCalledWith('PA_CODE', 'ABC123', 'TEAM_CODE')
+          expect((jest as any).mocked(userAdminService).getRoUserByStaffIdentifier).toHaveBeenCalled()
+          expect((jest as any).mocked(userAdminService).getRoUserByStaffIdentifier).toHaveBeenCalledWith(999)
+          expect((jest as any).mocked(userAdminService).getFunctionalMailbox).toHaveBeenCalledWith(
+            'PA_CODE',
+            'ABC123',
+            'TEAM_CODE'
+          )
         })
     })
 
     test('should display RO details (from delius)', () => {
-      mocked(userAdminService).getFunctionalMailbox.mockResolvedValue('abc@def.com')
+      ;(jest as any).mocked(userAdminService).getFunctionalMailbox.mockResolvedValue('abc@def.com')
       return request(app)
         .get('/contact/123456')
         .expect(200)
@@ -91,7 +94,7 @@ describe('/contact', () => {
     })
 
     test('should display RO details (from local store)', () => {
-      mocked(userAdminService).getRoUserByStaffIdentifier.mockResolvedValue({
+      ;(jest as any).mocked(userAdminService).getRoUserByStaffIdentifier.mockResolvedValue({
         first: 'first',
         last: 'last',
         jobRole: 'JR',
@@ -118,9 +121,8 @@ describe('/contact', () => {
     })
 
     test('should display RO details, from local store, when mapped username in delius', () => {
-      mocked(userAdminService).getRoUserByStaffIdentifier.mockResolvedValueOnce(null)
-
-      mocked(userAdminService).getRoUserByDeliusUsername.mockResolvedValueOnce({
+      ;(jest as any).mocked(userAdminService).getRoUserByStaffIdentifier.mockResolvedValueOnce(null)
+      ;(jest as any).mocked(userAdminService).getRoUserByDeliusUsername.mockResolvedValueOnce({
         first: 'first',
         last: 'last',
         jobRole: 'JR',
@@ -141,13 +143,15 @@ describe('/contact', () => {
           expect(res.text).toContain('The Org')
           expect(res.text).toContain('org@email.com')
 
-          expect(mocked(userAdminService).getRoUserByStaffIdentifier).toBeCalledWith(999)
-          expect(mocked(userAdminService).getRoUserByDeliusUsername).toBeCalledWith('username')
+          expect((jest as any).mocked(userAdminService).getRoUserByStaffIdentifier).toBeCalledWith(999)
+          expect((jest as any).mocked(userAdminService).getRoUserByDeliusUsername).toBeCalledWith('username')
         })
     })
 
     test('should handle absence of RO details (local and delius)', () => {
-      mocked(roService).findResponsibleOfficer.mockResolvedValue({ message: 'message', code: 'ERROR_CODE' })
+      ;(jest as any)
+        .mocked(roService)
+        .findResponsibleOfficer.mockResolvedValue({ message: 'message', code: 'ERROR_CODE' })
 
       return request(app)
         .get('/contact/123456')

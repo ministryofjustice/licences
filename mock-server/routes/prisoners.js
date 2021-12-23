@@ -72,9 +72,12 @@ router.get('/', (req, res) => {
       }
       if (lastName) {
         if (!firstName) {
-          return lastName.toUpperCase() === prisoner.lastName.toUpperCase()
+          return lastName.toString().toUpperCase() === prisoner.lastName.toUpperCase()
         }
-        return lastName === prisoner.lastName.toUpperCase() && prisoner.firstName.toUpperCase().includes(firstName)
+        return (
+          lastName === prisoner.lastName.toUpperCase() &&
+          prisoner.firstName.toUpperCase().includes(firstName.toString())
+        )
       }
       return undefined
     })

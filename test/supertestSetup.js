@@ -109,8 +109,10 @@ const appSetup = (route, user = 'caUser', prefix = '', flash = jest.fn().mockRet
     res.locals.user = userObj
     next()
   })
-  app.use(passport.initialize())
+
   app.use(cookieSession({ keys: [''] }))
+  app.use(passport.initialize())
+  app.use(passport.session())
   app.use(pdfRenderer(new GotenbergClient('http://localhost:3001')))
   app.use(bodyParser.json())
   app.use(bodyParser.urlencoded({ extended: false }))
