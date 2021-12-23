@@ -14,8 +14,6 @@ describe('sendCaAndDmNotifications', () => {
     config = {
       notifications: {
         notifyKey: 'dummy-key',
-        clearingOfficeEmail: 'HDC.ClearingOffice@justice.gov.uk',
-        clearingOfficeEmailEnabled: 'YES',
         activeNotificationTypes: [
           'CA_RETURN',
           'CA_DECISION',
@@ -146,16 +144,6 @@ describe('sendCaAndDmNotifications', () => {
               ...expectedCommonData,
               sender_name: 'sender',
               ca_name: 'Name Two',
-              prison: 'Moorland (HMP & YOI)',
-            },
-          },
-          {
-            email: config.notifications.clearingOfficeEmail,
-            templateName: 'CA_RETURN_COPY',
-            personalisation: {
-              ...expectedCommonData,
-              sender_name: 'sender',
-              ca_name: 'Name One',
               prison: 'Moorland (HMP & YOI)',
             },
           },

@@ -9,7 +9,6 @@ describe('sendRoNotifications', () => {
     config = {
       notifications: {
         notifyKey: 'dummy-key',
-        clearingOfficeEmail: 'HDC.ClearingOffice@justice.gov.uk',
         clearingOfficeEmailEnabled: 'YES',
         activeNotificationTypes: [
           'CA_RETURN',
@@ -132,11 +131,6 @@ describe('sendRoNotifications', () => {
             templateName: 'RO_OVERDUE_COPY',
             personalisation,
           },
-          {
-            email: config.notifications.clearingOfficeEmail,
-            templateName: 'RO_OVERDUE_COPY',
-            personalisation,
-          },
         ])
       })
 
@@ -150,11 +144,6 @@ describe('sendRoNotifications', () => {
         expect(data).toEqual([
           {
             email: 'admin@ro.email',
-            templateName: 'RO_NEW_COPY',
-            personalisation,
-          },
-          {
-            email: config.notifications.clearingOfficeEmail,
             templateName: 'RO_NEW_COPY',
             personalisation,
           },
@@ -172,11 +161,6 @@ describe('sendRoNotifications', () => {
           {
             email: 'ro@ro.email',
             templateName: 'RO_NEW',
-            personalisation,
-          },
-          {
-            email: config.notifications.clearingOfficeEmail,
-            templateName: 'RO_NEW_COPY',
             personalisation,
           },
         ])
