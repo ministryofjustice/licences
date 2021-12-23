@@ -79,12 +79,6 @@ env:
         name: {{ template "app.name" . }}
         key: NOTIFY_API_KEY
 
-  - name: CLEARING_OFFICE_EMAIL
-    valueFrom:
-      secretKeyRef:
-        name: {{ template "app.name" . }}
-        key: CLEARING_OFFICE_EMAIL
-
   - name: NOMIS_API_URL
     value: {{ .Values.env.NOMIS_API_URL | quote }}
 
