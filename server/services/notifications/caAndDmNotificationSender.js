@@ -14,7 +14,7 @@ module.exports = function createCaAndDmNotificationSender(
   configClient,
   notificationSender,
   nomisClientBuilder,
-  { notifications: { activeNotificationTypes, clearingOfficeEmail, clearingOfficeEmailEnabled, ..._ }, domain, ...rest }
+  { notifications: { activeNotificationTypes, ..._ }, domain, ...rest }
 ) {
   async function getNotificationData({
     prisoner,
@@ -51,8 +51,6 @@ module.exports = function createCaAndDmNotificationSender(
   // object -> [notification] -> [notification]
   const replaceTemplateNames = (replacements) => R.map(R.over(R.lensProp('templateName'), replaceName(replacements)))
 
-  const clearingOfficeEmailDisabled = clearingOfficeEmailEnabled.toUpperCase().trim() !== 'YES'
-
   const roOrganisationNotification = async (args, notifications) => {
     const orgEmail = await roContactDetailsService.getFunctionalMailBox(args.bookingId, args.token)
     return isEmpty(orgEmail) || isEmpty(notifications)
@@ -60,18 +58,9 @@ module.exports = function createCaAndDmNotificationSender(
       : [{ ...notifications[0], email: orgEmail, templateName: 'COPY' }]
   }
 
-  const clearingOfficeNotification = (notifications) =>
-    clearingOfficeEmailDisabled || isEmpty(notifications)
-      ? []
-      : [{ ...notifications[0], email: clearingOfficeEmail, templateName: 'COPY' }]
-
-  const getCaAndClearingOfficeAndRoOrganisationNotifications = async (args) => {
+  const getCaAndRoOrganisationNotifications = async (args) => {
     const notifications = await getCaNotifications(args)
-    return [
-      ...notifications,
-      ...clearingOfficeNotification(notifications),
-      ...(await roOrganisationNotification(args, notifications)),
-    ]
+    return [...notifications, ...(await roOrganisationNotification(args, notifications))]
   }
 
   async function getCaNotifications({ common, token, submissionTarget, sendingUserName }) {
@@ -120,7 +109,7 @@ module.exports = function createCaAndDmNotificationSender(
   const notificationDataMethod = {
     CA_RETURN: R.compose(
       R.andThen(replaceTemplateNames({ STANDARD: 'CA_RETURN', COPY: 'CA_RETURN_COPY' })),
-      getCaAndClearingOfficeAndRoOrganisationNotifications
+      getCaAndRoOrganisationNotifications
     ),
     DM_TO_CA_RETURN: R.compose(R.andThen(replaceTemplateNames({ STANDARD: 'CA_RETURN' })), getCaNotifications),
     CA_DECISION: R.compose(R.andThen(replaceTemplateNames({ STANDARD: 'CA_DECISION' })), getCaNotifications),
