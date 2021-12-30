@@ -5,8 +5,14 @@ import * as builder from './licenceWithConditionsBuilder'
 import { getAdditionalConditionsConfig, standardConditions, CURRENT_CONDITION_VERSION } from './config/conditionsConfig'
 import { AdditionalConditions, Licence } from '../data/licenceTypes'
 
-export default function createConditionsService() {
-  function getFullTextForApprovedConditions(licence: Licence) {
+export default class ConditionsService {
+  // condition routes / review routes / pdf generation
+  populateLicenceWithConditions(licence: Licence, errors = {}, approvedOnly = false) {
+    return builder.populateLicenceWithConditions(licence, errors, approvedOnly)
+  }
+
+  // form generation
+  getFullTextForApprovedConditions(licence: Licence) {
     const standardConditionsText = standardConditions.map((it) => it.text.replace(/\.+$/, ''))
 
     // could be undefined, 'No' or 'Yes'
@@ -37,11 +43,11 @@ export default function createConditionsService() {
     }
   }
 
-  function getStandardConditions() {
+  getStandardConditions() {
     return standardConditions
   }
 
-  function getAdditionalConditions(licence: Licence = null) {
+  getAdditionalConditions(licence: Licence = null) {
     const licenceAdditionalConditions = licence?.licenceConditions?.additional
     const additionalConditions = getAdditionalConditionsConfig(CURRENT_CONDITION_VERSION)
     if (licenceAdditionalConditions) {
@@ -53,7 +59,7 @@ export default function createConditionsService() {
     return additionalConditions.reduce(splitIntoGroupedObject, {})
   }
 
-  function formatConditionInputs(requestBody) {
+  formatConditionInputs(requestBody) {
     const selectedConditionsConfig = getAdditionalConditionsConfig(CURRENT_CONDITION_VERSION).filter((condition) =>
       requestBody.additionalConditions.includes(condition.id)
     )
@@ -61,7 +67,7 @@ export default function createConditionsService() {
     return formatConditionsInput(requestBody, selectedConditionsConfig)
   }
 
-  function createConditionsObjectForLicence(additional, bespoke) {
+  createConditionsObjectForLicence(additional, bespoke) {
     if (isEmpty(additional)) {
       return { additional: {}, bespoke }
     }
@@ -70,15 +76,15 @@ export default function createConditionsService() {
     const selectedConditionsConfig = getAdditionalConditionsConfig(CURRENT_CONDITION_VERSION).filter((condition) =>
       conditionIds.includes(condition.id)
     )
-    const additionalConditionsObject = createAdditionalConditionsObject(selectedConditionsConfig, additional)
+    const additionalConditionsObject = this.createAdditionalConditionsObject(selectedConditionsConfig, additional)
 
     return { additional: { ...additionalConditionsObject }, bespoke }
   }
 
-  function createAdditionalConditionsObject(selectedConditions, formInputs) {
+  private createAdditionalConditionsObject(selectedConditions, formInputs) {
     return selectedConditions.reduce((conditions, condition) => {
       const conditionAttributes = condition.field_position
-      const userInputs = conditionAttributes ? inputsFor(conditionAttributes, formInputs) : {}
+      const userInputs = conditionAttributes ? this.inputsFor(conditionAttributes, formInputs) : {}
 
       return {
         ...conditions,
@@ -89,7 +95,7 @@ export default function createConditionsService() {
     }, {})
   }
 
-  function getNonStandardConditions(licence) {
+  getNonStandardConditions(licence) {
     let { licenceConditions = [] } = builder.populateLicenceWithConditions(licence)
     if (!Array.isArray(licenceConditions)) {
       licenceConditions = []
@@ -115,7 +121,7 @@ export default function createConditionsService() {
     }
   }
 
-  const inputsFor = (fieldPositions, formInputs) => {
+  private inputsFor = (fieldPositions, formInputs) => {
     const conditionAttributes = Object.keys(fieldPositions)
 
     return conditionAttributes.reduce((conditionDataObject, formItem) => {
@@ -124,21 +130,6 @@ export default function createConditionsService() {
         [formItem]: formInputs[formItem],
       }
     }, {})
-  }
-
-  return {
-    // condition routes / review routes / pdf generation
-    populateLicenceWithConditions: builder.populateLicenceWithConditions,
-
-    // form generation
-    getFullTextForApprovedConditions,
-
-    // condition routes
-    createConditionsObjectForLicence,
-    getNonStandardConditions,
-    formatConditionInputs,
-    getStandardConditions,
-    getAdditionalConditions,
   }
 }
 

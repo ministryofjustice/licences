@@ -12,13 +12,13 @@ jest.mock('../../server/services/userAdminService')
 let app
 
 describe('/contact', () => {
-  let userAdminService: UserAdminService
-  let roService: RoService
+  let userAdminService: jest.Mocked<UserAdminService>
+  let roService: jest.Mocked<RoService>
   let signInService
 
   beforeEach(() => {
-    roService = new RoService(undefined, undefined)
-    ;(jest as any).mocked(roService).findResponsibleOfficer.mockResolvedValue({
+    roService = new RoService(undefined, undefined) as jest.Mocked<RoService>
+    roService.findResponsibleOfficer.mockResolvedValue({
       deliusId: 'DELIUS_ID',
       staffIdentifier: 999,
       name: 'Ro Name',
@@ -31,7 +31,7 @@ describe('/contact', () => {
       probationAreaDescription: 'PA Description',
       isAllocated: true,
     })
-    ;(jest as any).mocked(roService).getStaffByStaffIdentifier.mockResolvedValue({
+    roService.getStaffByStaffIdentifier.mockResolvedValue({
       username: 'username',
       email: '123456@somewhere.com',
       staffCode: 'DELIUS_ID',
@@ -49,7 +49,7 @@ describe('/contact', () => {
       ],
     })
 
-    userAdminService = new UserAdminService(undefined, undefined, undefined)
+    userAdminService = new UserAdminService(undefined, undefined, undefined) as jest.Mocked<UserAdminService>
 
     signInService = createSignInServiceStub()
 
@@ -65,18 +65,14 @@ describe('/contact', () => {
         .expect(() => {
           expect(roService.findResponsibleOfficer).toHaveBeenCalled()
           expect(roService.findResponsibleOfficer).toHaveBeenCalledWith('123456', 'system-token')
-          expect((jest as any).mocked(userAdminService).getRoUserByStaffIdentifier).toHaveBeenCalled()
-          expect((jest as any).mocked(userAdminService).getRoUserByStaffIdentifier).toHaveBeenCalledWith(999)
-          expect((jest as any).mocked(userAdminService).getFunctionalMailbox).toHaveBeenCalledWith(
-            'PA_CODE',
-            'ABC123',
-            'TEAM_CODE'
-          )
+          expect(userAdminService.getRoUserByStaffIdentifier).toHaveBeenCalled()
+          expect(userAdminService.getRoUserByStaffIdentifier).toHaveBeenCalledWith(999)
+          expect(userAdminService.getFunctionalMailbox).toHaveBeenCalledWith('PA_CODE', 'ABC123', 'TEAM_CODE')
         })
     })
 
     test('should display RO details (from delius)', () => {
-      ;(jest as any).mocked(userAdminService).getFunctionalMailbox.mockResolvedValue('abc@def.com')
+      userAdminService.getFunctionalMailbox.mockResolvedValue('abc@def.com')
       return request(app)
         .get('/contact/123456')
         .expect(200)
@@ -94,7 +90,7 @@ describe('/contact', () => {
     })
 
     test('should display RO details (from local store)', () => {
-      ;(jest as any).mocked(userAdminService).getRoUserByStaffIdentifier.mockResolvedValue({
+      userAdminService.getRoUserByStaffIdentifier.mockResolvedValue({
         first: 'first',
         last: 'last',
         jobRole: 'JR',
@@ -121,8 +117,8 @@ describe('/contact', () => {
     })
 
     test('should display RO details, from local store, when mapped username in delius', () => {
-      ;(jest as any).mocked(userAdminService).getRoUserByStaffIdentifier.mockResolvedValueOnce(null)
-      ;(jest as any).mocked(userAdminService).getRoUserByDeliusUsername.mockResolvedValueOnce({
+      userAdminService.getRoUserByStaffIdentifier.mockResolvedValueOnce(null)
+      userAdminService.getRoUserByDeliusUsername.mockResolvedValueOnce({
         first: 'first',
         last: 'last',
         jobRole: 'JR',
@@ -143,15 +139,13 @@ describe('/contact', () => {
           expect(res.text).toContain('The Org')
           expect(res.text).toContain('org@email.com')
 
-          expect((jest as any).mocked(userAdminService).getRoUserByStaffIdentifier).toBeCalledWith(999)
-          expect((jest as any).mocked(userAdminService).getRoUserByDeliusUsername).toBeCalledWith('username')
+          expect(userAdminService.getRoUserByStaffIdentifier).toBeCalledWith(999)
+          expect(userAdminService.getRoUserByDeliusUsername).toBeCalledWith('username')
         })
     })
 
     test('should handle absence of RO details (local and delius)', () => {
-      ;(jest as any)
-        .mocked(roService)
-        .findResponsibleOfficer.mockResolvedValue({ message: 'message', code: 'ERROR_CODE' })
+      roService.findResponsibleOfficer.mockResolvedValue({ message: 'message', code: 'ERROR_CODE' })
 
       return request(app)
         .get('/contact/123456')

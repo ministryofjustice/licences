@@ -1,11 +1,8 @@
-import { mocked } from 'ts-jest/utils'
 import createCaService from '../../server/services/caService'
 import { RoService } from '../../server/services/roService'
 import type { ResponsibleOfficer } from '../../types/licences'
 
 jest.mock('../../server/services/roService')
-
-const mockRoServiceConstructor = mocked(RoService, true)
 
 const responsibleOfficer: ResponsibleOfficer = {
   deliusId: undefined,
@@ -22,18 +19,13 @@ const responsibleOfficer: ResponsibleOfficer = {
 }
 
 describe('caService', () => {
-  let roService
-  let mockRoService
+  let roService = new RoService(null, null) as jest.Mocked<RoService>
   let caService
   /** @type {any} */
   let lduActiveClient
 
   beforeEach(() => {
-    mockRoServiceConstructor.mockClear()
-
-    roService = new RoService(undefined, undefined)
-    mockRoService = mocked(roService, true)
-    mockRoService.findResponsibleOfficer.mockResolvedValue(responsibleOfficer)
+    roService.findResponsibleOfficer.mockResolvedValue(responsibleOfficer)
     lduActiveClient = { isLduPresent: jest.fn() }
 
     caService = createCaService(roService, lduActiveClient)
@@ -75,7 +67,7 @@ describe('caService', () => {
       it('should only return LDU_INACTIVE when LDU_INACTIVE and COM_NOT_ALLOCATED', async () => {
         lduActiveClient.isLduPresent.mockResolvedValue(false)
         responsibleOfficer.isAllocated = false
-        roService = { findResponsibleOfficer: jest.fn().mockResolvedValue(responsibleOfficer) }
+        roService.findResponsibleOfficer.mockResolvedValue(responsibleOfficer)
 
         const result = await caService.getReasonForNotContinuing('bookingId-1', 'token-1')
         expect(result).toEqual('LDU_INACTIVE')

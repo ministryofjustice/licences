@@ -1,4 +1,3 @@
-import { mocked } from 'ts-jest/utils'
 import MigrationService, { Flag } from '../../server/services/migrationService'
 import { delius } from '../../server/config'
 import { DeliusClient, StaffDetails } from '../../server/data/deliusClient'
@@ -6,7 +5,7 @@ import { DeliusClient, StaffDetails } from '../../server/data/deliusClient'
 jest.mock('../../server/data/deliusClient')
 
 describe('MigrationService', () => {
-  let deliusClient: DeliusClient
+  let deliusClient: jest.Mocked<DeliusClient>
   let userAdminService
   let nomisClient
   const nomisClientBuilder = jest.fn()
@@ -24,7 +23,7 @@ describe('MigrationService', () => {
       getRoUser: jest.fn(),
     }
 
-    deliusClient = new DeliusClient(undefined)
+    deliusClient = new DeliusClient(undefined) as jest.Mocked<DeliusClient>
     nomisClientBuilder.mockReturnValue(nomisClient)
     migrationService = new MigrationService(deliusClient, userAdminService, nomisClientBuilder)
   })
@@ -48,7 +47,7 @@ describe('MigrationService', () => {
   describe('addRoRole', () => {
     test('should call add role on delius client', async () => {
       userAdminService.getRoUser.mockResolvedValue({ staffIdentifier: 123 })
-      mocked(deliusClient).getStaffDetailsByStaffIdentifier.mockResolvedValue({
+      deliusClient.getStaffDetailsByStaffIdentifier.mockResolvedValue({
         username: 'delius-user',
       } as StaffDetails)
 
@@ -67,7 +66,7 @@ describe('MigrationService', () => {
 
   describe('getDeliusRoles', () => {
     test('get roles filters out non HDC roles', async () => {
-      mocked(deliusClient).getUser.mockResolvedValue({
+      deliusClient.getUser.mockResolvedValue({
         roles: [
           { name: delius.responsibleOfficerRoleId },
           { name: delius.responsibleOfficerVaryRoleId },
@@ -80,7 +79,7 @@ describe('MigrationService', () => {
       expect(result).toStrictEqual([delius.responsibleOfficerRoleId, delius.responsibleOfficerVaryRoleId])
     })
     test('get roles when missing user', async () => {
-      mocked(deliusClient).getUser.mockResolvedValue(null)
+      deliusClient.getUser.mockResolvedValue(null)
 
       const result = await migrationService.getDeliusRoles('user-1')
 
@@ -94,11 +93,11 @@ describe('MigrationService', () => {
 
       nomisClient.getAuthUser.mockResolvedValue({ username: 'user-1', enabled: true })
 
-      mocked(deliusClient).getStaffDetailsByStaffIdentifier.mockResolvedValue({
+      deliusClient.getStaffDetailsByStaffIdentifier.mockResolvedValue({
         username: 'user-1',
         email: 'user@gov.uk',
       } as StaffDetails)
-      mocked(deliusClient).getUser.mockResolvedValue({
+      deliusClient.getUser.mockResolvedValue({
         roles: [{ name: delius.responsibleOfficerRoleId }],
         enabled: true,
       })
@@ -129,11 +128,11 @@ describe('MigrationService', () => {
 
       nomisClient.getAuthUser.mockResolvedValue({ username: 'user-1', enabled: true })
 
-      mocked(deliusClient).getStaffDetailsByStaffCode.mockResolvedValue({
+      deliusClient.getStaffDetailsByStaffCode.mockResolvedValue({
         username: 'user-1',
         email: 'user@gov.uk',
       } as StaffDetails)
-      mocked(deliusClient).getUser.mockResolvedValue({
+      deliusClient.getUser.mockResolvedValue({
         roles: [{ name: delius.responsibleOfficerRoleId }],
         enabled: true,
       })
@@ -169,7 +168,7 @@ describe('MigrationService', () => {
 
       nomisClient.getAuthUser.mockResolvedValue({ username: 'user-1', enabled: true })
 
-      mocked(deliusClient).getStaffDetailsByStaffIdentifier.mockResolvedValue({ staffIdentifier: 1 } as StaffDetails)
+      deliusClient.getStaffDetailsByStaffIdentifier.mockResolvedValue({ staffIdentifier: 1 } as StaffDetails)
 
       const result = await migrationService.getStaffDetails('token', 'user-1')
 
@@ -202,12 +201,12 @@ describe('MigrationService', () => {
 
       nomisClient.getAuthUser.mockResolvedValue({ username: 'user-1', enabled: true })
 
-      mocked(deliusClient).getStaffDetailsByStaffIdentifier.mockResolvedValue({
+      deliusClient.getStaffDetailsByStaffIdentifier.mockResolvedValue({
         username: 'delius-user',
         staffIdentifier: 1,
         email: 'delius-user@gov.uk',
       } as StaffDetails)
-      mocked(deliusClient).getUser.mockResolvedValue({
+      deliusClient.getUser.mockResolvedValue({
         roles: [],
         enabled: true,
       })
@@ -246,11 +245,11 @@ describe('MigrationService', () => {
 
     nomisClient.getAuthUser.mockResolvedValue({ username: 'user-1', enabled: true })
 
-    mocked(deliusClient).getStaffDetailsByStaffIdentifier.mockResolvedValue({
+    deliusClient.getStaffDetailsByStaffIdentifier.mockResolvedValue({
       username: 'delius-user',
       staffIdentifier: 1,
     } as StaffDetails)
-    mocked(deliusClient).getUser.mockResolvedValue({
+    deliusClient.getUser.mockResolvedValue({
       roles: [],
       enabled: true,
     })
@@ -282,7 +281,7 @@ describe('MigrationService', () => {
 
     nomisClient.getAuthUser.mockResolvedValue(null)
 
-    mocked(deliusClient).getStaffDetailsByStaffCode.mockResolvedValue(null)
+    deliusClient.getStaffDetailsByStaffCode.mockResolvedValue(null)
 
     const result = await migrationService.getStaffDetails('token', 'user-1')
 
@@ -312,11 +311,11 @@ describe('MigrationService', () => {
       { roleCode: 'LICENCE_VARY' },
       { roleCode: 'GLOBAL_SEARCH' },
     ])
-    mocked(deliusClient).getStaffDetailsByStaffIdentifier.mockResolvedValue({
+    deliusClient.getStaffDetailsByStaffIdentifier.mockResolvedValue({
       username: 'user-1',
       email: 'user@gov.uk',
     } as StaffDetails)
-    mocked(deliusClient).getUser.mockResolvedValue({
+    deliusClient.getUser.mockResolvedValue({
       roles: [{ name: delius.responsibleOfficerRoleId }],
       enabled: true,
     })
@@ -352,11 +351,11 @@ describe('MigrationService', () => {
     })
 
     nomisClient.getAuthUser.mockRejectedValue(Error('bang!'))
-    mocked(deliusClient).getStaffDetailsByStaffIdentifier.mockResolvedValue({
+    deliusClient.getStaffDetailsByStaffIdentifier.mockResolvedValue({
       username: 'user-1',
       email: 'user@gov.uk',
     } as StaffDetails)
-    mocked(deliusClient).getUser.mockResolvedValue({
+    deliusClient.getUser.mockResolvedValue({
       roles: [{ name: delius.responsibleOfficerRoleId }],
       enabled: true,
     })

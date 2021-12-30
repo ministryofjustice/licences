@@ -1,4 +1,3 @@
-import { mocked } from 'ts-jest/utils'
 import createReminderService from '../../server/services/reminderService'
 import { createPrisonerServiceStub } from '../mockServices'
 import { RoContactDetailsService } from '../../server/services/roContactDetailsService'
@@ -9,7 +8,7 @@ jest.mock('../../server/services/roContactDetailsService')
 describe('reminderService', () => {
   let service
   let prisonerService
-  let roContactDetailsService: RoContactDetailsService
+  let roContactDetailsService: jest.Mocked<RoContactDetailsService>
   let deadlineService
   let roNotificationSender
 
@@ -19,8 +18,12 @@ describe('reminderService', () => {
     prisonerService = createPrisonerServiceStub()
     prisonerService.getEstablishmentForPrisoner.mockReturnValue({ premise: 'HMP Blah', agencyId: 'LT1' })
 
-    roContactDetailsService = new RoContactDetailsService(undefined, undefined, undefined)
-    mocked(roContactDetailsService).getResponsibleOfficerWithContactDetails.mockResolvedValue({
+    roContactDetailsService = new RoContactDetailsService(
+      undefined,
+      undefined,
+      undefined
+    ) as jest.Mocked<RoContactDetailsService>
+    roContactDetailsService.getResponsibleOfficerWithContactDetails.mockResolvedValue({
       staffIdentifier: 1,
     } as ResponsibleOfficerAndContactDetails)
 
@@ -172,7 +175,7 @@ describe('reminderService', () => {
     })
 
     test('should continue trying all other notifications even after a failure', async () => {
-      mocked(roContactDetailsService).getResponsibleOfficerWithContactDetails.mockRejectedValue({
+      roContactDetailsService.getResponsibleOfficerWithContactDetails.mockRejectedValue({
         message: 'error message',
         code: 'meh',
       })
@@ -186,7 +189,7 @@ describe('reminderService', () => {
     })
 
     test('should continue trying all other notifications even after an error happens when searching for offender details', async () => {
-      mocked(roContactDetailsService).getResponsibleOfficerWithContactDetails.mockResolvedValue({
+      roContactDetailsService.getResponsibleOfficerWithContactDetails.mockResolvedValue({
         message: 'some-error',
         code: 'some code',
       })

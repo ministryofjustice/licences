@@ -1,4 +1,3 @@
-import { mocked } from 'ts-jest/utils'
 import createRoNotificationHandler from '../../../server/services/notifications/roNotificationHandler'
 import transitionForDestinations from '../../../server/services/notifications/transitionsForDestinations'
 import { STAFF_NOT_LINKED } from '../../../server/services/serviceErrors'
@@ -21,7 +20,7 @@ describe('roNotificationHandler', () => {
   /** @type {any} */
   let deliusClient
   let roNotificationHandler
-  let roContactDetailsService: RoContactDetailsService
+  let roContactDetailsService: jest.Mocked<RoContactDetailsService>
 
   const prisoner = { firstName: 'first', lastName: 'last', dateOfBirth: 'off-dob', offenderNo: 'AB1234A' }
   const submissionTarget = { premise: 'HMP Blah', agencyId: 'LT1', name: 'Something', deliusId: 'delius' }
@@ -37,7 +36,11 @@ describe('roNotificationHandler', () => {
       removeDecision: jest.fn().mockReturnValue({}),
     }
 
-    roContactDetailsService = new RoContactDetailsService(undefined, undefined, undefined)
+    roContactDetailsService = new RoContactDetailsService(
+      undefined,
+      undefined,
+      undefined
+    ) as jest.Mocked<RoContactDetailsService>
 
     warningClient = {
       raiseWarning: jest.fn(),
@@ -84,7 +87,7 @@ describe('roNotificationHandler', () => {
         probationAreaDescription: 'prob-desc-1',
       } as ResponsibleOfficerAndContactDetails
 
-      mocked(roContactDetailsService).getResponsibleOfficerWithContactDetails.mockResolvedValue(responsibleOfficer)
+      roContactDetailsService.getResponsibleOfficerWithContactDetails.mockResolvedValue(responsibleOfficer)
 
       await roNotificationHandler.sendRo({
         transition: transitionForDestinations.addressReview,
@@ -122,7 +125,7 @@ describe('roNotificationHandler', () => {
     })
 
     test('caToRo when cannot get RO contact details', async () => {
-      mocked(roContactDetailsService).getResponsibleOfficerWithContactDetails.mockResolvedValue({
+      roContactDetailsService.getResponsibleOfficerWithContactDetails.mockResolvedValue({
         message: 'failed to find RO',
         code: '404',
       })
@@ -154,7 +157,7 @@ describe('roNotificationHandler', () => {
         probationAreaDescription: 'prob-desc-1',
       } as ResponsibleOfficerAndContactDetails
 
-      mocked(roContactDetailsService).getResponsibleOfficerWithContactDetails.mockResolvedValue(responsibleOfficer)
+      roContactDetailsService.getResponsibleOfficerWithContactDetails.mockResolvedValue(responsibleOfficer)
       prisonerService.getEstablishmentForPrisoner.mockResolvedValue(null)
 
       await roNotificationHandler.sendRo({
@@ -185,7 +188,7 @@ describe('roNotificationHandler', () => {
         isUnlinkedAccount: true,
       } as ResponsibleOfficerAndContactDetails
 
-      mocked(roContactDetailsService).getResponsibleOfficerWithContactDetails.mockResolvedValue(responsibleOfficer)
+      roContactDetailsService.getResponsibleOfficerWithContactDetails.mockResolvedValue(responsibleOfficer)
 
       await roNotificationHandler.sendRo({
         transition: transitionForDestinations.bassReview,
@@ -242,7 +245,7 @@ describe('roNotificationHandler', () => {
       isUnlinkedAccount: true,
     } as ResponsibleOfficerAndContactDetails
 
-    mocked(roContactDetailsService).getResponsibleOfficerWithContactDetails.mockResolvedValue(responsibleOfficer)
+    roContactDetailsService.getResponsibleOfficerWithContactDetails.mockResolvedValue(responsibleOfficer)
 
     await roNotificationHandler.sendRo({
       transition: transitionForDestinations.bassReview,
@@ -268,7 +271,7 @@ describe('roNotificationHandler', () => {
       isUnlinkedAccount: true,
     } as ResponsibleOfficerAndContactDetails
 
-    mocked(roContactDetailsService).getResponsibleOfficerWithContactDetails.mockResolvedValue(responsibleOfficer)
+    roContactDetailsService.getResponsibleOfficerWithContactDetails.mockResolvedValue(responsibleOfficer)
 
     await roNotificationHandler.sendRo({
       transition: transitionForDestinations.bassReview,
@@ -295,7 +298,7 @@ describe('roNotificationHandler', () => {
     } as ResponsibleOfficerAndContactDetails
 
     test('handles caToRo', async () => {
-      mocked(roContactDetailsService).getResponsibleOfficerWithContactDetails.mockResolvedValue(responsibleOfficer)
+      roContactDetailsService.getResponsibleOfficerWithContactDetails.mockResolvedValue(responsibleOfficer)
 
       const result = await roNotificationHandler.sendRoEmail({
         transition: transitionForDestinations.addressReview,
@@ -321,7 +324,7 @@ describe('roNotificationHandler', () => {
     })
 
     test('caToRo when cannot get RO contact details', async () => {
-      mocked(roContactDetailsService).getResponsibleOfficerWithContactDetails.mockResolvedValue({
+      roContactDetailsService.getResponsibleOfficerWithContactDetails.mockResolvedValue({
         message: 'failed to find RO',
         code: '404',
       })
@@ -344,7 +347,7 @@ describe('roNotificationHandler', () => {
     })
 
     test('caToRo when cannot get prison', async () => {
-      mocked(roContactDetailsService).getResponsibleOfficerWithContactDetails.mockResolvedValue(responsibleOfficer)
+      roContactDetailsService.getResponsibleOfficerWithContactDetails.mockResolvedValue(responsibleOfficer)
       prisonerService.getEstablishmentForPrisoner.mockResolvedValue(null)
 
       const result = await roNotificationHandler.sendRoEmail({
@@ -365,7 +368,7 @@ describe('roNotificationHandler', () => {
     })
 
     test('caToRo when delius staff records are not linked to user', async () => {
-      mocked(roContactDetailsService).getResponsibleOfficerWithContactDetails.mockResolvedValue({
+      roContactDetailsService.getResponsibleOfficerWithContactDetails.mockResolvedValue({
         ...responsibleOfficer,
         isUnlinkedAccount: true,
       })
@@ -389,7 +392,7 @@ describe('roNotificationHandler', () => {
     })
 
     test('caToRo adds RO role in delius if have access to delius username', async () => {
-      mocked(roContactDetailsService).getResponsibleOfficerWithContactDetails.mockResolvedValue({
+      roContactDetailsService.getResponsibleOfficerWithContactDetails.mockResolvedValue({
         ...responsibleOfficer,
         username: 'userBob',
       })
@@ -407,7 +410,7 @@ describe('roNotificationHandler', () => {
     })
 
     test('caToRo does not RO role in delius if delius username is not present', async () => {
-      mocked(roContactDetailsService).getResponsibleOfficerWithContactDetails.mockResolvedValue({
+      roContactDetailsService.getResponsibleOfficerWithContactDetails.mockResolvedValue({
         ...responsibleOfficer,
         username: undefined,
       })

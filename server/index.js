@@ -18,7 +18,7 @@ const notifyClient = new NotifyClient(config.notifications.notifyKey)
 const createSignInService = require('./authentication/signInService')
 const { createLicenceService } = require('./services/licenceService')
 const { createPrisonerService } = require('./services/prisonerService')
-const createConditionsService = require('./services/conditionsService').default
+const ConditionsService = require('./services/conditionsService').default
 const createCaseListService = require('./services/caseListService')
 const MigrationService = require('./services/migrationService').default
 const createPdfService = require('./services/pdfService')
@@ -53,7 +53,7 @@ const tokenVerifierFactory = require('./authentication/tokenverifier/tokenVerifi
 
 const signInService = createSignInService()
 const licenceService = createLicenceService(licenceClient)
-const conditionsService = createConditionsService()
+const conditionsService = new ConditionsService()
 
 const deliusClient = new DeliusClient(
   buildRestClient(

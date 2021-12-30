@@ -1,4 +1,3 @@
-import { mocked } from 'ts-jest/utils'
 import { RoService } from '../../server/services/roService'
 import {
   CommunityOrPrisonOffenderManager,
@@ -13,7 +12,7 @@ jest.mock('../../server/data/deliusClient')
 describe('roService', () => {
   let service: RoService
   let nomisClient
-  let deliusClient: DeliusClient
+  let deliusClient: jest.Mocked<DeliusClient>
 
   const prototypeRoPrisoner = {
     staffCode: undefined,
@@ -44,10 +43,10 @@ describe('roService', () => {
 
     const nomisClientBuilder = jest.fn().mockReturnValue(nomisClient)
 
-    deliusClient = new DeliusClient(undefined)
-    mocked(deliusClient).getROPrisonersByStaffIdentifier.mockResolvedValue(roPrisoners)
-    mocked(deliusClient).getStaffDetailsByStaffIdentifier.mockResolvedValue(staffDetails)
-    mocked(deliusClient).getStaffDetailsByUsername.mockResolvedValue(staffDetails)
+    deliusClient = new DeliusClient(undefined) as jest.Mocked<DeliusClient>
+    deliusClient.getROPrisonersByStaffIdentifier.mockResolvedValue(roPrisoners)
+    deliusClient.getStaffDetailsByStaffIdentifier.mockResolvedValue(staffDetails)
+    deliusClient.getStaffDetailsByUsername.mockResolvedValue(staffDetails)
 
     service = new RoService(deliusClient, nomisClientBuilder)
   })
@@ -60,7 +59,7 @@ describe('roService', () => {
     })
 
     test('should return message when 404 in api when getting RO relationship', () => {
-      mocked(deliusClient).getStaffDetailsByStaffIdentifier.mockResolvedValue(undefined)
+      deliusClient.getStaffDetailsByStaffIdentifier.mockResolvedValue(undefined)
       return expect(service.getStaffByStaffIdentifier(1)).resolves.toStrictEqual({
         code: 'STAFF_NOT_PRESENT',
         message: `Staff does not exist in delius: 1`,
@@ -75,14 +74,14 @@ describe('roService', () => {
     })
 
     test('should return message when 404 in api when getting RO relationship', () => {
-      mocked(deliusClient).getStaffDetailsByUsername.mockResolvedValue(undefined)
+      deliusClient.getStaffDetailsByUsername.mockResolvedValue(undefined)
       return expect(service.getStaffByUsername('code-1')).resolves.toBe(null)
     })
   })
 
   describe('getROPrisoners', () => {
     test('should call getROPrisoners from deliusClient && getOffenderSentencesByNomisId from nomisClient', async () => {
-      mocked(deliusClient).getROPrisonersByStaffIdentifier.mockResolvedValue(roPrisoners)
+      deliusClient.getROPrisonersByStaffIdentifier.mockResolvedValue(roPrisoners)
       await service.getROPrisonersForStaffIdentifier(123, 'token')
       expect(deliusClient.getROPrisonersByStaffIdentifier).toHaveBeenCalled()
       expect(nomisClient.getOffenderSentencesByNomisId).toHaveBeenCalled()
@@ -90,27 +89,27 @@ describe('roService', () => {
     })
 
     test('should not call getOffenderSentencesByNomisId when no results from getROPrisoners', async () => {
-      mocked(deliusClient).getROPrisonersByStaffIdentifier.mockResolvedValue([])
+      deliusClient.getROPrisonersByStaffIdentifier.mockResolvedValue([])
       await service.getROPrisonersForStaffIdentifier(123, 'token')
       expect(deliusClient.getROPrisonersByStaffIdentifier).toHaveBeenCalled()
       expect(nomisClient.getOffenderSentencesByNomisId).toHaveBeenCalled()
     })
 
     test('should not call getOffenderSentencesByNomisId when no offender numbers are returned from getROPrisoners', async () => {
-      mocked(deliusClient).getROPrisonersByStaffIdentifier.mockResolvedValue([{}, {}, {}] as ManagedOffender[])
+      deliusClient.getROPrisonersByStaffIdentifier.mockResolvedValue([{}, {}, {}] as ManagedOffender[])
       await service.getROPrisonersForStaffIdentifier(123, 'token')
       expect(deliusClient.getROPrisonersByStaffIdentifier).toHaveBeenCalled()
       expect(nomisClient.getOffenderSentencesByNomisId).toHaveBeenCalledWith([])
     })
 
     test('should return empty array and explanation message if no eligible releases found', async () => {
-      mocked(deliusClient).getROPrisonersByStaffIdentifier.mockResolvedValue([])
+      deliusClient.getROPrisonersByStaffIdentifier.mockResolvedValue([])
       const result = await service.getROPrisonersForStaffIdentifier(123, 'token')
       expect(result).toEqual([])
     })
 
     test('should return empty array when staff member not found in delius', async () => {
-      mocked(deliusClient).getROPrisonersByStaffIdentifier.mockResolvedValue(undefined)
+      deliusClient.getROPrisonersByStaffIdentifier.mockResolvedValue(undefined)
       const result = await service.getROPrisonersForStaffIdentifier(123, 'token')
       expect(result).toEqual(null)
     })
@@ -118,7 +117,7 @@ describe('roService', () => {
 
   describe('findResponsibleOfficer', () => {
     test('should call the api with the offenderNo', async () => {
-      mocked(deliusClient).getAllOffenderManagers.mockResolvedValue([])
+      deliusClient.getAllOffenderManagers.mockResolvedValue([])
 
       await service.findResponsibleOfficer('123', 'token')
 
@@ -130,7 +129,7 @@ describe('roService', () => {
     })
 
     test('should return the found COM', () => {
-      mocked(deliusClient).getAllOffenderManagers.mockResolvedValue([
+      deliusClient.getAllOffenderManagers.mockResolvedValue([
         {
           isResponsibleOfficer: true,
           staff: { forenames: 'Jo', surname: 'Smith' },
@@ -164,7 +163,7 @@ describe('roService', () => {
     })
 
     test('offender has not been assigned a COM', () => {
-      mocked(deliusClient).getAllOffenderManagers.mockResolvedValue([
+      deliusClient.getAllOffenderManagers.mockResolvedValue([
         { isPrisonOffenderManager: true } as CommunityOrPrisonOffenderManager,
       ])
 
@@ -177,12 +176,12 @@ describe('roService', () => {
     })
 
     test('should throw if error in api when getting ro', () => {
-      mocked(deliusClient).getAllOffenderManagers.mockRejectedValue(new Error('dead'))
+      deliusClient.getAllOffenderManagers.mockRejectedValue(new Error('dead'))
       return expect(service.findResponsibleOfficer('123', 'token')).rejects.toEqual(Error('dead'))
     })
 
     test('should return message when 404 in api when getting RO relationship', () => {
-      mocked(deliusClient).getAllOffenderManagers.mockResolvedValue(undefined)
+      deliusClient.getAllOffenderManagers.mockResolvedValue(undefined)
       return expect(service.findResponsibleOfficer('123', 'token')).resolves.toEqual({
         code: 'NO_OFFENDER_NUMBER',
         message: 'Offender number not entered in delius',
