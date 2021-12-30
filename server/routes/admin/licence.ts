@@ -112,7 +112,7 @@ export = (licenceService, signInService, prisonerService, audit, roNotificationH
     asyncMiddleware(async (req, res) => {
       const { abookingId: bookingId } = req.params
       const systemToken = await signInService.getClientCredentialsTokens(req.user.username)
-      const [ignored, error] = unwrapResult(
+      const [, error] = unwrapResult(
         await roNotificationHandler.sendRoEmail({
           transition: transitionsForDestinations.addressReview,
           bookingId,

@@ -19,8 +19,8 @@ module.exports = ({ reportingService }) => {
     const { report } = req.params
     const { start, end } = req.query
 
-    const startDate = start ? moment(start, 'DD-MM-YYYY') : null
-    const endDate = end ? moment(end, 'DD-MM-YYYY').set({ hour: 23, minute: 59 }) : null
+    const startDate = start ? moment(start.toString(), 'DD-MM-YYYY') : null
+    const endDate = end ? moment(end.toString(), 'DD-MM-YYYY').set({ hour: 23, minute: 59 }) : null
     const invalidDate = (startDate && !startDate.isValid()) || (endDate && !endDate.isValid())
     if (invalidDate) {
       return res.status(400).json({ message: 'Invalid date format' })

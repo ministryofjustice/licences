@@ -1,6 +1,4 @@
 /* eslint-disable no-underscore-dangle */
-const fs = require('fs')
-
 const addRequestId = require('express-request-id')()
 const moment = require('moment')
 
@@ -227,7 +225,7 @@ module.exports = function createApp({
   // Don't cache dynamic resources
   app.use(noCache())
 
-  const excludedPaths = new RegExp('^/public|^/assets|^/health|^/ping|^/favicon.ico')
+  const excludedPaths = /^\/public|^\/assets|^\/health|^\/ping|^\/favicon.ico/
   app.use((req, res, next) => {
     if (excludedPaths.test(req.path)) {
       return next()

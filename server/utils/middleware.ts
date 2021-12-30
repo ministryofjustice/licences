@@ -3,7 +3,7 @@ import authorisationConfig from '../routes/config/authorisation'
 import { getWhereKeyLike, isEmpty, merge } from './functionalHelpers'
 import { forbiddenError } from './errors'
 import getLicenceStatus from '../services/licence/licenceStatus'
-import { LicenceRecord, LicenceService } from '../services/licenceService'
+import { LicenceService } from '../services/licenceService'
 import { PrisonerService } from '../services/prisonerService'
 
 export function asyncMiddleware(fn) {
@@ -15,7 +15,7 @@ export function asyncMiddleware(fn) {
 export function checkLicenceMiddleware(licenceService: LicenceService, prisonerService: PrisonerService) {
   return async (req, res, next, bookingId) => {
     try {
-      const [licence, prisoner] = await Promise.all<LicenceRecord, any>([
+      const [licence, prisoner] = await Promise.all([
         licenceService.getLicence(bookingId),
         prisonerService.getPrisonerPersonalDetails(bookingId, res.locals.token),
       ])

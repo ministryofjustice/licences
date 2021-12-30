@@ -45,7 +45,7 @@ module.exports = {
       })
   },
 
-  async getEvents(action, filters = {}, startMoment, endMoment) {
+  async getEvents(action, filters, startMoment, endMoment) {
     const startTime = startMoment ? startMoment.toISOString() : null
     const endTime = endMoment ? endMoment.toISOString() : null
 
