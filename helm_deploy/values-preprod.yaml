@@ -29,7 +29,6 @@ env:
   NOMIS_API_URL: "https://api-preprod.prison.service.justice.gov.uk"
   NOMIS_AUTH_URL: "https://sign-in-preprod.hmpps.service.justice.gov.uk/auth"
   GLOBAL_SEARCH_URL: "https://digital-preprod.prison.service.justice.gov.uk/global-search"
-  AUTH_STRATEGY: "oauth"
   PUSH_TO_NOMIS: "yes"
   REMINDERS_SCHEDULE_RO: "0 1 * * 1-5"
   SCHEDULED_JOBS_AUTOSTART: "yes"

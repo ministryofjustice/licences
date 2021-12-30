@@ -257,6 +257,7 @@ export class LicenceService {
       Promise.all([
         this.licenceClient.updateLicence(bookingId, {}, postRelease),
         this.licenceClient.updateStage(bookingId, LicenceStage.ELIGIBILITY),
+        this.licenceClient.setConditionsVersion(bookingId, null),
       ])
     } catch (error) {
       logger.error('Error during licence reset', error.stack)

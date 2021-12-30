@@ -1920,6 +1920,11 @@ describe('licenceService', () => {
       service.resetLicence(100, false)
       expect(licenceClient.updateStage).toBeCalledWith(100, LicenceStage.ELIGIBILITY)
     })
+
+    it('should call setConditionsVersion', () => {
+      service.resetLicence(100, false)
+      expect(licenceClient.setConditionsVersion).toBeCalledWith(100, null)
+    })
   })
 
   describe('set conditions version', () => {
