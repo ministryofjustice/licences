@@ -8,8 +8,7 @@ import { isEmpty } from '../utils/functionalHelpers'
 import getTaskListModel from './viewModels/taskListModels'
 import logger from '../../log'
 import { getTasksForBlocked } from './viewModels/taskLists/caTasks'
-
-import { LicenceStage } from '../services/config/licenceStage'
+import { LicenceStage } from '../data/licenceTypes'
 
 const { APPROVAL, DECIDED, ELIGIBILITY, MODIFIED, MODIFIED_APPROVAL, PROCESSING_CA, PROCESSING_RO } = LicenceStage
 

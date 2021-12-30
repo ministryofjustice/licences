@@ -1,5 +1,5 @@
+const { LicenceStage } = require('../../../server/data/licenceTypes')
 const { getStatusLabel } = require('../../../server/services/licence/licenceStatusLabels')
-const { LicenceStage } = require('../../../server/services/config/licenceStage')
 
 describe('licenceStatusLabels', () => {
   describe('getStatusLabel', () => {

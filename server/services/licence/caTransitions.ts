@@ -1,5 +1,5 @@
+import { LicenceStage } from '../../data/licenceTypes'
 import { LicenceStatus, Decisions, Tasks } from './licenceStatusTypes'
-import { LicenceStage } from '../config/licenceStage'
 
 const { TaskState, allComplete } = require('../config/taskState')
 

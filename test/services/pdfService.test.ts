@@ -1,7 +1,7 @@
 const nock = require('nock')
 
-const createPdfService = require('../../server/services/pdfService')
-const { createPrisonerServiceStub } = require('../mockServices')
+import PdfService from '../../server/services/pdfService'
+import { createPrisonerServiceStub } from '../mockServices'
 
 describe('pdfService', () => {
   let licenceService
@@ -48,7 +48,7 @@ describe('pdfService', () => {
       DEFAULT_PLACEHOLDER: 'placeholder',
     }
 
-    service = createPdfService(logger, licenceService, conditionsService, prisonerService, pdfFormatter)
+    service = new PdfService(logger, licenceService, conditionsService, prisonerService, pdfFormatter)
   })
 
   afterEach(() => {

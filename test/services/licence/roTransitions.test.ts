@@ -1,6 +1,6 @@
 import getAllowedTransition from '../../../server/services/licence/roTransitions'
 import { TaskState } from '../../../server/services/config/taskState'
-import { LicenceStage } from '../../../server/services/config/licenceStage'
+import { LicenceStage } from '../../../server/data/licenceTypes'
 
 describe('getAllowedTransition', () => {
   describe('RO to CA', () => {

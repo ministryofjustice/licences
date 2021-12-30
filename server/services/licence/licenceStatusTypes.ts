@@ -1,5 +1,5 @@
+import { LicenceStage } from '../../data/licenceTypes'
 import { TaskState } from '../config/taskState'
-import { LicenceStage } from '../config/licenceStage'
 
 export type LicenceStatus = {
   stage: LicenceStage

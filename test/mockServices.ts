@@ -1,4 +1,5 @@
 import ConditionsService from '../server/services/conditionsService'
+import PdfService from '../server/services/pdfService'
 
 export const createSignInServiceStub = () => ({
   signIn: jest.fn(),
@@ -61,13 +62,14 @@ export const createPrisonerServiceStub = () => ({
   getDestinationForRole: jest.fn(),
 })
 
-export const createPdfServiceStub = () => ({
-  getPdfLicenceData: jest.fn(),
-  checkAndTakeSnapshot: jest.fn(),
-  getPdf: jest.fn(),
-  generatePdf: jest.fn(),
-  updateLicenceType: jest.fn(),
-})
+export const createPdfServiceStub = () =>
+  ({
+    getPdfLicenceData: jest.fn(),
+    checkAndTakeSnapshot: jest.fn(),
+    getPdf: jest.fn(),
+    generatePdf: jest.fn(),
+    updateLicenceType: jest.fn(),
+  } as unknown as jest.Mocked<PdfService>)
 
 export const createFormServiceStub = () => ({
   generatePdf: jest.fn(),

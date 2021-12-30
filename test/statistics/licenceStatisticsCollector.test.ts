@@ -1,6 +1,6 @@
+import { LicenceStage } from '../../server/data/licenceTypes'
 import { LicenceStatistics, LicenceStatisticsCollector } from '../../server/statistics/LicenceStatisticsCollector'
 import { LicenceRow } from '../../server/statistics/types'
-import { LicenceStage } from '../../server/services/config/licenceStage'
 
 let collector: LicenceStatisticsCollector
 

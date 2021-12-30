@@ -1,5 +1,6 @@
 /**
  * @typedef {import("../services/prisonerService").PrisonerService} PrisonerService
+ * @typedef {import("../services/pdfService").default} PdfService
  */
 const logger = require('../../log')
 const { asyncMiddleware } = require('../utils/middleware')
@@ -15,7 +16,7 @@ const {
 
 /**
  * @param {object} args
- * @param {any} args.pdfService
+ * @param {PdfService} args.pdfService
  * @param {PrisonerService} args.prisonerService
  */
 module.exports =

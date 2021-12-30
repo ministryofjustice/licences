@@ -1,6 +1,6 @@
+import { LicenceStage } from '../../data/licenceTypes'
 import { TaskState, allComplete } from '../config/taskState'
 import { LicenceStatus } from './licenceStatusTypes'
-import { LicenceStage } from '../config/licenceStage'
 
 export = function getAllowedTransition(licenceStatus: LicenceStatus) {
   if (!licenceStatus) {

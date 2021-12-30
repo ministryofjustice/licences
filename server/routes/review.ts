@@ -1,12 +1,12 @@
 import { getReviewSections } from './viewModels/reviewModels'
-import { asyncMiddleware } from '../utils/middleware'
-import { getIn } from '../utils/functionalHelpers'
+import { asyncMiddleware, LicenceLocals } from '../utils/middleware'
 import logger from '../../log'
 import { isPostApproval } from '../services/config/licenceStage'
 
-import { PrisonerService } from '../../types/licences'
-import { LicenceService } from '../services/licenceService'
+import type { PrisonerService } from '../../types/licences'
+import type { LicenceService } from '../services/licenceService'
 import type ConditionsService from '../services/conditionsService'
+import type { Response } from 'express'
 
 function shouldValidate(role, stage, postApproval) {
   return postApproval
@@ -36,14 +36,14 @@ export = ({
   return (router) => {
     router.get(
       '/:sectionName/:bookingId',
-      asyncMiddleware(async (req, res) => {
+      asyncMiddleware(async (req, res: Response<any, LicenceLocals>) => {
         const { sectionName, bookingId } = req.params
         const { licenceStatus } = res.locals
         logger.debug(`GET /review/${sectionName}/${bookingId}`)
 
-        const licence = getIn(res.locals.licence, ['licence']) || {}
-        const stage = getIn(res.locals.licence, ['stage']) || {}
-        const licenceVersion = getIn(res.locals.licence, ['version']) || {}
+        const licence = res.locals?.licence?.licence || {}
+        const stage = res.locals?.licence?.stage
+        const licenceVersion = res?.locals?.licence?.version || {}
 
         const postApproval = isPostApproval(stage)
         const showErrors = shouldValidate(req.user.role, stage, postApproval)

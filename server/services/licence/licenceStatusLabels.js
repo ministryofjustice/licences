@@ -1,4 +1,4 @@
-const { LicenceStage } = require('../config/licenceStage')
+const { LicenceStage } = require('../../data/licenceTypes')
 const { TaskState, anyStarted } = require('../config/taskState')
 
 module.exports = { getStatusLabel }
