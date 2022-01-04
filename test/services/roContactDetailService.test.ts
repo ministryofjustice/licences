@@ -1,4 +1,3 @@
-import { mocked } from 'ts-jest/utils'
 import { RoContactDetailsService } from '../../server/services/roContactDetailsService'
 import { ProbationTeamsClient } from '../../server/data/probationTeamsClient'
 import { RoService } from '../../server/services/roService'
@@ -23,17 +22,16 @@ const fullContactInfo: RoUser = {
 
 describe('roContactDetailsService', () => {
   let service: RoContactDetailsService
-  let userAdminService: UserAdminService
-  let probationTeamsClient: ProbationTeamsClient
-  let roService: RoService
+  let userAdminService: jest.Mocked<UserAdminService>
+  let probationTeamsClient: jest.Mocked<ProbationTeamsClient>
+  let roService: jest.Mocked<RoService>
 
   beforeEach(() => {
-    // userClient is a Jest mock.
-    userAdminService = new UserAdminService(undefined, undefined, undefined)
+    userAdminService = new UserAdminService(undefined, undefined, undefined) as jest.Mocked<UserAdminService>
 
-    roService = new RoService(undefined, undefined)
+    roService = new RoService(undefined, undefined) as jest.Mocked<RoService>
 
-    mocked(roService).findResponsibleOfficer.mockResolvedValue({
+    roService.findResponsibleOfficer.mockResolvedValue({
       deliusId: 'XXX-not-used-XXX',
       staffIdentifier: 1,
       name: 'RO',
@@ -45,14 +43,14 @@ describe('roContactDetailsService', () => {
       probationAreaDescription: 'Probation Area 1',
     } as ResponsibleOfficer)
 
-    probationTeamsClient = new ProbationTeamsClient(undefined)
+    probationTeamsClient = new ProbationTeamsClient(undefined) as jest.Mocked<ProbationTeamsClient>
 
     service = new RoContactDetailsService(userAdminService, roService, probationTeamsClient)
   })
 
   describe('getFunctionalMailBox', () => {
     test('successfully returns local data', async () => {
-      mocked(userAdminService).getRoUserByStaffIdentifier.mockResolvedValue(fullContactInfo)
+      userAdminService.getRoUserByStaffIdentifier.mockResolvedValue(fullContactInfo)
 
       const result = await service.getFunctionalMailBox(123, 'token')
 
@@ -62,9 +60,9 @@ describe('roContactDetailsService', () => {
     })
 
     test('local data not stored, retrieve from external service is enabled', async () => {
-      mocked(userAdminService).getRoUserByStaffIdentifier.mockResolvedValue(null)
-      mocked(probationTeamsClient).getFunctionalMailbox.mockResolvedValue('ro-org@email.com')
-      mocked(roService).getStaffByStaffIdentifier.mockResolvedValue({ email: 'ro@email.com' } as StaffDetails)
+      userAdminService.getRoUserByStaffIdentifier.mockResolvedValue(null)
+      probationTeamsClient.getFunctionalMailbox.mockResolvedValue('ro-org@email.com')
+      roService.getStaffByStaffIdentifier.mockResolvedValue({ email: 'ro@email.com' } as StaffDetails)
 
       const result = await service.getFunctionalMailBox(123, 'token')
 
@@ -76,7 +74,7 @@ describe('roContactDetailsService', () => {
 
   describe('getResponsibleOfficerWithContactDetails', () => {
     test('successfully returns local data', async () => {
-      mocked(userAdminService).getRoUserByStaffIdentifier.mockResolvedValue(fullContactInfo)
+      userAdminService.getRoUserByStaffIdentifier.mockResolvedValue(fullContactInfo)
 
       const result = await service.getResponsibleOfficerWithContactDetails(1, 'token-1')
 
@@ -100,8 +98,8 @@ describe('roContactDetailsService', () => {
     })
 
     test('Fail to find responsible officer', async () => {
-      mocked(roService).findResponsibleOfficer.mockResolvedValue({ message: 'could not find', code: '404' })
-      mocked(userAdminService).getRoUserByStaffIdentifier.mockReturnValue(null)
+      roService.findResponsibleOfficer.mockResolvedValue({ message: 'could not find', code: '404' })
+      userAdminService.getRoUserByStaffIdentifier.mockReturnValue(null)
 
       const result = await service.getResponsibleOfficerWithContactDetails(123, 'token')
 
@@ -110,10 +108,10 @@ describe('roContactDetailsService', () => {
     })
 
     test('no staff record local, found in delius', async () => {
-      mocked(userAdminService).getRoUserByStaffIdentifier.mockResolvedValue(null)
+      userAdminService.getRoUserByStaffIdentifier.mockResolvedValue(null)
 
-      mocked(probationTeamsClient).getFunctionalMailbox.mockResolvedValue('ro-org@email.com')
-      mocked(roService).getStaffByStaffIdentifier.mockResolvedValue({
+      probationTeamsClient.getFunctionalMailbox.mockResolvedValue('ro-org@email.com')
+      roService.getStaffByStaffIdentifier.mockResolvedValue({
         email: 'ro@ro.email.com',
         username: 'user-1',
       } as StaffDetails)
@@ -141,12 +139,12 @@ describe('roContactDetailsService', () => {
     })
 
     test('unmatched staff code but has delius username', async () => {
-      mocked(userAdminService).getRoUserByStaffIdentifier.mockReturnValue(null)
-      mocked(roService).getStaffByStaffIdentifier.mockResolvedValue({
+      userAdminService.getRoUserByStaffIdentifier.mockReturnValue(null)
+      roService.getStaffByStaffIdentifier.mockResolvedValue({
         email: 'deliusRo@ro.email.com',
         username: 'delius-user-1',
       } as StaffDetails)
-      mocked(userAdminService).getRoUserByDeliusUsername.mockResolvedValue(fullContactInfo)
+      userAdminService.getRoUserByDeliusUsername.mockResolvedValue(fullContactInfo)
 
       const result = await service.getResponsibleOfficerWithContactDetails(1, 'token-1')
 
@@ -172,9 +170,9 @@ describe('roContactDetailsService', () => {
     })
 
     test('no staff record local, linked user found in delius', async () => {
-      mocked(userAdminService).getRoUserByStaffIdentifier.mockResolvedValue(null)
-      mocked(probationTeamsClient).getFunctionalMailbox.mockResolvedValue('ro-org@email.com')
-      mocked(roService).getStaffByStaffIdentifier.mockResolvedValue({
+      userAdminService.getRoUserByStaffIdentifier.mockResolvedValue(null)
+      probationTeamsClient.getFunctionalMailbox.mockResolvedValue('ro-org@email.com')
+      roService.getStaffByStaffIdentifier.mockResolvedValue({
         email: 'ro@ro.email.com',
         username: 'user-1',
       } as StaffDetails)
@@ -202,16 +200,16 @@ describe('roContactDetailsService', () => {
     })
 
     it('no staff record local, un-linked user found in delius', async () => {
-      mocked(userAdminService).getRoUserByStaffIdentifier.mockResolvedValue(null)
+      userAdminService.getRoUserByStaffIdentifier.mockResolvedValue(null)
 
-      mocked(roService).findResponsibleOfficer.mockResolvedValue({
+      roService.findResponsibleOfficer.mockResolvedValue({
         deliusId: 'XXX-not-used-XXX',
         staffIdentifier: 1,
         lduDescription: 'Sheffield',
         lduCode: 'SHF-1',
       } as ResponsibleOfficer)
-      mocked(probationTeamsClient).getFunctionalMailbox.mockResolvedValue('ro-org@email.com')
-      mocked(roService).getStaffByStaffIdentifier.mockResolvedValue({} as StaffDetails)
+      probationTeamsClient.getFunctionalMailbox.mockResolvedValue('ro-org@email.com')
+      roService.getStaffByStaffIdentifier.mockResolvedValue({} as StaffDetails)
 
       const result = await service.getResponsibleOfficerWithContactDetails(1, 'token-1')
 
@@ -231,8 +229,8 @@ describe('roContactDetailsService', () => {
     })
 
     test('no staff record local, found in delius but not linked user', async () => {
-      mocked(userAdminService).getRoUserByStaffIdentifier.mockResolvedValue(null)
-      mocked(roService).getStaffByStaffIdentifier.mockResolvedValue({
+      userAdminService.getRoUserByStaffIdentifier.mockResolvedValue(null)
+      roService.getStaffByStaffIdentifier.mockResolvedValue({
         message: 'Staff and user not linked in delius: delius-1',
         code: '404',
       })

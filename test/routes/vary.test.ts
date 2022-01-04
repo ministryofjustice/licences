@@ -1,4 +1,3 @@
-import { mocked } from 'ts-jest/utils'
 import request from 'supertest'
 import { mockAudit } from '../mockClients'
 import { appSetup, testFormPageGets } from '../supertestSetup'
@@ -16,10 +15,10 @@ jest.mock('../../server/services/licenceService')
 
 describe('/hdc/vary', () => {
   describe('vary routes', () => {
-    const licenceService = new LicenceService(undefined)
     const licenceRecord = { licence: { reporting: { reportingInstructions: { buildingAndStreet1: 'this' } } } }
-    mocked(licenceService).getLicence.mockResolvedValue(licenceRecord as LicenceRecord)
-    mocked(licenceService).addSplitDateFields.mockImplementation((arg) => arg)
+    let licenceService = new LicenceService(undefined) as jest.Mocked<LicenceService>
+    licenceService.getLicence.mockResolvedValue(licenceRecord as LicenceRecord)
+    licenceService.addSplitDateFields.mockImplementation((arg) => arg)
     const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
 
     const routes = [
@@ -33,9 +32,10 @@ describe('/hdc/vary', () => {
   })
 
   describe('GET /hdc/vary/licenceDetails', () => {
+    const licenceService = new LicenceService(undefined) as jest.Mocked<LicenceService>
+
     test('renders page if licence doesnt exist', () => {
-      const licenceService = new LicenceService(undefined)
-      mocked(licenceService).getLicence.mockResolvedValue({
+      licenceService.getLicence.mockResolvedValue({
         licence: {
           vary: { evidence: { evidence: 'qfe' } },
           variedFromLicenceNotInSystem: true,
@@ -48,8 +48,7 @@ describe('/hdc/vary', () => {
     })
 
     test('redirects to tasklist if licence exists', () => {
-      const licenceService = new LicenceService(undefined)
-      mocked(licenceService).getLicence.mockResolvedValue({
+      licenceService.getLicence.mockResolvedValue({
         licence: {
           vary: { evidence: { evidence: 'qfe' } },
           variedFromLicenceNotInSystem: true,
@@ -65,9 +64,10 @@ describe('/hdc/vary', () => {
 
   describe('POST /hdc/vary/evidence/', () => {
     test('submits and redirects to /hdc/vary/licenceDetails/1', () => {
-      const licenceService = new LicenceService(undefined)
-      mocked(licenceService).getLicence.mockResolvedValue({ licence: {} } as LicenceRecord)
-      mocked(licenceService).update.mockResolvedValue({ vary: { evidence: {} } })
+      const licenceService = new LicenceService(undefined) as jest.Mocked<LicenceService>
+
+      licenceService.getLicence.mockResolvedValue({ licence: {} } as LicenceRecord)
+      licenceService.update.mockResolvedValue({ vary: { evidence: {} } })
 
       const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
       return request(app)
@@ -92,13 +92,14 @@ describe('/hdc/vary', () => {
   })
 
   describe('approval route', () => {
-    const licenceService = new LicenceService(undefined)
+    const licenceService = new LicenceService(undefined) as jest.Mocked<LicenceService>
+
     licenceService.getLicence = jest.fn().mockReturnValue({
       licence: {
         vary: { approval: { name: 'name', jobTitle: 'title' } },
       },
     })
-    mocked(licenceService).addSplitDateFields.mockImplementation((arg) => arg)
+    licenceService.addSplitDateFields.mockImplementation((arg) => arg)
 
     const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
 
@@ -109,8 +110,8 @@ describe('/hdc/vary', () => {
 
   describe('POST /hdc/vary/licenceDetails/', () => {
     test('submits and redirects to additional conditions page if radio selected', () => {
-      const licenceService = new LicenceService(undefined)
-      mocked(licenceService).getLicence.mockResolvedValue({ licence: { vary: { evidence: {} } } } as LicenceRecord)
+      const licenceService = new LicenceService(undefined) as jest.Mocked<LicenceService>
+      licenceService.getLicence.mockResolvedValue({ licence: { vary: { evidence: {} } } } as LicenceRecord)
 
       const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
       return request(app)
@@ -132,8 +133,8 @@ describe('/hdc/vary', () => {
     })
 
     test('submits and redirects to tasklist if radio not selected', () => {
-      const licenceService = new LicenceService(undefined)
-      mocked(licenceService).getLicence.mockResolvedValue({ licence: { vary: { evidence: {} } } } as LicenceRecord)
+      const licenceService = new LicenceService(undefined) as jest.Mocked<LicenceService>
+      licenceService.getLicence.mockResolvedValue({ licence: { vary: { evidence: {} } } } as LicenceRecord)
       const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
       return request(app)
         .post('/hdc/vary/licenceDetails/1')
@@ -154,8 +155,8 @@ describe('/hdc/vary', () => {
     })
 
     test('calls validate and passes in appropriate form items', () => {
-      const licenceService = new LicenceService(undefined)
-      mocked(licenceService).getLicence.mockResolvedValue({ licence: { vary: { evidence: {} } } } as LicenceRecord)
+      const licenceService = new LicenceService(undefined) as jest.Mocked<LicenceService>
+      licenceService.getLicence.mockResolvedValue({ licence: { vary: { evidence: {} } } } as LicenceRecord)
       const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
       return request(app)
         .post('/hdc/vary/licenceDetails/1')
@@ -171,9 +172,9 @@ describe('/hdc/vary', () => {
     })
 
     test('redirects to get if errors found', () => {
-      const licenceService = new LicenceService(undefined)
-      mocked(licenceService).getLicence.mockResolvedValue({ licence: {} } as LicenceRecord)
-      mocked(licenceService).validateForm.mockReturnValue({ error: 'this' })
+      const licenceService = new LicenceService(undefined) as jest.Mocked<LicenceService>
+      licenceService.getLicence.mockResolvedValue({ licence: {} } as LicenceRecord)
+      licenceService.validateForm.mockReturnValue({ error: 'this' })
       const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
       return request(app)
         .post('/hdc/vary/licenceDetails/1')
@@ -185,7 +186,7 @@ describe('/hdc/vary', () => {
 
   describe('POST /hdc/vary/address/', () => {
     test('submits and redirects to tasklist', () => {
-      const licenceService = new LicenceService(undefined)
+      const licenceService = new LicenceService(undefined) as jest.Mocked<LicenceService>
       const licence = {
         proposedAddress: {
           curfewAddress: {
@@ -193,7 +194,7 @@ describe('/hdc/vary', () => {
           },
         },
       }
-      mocked(licenceService).getLicence.mockResolvedValue({
+      licenceService.getLicence.mockResolvedValue({
         licence,
       } as LicenceRecord)
       const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
@@ -216,9 +217,9 @@ describe('/hdc/vary', () => {
     })
 
     test('redirects to get if errors found', () => {
-      const licenceService = new LicenceService(undefined)
-      mocked(licenceService).getLicence.mockResolvedValue({ licence: {} } as LicenceRecord)
-      mocked(licenceService).validateForm.mockReturnValue({ error: 'this' })
+      const licenceService = new LicenceService(undefined) as jest.Mocked<LicenceService>
+      licenceService.getLicence.mockResolvedValue({ licence: {} } as LicenceRecord)
+      licenceService.validateForm.mockReturnValue({ error: 'this' })
       const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
       return request(app)
         .post('/hdc/vary/address/1')
@@ -229,9 +230,15 @@ describe('/hdc/vary', () => {
   })
 
   describe('POST /hdc/vary/reportingAddress/', () => {
+    let licenceService: jest.Mocked<LicenceService>
+
+    beforeEach(() => {
+      ;(LicenceService as jest.MockedClass<typeof LicenceService>).mockClear()
+      licenceService = new LicenceService(undefined) as jest.Mocked<LicenceService>
+    })
+
     test('submits and redirects to tasklist', () => {
-      const licenceService = new LicenceService(undefined)
-      mocked(licenceService).getLicence.mockResolvedValue({ licence: {} } as LicenceRecord)
+      licenceService.getLicence.mockResolvedValue({ licence: {} } as LicenceRecord)
       const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
       return request(app)
         .post('/hdc/vary/reportingAddress/1')
@@ -252,9 +259,8 @@ describe('/hdc/vary', () => {
     })
 
     test('redirects to get if errors found', () => {
-      const licenceService = new LicenceService(undefined)
-      mocked(licenceService).getLicence.mockResolvedValue({ licence: {} } as LicenceRecord)
-      mocked(licenceService).validateForm.mockReturnValue({ error: 'this' })
+      licenceService.getLicence.mockResolvedValue({ licence: {} } as LicenceRecord)
+      licenceService.validateForm.mockReturnValue({ error: 'this' })
       const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
       return request(app)
         .post('/hdc/vary/reportingAddress/1')
@@ -266,6 +272,12 @@ describe('/hdc/vary', () => {
 })
 
 describe('POST /hdc/vary/', () => {
+  let licenceService = new LicenceService(undefined) as jest.Mocked<LicenceService>
+
+  beforeEach(() => {
+    ;(LicenceService as jest.MockedClass<typeof LicenceService>).mockClear()
+  })
+
   const routes = [
     '/hdc/vary/evidence/1',
     '/hdc/vary/licenceDetails/1',
@@ -276,11 +288,10 @@ describe('POST /hdc/vary/', () => {
 
   routes.forEach((route) => {
     test(`calls audit for ${route}`, () => {
-      const licenceService = new LicenceService(undefined)
       const audit = mockAudit()
 
-      mocked(licenceService).getLicence.mockResolvedValue({ licence: { vary: { evidence: {} } } } as LicenceRecord)
-      mocked(licenceService).update.mockResolvedValue({ vary: { evidence: {} } })
+      licenceService.getLicence.mockResolvedValue({ licence: { vary: { evidence: {} } } } as LicenceRecord)
+      licenceService.update.mockResolvedValue({ vary: { evidence: {} } })
       const app = createApp({ licenceServiceStub: licenceService, audit }, 'roUser')
 
       return request(app)

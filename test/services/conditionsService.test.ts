@@ -1,4 +1,4 @@
-import createConditionsService from '../../server/services/conditionsService'
+import ConditionsService from '../../server/services/conditionsService'
 import { standardConditions } from '../../server/services/config/conditionsConfig'
 import {
   additionalConditionsObject,
@@ -10,7 +10,7 @@ describe('conditionsService', () => {
   let service
 
   beforeEach(() => {
-    service = createConditionsService()
+    service = new ConditionsService()
   })
 
   describe('getStandardConditions', () => {

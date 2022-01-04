@@ -1,4 +1,3 @@
-import { mocked } from 'ts-jest/utils'
 import {
   FunctionalMailboxService,
   mergeLduData,
@@ -13,8 +12,6 @@ import type { ProbationArea } from '../../server/data/deliusClient'
 
 jest.mock('../../server/data/deliusClient')
 jest.mock('../../server/data/probationTeamsClient')
-
-const mockDeliusClient = mocked(DeliusClient, true)
 
 const BASE_PROBATION_AREA: ProbationArea = Object.freeze({
   code: '',
@@ -36,7 +33,7 @@ const BASE_PROBATION_AREA: ProbationArea = Object.freeze({
 
 describe('FunctionalMailboxService', () => {
   beforeEach(() => {
-    mockDeliusClient.mockClear()
+    ;(DeliusClient as jest.MockedClass<typeof DeliusClient>).mockClear()
   })
 
   describe('mergeLduData', () => {
@@ -129,14 +126,14 @@ describe('FunctionalMailboxService', () => {
   })
 
   describe('service methods', () => {
-    let deliusClient: DeliusClient
-    let probationTeamsClient: ProbationTeamsClient
+    let deliusClient: jest.Mocked<DeliusClient>
+    let probationTeamsClient: jest.Mocked<ProbationTeamsClient>
     let functionalMailboxService: FunctionalMailboxService
     let audit: AuditMock
 
     const initMocks = () => {
-      deliusClient = new DeliusClient(undefined)
-      probationTeamsClient = new ProbationTeamsClient(undefined)
+      deliusClient = new DeliusClient(undefined) as jest.Mocked<DeliusClient>
+      probationTeamsClient = new ProbationTeamsClient(undefined) as jest.Mocked<ProbationTeamsClient>
       audit = mockAudit()
       functionalMailboxService = new FunctionalMailboxService(deliusClient, probationTeamsClient, audit)
     }
@@ -145,13 +142,13 @@ describe('FunctionalMailboxService', () => {
       beforeEach(initMocks)
 
       it('Happy path', async () => {
-        mocked(deliusClient).getAllProbationAreas.mockResolvedValue({
+        deliusClient.getAllProbationAreas.mockResolvedValue({
           content: [
             { ...BASE_PROBATION_AREA, code: 'A', description: 'PA A' },
             { ...BASE_PROBATION_AREA, code: 'B', description: 'PA B' },
           ],
         })
-        mocked(probationTeamsClient).getProbationAreaCodes.mockResolvedValue(['B', 'C'])
+        probationTeamsClient.getProbationAreaCodes.mockResolvedValue(['B', 'C'])
 
         expect(await functionalMailboxService.getAllProbationAreas()).toEqual({
           A: {
@@ -165,8 +162,8 @@ describe('FunctionalMailboxService', () => {
       })
 
       it('absent data', async () => {
-        mocked(deliusClient).getAllProbationAreas.mockResolvedValue(undefined)
-        mocked(probationTeamsClient).getProbationAreaCodes.mockResolvedValue(undefined)
+        deliusClient.getAllProbationAreas.mockResolvedValue(undefined)
+        probationTeamsClient.getProbationAreaCodes.mockResolvedValue(undefined)
 
         expect(await functionalMailboxService.getAllProbationAreas()).toEqual({})
       })
@@ -176,10 +173,10 @@ describe('FunctionalMailboxService', () => {
       beforeEach(initMocks)
 
       it('Happy path', async () => {
-        mocked(deliusClient).getAllLdusForProbationArea.mockResolvedValue({
+        deliusClient.getAllLdusForProbationArea.mockResolvedValue({
           content: [{ code: 'B', description: 'LDU B' }],
         })
-        mocked(probationTeamsClient).getProbationArea.mockResolvedValue({
+        probationTeamsClient.getProbationArea.mockResolvedValue({
           probationAreaCode: 'PA',
           localDeliveryUnits: {
             B: {
@@ -200,8 +197,8 @@ describe('FunctionalMailboxService', () => {
       })
 
       it('Handles missing data', async () => {
-        mocked(deliusClient).getAllLdusForProbationArea.mockResolvedValue({ content: [] })
-        mocked(probationTeamsClient).getProbationArea.mockResolvedValue(undefined)
+        deliusClient.getAllLdusForProbationArea.mockResolvedValue({ content: [] })
+        probationTeamsClient.getProbationArea.mockResolvedValue(undefined)
 
         expect(await functionalMailboxService.getLdusForProbationArea('PA')).toEqual({})
       })
@@ -211,7 +208,7 @@ describe('FunctionalMailboxService', () => {
       beforeEach(initMocks)
 
       it('Happy path', async () => {
-        mocked(deliusClient).getAllLdusForProbationArea.mockResolvedValue({
+        deliusClient.getAllLdusForProbationArea.mockResolvedValue({
           content: [
             { code: 'A', description: 'LDU A' },
             { code: 'B', description: 'LDU B' },
@@ -219,14 +216,14 @@ describe('FunctionalMailboxService', () => {
           ],
         })
 
-        mocked(deliusClient).getAllTeamsForLdu.mockResolvedValue({
+        deliusClient.getAllTeamsForLdu.mockResolvedValue({
           content: [
             { code: 'TA', description: 'Team A' },
             { code: 'TB', description: 'Team B' },
           ],
         })
 
-        mocked(probationTeamsClient).getLduWithProbationTeams.mockResolvedValue({
+        probationTeamsClient.getLduWithProbationTeams.mockResolvedValue({
           probationAreaCode: 'PA',
           localDeliveryUnitCode: 'B',
           functionalMailbox: 'b@b.com',
@@ -260,9 +257,9 @@ describe('FunctionalMailboxService', () => {
       })
 
       it('No data', async () => {
-        mocked(deliusClient).getAllLdusForProbationArea.mockResolvedValue({ content: [] })
-        mocked(deliusClient).getAllTeamsForLdu.mockResolvedValue({ content: [] })
-        mocked(probationTeamsClient).getLduWithProbationTeams.mockResolvedValue(undefined)
+        deliusClient.getAllLdusForProbationArea.mockResolvedValue({ content: [] })
+        deliusClient.getAllTeamsForLdu.mockResolvedValue({ content: [] })
+        probationTeamsClient.getLduWithProbationTeams.mockResolvedValue(undefined)
 
         expect(
           await functionalMailboxService.getLduWithProbationTeams({
@@ -277,9 +274,9 @@ describe('FunctionalMailboxService', () => {
       })
 
       it('Not found', async () => {
-        mocked(deliusClient).getAllLdusForProbationArea.mockResolvedValue({ content: [] })
-        mocked(deliusClient).getAllTeamsForLdu.mockResolvedValue({ content: [] })
-        mocked(probationTeamsClient).getLduWithProbationTeams.mockResolvedValue(undefined)
+        deliusClient.getAllLdusForProbationArea.mockResolvedValue({ content: [] })
+        deliusClient.getAllTeamsForLdu.mockResolvedValue({ content: [] })
+        probationTeamsClient.getLduWithProbationTeams.mockResolvedValue(undefined)
 
         expect(
           await functionalMailboxService.getLduWithProbationTeams({

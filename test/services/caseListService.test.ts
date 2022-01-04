@@ -1,4 +1,3 @@
-import { mocked } from 'ts-jest/utils'
 import moment from 'moment'
 import createCaseListService from '../../server/services/caseListService'
 import createCaseListFormatter from '../../server/services/utils/caseListFormatter'
@@ -10,14 +9,11 @@ import { CaseWithApprovedVersion, DeliusIds } from '../../server/data/licenceCli
 jest.mock('../../server/services/roService')
 jest.mock('../../server/data/licenceClient')
 
-const mockRoService = mocked(RoService, true)
-const mockLicenceClient = mocked(LicenceClient, true)
-
 describe('caseListService', () => {
   let nomisClient
   let caseListService
-  let licenceClient: LicenceClient
-  let roService: RoService
+  const roService = new RoService(null, null) as jest.Mocked<RoService>
+  const licenceClient = new LicenceClient() as jest.Mocked<LicenceClient>
 
   const roPrisoners = [{ bookingId: 'A' }, { bookingId: 'B' }, { bookingId: 'C' }]
 
@@ -98,16 +94,13 @@ describe('caseListService', () => {
   const deliusId2: DeliusIds = { staffIdentifier: 2, deliusUsername: 'deliusUser2' }
 
   beforeEach(() => {
-    mockRoService.mockClear()
-    mockLicenceClient.mockClear()
+    jest.resetAllMocks()
 
     nomisClient = {
       getHdcEligiblePrisoners: jest.fn(),
     }
 
-    roService = new RoService(undefined, undefined)
-
-    mocked(roService).getROPrisonersForStaffIdentifier.mockResolvedValue([
+    roService.getROPrisonersForStaffIdentifier.mockResolvedValue([
       {
         bookingId: 0,
         offenderNo: 'A12345',
@@ -124,10 +117,8 @@ describe('caseListService', () => {
       },
     ])
 
-    mocked(roService).getStaffByUsername.mockResolvedValue(staffDetails)
-
-    licenceClient = new LicenceClient()
-    mocked(licenceClient).getLicences.mockResolvedValue([])
+    roService.getStaffByUsername.mockResolvedValue(staffDetails)
+    licenceClient.getLicences.mockResolvedValue([])
 
     const nomisClientBuilder = jest.fn().mockReturnValue(nomisClient)
     const caseListFormatter = createCaseListFormatter(licenceClient)
@@ -319,60 +310,60 @@ describe('caseListService', () => {
 
     describe('when user is a RO', () => {
       test('should call getROPrisonersForStaffIdentifier', async () => {
-        mocked(roService).getROPrisonersForStaffIdentifier.mockResolvedValue(roPrisoners)
-        mocked(licenceClient).getDeliusIds.mockResolvedValue([deliusId1])
+        roService.getROPrisonersForStaffIdentifier.mockResolvedValue(roPrisoners)
+        licenceClient.getDeliusIds.mockResolvedValue([deliusId1])
         await caseListService.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
         expect(roService.getROPrisonersForStaffIdentifier).toHaveBeenCalled()
       })
 
       test('should call getROPrisonersForStaffIdentifier when staff not found in delius', async () => {
-        mocked(roService).getROPrisonersForStaffIdentifier.mockResolvedValueOnce(null)
+        roService.getROPrisonersForStaffIdentifier.mockResolvedValueOnce(null)
         await caseListService.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
         expect(roService.getROPrisonersForStaffIdentifier).toHaveBeenCalled()
       })
 
       test('should call getDeliusIds without capitalising username', async () => {
-        mocked(licenceClient).getDeliusIds.mockResolvedValue([])
+        licenceClient.getDeliusIds.mockResolvedValue([])
         await caseListService.getHdcCaseList(ROUser.token, 'aAaA', ROUser.role)
         expect(licenceClient.getDeliusIds).toHaveBeenCalledWith('aAaA')
       })
 
       test('should use uppercase delius username when calling roService', async () => {
-        mocked(licenceClient).getDeliusIds.mockResolvedValue([deliusId1])
+        licenceClient.getDeliusIds.mockResolvedValue([deliusId1])
         await caseListService.getHdcCaseList(ROUser.token, 'user', ROUser.role)
         expect(roService.getROPrisonersForStaffIdentifier).toHaveBeenCalled()
         expect(roService.getROPrisonersForStaffIdentifier).toHaveBeenCalledWith(1, ROUser.token)
       })
 
       test('should return empty array and explanation message if no eligible releases found', async () => {
-        mocked(roService).getROPrisonersForStaffIdentifier.mockResolvedValue([])
+        roService.getROPrisonersForStaffIdentifier.mockResolvedValue([])
         const result = await caseListService.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
         expect(result).toEqual({ hdcEligible: [], message: 'No HDC cases' })
       })
 
       test('should return empty array and explanation message if no delius user name found locally or in delius', async () => {
-        mocked(licenceClient).getDeliusIds.mockResolvedValue([])
-        mocked(roService).getStaffByUsername.mockResolvedValue(null)
+        licenceClient.getDeliusIds.mockResolvedValue([])
+        roService.getStaffByUsername.mockResolvedValue(null)
         const result = await caseListService.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
         expect(result).toEqual({ hdcEligible: [], message: 'Staff details not found in Delius for username: 123' })
       })
 
       test('should return empty array and explanation message if too many delius user names found and username not found in Delius', async () => {
-        mocked(licenceClient).getDeliusIds.mockResolvedValue([deliusId1, deliusId2])
-        mocked(roService).getStaffByUsername.mockResolvedValue(null)
+        licenceClient.getDeliusIds.mockResolvedValue([deliusId1, deliusId2])
+        roService.getStaffByUsername.mockResolvedValue(null)
         const result = await caseListService.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
         expect(result).toEqual({ hdcEligible: [], message: 'Staff details not found in Delius for username: 123' })
       })
 
       test('delius interaction throws', () => {
-        mocked(licenceClient).getDeliusIds.mockResolvedValue([])
-        mocked(roService).getStaffByUsername.mockRejectedValue('Delius went bang!')
+        licenceClient.getDeliusIds.mockResolvedValue([])
+        roService.getStaffByUsername.mockRejectedValue('Delius went bang!')
         return expect(caseListService.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)).rejects.not.toBeNull()
       })
 
       test("staff details found in Delius, but there's no staff identifier. Not sure this is possible...", async () => {
-        mocked(licenceClient).getDeliusIds.mockResolvedValue([])
-        mocked(roService).getStaffByUsername.mockResolvedValue(staffDetailsNoStaffIdentifier)
+        licenceClient.getDeliusIds.mockResolvedValue([])
+        roService.getStaffByUsername.mockResolvedValue(staffDetailsNoStaffIdentifier)
         const result = await caseListService.getHdcCaseList(ROUser.token, ROUser.username, ROUser.role)
         expect(result).toEqual({
           hdcEligible: [],
@@ -413,8 +404,8 @@ describe('caseListService', () => {
         })
 
         test('should add Today to those received today', async () => {
-          mocked(roService).getROPrisonersForStaffIdentifier.mockResolvedValue([offender1])
-          mocked(licenceClient).getLicences.mockResolvedValue([
+          roService.getROPrisonersForStaffIdentifier.mockResolvedValue([offender1])
+          licenceClient.getLicences.mockResolvedValue([
             {
               booking_id: 1,
               transition_date: moment('2018-05-31 15:23:39').toDate(),
@@ -427,8 +418,8 @@ describe('caseListService', () => {
         })
 
         test('should add the number of days until hdced', async () => {
-          mocked(roService).getROPrisonersForStaffIdentifier.mockResolvedValue([offender1])
-          mocked(licenceClient).getLicences.mockResolvedValue([
+          roService.getROPrisonersForStaffIdentifier.mockResolvedValue([offender1])
+          licenceClient.getLicences.mockResolvedValue([
             { booking_id: 1, transition_date: moment('2018-05-20 15:23:39').toDate(), stage: 'PROCESSING_RO' },
           ] as CaseWithApprovedVersion[])
 
@@ -437,8 +428,8 @@ describe('caseListService', () => {
         })
 
         test('should not add the number of days if not in PROCESSING_RO', async () => {
-          mocked(roService).getROPrisonersForStaffIdentifier.mockResolvedValue([offender1])
-          mocked(licenceClient).getLicences.mockResolvedValue([
+          roService.getROPrisonersForStaffIdentifier.mockResolvedValue([offender1])
+          licenceClient.getLicences.mockResolvedValue([
             { booking_id: 1, transition_date: moment('2018-05-16 15:23:39').toDate(), stage: 'MODIFIED' },
           ] as CaseWithApprovedVersion[])
 
@@ -447,8 +438,8 @@ describe('caseListService', () => {
         })
 
         test('should order on days since received first', async () => {
-          mocked(roService).getROPrisonersForStaffIdentifier.mockResolvedValue([offender1, offender2])
-          mocked(licenceClient).getLicences.mockResolvedValue([
+          roService.getROPrisonersForStaffIdentifier.mockResolvedValue([offender1, offender2])
+          licenceClient.getLicences.mockResolvedValue([
             { booking_id: 1, transition_date: moment('2018-05-20 15:23:39').toDate(), stage: 'PROCESSING_RO' },
             { booking_id: 2, transition_date: moment('2018-05-18 15:23:39').toDate(), stage: 'PROCESSING_RO' },
           ] as CaseWithApprovedVersion[])
@@ -459,8 +450,8 @@ describe('caseListService', () => {
         })
 
         test('should order on days since received first', async () => {
-          mocked(roService).getROPrisonersForStaffIdentifier.mockResolvedValue([offender1, offender2])
-          mocked(licenceClient).getLicences.mockResolvedValue([
+          roService.getROPrisonersForStaffIdentifier.mockResolvedValue([offender1, offender2])
+          licenceClient.getLicences.mockResolvedValue([
             { booking_id: 1, transition_date: moment('2018-05-17 15:23:39').toDate(), stage: 'PROCESSING_RO' },
             { booking_id: 2, transition_date: moment('2018-05-18 15:23:39').toDate(), stage: 'PROCESSING_RO' },
           ] as CaseWithApprovedVersion[])
@@ -471,8 +462,8 @@ describe('caseListService', () => {
         })
 
         test('should prioritise those with received date', async () => {
-          mocked(roService).getROPrisonersForStaffIdentifier.mockResolvedValue([offender1, offender2])
-          mocked(licenceClient).getLicences.mockResolvedValue([
+          roService.getROPrisonersForStaffIdentifier.mockResolvedValue([offender1, offender2])
+          licenceClient.getLicences.mockResolvedValue([
             { booking_id: 1, transition_date: moment('2018-05-17 15:23:39').toDate(), stage: 'MODIFIED' },
             { booking_id: 2, transition_date: moment('2018-05-18 15:23:39').toDate(), stage: 'PROCESSING_RO' },
           ] as CaseWithApprovedVersion[])
@@ -483,8 +474,8 @@ describe('caseListService', () => {
         })
 
         test('should sort by release date if neither have received date', async () => {
-          mocked(roService).getROPrisonersForStaffIdentifier.mockResolvedValue([offender2, offender1])
-          mocked(licenceClient).getLicences.mockResolvedValue([
+          roService.getROPrisonersForStaffIdentifier.mockResolvedValue([offender2, offender1])
+          licenceClient.getLicences.mockResolvedValue([
             { booking_id: 1, transition_date: moment('2018-05-17 15:23:39').toDate(), stage: 'MODIFIED' },
             { booking_id: 2, transition_date: moment('2018-05-18 15:23:39').toDate(), stage: 'MODIFIED' },
           ] as CaseWithApprovedVersion[])

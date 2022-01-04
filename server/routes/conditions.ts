@@ -1,5 +1,6 @@
 import { LicenceService } from '../services/licenceService'
 import { CURRENT_CONDITION_VERSION } from '../services/config/conditionsConfig'
+import type ConditionsService from '../services/conditionsService'
 
 const { asyncMiddleware } = require('../utils/middleware')
 const createStandardRoutes = require('./routeWorkers/standard')
@@ -7,7 +8,13 @@ const logger = require('../../log')
 const { getIn } = require('../utils/functionalHelpers')
 const formConfig = require('./config/licenceConditions')
 
-export default ({ licenceService, conditionsService }: { licenceService: LicenceService; conditionsService: any }) =>
+export default ({
+    licenceService,
+    conditionsService,
+  }: {
+    licenceService: LicenceService
+    conditionsService: ConditionsService
+  }) =>
   (router, audited) => {
     const standard = createStandardRoutes({ formConfig, licenceService, sectionName: 'licenceConditions' })
 

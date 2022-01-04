@@ -6,6 +6,7 @@ import { isPostApproval } from '../services/config/licenceStage'
 
 import { PrisonerService } from '../../types/licences'
 import { LicenceService } from '../services/licenceService'
+import type ConditionsService from '../services/conditionsService'
 
 function shouldValidate(role, stage, postApproval) {
   return postApproval
@@ -24,7 +25,7 @@ export = ({
   prisonerService,
 }: {
   licenceService: LicenceService
-  conditionsService: any
+  conditionsService: ConditionsService
   prisonerService: PrisonerService
 }) => {
   function validate(licenceStatus, showErrors, licence, stage) {

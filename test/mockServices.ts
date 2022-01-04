@@ -1,3 +1,5 @@
+import ConditionsService from '../server/services/conditionsService'
+
 export const createSignInServiceStub = () => ({
   signIn: jest.fn(),
   refresh: jest.fn(),
@@ -38,14 +40,15 @@ export const createLduServiceStub = () => ({
   getProbationArea: jest.fn(),
 })
 
-export const createConditionsServiceStub = () => ({
-  getStandardConditions: jest.fn(),
-  getAdditionalConditions: jest.fn(),
-  formatConditionInputs: jest.fn(),
-  populateLicenceWithConditions: jest.fn().mockReturnValue({}),
-  getNonStandardConditions: jest.fn(),
-  createConditionsObjectForLicence: jest.fn(),
-})
+export const createConditionsServiceStub = () =>
+  ({
+    getStandardConditions: jest.fn(),
+    getAdditionalConditions: jest.fn(),
+    formatConditionInputs: jest.fn(),
+    populateLicenceWithConditions: jest.fn().mockReturnValue({}),
+    getNonStandardConditions: jest.fn(),
+    createConditionsObjectForLicence: jest.fn(),
+  } as unknown as jest.Mocked<ConditionsService>)
 
 export const createPrisonerServiceStub = () => ({
   getOrganisationContactDetails: jest.fn(),
