@@ -1,4 +1,4 @@
-import ConditionsService from '../server/services/conditionsService'
+import { ConditionsServiceFactory, ConditionsService } from '../server/services/conditionsService'
 import PdfService from '../server/services/pdfService'
 
 export const createSignInServiceStub = () => ({
@@ -50,6 +50,11 @@ export const createConditionsServiceStub = () =>
     getNonStandardConditions: jest.fn(),
     createConditionsObjectForLicence: jest.fn(),
   } as unknown as jest.Mocked<ConditionsService>)
+
+export const createConditionsServiceFactoryStub = () =>
+  ({
+    forVersion: jest.fn(),
+  } as unknown as jest.Mocked<ConditionsServiceFactory>)
 
 export const createPrisonerServiceStub = () => ({
   getOrganisationContactDetails: jest.fn(),

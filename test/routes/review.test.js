@@ -9,6 +9,7 @@ const {
   createPrisonerServiceStub,
   createConditionsServiceStub,
   createSignInServiceStub,
+  createConditionsServiceFactoryStub,
 } = require('../mockServices')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
@@ -300,7 +301,9 @@ function createApp(user) {
     tokenVerifier: new NullTokenVerifier(),
     config: null,
   })
-  const route = baseRouter(createRoute({ licenceService, conditionsService, prisonerService }))
+  const conditionsServiceFactory = createConditionsServiceFactoryStub()
+  conditionsServiceFactory.forVersion.mockReturnValue(conditionsService)
+  const route = baseRouter(createRoute({ licenceService, conditionsServiceFactory, prisonerService }))
 
   return appSetup(route, user, '/hdc/review')
 }

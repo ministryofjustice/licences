@@ -18,7 +18,7 @@ const notifyClient = new NotifyClient(config.notifications.notifyKey)
 const createSignInService = require('./authentication/signInService')
 const { createLicenceService } = require('./services/licenceService')
 const { createPrisonerService } = require('./services/prisonerService')
-const ConditionsService = require('./services/conditionsService').default
+const ConditionServiceFactory = require('./services/conditionsService').default
 const createCaseListService = require('./services/caseListService')
 const MigrationService = require('./services/migrationService').default
 const PdfService = require('./services/pdfService').default
@@ -53,7 +53,7 @@ const tokenVerifierFactory = require('./authentication/tokenverifier/tokenVerifi
 
 const signInService = createSignInService()
 const licenceService = createLicenceService(licenceClient)
-const conditionsService = new ConditionsService()
+const conditionsServiceFactory = new ConditionServiceFactory()
 
 const deliusClient = new DeliusClient(
   buildRestClient(
@@ -78,8 +78,8 @@ const caService = createCaService(roService, activeLduClient)
 const prisonerService = createPrisonerService(nomisClientBuilder, roService)
 const caseListFormatter = createCaseListFormatter(licenceClient)
 const caseListService = createCaseListService(nomisClientBuilder, roService, licenceClient, caseListFormatter)
-const pdfService = new PdfService(logger, licenceService, conditionsService, prisonerService, pdfFormatter)
-const formService = createFormService(pdfFormatter, conditionsService, prisonerService, configClient)
+const pdfService = new PdfService(logger, licenceService, conditionsServiceFactory, prisonerService, pdfFormatter)
+const formService = createFormService(pdfFormatter, conditionsServiceFactory, prisonerService, configClient)
 const reportingService = createReportingService(audit)
 const userAdminService = new UserAdminService(nomisClientBuilder, userClient, probationTeamsClient)
 const userService = createUserService(nomisClientBuilder)
@@ -138,7 +138,7 @@ const app = createApp({
   signInService,
   licenceService,
   prisonerService,
-  conditionsService,
+  conditionsServiceFactory,
   caseListService,
   pdfService,
   formService,

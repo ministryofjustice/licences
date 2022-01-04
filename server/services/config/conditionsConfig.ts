@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 
-type ConditionVersion = 1 | 2
+export type ConditionVersion = 1 | 2
 
 type ConditionMetadata = {
   id: string
