@@ -88,9 +88,6 @@ env:
   - name: GLOBAL_SEARCH_URL
     value: {{ .Values.env.GLOBAL_SEARCH_URL | quote }}
 
-  - name: AUTH_STRATEGY
-    value: {{ .Values.env.AUTH_STRATEGY | quote }}
-
   - name: PUSH_TO_NOMIS
     value: {{ .Values.env.PUSH_TO_NOMIS | quote }}
 
