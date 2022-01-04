@@ -1,5 +1,6 @@
 /**
  * @typedef {import("../services/prisonerService").PrisonerService} PrisonerService
+ * @typedef {import("../services/conditionsService").default} ConditionsService
  */
 const moment = require('moment')
 const { isEmpty, getIn, mergeWithRight } = require('../utils/functionalHelpers')
@@ -18,6 +19,7 @@ const logger = require('../../log')
 
 /**
  * @param {PrisonerService} prisonerService
+ * @param {ConditionsService} conditionsService
  */
 module.exports = function createFormService(pdfFormatter, conditionsService, prisonerService, configClient) {
   async function getTemplateData(templateName, licence, prisoner) {

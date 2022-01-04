@@ -1,12 +1,11 @@
 import * as R from 'ramda'
 import moment from 'moment'
 import logger from '../../log'
-import { LicenceStage, transitions } from './config/licenceStage'
+import { transitions } from './config/licenceStage'
 import recordList from './utils/recordList'
 import formValidation from './utils/formValidation'
 import { LicenceClient } from '../data/licenceClient'
-import { Case } from '../data/licenceClientTypes'
-import { Licence, LicenceConditions } from '../data/licenceTypes'
+import { Licence, LicenceConditions, LicenceStage } from '../data/licenceTypes'
 import { pickCurfewAddressPath } from './utils/pdfFormatter'
 
 const {
@@ -33,7 +32,7 @@ interface ApprovedVersionDetails {
 
 export interface LicenceRecord {
   licence: Licence
-  stage: string
+  stage: LicenceStage
   version: string
   versionDetails: { version: number; vary_version: number; additional_conditions_version: number }
   approvedVersion: string
@@ -120,7 +119,7 @@ export class LicenceService {
 
   async updateLicenceConditions(
     bookingId,
-    existingLicence: Case,
+    existingLicence: LicenceRecord,
     newConditionsObject: LicenceConditions,
     postRelease = false
   ): Promise<any> {

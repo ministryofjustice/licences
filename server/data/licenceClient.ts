@@ -1,7 +1,6 @@
-import { LicenceStage } from '../services/config/licenceStage'
 import * as db from './dataAccess/db'
 import { ApprovedLicenceVersion, CaseWithApprovedVersion, CaseWithVaryVersion, DeliusIds } from './licenceClientTypes'
-import { Licence } from './licenceTypes'
+import { Licence, LicenceStage } from './licenceTypes'
 
 async function updateVersion(bookingId, postRelease = false): Promise<void> {
   const version = postRelease ? 'vary_version' : 'version'

@@ -2,13 +2,13 @@ import {
   createLicenceService,
   LicenceService,
   adaptFieldConfigToSelectWorkingAddress,
+  LicenceRecord,
 } from '../../server/services/licenceService'
 import * as varyConfig from '../../server/routes/config/vary'
 import formValidation from '../../server/services/utils/formValidation'
 import { LicenceClient } from '../../server/data/licenceClient'
-import { CaseWithVaryVersion, Case } from '../../server/data/licenceClientTypes'
-import { Licence } from '../../server/data/licenceTypes'
-import { LicenceStage } from '../../server/services/config/licenceStage'
+import { CaseWithVaryVersion } from '../../server/data/licenceClientTypes'
+import { Licence, LicenceStage } from '../../server/data/licenceTypes'
 
 jest.mock('../../server/services/utils/formValidation')
 
@@ -156,7 +156,7 @@ describe('licenceService', () => {
         licence: {
           licenceConditions: { standard: { additionalConditionsRequired: 'Yes' } },
         },
-      } as CaseWithVaryVersion
+      } as LicenceRecord
 
       await service.updateLicenceConditions(
         'ab1',
@@ -190,7 +190,7 @@ describe('licenceService', () => {
             bespoke: [{ text: 'bespoke' }],
           },
         },
-      } as Case
+      } as LicenceRecord
 
       await service.updateLicenceConditions('ab1', existingLicence, {
         additional: { NOCONTACTPRISONER: {} },
@@ -207,7 +207,7 @@ describe('licenceService', () => {
 
     describe('post approval modifications', () => {
       test('should change stage to MODIFIED_APPROVAL when updates occur', async () => {
-        const existingLicence = { stage: 'DECIDED', licence: {} } as Case
+        const existingLicence = { stage: 'DECIDED', licence: {} } as LicenceRecord
         await service.updateLicenceConditions('ab1', existingLicence, {
           additional: { NOCONTACTPRISONER: '' },
         })
@@ -217,7 +217,7 @@ describe('licenceService', () => {
       })
 
       test('should change stage to MODIFIED_APPROVAL when updates occur in MODIFIED stage', async () => {
-        const existingLicence = { stage: 'MODIFIED', licence: {} } as Case
+        const existingLicence = { stage: 'MODIFIED', licence: {} } as LicenceRecord
         await service.updateLicenceConditions('ab1', existingLicence, {
           additional: { NOCONTACTPRISONER: '' },
         })
@@ -227,7 +227,7 @@ describe('licenceService', () => {
       })
 
       test('should not change stage if not DECIDED', async () => {
-        const existingLicence = { stage: 'PROCESSING_RO', licence: {} } as Case
+        const existingLicence = { stage: 'PROCESSING_RO', licence: {} } as LicenceRecord
         await service.updateLicenceConditions('ab1', existingLicence, {
           additional: { NOCONTACTPRISONER: '' },
         })
@@ -239,7 +239,7 @@ describe('licenceService', () => {
         const existingLicence = {
           stage: 'PROCESSING_RO',
           licence: { licenceConditions: { additional: { NOCONTACTPRISONER: '' } } },
-        } as Case
+        } as LicenceRecord
         await service.updateLicenceConditions('ab1', existingLicence, {
           additional: { NOCONTACTPRISONER: '' },
         })

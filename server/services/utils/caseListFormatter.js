@@ -3,7 +3,7 @@ const { getIn } = require('../../utils/functionalHelpers')
 const { formatObjectForView } = require('./formatForView')
 const getLicenceStatus = require('../licence/licenceStatus')
 const { getStatusLabel } = require('../licence/licenceStatusLabels')
-const { LicenceStage } = require('../config/licenceStage')
+const { LicenceStage } = require('../../data/licenceTypes')
 
 module.exports = function createCaseListFormatter(licenceClient) {
   async function formatCaseList(hdcEligibleReleases, role) {

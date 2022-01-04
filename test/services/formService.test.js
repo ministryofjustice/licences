@@ -5,6 +5,7 @@ const { createPrisonerServiceStub } = require('../mockServices')
 describe('formService', () => {
   let service
   let pdfFormatter
+  /** @type any */
   let conditionsService
   let prisonerService
   let configClient
@@ -24,6 +25,7 @@ describe('formService', () => {
     pdfFormatter = {
       pickCurfewAddress,
     }
+
     conditionsService = {
       getFullTextForApprovedConditions: jest.fn().mockReturnValue({}),
     }

@@ -1,9 +1,9 @@
-import { Licence } from './licenceTypes'
+import { Licence, LicenceStage } from './licenceTypes'
 
 export interface Case {
   licence: Licence
   booking_id: number
-  stage: string
+  stage: LicenceStage
   version: number
   additional_conditions_version: number
 }

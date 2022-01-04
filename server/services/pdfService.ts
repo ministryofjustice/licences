@@ -1,23 +1,29 @@
-/**
- * @typedef {import("../services/prisonerService").PrisonerService} PrisonerService
- */
+import ConditionsService from './conditionsService'
+import { LicenceService } from './licenceService'
+import { PrisonerService } from './prisonerService'
+
 const versionInfo = require('../utils/versionInfo')
 const { getIn } = require('../utils/functionalHelpers')
 
-/**
- * @param {PrisonerService} prisonerService
- */
-module.exports = function createPdfService(logger, licenceService, conditionsService, prisonerService, pdfFormatter) {
-  async function getPdfLicenceData(bookingId, rawLicence, token) {
+export default class PdfService {
+  constructor(
+    private readonly logger,
+    private readonly licenceService: LicenceService,
+    private readonly conditionsService: ConditionsService,
+    private readonly prisonerService: PrisonerService,
+    private readonly pdfFormatter
+  ) {}
+
+  async getPdfLicenceData(bookingId, rawLicence, token) {
     const [licence, prisonerInfo, establishment] = await Promise.all([
-      conditionsService.populateLicenceWithConditions(rawLicence.licence),
-      prisonerService.getPrisonerDetails(bookingId, token),
-      prisonerService.getEstablishmentForPrisoner(bookingId, token),
+      this.conditionsService.populateLicenceWithConditions(rawLicence.licence),
+      this.prisonerService.getPrisonerDetails(bookingId, token),
+      this.prisonerService.getEstablishmentForPrisoner(bookingId, token),
     ])
 
-    const image = prisonerInfo.facialImageId ? await getImage(prisonerInfo.facialImageId, token) : null
+    const image = prisonerInfo.facialImageId ? await this.getImage(prisonerInfo.facialImageId, token) : null
 
-    return pdfFormatter.formatPdfData(
+    return this.pdfFormatter.formatPdfData(
       getIn(licence, ['document', 'template', 'decision']),
       {
         licence,
@@ -29,13 +35,7 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
     )
   }
 
-  async function updateLicenceType(
-    rawLicence,
-    bookingId,
-    offenceCommittedBeforeCutoffDecision,
-    templateId,
-    postRelease
-  ) {
+  async updateLicenceType(rawLicence, bookingId, offenceCommittedBeforeCutoffDecision, templateId, postRelease) {
     const offenceCommittedBeforeFeb2015 = getIn(rawLicence, [
       'licence',
       'document',
@@ -48,7 +48,7 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
       return
     }
 
-    await licenceService.update({
+    await this.licenceService.update({
       bookingId,
       originalLicence: rawLicence,
       config: { fields: [{ decision: {} }, { offenceCommittedBeforeFeb2015: {} }], noModify: true },
@@ -59,16 +59,16 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
     })
   }
 
-  async function getImage(facialImageId, token) {
+  async getImage(facialImageId, token) {
     try {
-      return await prisonerService.getPrisonerImage(facialImageId, token)
+      return await this.prisonerService.getPrisonerImage(facialImageId, token)
     } catch (error) {
-      logger.error('Error during getPrisonerImage: ', error.stack)
+      this.logger.error('Error during getPrisonerImage: ', error.stack)
       return null
     }
   }
 
-  async function checkAndTakeSnapshot(rawLicence, bookingId) {
+  async checkAndTakeSnapshot(rawLicence, bookingId) {
     const { isNewTemplate, isNewVersion } = versionInfo(rawLicence)
 
     if (!(isNewVersion || isNewTemplate)) {
@@ -76,16 +76,10 @@ module.exports = function createPdfService(logger, licenceService, conditionsSer
     }
 
     // Second argument is unnecessary. Sort that out later...
-    await licenceService.saveApprovedLicenceVersion(
+    await this.licenceService.saveApprovedLicenceVersion(
       bookingId,
       getIn(rawLicence, ['licence', 'document', 'template', 'decision'])
     )
-    return licenceService.getLicence(bookingId)
-  }
-
-  return {
-    updateLicenceType,
-    checkAndTakeSnapshot,
-    getPdfLicenceData,
+    return this.licenceService.getLicence(bookingId)
   }
 }

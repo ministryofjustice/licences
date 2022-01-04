@@ -1,6 +1,8 @@
 import { LicenceService } from '../services/licenceService'
 import { CURRENT_CONDITION_VERSION } from '../services/config/conditionsConfig'
 import type ConditionsService from '../services/conditionsService'
+import type { Response } from 'express'
+import type { LicenceLocals } from '../utils/middleware'
 
 const { asyncMiddleware } = require('../utils/middleware')
 const createStandardRoutes = require('./routeWorkers/standard')
@@ -21,13 +23,12 @@ export default ({
     router.get('/standard/:bookingId', getStandard)
     router.get('/standard/:action/:bookingId', getStandard)
 
-    function getStandard(req, res) {
+    function getStandard(req, res: Response<any, LicenceLocals>) {
       logger.debug('GET /standard/:bookingId')
 
       const { action, bookingId } = req.params
       const standardConditions = conditionsService.getStandardConditions()
-      const { additionalConditionsRequired } =
-        getIn(res.locals.licence, ['licence', 'licenceConditions', 'standard']) || {}
+      const { additionalConditionsRequired } = res.locals.licence?.licence?.licenceConditions?.standard || {}
       const { additionalConditions, pssConditions, bespokeConditions, unapprovedBespokeConditions } =
         conditionsService.getNonStandardConditions(res.locals.licence.licence)
 
@@ -46,7 +47,7 @@ export default ({
     router.post('/standard/:bookingId', audited, asyncMiddleware(postStandard))
     router.post('/standard/:action/:bookingId', audited, asyncMiddleware(postStandard))
 
-    async function postStandard(req, res) {
+    async function postStandard(req, res: Response<any, LicenceLocals>) {
       logger.debug('POST /standard/')
       const { bookingId, action } = req.params
       const isChange = action === 'change'
@@ -75,12 +76,12 @@ export default ({
     router.get('/additionalConditions/:bookingId', getAdditional)
     router.get('/additionalConditions/:action/:bookingId', getAdditional)
 
-    function getAdditional(req, res) {
+    function getAdditional(req, res: Response<any, LicenceLocals>) {
       logger.debug('GET /additionalConditions')
 
       const { action, bookingId } = req.params
-      const licence = getIn(res.locals.licence, ['licence'])
-      const bespokeConditions = getIn(licence, ['licenceConditions', 'bespoke']) || []
+      const licence = res.locals.licence?.licence
+      const bespokeConditions = licence?.licenceConditions?.bespoke || []
       const conditions = conditionsService.getAdditionalConditions(licence)
       let behaviours =
         getIn(conditions, ['Drugs, health and behaviour', 'base', 1, 'user_submission', 'abuseAndBehaviours']) || []
@@ -101,7 +102,7 @@ export default ({
     router.post('/additionalConditions/:bookingId', audited, asyncMiddleware(postAdditional))
     router.post('/additionalConditions/:action/:bookingId', audited, asyncMiddleware(postAdditional))
 
-    async function postAdditional(req, res) {
+    async function postAdditional(req, res: Response<any, LicenceLocals>) {
       logger.debug('POST /additionalConditions')
       const { bookingId, additionalConditions, bespokeDecision, bespokeConditions } = req.body
       const { action } = req.params
@@ -129,13 +130,13 @@ export default ({
     router.get('/conditionsSummary/:bookingId', getConditionsSummary)
     router.get('/conditionsSummary/:action/:bookingId', getConditionsSummary)
 
-    function getConditionsSummary(req, res) {
+    function getConditionsSummary(req, res: Response<any, LicenceLocals>) {
       const { bookingId, action } = req.params
       logger.debug('GET licenceConditions/conditionsSummary/:bookingId')
 
       const nextPath = formConfig.conditionsSummary.nextPath[action] || formConfig.conditionsSummary.nextPath.path
-      const licence = getIn(res.locals.licence, ['licence']) || {}
-      const additionalConditions = getIn(licence, ['licenceConditions', 'additional']) || {}
+      const licence = res.locals?.licence?.licence || {}
+      const additionalConditions = licence?.licenceConditions?.additional || {}
       const errorObject = licenceService.validateForm({
         formResponse: additionalConditions,
         pageConfig: formConfig.additional,
@@ -151,7 +152,7 @@ export default ({
     router.post('/additionalConditions/:bookingId/delete/:conditionId', audited, asyncMiddleware(postDelete))
     router.post('/additionalConditions/:action/:bookingId/delete/:conditionId', audited, asyncMiddleware(postDelete))
 
-    async function postDelete(req, res) {
+    async function postDelete(req, res: Response<any, LicenceLocals>) {
       logger.debug('POST /additionalConditions/delete')
       const { bookingId, conditionId } = req.body
       const { action } = req.params

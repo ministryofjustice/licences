@@ -1,11 +1,12 @@
 import { TaskState, getOverallState } from '../config/taskState'
-import { LicenceStage, isPostApproval } from '../config/licenceStage'
+import { isPostApproval } from '../config/licenceStage'
 import { isEmpty, flatten } from '../../utils/functionalHelpers'
 
 import { getBassAreaState, getBassRequestState, getBassState } from './bassAddressState'
 import { getCurfewAddressReviewState, getCurfewAddressState } from './curfewAddressState'
 import { getEligibilityState } from './eligibilityState'
 import { LicenceStatus } from './licenceStatusTypes'
+import { LicenceStage } from '../../data/licenceTypes'
 
 export = function getLicenceStatus(licenceRecord): LicenceStatus {
   if (!licenceRecord || isEmpty(licenceRecord.licence) || !licenceRecord.stage) {

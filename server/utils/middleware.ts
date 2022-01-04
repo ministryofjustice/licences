@@ -3,13 +3,23 @@ import authorisationConfig from '../routes/config/authorisation'
 import { getWhereKeyLike, isEmpty, merge } from './functionalHelpers'
 import { forbiddenError } from './errors'
 import getLicenceStatus from '../services/licence/licenceStatus'
-import { LicenceService } from '../services/licenceService'
+import { LicenceRecord, LicenceService } from '../services/licenceService'
 import { PrisonerService } from '../services/prisonerService'
+import { Licence } from '../data/licenceTypes'
+import { LicenceStatus } from '../services/licence/licenceStatusTypes'
 
 export function asyncMiddleware(fn) {
   return (req, res, next) => {
     Promise.resolve(fn(req, res, next)).catch(next)
   }
+}
+
+export type LicenceLocals = {
+  licence: LicenceRecord
+  prisoner: any
+  postRelease: boolean
+  licenceStatus: LicenceStatus
+  token: string
 }
 
 export function checkLicenceMiddleware(licenceService: LicenceService, prisonerService: PrisonerService) {
