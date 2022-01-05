@@ -1,7 +1,8 @@
 const nock = require('nock')
 
+import { ConditionsService } from '../../server/services/conditionsService'
 import PdfService from '../../server/services/pdfService'
-import { createPrisonerServiceStub } from '../mockServices'
+import { createPrisonerServiceStub, createConditionsServiceFactoryStub } from '../mockServices'
 
 describe('pdfService', () => {
   let licenceService
@@ -36,7 +37,7 @@ describe('pdfService', () => {
 
     conditionsService = {
       populateLicenceWithConditions: jest.fn().mockReturnValue(licence),
-    }
+    } as unknown as jest.Mocked<ConditionsService>
 
     prisonerService = createPrisonerServiceStub()
     prisonerService.getPrisonerDetails.mockReturnValue(prisonerResponse)
@@ -48,7 +49,9 @@ describe('pdfService', () => {
       DEFAULT_PLACEHOLDER: 'placeholder',
     }
 
-    service = new PdfService(logger, licenceService, conditionsService, prisonerService, pdfFormatter)
+    const conditionServiceFactory = createConditionsServiceFactoryStub()
+    conditionServiceFactory.forVersion.mockReturnValue(conditionsService)
+    service = new PdfService(logger, licenceService, conditionServiceFactory, prisonerService, pdfFormatter)
   })
 
   afterEach(() => {
