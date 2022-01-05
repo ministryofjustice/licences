@@ -421,7 +421,7 @@ export const standardConditions: StandardCondition[] = [
   },
 ]
 
-export const CURRENT_CONDITION_VERSION = 1
+export const CURRENT_CONDITION_VERSION: ConditionVersion = 1
 
 export const getAdditionalConditionsConfig = (version: ConditionVersion) => additionalConditions.get(version)
 

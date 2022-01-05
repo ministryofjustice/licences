@@ -1,11 +1,11 @@
 import moment from 'moment'
 import { formatConditionsInput, getConditionText, formatConditionsText } from './utils/conditionsFormatter'
 import { isEmpty } from '../utils/functionalHelpers'
-import * as builder from './licenceWithConditionsBuilder'
 import { getAdditionalConditionsConfig, standardConditions, CURRENT_CONDITION_VERSION } from './config/conditionsConfig'
 import { AdditionalConditions, Licence } from '../data/licenceTypes'
 import { LicenceRecord } from './licenceService'
 import { ConditionVersion } from '../data/licenceClientTypes'
+import { LicenceWithConditionsBuilder } from './licenceWithConditionsBuilder'
 
 export class ConditionsServiceFactory {
   forVersion(version: ConditionVersion) {
@@ -24,11 +24,15 @@ export class ConditionsServiceFactory {
 }
 
 export class ConditionsService {
-  constructor(private readonly version: ConditionVersion) {}
+  private readonly builder: LicenceWithConditionsBuilder
+
+  constructor(private readonly version: ConditionVersion) {
+    this.builder = new LicenceWithConditionsBuilder(version)
+  }
 
   // condition routes / review routes / pdf generation
   populateLicenceWithConditions(licence: Licence, errors = {}, approvedOnly = false) {
-    return builder.populateLicenceWithConditions(licence, errors, approvedOnly)
+    return this.builder.populateLicenceWithConditions(licence, errors, approvedOnly)
   }
 
   // form generation
@@ -42,7 +46,7 @@ export class ConditionsService {
       return { standardConditions: standardConditionsText, additionalConditions: [] }
     }
 
-    const conditions = builder.populateLicenceWithApprovedConditions(licence).licenceConditions
+    const conditions = this.builder.populateLicenceWithApprovedConditions(licence).licenceConditions
 
     // conditions can be either the original licenceConditions object or an array of objects if
     // populateLicenceWithApprovedConditions did its thing.
@@ -116,7 +120,7 @@ export class ConditionsService {
   }
 
   getNonStandardConditions(licence) {
-    let { licenceConditions = [] } = builder.populateLicenceWithConditions(licence)
+    let { licenceConditions = [] } = this.builder.populateLicenceWithConditions(licence)
     if (!Array.isArray(licenceConditions)) {
       licenceConditions = []
     }

@@ -1,7 +1,8 @@
-import * as builder from '../../server/services/licenceWithConditionsBuilder'
+import { LicenceWithConditionsBuilder } from '../../server/services/licenceWithConditionsBuilder'
 import { Licence } from '../../server/data/licenceTypes'
 
 describe('licenceWithConditionsBuilder', () => {
+  const builder = new LicenceWithConditionsBuilder(1)
   describe('populateLicenceWithConditions', () => {
     test('should return the licence if conditions not required', () => {
       const licence = {
