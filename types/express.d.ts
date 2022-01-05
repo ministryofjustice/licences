@@ -26,5 +26,10 @@ declare namespace Express {
         userId: string
       }
     }
+    renderPDF: (
+      view: string,
+      pageData: Record<string, any>,
+      options: { filename: string; pdfOptions: PdfOptions }
+    ) => void
   }
 }

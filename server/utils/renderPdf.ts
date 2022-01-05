@@ -1,9 +1,10 @@
 import { GotenbergClient, PdfOptions } from '../data/gotenbergClient'
 import logger from '../../log'
+import { Response } from 'express'
 
 // eslint-disable-next-line no-unused-vars
 export = function pdfRenderer(client: GotenbergClient) {
-  return (req, res, next) => {
+  return (req, res: Response, next) => {
     res.renderPDF = (
       view,
       pageData,

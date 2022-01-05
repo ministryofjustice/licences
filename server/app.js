@@ -42,7 +42,7 @@ const apiRouter = require('./routes/api')
 
 const caseListRouter = require('./routes/caseList')
 const contactRouter = require('./routes/contact')
-const pdfRouter = require('./routes/pdf')
+const pdfRouter = require('./routes/pdf').default
 const formsRouter = require('./routes/forms')
 const sendRouter = require('./routes/send')
 const sentRouter = require('./routes/sent')
@@ -385,7 +385,7 @@ module.exports = function createApp({
   app.use('/admin/functionalMailboxes', secureRoute(functionalMailboxRouter(functionalMailboxService)))
 
   app.use('/hdc/contact/', secureRoute(contactRouter(userAdminService, roService, signInService)))
-  app.use('/hdc/pdf/', secureRoute(pdfRouter({ pdfService, prisonerService }), { auditKey: 'CREATE_PDF' }))
+  app.use('/hdc/pdf/', secureRoute(pdfRouter(pdfService, prisonerService), { auditKey: 'CREATE_PDF' }))
   app.use('/hdc/forms/', secureRoute(formsRouter({ formService })))
   app.use('/hdc/send/', secureRoute(sendRouter({ prisonerService, notificationService })))
   app.use('/hdc/sent/', secureRoute(sentRouter({ prisonerService })))

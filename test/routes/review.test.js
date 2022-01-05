@@ -302,7 +302,7 @@ function createApp(user) {
     config: null,
   })
   const conditionsServiceFactory = createConditionsServiceFactoryStub()
-  conditionsServiceFactory.forVersion.mockReturnValue(conditionsService)
+  conditionsServiceFactory.forLicence.mockReturnValue(conditionsService)
   const route = baseRouter(createRoute({ licenceService, conditionsServiceFactory, prisonerService }))
 
   return appSetup(route, user, '/hdc/review')

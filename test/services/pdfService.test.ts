@@ -50,7 +50,7 @@ describe('pdfService', () => {
     }
 
     const conditionServiceFactory = createConditionsServiceFactoryStub()
-    conditionServiceFactory.forVersion.mockReturnValue(conditionsService)
+    conditionServiceFactory.forLicence.mockReturnValue(conditionsService)
     service = new PdfService(logger, licenceService, conditionServiceFactory, prisonerService, pdfFormatter)
   })
 
