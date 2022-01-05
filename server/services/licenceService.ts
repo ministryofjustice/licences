@@ -7,6 +7,7 @@ import formValidation from './utils/formValidation'
 import { LicenceClient } from '../data/licenceClient'
 import { Licence, LicenceConditions, LicenceStage } from '../data/licenceTypes'
 import { pickCurfewAddressPath } from './utils/pdfFormatter'
+import { ConditionVersion } from '../data/licenceClientTypes'
 
 const {
   getIn,
@@ -34,7 +35,7 @@ export interface LicenceRecord {
   licence: Licence
   stage: LicenceStage
   version: string
-  versionDetails: { version: number; vary_version: number; additional_conditions_version: number }
+  versionDetails: { version: number; vary_version: number; additional_conditions_version: ConditionVersion }
   approvedVersion: string
   approvedVersionDetails: ApprovedVersionDetails
 }
@@ -570,7 +571,7 @@ export class LicenceService {
     return this.licenceClient.saveApprovedLicenceVersion(bookingId, template)
   }
 
-  setConditionsVersion(bookingId: number, conditionVersion: number) {
+  setConditionsVersion(bookingId: number, conditionVersion: ConditionVersion) {
     return this.licenceClient.setConditionsVersion(bookingId, conditionVersion)
   }
 }

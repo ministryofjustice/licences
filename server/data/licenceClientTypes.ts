@@ -1,11 +1,13 @@
 import { Licence, LicenceStage } from './licenceTypes'
 
+export type ConditionVersion = 1 | 2
+
 export interface Case {
   licence: Licence
   booking_id: number
   stage: LicenceStage
   version: number
-  additional_conditions_version: number
+  additional_conditions_version: ConditionVersion
 }
 
 export interface CaseWithApprovedVersion extends Case {

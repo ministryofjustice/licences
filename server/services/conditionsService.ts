@@ -2,12 +2,24 @@ import moment from 'moment'
 import { formatConditionsInput, getConditionText, formatConditionsText } from './utils/conditionsFormatter'
 import { isEmpty } from '../utils/functionalHelpers'
 import * as builder from './licenceWithConditionsBuilder'
-import { getAdditionalConditionsConfig, standardConditions, ConditionVersion } from './config/conditionsConfig'
+import { getAdditionalConditionsConfig, standardConditions, CURRENT_CONDITION_VERSION } from './config/conditionsConfig'
 import { AdditionalConditions, Licence } from '../data/licenceTypes'
+import { LicenceRecord } from './licenceService'
+import { ConditionVersion } from '../data/licenceClientTypes'
 
 export class ConditionsServiceFactory {
   forVersion(version: ConditionVersion) {
     return new ConditionsService(version)
+  }
+
+  forLicence(licence: LicenceRecord) {
+    const version = licence.versionDetails?.additional_conditions_version || CURRENT_CONDITION_VERSION
+    return this.forVersion(version)
+  }
+
+  getNewVersion(licence: LicenceRecord): ConditionVersion {
+    const version = licence.versionDetails?.additional_conditions_version
+    return version == null ? CURRENT_CONDITION_VERSION : null
   }
 }
 

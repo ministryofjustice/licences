@@ -1,5 +1,4 @@
 import { LicenceService } from '../services/licenceService'
-import { CURRENT_CONDITION_VERSION } from '../services/config/conditionsConfig'
 import type { Response } from 'express'
 import type { LicenceLocals } from '../utils/middleware'
 import type { ConditionsServiceFactory } from '../services/conditionsService'
@@ -27,12 +26,11 @@ export default ({
       logger.debug('GET /standard/:bookingId')
 
       const { action, bookingId } = req.params
-      const standardConditions = conditionsServiceFactory.forVersion(CURRENT_CONDITION_VERSION).getStandardConditions()
+      const conditionsService = conditionsServiceFactory.forLicence(res.locals.licence)
+      const standardConditions = conditionsService.getStandardConditions()
       const { additionalConditionsRequired } = res.locals.licence?.licence?.licenceConditions?.standard || {}
       const { additionalConditions, pssConditions, bespokeConditions, unapprovedBespokeConditions } =
-        conditionsServiceFactory
-          .forVersion(CURRENT_CONDITION_VERSION)
-          .getNonStandardConditions(res.locals.licence.licence)
+        conditionsService.getNonStandardConditions(res.locals.licence.licence)
 
       res.render('licenceConditions/standard', {
         action,
@@ -82,9 +80,9 @@ export default ({
       logger.debug('GET /additionalConditions')
 
       const { action, bookingId } = req.params
-      const licence = res.locals.licence?.licence
-      const bespokeConditions = licence?.licenceConditions?.bespoke || []
-      const conditions = conditionsServiceFactory.forVersion(CURRENT_CONDITION_VERSION).getAdditionalConditions(licence)
+      const record = res.locals.licence
+      const bespokeConditions = record.licence?.licenceConditions?.bespoke || []
+      const conditions = conditionsServiceFactory.forLicence(record).getAdditionalConditions(record.licence)
       let behaviours =
         getIn(conditions, ['Drugs, health and behaviour', 'base', 1, 'user_submission', 'abuseAndBehaviours']) || []
 
@@ -110,12 +108,11 @@ export default ({
       const { action } = req.params
       const destination = action ? `${action}/${bookingId}` : bookingId
       const bespoke = (bespokeDecision === 'Yes' && bespokeConditions.filter((condition) => condition.text)) || []
-      const additional = additionalConditions
-        ? conditionsServiceFactory.forVersion(CURRENT_CONDITION_VERSION).formatConditionInputs(req.body)
-        : {}
-      const newConditionsObject = conditionsServiceFactory
-        .forVersion(CURRENT_CONDITION_VERSION)
-        .createConditionsObjectForLicence(additional, bespoke)
+
+      const conditionsService = conditionsServiceFactory.forLicence(res.locals.licence)
+
+      const additional = additionalConditions ? conditionsService.formatConditionInputs(req.body) : {}
+      const newConditionsObject = conditionsService.createConditionsObjectForLicence(additional, bespoke)
 
       await licenceService.updateLicenceConditions(
         bookingId,
@@ -124,10 +121,10 @@ export default ({
         res.locals.postRelease
       )
 
-      const conditionsVersion = res.locals.licence.versionDetails?.additional_conditions_version
+      const newVersion = conditionsServiceFactory.getNewVersion(res.locals.licence)
 
-      if (!conditionsVersion) {
-        await licenceService.setConditionsVersion(Number(bookingId), CURRENT_CONDITION_VERSION)
+      if (newVersion) {
+        await licenceService.setConditionsVersion(Number(bookingId), newVersion)
       }
 
       res.redirect(`/hdc/licenceConditions/conditionsSummary/${destination}`)
@@ -149,7 +146,7 @@ export default ({
         formType: 'additional',
       })
       const data = conditionsServiceFactory
-        .forVersion(CURRENT_CONDITION_VERSION)
+        .forLicence(res.locals.licence)
         .populateLicenceWithConditions(licence, errorObject)
 
       const errorList = req.flash('errors')
