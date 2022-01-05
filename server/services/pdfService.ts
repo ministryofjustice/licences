@@ -1,6 +1,5 @@
 import { ConditionsServiceFactory } from './conditionsService'
-import { CURRENT_CONDITION_VERSION } from './config/conditionsConfig'
-import { LicenceService } from './licenceService'
+import { LicenceRecord, LicenceService } from './licenceService'
 import { PrisonerService } from './prisonerService'
 
 const versionInfo = require('../utils/versionInfo')
@@ -15,11 +14,9 @@ export default class PdfService {
     private readonly pdfFormatter
   ) {}
 
-  async getPdfLicenceData(bookingId, rawLicence, token) {
+  async getPdfLicenceData(bookingId, rawLicence: LicenceRecord, token) {
     const [licence, prisonerInfo, establishment] = await Promise.all([
-      this.conditionsServiceFactory
-        .forVersion(CURRENT_CONDITION_VERSION)
-        .populateLicenceWithConditions(rawLicence.licence),
+      this.conditionsServiceFactory.forLicence(rawLicence).populateLicenceWithConditions(rawLicence.licence),
       this.prisonerService.getPrisonerDetails(bookingId, token),
       this.prisonerService.getEstablishmentForPrisoner(bookingId, token),
     ])
@@ -71,7 +68,7 @@ export default class PdfService {
     }
   }
 
-  async checkAndTakeSnapshot(rawLicence, bookingId) {
+  async checkAndTakeSnapshot(rawLicence: LicenceRecord, bookingId): Promise<LicenceRecord> {
     const { isNewTemplate, isNewVersion } = versionInfo(rawLicence)
 
     if (!(isNewVersion || isNewTemplate)) {

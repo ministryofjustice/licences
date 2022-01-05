@@ -1,18 +1,19 @@
-const request = require('supertest')
-const pdfParse = require('pdf-parse')
-const { mockAudit } = require('../../test/mockClients')
-const { appSetup } = require('../../test/supertestSetup')
+import request from 'supertest'
+import pdfParse from 'pdf-parse'
+import { mockAudit } from '../../test/mockClients'
+import { appSetup } from '../../test/supertestSetup'
 
-const {
+import {
   createPdfServiceStub,
   createPrisonerServiceStub,
   createLicenceServiceStub,
   createSignInServiceStub,
-} = require('../../test/mockServices')
+} from '../../test/mockServices'
 
-const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
-const createPdfRouter = require('../../server/routes/pdf')
-const NullTokenVerifier = require('../../server/authentication/tokenverifier/NullTokenVerifier')
+import standardRouter from '../../server/routes/routeWorkers/standardRouter'
+import createPdfRouter from '../../server/routes/pdf'
+import NullTokenVerifier from '../../server/authentication/tokenverifier/NullTokenVerifier'
+import { LicenceRecord } from '../../server/services/licenceService'
 
 const valuesWithMissing = {
   values: {
@@ -297,7 +298,7 @@ describe('PDF:', () => {
         version: '1.0',
         versionDetails: { version: 1, vary_version: 0 },
         approvedVersionDetails: { version: 1, vary_version: 0 },
-      }
+      } as unknown as LicenceRecord
       licenceServiceStub.getLicence.mockReset()
       licenceServiceStub.getLicence.mockResolvedValue(rawLicence)
       pdfServiceStub.getPdfLicenceData.mockResolvedValue({
@@ -373,7 +374,7 @@ function createApp(
     tokenVerifier: new NullTokenVerifier(),
     config: null,
   })
-  const route = baseRouter(createPdfRouter({ pdfService: pdfServiceStub, prisonerService }), {
+  const route = baseRouter(createPdfRouter(pdfServiceStub, prisonerService), {
     auditKey: 'CREATE_PDF',
   })
 
