@@ -99,7 +99,7 @@ jobs:
           at: ~/app
       - run:
           name: Javascript Integration Tests
-          command: npm run integrationTest
+          command: npm run integration-test
       - store_test_results:
           path: test-results
       - store_artifacts:

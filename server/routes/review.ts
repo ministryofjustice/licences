@@ -5,8 +5,9 @@ import { isPostApproval } from '../services/config/licenceStage'
 
 import type { PrisonerService } from '../../types/licences'
 import type { LicenceService } from '../services/licenceService'
-import type ConditionsService from '../services/conditionsService'
 import type { Response } from 'express'
+import type { ConditionsServiceFactory } from '../services/conditionsService'
+import { CURRENT_CONDITION_VERSION } from '../services/config/conditionsConfig'
 
 function shouldValidate(role, stage, postApproval) {
   return postApproval
@@ -21,11 +22,11 @@ function shouldValidate(role, stage, postApproval) {
 
 export = ({
   licenceService,
-  conditionsService,
+  conditionsServiceFactory,
   prisonerService,
 }: {
   licenceService: LicenceService
-  conditionsService: ConditionsService
+  conditionsServiceFactory: ConditionsServiceFactory
   prisonerService: PrisonerService
 }) => {
   function validate(licenceStatus, showErrors, licence, stage) {
@@ -49,7 +50,9 @@ export = ({
         const showErrors = shouldValidate(req.user.role, stage, postApproval)
         const errorObject = validate(licenceStatus, showErrors, licence, stage)
 
-        const data = conditionsService.populateLicenceWithConditions(licence, errorObject)
+        const data = conditionsServiceFactory
+          .forVersion(CURRENT_CONDITION_VERSION)
+          .populateLicenceWithConditions(licence, errorObject)
 
         const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, res.locals.token)
 

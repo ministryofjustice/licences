@@ -5,7 +5,6 @@ import { forbiddenError } from './errors'
 import getLicenceStatus from '../services/licence/licenceStatus'
 import { LicenceRecord, LicenceService } from '../services/licenceService'
 import { PrisonerService } from '../services/prisonerService'
-import { Licence } from '../data/licenceTypes'
 import { LicenceStatus } from '../services/licence/licenceStatusTypes'
 
 export function asyncMiddleware(fn) {

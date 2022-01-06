@@ -1,4 +1,5 @@
-import ConditionsService from './conditionsService'
+import { ConditionsServiceFactory } from './conditionsService'
+import { CURRENT_CONDITION_VERSION } from './config/conditionsConfig'
 import { LicenceService } from './licenceService'
 import { PrisonerService } from './prisonerService'
 
@@ -9,14 +10,16 @@ export default class PdfService {
   constructor(
     private readonly logger,
     private readonly licenceService: LicenceService,
-    private readonly conditionsService: ConditionsService,
+    private readonly conditionsServiceFactory: ConditionsServiceFactory,
     private readonly prisonerService: PrisonerService,
     private readonly pdfFormatter
   ) {}
 
   async getPdfLicenceData(bookingId, rawLicence, token) {
     const [licence, prisonerInfo, establishment] = await Promise.all([
-      this.conditionsService.populateLicenceWithConditions(rawLicence.licence),
+      this.conditionsServiceFactory
+        .forVersion(CURRENT_CONDITION_VERSION)
+        .populateLicenceWithConditions(rawLicence.licence),
       this.prisonerService.getPrisonerDetails(bookingId, token),
       this.prisonerService.getEstablishmentForPrisoner(bookingId, token),
     ])

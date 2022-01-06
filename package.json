@@ -18,7 +18,7 @@
     "start:dev": "npm run build && concurrently -k -p \"[{name}]\" -n \"Views,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-views\" \"npm run watch-ts\" \"npm run watch-node\"",
     "start-mocks": "node mock-server/start.js",
     "test": "jest --runInBand --testPathPattern=/test/.*",
-    "integrationTest": "jest --runInBand --testPathPattern=/integration_test/.*",
+    "integration-test": "jest --runInBand --testPathPattern=/integration_test/.*",
     "lint": "eslint .",
     "typecheck": "tsc",
     "record-build-info": "node ./bin/record-build-info",

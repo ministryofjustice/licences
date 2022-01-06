@@ -1,6 +1,6 @@
 /**
  * @typedef {import("../services/prisonerService").PrisonerService} PrisonerService
- * @typedef {import("../services/conditionsService").default} ConditionsService
+ * @typedef {import("../services/conditionsService").ConditionsServiceFactory} ConditionsServiceFactory
  */
 const moment = require('moment')
 const { isEmpty, getIn, mergeWithRight } = require('../utils/functionalHelpers')
@@ -16,12 +16,13 @@ const {
   unsuitableReasonlabels,
 } = require('./config/formConfig')
 const logger = require('../../log')
+const { CURRENT_CONDITION_VERSION } = require('./config/conditionsConfig')
 
 /**
  * @param {PrisonerService} prisonerService
- * @param {ConditionsService} conditionsService
+ * @param {ConditionsServiceFactory} conditionsServiceFactory
  */
-module.exports = function createFormService(pdfFormatter, conditionsService, prisonerService, configClient) {
+module.exports = function createFormService(pdfFormatter, conditionsServiceFactory, prisonerService, configClient) {
   async function getTemplateData(templateName, licence, prisoner) {
     logger.info(`getTemplateData for '${templateName}'`)
     if (!requiredFields[templateName]) {
@@ -126,7 +127,7 @@ module.exports = function createFormService(pdfFormatter, conditionsService, pri
 
   async function getCurfewAddressCheckData({ agencyLocationId, licence, isBass, isAp, bookingId, token }) {
     const [conditions, prisoner, caMailboxes] = await Promise.all([
-      conditionsService.getFullTextForApprovedConditions(licence),
+      conditionsServiceFactory.forVersion(CURRENT_CONDITION_VERSION).getFullTextForApprovedConditions(licence),
       prisonerService.getPrisonerDetails(bookingId, token),
       configClient.getMailboxes(agencyLocationId, 'CA'),
     ])

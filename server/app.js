@@ -73,7 +73,7 @@ module.exports = function createApp({
   signInService,
   licenceService,
   prisonerService,
-  conditionsService,
+  conditionsServiceFactory,
   caseListService,
   pdfService,
   formService,
@@ -394,11 +394,11 @@ module.exports = function createApp({
   app.use('/hdc/proposedAddress/', secureRoute(addressRouter({ licenceService, nomisPushService })))
   app.use('/hdc/approval/', secureRoute(approvalRouter({ licenceService, prisonerService, nomisPushService })))
   app.use('/hdc/bassReferral/', secureRoute(bassReferralRouter({ licenceService, nomisPushService })))
-  app.use('/hdc/licenceConditions/', secureRoute(conditionsRouter({ licenceService, conditionsService })))
+  app.use('/hdc/licenceConditions/', secureRoute(conditionsRouter({ licenceService, conditionsServiceFactory })))
   app.use('/hdc/curfew/', secureRoute(curfewRouter({ licenceService, nomisPushService })))
   app.use('/hdc/eligibility/', secureRoute(eligibilityRouter({ licenceService, nomisPushService })))
   app.use('/hdc/finalChecks/', secureRoute(finalChecksRouter({ licenceService, nomisPushService })))
-  app.use('/hdc/review/', secureRoute(reviewRouter({ licenceService, conditionsService, prisonerService })))
+  app.use('/hdc/review/', secureRoute(reviewRouter({ licenceService, conditionsServiceFactory, prisonerService })))
   app.use('/hdc/reporting/', secureRoute(reportingRouter({ licenceService })))
   app.use('/hdc/risk/', secureRoute(riskRouter({ licenceService })))
   app.use('/hdc/victim/', secureRoute(victimRouter({ licenceService })))

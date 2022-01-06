@@ -2,10 +2,18 @@ import moment from 'moment'
 import { formatConditionsInput, getConditionText, formatConditionsText } from './utils/conditionsFormatter'
 import { isEmpty } from '../utils/functionalHelpers'
 import * as builder from './licenceWithConditionsBuilder'
-import { getAdditionalConditionsConfig, standardConditions, CURRENT_CONDITION_VERSION } from './config/conditionsConfig'
+import { getAdditionalConditionsConfig, standardConditions, ConditionVersion } from './config/conditionsConfig'
 import { AdditionalConditions, Licence } from '../data/licenceTypes'
 
-export default class ConditionsService {
+export class ConditionsServiceFactory {
+  forVersion(version: ConditionVersion) {
+    return new ConditionsService(version)
+  }
+}
+
+export class ConditionsService {
+  constructor(private readonly version: ConditionVersion) {}
+
   // condition routes / review routes / pdf generation
   populateLicenceWithConditions(licence: Licence, errors = {}, approvedOnly = false) {
     return builder.populateLicenceWithConditions(licence, errors, approvedOnly)
@@ -49,7 +57,7 @@ export default class ConditionsService {
 
   getAdditionalConditions(licence: Licence = null) {
     const licenceAdditionalConditions = licence?.licenceConditions?.additional
-    const additionalConditions = getAdditionalConditionsConfig(CURRENT_CONDITION_VERSION)
+    const additionalConditions = getAdditionalConditionsConfig(this.version)
     if (licenceAdditionalConditions) {
       return additionalConditions
         .map(populateFromSavedLicence(licenceAdditionalConditions))
@@ -60,7 +68,7 @@ export default class ConditionsService {
   }
 
   formatConditionInputs(requestBody) {
-    const selectedConditionsConfig = getAdditionalConditionsConfig(CURRENT_CONDITION_VERSION).filter((condition) =>
+    const selectedConditionsConfig = getAdditionalConditionsConfig(this.version).filter((condition) =>
       requestBody.additionalConditions.includes(condition.id)
     )
 
@@ -73,7 +81,7 @@ export default class ConditionsService {
     }
 
     const conditionIds = additional.additionalConditions
-    const selectedConditionsConfig = getAdditionalConditionsConfig(CURRENT_CONDITION_VERSION).filter((condition) =>
+    const selectedConditionsConfig = getAdditionalConditionsConfig(this.version).filter((condition) =>
       conditionIds.includes(condition.id)
     )
     const additionalConditionsObject = this.createAdditionalConditionsObject(selectedConditionsConfig, additional)

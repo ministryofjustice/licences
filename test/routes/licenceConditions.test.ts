@@ -6,6 +6,7 @@ import {
   createPrisonerServiceStub,
   createLicenceServiceStub,
   createConditionsServiceStub,
+  createConditionsServiceFactoryStub,
   createSignInServiceStub,
 } from '../mockServices'
 
@@ -437,7 +438,10 @@ function createApp(
     tokenVerifier: new NullTokenVerifier(),
     config: null,
   })
-  const route = baseRouter(createRoute({ licenceService, conditionsService }))
+
+  const conditionsServiceFactory = createConditionsServiceFactoryStub()
+  conditionsServiceFactory.forVersion.mockReturnValue(conditionsService)
+  const route = baseRouter(createRoute({ licenceService, conditionsServiceFactory }))
 
   return appSetup(route, user, '/hdc/licenceConditions/')
 }
