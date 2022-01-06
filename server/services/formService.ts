@@ -1,7 +1,5 @@
-/**
- * @typedef {import("../services/prisonerService").PrisonerService} PrisonerService
- * @typedef {import("../services/conditionsService").ConditionsServiceFactory} ConditionsServiceFactory
- */
+import { ConditionsServiceFactory } from './conditionsService'
+import { PrisonerService } from './prisonerService'
 const moment = require('moment')
 const { isEmpty, getIn, mergeWithRight } = require('../utils/functionalHelpers')
 const {
@@ -18,12 +16,15 @@ const {
 const logger = require('../../log')
 const { CURRENT_CONDITION_VERSION } = require('./config/conditionsConfig')
 
-/**
- * @param {PrisonerService} prisonerService
- * @param {ConditionsServiceFactory} conditionsServiceFactory
- */
-module.exports = function createFormService(pdfFormatter, conditionsServiceFactory, prisonerService, configClient) {
-  async function getTemplateData(templateName, licence, prisoner) {
+export default class FormService {
+  constructor(
+    private readonly pdfFormatter,
+    private readonly conditionsServiceFactory: ConditionsServiceFactory,
+    private readonly prisonerService: PrisonerService,
+    private readonly configClient
+  ) {}
+
+  getTemplateData(templateName, licence, prisoner) {
     logger.info(`getTemplateData for '${templateName}'`)
     if (!requiredFields[templateName]) {
       logger.warn(`No such form template: ${templateName}`)
@@ -33,18 +34,18 @@ module.exports = function createFormService(pdfFormatter, conditionsServiceFacto
     const required = requiredFields[templateName]
 
     const values = required.reduce((allValues, field) => {
-      return mergeWithRight(allValues, { [field]: fieldValue(licence, prisoner, field) })
+      return mergeWithRight(allValues, { [field]: this.fieldValue(licence, prisoner, field) })
     }, {})
 
     logger.info(`getTemplateData for '${templateName}'. Extracted template data for ${Object.keys(values).join(', ')}`)
     return values
   }
 
-  function getValue(data, path) {
+  private getValue(data, path) {
     return getIn(data, path) || ''
   }
 
-  function combine(data, paths, separator) {
+  private combine(data, paths, separator) {
     return (
       paths
         .map((path) => getIn(data, path))
@@ -53,34 +54,34 @@ module.exports = function createFormService(pdfFormatter, conditionsServiceFacto
     )
   }
 
-  function getDateValue(data, path) {
-    const value = getValue(data, path)
+  private getDateValue(data, path) {
+    const value = this.getValue(data, path)
     if (moment(value, 'DD-MM-YYYY').isValid()) {
       return moment(value, 'DD-MM-YYYY').format(formsDateFormat)
     }
     return value
   }
 
-  function pickFirst(reasons) {
+  private pickFirst(reasons) {
     return Array.isArray(reasons) ? reasons[0] : reasons
   }
 
-  function fieldValue(licence, prisoner, field) {
+  private fieldValue(licence, prisoner, field) {
     const fieldFunction = {
       CREATION_DATE: () => moment().format(formsDateFormat),
-      OFF_NAME: () => getOffenderName(prisoner),
-      OFF_NOMS: () => getValue(prisoner, ['offenderNo']),
-      EST_PREMISE: () => getValue(prisoner, ['agencyLocationDesc']),
-      SENT_HDCED: () => getDateValue(prisoner, ['sentenceDetail', 'homeDetentionCurfewEligibilityDate']),
-      SENT_HDCAD: () => getDateValue(prisoner, ['sentenceDetail', 'homeDetentionCurfewActualDate']),
-      SENT_CRD: () => getDateValue(prisoner, ['sentenceDetail', 'releaseDate']),
-      CURFEW_ADDRESS: () => getCurfewAddress(pdfFormatter.pickCurfewAddress(licence)),
-      CURFEW_TELEPHONE: () => getCurfewTelephone(pdfFormatter.pickCurfewAddress(licence)),
-      REFUSAL_REASON: () => getRefusalReason(licence),
-      INELIGIBLE_REASON: () => getIneligibleReason(licence),
-      UNSUITABLE_REASON: () => getUnsuitableReason(licence),
-      CURFEW_HOURS: () => getValue(licence, ['curfew', 'curfewHours']),
-      CURFEW_FIRST: () => getValue(licence, ['curfew', 'firstNight']),
+      OFF_NAME: () => this.getOffenderName(prisoner),
+      OFF_NOMS: () => this.getValue(prisoner, ['offenderNo']),
+      EST_PREMISE: () => this.getValue(prisoner, ['agencyLocationDesc']),
+      SENT_HDCED: () => this.getDateValue(prisoner, ['sentenceDetail', 'homeDetentionCurfewEligibilityDate']),
+      SENT_HDCAD: () => this.getDateValue(prisoner, ['sentenceDetail', 'homeDetentionCurfewActualDate']),
+      SENT_CRD: () => this.getDateValue(prisoner, ['sentenceDetail', 'releaseDate']),
+      CURFEW_ADDRESS: () => this.getCurfewAddress(this.pdfFormatter.pickCurfewAddress(licence)),
+      CURFEW_TELEPHONE: () => this.getCurfewTelephone(this.pdfFormatter.pickCurfewAddress(licence)),
+      REFUSAL_REASON: () => this.getRefusalReason(licence),
+      INELIGIBLE_REASON: () => this.getIneligibleReason(licence),
+      UNSUITABLE_REASON: () => this.getUnsuitableReason(licence),
+      CURFEW_HOURS: () => this.getValue(licence, ['curfew', 'curfewHours']),
+      CURFEW_FIRST: () => this.getValue(licence, ['curfew', 'firstNight']),
     }
 
     if (!fieldFunction[field]) {
@@ -91,45 +92,47 @@ module.exports = function createFormService(pdfFormatter, conditionsServiceFacto
     return fieldFunction[field]()
   }
 
-  function getOffenderName(prisonerInfo) {
-    return combine(prisonerInfo, [['firstName'], ['middleName'], ['lastName']], ' ')
+  private getOffenderName(prisonerInfo) {
+    return this.combine(prisonerInfo, [['firstName'], ['middleName'], ['lastName']], ' ')
   }
 
-  function getCurfewAddress(address) {
-    return address ? combine(address, [['addressLine1'], ['addressLine2'], ['addressTown'], ['postCode']], '\n') : ''
+  private getCurfewAddress(address) {
+    return address
+      ? this.combine(address, [['addressLine1'], ['addressLine2'], ['addressTown'], ['postCode']], '\n')
+      : ''
   }
 
-  function getCurfewTelephone(address) {
+  private getCurfewTelephone(address) {
     return address ? address.telephone : ''
   }
 
-  function getRefusalReason(licence) {
+  private getRefusalReason(licence) {
     const finalChecksReasons = ['finalChecks', 'refusal', 'reason']
     if (!isEmpty(getIn(licence, finalChecksReasons))) {
-      return getReasonLabel(licence, finalChecksReasons, refusalReasonlabels)
+      return this.getReasonLabel(licence, finalChecksReasons, refusalReasonlabels)
     }
 
-    return getReasonLabel(licence, ['approval', 'release', 'reason'], refusalReasonlabels)
+    return this.getReasonLabel(licence, ['approval', 'release', 'reason'], refusalReasonlabels)
   }
 
-  function getIneligibleReason(licence) {
-    return getReasonLabel(licence, ['eligibility', 'excluded', 'reason'], ineligibleReasonlabels)
+  private getIneligibleReason(licence) {
+    return this.getReasonLabel(licence, ['eligibility', 'excluded', 'reason'], ineligibleReasonlabels)
   }
 
-  function getUnsuitableReason(licence) {
-    return getReasonLabel(licence, ['eligibility', 'suitability', 'reason'], unsuitableReasonlabels)
+  private getUnsuitableReason(licence) {
+    return this.getReasonLabel(licence, ['eligibility', 'suitability', 'reason'], unsuitableReasonlabels)
   }
 
-  function getReasonLabel(licence, path, labels) {
+  private getReasonLabel(licence, path, labels) {
     const reasons = getIn(licence, path)
-    return labels[pickFirst(reasons)] || ''
+    return labels[this.pickFirst(reasons)] || ''
   }
 
-  async function getCurfewAddressCheckData({ agencyLocationId, licence, isBass, isAp, bookingId, token }) {
+  async getCurfewAddressCheckData({ agencyLocationId, licence, isBass, isAp, bookingId, token }) {
     const [conditions, prisoner, caMailboxes] = await Promise.all([
-      conditionsServiceFactory.forVersion(CURRENT_CONDITION_VERSION).getFullTextForApprovedConditions(licence),
-      prisonerService.getPrisonerDetails(bookingId, token),
-      configClient.getMailboxes(agencyLocationId, 'CA'),
+      this.conditionsServiceFactory.forVersion(CURRENT_CONDITION_VERSION).getFullTextForApprovedConditions(licence),
+      this.prisonerService.getPrisonerDetails(bookingId, token),
+      this.configClient.getMailboxes(agencyLocationId, 'CA'),
     ])
 
     if (isBass === undefined || isAp === undefined) {
@@ -141,7 +144,7 @@ module.exports = function createFormService(pdfFormatter, conditionsServiceFacto
     const sentenceDetail = getIn(prisoner, ['sentenceDetail']) || {}
     const responsibleOfficer = getIn(prisoner, ['com']) || {}
 
-    const curfewAddressDetails = getCurfewAddressDetails(isBass, isAp, licence)
+    const curfewAddressDetails = this.getCurfewAddressDetails(isBass, isAp, licence)
 
     const reportingInstructions = getIn(licence, ['reporting', 'reportingInstructions']) || {}
     const riskManagement = getIn(licence, ['risk', 'riskManagement']) || {}
@@ -162,7 +165,7 @@ module.exports = function createFormService(pdfFormatter, conditionsServiceFacto
     }
   }
 
-  function getCurfewAddressDetails(isBass, isAp, licence) {
+  getCurfewAddressDetails(isBass, isAp, licence) {
     if (isBass) {
       return {
         bassRequest: getIn(licence, ['bassReferral', 'bassRequest']) || {},
@@ -181,10 +184,5 @@ module.exports = function createFormService(pdfFormatter, conditionsServiceFacto
       curfewAddressReview: getIn(licence, ['curfew', 'curfewAddressReview']) || {},
       occupier: getIn(licence, ['proposedAddress', 'curfewAddress', 'occupier']) || {},
     }
-  }
-
-  return {
-    getTemplateData,
-    getCurfewAddressCheckData,
   }
 }

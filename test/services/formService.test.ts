@@ -1,6 +1,6 @@
-const createFormService = require('../../server/services/formService')
-const { pickCurfewAddress } = require('../../server/services/utils/pdfFormatter')
-const { createPrisonerServiceStub, createConditionsServiceFactoryStub } = require('../mockServices')
+import FormService from '../../server/services/formService'
+import { pickCurfewAddress } from '../../server/services/utils/pdfFormatter'
+import { createPrisonerServiceStub, createConditionsServiceFactoryStub } from '../mockServices'
 
 describe('formService', () => {
   let service
@@ -37,7 +37,7 @@ describe('formService', () => {
     }
     const conditionsServiceFactory = createConditionsServiceFactoryStub()
     conditionsServiceFactory.forVersion.mockReturnValue(conditionsService)
-    service = createFormService(pdfFormatter, conditionsServiceFactory, prisonerService, configClient)
+    service = new FormService(pdfFormatter, conditionsServiceFactory, prisonerService, configClient)
     const time = new Date('April 25, 2019 01:00:00')
     realDateNow = Date.now.bind(global.Date)
     jest.spyOn(Date, 'now').mockImplementation(() => time.getTime())
