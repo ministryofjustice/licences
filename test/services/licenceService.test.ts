@@ -7,7 +7,7 @@ import {
 import * as varyConfig from '../../server/routes/config/vary'
 import formValidation from '../../server/services/utils/formValidation'
 import { LicenceClient } from '../../server/data/licenceClient'
-import { CaseWithVaryVersion } from '../../server/data/licenceClientTypes'
+import { CaseWithVaryVersion, ConditionVersion } from '../../server/data/licenceClientTypes'
 import { Licence, LicenceStage } from '../../server/data/licenceTypes'
 
 jest.mock('../../server/services/utils/formValidation')
@@ -26,7 +26,7 @@ describe('licenceService', () => {
         stage: undefined,
         version: 2,
         vary_version: 5,
-        additional_conditions_version: 3,
+        additional_conditions_version: 3 as ConditionVersion,
       }),
       createLicence: jest.fn() as jest.Mock<Promise<number>>,
       updateSection: jest.fn() as jest.Mock<Promise<void>>,

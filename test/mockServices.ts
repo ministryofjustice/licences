@@ -54,6 +54,8 @@ export const createConditionsServiceStub = () =>
 export const createConditionsServiceFactoryStub = () =>
   ({
     forVersion: jest.fn(),
+    forLicence: jest.fn(),
+    getNewVersion: jest.fn(),
   } as unknown as jest.Mocked<ConditionsServiceFactory>)
 
 export const createPrisonerServiceStub = () => ({

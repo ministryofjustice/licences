@@ -1,7 +1,6 @@
+import { ConditionVersion } from '../../data/licenceClientTypes'
+
 /* eslint-disable max-len */
-
-export type ConditionVersion = 1 | 2
-
 type ConditionMetadata = {
   id: string
   text: string

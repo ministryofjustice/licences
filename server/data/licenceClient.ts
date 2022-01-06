@@ -1,5 +1,11 @@
 import * as db from './dataAccess/db'
-import { ApprovedLicenceVersion, CaseWithApprovedVersion, CaseWithVaryVersion, DeliusIds } from './licenceClientTypes'
+import {
+  ApprovedLicenceVersion,
+  CaseWithApprovedVersion,
+  CaseWithVaryVersion,
+  ConditionVersion,
+  DeliusIds,
+} from './licenceClientTypes'
 import { Licence, LicenceStage } from './licenceTypes'
 
 async function updateVersion(bookingId, postRelease = false): Promise<void> {
@@ -176,7 +182,7 @@ export class LicenceClient {
     return rows
   }
 
-  async setConditionsVersion(bookingId: number, conditionVersion: number): Promise<void> {
+  async setConditionsVersion(bookingId: number, conditionVersion: ConditionVersion): Promise<void> {
     const query = {
       text: `update licences l set additional_conditions_version = $1 where booking_id = $2`,
       values: [conditionVersion, bookingId],

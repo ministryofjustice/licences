@@ -16,10 +16,10 @@ import formConfig from '../../server/routes/config/licenceConditions'
 import NullTokenVerifier from '../../server/authentication/tokenverifier/NullTokenVerifier'
 
 describe('/hdc/licenceConditions', () => {
-  let conditionsService
+  let conditionsService = createConditionsServiceStub()
+  let conditionsServiceFactory = createConditionsServiceFactoryStub()
 
   beforeEach(() => {
-    conditionsService = createConditionsServiceStub()
     conditionsService.getStandardConditions = jest.fn().mockReturnValue([{ text: 'Not commit any offence' }])
     conditionsService.getAdditionalConditions = jest.fn().mockReturnValue({
       base: {
@@ -27,27 +27,21 @@ describe('/hdc/licenceConditions', () => {
       },
     })
     conditionsService.populateLicenceWithConditions = jest.fn().mockReturnValue({ licence: {} })
+    conditionsServiceFactory.forVersion.mockReturnValue(conditionsService)
+    conditionsServiceFactory.forLicence.mockReturnValue(conditionsService)
   })
 
   describe('licenceConditions routes', () => {
     const licenceService = createLicenceServiceStub()
-    const conditionsServiceStub = createConditionsServiceStub()
-    conditionsServiceStub.getStandardConditions = jest.fn().mockReturnValue([{ text: 'Not commit any offence' }])
-    conditionsServiceStub.getAdditionalConditions = jest.fn().mockReturnValue({
-      base: {
-        base: [{ text: 'hi', id: 'ho', user_input: {} }],
-      },
-    })
 
-    conditionsServiceStub.populateLicenceWithConditions = jest.fn().mockReturnValue({ licence: {} })
-    conditionsServiceStub.getNonStandardConditions = jest.fn().mockReturnValue({
+    conditionsService.getNonStandardConditions.mockReturnValue({
       additionalConditions: [{ text: '' }],
       bespokeConditions: [{ text: '' }],
       pssConditions: [{ text: '' }],
       unapprovedBespokeConditions: [{ text: '' }],
     })
 
-    const app = createApp({ licenceService, conditionsService: conditionsServiceStub }, 'roUser')
+    const app = createApp({ licenceService }, 'roUser')
     const routes = [
       { url: '/hdc/licenceConditions/standard/1', content: 'Not commit any offence' },
       { url: '/hdc/licenceConditions/additionalConditions/1', content: 'Select additional conditions</h1>' },
@@ -59,18 +53,16 @@ describe('/hdc/licenceConditions', () => {
 
   describe('Additional licenceConditions route ', () => {
     const licenceService = createLicenceServiceStub()
-    const conditionsServiceStub = createConditionsServiceStub()
-    conditionsServiceStub.getStandardConditions = jest.fn().mockReturnValue([{}])
 
     test('displays the 1 additional condition selected', () => {
-      conditionsServiceStub.getNonStandardConditions = jest.fn().mockReturnValue({
+      conditionsService.getNonStandardConditions.mockReturnValue({
         additionalConditions: [{ text: 'Not to contact directly or indirectly' }],
         bespokeConditions: [{ text: '' }],
         pssConditions: [{ text: '' }],
         unapprovedBespokeConditions: [{ text: '' }],
       })
 
-      const app = createApp({ licenceService, conditionsService: conditionsServiceStub }, 'roUser')
+      const app = createApp({ licenceService }, 'roUser')
       return request(app)
         .get('/hdc/licenceConditions/standard/1')
         .expect(200)
@@ -81,14 +73,14 @@ describe('/hdc/licenceConditions', () => {
     })
 
     test('displays the 1 PSS condition selected', () => {
-      conditionsServiceStub.getNonStandardConditions = jest.fn().mockReturnValue({
+      conditionsService.getNonStandardConditions.mockReturnValue({
         additionalConditions: [{ text: '' }],
         bespokeConditions: [{ text: '' }],
         pssConditions: [{ text: 'reasonably required by your supervisor, to give a sample' }],
         unapprovedBespokeConditions: [{ text: '' }],
       })
 
-      const app = createApp({ licenceService, conditionsService: conditionsServiceStub }, 'roUser')
+      const app = createApp({ licenceService }, 'roUser')
       return request(app)
         .get('/hdc/licenceConditions/standard/1')
         .expect(200)
@@ -99,14 +91,14 @@ describe('/hdc/licenceConditions', () => {
     })
 
     test('displays the 1 approved Bespoke condition selected', () => {
-      conditionsServiceStub.getNonStandardConditions = jest.fn().mockReturnValue({
+      conditionsService.getNonStandardConditions.mockReturnValue({
         additionalConditions: [{ text: '' }],
         bespokeConditions: [{ text: 'Bespoke condition - approval Yes' }],
         pssConditions: [{ text: '' }],
         unapprovedBespokeConditions: [{ text: '' }],
       })
 
-      const app = createApp({ licenceService, conditionsService: conditionsServiceStub }, 'roUser')
+      const app = createApp({ licenceService }, 'roUser')
       return request(app)
         .get('/hdc/licenceConditions/standard/1')
         .expect(200)
@@ -117,14 +109,14 @@ describe('/hdc/licenceConditions', () => {
     })
 
     test('Displays appropriate message where no additional, pss or bespoke conditions selected', () => {
-      conditionsServiceStub.getNonStandardConditions = jest.fn().mockReturnValue({
+      conditionsService.getNonStandardConditions.mockReturnValue({
         additionalConditions: [],
         bespokeConditions: [],
         pssConditions: [],
         unapprovedBespokeConditions: [],
       })
 
-      const app = createApp({ licenceService, conditionsService: conditionsServiceStub }, 'roUser')
+      const app = createApp({ licenceService }, 'roUser')
       return request(app)
         .get('/hdc/licenceConditions/standard/1')
         .expect(200)
@@ -185,7 +177,7 @@ describe('/hdc/licenceConditions', () => {
           licence: { key: 'value' },
           versionDetails: { additional_conditions_version: 1 },
         })
-        const app = createApp({ licenceService, conditionsService }, 'roUser')
+        const app = createApp({ licenceService }, 'roUser')
 
         return request(app)
           .post(route.url)
@@ -214,7 +206,7 @@ describe('/hdc/licenceConditions', () => {
           licence: { key: 'value' },
           versionDetails: { additional_conditions_version: 1 },
         })
-        const app = createApp({ licenceService, conditionsService }, 'caUser')
+        const app = createApp({ licenceService }, 'caUser')
 
         return request(app)
           .post(route.url)
@@ -245,7 +237,7 @@ describe('/hdc/licenceConditions', () => {
       test(`throws when posting to '${route.nextPath}' when ca in non-post approval`, () => {
         const licenceService = createLicenceServiceStub()
         licenceService.getLicence.mockResolvedValue({ stage: 'PROCESSING_RO', licence: { key: 'value' } })
-        const app = createApp({ licenceService, conditionsService }, 'caUser')
+        const app = createApp({ licenceService }, 'caUser')
 
         return request(app).post(route.url).send(route.body).expect(403)
       })
@@ -255,7 +247,7 @@ describe('/hdc/licenceConditions', () => {
       const licenceService = createLicenceServiceStub()
       const prisonerService = createPrisonerServiceStub()
       prisonerService.getPrisonerPersonalDetails.mockResolvedValue({ agencyLocationId: 'out' })
-      const app = createApp({ licenceService, conditionsService, prisonerService }, 'roUser')
+      const app = createApp({ licenceService, prisonerService }, 'roUser')
 
       await request(app)
         .post('/hdc/licenceConditions/standard/1')
@@ -297,8 +289,8 @@ describe('/hdc/licenceConditions', () => {
           licence: { key: 'value' },
           versionDetails: { additional_conditions_version: 1 },
         })
-        conditionsService.createConditionsObjectForLicence.mockReturnValue({})
-        const app = createApp({ licenceService, conditionsService }, 'roUser')
+        conditionsService.createConditionsObjectForLicence.mockReturnValue({} as any)
+        const app = createApp({ licenceService }, 'roUser')
 
         return request(app)
           .post(route.url)
@@ -319,11 +311,8 @@ describe('/hdc/licenceConditions', () => {
     describe('setting conditions version', () => {
       test(`sets conditions version if not previously set and additional conditions selected`, () => {
         const licenceService = createLicenceServiceStub()
-        licenceService.getLicence.mockResolvedValue({
-          licence: { key: 'value' },
-          versionDetails: { additional_conditions_version: undefined },
-        })
-        const app = createApp({ licenceService, conditionsService }, 'roUser')
+        conditionsServiceFactory.getNewVersion.mockReturnValue(1)
+        const app = createApp({ licenceService }, 'roUser')
 
         return request(app)
           .post('/hdc/licenceConditions/additionalConditions/2')
@@ -336,11 +325,8 @@ describe('/hdc/licenceConditions', () => {
 
       test(`sets conditions version if not previously set and no additional conditions selected`, () => {
         const licenceService = createLicenceServiceStub()
-        licenceService.getLicence.mockResolvedValue({
-          licence: { key: 'value' },
-          versionDetails: { additional_conditions_version: undefined },
-        })
-        const app = createApp({ licenceService, conditionsService }, 'roUser')
+        conditionsServiceFactory.getNewVersion.mockReturnValue(1)
+        const app = createApp({ licenceService }, 'roUser')
 
         return request(app)
           .post('/hdc/licenceConditions/additionalConditions/2')
@@ -348,6 +334,20 @@ describe('/hdc/licenceConditions', () => {
           .expect(302)
           .expect(() => {
             expect(licenceService.setConditionsVersion).toHaveBeenCalledWith(2, 1)
+          })
+      })
+
+      test(`does not set conditions version if previously set and no additional conditions selected`, () => {
+        const licenceService = createLicenceServiceStub()
+        conditionsServiceFactory.getNewVersion.mockReturnValue(null)
+        const app = createApp({ licenceService }, 'roUser')
+
+        return request(app)
+          .post('/hdc/licenceConditions/additionalConditions/2')
+          .send({ bookingId: 2 })
+          .expect(302)
+          .expect(() => {
+            expect(licenceService.setConditionsVersion).not.toHaveBeenCalled()
           })
       })
     })
@@ -361,7 +361,7 @@ describe('/hdc/licenceConditions', () => {
 
     test('calls licence service delete and returns to summary page', () => {
       const licenceService = createLicenceServiceStub()
-      const app = createApp({ licenceService, conditionsService }, 'roUser')
+      const app = createApp({ licenceService }, 'roUser')
 
       return request(app)
         .post('/hdc/licenceConditions/additionalConditions/123/delete/ABC')
@@ -380,7 +380,7 @@ describe('/hdc/licenceConditions', () => {
     test('audits the delete event', () => {
       const licenceService = createLicenceServiceStub()
       const audit = mockAudit()
-      const app = createApp({ licenceService, conditionsService, audit }, 'roUser')
+      const app = createApp({ licenceService, audit }, 'roUser')
 
       return request(app)
         .post('/hdc/licenceConditions/additionalConditions/123/delete/ABC')
@@ -403,7 +403,7 @@ describe('/hdc/licenceConditions', () => {
       const licenceService = createLicenceServiceStub()
       licenceService.getLicence.mockResolvedValue({ licence: { licenceConditions: { additional: { cond: 'that' } } } })
       licenceService.validateForm = jest.fn().mockReturnValue({ error: 'object' })
-      const app = createApp({ licenceService, conditionsService }, 'roUser')
+      const app = createApp({ licenceService }, 'roUser')
 
       return request(app)
         .get('/hdc/licenceConditions/conditionsSummary/1')
@@ -421,27 +421,22 @@ describe('/hdc/licenceConditions', () => {
         })
     })
   })
+
+  function createApp({ licenceService = null, prisonerService = null, audit = mockAudit() }, user) {
+    const prisonerServiceMock = prisonerService || createPrisonerServiceStub()
+    const signInService = createSignInServiceStub()
+
+    const baseRouter = standardRouter({
+      licenceService,
+      prisonerService: prisonerServiceMock,
+      audit,
+      signInService,
+      tokenVerifier: new NullTokenVerifier(),
+      config: null,
+    })
+
+    const route = baseRouter(createRoute({ licenceService, conditionsServiceFactory }))
+
+    return appSetup(route, user, '/hdc/licenceConditions/')
+  }
 })
-
-function createApp(
-  { licenceService = null, conditionsService = null, prisonerService = null, audit = mockAudit() },
-  user
-) {
-  const prisonerServiceMock = prisonerService || createPrisonerServiceStub()
-  const signInService = createSignInServiceStub()
-
-  const baseRouter = standardRouter({
-    licenceService,
-    prisonerService: prisonerServiceMock,
-    audit,
-    signInService,
-    tokenVerifier: new NullTokenVerifier(),
-    config: null,
-  })
-
-  const conditionsServiceFactory = createConditionsServiceFactoryStub()
-  conditionsServiceFactory.forVersion.mockReturnValue(conditionsService)
-  const route = baseRouter(createRoute({ licenceService, conditionsServiceFactory }))
-
-  return appSetup(route, user, '/hdc/licenceConditions/')
-}
