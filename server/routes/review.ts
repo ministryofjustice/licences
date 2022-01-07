@@ -7,7 +7,6 @@ import type { PrisonerService } from '../../types/licences'
 import type { LicenceService } from '../services/licenceService'
 import type { Response } from 'express'
 import type { ConditionsServiceFactory } from '../services/conditionsService'
-import { CURRENT_CONDITION_VERSION } from '../services/config/conditionsConfig'
 
 function shouldValidate(role, stage, postApproval) {
   return postApproval
@@ -51,7 +50,7 @@ export = ({
         const errorObject = validate(licenceStatus, showErrors, licence, stage)
 
         const data = conditionsServiceFactory
-          .forVersion(CURRENT_CONDITION_VERSION)
+          .forLicence(res.locals.licence)
           .populateLicenceWithConditions(licence, errorObject)
 
         const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, res.locals.token)
