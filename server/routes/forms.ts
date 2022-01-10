@@ -6,6 +6,7 @@ import { curfewAddressCheckFormFileName } from './utils/pdfUtils'
 import { isEmpty, getIn } from '../utils/functionalHelpers'
 import FormService from '../services/formService'
 import { Response } from 'express'
+import { ConditionsServiceFactory } from '../services/conditionsService'
 
 const {
   port,
@@ -15,19 +16,18 @@ const {
   },
 } = config
 
-export default (formService: FormService) => (router) => {
+export default (formService: FormService, conditionsServiceFactory: ConditionsServiceFactory) => (router) => {
   router.get(
     '/curfewAddress/:bookingId',
     asyncMiddleware(async (req, res: Response<any, LicenceLocals>) => {
       const { bookingId } = req.params
-      const {
-        prisoner,
-        licence: { licence },
-        licenceStatus,
-      } = res.locals
+      const { prisoner, licence: licenceRecord, licenceStatus } = res.locals
 
+      const { licence } = licenceRecord
       const isBass = getIn(licenceStatus, ['decisions', 'bassReferralNeeded']) === true
       const isAp = getIn(licenceStatus, ['decisions', 'approvedPremisesRequired']) === true
+
+      const conditions = conditionsServiceFactory.forLicence(licenceRecord).getFullTextForApprovedConditions(licence)
 
       const pageData = await formService.getCurfewAddressCheckData({
         agencyLocationId: prisoner.agencyLocationId,
@@ -46,7 +46,7 @@ export default (formService: FormService) => (router) => {
         {}
       return res.renderPDF(
         'forms/curfewAddress',
-        { ...pageData, approvedPremisesAddress, hdcUrl, port, completionDate },
+        { ...pageData, conditions, approvedPremisesAddress, hdcUrl, port, completionDate },
         { filename, pdfOptions }
       )
     })

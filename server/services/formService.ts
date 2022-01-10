@@ -8,10 +8,8 @@ import {
   unsuitableReasonlabels,
 } from './config/formConfig'
 import logger from '../../log'
-import { CURRENT_CONDITION_VERSION } from './config/conditionsConfig'
-import { PrisonerService } from './prisonerService'
-import { ConditionsServiceFactory } from './conditionsService'
-import { Licence } from '../data/licenceTypes'
+import type { PrisonerService } from './prisonerService'
+import type { Licence } from '../data/licenceTypes'
 
 const {
   pdf: {
@@ -22,7 +20,6 @@ const {
 export default class FormService {
   constructor(
     private readonly pdfFormatter,
-    private readonly conditionsServiceFactory: ConditionsServiceFactory,
     private readonly prisonerService: PrisonerService,
     private readonly configClient
   ) {}
@@ -146,8 +143,7 @@ export default class FormService {
     bookingId: number
     token: string
   }) {
-    const [conditions, prisoner, caMailboxes] = await Promise.all([
-      this.conditionsServiceFactory.forVersion(CURRENT_CONDITION_VERSION).getFullTextForApprovedConditions(licence),
+    const [prisoner, caMailboxes] = await Promise.all([
       this.prisonerService.getPrisonerDetails(bookingId, token),
       this.configClient.getMailboxes(agencyLocationId, 'CA'),
     ])
@@ -175,7 +171,6 @@ export default class FormService {
       ...curfewAddressDetails,
       prisonEmail,
       reportingInstructions,
-      conditions,
       riskManagement,
       victimLiaison,
       responsibleOfficer,

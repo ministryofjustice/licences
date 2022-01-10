@@ -1,14 +1,20 @@
 import pdfParse from 'pdf-parse'
 import request from 'supertest'
 import { appSetup } from '../../test/supertestSetup'
-import { createSignInServiceStub } from '../../test/mockServices'
+import {
+  createConditionsServiceFactoryStub,
+  createConditionsServiceStub,
+  createSignInServiceStub,
+} from '../../test/mockServices'
 import standardRouter from '../../server/routes/routeWorkers/standardRouter'
 import createRoute from '../../server/routes/forms'
 import NullTokenVerifier from '../../server/authentication/tokenverifier/NullTokenVerifier'
+import { ConditionsService } from '../../server/services/conditionsService'
 
 describe('/forms/', () => {
   let licenceService
   let prisonerService
+  let conditionsService: jest.Mocked<ConditionsService>
   let formService
 
   let app
@@ -39,7 +45,6 @@ describe('/forms/', () => {
     occupier: {},
     prisonEmail: {},
     reportingInstructions: {},
-    conditions: { standardConditions: ['STANDARD CONDITION'], additionalConditions: ['ADDITIONAL CONDITION'] },
     riskManagement: {},
     victimLiaison: {},
     responsibleOfficer: {},
@@ -58,6 +63,11 @@ describe('/forms/', () => {
       getTemplateData: jest.fn().mockReturnValue(formTemplateData),
       getCurfewAddressCheckData: jest.fn().mockReturnValue(curfewData),
     }
+    conditionsService = createConditionsServiceStub()
+    conditionsService.getFullTextForApprovedConditions.mockReturnValue({
+      standardConditions: ['STANDARD CONDITION'],
+      additionalConditions: ['ADDITIONAL CONDITION'],
+    })
   })
 
   describe('/:templateName/:bookingId/', () => {
@@ -273,7 +283,9 @@ describe('/forms/', () => {
       tokenVerifier: new NullTokenVerifier(),
       config: null,
     })
-    const route = baseRouter(createRoute(formService))
+    const conditionsServiceFactory = createConditionsServiceFactoryStub()
+    conditionsServiceFactory.forLicence.mockReturnValue(conditionsService)
+    const route = baseRouter(createRoute(formService, conditionsServiceFactory))
     return appSetup(route, user, '/hdc/forms')
   }
 })
