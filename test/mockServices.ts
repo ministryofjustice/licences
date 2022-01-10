@@ -48,6 +48,7 @@ export const createConditionsServiceStub = () =>
     formatConditionInputs: jest.fn(),
     populateLicenceWithConditions: jest.fn().mockReturnValue({}),
     getNonStandardConditions: jest.fn(),
+    getFullTextForApprovedConditions: jest.fn(),
     createConditionsObjectForLicence: jest.fn(),
   } as unknown as jest.Mocked<ConditionsService>)
 

@@ -1,12 +1,10 @@
 import FormService from '../../server/services/formService'
 import { pickCurfewAddress } from '../../server/services/utils/pdfFormatter'
-import { createPrisonerServiceStub, createConditionsServiceFactoryStub } from '../mockServices'
+import { createPrisonerServiceStub } from '../mockServices'
 
 describe('formService', () => {
   let service
   let pdfFormatter
-  /** @type any */
-  let conditionsService
   let prisonerService
   let configClient
 
@@ -26,18 +24,13 @@ describe('formService', () => {
       pickCurfewAddress,
     }
 
-    conditionsService = {
-      getFullTextForApprovedConditions: jest.fn().mockReturnValue({}),
-    }
     prisonerService = createPrisonerServiceStub()
     prisonerService.getPrisonerDetails.mockReturnValue({})
 
     configClient = {
       getMailboxes: jest.fn().mockReturnValue([{ email: 'first' }, { email: 'second' }]),
     }
-    const conditionsServiceFactory = createConditionsServiceFactoryStub()
-    conditionsServiceFactory.forVersion.mockReturnValue(conditionsService)
-    service = new FormService(pdfFormatter, conditionsServiceFactory, prisonerService, configClient)
+    service = new FormService(pdfFormatter, prisonerService, configClient)
     const time = new Date('April 25, 2019 01:00:00')
     realDateNow = Date.now.bind(global.Date)
     jest.spyOn(Date, 'now').mockImplementation(() => time.getTime())
@@ -386,10 +379,6 @@ describe('formService', () => {
 
     test('should call services for data', async () => {
       await service.getCurfewAddressCheckData(curfewAddressRequest)
-
-      expect(conditionsService.getFullTextForApprovedConditions).toHaveBeenCalled()
-      expect(conditionsService.getFullTextForApprovedConditions).toHaveBeenCalledWith(licence)
-
       expect(prisonerService.getPrisonerDetails).toHaveBeenCalled()
       expect(prisonerService.getPrisonerDetails).toHaveBeenCalledWith('bookingId', 'token')
 
