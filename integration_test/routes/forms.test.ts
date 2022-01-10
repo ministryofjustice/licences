@@ -1,10 +1,10 @@
-const pdfParse = require('pdf-parse')
-const request = require('supertest')
-const { appSetup } = require('../../test/supertestSetup')
-const { createSignInServiceStub } = require('../../test/mockServices')
-const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
-const createRoute = require('../../server/routes/forms')
-const NullTokenVerifier = require('../../server/authentication/tokenverifier/NullTokenVerifier')
+import pdfParse from 'pdf-parse'
+import request from 'supertest'
+import { appSetup } from '../../test/supertestSetup'
+import { createSignInServiceStub } from '../../test/mockServices'
+import standardRouter from '../../server/routes/routeWorkers/standardRouter'
+import createRoute from '../../server/routes/forms'
+import NullTokenVerifier from '../../server/authentication/tokenverifier/NullTokenVerifier'
 
 describe('/forms/', () => {
   let licenceService
@@ -273,7 +273,7 @@ describe('/forms/', () => {
       tokenVerifier: new NullTokenVerifier(),
       config: null,
     })
-    const route = baseRouter(createRoute({ formService }))
+    const route = baseRouter(createRoute(formService))
     return appSetup(route, user, '/hdc/forms')
   }
 })
