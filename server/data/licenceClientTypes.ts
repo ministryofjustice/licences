@@ -2,6 +2,17 @@ import { Licence, LicenceStage } from './licenceTypes'
 
 export type ConditionVersion = 1 | 2
 
+export type ConditionMetadata = {
+  id: string
+  text: string
+  user_input: string
+  field_position: Record<string, number>
+  group_name: string
+  subgroup_name: string
+}
+
+export type StandardCondition = { text: string }
+
 export interface Case {
   licence: Licence
   booking_id: number
