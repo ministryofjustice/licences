@@ -17,7 +17,7 @@ import { confiscationOrder, onRemand, seriousOffence } from '../../server/routes
 import { bassAreaCheck, bassOffer, bassRequest } from '../../server/routes/config/bassReferral'
 import { release } from '../../server/routes/config/approval'
 import { licenceDetails } from '../../server/routes/config/vary'
-import { CurfewAddress, Licence } from '../../server/data/licenceTypes'
+import { CurfewAddress, Licence, LicenceStage } from '../../server/data/licenceTypes'
 
 describe('validation', () => {
   const service = createLicenceService(null)
@@ -631,7 +631,7 @@ describe('validation', () => {
       })
 
       describe('additionalConditions', () => {
-        const pageConfig = additional
+        const pageConfig = additional.get(1)
         const options = [
           { formResponse: {}, outcome: {} },
           { formResponse: { NOCONTACTASSOCIATE: { groupsOrOrganisation: 'ngr' } }, outcome: {} },
@@ -1402,7 +1402,8 @@ describe('validation', () => {
 
   describe('validateFormGroup', () => {
     describe('eligibility', () => {
-      const stage = 'ELIGIBILITY'
+      const stage = LicenceStage.ELIGIBILITY
+      const conditionVersion = 1
       const validAddress: CurfewAddress = {
         addressLine1: 'a1',
         addressTown: 't1',
@@ -1432,7 +1433,7 @@ describe('validation', () => {
       options.forEach((option) => {
         test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.licence)}`, () => {
           const { outcome, licence } = option
-          expect(service.validateFormGroup({ licence, stage })).toEqual(outcome)
+          expect(service.validateFormGroup({ licence, stage, conditionVersion })).toEqual(outcome)
         })
       })
 
@@ -1471,7 +1472,13 @@ describe('validation', () => {
           test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.licence)}`, () => {
             const { outcome, licence } = option
             expect(
-              service.validateFormGroup({ licence, stage, decisions: { bassReferralNeeded: true }, tasks: undefined })
+              service.validateFormGroup({
+                licence,
+                stage,
+                decisions: { bassReferralNeeded: true },
+                tasks: undefined,
+                conditionVersion,
+              })
             ).toEqual(outcome)
           })
         })
@@ -1479,7 +1486,8 @@ describe('validation', () => {
     })
 
     describe('processing_ro', () => {
-      const stage = 'PROCESSING_RO'
+      const stage = LicenceStage.PROCESSING_RO
+      const conditionVersion = 1
       const validRiskManagement = {
         planningActions: 'No',
         awaitingInformation: 'No',
@@ -1670,7 +1678,9 @@ describe('validation', () => {
         options.forEach((option) => {
           test(`should return ${JSON.stringify(option.standardOutcome)} for ${JSON.stringify(option.licence)}`, () => {
             const { standardOutcome, licence, decisions } = option
-            expect(service.validateFormGroup({ licence, stage, decisions: decisions || {} })).toEqual(standardOutcome)
+            expect(service.validateFormGroup({ licence, stage, decisions: decisions || {}, conditionVersion })).toEqual(
+              standardOutcome
+            )
           })
         })
       })
@@ -1686,7 +1696,9 @@ describe('validation', () => {
               curfewAddressRejected: true,
               addressReviewFailed: true,
             }
-            expect(service.validateFormGroup({ licence, stage, decisions: decs })).toEqual(addressReviewFailedOutcome)
+            expect(service.validateFormGroup({ licence, stage, decisions: decs, conditionVersion })).toEqual(
+              addressReviewFailedOutcome
+            )
           })
         })
       })
@@ -1703,7 +1715,9 @@ describe('validation', () => {
               addressReviewFailed: false,
               addressUnsuitable: true,
             }
-            expect(service.validateFormGroup({ licence, stage, decisions: decs })).toEqual(addressRiskFailedOutcome)
+            expect(service.validateFormGroup({ licence, stage, decisions: decs, conditionVersion })).toEqual(
+              addressRiskFailedOutcome
+            )
           })
         })
       })
@@ -1741,6 +1755,7 @@ describe('validation', () => {
                 licence,
                 stage,
                 decisions: { bassReferralNeeded: true },
+                conditionVersion,
               })
             ).toEqual(outcome)
           })
@@ -1789,9 +1804,9 @@ describe('validation', () => {
         bassOptions.forEach((option) => {
           test(`should return ${JSON.stringify(option.bassOutcome)} for ${JSON.stringify(option.licence)}`, () => {
             const { bassOutcome, licence } = option
-            expect(service.validateFormGroup({ licence, stage, decisions: { bassAreaNotSuitable: true } })).toEqual(
-              bassOutcome
-            )
+            expect(
+              service.validateFormGroup({ licence, stage, decisions: { bassAreaNotSuitable: true }, conditionVersion })
+            ).toEqual(bassOutcome)
           })
         })
       })

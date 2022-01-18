@@ -1,33 +1,28 @@
-const baseJoi = require('joi').extend(require('@hapi/joi-date'))
+import baseJoi from 'joi'
+import joiDate from '@hapi/joi-date'
 
-const moment = require('moment')
+const joi = baseJoi.extend(joiDate)
+
+import moment from 'moment'
 
 const today = moment().startOf('day').format('MM-DD-YYYY')
-const {
-  curfewAddressSchema,
-  addressReviewSchema,
-  addressReviewSchemaOffenderIsOccupier,
-} = require('./bespokeAddressSchema')
-const additionalConditionsSchema = require('./bespokeConditionsSchema')
 
-const {
-  getFieldName,
-  getFieldDetail,
-  getIn,
-  isEmpty,
-  mergeWithRight,
-  lastItem,
-} = require('../../utils/functionalHelpers')
+import { curfewAddressSchema, addressReviewSchema, addressReviewSchemaOffenderIsOccupier } from './bespokeAddressSchema'
 
-const proposedAddressConfig = require('../../routes/config/proposedAddress')
-const riskConfig = require('../../routes/config/risk')
-const victimConfig = require('../../routes/config/victim')
-const curfewConfig = require('../../routes/config/curfew')
-const reportingConfig = require('../../routes/config/reporting')
-const bassConfig = require('../../routes/config/bassReferral')
-const conditionsConfig = require('../../routes/config/licenceConditions')
+import additionalConditionsSchema from './bespokeConditionsSchema'
 
-const joi = baseJoi
+import { getFieldName, getFieldDetail, getIn, isEmpty, mergeWithRight, lastItem } from '../../utils/functionalHelpers'
+
+import proposedAddressConfig from '../../routes/config/proposedAddress'
+import riskConfig from '../../routes/config/risk'
+import victimConfig from '../../routes/config/victim'
+import curfewConfig from '../../routes/config/curfew'
+import reportingConfig from '../../routes/config/reporting'
+import bassConfig from '../../routes/config/bassReferral'
+import * as conditionsConfig from '../../routes/config/licenceConditions'
+import { Licence } from '../../data/licenceTypes'
+import { ConditionVersion } from '../../data/licenceClientTypes'
+
 const postcode = joi
   .string()
   .regex(/^[a-z]{1,2}\d[a-z\d]?\s*\d[a-z]{2}$/i)
@@ -157,12 +152,7 @@ const validationProcedures = {
   },
 }
 
-module.exports = {
-  validate,
-  validateGroup,
-}
-
-function validate({ formResponse, pageConfig, formType = 'standard', bespokeConditions = {} }) {
+export function validate({ formResponse, pageConfig, formType = 'standard', bespokeConditions = {} }) {
   const procedure = validationProcedures[formType] || validationProcedures.standard
   const fieldsConfig = getIn(pageConfig, ['fields'])
   const formSchema = procedure.getSchema(pageConfig, bespokeConditions)
@@ -200,7 +190,17 @@ function getErrorMessage(fieldConfig, error, errorMethod) {
   return errorMethod(fieldConfig, error.path) || defaultForType(fieldConfig, error) || error.message
 }
 
-function validateGroup({ licence, group, bespokeConditions }) {
+export function validateGroup({
+  licence,
+  group,
+  bespokeConditions,
+  conditionVersion,
+}: {
+  licence: Licence
+  group: string
+  bespokeConditions: any
+  conditionVersion: ConditionVersion
+}) {
   const groups = {
     ELIGIBILITY: [
       {
@@ -231,7 +231,7 @@ function validateGroup({ licence, group, bespokeConditions }) {
         conditionallyActive:
           getIn(licence, ['licenceConditions', 'standard', 'additionalConditionsRequired']) === 'Yes',
         formType: 'additional',
-        pageConfig: conditionsConfig.additional,
+        pageConfig: conditionsConfig.additional.get(conditionVersion),
         section: 'licenceConditions',
         missingMessage: 'Enter one or more additional conditions',
       },
@@ -278,7 +278,7 @@ function validateGroup({ licence, group, bespokeConditions }) {
         conditionallyActive:
           getIn(licence, ['licenceConditions', 'standard', 'additionalConditionsRequired']) === 'Yes',
         formType: 'additional',
-        pageConfig: conditionsConfig.additional,
+        pageConfig: conditionsConfig.additional.get(conditionVersion),
         section: 'licenceConditions',
         missingMessage: 'Enter one or more additional conditions',
       },
@@ -374,7 +374,7 @@ function validateGroup({ licence, group, bespokeConditions }) {
         conditionallyActive:
           getIn(licence, ['licenceConditions', 'standard', 'additionalConditionsRequired']) === 'Yes',
         formType: 'additional',
-        pageConfig: conditionsConfig.additional,
+        pageConfig: conditionsConfig.additional.get(conditionVersion),
         section: 'licenceConditions',
         missingMessage: 'Enter one or more additional conditions',
       },

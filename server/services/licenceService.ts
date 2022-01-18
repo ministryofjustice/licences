@@ -3,11 +3,12 @@ import moment from 'moment'
 import logger from '../../log'
 import { transitions } from './config/licenceStage'
 import recordList from './utils/recordList'
-import formValidation from './utils/formValidation'
+import * as formValidation from './utils/formValidation'
 import { LicenceClient } from '../data/licenceClient'
 import { Licence, LicenceConditions, LicenceStage } from '../data/licenceTypes'
 import { pickCurfewAddressPath } from './utils/pdfFormatter'
 import { ConditionVersion } from '../data/licenceClientTypes'
+import { Decisions, Tasks } from './licence/licenceStatusTypes'
 
 const {
   getIn,
@@ -463,13 +464,15 @@ export class LicenceService {
   validateFormGroup({
     licence,
     stage,
+    conditionVersion,
     decisions = {},
     tasks = {},
   }: {
     licence: Licence
-    stage: string
-    decisions?: any
-    tasks?: any
+    stage: LicenceStage
+    decisions?: Decisions
+    tasks?: Tasks
+    conditionVersion: ConditionVersion
   }) {
     const {
       addressUnsuitable,
@@ -485,7 +488,7 @@ export class LicenceService {
     const newBassAreaAddedForReview = stage !== 'PROCESSING_RO' && bassAreaCheck === 'UNSTARTED'
 
     const groupName = () => {
-      if (stage === 'PROCESSING_RO') {
+      if (stage === LicenceStage.PROCESSING_RO) {
         if (approvedPremisesRequired) {
           return 'PROCESSING_RO_APPROVED_PREMISES'
         }
@@ -503,7 +506,7 @@ export class LicenceService {
         }
       }
 
-      if (bassReferralNeeded && (stage === 'ELIGIBILITY' || newBassAreaAddedForReview)) {
+      if (bassReferralNeeded && (stage === LicenceStage.ELIGIBILITY || newBassAreaAddedForReview)) {
         return 'BASS_REQUEST'
       }
 
@@ -517,6 +520,7 @@ export class LicenceService {
     return formValidation.validateGroup({
       licence,
       group: groupName(),
+      conditionVersion,
       bespokeConditions: {
         offenderIsMainOccupier: decisions.offenderIsMainOccupier,
       },
