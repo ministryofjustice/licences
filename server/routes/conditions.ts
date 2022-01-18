@@ -3,11 +3,11 @@ import type { Response } from 'express'
 import type { LicenceLocals } from '../utils/middleware'
 import type { ConditionsServiceFactory } from '../services/conditionsService'
 
-const { asyncMiddleware } = require('../utils/middleware')
-const createStandardRoutes = require('./routeWorkers/standard')
-const logger = require('../../log')
-const { getIn } = require('../utils/functionalHelpers')
-const formConfig = require('./config/licenceConditions')
+import { asyncMiddleware } from '../utils/middleware'
+import createStandardRoutes from './routeWorkers/standard'
+import logger from '../../log'
+import { getIn } from '../utils/functionalHelpers'
+import * as formConfig from './config/licenceConditions'
 
 export default ({
     licenceService,
@@ -140,9 +140,10 @@ export default ({
       const nextPath = formConfig.conditionsSummary.nextPath[action] || formConfig.conditionsSummary.nextPath.path
       const licence = res.locals?.licence?.licence || {}
       const additionalConditions = licence?.licenceConditions?.additional || {}
+      const version = conditionsServiceFactory.getVersion(res.locals.licence)
       const errorObject = licenceService.validateForm({
         formResponse: additionalConditions,
-        pageConfig: formConfig.additional,
+        pageConfig: formConfig.additional.get(version),
         formType: 'additional',
       })
       const data = conditionsServiceFactory

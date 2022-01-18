@@ -1,11 +1,12 @@
-const baseJoi = require('joi').extend(require('@hapi/joi-date'))
+import baseJoi from 'joi'
+import dateJoi from '@hapi/joi-date'
 
-const joi = baseJoi
-const moment = require('moment')
+const joi = baseJoi.extend(dateJoi)
+import moment from 'moment'
 
 const today = moment().startOf('day').format('MM-DD-YYYY')
 
-module.exports = joi.object({
+export default joi.object({
   NOCONTACTASSOCIATE: joi.object({
     groupsOrOrganisation: joi.string().required(),
   }),

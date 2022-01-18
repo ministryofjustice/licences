@@ -5,10 +5,11 @@ import {
   LicenceRecord,
 } from '../../server/services/licenceService'
 import * as varyConfig from '../../server/routes/config/vary'
-import formValidation from '../../server/services/utils/formValidation'
+import * as formValidation from '../../server/services/utils/formValidation'
 import { LicenceClient } from '../../server/data/licenceClient'
 import { CaseWithVaryVersion, ConditionVersion } from '../../server/data/licenceClientTypes'
 import { Licence, LicenceStage } from '../../server/data/licenceTypes'
+import { TaskState } from '../../server/services/config/taskState'
 
 jest.mock('../../server/services/utils/formValidation')
 
@@ -1641,13 +1642,20 @@ describe('licenceService', () => {
         offenderIsMainOccupier: true,
       }
 
-      service.validateFormGroup({ licence: {}, stage: 'ELIGIBILITY', decisions, tasks: {} })
+      service.validateFormGroup({
+        licence: {},
+        stage: LicenceStage.ELIGIBILITY,
+        decisions,
+        tasks: {},
+        conditionVersion: 1,
+      })
 
       expect(formValidation.validateGroup).toHaveBeenCalled()
       expect(formValidation.validateGroup).toHaveBeenCalledWith({
         licence: {},
         group: 'BASS_REQUEST',
         bespokeConditions: { offenderIsMainOccupier: true },
+        conditionVersion: 1,
       })
     })
 
@@ -1656,21 +1664,29 @@ describe('licenceService', () => {
         approvedPremisesRequired: true,
       }
 
-      service.validateFormGroup({ licence: {}, stage: 'PROCESSING_RO', decisions, tasks: {} })
+      service.validateFormGroup({
+        licence: {},
+        stage: LicenceStage.PROCESSING_RO,
+        decisions,
+        tasks: {},
+        conditionVersion: 1,
+      })
 
       expect(formValidation.validateGroup).toHaveBeenCalled()
       expect(formValidation.validateGroup).toHaveBeenCalledWith({
         licence: {},
         group: 'PROCESSING_RO_APPROVED_PREMISES',
         bespokeConditions: { offenderIsMainOccupier: undefined },
+        conditionVersion: 1,
       })
     })
     test('should use correct group when new address for review', () => {
       service.validateFormGroup({
         licence: {},
-        stage: 'ELIGIBILITY',
+        stage: LicenceStage.ELIGIBILITY,
         decisions: {},
-        tasks: { curfewAddressReview: 'UNSTARTED' },
+        tasks: { curfewAddressReview: TaskState.UNSTARTED },
+        conditionVersion: 1,
       })
 
       expect(formValidation.validateGroup).toHaveBeenCalled()
@@ -1678,6 +1694,7 @@ describe('licenceService', () => {
         licence: {},
         group: 'ELIGIBILITY',
         bespokeConditions: { offenderIsMainOccupier: undefined },
+        conditionVersion: 1,
       })
     })
   })

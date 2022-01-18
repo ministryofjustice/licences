@@ -12,8 +12,9 @@ import {
 
 import standardRouter from '../../server/routes/routeWorkers/standardRouter'
 import createRoute from '../../server/routes/conditions'
-import formConfig from '../../server/routes/config/licenceConditions'
+import * as formConfig from '../../server/routes/config/licenceConditions'
 import NullTokenVerifier from '../../server/authentication/tokenverifier/NullTokenVerifier'
+import { CURRENT_CONDITION_VERSION } from '../../server/services/config/conditionsConfig'
 
 describe('/hdc/licenceConditions', () => {
   let conditionsService = createConditionsServiceStub()
@@ -29,6 +30,7 @@ describe('/hdc/licenceConditions', () => {
     conditionsService.populateLicenceWithConditions = jest.fn().mockReturnValue({ licence: {} })
     conditionsServiceFactory.forVersion.mockReturnValue(conditionsService)
     conditionsServiceFactory.forLicence.mockReturnValue(conditionsService)
+    conditionsServiceFactory.getVersion.mockReturnValue(CURRENT_CONDITION_VERSION)
   })
 
   describe('licenceConditions routes', () => {
@@ -411,7 +413,7 @@ describe('/hdc/licenceConditions', () => {
         .expect(() => {
           expect(licenceService.validateForm).toHaveBeenCalledWith({
             formResponse: { cond: 'that' },
-            pageConfig: formConfig.additional,
+            pageConfig: formConfig.additional.get(CURRENT_CONDITION_VERSION),
             formType: 'additional',
           })
           expect(conditionsService.populateLicenceWithConditions).toHaveBeenCalledWith(

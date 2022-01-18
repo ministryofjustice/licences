@@ -1,12 +1,23 @@
 import { ConditionMetadata } from '../../../data/licenceClientTypes'
 
+enum GroupName {
+  PEOPLE_CONTACT_AND_RELATIONSHIPS = 'People, contact and relationships',
+  DRUGS_HEALTH_AND_BEHAVIOUR = 'Drugs, health and behaviour',
+  CURFEW_AND_REPORTING = 'Curfew and reporting',
+  TRAVEL = 'Travel',
+  EXCLUSION = 'Exclusion',
+  TECHNOLOGY = 'Technology',
+  POST_SENTENCE_SUPERVISION_ONLY = 'Post-sentence supervision only',
+  RESTRICTED = 'Restricted additional conditions',
+}
+
 export const v1Conditions: ConditionMetadata[] = [
   {
     id: 'NOCONTACTPRISONER',
     text: 'Not to contact directly or indirectly any person who is a serving or remand offender or detained in State custody, without the prior approval of your supervising officer.',
     user_input: null,
     field_position: null,
-    group_name: 'People, contact and relationships',
+    group_name: GroupName.PEOPLE_CONTACT_AND_RELATIONSHIPS,
     subgroup_name: 'Person or group',
   },
   {
@@ -16,7 +27,7 @@ export const v1Conditions: ConditionMetadata[] = [
     field_position: {
       groupsOrOrganisation: 0,
     },
-    group_name: 'People, contact and relationships',
+    group_name: GroupName.PEOPLE_CONTACT_AND_RELATIONSHIPS,
     subgroup_name: 'Person or group',
   },
   {
@@ -24,7 +35,7 @@ export const v1Conditions: ConditionMetadata[] = [
     text: 'Not to contact or associate with a known sex offender other than when compelled by attendance at a Treatment Programme or when residing at Approved Premises without the prior approval of your supervising officer.',
     user_input: null,
     field_position: null,
-    group_name: 'People, contact and relationships',
+    group_name: GroupName.PEOPLE_CONTACT_AND_RELATIONSHIPS,
     subgroup_name: 'Person or group',
   },
   {
@@ -34,7 +45,7 @@ export const v1Conditions: ConditionMetadata[] = [
     field_position: {
       intimateGender: 0,
     },
-    group_name: 'People, contact and relationships',
+    group_name: GroupName.PEOPLE_CONTACT_AND_RELATIONSHIPS,
     subgroup_name: 'Person or group',
   },
   {
@@ -44,7 +55,7 @@ export const v1Conditions: ConditionMetadata[] = [
     field_position: {
       noContactOffenders: 0,
     },
-    group_name: 'People, contact and relationships',
+    group_name: GroupName.PEOPLE_CONTACT_AND_RELATIONSHIPS,
     subgroup_name: 'Person or group',
   },
   {
@@ -55,7 +66,7 @@ export const v1Conditions: ConditionMetadata[] = [
       notResideWithAge: 1,
       notResideWithGender: 0,
     },
-    group_name: 'People, contact and relationships',
+    group_name: GroupName.PEOPLE_CONTACT_AND_RELATIONSHIPS,
     subgroup_name: 'Children',
   },
   {
@@ -67,7 +78,7 @@ export const v1Conditions: ConditionMetadata[] = [
       unsupervisedContactGender: 0,
       unsupervisedContactSocial: 2,
     },
-    group_name: 'People, contact and relationships',
+    group_name: GroupName.PEOPLE_CONTACT_AND_RELATIONSHIPS,
     subgroup_name: 'Children',
   },
   {
@@ -77,7 +88,7 @@ export const v1Conditions: ConditionMetadata[] = [
     field_position: {
       notInSightOf: 0,
     },
-    group_name: 'People, contact and relationships',
+    group_name: GroupName.PEOPLE_CONTACT_AND_RELATIONSHIPS,
     subgroup_name: 'Children',
   },
   {
@@ -87,7 +98,7 @@ export const v1Conditions: ConditionMetadata[] = [
     field_position: {
       noWorkWithAge: 0,
     },
-    group_name: 'People, contact and relationships',
+    group_name: GroupName.PEOPLE_CONTACT_AND_RELATIONSHIPS,
     subgroup_name: 'Children',
   },
   {
@@ -95,7 +106,7 @@ export const v1Conditions: ConditionMetadata[] = [
     text: 'Notify your supervising officer of any developing personal relationships, whether intimate or not, with any person you know or believe to be resident in a household containing children under the age of 18. This includes persons known to you prior to your time in custody with whom you are renewing or developing a personal relationship with.',
     user_input: null,
     field_position: null,
-    group_name: 'People, contact and relationships',
+    group_name: GroupName.PEOPLE_CONTACT_AND_RELATIONSHIPS,
     subgroup_name: 'Children',
   },
   {
@@ -106,7 +117,7 @@ export const v1Conditions: ConditionMetadata[] = [
       socialServicesDept: 1,
       victimFamilyMembers: 0,
     },
-    group_name: 'People, contact and relationships',
+    group_name: GroupName.PEOPLE_CONTACT_AND_RELATIONSHIPS,
     subgroup_name: 'Victims',
   },
   {
@@ -118,7 +129,7 @@ export const v1Conditions: ConditionMetadata[] = [
       appointmentTimeInDrugsSection: 1,
       appointmentAddressInDrugsSection: 2,
     },
-    group_name: 'Drugs, health and behaviour',
+    group_name: GroupName.DRUGS_HEALTH_AND_BEHAVIOUR,
     subgroup_name: null,
   },
   {
@@ -129,7 +140,7 @@ export const v1Conditions: ConditionMetadata[] = [
       abuseAndBehaviours: 0,
       courseOrCentre: 1,
     },
-    group_name: 'Drugs, health and behaviour',
+    group_name: GroupName.DRUGS_HEALTH_AND_BEHAVIOUR,
     subgroup_name: null,
   },
   {
@@ -140,7 +151,7 @@ export const v1Conditions: ConditionMetadata[] = [
       appointmentName: 0,
       appointmentProfession: 1,
     },
-    group_name: 'Drugs, health and behaviour',
+    group_name: GroupName.DRUGS_HEALTH_AND_BEHAVIOUR,
     subgroup_name: null,
   },
   {
@@ -150,7 +161,7 @@ export const v1Conditions: ConditionMetadata[] = [
     field_position: {
       mentalHealthName: 0,
     },
-    group_name: 'Drugs, health and behaviour',
+    group_name: GroupName.DRUGS_HEALTH_AND_BEHAVIOUR,
     subgroup_name: null,
   },
   {
@@ -163,7 +174,7 @@ export const v1Conditions: ConditionMetadata[] = [
       curfewAddress: 0,
       curfewTagRequired: 3,
     },
-    group_name: 'Curfew and reporting',
+    group_name: GroupName.CURFEW_AND_REPORTING,
     subgroup_name: null,
   },
   {
@@ -175,7 +186,7 @@ export const v1Conditions: ConditionMetadata[] = [
       confinedFrom: 1,
       confinedReviewFrequency: 2,
     },
-    group_name: 'Curfew and reporting',
+    group_name: GroupName.CURFEW_AND_REPORTING,
     subgroup_name: null,
   },
   {
@@ -188,7 +199,7 @@ export const v1Conditions: ConditionMetadata[] = [
       reportingAddress: 0,
       reportingFrequency: 3,
     },
-    group_name: 'Curfew and reporting',
+    group_name: GroupName.CURFEW_AND_REPORTING,
     subgroup_name: null,
   },
   {
@@ -196,7 +207,7 @@ export const v1Conditions: ConditionMetadata[] = [
     text: 'Should you return to the UK and Islands before the expiry date of your licence then your licence conditions will be in force and you must report within two working days to  our supervising officer.',
     user_input: null,
     field_position: null,
-    group_name: 'Travel',
+    group_name: GroupName.TRAVEL,
     subgroup_name: null,
   },
   {
@@ -204,7 +215,7 @@ export const v1Conditions: ConditionMetadata[] = [
     text: 'To notify your supervising officer of the details of any passport that you possess (including passport number), and of any intention to apply for a new passport.',
     user_input: null,
     field_position: null,
-    group_name: 'Travel',
+    group_name: GroupName.TRAVEL,
     subgroup_name: 'Passports',
   },
   {
@@ -212,7 +223,7 @@ export const v1Conditions: ConditionMetadata[] = [
     text: 'To surrender your passport(s) to your supervising officer and to notify your supervising officer of any intention to apply for a new passport.',
     user_input: null,
     field_position: null,
-    group_name: 'Travel',
+    group_name: GroupName.TRAVEL,
     subgroup_name: 'Passports',
   },
   {
@@ -222,7 +233,7 @@ export const v1Conditions: ConditionMetadata[] = [
     field_position: {
       vehicleDetails: 0,
     },
-    group_name: 'Travel',
+    group_name: GroupName.TRAVEL,
     subgroup_name: 'Vehicles',
   },
   {
@@ -232,7 +243,7 @@ export const v1Conditions: ConditionMetadata[] = [
     field_position: {
       noEnterPlace: 0,
     },
-    group_name: 'Exclusion',
+    group_name: GroupName.EXCLUSION,
     subgroup_name: null,
   },
   {
@@ -242,7 +253,7 @@ export const v1Conditions: ConditionMetadata[] = [
     field_position: {
       exclusionArea: 0,
     },
-    group_name: 'Exclusion',
+    group_name: GroupName.EXCLUSION,
     subgroup_name: null,
   },
   {
@@ -250,7 +261,7 @@ export const v1Conditions: ConditionMetadata[] = [
     text: 'Not to own or possess more than one mobile phone or SIM card without the prior approval of your supervising officer and to provide your supervising officer with details of that mobile telephone, including the IMEI number and the SIM card that you possess.',
     user_input: null,
     field_position: null,
-    group_name: 'Technology',
+    group_name: GroupName.TECHNOLOGY,
     subgroup_name: 'Mobile phones',
   },
   {
@@ -258,7 +269,7 @@ export const v1Conditions: ConditionMetadata[] = [
     text: 'Not to use or access any computer or device which is internet enabled without the prior approval of your supervising officer; and only for the purpose, and only at a public location, as specified by that officer.',
     user_input: null,
     field_position: null,
-    group_name: 'Technology',
+    group_name: GroupName.TECHNOLOGY,
     subgroup_name: 'Computers and internet',
   },
   {
@@ -266,7 +277,7 @@ export const v1Conditions: ConditionMetadata[] = [
     text: 'Not to delete the usage history on any internet enabled device or computer used and to allow such items to be inspected as required by the police or your supervising officer. Such inspection may include removal of the device for inspection and the installation of monitoring software.',
     user_input: null,
     field_position: null,
-    group_name: 'Technology',
+    group_name: GroupName.TECHNOLOGY,
     subgroup_name: 'Computers and internet',
   },
   {
@@ -274,7 +285,7 @@ export const v1Conditions: ConditionMetadata[] = [
     text: 'To make any device capable of making or storing digital images (including a camera and a mobile phone with a camera function) available for inspection on request by your supervising officer and/or a police officer.',
     user_input: null,
     field_position: null,
-    group_name: 'Technology',
+    group_name: GroupName.TECHNOLOGY,
     subgroup_name: 'Cameras and photos',
   },
   {
@@ -282,7 +293,7 @@ export const v1Conditions: ConditionMetadata[] = [
     text: 'Not to own or use a camera without the prior approval of your supervising officer.',
     user_input: null,
     field_position: null,
-    group_name: 'Technology',
+    group_name: GroupName.TECHNOLOGY,
     subgroup_name: 'Cameras and photos',
   },
   {
@@ -290,7 +301,7 @@ export const v1Conditions: ConditionMetadata[] = [
     text: 'Not to own or possess a mobile phone with a photographic function without the prior approval of your supervising officer.',
     user_input: null,
     field_position: null,
-    group_name: 'Technology',
+    group_name: GroupName.TECHNOLOGY,
     subgroup_name: 'Cameras and photos',
   },
   {
@@ -298,7 +309,7 @@ export const v1Conditions: ConditionMetadata[] = [
     text: 'To comply with any instruction given by your supervising officer requiring you to attend polygraph testing. To participate in polygraph sessions and examinations as instructed by or under the authority of your supervising officer and to comply with any instruction given to you during a polygraph session by the person conducting the polygraph.',
     user_input: null,
     field_position: null,
-    group_name: 'Restricted additional conditions',
+    group_name: GroupName.RESTRICTED,
     subgroup_name: null,
   },
   {
@@ -309,7 +320,7 @@ export const v1Conditions: ConditionMetadata[] = [
       drug_testing_name: 0,
       drug_testing_address: 1,
     },
-    group_name: 'Restricted additional conditions',
+    group_name: GroupName.RESTRICTED,
     subgroup_name: null,
   },
   {
@@ -320,7 +331,7 @@ export const v1Conditions: ConditionMetadata[] = [
       attendSampleDetailsName: 0,
       attendSampleDetailsAddress: 1,
     },
-    group_name: 'Post-sentence supervision only',
+    group_name: GroupName.POST_SENTENCE_SUPERVISION_ONLY,
     subgroup_name: null,
   },
   {
@@ -332,7 +343,7 @@ export const v1Conditions: ConditionMetadata[] = [
       appointmentTime: 1,
       appointmentAddress: 2,
     },
-    group_name: 'Post-sentence supervision only',
+    group_name: GroupName.POST_SENTENCE_SUPERVISION_ONLY,
     subgroup_name: null,
   },
 ]

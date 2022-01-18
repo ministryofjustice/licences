@@ -7,6 +7,9 @@ import type { PrisonerService } from '../../types/licences'
 import type { LicenceService } from '../services/licenceService'
 import type { Response } from 'express'
 import type { ConditionsServiceFactory } from '../services/conditionsService'
+import { Licence, LicenceStage } from '../data/licenceTypes'
+import { ConditionVersion } from '../data/licenceClientTypes'
+import { LicenceStatus } from '../services/licence/licenceStatusTypes'
 
 function shouldValidate(role, stage, postApproval) {
   return postApproval
@@ -28,9 +31,15 @@ export = ({
   conditionsServiceFactory: ConditionsServiceFactory
   prisonerService: PrisonerService
 }) => {
-  function validate(licenceStatus, showErrors, licence, stage) {
+  function validate(
+    licenceStatus: LicenceStatus,
+    showErrors,
+    licence: Licence,
+    stage: LicenceStage,
+    conditionVersion: ConditionVersion
+  ) {
     const { decisions, tasks } = licenceStatus
-    return showErrors ? licenceService.validateFormGroup({ licence, stage, decisions, tasks }) : {}
+    return showErrors ? licenceService.validateFormGroup({ licence, stage, decisions, tasks, conditionVersion }) : {}
   }
 
   return (router) => {
@@ -44,10 +53,11 @@ export = ({
         const licence = res.locals?.licence?.licence || {}
         const stage = res.locals?.licence?.stage
         const licenceVersion = res?.locals?.licence?.version || {}
+        const conditionsVersion = conditionsServiceFactory.getVersion(res.locals?.licence)
 
         const postApproval = isPostApproval(stage)
         const showErrors = shouldValidate(req.user.role, stage, postApproval)
-        const errorObject = validate(licenceStatus, showErrors, licence, stage)
+        const errorObject = validate(licenceStatus, showErrors, licence, stage, conditionsVersion)
 
         const data = conditionsServiceFactory
           .forLicence(res.locals.licence)

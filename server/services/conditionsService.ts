@@ -8,6 +8,10 @@ import { ConditionVersion } from '../data/licenceClientTypes'
 import { LicenceWithConditionsBuilder } from './licenceWithConditionsBuilder'
 
 export class ConditionsServiceFactory {
+  getVersion(licence: LicenceRecord): ConditionVersion {
+    return licence.versionDetails?.additional_conditions_version || CURRENT_CONDITION_VERSION
+  }
+
   forVersion(version: ConditionVersion) {
     return new ConditionsService(version)
   }
@@ -26,7 +30,7 @@ export class ConditionsServiceFactory {
 export class ConditionsService {
   private readonly builder: LicenceWithConditionsBuilder
 
-  constructor(private readonly version: ConditionVersion) {
+  constructor(readonly version: ConditionVersion) {
     this.builder = new LicenceWithConditionsBuilder(version)
   }
 

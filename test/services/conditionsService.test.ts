@@ -1,5 +1,7 @@
+import { ConditionVersion } from '../../server/data/licenceClientTypes'
 import { ConditionsServiceFactory } from '../../server/services/conditionsService'
-import { standardConditions } from '../../server/services/config/conditionsConfig'
+import { CURRENT_CONDITION_VERSION, standardConditions } from '../../server/services/config/conditionsConfig'
+import { LicenceRecord } from '../../server/services/licenceService'
 import {
   additionalConditionsObject,
   additionalConditionsObjectNoResideSelected,
@@ -11,6 +13,77 @@ describe('conditionsService', () => {
 
   beforeEach(() => {
     service = new ConditionsServiceFactory().forVersion(1)
+  })
+
+  describe('ConditionServiceFactory', () => {
+    const factory = new ConditionsServiceFactory()
+    describe('getVersion', () => {
+      test('defaults to current version when not set on licence', () => {
+        const licence = {} as LicenceRecord
+
+        const version = factory.getVersion(licence)
+
+        expect(version).toBe(CURRENT_CONDITION_VERSION)
+      })
+
+      test('reads version from licence when set', () => {
+        const licence = {} as LicenceRecord
+        licence.versionDetails = {} as any
+        licence.versionDetails.additional_conditions_version = 1234 as ConditionVersion
+
+        const version = factory.getVersion(licence)
+
+        expect(version).toBe(1234)
+      })
+    })
+
+    describe('get new version', () => {
+      test('defaults to current version when not set on licence', () => {
+        const licence = {} as LicenceRecord
+
+        const version = factory.getNewVersion(licence)
+
+        expect(version).toBe(CURRENT_CONDITION_VERSION)
+      })
+
+      test('reads version from licence when set', () => {
+        const licence = {} as LicenceRecord
+        licence.versionDetails = {} as any
+        licence.versionDetails.additional_conditions_version = 1234 as ConditionVersion
+
+        const version = factory.getNewVersion(licence)
+
+        expect(version).toBe(null)
+      })
+    })
+
+    describe('forVersion', () => {
+      test('version for new service', () => {
+        const createdService = factory.forVersion(1234 as ConditionVersion)
+
+        expect(createdService.version).toBe(1234)
+      })
+    })
+
+    describe('forLicence', () => {
+      test('version for new service defaults to current version when not set on licence', () => {
+        const licence = {} as LicenceRecord
+
+        const createdService = factory.forLicence(licence)
+
+        expect(createdService.version).toBe(CURRENT_CONDITION_VERSION)
+      })
+
+      test('version for new service reads version from licence when set', () => {
+        const licence = {} as LicenceRecord
+        licence.versionDetails = {} as any
+        licence.versionDetails.additional_conditions_version = 1234 as ConditionVersion
+
+        const createdService = factory.forLicence(licence)
+
+        expect(createdService.version).toBe(1234)
+      })
+    })
   })
 
   describe('getStandardConditions', () => {
