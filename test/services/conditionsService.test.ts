@@ -1,5 +1,6 @@
 import { ConditionVersion } from '../../server/data/licenceClientTypes'
-import { ConditionsServiceFactory } from '../../server/services/conditionsService'
+import { Licence } from '../../server/data/licenceTypes'
+import { ConditionsService, ConditionsServiceFactory } from '../../server/services/conditionsService'
 import { CURRENT_CONDITION_VERSION, standardConditions } from '../../server/services/config/conditionsConfig'
 import { LicenceRecord } from '../../server/services/licenceService'
 import {
@@ -9,7 +10,7 @@ import {
 } from '../stubs/conditions'
 
 describe('conditionsService', () => {
-  let service
+  let service: ConditionsService
 
   beforeEach(() => {
     service = new ConditionsServiceFactory().forVersion(1)
@@ -146,6 +147,41 @@ describe('conditionsService', () => {
     })
   })
 
+  describe('getAbuseAndBehaviours', () => {
+    test('should extract out risks and behaviours for v1', () => {
+      const conditionsService = new ConditionsServiceFactory().forVersion(1)
+      const conditions = {
+        ['Drugs, health and behaviour']: {
+          base: [{}, { user_submission: { abuseAndBehaviours: ['risk 1', 'risk 2'] } }],
+        },
+      }
+
+      return expect(conditionsService.getAbuseAndBehaviours(conditions)).toEqual(['risk 1', 'risk 2'])
+    })
+
+    test('should extract out risks and behaviours for v2', () => {
+      const conditionsService = new ConditionsServiceFactory().forVersion(2)
+      const conditions = {
+        ['Participation in, or co-operation with, a programme or set of activities']: {
+          base: [{}, { user_submission: { abuseAndBehaviours: ['risk 1', 'risk 2'] } }],
+        },
+      }
+
+      return expect(conditionsService.getAbuseAndBehaviours(conditions)).toEqual(['risk 1', 'risk 2'])
+    })
+
+    test('should wrap single strings into an array', () => {
+      const conditionsService = new ConditionsServiceFactory().forVersion(2)
+      const conditions = {
+        ['Participation in, or co-operation with, a programme or set of activities']: {
+          base: [{}, { user_submission: { abuseAndBehaviours: 'risk 1' } }],
+        },
+      }
+
+      return expect(conditionsService.getAbuseAndBehaviours(conditions)).toEqual(['risk 1'])
+    })
+  })
+
   describe('getFullTextForApprovedConditions', () => {
     const standardConditionsText = standardConditions.map((it) => it.text.replace(/\.+$/, ''))
 
@@ -165,7 +201,7 @@ describe('conditionsService', () => {
     test('should return standard conditions only when no additional conditions required', () => {
       const licence = {
         licenceConditions: { standard: { additionalConditionsRequired: 'No' } },
-      }
+      } as Licence
 
       return expect(service.getFullTextForApprovedConditions(licence)).toEqual({
         standardConditions: standardConditionsText,
@@ -179,7 +215,7 @@ describe('conditionsService', () => {
           standard: { additionalConditionsRequired: 'Yes' },
           additional: { ATTENDDEPENDENCY: { appointmentDate: '12/03/1985' } },
         },
-      }
+      } as Licence
 
       return expect(service.getFullTextForApprovedConditions(licence)).toEqual({
         standardConditions: standardConditionsText,
@@ -200,7 +236,7 @@ describe('conditionsService', () => {
             { text: 'unapproved text' },
           ],
         },
-      }
+      } as Licence
 
       return expect(service.getFullTextForApprovedConditions(licence)).toEqual({
         standardConditions: standardConditionsText,

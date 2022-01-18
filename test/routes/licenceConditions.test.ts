@@ -21,8 +21,9 @@ describe('/hdc/licenceConditions', () => {
   let conditionsServiceFactory = createConditionsServiceFactoryStub()
 
   beforeEach(() => {
-    conditionsService.getStandardConditions = jest.fn().mockReturnValue([{ text: 'Not commit any offence' }])
-    conditionsService.getAdditionalConditions = jest.fn().mockReturnValue({
+    conditionsService.getStandardConditions.mockReturnValue([{ text: 'Not commit any offence' }])
+    conditionsService.getAbuseAndBehaviours.mockReturnValue([])
+    conditionsService.getAdditionalConditions.mockReturnValue({
       base: {
         base: [{ text: 'hi', id: 'ho', user_input: {} }],
       },
