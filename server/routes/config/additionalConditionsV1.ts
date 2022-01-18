@@ -1,4 +1,5 @@
 export const additionalConditionsV1 = {
+  version: 1,
   fields: [
     {
       NOCONTACTASSOCIATE: {

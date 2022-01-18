@@ -1,7 +1,8 @@
 export const additionalConditionsV2 = {
+  version: 2,
   fields: [
     {
-      NOCONTACTASSOCIATE: {
+      NO_CONTACT_ASSOCIATE: {
         contains: [
           {
             groupsOrOrganisation: {
@@ -12,7 +13,7 @@ export const additionalConditionsV2 = {
       },
     },
     {
-      INTIMATERELATIONSHIP: {
+      INTIMATE_RELATIONSHIP: {
         contains: [
           {
             intimateGender: {
@@ -23,7 +24,7 @@ export const additionalConditionsV2 = {
       },
     },
     {
-      NOCONTACTNAMED: {
+      NO_CONTACT_NAMED: {
         contains: [
           {
             noContactOffenders: {
@@ -34,7 +35,7 @@ export const additionalConditionsV2 = {
       },
     },
     {
-      NORESIDE: {
+      NO_RESIDE: {
         contains: [
           {
             notResideWithGender: {
@@ -50,7 +51,7 @@ export const additionalConditionsV2 = {
       },
     },
     {
-      NOUNSUPERVISEDCONTACT: {
+      NO_UNSUPERVISED_CONTACT: {
         contains: [
           {
             unsupervisedContactGender: {
@@ -71,7 +72,7 @@ export const additionalConditionsV2 = {
       },
     },
     {
-      NOCHILDRENSAREA: {
+      NO_CHILDRENS_AREA: {
         contains: [
           {
             notInSightOf: {
@@ -82,7 +83,7 @@ export const additionalConditionsV2 = {
       },
     },
     {
-      NOWORKWITHAGE: {
+      NO_WORK_WITH_AGE: {
         contains: [
           {
             noWorkWithAge: {
@@ -93,7 +94,7 @@ export const additionalConditionsV2 = {
       },
     },
     {
-      NOCOMMUNICATEVICTIM: {
+      NO_COMMUNICATE_VICTIM: {
         contains: [
           {
             victimFamilyMembers: {
@@ -109,7 +110,7 @@ export const additionalConditionsV2 = {
       },
     },
     {
-      COMPLYREQUIREMENTS: {
+      COMPLY_REQUIREMENTS: {
         contains: [
           {
             courseOrCentre: {
@@ -126,7 +127,7 @@ export const additionalConditionsV2 = {
       },
     },
     {
-      ATTENDALL: {
+      ATTEND_ALL: {
         contains: [
           {
             appointmentName: {
@@ -142,7 +143,7 @@ export const additionalConditionsV2 = {
       },
     },
     {
-      HOMEVISITS: {
+      HOME_VISITS: {
         contains: [
           {
             mentalHealthName: {
@@ -153,7 +154,7 @@ export const additionalConditionsV2 = {
       },
     },
     {
-      REMAINADDRESS: {
+      REMAIN_ADDRESS: {
         contains: [
           {
             curfewAddress: {
@@ -174,7 +175,7 @@ export const additionalConditionsV2 = {
       },
     },
     {
-      CONFINEADDRESS: {
+      CONFINE_ADDRESS: {
         contains: [
           {
             confinedTo: {
@@ -195,7 +196,7 @@ export const additionalConditionsV2 = {
       },
     },
     {
-      REPORTTO: {
+      REPORT_TO: {
         contains: [
           {
             reportingAddress: {
@@ -221,7 +222,7 @@ export const additionalConditionsV2 = {
       },
     },
     {
-      VEHICLEDETAILS: {
+      VEHICLE_DETAILS: {
         contains: [
           {
             vehicleDetails: {
@@ -232,7 +233,7 @@ export const additionalConditionsV2 = {
       },
     },
     {
-      EXCLUSIONADDRESS: {
+      EXCLUSION_ADDRESS: {
         contains: [
           {
             noEnterPlace: {
@@ -243,7 +244,7 @@ export const additionalConditionsV2 = {
       },
     },
     {
-      EXCLUSIONAREA: {
+      EXCLUSION_AREA: {
         contains: [
           {
             exclusionArea: {
@@ -270,28 +271,7 @@ export const additionalConditionsV2 = {
       },
     },
     {
-      ATTENDDEPENDENCY: {
-        contains: [
-          {
-            appointmentDate: {
-              validationMessage: 'Enter appointment date',
-            },
-          },
-          {
-            appointmentTime: {
-              validationMessage: 'Enter appointment time',
-            },
-          },
-          {
-            appointmentAddress: {
-              validationMessage: 'Enter appointment name and address',
-            },
-          },
-        ],
-      },
-    },
-    {
-      ATTENDDEPENDENCYINDRUGSSECTION: {
+      ATTEND_DEPENDENCY_IN_DRUGS_SECTION: {
         contains: [
           {
             appointmentDateInDrugsSection: {
@@ -306,22 +286,6 @@ export const additionalConditionsV2 = {
           {
             appointmentAddressInDrugsSection: {
               validationMessage: 'Enter appointment name and address',
-            },
-          },
-        ],
-      },
-    },
-    {
-      ATTENDSAMPLE: {
-        contains: [
-          {
-            attendSampleDetailsName: {
-              validationMessage: 'Enter appointment name',
-            },
-          },
-          {
-            attendSampleDetailsAddress: {
-              validationMessage: 'Enter appointment address',
             },
           },
         ],

@@ -283,7 +283,7 @@ export const v2Conditions: ConditionMetadata[] = [
   {
     id: 'POLICE_ESCORT',
     text: 'On release to be escorted by police to Approved Premises.',
-    user_input: 'notInSightOf',
+    user_input: null,
     field_position: null,
     group_name: GroupName.FREEDOM_OF_MOVEMENT,
     subgroup_name: null,
@@ -342,7 +342,7 @@ export const v2Conditions: ConditionMetadata[] = [
   {
     id: 'DONT_HAMPER_DRUG_TESTING',
     text: 'Not to take any action that could hamper or frustrate the drug testing process.',
-    user_input: 'drug_testing',
+    user_input: null,
     field_position: null,
     group_name: GroupName.DRUG_TESTING,
     subgroup_name: null,
@@ -375,15 +375,15 @@ export const v2Conditions: ConditionMetadata[] = [
     subgroup_name: null,
   },
   {
-    id: 'ELECTRONIC_MONITORING_TRAIL',
-    text: 'You must stay at [approved address] between 5pm and midnight every day until your electronic tag is installed unless otherwise authorised by your supervising officer.',
+    id: 'CURFEW_UNTIL_INSTALLATION',
+    text: 'You must stay at [APPROVED ADDRESS] between 5pm and midnight every day until your electronic tag is installed unless otherwise authorised by your supervising officer.',
     user_input: null, // need to add
     field_position: null,
     group_name: GroupName.ELECTRONIC_MONITORING,
     subgroup_name: null,
   },
   {
-    id: 'ELECTRONIC_MONITORING_TRAIL',
+    id: 'ALCOHOL_MONITORING',
     text: 'You are subject to alcohol monitoring. Your alcohol intake will be electronically monitoring for a period of [INSERT TIMEFRAME AND END DATE], and you may not consume units of alcohol, unless otherwise permitted by your supervising officer.',
     user_input: null, // need to add
     field_position: null,
