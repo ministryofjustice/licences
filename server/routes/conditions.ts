@@ -6,7 +6,6 @@ import type { ConditionsServiceFactory } from '../services/conditionsService'
 import { asyncMiddleware } from '../utils/middleware'
 import createStandardRoutes from './routeWorkers/standard'
 import logger from '../../log'
-import { getIn } from '../utils/functionalHelpers'
 import * as formConfig from './config/licenceConditions'
 
 export default ({
@@ -82,13 +81,9 @@ export default ({
       const { action, bookingId } = req.params
       const record = res.locals.licence
       const bespokeConditions = record.licence?.licenceConditions?.bespoke || []
-      const conditions = conditionsServiceFactory.forLicence(record).getAdditionalConditions(record.licence)
-      let behaviours =
-        getIn(conditions, ['Drugs, health and behaviour', 'base', 1, 'user_submission', 'abuseAndBehaviours']) || []
-
-      if (typeof behaviours === 'string') {
-        behaviours = [behaviours]
-      }
+      const conditionsService = conditionsServiceFactory.forLicence(record)
+      const conditions = conditionsService.getAdditionalConditions(record.licence)
+      let behaviours = conditionsService.getAbuseAndBehaviours(conditions) || []
 
       res.render('licenceConditions/additionalConditions', {
         action,

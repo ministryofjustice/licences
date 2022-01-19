@@ -1,5 +1,5 @@
 import { LicenceWithConditionsBuilder } from '../../server/services/licenceWithConditionsBuilder'
-import { Licence } from '../../server/data/licenceTypes'
+import { AdditionalConditionsV1, AdditionalConditionsV2, Licence } from '../../server/data/licenceTypes'
 
 describe('licenceWithConditionsBuilder', () => {
   const builder = new LicenceWithConditionsBuilder(1)
@@ -755,6 +755,32 @@ describe('licenceWithConditionsBuilder', () => {
         ],
         additionalConditionsJustification: undefined,
       })
+    })
+  })
+
+  describe('getPersistedAbuseAndBehaviours', () => {
+    test('should extract out risks and behaviours for v1', () => {
+      const service = new LicenceWithConditionsBuilder(1)
+
+      const conditions = {
+        COMPLYREQUIREMENTS: {
+          abuseAndBehaviours: ['risk 1', 'risk 2'],
+        },
+      } as AdditionalConditionsV1
+
+      return expect(service.getAbuseAndBehaviours(conditions)).toEqual(['risk 1', 'risk 2'])
+    })
+
+    test('should extract out risks and behaviours for v2', () => {
+      const service = new LicenceWithConditionsBuilder(2)
+
+      const conditions = {
+        COMPLY_REQUIREMENTS: {
+          abuseAndBehaviours: ['risk 1', 'risk 2'],
+        },
+      } as AdditionalConditionsV2
+
+      return expect(service.getAbuseAndBehaviours(conditions)).toEqual(['risk 1', 'risk 2'])
     })
   })
 })

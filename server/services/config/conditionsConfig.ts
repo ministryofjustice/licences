@@ -1,6 +1,7 @@
 import { ConditionVersion, ConditionMetadata } from '../../data/licenceClientTypes'
-import { v1Conditions } from './conditions/additionalConditionsV1'
-import { v2Conditions } from './conditions/additionalConditionsV2'
+import { AdditionalConditions } from '../../data/licenceTypes'
+import * as v1 from './conditions/additionalConditionsV1'
+import * as v2 from './conditions/additionalConditionsV2'
 import { standardConditions as stdConditions } from './conditions/standardConditions'
 
 export const standardConditions = stdConditions
@@ -8,10 +9,24 @@ export const standardConditions = stdConditions
 export const CURRENT_CONDITION_VERSION: ConditionVersion = 1
 
 const additionalConditions: Map<ConditionVersion, ConditionMetadata[]> = new Map([
-  [1, v1Conditions],
-  [2, v2Conditions],
+  [1, v1.conditions],
+  [2, v2.conditions],
 ])
 export const getAdditionalConditionsConfig = (version: ConditionVersion) => additionalConditions.get(version)
+
+const abuseAndBehaviours: Map<ConditionVersion, (conditions: any) => string[]> = new Map([
+  [1, v1.getAbuseAndBehaviours],
+  [2, v2.getAbuseAndBehaviours],
+])
+export const getAbuseAndBehaviours = (version: ConditionVersion, conditions: any) =>
+  abuseAndBehaviours.get(version)(conditions)
+
+const persistedAbuseAndBehaviours: Map<ConditionVersion, (conditions: AdditionalConditions) => string[]> = new Map([
+  [1, v1.getPersistedAbuseAndBehaviours],
+  [2, v2.getPersistedAbuseAndBehaviours],
+])
+export const getPersistedAbuseBehaviours = (version: ConditionVersion, conditions: AdditionalConditions) =>
+  persistedAbuseAndBehaviours.get(version)(conditions)
 
 export const multiFields = {
   appointmentDetails: {

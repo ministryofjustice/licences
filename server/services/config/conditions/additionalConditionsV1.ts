@@ -1,4 +1,6 @@
 import { ConditionMetadata } from '../../../data/licenceClientTypes'
+import { AdditionalConditions, AdditionalConditionsV1 } from '../../../data/licenceTypes'
+import { getIn } from '../../../utils/functionalHelpers'
 
 enum GroupName {
   PEOPLE_CONTACT_AND_RELATIONSHIPS = 'People, contact and relationships',
@@ -11,7 +13,13 @@ enum GroupName {
   RESTRICTED = 'Restricted additional conditions',
 }
 
-export const v1Conditions: ConditionMetadata[] = [
+export const getAbuseAndBehaviours = (conditions) =>
+  getIn(conditions, [GroupName.DRUGS_HEALTH_AND_BEHAVIOUR, 'base', 1, 'user_submission', 'abuseAndBehaviours'])
+
+export const getPersistedAbuseAndBehaviours = (conditions: AdditionalConditions) =>
+  (conditions as AdditionalConditionsV1)?.COMPLYREQUIREMENTS?.abuseAndBehaviours
+
+export const conditions: ConditionMetadata[] = [
   {
     id: 'NOCONTACTPRISONER',
     text: 'Not to contact directly or indirectly any person who is a serving or remand offender or detained in State custody, without the prior approval of your supervising officer.',

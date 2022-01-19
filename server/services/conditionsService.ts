@@ -1,7 +1,12 @@
 import moment from 'moment'
 import { formatConditionsInput, getConditionText, formatConditionsText } from './utils/conditionsFormatter'
 import { isEmpty } from '../utils/functionalHelpers'
-import { getAdditionalConditionsConfig, standardConditions, CURRENT_CONDITION_VERSION } from './config/conditionsConfig'
+import {
+  getAdditionalConditionsConfig,
+  getAbuseAndBehaviours,
+  standardConditions,
+  CURRENT_CONDITION_VERSION,
+} from './config/conditionsConfig'
 import { AdditionalConditions, Licence } from '../data/licenceTypes'
 import { LicenceRecord } from './licenceService'
 import { ConditionVersion } from '../data/licenceClientTypes'
@@ -73,6 +78,11 @@ export class ConditionsService {
 
   getStandardConditions() {
     return standardConditions
+  }
+
+  getAbuseAndBehaviours(conditions): string[] {
+    const result = getAbuseAndBehaviours(this.version, conditions)
+    return typeof result === 'string' ? [result] : result
   }
 
   getAdditionalConditions(licence: Licence = null) {

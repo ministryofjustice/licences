@@ -124,7 +124,9 @@ export interface FinalChecks {
 
 export type BespokeCondition = { approved?: string; text?: string }
 
-export type AdditionalConditions = {
+export type AdditionalConditions = AdditionalConditionsV1 | AdditionalConditionsV2
+
+export type AdditionalConditionsV1 = {
   ATTENDALL?: any
   ATTENDDEPENDENCY?: any
   ATTENDDEPENDENCYINDRUGSSECTION?: any
@@ -154,6 +156,49 @@ export type AdditionalConditions = {
   SURRENDERPASSPORT?: any
   USAGEHISTORY?: any
   VEHICLEDETAILS?: any
+}
+
+export type AdditionalConditionsV2 = {
+  RESIDE_AT_SPECIFIC_PLACE?: any
+  NO_RESIDE?: any
+  NO_CONTACT_PRISONER?: any
+  NO_CONTACT_ASSOCIATE?: any
+  NO_CONTACT_SEX_OFFENDER?: any
+  NO_CONTACT_NAMED?: any
+  NO_UNSUPERVISED_CONTACT?: any
+  NO_COMMUNICATE_VICTIM?: any
+  ATTEND_DEPENDENCY_IN_DRUGS_SECTION?: any
+  ATTEND_ALL?: any
+  HOME_VISITS?: any
+  RETURN_TO_UK?: any
+  NO_WORK_WITH_AGE?: any
+  COMPLY_REQUIREMENTS?: { abuseAndBehaviours: any }
+  SPECIFIC_ITEM?: any
+  SURRENDER_PASSPORT?: any
+  ONE_PHONE?: any
+  NO_INTERNET?: any
+  USAGE_HISTORY?: any
+  NO_CAMERA?: any
+  CAMERA_APPROVAL?: any
+  NO_CAMERA_PHONE?: any
+  INTIMATE_RELATIONSHIP?: any
+  NOTIFY_RELATIONSHIP?: any
+  NOTIFY_PASSPORT?: any
+  VEHICLE_DETAILS?: any
+  REMAIN_ADDRESS?: any
+  CONFINE_ADDRESS?: any
+  POLICE_ESCORT?: any
+  NO_CHILDRENS_AREA?: any
+  EXCLUSION_ADDRESS?: any
+  EXCLUSION_AREA?: any
+  REPORT_TO?: any
+  POLYGRAPH?: any
+  DONT_HAMPER_DRUG_TESTING?: any
+  DRUG_TESTING?: any
+  ELECTRONIC_MONITORING_INSTALLATION?: any
+  ELECTRONIC_MONITORING_TRAIL?: any
+  CURFEW_UNTIL_INSTALLATION?: any
+  ALCOHOL_MONITORING?: any
 }
 
 export interface LicenceConditions {

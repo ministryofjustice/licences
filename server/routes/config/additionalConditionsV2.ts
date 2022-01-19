@@ -2,6 +2,17 @@ export const additionalConditionsV2 = {
   version: 2,
   fields: [
     {
+      RESIDE_AT_SPECIFIC_PLACE: {
+        contains: [
+          {
+            region: {
+              validationMessage: 'Enter a name of a region',
+            },
+          },
+        ],
+      },
+    },
+    {
       NO_CONTACT_ASSOCIATE: {
         contains: [
           {

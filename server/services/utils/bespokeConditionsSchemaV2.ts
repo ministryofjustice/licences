@@ -7,7 +7,9 @@ import moment from 'moment'
 const today = moment().startOf('day').format('MM-DD-YYYY')
 
 export default joi.object({
-  RESIDE_AT_SPECIFIC_PLACE: joi.object({}),
+  RESIDE_AT_SPECIFIC_PLACE: joi.object({
+    region: joi.string().required(),
+  }),
   NO_RESIDE: joi.object({
     notResideWithGender: joi.string().required(),
     notResideWithAge: joi.string().required(),

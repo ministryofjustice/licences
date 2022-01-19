@@ -1,4 +1,6 @@
 import { ConditionMetadata } from '../../../data/licenceClientTypes'
+import { AdditionalConditions, AdditionalConditionsV2 } from '../../../data/licenceTypes'
+import { getIn } from '../../../utils/functionalHelpers'
 
 enum GroupName {
   RESIDENCE_AT_A_SPECIFIC_PLACE = 'Residence at a specific place',
@@ -13,13 +15,18 @@ enum GroupName {
   DRUG_TESTING = 'Drug Testing Conditions',
   ELECTRONIC_MONITORING = 'Electronic Monitoring Conditions',
 }
+export const getAbuseAndBehaviours = (conditions) =>
+  getIn(conditions, [GroupName.PARTICIPATION, 'base', 1, 'user_submission', 'abuseAndBehaviours'])
 
-export const v2Conditions: ConditionMetadata[] = [
+export const getPersistedAbuseAndBehaviours = (conditions: AdditionalConditions) =>
+  (conditions as AdditionalConditionsV2)?.COMPLY_REQUIREMENTS?.abuseAndBehaviours
+
+export const conditions: ConditionMetadata[] = [
   {
     id: 'RESIDE_AT_SPECIFIC_PLACE',
     text: 'You must reside within [INSERT REGION] while of no fixed abode, unless otherwise approved by your supervising officer.',
-    user_input: null, // needed
-    field_position: null,
+    user_input: 'resideWithinRegion',
+    field_position: { region: 0 },
     group_name: GroupName.RESIDENCE_AT_A_SPECIFIC_PLACE,
     subgroup_name: null,
   },
