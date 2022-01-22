@@ -1,7 +1,7 @@
 import { ConditionVersion, ConditionMetadata } from '../../data/licenceClientTypes'
 import { AdditionalConditions } from '../../data/licenceTypes'
-import * as v1 from './conditions/additionalConditionsV1'
-import * as v2 from './conditions/additionalConditionsV2'
+import * as v1 from './conditions/v1/conditions'
+import * as v2 from './conditions/v2/conditions'
 import { standardConditions as stdConditions } from './conditions/standardConditions'
 
 export const standardConditions = stdConditions

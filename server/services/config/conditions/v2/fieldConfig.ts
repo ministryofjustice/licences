@@ -302,5 +302,42 @@ export const additionalConditionsV2 = {
         ],
       },
     },
+    {
+      ATTEND_DEPENDENCY: {
+        contains: [
+          {
+            appointmentDate: {
+              validationMessage: 'Enter appointment date',
+            },
+          },
+          {
+            appointmentTime: {
+              validationMessage: 'Enter appointment time',
+            },
+          },
+          {
+            appointmentAddress: {
+              validationMessage: 'Enter appointment name and address',
+            },
+          },
+        ],
+      },
+    },
+    {
+      ATTEND_SAMPLE: {
+        contains: [
+          {
+            attendSampleDetailsName: {
+              validationMessage: 'Enter appointment name',
+            },
+          },
+          {
+            attendSampleDetailsAddress: {
+              validationMessage: 'Enter appointment address',
+            },
+          },
+        ],
+      },
+    },
   ],
 }
