@@ -1,4 +1,5 @@
-const { formatConditionsInput } = require('../../../server/services/utils/conditionsFormatter')
+import { ConditionMetadata } from '../../../server/data/licenceClientTypes'
+import { formatConditionsInput } from '../../../server/services/utils/conditionsFormatter'
 
 describe('conditionsValidator', () => {
   test('should reformat date fields to dd/mm/yyyy format', () => {
@@ -8,8 +9,7 @@ describe('conditionsValidator', () => {
       appointmentYear: '2017',
     }
 
-    const conditionsSelected = [{ field_position: { appointmentDate: 0 } }]
-    /** @type {any} */
+    const conditionsSelected = [{ field_position: { appointmentDate: 0 } }] as unknown as ConditionMetadata[]
     const formatted = formatConditionsInput(inputObject, conditionsSelected)
     expect(formatted.appointmentDate).toBe('23/12/2017')
   })

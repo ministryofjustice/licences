@@ -233,6 +233,39 @@ export const additionalConditionsV2 = {
       },
     },
     {
+      SPECIFIC_ITEM: {
+        contains: [
+          {
+            specificItem: {
+              validationMessage: 'Enter the specific item',
+            },
+          },
+        ],
+      },
+    },
+    {
+      ELECTRONIC_MONITORING_INSTALLATION: {
+        contains: [
+          {
+            conditionTypes: {
+              validationMessage: 'Enter the types of condition to be electronically monitored',
+            },
+          },
+        ],
+      },
+    },
+    {
+      ELECTRONIC_MONITORING_TRAIL: {
+        contains: [
+          {
+            trailEndDate: {
+              validationMessage: 'Enter trail end date',
+            },
+          },
+        ],
+      },
+    },
+    {
       VEHICLE_DETAILS: {
         contains: [
           {

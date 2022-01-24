@@ -1,4 +1,3 @@
-import moment from 'moment'
 import { formatConditionsInput, getConditionText, formatConditionsText } from './utils/conditionsFormatter'
 import { isEmpty } from '../utils/functionalHelpers'
 import {
@@ -9,7 +8,7 @@ import {
 } from './config/conditionsConfig'
 import { AdditionalConditions, Licence } from '../data/licenceTypes'
 import { LicenceRecord } from './licenceService'
-import { ConditionVersion } from '../data/licenceClientTypes'
+import { ConditionMetadata, ConditionVersion } from '../data/licenceClientTypes'
 import { LicenceWithConditionsBuilder } from './licenceWithConditionsBuilder'
 
 export class ConditionsServiceFactory {
@@ -187,41 +186,24 @@ function splitIntoGroupedObject(conditionObject, condition) {
 function populateFromSavedLicence(inputtedConditions: AdditionalConditions) {
   const populatedConditionIds = Object.keys(inputtedConditions)
 
-  return (condition) => {
-    const submission = getSubmissionForCondition(condition.id, inputtedConditions)
+  return (condition: ConditionMetadata) => {
+    const submission = getSubmissionForCondition(condition, inputtedConditions)
     const selected = populatedConditionIds.includes(String(condition.id))
 
     return { ...condition, selected, user_submission: submission }
   }
 }
 
-function getSubmissionForCondition(conditionId, inputtedConditions: AdditionalConditions) {
-  if (isEmpty(inputtedConditions[conditionId])) {
+function getSubmissionForCondition(condition: ConditionMetadata, inputtedConditions: AdditionalConditions) {
+  const { id } = condition
+  const inputtedCondition = inputtedConditions[id]
+  if (isEmpty(inputtedCondition)) {
     return {}
   }
 
-  if (conditionId === 'ATTENDDEPENDENCY') {
-    const appointmentDate = moment(inputtedConditions[conditionId].appointmentDate, 'DD/MM/YYYY')
-    return {
-      ...inputtedConditions[conditionId],
-      appointmentDay: appointmentDate.format('DD'),
-      appointmentMonth: appointmentDate.format('MM'),
-      appointmentYear: appointmentDate.format('YYYY'),
-    }
+  if (condition.displayForEdit) {
+    return condition.displayForEdit(inputtedCondition)
   }
 
-  if (conditionId === 'ATTENDDEPENDENCYINDRUGSSECTION') {
-    const appointmentDateInDrugsSection = moment(
-      inputtedConditions[conditionId].appointmentDateInDrugsSection,
-      'DD/MM/YYYY'
-    )
-    return {
-      ...inputtedConditions[conditionId],
-      appointmentDayInDrugsSection: appointmentDateInDrugsSection.format('DD'),
-      appointmentMonthInDrugsSection: appointmentDateInDrugsSection.format('MM'),
-      appointmentYearInDrugsSection: appointmentDateInDrugsSection.format('YYYY'),
-    }
-  }
-
-  return inputtedConditions[conditionId]
+  return inputtedCondition
 }
