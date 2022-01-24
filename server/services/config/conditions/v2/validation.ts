@@ -110,4 +110,13 @@ export default joi.object({
   ELECTRONIC_MONITORING_TRAIL: joi.object({}),
   CURFEW_UNTIL_INSTALLATION: joi.object({}),
   ALCOHOL_MONITORING: joi.object({}),
+  ATTEND_DEPENDENCY: joi.object({
+    appointmentDate: joi.date().format('DD/MM/YYYY').min(today).required(),
+    appointmentTime: joi.string().required(),
+    appointmentAddress: joi.string().required(),
+  }),
+  ATTEND_SAMPLE: joi.object({
+    attendSampleDetailsName: joi.string().required(),
+    attendSampleDetailsAddress: joi.string().required(),
+  }),
 })

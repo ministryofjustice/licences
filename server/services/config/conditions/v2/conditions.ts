@@ -1,6 +1,6 @@
-import { ConditionMetadata } from '../../../data/licenceClientTypes'
-import { AdditionalConditions, AdditionalConditionsV2 } from '../../../data/licenceTypes'
-import { getIn } from '../../../utils/functionalHelpers'
+import { ConditionMetadata } from '../../../../data/licenceClientTypes'
+import { AdditionalConditions, AdditionalConditionsV2 } from '../../../../data/licenceTypes'
+import { getIn } from '../../../../utils/functionalHelpers'
 
 enum GroupName {
   RESIDENCE_AT_A_SPECIFIC_PLACE = 'Residence at a specific place',
@@ -14,6 +14,7 @@ enum GroupName {
   POLYGRAPH = 'Polygraph Condition',
   DRUG_TESTING = 'Drug Testing Conditions',
   ELECTRONIC_MONITORING = 'Electronic Monitoring Conditions',
+  POST_SENTENCE_SUPERVISION_ONLY = 'Post-sentence supervision only',
 }
 export const getAbuseAndBehaviours = (conditions) =>
   getIn(conditions, [GroupName.PARTICIPATION, 'base', 1, 'user_submission', 'abuseAndBehaviours'])
@@ -395,6 +396,29 @@ export const conditions: ConditionMetadata[] = [
     user_input: null, // need to add
     field_position: null,
     group_name: GroupName.ELECTRONIC_MONITORING,
+    subgroup_name: null,
+  },
+  {
+    id: 'ATTEND_SAMPLE',
+    text: 'Attend [INSERT APPOINTMENT NAME AND ADDRESS], as reasonably required by your supervisor, to give a sample of oral fluid/urine in order to test whether you have any specified Class A and specified Class B drugs in your body, for the purpose of ensuring that you are complying with the requirement of supervision period requiring you to be of good behaviour.',
+    user_input: 'attendSampleDetails',
+    field_position: {
+      attendSampleDetailsName: 0,
+      attendSampleDetailsAddress: 1,
+    },
+    group_name: GroupName.POST_SENTENCE_SUPERVISION_ONLY,
+    subgroup_name: null,
+  },
+  {
+    id: 'ATTEND_DEPENDENCY',
+    text: 'Attend [INSERT APPOINTMENT TIME DATE AND ADDRESS], as directed, to address your dependency on, or propensity to misuse, a controlled drug.',
+    user_input: 'appointmentDetails',
+    field_position: {
+      appointmentDate: 0,
+      appointmentTime: 1,
+      appointmentAddress: 2,
+    },
+    group_name: GroupName.POST_SENTENCE_SUPERVISION_ONLY,
     subgroup_name: null,
   },
 ]

@@ -9,8 +9,8 @@ const today = moment().startOf('day').format('MM-DD-YYYY')
 
 import { curfewAddressSchema, addressReviewSchema, addressReviewSchemaOffenderIsOccupier } from './bespokeAddressSchema'
 
-import additionalConditionsSchemaV1 from './bespokeConditionsSchemaV1'
-import additionalConditionsSchemaV2 from './bespokeConditionsSchemaV2'
+import additionalConditionsSchemaV1 from '../config/conditions/v1/validation'
+import additionalConditionsSchemaV2 from '../config/conditions/v2/validation'
 
 import { getFieldName, getFieldDetail, getIn, isEmpty, mergeWithRight, lastItem } from '../../utils/functionalHelpers'
 
