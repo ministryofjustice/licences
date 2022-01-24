@@ -1,3 +1,4 @@
+import moment from 'moment'
 import { ConditionMetadata } from '../../../../data/licenceClientTypes'
 import { AdditionalConditions, AdditionalConditionsV1 } from '../../../../data/licenceTypes'
 import { getIn } from '../../../../utils/functionalHelpers'
@@ -139,6 +140,15 @@ export const conditions: ConditionMetadata[] = [
     },
     group_name: GroupName.DRUGS_HEALTH_AND_BEHAVIOUR,
     subgroup_name: null,
+    displayForEdit: (inputtedCondition) => {
+      const appointmentDate = moment(inputtedCondition.appointmentDateInDrugsSection, 'DD/MM/YYYY')
+      return {
+        ...inputtedCondition,
+        appointmentDayInDrugsSection: appointmentDate.format('DD'),
+        appointmentMonthInDrugsSection: appointmentDate.format('MM'),
+        appointmentYearInDrugsSection: appointmentDate.format('YYYY'),
+      }
+    },
   },
   {
     id: 'COMPLYREQUIREMENTS',
@@ -353,5 +363,14 @@ export const conditions: ConditionMetadata[] = [
     },
     group_name: GroupName.POST_SENTENCE_SUPERVISION_ONLY,
     subgroup_name: null,
+    displayForEdit: (inputtedCondition) => {
+      const appointmentDate = moment(inputtedCondition.appointmentDate, 'DD/MM/YYYY')
+      return {
+        ...inputtedCondition,
+        appointmentDay: appointmentDate.format('DD'),
+        appointmentMonth: appointmentDate.format('MM'),
+        appointmentYear: appointmentDate.format('YYYY'),
+      }
+    },
   },
 ]

@@ -9,6 +9,7 @@ export type ConditionMetadata = {
   field_position: Record<string, number>
   group_name: string
   subgroup_name: string
+  displayForEdit?: (fieldInput: Record<string, string>) => Record<string, unknown>
 }
 
 export type StandardCondition = { text: string }

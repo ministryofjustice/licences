@@ -1,0 +1,14 @@
+div.pure-g
+  div.pure-u-1
+    div.form-date
+      div.form-group.form-group-day
+        label.form-label(for="trailEndDay") Day
+        input.form-control#trailEndDay(name="trailEndDay" type="number" pattern="[0-9]*" value=condition.user_submission && condition.user_submission.trailEndDay)
+
+      div.form-group.form-group-month
+        label.form-label(for="trailEndMonth") Month
+        input.form-control#trailEndMonth(name="trailEndMonth" type="number" pattern="[0-9]*" value=condition.user_submission && condition.user_submission.trailEndMonth)
+
+      div.form-group.form-group-year
+        label.form-label(for="trailEndYear") Year
+        input.form-control#trailEndYear(name="trailEndYear" type="number" pattern="[0-9]*" value=condition.user_submission && condition.user_submission.trailEndYear)
