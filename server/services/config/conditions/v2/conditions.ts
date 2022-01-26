@@ -20,8 +20,6 @@ enum GroupName {
   ELECTRONIC_MONITORING = 'Electronic Monitoring Conditions',
   POST_SENTENCE_SUPERVISION_ONLY = 'Post-sentence supervision only',
 }
-export const getAbuseAndBehaviours = (conditions) =>
-  getIn(conditions, [GroupName.PARTICIPATION, 'base', 1, 'user_submission', 'abuseAndBehaviours'])
 
 export const getPersistedAbuseAndBehaviours = (conditions: AdditionalConditions) =>
   (conditions as AdditionalConditionsV2)?.COMPLY_REQUIREMENTS?.abuseAndBehaviours
@@ -165,6 +163,14 @@ export const conditions: ConditionMetadata[] = [
     },
     group_name: GroupName.PARTICIPATION,
     subgroup_name: null,
+    displayForEdit: (inputtedCondition) => {
+      const result = inputtedCondition.abuseAndBehaviours
+      const abuseAndBehaviours = typeof result === 'string' ? [result] : result
+      return {
+        ...inputtedCondition,
+        abuseAndBehaviours,
+      }
+    },
   },
   {
     id: 'NO_WORK_WITH_AGE',
@@ -477,18 +483,32 @@ export const conditions: ConditionMetadata[] = [
   {
     id: 'CURFEW_UNTIL_INSTALLATION',
     text: 'You must stay at [APPROVED ADDRESS] between 5pm and midnight every day until your electronic tag is installed unless otherwise authorised by your supervising officer.',
-    user_input: null, // need to add
-    field_position: null,
+    user_input: 'curfewUntilInstallation',
+    field_position: {
+      approvedAddress: 0,
+    },
     group_name: GroupName.ELECTRONIC_MONITORING,
     subgroup_name: null,
   },
   {
     id: 'ALCOHOL_MONITORING',
     text: 'You are subject to alcohol monitoring. Your alcohol intake will be electronically monitoring for a period of [INSERT TIMEFRAME AND END DATE], and you may not consume units of alcohol, unless otherwise permitted by your supervising officer.',
-    user_input: null, // need to add
-    field_position: null,
+    user_input: 'alcoholMonitoring',
+    field_position: {
+      timeframe: 0,
+      endDate: 1,
+    },
     group_name: GroupName.ELECTRONIC_MONITORING,
     subgroup_name: null,
+    displayForEdit: (inputtedCondition) => {
+      const endDate = moment(inputtedCondition.endDate, 'DD/MM/YYYY')
+      return {
+        ...inputtedCondition,
+        endDay: endDate.format('DD'),
+        endMonth: endDate.format('MM'),
+        endYear: endDate.format('YYYY'),
+      }
+    },
   },
   {
     id: 'ATTEND_SAMPLE',

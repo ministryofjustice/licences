@@ -14,13 +14,6 @@ const additionalConditions: Map<ConditionVersion, ConditionMetadata[]> = new Map
 ])
 export const getAdditionalConditionsConfig = (version: ConditionVersion) => additionalConditions.get(version)
 
-const abuseAndBehaviours: Map<ConditionVersion, (conditions: any) => string[]> = new Map([
-  [1, v1.getAbuseAndBehaviours],
-  [2, v2.getAbuseAndBehaviours],
-])
-export const getAbuseAndBehaviours = (version: ConditionVersion, conditions: any) =>
-  abuseAndBehaviours.get(version)(conditions)
-
 const persistedAbuseAndBehaviours: Map<ConditionVersion, (conditions: AdditionalConditions) => string[]> = new Map([
   [1, v1.getPersistedAbuseAndBehaviours],
   [2, v2.getPersistedAbuseAndBehaviours],
@@ -44,5 +37,9 @@ export const multiFields = {
   drug_testing: {
     fields: ['drug_testing_name', 'drug_testing_address'],
     joining: [', '],
+  },
+  alcoholMonitoring: {
+    fields: ['timeframe', 'endDate'],
+    joining: [' ending on '],
   },
 }

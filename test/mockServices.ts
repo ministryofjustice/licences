@@ -50,7 +50,6 @@ export const createConditionsServiceStub = () =>
     getNonStandardConditions: jest.fn(),
     getFullTextForApprovedConditions: jest.fn(),
     createConditionsObjectForLicence: jest.fn(),
-    getAbuseAndBehaviours: jest.fn(),
   } as unknown as jest.Mocked<ConditionsService>)
 
 export const createConditionsServiceFactoryStub = () =>

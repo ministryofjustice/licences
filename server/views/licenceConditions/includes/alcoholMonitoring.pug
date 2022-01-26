@@ -1,0 +1,19 @@
+label(for='timeframe') Timeframe
+textarea(name='timeframe' id='timeframe' class='form-control' rows='1' aria-label="Timeframe")
+  if condition.user_submission && condition.user_submission.timeframe
+    | #{condition.user_submission.timeframe}
+
+div.pure-g
+  div.pure-u-1
+    div.form-date
+      div.form-group.form-group-day
+        label.form-label(for="endDay") Day
+        input.form-control#endDay(name="endDay" type="number" pattern="[0-9]*" value=condition.user_submission && condition.user_submission.endDay)
+
+      div.form-group.form-group-month
+        label.form-label(for="endMonth") Month
+        input.form-control#endMonth(name="endMonth" type="number" pattern="[0-9]*" value=condition.user_submission && condition.user_submission.endMonth)
+
+      div.form-group.form-group-year
+        label.form-label(for="endYear") Year
+        input.form-control#endYear(name="endYear" type="number" pattern="[0-9]*" value=condition.user_submission && condition.user_submission.endYear)

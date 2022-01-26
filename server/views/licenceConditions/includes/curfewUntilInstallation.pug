@@ -1,0 +1,4 @@
+label(for='approvedAddress') Approved address
+textarea(name='approvedAddress' id='approvedAddress' class='form-control' rows='7' aria-label="Approved address")
+  if condition.user_submission && condition.user_submission.approvedAddress
+    | #{condition.user_submission.approvedAddress}

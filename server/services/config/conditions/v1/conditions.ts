@@ -14,9 +14,6 @@ enum GroupName {
   RESTRICTED = 'Restricted additional conditions',
 }
 
-export const getAbuseAndBehaviours = (conditions) =>
-  getIn(conditions, [GroupName.DRUGS_HEALTH_AND_BEHAVIOUR, 'base', 1, 'user_submission', 'abuseAndBehaviours'])
-
 export const getPersistedAbuseAndBehaviours = (conditions: AdditionalConditions) =>
   (conditions as AdditionalConditionsV1)?.COMPLYREQUIREMENTS?.abuseAndBehaviours
 
@@ -160,6 +157,14 @@ export const conditions: ConditionMetadata[] = [
     },
     group_name: GroupName.DRUGS_HEALTH_AND_BEHAVIOUR,
     subgroup_name: null,
+    displayForEdit: (inputtedCondition) => {
+      const result = inputtedCondition.abuseAndBehaviours
+      const abuseAndBehaviours = typeof result === 'string' ? [result] : result
+      return {
+        ...inputtedCondition,
+        abuseAndBehaviours,
+      }
+    },
   },
   {
     id: 'ATTENDALL',
