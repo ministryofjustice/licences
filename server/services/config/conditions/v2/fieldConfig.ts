@@ -266,6 +266,33 @@ export const additionalConditionsV2 = {
       },
     },
     {
+      CURFEW_UNTIL_INSTALLATION: {
+        contains: [
+          {
+            approvedAddress: {
+              validationMessage: 'Enter the approved address',
+            },
+          },
+        ],
+      },
+    },
+    {
+      ALCOHOL_MONITORING: {
+        contains: [
+          {
+            timeframe: {
+              validationMessage: 'Enter the timeframe',
+            },
+          },
+          {
+            endDate: {
+              validationMessage: 'Enter the endDate',
+            },
+          },
+        ],
+      },
+    },
+    {
       VEHICLE_DETAILS: {
         contains: [
           {

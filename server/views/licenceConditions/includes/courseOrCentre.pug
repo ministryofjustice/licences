@@ -5,7 +5,7 @@ div.pure-g.paddingBottom
       if condition.user_submission && condition.user_submission.courseOrCentre
         | #{condition.user_submission.courseOrCentre}
 
-
+- var behaviours = condition.user_submission && condition.user_submission.abuseAndBehaviours || []
 div.govuk-fieldset
   div.multiple-choice
     input(id='alcoholAbuse' type='checkbox' name='abuseAndBehaviours' value='alcohol abuse' checked=behaviours.includes('alcohol abuse'))

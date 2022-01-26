@@ -114,7 +114,13 @@ export default joi.object({
   ELECTRONIC_MONITORING_TRAIL: joi.object({
     trailEndDate: joi.date().format('DD/MM/YYYY').min(today).required(),
   }),
-  CURFEW_UNTIL_INSTALLATION: joi.object({}),
+  CURFEW_UNTIL_INSTALLATION: joi.object({
+    approvedAddress: joi.string().required(),
+  }),
+  ALCOHOL_MONITORING: joi.object({
+    timeframe: joi.string().required(),
+    endDate: joi.date().format('DD/MM/YYYY').min(today).required(),
+  }),
   NOTIFY_BANKING: joi.object({}),
   PLACE_OF_WORSHIP: joi.object({}),
   SPECIFIC_CONDUCT_OR_ACTS: joi.object({}),
@@ -123,7 +129,6 @@ export default joi.object({
   DELIVER_EXTREME: joi.object({}),
   PROMOTE_EXTREME: joi.object({}),
   EXTREME_MATERIALS: joi.object({}),
-  ALCOHOL_MONITORING: joi.object({}),
   ATTEND_DEPENDENCY: joi.object({
     appointmentDate: joi.date().format('DD/MM/YYYY').min(today).required(),
     appointmentTime: joi.string().required(),

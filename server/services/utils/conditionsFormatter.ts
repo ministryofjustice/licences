@@ -54,12 +54,17 @@ const dateFields = Object.entries({
   appointmentDateInDrugsSection: {
     day: 'appointmentDayInDrugsSection',
     month: 'appointmentMonthInDrugsSection',
-    year: 'appointmentMonthInDrugsSection',
+    year: 'appointmentYearInDrugsSection',
   },
   trailEndDate: {
     day: 'trailEndDay',
     month: 'trailEndMonth',
     year: 'trailEndYear',
+  },
+  endDate: {
+    day: 'endDay',
+    month: 'endMonth',
+    year: 'endYear',
   },
 })
 

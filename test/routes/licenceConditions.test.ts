@@ -22,7 +22,6 @@ describe('/hdc/licenceConditions', () => {
 
   beforeEach(() => {
     conditionsService.getStandardConditions.mockReturnValue([{ text: 'Not commit any offence' }])
-    conditionsService.getAbuseAndBehaviours.mockReturnValue([])
     conditionsService.getAdditionalConditions.mockReturnValue({
       base: {
         base: [{ text: 'hi', id: 'ho', user_input: {} }],

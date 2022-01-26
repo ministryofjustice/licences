@@ -83,14 +83,12 @@ export default ({
       const bespokeConditions = record.licence?.licenceConditions?.bespoke || []
       const conditionsService = conditionsServiceFactory.forLicence(record)
       const conditions = conditionsService.getAdditionalConditions(record.licence)
-      let behaviours = conditionsService.getAbuseAndBehaviours(conditions) || []
 
       res.render('licenceConditions/additionalConditions', {
         action,
         bookingId,
         conditions,
         bespokeConditions,
-        behaviours,
       })
     }
 

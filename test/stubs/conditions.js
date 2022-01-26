@@ -140,6 +140,7 @@ module.exports = {
             courseOrCentre: 1,
             abuseAndBehaviours: 0,
           },
+          displayForEdit: expect.anything(),
           group_name: 'Drugs, health and behaviour',
           subgroup_name: null,
         },
@@ -546,6 +547,7 @@ module.exports = {
           id: 'COMPLYREQUIREMENTS',
           text: 'To comply with any requirements specified by your supervising officer for the purpose of ensuring that you address your [alcohol abuse / drug abuse / sexual behaviour / violent behaviour / gambling / solvent abuse / anger / debt / prolific behaviour/ offending behaviour] problems at the [NAME OF COURSE / CENTRE].',
           user_input: 'courseOrCentre',
+          displayForEdit: expect.anything(),
           field_position: {
             courseOrCentre: 1,
             abuseAndBehaviours: 0,
@@ -997,6 +999,7 @@ module.exports = {
           id: 'COMPLYREQUIREMENTS',
           text: 'To comply with any requirements specified by your supervising officer for the purpose of ensuring that you address your [alcohol abuse / drug abuse / sexual behaviour / violent behaviour / gambling / solvent abuse / anger / debt / prolific behaviour/ offending behaviour] problems at the [NAME OF COURSE / CENTRE].',
           user_input: 'courseOrCentre',
+          displayForEdit: expect.anything(),
           field_position: {
             courseOrCentre: 1,
             abuseAndBehaviours: 0,

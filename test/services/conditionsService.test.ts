@@ -147,41 +147,6 @@ describe('conditionsService', () => {
     })
   })
 
-  describe('getAbuseAndBehaviours', () => {
-    test('should extract out risks and behaviours for v1', () => {
-      const conditionsService = new ConditionsServiceFactory().forVersion(1)
-      const conditions = {
-        ['Drugs, health and behaviour']: {
-          base: [{}, { user_submission: { abuseAndBehaviours: ['risk 1', 'risk 2'] } }],
-        },
-      }
-
-      return expect(conditionsService.getAbuseAndBehaviours(conditions)).toEqual(['risk 1', 'risk 2'])
-    })
-
-    test('should extract out risks and behaviours for v2', () => {
-      const conditionsService = new ConditionsServiceFactory().forVersion(2)
-      const conditions = {
-        ['Participation in, or co-operation with, a programme or set of activities']: {
-          base: [{}, { user_submission: { abuseAndBehaviours: ['risk 1', 'risk 2'] } }],
-        },
-      }
-
-      return expect(conditionsService.getAbuseAndBehaviours(conditions)).toEqual(['risk 1', 'risk 2'])
-    })
-
-    test('should wrap single strings into an array', () => {
-      const conditionsService = new ConditionsServiceFactory().forVersion(2)
-      const conditions = {
-        ['Participation in, or co-operation with, a programme or set of activities']: {
-          base: [{}, { user_submission: { abuseAndBehaviours: 'risk 1' } }],
-        },
-      }
-
-      return expect(conditionsService.getAbuseAndBehaviours(conditions)).toEqual(['risk 1'])
-    })
-  })
-
   describe('getFullTextForApprovedConditions', () => {
     const standardConditionsText = standardConditions.map((it) => it.text.replace(/\.+$/, ''))
 
