@@ -1,0 +1,18 @@
+div.pure-g.paddingBottom
+  div.pure-u-3-4
+    label(for='appointmentName') Name
+    input(type='text' name='appointmentName' id='appointmentName' class='form-control' value=condition.user_submission && condition.user_submission.appointmentName aria-label="Name of psychiatrist, psychologist or medical practitioner")
+
+- var professions = condition.user_submission && condition.user_submission.appointmentProfessions || []
+div.govuk-fieldset
+  div.multiple-choice
+    input(id='psychiatrist' type='checkbox' name='appointmentProfessions' value='psychiatrist' checked=professions.includes('psychiatrist'))
+    label(for='psychiatrist') Psychiatrist
+  
+  div.multiple-choice
+    input(id='psychologist' type='checkbox' name='appointmentProfessions' value='psychologist' checked=professions.includes('psychologist'))
+    label(for='psychologist') Psychologist
+
+  div.multiple-choice
+    input(id='medicalPractitioner' type='checkbox' name='appointmentProfessions' value='medicalPractitioner' checked=professions.includes('medicalPractitioner'))
+    label(for='medicalPractitioner') Medical practitioner

@@ -1,7 +1,6 @@
 import moment from 'moment'
 import { ConditionMetadata } from '../../../../data/licenceClientTypes'
 import { AdditionalConditions, AdditionalConditionsV2 } from '../../../../data/licenceTypes'
-import { getIn } from '../../../../utils/functionalHelpers'
 
 enum GroupName {
   RESIDENCE_AT_A_SPECIFIC_PLACE = 'Residence at a specific place',
@@ -21,8 +20,27 @@ enum GroupName {
   POST_SENTENCE_SUPERVISION_ONLY = 'Post-sentence supervision only',
 }
 
-export const getPersistedAbuseAndBehaviours = (conditions: AdditionalConditions) =>
-  (conditions as AdditionalConditionsV2)?.COMPLY_REQUIREMENTS?.abuseAndBehaviours
+export const modifyAdditionalConditions = (someConditions: AdditionalConditions) => {
+  const conditions = someConditions as AdditionalConditionsV2
+
+  const abuseAndBehavioursConditions = conditions?.COMPLY_REQUIREMENTS?.abuseAndBehaviours
+
+  if (Array.isArray(abuseAndBehavioursConditions)) {
+    Object.assign(
+      abuseAndBehavioursConditions,
+      abuseAndBehavioursConditions.map((condition, index) => (index > 0 ? ` ${condition}` : condition))
+    )
+  }
+
+  const appointmentProfessions = conditions?.ATTEND_ALL?.appointmentProfessions
+
+  if (Array.isArray(appointmentProfessions)) {
+    Object.assign(
+      appointmentProfessions,
+      appointmentProfessions.map((condition, index) => (index > 0 ? ` ${condition}` : condition))
+    )
+  }
+}
 
 export const conditions: ConditionMetadata[] = [
   {
@@ -47,13 +65,21 @@ export const conditions: ConditionMetadata[] = [
   {
     id: 'ATTEND_ALL',
     text: 'Attend all appointments arranged for you with [INSERT NAME], a [PSYCHIATRIST / PSYCHOLOGIST / MEDICAL PRACTITIONER] and co-operate fully with any care or treatment they recommend.',
-    user_input: 'appointmentName', // need to change?!
+    user_input: 'attendAll',
     field_position: {
       appointmentName: 0,
-      appointmentProfession: 1,
+      appointmentProfessions: 1,
     },
     group_name: GroupName.MAKING_OR_MAINTAINING_CONTACT,
     subgroup_name: null,
+    displayForEdit: (inputtedCondition) => {
+      const result = inputtedCondition.appointmentProfessions
+      const appointmentProfessions = typeof result === 'string' ? [result] : result
+      return {
+        ...inputtedCondition,
+        appointmentProfessions,
+      }
+    },
   },
   {
     id: 'HOME_VISITS',

@@ -14,12 +14,12 @@ const additionalConditions: Map<ConditionVersion, ConditionMetadata[]> = new Map
 ])
 export const getAdditionalConditionsConfig = (version: ConditionVersion) => additionalConditions.get(version)
 
-const persistedAbuseAndBehaviours: Map<ConditionVersion, (conditions: AdditionalConditions) => string[]> = new Map([
-  [1, v1.getPersistedAbuseAndBehaviours],
-  [2, v2.getPersistedAbuseAndBehaviours],
+const modifyAdditionalConditions: Map<ConditionVersion, (conditions: AdditionalConditions) => void> = new Map([
+  [1, v1.modifyAdditionalConditions],
+  [2, v2.modifyAdditionalConditions],
 ])
-export const getPersistedAbuseBehaviours = (version: ConditionVersion, conditions: AdditionalConditions) =>
-  persistedAbuseAndBehaviours.get(version)(conditions)
+export const applyModifications = (version: ConditionVersion, conditions: AdditionalConditions) =>
+  modifyAdditionalConditions.get(version)(conditions)
 
 export const multiFields = {
   appointmentDetails: {

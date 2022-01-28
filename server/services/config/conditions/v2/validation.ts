@@ -38,7 +38,7 @@ export default joi.object({
   }),
   ATTEND_ALL: joi.object({
     appointmentName: joi.string().required(),
-    appointmentProfession: joi.string().required(),
+    appointmentProfessions: joi.any().required(),
   }),
   HOME_VISITS: joi.object({
     mentalHealthName: joi.string().required(),
