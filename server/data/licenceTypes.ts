@@ -169,7 +169,7 @@ export type AdditionalConditionsV2 = {
   NO_COMMUNICATE_VICTIM?: any
   ATTENDDEPENDENCY?: any
   ATTEND_DEPENDENCY_IN_DRUGS_SECTION?: any
-  ATTEND_ALL?: any
+  ATTEND_ALL?: { appointmentProfessions: any }
   HOME_VISITS?: any
   RETURN_TO_UK?: any
   NO_WORK_WITH_AGE?: any

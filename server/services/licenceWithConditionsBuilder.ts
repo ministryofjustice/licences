@@ -1,5 +1,5 @@
 import { getIn, isEmpty, interleave } from '../utils/functionalHelpers'
-import { getAdditionalConditionsConfig, getPersistedAbuseBehaviours, multiFields } from './config/conditionsConfig'
+import { getAdditionalConditionsConfig, applyModifications, multiFields } from './config/conditionsConfig'
 import { AdditionalConditions, Licence } from '../data/licenceTypes'
 import { ConditionVersion } from '../data/licenceClientTypes'
 
@@ -29,21 +29,14 @@ export class LicenceWithConditionsBuilder {
       conditionIdsSelected.includes(condition.id)
     )
 
-    const abuseAndBehavioursConditions = this.getAbuseAndBehaviours(licence?.licenceConditions?.additional)
-
-    if (Array.isArray(abuseAndBehavioursConditions)) {
-      Object.assign(
-        abuseAndBehavioursConditions,
-        abuseAndBehavioursConditions.map((condition, index) => (index > 0 ? ` ${condition}` : condition))
-      )
-    }
+    this.applyModifications(licence?.licenceConditions?.additional)
 
     return this.populateAdditionalConditionsAsObject(licence, selectedConditionsConfig, errors, approvedOnly)
   }
 
   // Only exported for testing
-  getAbuseAndBehaviours(conditions: AdditionalConditions): string[] {
-    return getPersistedAbuseBehaviours(this.conditionVersion, conditions)
+  applyModifications(conditions: AdditionalConditions) {
+    return applyModifications(this.conditionVersion, conditions)
   }
 
   // Only exported for testing

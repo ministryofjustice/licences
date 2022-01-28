@@ -14,8 +14,18 @@ enum GroupName {
   RESTRICTED = 'Restricted additional conditions',
 }
 
-export const getPersistedAbuseAndBehaviours = (conditions: AdditionalConditions) =>
-  (conditions as AdditionalConditionsV1)?.COMPLYREQUIREMENTS?.abuseAndBehaviours
+export const modifyAdditionalConditions = (someConditions: AdditionalConditions) => {
+  const conditions = someConditions as AdditionalConditionsV1
+
+  const abuseAndBehavioursConditions = conditions?.COMPLYREQUIREMENTS?.abuseAndBehaviours
+
+  if (Array.isArray(abuseAndBehavioursConditions)) {
+    Object.assign(
+      abuseAndBehavioursConditions,
+      abuseAndBehavioursConditions.map((condition, index) => (index > 0 ? ` ${condition}` : condition))
+    )
+  }
+}
 
 export const conditions: ConditionMetadata[] = [
   {

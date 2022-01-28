@@ -131,7 +131,7 @@ export const additionalConditionsV2 = {
           {
             abuseAndBehaviours: {
               validationMessage:
-                'Select at least one option from the alcohol abuse / drug abuse / sexual behaviour / violent behaviour / gambling / solvent abuse / anger / debt / prolific behaviour / offending behaviour',
+                'Select at least one option from alcohol abuse / drug abuse / sexual behaviour / violent behaviour / gambling / solvent abuse / anger / debt / prolific behaviour / offending behaviour',
             },
           },
         ],
@@ -146,8 +146,8 @@ export const additionalConditionsV2 = {
             },
           },
           {
-            appointmentProfession: {
-              validationMessage: 'Select psychiatrist / psychologist / medical practitioner',
+            appointmentProfessions: {
+              validationMessage: 'Select at least one option from psychiatrist / psychologist / medical practitioner',
             },
           },
         ],

@@ -758,7 +758,7 @@ describe('licenceWithConditionsBuilder', () => {
     })
   })
 
-  describe('getPersistedAbuseAndBehaviours', () => {
+  describe('applyModifications', () => {
     test('should extract out risks and behaviours for v1', () => {
       const service = new LicenceWithConditionsBuilder(1)
 
@@ -768,7 +768,11 @@ describe('licenceWithConditionsBuilder', () => {
         },
       } as AdditionalConditionsV1
 
-      return expect(service.getAbuseAndBehaviours(conditions)).toEqual(['risk 1', 'risk 2'])
+      service.applyModifications(conditions)
+
+      return expect(conditions).toEqual({
+        COMPLYREQUIREMENTS: { abuseAndBehaviours: ['risk 1', ' risk 2'] },
+      })
     })
 
     test('should extract out risks and behaviours for v2', () => {
@@ -780,7 +784,27 @@ describe('licenceWithConditionsBuilder', () => {
         },
       } as AdditionalConditionsV2
 
-      return expect(service.getAbuseAndBehaviours(conditions)).toEqual(['risk 1', 'risk 2'])
+      service.applyModifications(conditions)
+
+      return expect(conditions).toEqual({
+        COMPLY_REQUIREMENTS: { abuseAndBehaviours: ['risk 1', ' risk 2'] },
+      })
+    })
+
+    test('should extract out appointmentProfessions for v2', () => {
+      const service = new LicenceWithConditionsBuilder(2)
+
+      const conditions = {
+        ATTEND_ALL: {
+          appointmentProfessions: ['prof 1', 'prof 2'],
+        },
+      } as AdditionalConditionsV2
+
+      service.applyModifications(conditions)
+
+      return expect(conditions).toEqual({
+        ATTEND_ALL: { appointmentProfessions: ['prof 1', ' prof 2'] },
+      })
     })
   })
 })
