@@ -81,15 +81,15 @@
         "additionalConditionsRequired": "Yes"
       },
       "additional": {
-        "HOMEVISITS": {
+        "HOME_VISITS": {
           "mentalHealthName": "sample input"
         },
-        "NORESIDE": {
+        "NO_RESIDE": {
           "notResideWithGender": "any",
           "notResideWithAge": "33"
         },
-        "NOTIFYRELATIONSHIP": {},
-        "NOCONTACTPRISONER": {}
+        "NOTIFY_RELATIONSHIP": {},
+        "NO_CONTACT_PRISONER": {}
       },
       "bespoke": [
         {
@@ -107,4 +107,3 @@
     }
   }
 }
-

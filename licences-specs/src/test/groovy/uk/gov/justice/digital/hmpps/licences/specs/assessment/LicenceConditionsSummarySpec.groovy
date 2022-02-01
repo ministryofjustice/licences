@@ -36,7 +36,7 @@ class LicenceConditionsSummarySpec extends GebReportingSpec {
 
     then: 'I see the previously selected values'
     conditions.additional.size() == 7
-    conditions.additional[3].content.contains('sample input')
+    conditions.additional[1].content.contains('sample input')
 
     conditions.additional[4].number.contains('5.')
     conditions.additional[4].title.contains('Bespoke')
@@ -69,20 +69,18 @@ class LicenceConditionsSummarySpec extends GebReportingSpec {
 
     conditions.additional.every { it.editControl != null }
 
-    //conditions.additional[0].editControl.getAttribute('href').endsWith('#NOCONTACTPRISONER')
-    conditions.additional[1].editControl.getAttribute('href').endsWith('#NORESIDE')
-    //conditions.additional[2].editControl.getAttribute('href').endsWith('#NOTIFYRELATIONSHIP')
-    conditions.additional[3].editControl.getAttribute('href').endsWith('#HOMEVISITS')
+    conditions.additional[0].editControl.getAttribute('href').endsWith('#NO_RESIDE')
+    conditions.additional[1].editControl.getAttribute('href').endsWith('#HOME_VISITS')
     conditions.additional[4].editControl.getAttribute('href').endsWith('#bespoke-0')
 
     when: 'I click edit condition'
-    conditions.additional[1].editControl.click()
+    conditions.additional[0].editControl.click()
 
     then: 'I see the additional conditions screen'
     at LicenceConditionsAdditionalPage
 
     and: 'The link goes to the named anchor for the condition'
-    browser.currentUrl.endsWith('#NORESIDE')
+    browser.currentUrl.endsWith('#NO_RESIDE')
   }
 
   def 'Delete condition removes the condition and redisplays the summary screen'() {
@@ -95,10 +93,10 @@ class LicenceConditionsSummarySpec extends GebReportingSpec {
     conditions.additional.every { it.deleteControl != null }
 
     and: 'I see the condition that will be deleted'
-    conditions.additional[3].content.contains('sample input')
+    conditions.additional[1].content.contains('sample input')
 
     when: 'I click delete'
-    conditions.additional[3].deleteControl.click()
+    conditions.additional[1].deleteControl.click()
 
     then: 'I return to the conditions summary page'
     at LicenceConditionsSummaryPage
@@ -156,7 +154,7 @@ class LicenceConditionsSummarySpec extends GebReportingSpec {
     to LicenceConditionsAdditionalPage, testData.markAndrewsBookingId
 
     and: 'I select some conditions'
-    $("form")['additionalConditions[]'] = ['COMPLYREQUIREMENTS']
+    $("form")['additionalConditions[]'] = ['COMPLY_REQUIREMENTS']
 
     and: 'I select violent behaviour and anger from Drugs, health and behaviour'
     $("form").abuseAndBehaviours = ['violent behaviour', 'anger']

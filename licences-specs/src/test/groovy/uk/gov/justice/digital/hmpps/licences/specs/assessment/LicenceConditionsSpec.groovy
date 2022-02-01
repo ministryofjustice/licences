@@ -87,7 +87,7 @@ class LicenceConditionsSpec extends GebReportingSpec {
     conditions.every { !it.value() }
 
     and: 'I see the right number of conditions'
-    conditions.size() == 34
+    conditions.size() == 50
   }
 
   def 'Select a condition reveals the input form'() {
@@ -99,7 +99,7 @@ class LicenceConditionsSpec extends GebReportingSpec {
     !$("#groupsOrOrganisation").isDisplayed()
 
     when: 'I select a condition requiring additional input'
-    $("form")['additionalConditions[]'] = 'NOCONTACTASSOCIATE'
+    $("form")['additionalConditions[]'] = 'NO_CONTACT_ASSOCIATE'
 
     then: 'The input form is shown'
     $("#groupsOrOrganisation").isDisplayed()
@@ -112,7 +112,7 @@ class LicenceConditionsSpec extends GebReportingSpec {
     at LicenceConditionsAdditionalPage
 
     and: 'I select some conditions'
-    $("form")['additionalConditions[]'] = ['NOCONTACTPRISONER', 'NOCONTACTASSOCIATE', 'NORESIDE']
+    $("form")['additionalConditions[]'] = ['NO_CONTACT_PRISONER', 'NO_CONTACT_ASSOCIATE', 'NORESIDE']
 
     and: 'I choose return to tasklist'
     find('#backBtn').click()
@@ -131,7 +131,7 @@ class LicenceConditionsSpec extends GebReportingSpec {
     at LicenceConditionsAdditionalPage
 
     and: 'I select some conditions'
-    $("form")['additionalConditions[]'] = ['NOCONTACTPRISONER', 'NOCONTACTASSOCIATE']
+    $("form")['additionalConditions[]'] = ['NO_CONTACT_PRISONER', 'NO_CONTACT_ASSOCIATE']
     $("#groupsOrOrganisation") << 'sample input'
 
     and: 'I save and continue'
@@ -141,8 +141,8 @@ class LicenceConditionsSpec extends GebReportingSpec {
     to LicenceConditionsAdditionalPage, testData.markAndrewsBookingId
 
     then: 'I see the previously entered values'
-    conditionsItem('NOCONTACTPRISONER').checked
-    conditionsItem('NOCONTACTASSOCIATE').checked
+    conditionsItem('NO_CONTACT_PRISONER').checked
+    conditionsItem('NO_CONTACT_ASSOCIATE').checked
     $("#groupsOrOrganisation").value() == 'sample input'
   }
 
@@ -152,7 +152,7 @@ class LicenceConditionsSpec extends GebReportingSpec {
     at LicenceConditionsAdditionalPage
 
     and: 'I select some conditions'
-    $("form")['additionalConditions[]'] = ['COMPLYREQUIREMENTS']
+    $("form")['additionalConditions[]'] = ['COMPLY_REQUIREMENTS']
 
     and: 'I select alcohol abuse and drug abuse from the Drugs, health and behaviour section'
     $("form").abuseAndBehaviours = ['alcohol abuse', 'drug abuse']
@@ -164,7 +164,7 @@ class LicenceConditionsSpec extends GebReportingSpec {
     to LicenceConditionsAdditionalPage, testData.markAndrewsBookingId
 
     then: 'I see the previously entered values'
-    conditionsItem('COMPLYREQUIREMENTS').checked
+    conditionsItem('COMPLY_REQUIREMENTS').checked
 
     abuseAndBehaviours('alcohol abuse').checked
     abuseAndBehaviours('solvent abuse').unchecked
