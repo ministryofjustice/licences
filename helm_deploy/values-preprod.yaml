@@ -23,7 +23,7 @@ ingress:
   cert_secret: licences-cert
   path: /
   annotations:
-    external-dns.alpha.kubernetes.io/set-identifier: licences-licences-preprod-blue
+    external-dns.alpha.kubernetes.io/set-identifier: licences-licences-preprod-green
 
 env:
   NOMIS_API_URL: "https://api-preprod.prison.service.justice.gov.uk"
