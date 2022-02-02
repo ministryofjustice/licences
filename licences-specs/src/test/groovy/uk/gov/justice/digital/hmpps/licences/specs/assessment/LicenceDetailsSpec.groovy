@@ -102,7 +102,7 @@ class LicenceDetailsSpec extends GebReportingSpec {
     conditions.additional.size() == 2
 
     conditions.additional[0].number == '1.'
-    conditions.additional[0].title == 'Technology: Cameras and photos'
+    conditions.additional[0].title == 'Possession, ownership, control or inspection of specified items or documents.'
 
     conditions.additional[1].number == '2.'
     conditions.additional[1].content == 'First bespoke condition'

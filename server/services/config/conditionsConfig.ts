@@ -6,7 +6,7 @@ import { standardConditions as stdConditions } from './conditions/standardCondit
 
 export const standardConditions = stdConditions
 
-export const CURRENT_CONDITION_VERSION: ConditionVersion = 1
+export const CURRENT_CONDITION_VERSION: ConditionVersion = 2
 
 const additionalConditions: Map<ConditionVersion, ConditionMetadata[]> = new Map([
   [1, v1.conditions],

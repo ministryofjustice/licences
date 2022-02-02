@@ -81,7 +81,7 @@
         "additionalConditionsRequired": "Yes"
       },
       "additional": {
-        "NOCAMERAPHONE": {}
+        "NO_CAMERA_PHONE": {}
       },
       "bespoke": []
     }

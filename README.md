@@ -7,8 +7,8 @@
 
 0. Install node and npm (check package.json for required versions)
 
-- Node 10.15 or higher
-- NPM 5.6 or higher
+- Node 14.16 or higher
+- NPM 7.2.4 or higher
 
 1. Install the dependencies required to run the service:
 
@@ -32,16 +32,22 @@ Or, for development, build css and restart server on file changes:
 $ npm run start:dev
 ```
 
-To run locally you also need the database, mock server, and the auth server. These can all be started by running
+To run locally you need:
+- database
+- redis
+- auth server
+- nomis
+- community api
+- probation teams
+- gotenberg
+- nomis-user-roles-api
 
-```
-npm run start-mocks
-docker-compose up
-```
+You can run local database, redis and configure the application to point to the T3/dev environment for other services.
+Or these can be run locally using `docker-compose` and starting `mock-services`.
+Or you can point to mock-services for a subset of services and T3/dev for others..
 
 If you get a ‘You are not authorised to access this application’ when trying to run the app locally, 
-Then login as NOMIS_BATCHLOAD user and go to ‘manage locations’ and then 'ABC probation area (ABC)' and ensure it is ticked. 
-
+Then login as NOMIS_BATCHLOAD user and go to ‘manage locations’ and then 'ABC probation area (ABC)' and ensure it is ticked.
 
 4. Visit [localhost:3000](http://localhost:3000/)
 
@@ -52,35 +58,15 @@ Then login as NOMIS_BATCHLOAD user and go to ‘manage locations’ and then 'AB
 - `npm run clean` -> cleans previously generated files
 - `npm run build` -> cleans and regenerates assets.
 - `npm run typecheck` -> runs typescript type checking
+- `npm run start:feature` -> runs the application configured to run integration tests
+
 
 # Environment variables
 
-The following environment variables are used and values should be supplied for correct operation but have defaults.
-The easiest way to supply them is to create a .env file in the project root.
+To create a .env file, copy `feature.env` to `.env` and make any required changes.
+This file is `.gitignore`d
 
-- NOMIS_API_URL - url for nomis elite2 api entry point eg http://localhost:8080/elite2api
-- NOMIS_AUTH_URL - url for nomis oauth server eg http://localhost:9090/auth
-- DOMAIN - domain where the app is running eg http://localhost:3000
-
-Oauth config:
-
-- API_CLIENT_SECRET
-- ADMIN_API_CLIENT_SECRET
-- API_CLIENT_ID
-- ADMIN_API_CLIENT_ID
-
-For the database:
-
-- DB_USER - username for DB access
-- DB_PASS - password for DB access
-- DB_SERVER - DB server host
-- DB_NAME - DB name
-- DB_SSL_ENABLED - set to false for local
-
-Other
-
-- ENABLE_TEST_UTILS=true to enable test utils such as resetting DB
-- PUSH_TO_NOMIS=yes to send approval status updates to nomis
+`feature.env` contains defaults required for integration tests 
 
 # AWS database access
 
