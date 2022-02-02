@@ -10,7 +10,7 @@ const redis = require('redis')
 const session = require('express-session')
 const ConnectRedis = require('connect-redis')
 
-const helmet = require('helmet')
+const helmet = require('helmet').default
 const noCache = require('nocache')
 
 const csurf = require('csurf')
