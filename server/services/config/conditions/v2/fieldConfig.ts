@@ -6,7 +6,7 @@ export const additionalConditionsV2 = {
         contains: [
           {
             region: {
-              validationMessage: 'Enter a name of a region',
+              validationMessage: 'Enter the region',
             },
           },
         ],
@@ -237,7 +237,7 @@ export const additionalConditionsV2 = {
         contains: [
           {
             specificItem: {
-              validationMessage: 'Enter the specific item',
+              validationMessage: 'Enter the specified item',
             },
           },
         ],
@@ -248,7 +248,7 @@ export const additionalConditionsV2 = {
         contains: [
           {
             conditionTypes: {
-              validationMessage: 'Enter the types of condition to be electronically monitored',
+              validationMessage: 'Enter the types of conditions to be electronically monitored',
             },
           },
         ],
@@ -259,7 +259,7 @@ export const additionalConditionsV2 = {
         contains: [
           {
             trailEndDate: {
-              validationMessage: 'Enter trail end date',
+              validationMessage: 'Enter the monitoring end date',
             },
           },
         ],
@@ -281,12 +281,12 @@ export const additionalConditionsV2 = {
         contains: [
           {
             timeframe: {
-              validationMessage: 'Enter the timeframe',
+              validationMessage: 'Enter the monitoring timefram',
             },
           },
           {
             endDate: {
-              validationMessage: 'Enter the endDate',
+              validationMessage: 'Enter the monitoring end date',
             },
           },
         ],
