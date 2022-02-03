@@ -2,7 +2,19 @@ import R from 'ramda'
 
 import { Result, Error } from '../../types/licences'
 
-export { flatten, merge, equals, difference, pipe, all, pick, pickBy, keys, intersection, splitEvery } from 'ramda'
+export {
+  flatten,
+  mergeRight as merge,
+  equals,
+  difference,
+  pipe,
+  all,
+  pick,
+  pickBy,
+  keys,
+  intersection,
+  splitEvery,
+} from 'ramda'
 
 export const lastItem = R.last
 export const mergeWithRight = R.mergeDeepRight

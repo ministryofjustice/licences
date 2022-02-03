@@ -1,7 +1,6 @@
 import moment from 'moment'
 import { ConditionMetadata } from '../../../../data/licenceClientTypes'
 import { AdditionalConditions, AdditionalConditionsV1 } from '../../../../data/licenceTypes'
-import { getIn } from '../../../../utils/functionalHelpers'
 
 enum GroupName {
   PEOPLE_CONTACT_AND_RELATIONSHIPS = 'People, contact and relationships',
