@@ -1,6 +1,7 @@
 import moment from 'moment'
 import { ConditionMetadata } from '../../../../data/licenceClientTypes'
 import { AdditionalConditions, AdditionalConditionsV2 } from '../../../../data/licenceTypes'
+import { isEmpty } from '../../../../utils/functionalHelpers'
 
 enum GroupName {
   RESIDENCE_AT_A_SPECIFIC_PLACE = 'Residence at a specific place',
@@ -40,6 +41,16 @@ export const modifyAdditionalConditions = (someConditions: AdditionalConditions)
       appointmentProfessions.map((condition, index) => (index > 0 ? ` ${condition}` : condition))
     )
   }
+
+  if (!isEmpty(conditions?.REPORT_TO)) {
+    const { reportingTime, reportingDaily, ...rest } = conditions?.REPORT_TO
+
+    conditions.REPORT_TO = {
+      reportingTime: reportingTime ? `at ${reportingTime}` : reportingDaily,
+      reportingDaily: reportingDaily,
+      ...rest,
+    }
+  }
 }
 
 export const conditions: ConditionMetadata[] = [
@@ -64,11 +75,10 @@ export const conditions: ConditionMetadata[] = [
   },
   {
     id: 'ATTEND_ALL',
-    text: 'Attend all appointments arranged for you with [INSERT NAME], a [PSYCHIATRIST / PSYCHOLOGIST / MEDICAL PRACTITIONER] and co-operate fully with any care or treatment they recommend.',
+    text: 'Attend all appointments arranged for you with a [PSYCHIATRIST / PSYCHOLOGIST / MEDICAL PRACTITIONER] and co-operate fully with any care or treatment they recommend.',
     user_input: 'attendAll',
     field_position: {
-      appointmentName: 0,
-      appointmentProfessions: 1,
+      appointmentProfessions: 0,
     },
     group_name: GroupName.MAKING_OR_MAINTAINING_CONTACT,
     subgroup_name: null,
@@ -163,7 +173,7 @@ export const conditions: ConditionMetadata[] = [
   },
   {
     id: 'NO_CONTACT_PRISONER',
-    text: 'Not to contact directly or indirectly any person who is a serving or remand offender or detained in State custody, without the prior approval of your supervising officer.',
+    text: 'Not to contact directly or indirectly any person who is a serving or remand prisoner or detained in State custody, without the prior approval of your supervising officer.',
     user_input: null,
     field_position: null,
     group_name: GroupName.MAKING_OR_MAINTAINING_CONTACT,
@@ -181,8 +191,8 @@ export const conditions: ConditionMetadata[] = [
   },
   {
     id: 'COMPLY_REQUIREMENTS',
-    text: 'To comply with any requirements specified by your supervising officer for the purpose of ensuring that you address your [alcohol abuse / drug abuse / sexual behaviour / violent behaviour / gambling / solvent abuse / anger / debt / prolific behaviour/ offending behaviour] problems at the [NAME OF COURSE / CENTRE].',
-    user_input: 'courseOrCentre',
+    text: 'To comply with any requirements specified by your supervising officer for the purpose of ensuring that you address your [alcohol / drug / sexual / violent / gambling / solvent abuse / anger / debt / prolific / offending behaviour] problems at the [NAME OF COURSE / CENTRE].',
+    user_input: 'courseOrCentreV2',
     field_position: {
       abuseAndBehaviours: 0,
       courseOrCentre: 1,
@@ -210,7 +220,7 @@ export const conditions: ConditionMetadata[] = [
   },
   {
     id: 'ONE_PHONE',
-    text: 'Not to own or possess more than one mobile phone or SIM card without the prior approval of your supervising officer and to provide your supervising officer with details of that mobile telephone, including the IMEI number and the SIM card that you possess.',
+    text: 'Not to own or possess more than one mobile phone or SIM card without the prior approval of your supervising officer and to provide your supervising officer with details of that mobile telephone or one you have regular use of, including the IMEI number and the SIM card that you possess.',
     user_input: null,
     field_position: null,
     group_name: GroupName.POSSESSION,
@@ -383,7 +393,7 @@ export const conditions: ConditionMetadata[] = [
   },
   {
     id: 'PLACE_OF_WORSHIP',
-    text: 'To only attend places of worship which have been previously agreed swith your supervising officer.',
+    text: 'To only attend places of worship which have been previously agreed with your supervising officer.',
     user_input: null,
     field_position: null,
     group_name: GroupName.FREEDOM_OF_MOVEMENT,
@@ -391,13 +401,13 @@ export const conditions: ConditionMetadata[] = [
   },
   {
     id: 'REPORT_TO',
-    text: 'Report to staff at [NAME OF APPROVED PREMISES / POLICE STATION] at [TIME / DAILY], unless otherwise authorised by your supervising officer.  This condition will be reviewed by your supervising officer on a [WEEKLY / MONTHLY / ETC] basis and may be amended or removed if it is felt that the level of risk you present has reduced appropriately.',
-    user_input: 'reportingDetails',
+    text: 'Report to staff at [NAME OF APPROVED PREMISES / POLICE STATION] [at TIME / DAILY], unless otherwise authorised by your supervising officer.  This condition will be reviewed by your supervising officer on a [WEEKLY / MONTHLY / ETC] basis and may be amended or removed if it is felt that the level of risk you present has reduced appropriately.',
+    user_input: 'reportingDetailsV2',
     field_position: {
       reportingTime: 1,
-      reportingDaily: 2,
+      reportingDaily: 5,
       reportingAddress: 0,
-      reportingFrequency: 3,
+      reportingFrequency: 2,
     },
     group_name: GroupName.COMMUNITY_SUPERVISION,
     subgroup_name: null,

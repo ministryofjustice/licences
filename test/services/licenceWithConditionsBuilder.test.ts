@@ -806,5 +806,45 @@ describe('licenceWithConditionsBuilder', () => {
         ATTEND_ALL: { appointmentProfessions: ['prof 1', ' prof 2'] },
       })
     })
+
+    test('should prefix reporting time with "at"', () => {
+      const service = new LicenceWithConditionsBuilder(2)
+
+      const conditions = {
+        REPORT_TO: {
+          reportingTime: '12:30',
+          reportingDaily: 'daily',
+        },
+      } as AdditionalConditionsV2
+
+      service.applyModifications(conditions)
+
+      return expect(conditions).toEqual({
+        REPORT_TO: {
+          reportingDaily: 'daily',
+          reportingTime: 'at 12:30',
+        },
+      })
+    })
+
+    test('should default to daily if time not present', () => {
+      const service = new LicenceWithConditionsBuilder(2)
+
+      const conditions = {
+        REPORT_TO: {
+          reportingTime: undefined,
+          reportingDaily: 'daily',
+        },
+      } as AdditionalConditionsV2
+
+      service.applyModifications(conditions)
+
+      return expect(conditions).toEqual({
+        REPORT_TO: {
+          reportingDaily: 'daily',
+          reportingTime: 'daily',
+        },
+      })
+    })
   })
 })

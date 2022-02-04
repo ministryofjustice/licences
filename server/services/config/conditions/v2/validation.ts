@@ -37,7 +37,6 @@ export default joi.object({
     appointmentAddressInDrugsSection: joi.string().required(),
   }),
   ATTEND_ALL: joi.object({
-    appointmentName: joi.string().required(),
     appointmentProfessions: joi.any().required(),
   }),
   HOME_VISITS: joi.object({
@@ -94,12 +93,12 @@ export default joi.object({
   }),
   REPORT_TO: joi.object({
     reportingAddress: joi.string().required(),
-    reportingTime: joi.string().allow('').optional(),
-    reportingDaily: joi.when('reportingTime', {
-      is: '',
-      then: joi.string().required(),
-      otherwise: joi.valid('').optional(),
+    reportingTime: joi.when('reportingDaily', {
+      is: joi.exist(),
+      then: joi.valid('').optional(),
+      otherwise: joi.string().required(),
     }),
+    reportingDaily: joi.string().allow('').optional(),
     reportingFrequency: joi.string().required(),
   }),
   POLYGRAPH: joi.object({}),

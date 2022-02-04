@@ -1,0 +1,28 @@
+div.smallPaddingBottom
+  label(for='reportingAddress') Approved premises / police stations address
+  textarea(name='reportingAddress' id='reportingAddress' class='form-control' rows='3')
+    if condition.user_submission && condition.user_submission.reportingAddress
+      | #{condition.user_submission.reportingAddress}
+
+div.pure-g.smallPaddingBottom
+  div.pure-u-1-2
+    label(for='reportingTime') At (time)
+    input(type='text' name='reportingTime' id='reportingTime' class='form-control' value=condition.user_submission && condition.user_submission.reportingTime aria-label="Time")
+
+  div.pure-u-6-12
+    div.pure-g.lineMarginTop
+      p.center.pure-u-8-24 or
+      div.pure-u-1-2
+        div.multiple-choice
+          input(id='reportingDaily' name='reportingDaily' type='checkbox' value='daily' checked=condition.user_submission && condition.user_submission.reportingDaily === 'daily')
+          label(for='reportingDaily') Daily
+
+
+div.inline
+  div.multiple-choice
+    input(id='reportingWeekly' type='radio' name='reportingFrequency' value='Weekly' checked=condition.user_submission && condition.user_submission.reportingFrequency === 'Weekly')
+    label(for='reportingWeekly') Weekly
+
+  div.multiple-choice
+    input(id='reportingMonthly' type='radio' name='reportingFrequency' value='Monthly' checked=condition.user_submission && condition.user_submission.reportingFrequency === 'Monthly')
+    label(for='reportingMonthly') Monthly
