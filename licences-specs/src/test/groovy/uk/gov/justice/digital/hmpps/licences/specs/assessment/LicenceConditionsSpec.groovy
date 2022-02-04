@@ -167,7 +167,7 @@ class LicenceConditionsSpec extends GebReportingSpec {
     conditionsItem('COMPLY_REQUIREMENTS').checked
 
     abuseAndBehaviours('alcohol').checked
-    abuseAndBehaviours('solvent').unchecked
+    abuseAndBehaviours('solvent abuse').unchecked
     abuseAndBehaviours('drug').checked
   }
 
