@@ -141,11 +141,6 @@ export const additionalConditionsV2 = {
       ATTEND_ALL: {
         contains: [
           {
-            appointmentName: {
-              validationMessage: 'Enter name',
-            },
-          },
-          {
             appointmentProfessions: {
               validationMessage: 'Select at least one option from psychiatrist / psychologist / medical practitioner',
             },
@@ -281,7 +276,7 @@ export const additionalConditionsV2 = {
         contains: [
           {
             timeframe: {
-              validationMessage: 'Enter the monitoring timefram',
+              validationMessage: 'Enter the monitoring timeframe',
             },
           },
           {
@@ -356,7 +351,7 @@ export const additionalConditionsV2 = {
           },
           {
             appointmentAddressInDrugsSection: {
-              validationMessage: 'Enter appointment name and address',
+              validationMessage: 'Enter appointment address',
             },
           },
         ],

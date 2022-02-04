@@ -155,7 +155,7 @@ class LicenceConditionsSpec extends GebReportingSpec {
     $("form")['additionalConditions[]'] = ['COMPLY_REQUIREMENTS']
 
     and: 'I select alcohol abuse and drug abuse from the Drugs, health and behaviour section'
-    $("form").abuseAndBehaviours = ['alcohol abuse', 'drug abuse']
+    $("form").abuseAndBehaviours = ['alcohol', 'drug']
 
     and: 'I save and continue'
     find('#continueBtn').click()
@@ -166,9 +166,9 @@ class LicenceConditionsSpec extends GebReportingSpec {
     then: 'I see the previously entered values'
     conditionsItem('COMPLY_REQUIREMENTS').checked
 
-    abuseAndBehaviours('alcohol abuse').checked
+    abuseAndBehaviours('alcohol').checked
     abuseAndBehaviours('solvent abuse').unchecked
-    abuseAndBehaviours('drug abuse').checked
+    abuseAndBehaviours('drug').checked
   }
 
 

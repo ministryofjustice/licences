@@ -1,8 +1,3 @@
-div.pure-g.paddingBottom
-  div.pure-u-3-4
-    label(for='appointmentName') Name
-    input(type='text' name='appointmentName' id='appointmentName' class='form-control' value=condition.user_submission && condition.user_submission.appointmentName aria-label="Name of psychiatrist, psychologist or medical practitioner")
-
 - var professions = condition.user_submission && condition.user_submission.appointmentProfessions || []
 div.govuk-fieldset
   div.multiple-choice
@@ -14,5 +9,5 @@ div.govuk-fieldset
     label(for='psychologist') Psychologist
 
   div.multiple-choice
-    input(id='medicalPractitioner' type='checkbox' name='appointmentProfessions' value='medicalPractitioner' checked=professions.includes('medicalPractitioner'))
+    input(id='medicalPractitioner' type='checkbox' name='appointmentProfessions' value='medical practitioner' checked=professions.includes('medical practitioner'))
     label(for='medicalPractitioner') Medical practitioner
