@@ -125,7 +125,7 @@ module.exports = function createApp({
   // Secure code best practice - see:
   // 1. https://expressjs.com/en/advanced/best-practice-security.html,
   // 2. https://www.npmjs.com/package/helmet
-  app.use(helmet({ contentSecurityPolicy: false }))
+  app.use(helmet({ contentSecurityPolicy: false, crossOriginResourcePolicy: { policy: 'cross-origin' } }))
 
   app.use(addRequestId)
 
