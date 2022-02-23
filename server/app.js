@@ -1,7 +1,6 @@
 /* eslint-disable no-underscore-dangle */
-const addRequestId = require('express-request-id')()
 const moment = require('moment')
-
+const uuid = require('uuid')
 const bodyParser = require('body-parser')
 const express = require('express')
 const path = require('path')
@@ -127,7 +126,16 @@ module.exports = function createApp({
   // 2. https://www.npmjs.com/package/helmet
   app.use(helmet({ contentSecurityPolicy: false, crossOriginResourcePolicy: { policy: 'cross-origin' } }))
 
-  app.use(addRequestId)
+  app.use((req, res, next) => {
+    const headerName = 'X-Request-Id'
+    const oldValue = req.get(headerName)
+    const id = oldValue === undefined ? uuid.v4() : oldValue
+
+    res.set(headerName, id)
+    req.id = id
+
+    next()
+  })
 
   const client = redis.createClient({
     port: config.redis.port,
