@@ -53,6 +53,8 @@ export const modifyAdditionalConditions = (someConditions: AdditionalConditions)
   }
 }
 
+export const pssConditions = ['ATTEND_SAMPLE', 'ATTEND_DEPENDENCY']
+
 export const conditions: ConditionMetadata[] = [
   {
     id: 'RESIDE_AT_SPECIFIC_PLACE',

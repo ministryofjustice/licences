@@ -1,3 +1,4 @@
+const v1 = require('../../../server/services/config/conditions/v1/conditions')
 const { formatPdfData, getConditionText } = require('../../../server/services/utils/pdfFormatter/pdfFormatter')
 
 describe('pdfFormatter', () => {
@@ -21,6 +22,7 @@ describe('pdfFormatter', () => {
     image = '',
     approvedVersionDetails = {},
     placeholder = 'PLACEHOLDER',
+    pssConditions = v1.pssConditions,
   }) {
     return formatPdfData(
       templateName,
@@ -28,6 +30,7 @@ describe('pdfFormatter', () => {
         licence,
         prisonerInfo,
         establishment,
+        pssConditions,
       },
       image,
       approvedVersionDetails,

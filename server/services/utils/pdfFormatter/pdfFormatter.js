@@ -12,14 +12,14 @@ module.exports = { formatPdfData, DEFAULT_PLACEHOLDER, pickCurfewAddress, pickCu
 
 function formatPdfData(
   templateName,
-  { licence, prisonerInfo, establishment },
+  { licence, prisonerInfo, establishment, pssConditions },
   image,
   approvedVersionDetails,
   placeholder = DEFAULT_PLACEHOLDER
 ) {
   const licencePathSelector = selectPathsFrom(licence)
-  const conditions = getConditionsForConfig(licencePathSelector, templateName, 'CONDITIONS')
-  const pssconditions = getConditionsForConfig(licencePathSelector, templateName, 'PSSCONDITIONS')
+  const conditions = getConditionsForConfig(licencePathSelector, templateName, pssConditions, 'CONDITIONS')
+  const pssconditions = getConditionsForConfig(licencePathSelector, templateName, pssConditions, 'PSSCONDITIONS')
   const photo = image ? image.toString('base64') : null
   const taggingCompany = { telephone: config.pdf.licences.taggingCompanyTelephone }
   const curfewAddress = pickCurfewAddress(licence)
@@ -91,9 +91,13 @@ function pickCurfewAddressPath(licence) {
   return ['proposedAddress', 'curfewAddress']
 }
 
-function getConditionsForConfig(licencePathSelector, templateName, configName) {
+function getConditionsForConfig(licencePathSelector, templateName, pssConditions, configName) {
   const conditionsConfig = pdfData[templateName][configName]
-  return isEmpty(conditionsConfig) ? {} : getAdditionalConditionsText(licencePathSelector, conditionsConfig)
+  if (isEmpty(conditionsConfig)) {
+    return {}
+  }
+  const pssConfig = { ...conditionsConfig, filtered: pssConditions }
+  return getAdditionalConditionsText(licencePathSelector, pssConfig)
 }
 
 function getAdditionalConditionsText(licencePathSelector, conditionsConfig) {

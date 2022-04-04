@@ -1,6 +1,11 @@
 import { formatConditionsInput, getConditionText, formatConditionsText } from './utils/conditionsFormatter'
 import { isEmpty } from '../utils/functionalHelpers'
-import { getAdditionalConditionsConfig, standardConditions, CURRENT_CONDITION_VERSION } from './config/conditionsConfig'
+import {
+  getAdditionalConditionsConfig,
+  standardConditions,
+  getPssConditions,
+  CURRENT_CONDITION_VERSION,
+} from './config/conditionsConfig'
 import { AdditionalConditions, Licence } from '../data/licenceTypes'
 import { LicenceRecord } from './licenceService'
 import { ConditionMetadata, ConditionVersion } from '../data/licenceClientTypes'
@@ -72,6 +77,10 @@ export class ConditionsService {
 
   getStandardConditions() {
     return standardConditions
+  }
+
+  getPssConditions(): string[] {
+    return getPssConditions(this.version)
   }
 
   getAdditionalConditions(licence: Licence = null) {
