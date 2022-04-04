@@ -28,6 +28,8 @@ describe('pdfService', () => {
     error: jest.fn(),
   }
 
+  const pssConditions = ['condition1', 'condition2']
+
   beforeEach(() => {
     licenceService = {
       getLicence: jest.fn().mockReturnValue(licenceResponse),
@@ -37,6 +39,7 @@ describe('pdfService', () => {
 
     conditionsService = {
       populateLicenceWithConditions: jest.fn().mockReturnValue(licence),
+      getPssConditions: jest.fn().mockReturnValue(pssConditions),
     } as unknown as jest.Mocked<ConditionsService>
 
     prisonerService = createPrisonerServiceStub()
@@ -88,6 +91,7 @@ describe('pdfService', () => {
           licence,
           prisonerInfo: prisonerResponse,
           establishment: establishmentResponse,
+          pssConditions,
         },
         imageResponse,
         { a: 'a', approvedVersion: 1.3 }
@@ -113,6 +117,7 @@ describe('pdfService', () => {
           licence,
           prisonerInfo: {},
           establishment: establishmentResponse,
+          pssConditions,
         },
         null,
         { a: 'a', approvedVersion: 1.3 }
@@ -133,6 +138,7 @@ describe('pdfService', () => {
           licence,
           prisonerInfo: prisonerResponse,
           establishment: establishmentResponse,
+          pssConditions,
         },
         null,
         { a: 'a', approvedVersion: 1.3 }

@@ -25,7 +25,7 @@ export const modifyAdditionalConditions = (someConditions: AdditionalConditions)
     )
   }
 }
-
+export const pssConditions = ['ATTENDSAMPLE', 'ATTENDDEPENDENCY']
 export const conditions: ConditionMetadata[] = [
   {
     id: 'NOCONTACTPRISONER',

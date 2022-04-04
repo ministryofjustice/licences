@@ -8,6 +8,12 @@ export const standardConditions = stdConditions
 
 export const CURRENT_CONDITION_VERSION: ConditionVersion = 2
 
+const pssConditions: Map<ConditionVersion, string[]> = new Map([
+  [1, v1.pssConditions],
+  [2, v2.pssConditions],
+])
+export const getPssConditions = (version: ConditionVersion) => pssConditions.get(version)
+
 const additionalConditions: Map<ConditionVersion, ConditionMetadata[]> = new Map([
   [1, v1.conditions],
   [2, v2.conditions],

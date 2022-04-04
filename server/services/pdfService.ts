@@ -15,13 +15,16 @@ export default class PdfService {
   ) {}
 
   async getPdfLicenceData(bookingId, rawLicence: LicenceRecord, token) {
+    const conditionsService = this.conditionsServiceFactory.forLicence(rawLicence)
+
     const [licence, prisonerInfo, establishment] = await Promise.all([
-      this.conditionsServiceFactory.forLicence(rawLicence).populateLicenceWithConditions(rawLicence.licence),
+      conditionsService.populateLicenceWithConditions(rawLicence.licence),
       this.prisonerService.getPrisonerDetails(bookingId, token),
       this.prisonerService.getEstablishmentForPrisoner(bookingId, token),
     ])
 
     const image = prisonerInfo.facialImageId ? await this.getImage(prisonerInfo.facialImageId, token) : null
+    const pssConditions = conditionsService.getPssConditions()
 
     return this.pdfFormatter.formatPdfData(
       getIn(licence, ['document', 'template', 'decision']),
@@ -29,6 +32,7 @@ export default class PdfService {
         licence,
         prisonerInfo,
         establishment,
+        pssConditions,
       },
       image,
       { ...rawLicence.approvedVersionDetails, approvedVersion: rawLicence.approvedVersion }
