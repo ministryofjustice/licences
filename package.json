@@ -122,7 +122,7 @@
     "jwt-decode": "^3.1.2",
     "knex": "^1.0.4",
     "knex-migrate": "^1.7.4",
-    "moment": "2.29.1",
+    "moment": "2.29.2",
     "moment-business-days": "^1.2.0",
     "nocache": "^3.0.3",
     "node-schedule": "^2.1.0",
