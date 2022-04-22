@@ -23,6 +23,10 @@ RUN npm ci --no-audit && \
 RUN npm prune --production
 
 FROM node:14.17-buster-slim
+
+ARG BUILD_NUMBER
+ARG GIT_REF
+
 LABEL maintainer="HMPPS Digital Studio <info@digital.justice.gov.uk>"
 
 # Cache breaking
