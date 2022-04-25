@@ -19,7 +19,7 @@ block content
 
           div.form-group.inline.smallPaddingTop
             p Are there checks you need to carry out to decide if the address is suitable?
-              span.form-hint For example, police or social services checks.
+              span.form-hint.smallMarginTop For example, police or social services checks.
 
             div.multiple-choice
               input#planningYes(type="radio" checked=data.planningActions === 'Yes' name="planningActions" value="Yes")
@@ -39,7 +39,9 @@ block content
               label(for="awaitingNo") No
 
           div.form-group
-            label(for='riskManagementDetails') Provide details of your checks. If you're waiting for information explain what it is and when you should get it. (optional)
+            label(for='riskManagementDetails') Provide details of your checks
+              span.form-hint.midMarginBottom.smallMarginTop You must confirm here that you have considered information from the police and social services when assessing the suitability of the proposed address.
+              span.form-hint.smallMarginBottom Also include details of information you're waiting for and when you should get it.
             textarea(name='riskManagementDetails' id='riskManagementDetails' class='form-control' rows='5' aria-label="Provide details of when you expect to get the information")
               if data.riskManagementDetails
                 | #{data.riskManagementDetails}
