@@ -216,6 +216,7 @@ module.exports = function createApp({
       hostname: req.hostname,
       authUrl: config.nomis.authUrl,
       apiClientId: config.nomis.apiClientId,
+      exitUrl: config.links.exitUrl,
     }
     next()
   }
