@@ -63,7 +63,7 @@ class WebsiteSpec extends GebReportingSpec {
 
     then: 'I see health status OK'
 
-    def json = (driver.pageSource.replaceAll("\\<.*?>", "")) - '</pre></body></html>'
+    def json = (driver.pageSource.replaceAll("\\<.*?>", ""))
 
     def response = new JsonSlurper().parseText(json)
 
