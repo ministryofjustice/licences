@@ -1,8 +1,8 @@
 ---
-# Values here are the same across all environments
 
 generic-prometheus-alerts:
   targetApplication: licences
+  alertSeverity: digital-prison-service-dev
 
 ingress:
   annotations:
