@@ -48,8 +48,7 @@ executors:
           SERVER_PORT: 9190
           API_BASE_URL_OAUTH: http://hmpps-auth:9090/auth
       - image: bitnami/redis:5.0
-        environment:
-          ALLOW_EMPTY_PASSWORD=yes
+        environment: ALLOW_EMPTY_PASSWORD=yes
     working_directory: ~/app
 
 jobs:
@@ -172,12 +171,14 @@ jobs:
           destination: integration/geb
       - store_test_results:
           path: licences-specs/build/test-results
+    # The resource_class feature allows configuring CPU and RAM resources for each job. Different resource classes are available for different executors. https://circleci.com/docs/2.0/configuration-reference/#resourceclass
+    resource_class: large
 
 workflows:
   version: 2
   build-test-and-deploy:
     jobs:
-      - build:
+      - build: null
         filters:
           tags:
             ignore: /.*/
@@ -275,4 +276,3 @@ workflows:
           context:
             - veracode-credentials
             - hmpps-common-vars
-
