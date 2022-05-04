@@ -16,7 +16,7 @@ describe('probationTeamsClient', () => {
   beforeEach(() => {
     fakeProbationTeamsService = nock(`${config.probationTeams.apiUrl}`)
     signInService = {
-      getAnonymousClientCredentialsTokens: jest.fn().mockResolvedValue({ token: 'token' }),
+      getAnonymousClientCredentialsTokens: jest.fn().mockResolvedValue('token'),
     }
     const restClient = buildRestClient(
       clientCredentialsTokenSource(signInService, 'probationTeams'),

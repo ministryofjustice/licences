@@ -47,7 +47,7 @@ module.exports =
         const { nomisId } = req.params
 
         const token = await signInService.getClientCredentialsTokens(req.user.username)
-        const results = await migrationService.getStaffDetails(token.token, nomisId)
+        const results = await migrationService.getStaffDetails(token, nomisId)
 
         const errors = firstItem(req.flash('errors')) || {}
         const userInput = firstItem(req.flash('userInput')) || null
@@ -60,7 +60,7 @@ module.exports =
       asyncMiddleware(async (req, res) => {
         const { limit, offset } = req.query
         const token = await signInService.getClientCredentialsTokens(req.user.username)
-        const results = await migrationService.getAll(token.token, {
+        const results = await migrationService.getAll(token, {
           limit: limit ? parseInt(limit, 10) : 20,
           offset: offset ? parseInt(offset, 10) : 0,
         })
@@ -82,7 +82,7 @@ module.exports =
       asyncMiddleware(async (req, res) => {
         const { nomisId } = req.params
         const token = await signInService.getClientCredentialsTokens(req.user.username)
-        await migrationService.disableAuthAccount(token.token, nomisId)
+        await migrationService.disableAuthAccount(token, nomisId)
         return res.redirect(`/admin/roUsers/migrate/${nomisId}`)
       })
     )
@@ -92,7 +92,7 @@ module.exports =
       asyncMiddleware(async (req, res) => {
         const { nomisId } = req.params
         const token = await signInService.getClientCredentialsTokens(req.user.username)
-        await migrationService.enableAuthAccount(token.token, nomisId)
+        await migrationService.enableAuthAccount(token, nomisId)
         return res.redirect(`/admin/roUsers/migrate/${nomisId}`)
       })
     )

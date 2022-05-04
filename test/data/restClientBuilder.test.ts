@@ -8,6 +8,9 @@ import {
   clientCredentialsTokenSource,
   RestClientConfig,
 } from '../../server/data/restClientBuilder'
+import SignInService from '../../server/authentication/signInService'
+
+jest.mock('../../server/authentication/signInService')
 
 const BASE_PATH = 'http://www.example.gov.uk'
 
@@ -194,16 +197,16 @@ describe('restClientBuilder', () => {
 
   describe('dynamicTokenSource', () => {
     it('returns a token', async () => {
-      const signInService = { getAnonymousClientCredentialsTokens: jest.fn() }
-      signInService.getAnonymousClientCredentialsTokens.mockResolvedValue({ token: 't' })
+      const signInService = new SignInService(null)
+      signInService.getAnonymousClientCredentialsTokens = jest.fn().mockResolvedValue('t')
       const tokenSource = clientCredentialsTokenSource(signInService, 'serviceName')
       expect(await tokenSource()).toEqual('t')
       expect(signInService.getAnonymousClientCredentialsTokens).toHaveBeenCalledWith('serviceName')
     })
 
     it('throws error on missing token', async () => {
-      const signInService = { getAnonymousClientCredentialsTokens: jest.fn() }
-      signInService.getAnonymousClientCredentialsTokens.mockResolvedValue({})
+      const signInService = new SignInService(null)
+      signInService.getAnonymousClientCredentialsTokens = jest.fn().mockResolvedValue('')
       const tokenSource = clientCredentialsTokenSource(signInService, 'serviceName')
       expect(tokenSource()).rejects.toThrow('Error obtaining OAuth token')
     })

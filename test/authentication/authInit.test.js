@@ -11,7 +11,7 @@ describe('strategiesTest', () => {
   beforeEach(() => {
     service = authInit(userService, audit)
     done = jest.fn()
-    signInService.getClientCredentialsTokens = jest.fn().mockReturnValue({ token: 'cdt' })
+    signInService.getClientCredentialsTokens = jest.fn().mockReturnValue('cdt')
     userService.getUserProfile = jest.fn().mockReturnValue({ name: 'someone', role: 'CA', staffId: 'sid' })
     audit.record = jest.fn()
   })

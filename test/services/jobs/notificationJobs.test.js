@@ -8,7 +8,7 @@ describe('notificationJobs', () => {
   const notifyRoRemindersResult = { result: 'result' }
 
   beforeEach(() => {
-    signInService = { getAnonymousClientCredentialsTokens: jest.fn().mockReturnValue({ token: 'test-token' }) }
+    signInService = { getAnonymousClientCredentialsTokens: jest.fn().mockReturnValue('test-token') }
     reminderService = { notifyRoReminders: jest.fn().mockReturnValue(notifyRoRemindersResult) }
 
     jobs = createNotificationJobs(reminderService, signInService)

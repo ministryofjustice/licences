@@ -2,6 +2,7 @@ import superagent from 'superagent'
 import Agent, { HttpsAgent } from 'agentkeepalive'
 import logger from '../../log'
 import { buildErrorHandler } from './clientErrorHandler'
+import SignInService from '../authentication/signInService'
 
 interface TimeoutSpec {
   response: number
@@ -35,13 +36,13 @@ export const constantTokenSource =
   }
 
 export const clientCredentialsTokenSource =
-  (signInService, oauthServiceName: string): TokenSource =>
+  (signInService: SignInService, oauthServiceName: string): TokenSource =>
   async () => {
     const token = await signInService.getAnonymousClientCredentialsTokens(oauthServiceName)
-    if (!token?.token) {
+    if (!token) {
       throw Error(`Error obtaining OAuth token`)
     }
-    return token.token
+    return token
   }
 
 /**

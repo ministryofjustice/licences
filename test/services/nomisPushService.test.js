@@ -17,7 +17,7 @@ describe('nomisPushService', () => {
     }
     nomisClientBuilder = jest.fn().mockReturnValue(nomisClientMock)
     signInService = {
-      getClientCredentialsTokens: jest.fn().mockReturnValue({ token: 'valid-token' }),
+      getClientCredentialsTokens: jest.fn().mockReturnValue('valid-token'),
     }
     service = createNomisPushService(nomisClientBuilder, signInService)
   })
