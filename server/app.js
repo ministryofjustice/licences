@@ -5,7 +5,6 @@ const bodyParser = require('body-parser')
 const express = require('express')
 const path = require('path')
 const flash = require('connect-flash')
-const redis = require('redis')
 const session = require('express-session')
 const ConnectRedis = require('connect-redis')
 
@@ -63,6 +62,8 @@ const riskRouter = require('./routes/risk')
 const victimRouter = require('./routes/victim')
 const { GotenbergClient } = require('./data/gotenbergClient')
 const { varyRouter } = require('./routes/vary')
+const { createRedisClient } = require('./data/redisClient')
+const { asyncMiddleware } = require('./utils/middleware')
 
 const version = moment.now().toString()
 const { production } = config
@@ -137,19 +138,10 @@ module.exports = function createApp({
     next()
   })
 
-  const client = redis.createClient({
-    port: config.redis.port,
-    password: config.redis.password,
-    host: config.redis.host,
-    tls:
-      config.redis.tls_enabled === 'true'
-        ? {
-            rejectUnauthorized: config.production,
-          }
-        : false,
-  })
-
   const RedisStore = ConnectRedis(session)
+  const client = createRedisClient({ legacyMode: true })
+  client.connect()
+
   app.use(
     session({
       store: new RedisStore({ client }),
@@ -280,13 +272,15 @@ module.exports = function createApp({
 
   // Update a value in the cookie so that the set-cookie will be sent.
   // Only changes every minute so that it's not sent with every request.
-  app.use((req, res, next) => {
-    req.session.nowInMinutes = Math.floor(Date.now() / 60e3)
-    next()
-  })
+  app.use(
+    asyncMiddleware((req, res, next) => {
+      req.session.nowInMinutes = Math.floor(Date.now() / 60e3)
+      next()
+    })
+  )
 
   const health = healthFactory({
-    elite2: `${config.nomis.apiUrl}/health/ping`,
+    prisonApi: `${config.nomis.apiUrl}/health/ping`,
     auth: `${config.nomis.authUrl}/health/ping`,
     delius: `${config.delius.apiUrl}/health/ping`,
     probationTeams: `${config.probationTeams.apiUrl}/health/ping`,
@@ -331,30 +325,33 @@ module.exports = function createApp({
 
   app.get('/login', passport.authenticate('oauth2'))
 
-  app.get('/login/callback', (req, res, next) => {
-    passport.authenticate('oauth2', (err, user, info) => {
-      if (err) {
-        return res.redirect('/autherror')
-      }
-      if (!user) {
-        if (info && info.message === 'Unable to verify authorization request state.') {
-          // failure to due authorisation state not being there on return, so retry
-          logger.info('Retrying auth callback as no state found')
-          return res.redirect('/')
+  app.get(
+    '/login/callback',
+    asyncMiddleware((req, res, next) => {
+      passport.authenticate('oauth2', (err, user, info) => {
+        if (err) {
+          return res.redirect('/autherror')
         }
-        logger.info(`Auth failure due to ${JSON.stringify(info)}`)
-        return res.redirect('/autherror')
-      }
-      req.logIn(user, (err2) => {
-        if (err2) {
-          return next(err2)
+        if (!user) {
+          if (info && info.message === 'Unable to verify authorization request state.') {
+            // failure to due authorisation state not being there on return, so retry
+            logger.info('Retrying auth callback as no state found')
+            return res.redirect('/')
+          }
+          logger.info(`Auth failure due to ${JSON.stringify(info)}`)
+          return res.redirect('/autherror')
         }
+        req.logIn(user, (err2) => {
+          if (err2) {
+            return next(err2)
+          }
 
-        return res.redirect(req.session.returnTo || '/')
-      })
-      return null
-    })(req, res, next)
-  })
+          return res.redirect(req.session.returnTo || '/')
+        })
+        return null
+      })(req, res, next)
+    })
+  )
 
   const secureRoute = standardRouter({ licenceService, prisonerService, audit, signInService, tokenVerifier, config })
 

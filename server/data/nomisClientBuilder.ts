@@ -1,7 +1,7 @@
 import moment from 'moment'
 import config from '../config'
 import { isEmpty, merge, pipe, splitEvery } from '../utils/functionalHelpers'
-import { Profile, Role } from '../../types/elite2api'
+import { Profile, Role } from '../../types/prisonApi'
 import { buildRestClient, constantTokenSource } from './restClientBuilder'
 
 const timeoutSpec = {

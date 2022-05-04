@@ -28,7 +28,7 @@ services:
       NOMIS_AUTH_URL: "http://hmpps-auth:8080/auth"
       NOMIS_AUTH_EXTERNAL_URL: "http://localhost:9090/auth"
       TOKENVERIFICATION_API_URL: "http://token-verification-api:8080"
-      NOMIS_API_URL: "http://stubs:3000/elite2api"
+      NOMIS_API_URL: "http://stubs:3000/prisonApi"
       DELIUS_API_URL: "http://stubs:3000/communityapi"
       PROBATION_TEAMS_API_URL: "http://stubs:3000/probationteams"
       HDC_URL: "http://licences:3000"

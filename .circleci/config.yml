@@ -123,7 +123,7 @@ jobs:
     environment:
       DB_SSL_ENABLED: false
       ENABLE_TEST_UTILS: true
-      NOMIS_API_URL: http://localhost:8080/elite2api
+      NOMIS_API_URL: http://localhost:8080/prisonApi
       NOMIS_AUTH_URL: http://hmpps-auth:9090/auth
       DELIUS_API_URL: http://localhost:8080/communityapi
       PROBATION_TEAMS_API_URL: http://localhost:8080/probationteams
