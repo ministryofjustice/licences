@@ -12,8 +12,8 @@ module.exports = (nomisClientBuilder, signInService) => {
       return null
     }
 
-    const systemTokens = await signInService.getClientCredentialsTokens(username)
-    const nomisClient = nomisClientBuilder(systemTokens.token)
+    const systemToken = await signInService.getClientCredentialsTokens(username)
+    const nomisClient = nomisClientBuilder(systemToken)
 
     logger.info('Pushing approval status to nomis', approvalStatus)
     try {
@@ -28,8 +28,8 @@ module.exports = (nomisClientBuilder, signInService) => {
   }
 
   async function pushChecksPassed({ bookingId, passed, username }) {
-    const systemTokens = await signInService.getClientCredentialsTokens(username)
-    const nomisClient = nomisClientBuilder(systemTokens.token)
+    const systemToken = await signInService.getClientCredentialsTokens(username)
+    const nomisClient = nomisClientBuilder(systemToken)
 
     logger.info(`Pushing checks passed=${passed} to nomis for bookingId: ${bookingId}`)
     try {
@@ -44,8 +44,8 @@ module.exports = (nomisClientBuilder, signInService) => {
   }
 
   async function resetHDC(bookingId, username) {
-    const systemTokens = await signInService.getClientCredentialsTokens(username)
-    const nomisClient = nomisClientBuilder(systemTokens.token)
+    const systemToken = await signInService.getClientCredentialsTokens(username)
+    const nomisClient = nomisClientBuilder(systemToken)
 
     logger.info(`Resetting checks passed to null for bookingId: ${bookingId}`)
     try {

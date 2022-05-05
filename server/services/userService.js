@@ -66,7 +66,7 @@ module.exports = (nomisClientBuilder) => {
   }
 
   function getAllCaseLoads(user, token) {
-    // only call elite2 if we have a nomis user
+    // only call prisonApi if we have a nomis user
     if (user.authSource !== 'nomis') return []
 
     const nomisClient = nomisClientBuilder(token)

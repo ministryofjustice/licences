@@ -14,7 +14,7 @@ describe('jobSchedulerService', () => {
 
     beforeEach(() => {
       signInService = {
-        getClientCredentialsTokens: jest.fn().mockReturnValue({ token: 'system-user-token' }),
+        getClientCredentialsTokens: jest.fn().mockReturnValue('system-user-token'),
       }
 
       reminderService = {

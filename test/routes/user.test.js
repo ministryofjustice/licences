@@ -22,7 +22,7 @@ describe('/user', () => {
       setActiveCaseLoad: jest.fn(),
     }
     signInService = {
-      getClientCredentialsTokens: jest.fn().mockReturnValue({ token: 'system-token' }),
+      getClientCredentialsTokens: jest.fn().mockReturnValue('system-token'),
     }
   })
 

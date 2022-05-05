@@ -5,11 +5,13 @@ const db = require('../server/data/dataAccess/db')
 const { unwrapResult } = require('../server/utils/functionalHelpers')
 
 const nomisClientBuilder = require('../server/data/nomisClientBuilder')
-const createSignInService = require('../server/authentication/signInService')
+const SignInService = require('../server/authentication/signInService')
 const { DeliusClient } = require('../server/data/deliusClient')
 const { RoService } = require('../server/services/roService')
+const { createRedisClient } = require('../server/data/redisClient')
+const { default: TokenStore } = require('../server/data/tokenStore')
 
-const signInService = createSignInService()
+const signInService = new SignInService(new TokenStore(createRedisClient({ legacyMode: false })))
 const deliusClient = new DeliusClient(signInService)
 const roService = new RoService(deliusClient, nomisClientBuilder)
 
@@ -32,7 +34,7 @@ module.exports = async () => {
 
   let count = 0
   for (const bookingId of bookingIds) {
-    const [ro, roError] = unwrapResult(await roService.findResponsibleOfficer(bookingId, token.token))
+    const [ro, roError] = unwrapResult(await roService.findResponsibleOfficer(bookingId, token))
     if (roError) {
       logger.error(`Error retrieving RO for booking: '${bookingId}', reason: ${roError.message}`)
       missingRos.add({ bookingId, reason: roError.message })

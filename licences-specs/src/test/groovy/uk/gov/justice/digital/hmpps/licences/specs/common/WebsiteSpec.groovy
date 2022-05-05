@@ -71,7 +71,7 @@ class WebsiteSpec extends GebReportingSpec {
     response.name == "Licences"
     !response.version.isEmpty()
     response.api == [
-      elite2        : 'UP',
+      prisonApi     : 'UP',
       auth          : 'UP',
       delius        : 'UP',
       probationTeams: 'UP'

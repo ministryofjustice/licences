@@ -15,7 +15,7 @@ const activeLduClient = require('./data/activeLduClient')
 const warningClient = require('./data/warningClient')
 
 const notifyClient = new NotifyClient(config.notifications.notifyKey)
-const createSignInService = require('./authentication/signInService')
+const SignInService = require('./authentication/signInService')
 const { createLicenceService } = require('./services/licenceService')
 const { createPrisonerService } = require('./services/prisonerService')
 const ConditionServiceFactory = require('./services/conditionsService').ConditionsServiceFactory
@@ -50,8 +50,10 @@ const createLduService = require('./services/lduService')
 const { FunctionalMailboxService } = require('./services/functionalMailboxService')
 const createLicenceSearchService = require('./services/licenceSearchService')
 const tokenVerifierFactory = require('./authentication/tokenverifier/tokenVerifierFactory')
+const { default: TokenStore } = require('./data/tokenStore')
+const { createRedisClient } = require('./data/redisClient')
 
-const signInService = createSignInService()
+const signInService = new SignInService(new TokenStore(createRedisClient({ legacyMode: false })))
 const licenceService = createLicenceService(licenceClient)
 const conditionsServiceFactory = new ConditionServiceFactory()
 

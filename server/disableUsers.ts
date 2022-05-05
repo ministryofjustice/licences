@@ -20,30 +20,16 @@
  */
 
 import concat from 'concat-stream'
-import { buildRestClient, clientCredentialsTokenSource, TokenSource } from './data/restClientBuilder'
-import createSignInService from './authentication/signInService'
+import { buildRestClient, clientCredentialsTokenSource } from './data/restClientBuilder'
+import SignInService from './authentication/signInService'
 import config from './config'
+import TokenStore from './data/tokenStore'
+import { createRedisClient } from './data/redisClient'
 
 const writeStdOut = (data) => new Promise<void>((resolve) => process.stdout.write(data, () => resolve()))
 
-/**
- * Always return the first token retrieved from the wrapped TokenSource.
- * Sufficient for a script that will complete within the cached token's expiry time.
- * Could extend this to refresh tokens when they expire which might be useful for
- * REST clients that use client credentials.
- */
-const cachingTokenSource = (tokenSource: TokenSource): TokenSource => {
-  let token: string
-  return async () => {
-    if (!token) {
-      token = await tokenSource()
-    }
-    return token
-  }
-}
-
 const oauthRestClient = buildRestClient(
-  cachingTokenSource(clientCredentialsTokenSource(createSignInService(), 'nomis')),
+  clientCredentialsTokenSource(new SignInService(new TokenStore(createRedisClient({ legacyMode: false }))), 'nomis'),
   `${config.nomis.authUrl}`,
   'OAuth API',
   { timeout: config.nomis.timeout, agent: config.nomis.agent }

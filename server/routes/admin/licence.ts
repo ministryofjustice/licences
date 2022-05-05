@@ -25,7 +25,7 @@ export = (licenceService, signInService, prisonerService, audit, roNotificationH
       const { abookingId: bookingId } = req.params
       const licence = await licenceService.getLicence(bookingId)
       const systemToken = await signInService.getClientCredentialsTokens(req.user.username)
-      const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, systemToken.token)
+      const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, systemToken)
       const events = await audit.getEventsForBooking(bookingId)
       const errors = firstItem(req.flash('errors')) || {}
       return res.render('admin/licences/view', {
@@ -68,7 +68,7 @@ export = (licenceService, signInService, prisonerService, audit, roNotificationH
       const { abookingId: bookingId } = req.params
       const licence = await licenceService.getLicence(bookingId)
       const systemToken = await signInService.getClientCredentialsTokens(req.user.username)
-      const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, systemToken.token)
+      const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, systemToken)
       return res.render('admin/licences/notify', { bookingId, licence, prisonerInfo })
     })
   )
@@ -78,7 +78,7 @@ export = (licenceService, signInService, prisonerService, audit, roNotificationH
     asyncMiddleware(async (req, res) => {
       const bookingId = req.params.abookingId
       const systemToken = await signInService.getClientCredentialsTokens(req.user.username)
-      const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, systemToken.token)
+      const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, systemToken)
       const flash = req.flash('errorObject')
       const errorObject = flash[0] || {}
 
@@ -116,7 +116,7 @@ export = (licenceService, signInService, prisonerService, audit, roNotificationH
         await roNotificationHandler.sendRoEmail({
           transition: transitionsForDestinations.addressReview,
           bookingId,
-          token: systemToken.token,
+          token: systemToken,
           user: req.user,
         })
       )
