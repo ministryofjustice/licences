@@ -148,18 +148,6 @@ describe('userClient', () => {
     })
   })
 
-  describe('deleteRoUser', () => {
-    test('should pass in the correct sql and params', async () => {
-      const expectedClause = 'update v_staff_ids set deleted = true where nomis_id = $1'
-
-      await userClient.deleteRoUser('nomisId')
-
-      const { text, values } = db.query.mock.calls[0][0]
-      expect(text).toContain(expectedClause)
-      expect(values).toEqual(['nomisId'])
-    })
-  })
-
   describe('findRoUsers', () => {
     test('should pass in the correct sql and params with wildcard searchterm', async () => {
       const expectedSelectClause = 'select * from v_staff_ids'

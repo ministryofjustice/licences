@@ -228,39 +228,6 @@ describe('/admin', () => {
         })
     })
   })
-
-  describe('POST /admin/roUsers/delete', () => {
-    test('calls user service and redirects to user list', () => {
-      const app = createApp('batchUser')
-      return request(app)
-        .post('/admin/roUsers/delete/1')
-        .send()
-        .expect(302)
-        .expect('Location', '/admin/roUsers')
-        .expect(() => {
-          expect(userAdminService.deleteRoUser).toHaveBeenCalled()
-          expect(userAdminService.deleteRoUser).toHaveBeenCalledWith('1')
-        })
-    })
-
-    test('Audits the delete user event', () => {
-      const audit = mockAudit()
-      const app = createApp('batchUser', audit)
-      return request(app)
-        .post('/admin/roUsers/delete/1')
-        .expect(302)
-        .expect('Location', '/admin/roUsers')
-        .expect(() => {
-          expect(audit.record).toHaveBeenCalled()
-          expect(audit.record).toHaveBeenCalledWith('USER_MANAGEMENT', 'NOMIS_BATCHLOAD', {
-            bookingId: undefined,
-            path: '/admin/roUsers/delete/1',
-            userInput: {},
-          })
-        })
-    })
-  })
-
   describe('POST /admin/roUsers/add', () => {
     describe('Invalid inputs', () => {
       const examples = [
