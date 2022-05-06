@@ -154,6 +154,21 @@ describe('/admin', () => {
     })
   })
 
+  describe('POST /admin/mailboxes/delete', () => {
+    test('calls configClient and redirects to mailbox list', () => {
+      const app = createApp(configClient, 'batchUser')
+      return request(app)
+        .post('/admin/mailboxes/delete/1')
+        .send()
+        .expect(302)
+        .expect('Location', '/admin/mailboxes')
+        .expect(() => {
+          expect(configClient.deleteMailbox).toHaveBeenCalled()
+          expect(configClient.deleteMailbox).toHaveBeenCalledWith('1')
+        })
+    })
+  })
+
   describe('GET /admin/mailboxes/add', () => {
     const app = createApp(configClient, 'batchUser')
     test('shows add mailbox form', () => {
