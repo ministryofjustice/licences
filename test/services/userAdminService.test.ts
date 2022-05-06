@@ -1,7 +1,7 @@
 import nock from 'nock'
-import { RoUser, userClient } from '../../server/data/userClient'
+import {RoUser, userClient} from '../../server/data/userClient'
 import UserAdminService from '../../server/services/userAdminService'
-import { ProbationTeamsClient } from '../../server/data/probationTeamsClient'
+import {ProbationTeamsClient} from '../../server/data/probationTeamsClient'
 
 jest.mock('../../server/data/userClient')
 jest.mock('../../server/data/probationTeamsClient')
@@ -41,7 +41,6 @@ describe('userAdminService', () => {
     mockUserClient.getRoUser.mockResolvedValue(user2)
     mockUserClient.getRoUserByStaffIdentifier.mockResolvedValue(user2)
     mockUserClient.updateRoUser.mockResolvedValue({})
-    mockUserClient.deleteRoUser.mockResolvedValue({})
 
     const probationTeamClient: ProbationTeamsClient = undefined
 
@@ -108,16 +107,6 @@ describe('userAdminService', () => {
       expect(userClient.updateRoUser).toHaveBeenCalledWith('originalNomisId', 1)
     })
   })
-
-  describe('deleteRoUser', () => {
-    test('should call user client with params', async () => {
-      await service.deleteRoUser('id')
-
-      expect(userClient.deleteRoUser).toHaveBeenCalled()
-      expect(userClient.deleteRoUser).toHaveBeenCalledWith('id')
-    })
-  })
-
   describe('verifyUserDetails', () => {
     test('should call nomis client with params', async () => {
       await service.verifyUserDetails('token', 'userName')
