@@ -211,23 +211,6 @@ describe('/admin', () => {
     })
   })
 
-  describe('GET /admin/roUsers/delete', () => {
-    test('calls user service and shows user details', () => {
-      const app = createApp('batchUser')
-      return request(app)
-        .get('/admin/roUsers/delete/1')
-        .expect(200)
-        .expect('Content-Type', /html/)
-        .expect((res) => {
-          expect(userAdminService.getRoUser).toHaveBeenCalled()
-          expect(userAdminService.getRoUser).toHaveBeenCalledWith('1')
-          expect(res.text).toContain('nomisId">user1')
-          expect(res.text).toContain('deliusId">d1')
-          expect(res.text).toContain('firstName">f1')
-          expect(res.text).toContain('lastName">l1')
-        })
-    })
-  })
   describe('POST /admin/roUsers/add', () => {
     describe('Invalid inputs', () => {
       const examples = [
