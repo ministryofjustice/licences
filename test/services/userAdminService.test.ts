@@ -1,7 +1,7 @@
 import nock from 'nock'
-import {RoUser, userClient} from '../../server/data/userClient'
+import { RoUser, userClient } from '../../server/data/userClient'
 import UserAdminService from '../../server/services/userAdminService'
-import {ProbationTeamsClient} from '../../server/data/probationTeamsClient'
+import { ProbationTeamsClient } from '../../server/data/probationTeamsClient'
 
 jest.mock('../../server/data/userClient')
 jest.mock('../../server/data/probationTeamsClient')
