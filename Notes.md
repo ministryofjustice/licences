@@ -41,7 +41,7 @@ If a request has a bookingId then checkLicenceMiddleware adds the following obje
 
 ```
       licence,         // from licenceService.getLicence
-      prisoner,        // from elite2Api POST /offender-sentences/bookings with bookingId
+      prisoner,        // from prisonApi POST /offender-sentences/bookings with bookingId
       postRelease      // flag, computed as prisoner.agencyLocationId === 'OUT', implies that the prisoner has been released
       licenceStatus
 ```
@@ -100,7 +100,7 @@ create table licence_versions
 );
 ```
 
-The prisoner object is an OffenderSentenceDetail object in elite2Api:
+The prisoner object is an OffenderSentenceDetail object in prisonApi:
 
 For reference, it looks like this: (from https://api-dev.prison.service.justice.gov.uk/swagger-ui.html#//offender-sentences/postOffenderSentencesBookings)
 
@@ -176,7 +176,7 @@ The caselist is constructed differently for CA, DM and RO.
 For,
 
 ```
-    CA and DM: elite2Api, /offender-sentences/home-detention-curfew-candidates     -> OffenderSentenceCalc
+    CA and DM: prisonApi, /offender-sentences/home-detention-curfew-candidates     -> OffenderSentenceCalc
     RO:        deliusApi, /staff/staffCode/${deliusStaffCode}/managedOffenders -> OffenderSummary
 ```
 
@@ -217,10 +217,10 @@ A user interacts with a Tasks by selecting it from this list of currently availa
 ```
    View data:
        prisonerInfo   from:   server/services/prisonerService.js getPrisonserDetails.
-          prisoner,           from elite2Api POST /offender-sentences/bookings with bookingId (Also at res.locals.prisoner??? See above)
-          aliases,            from elite2Api  GET /bookings/${bookingId}/aliases
-          offences,           from elite2Api  GET /bookings/${bookingId}/mainOffence
-          responsibleOfficer, from elite2Api or Delius
+          prisoner,           from prisonApi POST /offender-sentences/bookings with bookingId (Also at res.locals.prisoner??? See above)
+          aliases,            from prisonApi  GET /bookings/${bookingId}/aliases
+          offences,           from prisonApi  GET /bookings/${bookingId}/mainOffence
+          responsibleOfficer, from prisonApi or Delius
           PNC,
           CRO,
           image,

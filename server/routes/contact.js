@@ -25,7 +25,7 @@ module.exports = (userAdminService, roService, signInService) => (router) => {
       // because 'bookingId' is treated specially - see standardRouter.js
       const { theBookingId } = req.params
       const token = await signInService.getClientCredentialsTokens(req.user.username)
-      const [ro] = unwrapResult(await roService.findResponsibleOfficer(theBookingId, token.token))
+      const [ro] = unwrapResult(await roService.findResponsibleOfficer(theBookingId, token))
 
       const contact =
         ro && ro.staffIdentifier && (await userAdminService.getRoUserByStaffIdentifier(ro.staffIdentifier))

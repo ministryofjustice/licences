@@ -1,11 +1,13 @@
+import SignInService from '../server/authentication/signInService'
 import { ConditionsServiceFactory, ConditionsService } from '../server/services/conditionsService'
 import PdfService from '../server/services/pdfService'
 
-export const createSignInServiceStub = () => ({
-  signIn: jest.fn(),
-  refresh: jest.fn(),
-  getClientCredentialsTokens: jest.fn().mockReturnValue({ token: 'system-token' }),
-})
+export const createSignInServiceStub = () =>
+  ({
+    signIn: jest.fn(),
+    refresh: jest.fn(),
+    getClientCredentialsTokens: jest.fn().mockReturnValue('system-token'),
+  } as unknown as jest.Mocked<SignInService>)
 
 export const createLicenceServiceStub = () => ({
   getLicence: jest.fn().mockReturnValue({ licence: { key: 'value' } }),

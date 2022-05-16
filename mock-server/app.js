@@ -30,22 +30,22 @@ app.use((req, res, next) => {
 })
 
 app.use('/', indexRouter)
-app.use('/elite2api/api/oauth', oauthRouter)
-app.use('/elite2api/api/users', usersRouter)
-app.use('/elite2api/api/user', authUserRouter)
-app.use('/elite2api/api/offender-sentences', sentencesRouter)
-app.use('/elite2api/api/bookings', bookingsRouter)
-app.use('/elite2api/api/persons', personsRouter)
-app.use('/elite2api/api/images', imagesRouter)
-app.use('/elite2api/api/offender-relationships', relationshipsRouter)
-app.use('/elite2api/api/agencies', agenciesRouter)
-app.use('/elite2api/api/movements', movementsRouter)
-app.use('/elite2api/api/prisoners', prisonersRouter)
+app.use('/prisonApi/api/oauth', oauthRouter)
+app.use('/prisonApi/api/users', usersRouter)
+app.use('/prisonApi/api/user', authUserRouter)
+app.use('/prisonApi/api/offender-sentences', sentencesRouter)
+app.use('/prisonApi/api/bookings', bookingsRouter)
+app.use('/prisonApi/api/persons', personsRouter)
+app.use('/prisonApi/api/images', imagesRouter)
+app.use('/prisonApi/api/offender-relationships', relationshipsRouter)
+app.use('/prisonApi/api/agencies', agenciesRouter)
+app.use('/prisonApi/api/movements', movementsRouter)
+app.use('/prisonApi/api/prisoners', prisonersRouter)
 
 app.use('/communityapi/api', deliusRouter)
 app.use('/probationteams', probationteamsRouter)
 
-app.get('/elite2api/health/ping', (req, res) => {
+app.get('/prisonApi/health/ping', (req, res) => {
   res.send({ status: 'UP' })
 })
 
@@ -57,7 +57,7 @@ app.get('/communityapi/health/ping', (req, res) => {
   res.send('pong')
 })
 
-app.get('/elite2api/ping', (req, res) => {
+app.get('/prisonApi/ping', (req, res) => {
   res.send('pong')
 })
 

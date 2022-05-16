@@ -3,6 +3,9 @@ const nock = require('nock')
 const config = require('../../server/config')
 const { buildRestClient, clientCredentialsTokenSource } = require('../../server/data/restClientBuilder')
 const { DeliusClient } = require('../../server/data/deliusClient')
+const SignInService = require('../../server/authentication/signInService')
+
+jest.mock('../../server/authentication/signInService')
 
 describe('deliusClient', () => {
   let fakeDelius
@@ -11,9 +14,8 @@ describe('deliusClient', () => {
 
   beforeEach(() => {
     fakeDelius = nock(`${config.delius.apiUrl}${config.delius.apiPrefix}`)
-    signInService = {
-      getAnonymousClientCredentialsTokens: jest.fn().mockResolvedValue({ token: 'token' }),
-    }
+    signInService = new SignInService(null)
+    signInService.getAnonymousClientCredentialsTokens = jest.fn().mockResolvedValue('token')
     const restClient = buildRestClient(
       clientCredentialsTokenSource(signInService, 'delius'),
       `${config.delius.apiUrl}${config.delius.apiPrefix}`,

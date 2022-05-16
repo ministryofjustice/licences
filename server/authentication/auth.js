@@ -14,7 +14,7 @@ const authenticationMiddleware = (signInService, tokenVerifier) => {
         return next()
       }
       const systemToken = await signInService.getClientCredentialsTokens(username)
-      res.locals.token = systemToken.token
+      res.locals.token = systemToken
       return next()
     }
 
