@@ -101,15 +101,6 @@ export const userClient = {
     return db.query(query)
   },
 
-  async deleteRoUser(nomisId) {
-    const query = {
-      text: 'update v_staff_ids set deleted = true where nomis_id = $1',
-      values: [nomisId],
-    }
-
-    return db.query(query)
-  },
-
   async findRoUsers(searchTerm): Promise<Array<RoUser>> {
     const query = {
       text: `select * from v_staff_ids

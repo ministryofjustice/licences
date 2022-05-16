@@ -128,16 +128,6 @@ module.exports =
       })
     )
 
-    router.post(
-      '/delete/:nomisId',
-      audited,
-      asyncMiddleware(async (req, res) => {
-        const { nomisId } = req.params
-        await userAdminService.deleteRoUser(nomisId)
-        res.redirect('/admin/roUsers')
-      })
-    )
-
     router.get('/verify/', audited, async (req, res) => {
       const { nomisUserName } = req.query
 

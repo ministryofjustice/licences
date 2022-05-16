@@ -41,7 +41,6 @@ describe('userAdminService', () => {
     mockUserClient.getRoUser.mockResolvedValue(user2)
     mockUserClient.getRoUserByStaffIdentifier.mockResolvedValue(user2)
     mockUserClient.updateRoUser.mockResolvedValue({})
-    mockUserClient.deleteRoUser.mockResolvedValue({})
 
     const probationTeamClient: ProbationTeamsClient = undefined
 
@@ -108,16 +107,6 @@ describe('userAdminService', () => {
       expect(userClient.updateRoUser).toHaveBeenCalledWith('originalNomisId', 1)
     })
   })
-
-  describe('deleteRoUser', () => {
-    test('should call user client with params', async () => {
-      await service.deleteRoUser('id')
-
-      expect(userClient.deleteRoUser).toHaveBeenCalled()
-      expect(userClient.deleteRoUser).toHaveBeenCalledWith('id')
-    })
-  })
-
   describe('verifyUserDetails', () => {
     test('should call nomis client with params', async () => {
       await service.verifyUserDetails('token', 'userName')

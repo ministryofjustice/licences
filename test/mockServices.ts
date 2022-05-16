@@ -91,7 +91,6 @@ export const createUserAdminServiceStub = () => ({
   getRoUser: jest.fn(),
   getRoUserByDeliusId: jest.fn().mockReturnValue({}),
   updateRoUser: jest.fn(),
-  deleteRoUser: jest.fn(),
   addRoUser: jest.fn(),
   findRoUsers: jest.fn(),
   verifyUserDetails: jest.fn(),

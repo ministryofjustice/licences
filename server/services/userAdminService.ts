@@ -56,10 +56,6 @@ export = class UserAdminService {
     return this.userClient.getRoUserByStaffIdentifier(staffIdentifier)
   }
 
-  deleteRoUser(nomisId) {
-    return this.userClient.deleteRoUser(nomisId)
-  }
-
   findRoUsers(searchTerm) {
     return this.userClient.findRoUsers(searchTerm)
   }
