@@ -1,4 +1,5 @@
 import moment from 'moment'
+const path = require('path')
 import logger from '../../log'
 import { asyncMiddleware, LicenceLocals } from '../utils/middleware'
 import config from '../config'
@@ -14,6 +15,7 @@ const {
   pdf: {
     forms: { formTemplates, formsDateFormat, pdfOptions },
   },
+  pdfFormatForms,
 } = config
 
 export default (formService: FormService, conditionsServiceFactory: ConditionsServiceFactory) => (router) => {
@@ -64,6 +66,11 @@ export default (formService: FormService, conditionsServiceFactory: ConditionsSe
 
       if (isEmpty(formTemplates[templateName])) {
         throw new Error(`unknown form template: ${templateName}`)
+      }
+
+      if (pdfFormatForms.includes(templateName)) {
+        logger.info(`Returning pdf document for the '${templateName}' form`)
+        return res.sendFile(path.join(__dirname, `../views/forms/downloads/${templateName}.pdf`))
       }
 
       logger.info(`Render PDF for form '${templateName}'`)

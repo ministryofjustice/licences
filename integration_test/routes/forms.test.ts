@@ -259,7 +259,7 @@ describe('/forms/', () => {
         'Is the prisoner partaking in the Acquisitive Crime project with a mandatory trail monitoring  condition? Yes No'
       )
     })
-    test('Generates a PDF of agency_notification form - acquisitive question text appears in the output', async () => {
+    test('Presents a PDF of agency_notification form', async () => {
       app = createApp('roUser')
 
       const res = await request(app).get('/hdc/forms/agency_notification/1')
@@ -268,7 +268,7 @@ describe('/forms/', () => {
       const pdfText = pdf.text.replace(/([\t\n])/gm, ' ')
 
       expect(pdfText).toContain(
-        'Is the prisoner partaking in the Acquisitive Crime project with a mandatory trail monitoring  condition? Yes No'
+        'This form must be sent to the EMS provider (LPAdmin@ems.co.uk.cjsm.net), probation provider  and the home police force'
       )
     })
   })
