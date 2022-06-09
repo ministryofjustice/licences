@@ -28,7 +28,7 @@ describe('GET /forms', () => {
       .get('/forms/agency_notification/1')
       .expect(200)
       .expect('Content-Type', 'application/pdf')
-      .expect('content-length', '91016')
+      .expect('content-length', '82816')
   })
 })
 
