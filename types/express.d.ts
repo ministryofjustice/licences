@@ -9,7 +9,7 @@ declare namespace Express {
       role: string
     }
     session: any
-    logout: () => void
+    logout: (done: (err: unknown) => void) => void
     csrfToken: () => string
     flash(): { [key: string]: any[] }
     flash(type: string, message: any): number

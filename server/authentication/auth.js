@@ -18,9 +18,10 @@ const authenticationMiddleware = (signInService, tokenVerifier) => {
       return next()
     }
 
-    req.logout()
-    const query = querystring.stringify({ returnTo: req.originalUrl })
-    return res.redirect(`/login?${query}`)
+    return req.logout(() => {
+      const query = querystring.stringify({ returnTo: req.originalUrl })
+      return res.redirect(`/login?${query}`)
+    })
   }
 }
 

@@ -246,9 +246,12 @@ module.exports = function createApp({
 
   app.use('/logout', (req, res) => {
     if (req.user) {
-      req.logout()
+      return req.logout(() => {
+        req.session.destroy()
+        res.redirect(authLogoutUrl)
+      })
     }
-    res.redirect(authLogoutUrl)
+    return res.redirect(authLogoutUrl)
   })
 
   // token refresh
