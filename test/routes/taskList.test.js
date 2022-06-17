@@ -210,7 +210,7 @@ describe('GET /taskList/:prisonNumber', () => {
         .expect('Content-Type', /html/)
         .expect((res) => {
           expect(res.text).toContain(
-            'This is because the assigned Community Offender Manager is in an area not covered by the HDC roll out'
+            "You need to contact the probation team to ask them to review this person's Community Offender Manager allocation in Delius."
           )
         })
     })
