@@ -1,5 +1,6 @@
+const { appInsights } = require('./utils/azureAppInsights')
+// eslint-disable-next-line import/order
 const { NotifyClient } = require('notifications-node-client')
-const appInsights = require('../azure-appinsights')
 const createApp = require('./app')
 const logger = require('../log')
 const config = require('./config')
