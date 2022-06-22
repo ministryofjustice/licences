@@ -59,7 +59,7 @@ describe('azureAppInsights', () => {
       expect(envelope.data.baseData.properties).toStrictEqual(user)
     })
 
-    it('handles missing user details', () => {
+    it('does not add additional properties as undefined if they are missing', () => {
       const envelope = createEnvelope({ other: 'things' })
 
       addUserDataToRequests(envelope, {
