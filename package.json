@@ -153,6 +153,7 @@
     "@types/passport": "^1.0.8",
     "@typescript-eslint/eslint-plugin": "^5.22.0",
     "@typescript-eslint/parser": "^5.22.0",
+    "audit-ci": "^6.3.0",
     "concurrently": "^7.2.1",
     "eslint": "^8.17.0",
     "eslint-config-airbnb-base": "15.0.0",
