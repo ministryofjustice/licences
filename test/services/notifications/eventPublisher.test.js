@@ -1,3 +1,4 @@
+const { TelemetryClient } = require('applicationinsights')
 const EventPublisher = require('../../../server/services/notifications/eventPublisher')
 
 describe('EventPublisher', () => {
@@ -8,16 +9,14 @@ describe('EventPublisher', () => {
   }
 
   describe('With application insights enabled', () => {
-    const client = {
+    /** @type {TelemetryClient} */
+    // @ts-ignore
+    const telemetryClient = {
       trackEvent: jest.fn(),
-    }
-    /** @type {any} */
-    const applicationInsights = {
-      defaultClient: client,
     }
 
     test('audits action', async () => {
-      const eventPublisher = new EventPublisher(audit, applicationInsights)
+      const eventPublisher = new EventPublisher(audit, telemetryClient)
 
       await eventPublisher.raiseCaseHandover({
         username: 'BOB',
@@ -38,7 +37,7 @@ describe('EventPublisher', () => {
     })
 
     test('raises event', async () => {
-      const eventPublisher = new EventPublisher(audit, applicationInsights)
+      const eventPublisher = new EventPublisher(audit, telemetryClient)
 
       await eventPublisher.raiseCaseHandover({
         username: 'BOB',
@@ -49,7 +48,7 @@ describe('EventPublisher', () => {
         target: { type: 'probation', probationAreaCode: 'aa2', lduCode: '2' },
       })
 
-      expect(client.trackEvent).toHaveBeenCalledWith({
+      expect(telemetryClient.trackEvent).toHaveBeenCalledWith({
         name: 'CaseHandover',
         properties: {
           bookingId: '2',

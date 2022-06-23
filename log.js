@@ -1,4 +1,4 @@
-const appInsights = require('./azure-appinsights')
+const { appInsights } = require('./server/utils/azureAppInsights')
 // eslint-disable-next-line import/order
 const winston = require('winston')
 

@@ -1,16 +1,18 @@
 /** @typedef {import('../../../types/licences').Destination} Destination */
 
+const { TelemetryClient } = require('applicationinsights')
+
 const flattenDestination = (type, destination) =>
   Object.keys(destination).reduce((result, key) => ({ ...result, [`${type}_${key}`]: destination[key] }), {})
 
 class EventPublisher {
   /**
    * @param {import('../../data/audit')} audit
-   * @param {import('applicationinsights') | undefined} applicationInsights
+   * @param {TelemetryClient | undefined} telemetryClient
    */
-  constructor(audit, applicationInsights) {
+  constructor(audit, telemetryClient) {
     this.audit = audit
-    this.telemetryClient = applicationInsights ? applicationInsights.defaultClient : null
+    this.telemetryClient = telemetryClient || null
   }
 
   /**
