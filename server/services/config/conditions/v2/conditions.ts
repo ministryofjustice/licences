@@ -463,6 +463,14 @@ export const conditions: ConditionMetadata[] = [
     subgroup_name: null,
   },
   {
+    id: 'ALLOW_POLICE_SEARCH',
+    text: 'You must let the police search you if they ask. You must also let them search a vehicle you are with, like a car or a motorbike.',
+    user_input: null,
+    field_position: null,
+    group_name: GroupName.EXTREMISM,
+    subgroup_name: null,
+  },
+  {
     id: 'POLYGRAPH',
     text: 'To comply with any instruction given by your supervising officer requiring you to attend polygraph testing. To participate in polygraph sessions and examinations as instructed by or under the authority of your supervising officer and to comply with any instruction given to you during a polygraph session by the person conducting the polygraph.',
     user_input: null,

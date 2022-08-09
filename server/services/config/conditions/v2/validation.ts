@@ -137,4 +137,5 @@ export default joi.object({
     attendSampleDetailsName: joi.string().required(),
     attendSampleDetailsAddress: joi.string().required(),
   }),
+  ALLOW_POLICE_SEARCH: joi.object({}),
 })
