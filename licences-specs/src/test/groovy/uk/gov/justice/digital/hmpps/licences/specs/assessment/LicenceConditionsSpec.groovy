@@ -87,7 +87,7 @@ class LicenceConditionsSpec extends GebReportingSpec {
     conditions.every { !it.value() }
 
     and: 'I see the right number of conditions'
-    conditions.size() == 50
+    conditions.size() == 51
   }
 
   def 'Select a condition reveals the input form'() {
