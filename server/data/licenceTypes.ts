@@ -200,6 +200,7 @@ export type AdditionalConditionsV2 = {
   ELECTRONIC_MONITORING_TRAIL?: any
   CURFEW_UNTIL_INSTALLATION?: any
   ALCOHOL_MONITORING?: any
+  ALLOW_POLICE_SEARCH?: any
 }
 
 export interface LicenceConditions {
