@@ -1,18 +1,18 @@
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "app.fullname" . -}}
 {{- $ingressPath := .Values.ingress.path -}}
-apiVersion: networking.k8s.io/v1beta1
+apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
     {{- include "app.labels" . | nindent 4 }}
   annotations:
-    kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/custom-http-errors: "418"
     {{- toYaml .Values.ingress.annotations | nindent 4 }}
     {{ if .Values.ingress.enable_allowlist }}nginx.ingress.kubernetes.io/whitelist-source-range: {{ include "app.joinListWithComma" .Values.allowlist | quote }}{{ end }}
 spec:
+  ingressClassName: default
   tls:
   - hosts:
     - {{ .Values.ingress.host }}
@@ -22,7 +22,10 @@ spec:
       http:
         paths:
           - path: {{ $ingressPath }}
+            pathType: ImplementationSpecific
             backend:
-              serviceName: {{ $fullName }}
-              servicePort: http
+              service:
+                name: {{ $fullName }}
+                port:
+                  name: http
 {{- end }}
