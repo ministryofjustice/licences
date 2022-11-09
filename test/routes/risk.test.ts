@@ -1,13 +1,13 @@
-const request = require('supertest')
-const { mockAudit } = require('../mockClients')
-const { appSetup, testFormPageGets } = require('../supertestSetup')
+import request from 'supertest'
+import { mockAudit } from '../mockClients'
+import { appSetup, testFormPageGets } from '../supertestSetup'
 
-const { createPrisonerServiceStub, createLicenceServiceStub, createSignInServiceStub } = require('../mockServices')
+import { createPrisonerServiceStub, createLicenceServiceStub, createSignInServiceStub } from '../mockServices'
 
-const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
-const createRoute = require('../../server/routes/risk')
-const formConfig = require('../../server/routes/config/risk')
-const NullTokenVerifier = require('../../server/authentication/tokenverifier/NullTokenVerifier')
+import standardRouter from '../../server/routes/routeWorkers/standardRouter'
+import createRoute from '../../server/routes/risk'
+import riskConfig from '../../server/routes/config/risk'
+import NullTokenVerifier from '../../server/authentication/tokenverifier/NullTokenVerifier'
 
 describe('/hdc/risk', () => {
   let licenceService
@@ -43,7 +43,7 @@ describe('/hdc/risk', () => {
             expect(licenceService.update).toHaveBeenCalledWith({
               bookingId: '1',
               originalLicence: { licence: { key: 'value' } },
-              config: formConfig.riskManagement,
+              config: riskConfig.riskManagement,
               userInput: formResponse,
               licenceSection: 'risk',
               formName: 'riskManagement',
@@ -64,7 +64,7 @@ describe('/hdc/risk', () => {
             expect(licenceService.update).toHaveBeenCalledWith({
               bookingId: '1',
               originalLicence: { licence: { key: 'value' }, stage: 'DECIDED' },
-              config: formConfig.riskManagement,
+              config: riskConfig.riskManagement,
               userInput: formResponse,
               licenceSection: 'risk',
               formName: 'riskManagement',

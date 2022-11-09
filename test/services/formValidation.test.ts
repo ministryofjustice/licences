@@ -2,7 +2,7 @@ import moment from 'moment'
 import { createLicenceService } from '../../server/services/licenceService'
 
 import { crdTime, exceptionalCircumstances, excluded, suitability } from '../../server/routes/config/eligibility'
-import { riskManagement } from '../../server/routes/config/risk'
+import riskConfig from '../../server/routes/config/risk'
 import { curfewAddress } from '../../server/routes/config/proposedAddress'
 import { victimLiaison } from '../../server/routes/config/victim'
 import { reportingDate, reportingInstructions } from '../../server/routes/config/reporting'
@@ -279,7 +279,7 @@ describe('validation', () => {
 
     describe('processing_ro', () => {
       describe('risk', () => {
-        const pageConfig = riskManagement
+        const pageConfig = riskConfig.riskManagement
         const options = [
           {
             formResponse: {

@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   riskManagement: {
     licenceSection: 'riskManagement',
     fields: [

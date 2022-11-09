@@ -249,6 +249,7 @@ export interface Reporting {
 }
 
 export interface RiskManagement {
+  version?: number
   awaitingInformation?: string
   emsInformation?: string
   emsInformationDetails?: string
