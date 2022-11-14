@@ -59,6 +59,11 @@ export default {
           validationMessage: 'Provide information that cannot be disclosed to the offender',
         },
       },
+      {
+        version: {
+          responseType: 'optionalInteger',
+        },
+      },
     ],
     nextPath: {
       path: '/hdc/taskList/',

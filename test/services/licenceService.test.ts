@@ -3,12 +3,13 @@ import {
   LicenceService,
   adaptFieldConfigToSelectWorkingAddress,
   LicenceRecord,
+  CURRENT_RISK_MANAGEMENT_VERSION,
 } from '../../server/services/licenceService'
 import * as varyConfig from '../../server/routes/config/vary'
 import * as formValidation from '../../server/services/utils/formValidation'
 import { LicenceClient } from '../../server/data/licenceClient'
 import { CaseWithVaryVersion, ConditionVersion } from '../../server/data/licenceClientTypes'
-import { Licence, LicenceStage } from '../../server/data/licenceTypes'
+import { Licence, LicenceStage, Risk, RiskManagement, RiskVersion } from '../../server/data/licenceTypes'
 import { TaskState } from '../../server/services/config/taskState'
 
 jest.mock('../../server/services/utils/formValidation')
@@ -44,6 +45,27 @@ describe('licenceService', () => {
       setConditionsVersion: jest.fn(),
     }
     service = createLicenceService(licenceClient)
+  })
+
+  describe('getRiskVersion', () => {
+    test('defaults to current risk version when not set on licence', () => {
+      const licence = {} as Licence
+
+      const version = service.getRiskVersion(licence)
+
+      expect(version).toBe(CURRENT_RISK_MANAGEMENT_VERSION)
+    })
+
+    test('reads risk version from licence when set', () => {
+      const licence = {} as Licence
+      licence.risk = {} as Risk
+      licence.risk.riskManagement = {} as RiskManagement
+      licence.risk.riskManagement.version = 1 as RiskVersion
+
+      const version = service.getRiskVersion(licence)
+
+      expect(version).toBe(1)
+    })
   })
 
   describe('getLicence', () => {

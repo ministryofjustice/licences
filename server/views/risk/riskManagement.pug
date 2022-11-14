@@ -15,6 +15,7 @@ block content
       form(method="post")
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="bookingId" value=bookingId || '')
+        input(type="hidden" name="version" value=version || '')
         div.paddingBottom.largeMarginBottom
 
           div.form-group.inline.smallPaddingTop

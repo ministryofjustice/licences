@@ -19,7 +19,7 @@ describe('/hdc/risk', () => {
   describe('risk routes', () => {
     const routes = [{ url: '/hdc/risk/riskManagement/1', content: 'Risk management' }]
     licenceService = createLicenceServiceStub()
-    const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
+    const app = createApp({ licenceService }, 'roUser')
 
     testFormPageGets(app, routes, licenceService)
   })
@@ -33,7 +33,7 @@ describe('/hdc/risk', () => {
 
     describe('When page contains form fields', () => {
       test('calls updateLicence from licenceService', () => {
-        const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
+        const app = createApp({ licenceService }, 'roUser')
         return request(app)
           .post('/hdc/risk/riskManagement/1')
           .send(formResponse)
@@ -54,7 +54,7 @@ describe('/hdc/risk', () => {
 
       test('calls updateLicence from licenceService when ca in post approval', () => {
         licenceService.getLicence.mockResolvedValue({ stage: 'DECIDED', licence: { key: 'value' } })
-        const app = createApp({ licenceServiceStub: licenceService }, 'caUser')
+        const app = createApp({ licenceService }, 'caUser')
         return request(app)
           .post('/hdc/risk/riskManagement/1')
           .send(formResponse)
@@ -75,7 +75,7 @@ describe('/hdc/risk', () => {
 
       test('audits the update event', () => {
         const audit = mockAudit()
-        const app = createApp({ licenceServiceStub: licenceService, audit }, 'roUser')
+        const app = createApp({ licenceService, audit }, 'roUser')
 
         return request(app)
           .post('/hdc/risk/riskManagement/1')
@@ -96,21 +96,20 @@ describe('/hdc/risk', () => {
       test('does not throw when ca not in final checks or post approval', () => {
         licenceService = createLicenceServiceStub()
         licenceService.getLicence.mockResolvedValue({ stage: 'ELIGIBILITY', licence: { key: 'value' } })
-        const app = createApp({ licenceServiceStub: licenceService }, 'caUser')
+        const app = createApp({ licenceService }, 'caUser')
         return request(app).post('/hdc/risk/riskManagement/1').send(formResponse).expect(302)
       })
     })
   })
 })
 
-function createApp({ licenceServiceStub, audit = mockAudit() }, user) {
-  const prisonerService = createPrisonerServiceStub()
-  const licenceService = licenceServiceStub || createLicenceServiceStub()
+function createApp({ licenceService = null, prisonerService = null, audit = mockAudit() }, user) {
+  const prisonerServiceMock = prisonerService || createPrisonerServiceStub()
   const signInService = createSignInServiceStub()
 
   const baseRouter = standardRouter({
     licenceService,
-    prisonerService,
+    prisonerService: prisonerServiceMock,
     audit,
     signInService,
     tokenVerifier: new NullTokenVerifier(),
