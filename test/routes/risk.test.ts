@@ -8,6 +8,7 @@ import standardRouter from '../../server/routes/routeWorkers/standardRouter'
 import createRoute from '../../server/routes/risk'
 import riskConfig from '../../server/routes/config/risk'
 import NullTokenVerifier from '../../server/authentication/tokenverifier/NullTokenVerifier'
+import { Licence } from '../../server/data/licenceTypes'
 
 describe('/hdc/risk', () => {
   let licenceService
@@ -22,6 +23,22 @@ describe('/hdc/risk', () => {
     const app = createApp({ licenceService }, 'roUser')
 
     testFormPageGets(app, routes, licenceService)
+  })
+
+  describe('GET /risk/:formName/:bookingId', () => {
+    test('should get risk version from licence and call service method correctly', () => {
+      licenceService.getLicence.mockReturnValue({
+        licence: {} as Licence,
+      })
+      const licence = {} as Licence
+      const app = createApp({ licenceService }, 'roUser')
+      return request(app)
+        .get('/hdc/risk/riskManagement/1')
+        .expect('Content-Type', 'text/html; charset=utf-8')
+        .expect((res) => {
+          expect(licenceService.getRiskVersion).toHaveBeenCalledWith(licence)
+        })
+    })
   })
 
   describe('POST /risk/:formName/:bookingId', () => {
