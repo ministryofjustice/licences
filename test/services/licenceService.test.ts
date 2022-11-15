@@ -3,7 +3,6 @@ import {
   LicenceService,
   adaptFieldConfigToSelectWorkingAddress,
   LicenceRecord,
-  CURRENT_RISK_MANAGEMENT_VERSION,
 } from '../../server/services/licenceService'
 import * as varyConfig from '../../server/routes/config/vary'
 import * as formValidation from '../../server/services/utils/formValidation'
@@ -11,6 +10,7 @@ import { LicenceClient } from '../../server/data/licenceClient'
 import { CaseWithVaryVersion, ConditionVersion } from '../../server/data/licenceClientTypes'
 import { Licence, LicenceStage, Risk, RiskManagement, RiskVersion } from '../../server/data/licenceTypes'
 import { TaskState } from '../../server/services/config/taskState'
+import { riskManagementVersion } from '../../server/config'
 
 jest.mock('../../server/services/utils/formValidation')
 
@@ -53,7 +53,7 @@ describe('licenceService', () => {
 
       const version = service.getRiskVersion(licence)
 
-      expect(version).toBe(CURRENT_RISK_MANAGEMENT_VERSION)
+      expect(version).toBe(riskManagementVersion)
     })
 
     test('reads risk version from licence when set', () => {

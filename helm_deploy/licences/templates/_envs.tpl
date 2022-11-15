@@ -150,4 +150,7 @@ env:
 
   - name: GOTENBERG_API_URL
     value: "http://licences-gotenberg:3000"
+
+  - name: LICENCE_RISK_MANAGEMENT_VERSION
+    value: 2
 {{- end -}}

@@ -5,10 +5,11 @@ import { transitions } from './config/licenceStage'
 import recordList from './utils/recordList'
 import * as formValidation from './utils/formValidation'
 import { LicenceClient } from '../data/licenceClient'
-import { Licence, LicenceConditions, LicenceStage, RiskManagement, RiskVersion } from '../data/licenceTypes'
+import { Licence, LicenceConditions, LicenceStage, RiskManagement } from '../data/licenceTypes'
 import { pickCurfewAddressPath } from './utils/pdfFormatter'
 import { ConditionVersion } from '../data/licenceClientTypes'
 import { Decisions, Tasks } from './licence/licenceStatusTypes'
+import { riskManagementVersion } from '../config'
 
 const {
   getIn,
@@ -31,8 +32,6 @@ interface ApprovedVersionDetails {
   version?: number
   vary_version?: number
 }
-
-export const CURRENT_RISK_MANAGEMENT_VERSION: RiskVersion = 2
 
 export interface LicenceRecord {
   licence: Licence
@@ -76,7 +75,7 @@ export class LicenceService {
   }
 
   getRiskVersion(licence: Licence): RiskManagement['version'] {
-    return licence.risk?.riskManagement?.version || CURRENT_RISK_MANAGEMENT_VERSION
+    return licence.risk?.riskManagement?.version || riskManagementVersion
   }
 
   async getLicence(bookingId: number): Promise<LicenceRecord> {
