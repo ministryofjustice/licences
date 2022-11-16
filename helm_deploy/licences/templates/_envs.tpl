@@ -152,5 +152,5 @@ env:
     value: "http://licences-gotenberg:3000"
 
   - name: LICENCE_RISK_MANAGEMENT_VERSION
-    value: 2
+    value: {{ .Values.env.LICENCE_RISK_MANAGEMENT_VERSION | quote }}
 {{- end -}}
