@@ -5,10 +5,11 @@ import { transitions } from './config/licenceStage'
 import recordList from './utils/recordList'
 import * as formValidation from './utils/formValidation'
 import { LicenceClient } from '../data/licenceClient'
-import { Licence, LicenceConditions, LicenceStage } from '../data/licenceTypes'
+import { Licence, LicenceConditions, LicenceStage, RiskManagement } from '../data/licenceTypes'
 import { pickCurfewAddressPath } from './utils/pdfFormatter'
 import { ConditionVersion } from '../data/licenceClientTypes'
 import { Decisions, Tasks } from './licence/licenceStatusTypes'
+import { riskManagementVersion } from '../config'
 
 const {
   getIn,
@@ -71,6 +72,10 @@ export class LicenceService {
       logger.error('Error during reset licences', error.stack)
       throw error
     }
+  }
+
+  getRiskVersion(licence: Licence): RiskManagement['version'] {
+    return licence.risk?.riskManagement?.version || riskManagementVersion
   }
 
   async getLicence(bookingId: number): Promise<LicenceRecord> {

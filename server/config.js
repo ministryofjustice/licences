@@ -210,4 +210,6 @@ module.exports = {
       'https://support-dev.hmpps.service.justice.gov.uk/feedback-and-support'
     ),
   },
+
+  riskManagementVersion: get('LICENCE_RISK_MANAGEMENT_VERSION', 2),
 }

@@ -1,13 +1,14 @@
-const request = require('supertest')
-const { mockAudit } = require('../mockClients')
-const { appSetup, testFormPageGets } = require('../supertestSetup')
+import request from 'supertest'
+import { mockAudit } from '../mockClients'
+import { appSetup, testFormPageGets } from '../supertestSetup'
 
-const { createPrisonerServiceStub, createLicenceServiceStub, createSignInServiceStub } = require('../mockServices')
+import { createPrisonerServiceStub, createLicenceServiceStub, createSignInServiceStub } from '../mockServices'
 
-const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
-const createRoute = require('../../server/routes/risk')
-const formConfig = require('../../server/routes/config/risk')
-const NullTokenVerifier = require('../../server/authentication/tokenverifier/NullTokenVerifier')
+import standardRouter from '../../server/routes/routeWorkers/standardRouter'
+import createRoute from '../../server/routes/risk'
+import riskConfig from '../../server/routes/config/risk'
+import NullTokenVerifier from '../../server/authentication/tokenverifier/NullTokenVerifier'
+import { Licence } from '../../server/data/licenceTypes'
 
 describe('/hdc/risk', () => {
   let licenceService
@@ -19,9 +20,25 @@ describe('/hdc/risk', () => {
   describe('risk routes', () => {
     const routes = [{ url: '/hdc/risk/riskManagement/1', content: 'Risk management' }]
     licenceService = createLicenceServiceStub()
-    const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
+    const app = createApp({ licenceService }, 'roUser')
 
     testFormPageGets(app, routes, licenceService)
+  })
+
+  describe('GET /risk/:formName/:bookingId', () => {
+    test('should get risk version from licence and call service method correctly', () => {
+      licenceService.getLicence.mockReturnValue({
+        licence: {} as Licence,
+      })
+      const licence = {} as Licence
+      const app = createApp({ licenceService }, 'roUser')
+      return request(app)
+        .get('/hdc/risk/riskManagement/1')
+        .expect('Content-Type', 'text/html; charset=utf-8')
+        .expect((res) => {
+          expect(licenceService.getRiskVersion).toHaveBeenCalledWith(licence)
+        })
+    })
   })
 
   describe('POST /risk/:formName/:bookingId', () => {
@@ -33,7 +50,7 @@ describe('/hdc/risk', () => {
 
     describe('When page contains form fields', () => {
       test('calls updateLicence from licenceService', () => {
-        const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
+        const app = createApp({ licenceService }, 'roUser')
         return request(app)
           .post('/hdc/risk/riskManagement/1')
           .send(formResponse)
@@ -43,7 +60,7 @@ describe('/hdc/risk', () => {
             expect(licenceService.update).toHaveBeenCalledWith({
               bookingId: '1',
               originalLicence: { licence: { key: 'value' } },
-              config: formConfig.riskManagement,
+              config: riskConfig.riskManagement,
               userInput: formResponse,
               licenceSection: 'risk',
               formName: 'riskManagement',
@@ -54,7 +71,7 @@ describe('/hdc/risk', () => {
 
       test('calls updateLicence from licenceService when ca in post approval', () => {
         licenceService.getLicence.mockResolvedValue({ stage: 'DECIDED', licence: { key: 'value' } })
-        const app = createApp({ licenceServiceStub: licenceService }, 'caUser')
+        const app = createApp({ licenceService }, 'caUser')
         return request(app)
           .post('/hdc/risk/riskManagement/1')
           .send(formResponse)
@@ -64,7 +81,7 @@ describe('/hdc/risk', () => {
             expect(licenceService.update).toHaveBeenCalledWith({
               bookingId: '1',
               originalLicence: { licence: { key: 'value' }, stage: 'DECIDED' },
-              config: formConfig.riskManagement,
+              config: riskConfig.riskManagement,
               userInput: formResponse,
               licenceSection: 'risk',
               formName: 'riskManagement',
@@ -75,7 +92,7 @@ describe('/hdc/risk', () => {
 
       test('audits the update event', () => {
         const audit = mockAudit()
-        const app = createApp({ licenceServiceStub: licenceService, audit }, 'roUser')
+        const app = createApp({ licenceService, audit }, 'roUser')
 
         return request(app)
           .post('/hdc/risk/riskManagement/1')
@@ -96,21 +113,20 @@ describe('/hdc/risk', () => {
       test('does not throw when ca not in final checks or post approval', () => {
         licenceService = createLicenceServiceStub()
         licenceService.getLicence.mockResolvedValue({ stage: 'ELIGIBILITY', licence: { key: 'value' } })
-        const app = createApp({ licenceServiceStub: licenceService }, 'caUser')
+        const app = createApp({ licenceService }, 'caUser')
         return request(app).post('/hdc/risk/riskManagement/1').send(formResponse).expect(302)
       })
     })
   })
 })
 
-function createApp({ licenceServiceStub, audit = mockAudit() }, user) {
-  const prisonerService = createPrisonerServiceStub()
-  const licenceService = licenceServiceStub || createLicenceServiceStub()
+function createApp({ licenceService = null, prisonerService = null, audit = mockAudit() }, user) {
+  const prisonerServiceMock = prisonerService || createPrisonerServiceStub()
   const signInService = createSignInServiceStub()
 
   const baseRouter = standardRouter({
     licenceService,
-    prisonerService,
+    prisonerService: prisonerServiceMock,
     audit,
     signInService,
     tokenVerifier: new NullTokenVerifier(),

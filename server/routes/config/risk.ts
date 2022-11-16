@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   riskManagement: {
     licenceSection: 'riskManagement',
     fields: [
@@ -57,6 +57,11 @@ module.exports = {
         nonDisclosableInformationDetails: {
           responseType: 'requiredStringIf_nonDisclosableInformation_Yes',
           validationMessage: 'Provide information that cannot be disclosed to the offender',
+        },
+      },
+      {
+        version: {
+          responseType: 'optionalInteger',
         },
       },
     ],

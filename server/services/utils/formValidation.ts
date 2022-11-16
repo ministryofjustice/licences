@@ -32,6 +32,7 @@ const postcode = joi
 const fieldOptions = {
   requiredString: joi.string().required(),
   optionalString: joi.string().allow('').optional(),
+  optionalInteger: joi.number().allow('').optional(),
   requiredYesNo: joi.valid('Yes', 'No').required(),
   optionalYesNo: joi.valid('Yes', 'No').optional(),
   selection: joi.alternatives().try(joi.string(), joi.array().min(1)).required(),
