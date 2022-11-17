@@ -66,11 +66,11 @@ describe('licenceService', () => {
       const licence = {} as Licence
       licence.risk = {} as Risk
       licence.risk.riskManagement = {} as RiskManagement
-      licence.risk.riskManagement.version = 1 as RiskVersion
+      licence.risk.riskManagement.version = '1' as RiskVersion
 
       const version = service.getRiskVersion(licence)
 
-      expect(version).toBe(1)
+      expect(version).toBe('1')
     })
   })
 

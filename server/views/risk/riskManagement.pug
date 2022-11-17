@@ -18,31 +18,60 @@ block content
         input(type="hidden" name="version" value=version || '')
         div.paddingBottom.largeMarginBottom
 
-          div.form-group.inline.smallPaddingTop
-            p Are there checks you need to carry out to decide if the address is suitable?
-              span.form-hint.smallMarginTop For example, police or social services checks.
+          if version == '2'
+            div.form-group.inline.smallPaddingTop
+              h3.heading-small Mandatory address checks
+              p Have you requested and considered current risk information from the police and children’s services related to the proposed address?
 
-            div.multiple-choice
-              input#planningYes(type="radio" checked=data.planningActions === 'Yes' name="planningActions" value="Yes")
-              label(for="planningYes") Yes
-            div.multiple-choice
-              input#planningNo(type="radio" checked=data.planningActions === 'No' name="planningActions" value="No")
-              label(for="planningNo") No
+              div.multiple-choice
+                input#consideredChecksYes(type="radio" checked=data.hasConsideredChecks === 'Yes' name="hasConsideredChecks" value="Yes")
+                label(for="consideredChecksYes") Yes
 
-          div.form-group.inline.smallPaddingTop
-            p Are you still waiting for information?
+              div.multiple-choice
+                input#consideredChecksNo(type="radio" checked=data.hasConsideredChecks === 'No' name="hasConsideredChecks" value="No")
+                label(for="consideredChecksNo") No
 
-            div.multiple-choice
-              input#awaitingYes(type="radio" checked=data.awaitingInformation === 'Yes' name="awaitingInformation" value="Yes")
-              label(for="awaitingYes") Yes
-            div.multiple-choice
-              input#awaitingNo(type="radio" checked=data.awaitingInformation === 'No' name="awaitingInformation" value="No")
-              label(for="awaitingNo") No
+            div.form-group.inline.smallPaddingTop
+              p Are you waiting for any other information?
+              span.form-hint.smallMarginTop For example, information from other agencies or their prison offender manager.
+
+              div.multiple-choice
+                input#awaitingOtherYes(type="radio" checked=data.awaitingOtherInformation === 'Yes' name="awaitingawaitingOtherInformationInformation" value="Yes")
+                label(for="awaitingOtherYes") Yes
+              div.multiple-choice
+                input#awaitingOtherNo(type="radio" checked=data.awaitingOtherInformation === 'No' name="awaitingOtherInformation" value="No")
+                label(for="awaitingOtherNo") No
+
+          else 
+            div.form-group.inline.smallPaddingTop
+              p Are there checks you need to carry out to decide if the address is suitable?
+                span.form-hint.smallMarginTop For example, police or social services checks.
+
+              div.multiple-choice
+                input#planningYes(type="radio" checked=data.planningActions === 'Yes' name="planningActions" value="Yes")
+                label(for="planningYes") Yes
+              
+              div.multiple-choice
+                input#planningNo(type="radio" checked=data.planningActions === 'No' name="planningActions" value="No")
+                label(for="planningNo") No
+
+            div.form-group.inline.smallPaddingTop
+              p Are you still waiting for information?
+
+              div.multiple-choice
+                input#awaitingYes(type="radio" checked=data.awaitingInformation === 'Yes' name="awaitingInformation" value="Yes")
+                label(for="awaitingYes") Yes
+              div.multiple-choice
+                input#awaitingNo(type="radio" checked=data.awaitingInformation === 'No' name="awaitingInformation" value="No")
+                label(for="awaitingNo") No
 
           div.form-group
             label(for='riskManagementDetails') Provide details of your checks
-              span.form-hint.midMarginBottom.smallMarginTop You must confirm here that you have considered information from the police and social services when assessing the suitability of the proposed address.
-              span.form-hint.smallMarginBottom Also include details of information you're waiting for and when you should get it.
+              if version == '2'
+                span.form-hint.midMarginBottom.smallMarginTop If you're waiting for information include details of what you're waiting for and when you should get it.
+              else
+                span.form-hint.midMarginBottom.smallMarginTop You must confirm here that you have considered information from the police and social services when assessing the suitability of the proposed address.
+                span.form-hint.smallMarginBottom Also include details of information you're waiting for and when you should get it.
             textarea(name='riskManagementDetails' id='riskManagementDetails' class='form-control' rows='5' aria-label="Provide details of when you expect to get the information")
               if data.riskManagementDetails
                 | #{data.riskManagementDetails}

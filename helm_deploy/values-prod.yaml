@@ -41,7 +41,7 @@ env:
   TOKENVERIFICATION_API_URL: https://token-verification-api.prison.service.justice.gov.uk
   TOKENVERIFICATION_API_ENABLED: true
   FEEDBACK_SUPPORT_URL: "https://support.hmpps.service.justice.gov.uk/feedback-and-support"
-  LICENCE_RISK_MANAGEMENT_VERSION: 1
+  LICENCE_RISK_MANAGEMENT_VERSION: '1'
 
 allowlist:
   office: "217.33.148.210/32"

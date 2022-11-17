@@ -4,14 +4,26 @@ export default {
     fields: [
       {
         planningActions: {
-          responseType: 'requiredYesNo',
+          responseType: 'requiredYesNoIfNot_version_2',
           validationMessage: 'Say if there are risk management actions',
         },
       },
       {
         awaitingInformation: {
-          responseType: 'requiredYesNo',
+          responseType: 'requiredYesNoIfNot_version_2',
           validationMessage: 'Say if you are still awaiting information',
+        },
+      },
+      {
+        hasConsideredChecks: {
+          responseType: 'requiredYesNoIf_version_2',
+          validationMessage: 'Say if there is risk information to be considered from police and children’s services',
+        },
+      },
+      {
+        awaitingOtherInformation: {
+          responseType: 'requiredYesNoIf_version_2',
+          validationMessage: 'Say if you are still awaiting other information',
         },
       },
       {
@@ -61,7 +73,7 @@ export default {
       },
       {
         version: {
-          responseType: 'optionalInteger',
+          responseType: 'optionalString',
         },
       },
     ],
