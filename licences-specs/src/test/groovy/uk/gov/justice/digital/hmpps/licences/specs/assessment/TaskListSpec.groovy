@@ -108,7 +108,7 @@ class TaskListSpec extends GebReportingSpec {
     task             | page
     tasks.address    | ApprovedPremisesPage
     tasks.conditions | LicenceConditionsStandardPage
-    tasks.risk       | RiskManagementPage
+    tasks.risk       | RiskManagementV1Page
     tasks.victim     | VictimLiaisonPage
     tasks.reporting  | ReportingInstructionsPage
   }

@@ -251,8 +251,10 @@ export interface Reporting {
 export interface RiskManagement {
   version?: RiskVersion
   awaitingInformation?: string
+  awaitingOtherInformation?: string
   emsInformation?: string
   emsInformationDetails?: string
+  hasConsideredChecks?: string
   nonDisclosableInformation?: string
   nonDisclosableInformationDetails?: string
   planningActions?: string
@@ -265,7 +267,7 @@ export interface Risk {
   riskManagement?: RiskManagement
 }
 
-export type RiskVersion = 1 | 2
+export type RiskVersion = '1' | '2'
 
 export interface Vary {
   approval?: { jobTitle?: string; name?: string }

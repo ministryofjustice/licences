@@ -154,7 +154,7 @@ class LicenceDetailsSpec extends GebReportingSpec {
     'address'     | ApprovedPremisesPage
     'curfewHours' | CurfewHoursPage
     'conditions'  | LicenceConditionsStandardPage
-    'risk'        | RiskManagementPage
+    'risk'        | RiskManagementV1Page
     'victim'      | VictimLiaisonPage
     'reporting'   | ReportingInstructionsPage
   }

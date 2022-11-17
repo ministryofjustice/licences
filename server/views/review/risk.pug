@@ -12,15 +12,26 @@ block content
   div.pure-u-1.pure-u-md-1-2.paddingBottom
     h2.heading-large Risk management
 
-    div.smallPaddingTop
-      p Are there any risk management planning actions that must take place prior to release?
+    if risk.version == '2'
+      div.smallPaddingTop
+        p Have you requested and considered current risk information from the police and children’s services related to the proposed address?
 
-      span#planningActions.block.bold #{risk.planningActions}
+        span#hasConsideredChecks.block.bold #{risk.hasConsideredChecks}
 
-    div.smallPaddingTop
-      p Are you still awaiting information?
+      div.smallPaddingTop
+        p Are you waiting for any other information?
 
-      span#awaitingInformation.block.bold #{risk.awaitingInformation}
+        span#awaitingOtherInformation.block.bold #{risk.awaitingOtherInformation}
+    else 
+      div.smallPaddingTop
+        p Are there any risk management planning actions that must take place prior to release?
+
+        span#planningActions.block.bold #{risk.planningActions}
+
+      div.smallPaddingTop
+        p Are you still awaiting information?
+
+        span#awaitingInformation.block.bold #{risk.awaitingInformation}
 
     if risk.riskManagementDetails
       div.smallPaddingTop

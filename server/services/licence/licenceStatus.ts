@@ -146,7 +146,8 @@ function getApprovalStageState(licence) {
 }
 
 function getRoStageState(licence) {
-  const { riskManagementNeeded, awaitingRiskInformation } = getRiskManagementState(licence)
+  const { riskManagementNeeded, awaitingRiskInformation, mandatoryAddressChecksNotCompleted, riskManagementVersion } =
+    getRiskManagementState(licence)
   const { decision: victimLiaisonNeeded, task: victim } = getTaskState(licence.victim?.victimLiaison?.decision)
   const {
     approvedPremisesRequired,
@@ -159,12 +160,15 @@ function getRoStageState(licence) {
   const { reportingInstructions } = getReportingInstructionsState(licence)
   const { licenceConditions, standardOnly, additional, bespoke, bespokeRejected, bespokePending } =
     getLicenceConditionsState(licence)
-  const { bassAreaCheck } = getBassAreaState(licence)
+  const { bassAreaCheck, bassAreaSuitable } = getBassAreaState(licence)
 
   return {
     decisions: {
+      riskManagementVersion,
       riskManagementNeeded,
       awaitingRiskInformation,
+      mandatoryAddressChecksNotCompleted,
+      bassAreaSuitable,
       victimLiaisonNeeded,
       standardOnly,
       additional,
@@ -227,16 +231,20 @@ function getCaStageState(licence) {
 
 function getRiskManagementState(licence) {
   const riskManagement = licence.risk?.riskManagement
+  const riskManagementVersion = riskManagement?.version
   const riskManagementAnswer = riskManagement?.planningActions
-  const awaitingInformationAnswer = riskManagement?.awaitingInformation
+  const checksConsideredAnswer = riskManagement?.hasConsideredChecks
+  const awaitingInformationAnswer = riskManagement?.awaitingInformation || riskManagement?.awaitingOtherInformation
   const { proposedAddressSuitable } = riskManagement || {}
 
   return {
     riskManagementNeeded: riskManagementAnswer === 'Yes',
+    mandatoryAddressChecksNotCompleted: riskManagementVersion === '2' && checksConsideredAnswer !== 'Yes',
     proposedAddressSuitable: proposedAddressSuitable === 'Yes',
     awaitingRiskInformation: awaitingInformationAnswer === 'Yes',
     riskManagement: getState(),
     addressUnsuitable: proposedAddressSuitable === 'No',
+    riskManagementVersion,
   }
 
   function getState() {
@@ -244,7 +252,7 @@ function getRiskManagementState(licence) {
       return TaskState.UNSTARTED
     }
 
-    if (riskManagementAnswer && awaitingInformationAnswer && proposedAddressSuitable) {
+    if ((riskManagementAnswer || checksConsideredAnswer) && awaitingInformationAnswer && proposedAddressSuitable) {
       return TaskState.DONE
     }
 

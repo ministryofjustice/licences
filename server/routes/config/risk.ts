@@ -4,13 +4,26 @@ export default {
     fields: [
       {
         planningActions: {
-          responseType: 'requiredYesNo',
+          responseType: 'requiredYesNoIfNot_version_2',
           validationMessage: 'Say if there are risk management actions',
         },
       },
       {
         awaitingInformation: {
-          responseType: 'requiredYesNo',
+          responseType: 'requiredYesNoIfNot_version_2',
+          validationMessage: 'Say if you are still awaiting information',
+        },
+      },
+      {
+        hasConsideredChecks: {
+          responseType: 'requiredYesNoIf_version_2',
+          validationMessage:
+            'Say if you have requested and considered risk information related to the proposed address',
+        },
+      },
+      {
+        awaitingOtherInformation: {
+          responseType: 'requiredYesNoIf_version_2',
           validationMessage: 'Say if you are still awaiting information',
         },
       },
@@ -61,7 +74,7 @@ export default {
       },
       {
         version: {
-          responseType: 'optionalInteger',
+          responseType: 'optionalString',
         },
       },
     ],

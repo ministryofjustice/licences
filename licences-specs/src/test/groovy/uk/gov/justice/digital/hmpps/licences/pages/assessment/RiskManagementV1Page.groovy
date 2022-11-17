@@ -4,7 +4,7 @@ import geb.Page
 import geb.module.RadioButtons
 import uk.gov.justice.digital.hmpps.licences.modules.HeaderModule
 
-class RiskManagementPage extends Page {
+class RiskManagementV1Page extends Page {
 
   static url = '/hdc/risk/riskManagement'
 
@@ -17,6 +17,7 @@ class RiskManagementPage extends Page {
 
     riskManagementRadios { $(name: "planningActions").module(RadioButtons) }
     awaitingInformationRadios { $(name: "awaitingInformation").module(RadioButtons) }
+
     addressSuitableRadios { $(name: "proposedAddressSuitable").module(RadioButtons) }
     emsInformationRadios(required: false) { $(name: "emsInformation").module(RadioButtons) }
     nonDisclosableInformationRadios { $(name: "nonDisclosableInformation").module(RadioButtons) }
