@@ -3,13 +3,13 @@ package uk.gov.justice.digital.hmpps.licences.specs.assessment
 import geb.spock.GebReportingSpec
 import spock.lang.Shared
 import spock.lang.Stepwise
-import uk.gov.justice.digital.hmpps.licences.pages.assessment.RiskManagementPage
 import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
+import uk.gov.justice.digital.hmpps.licences.pages.assessment.RiskManagementPage
 import uk.gov.justice.digital.hmpps.licences.util.Actions
 import uk.gov.justice.digital.hmpps.licences.util.TestData
 
 @Stepwise
-class RiskManagementSpec extends GebReportingSpec {
+class RiskManagementV1Spec extends GebReportingSpec {
 
   @Shared
   TestData testData = new TestData()
@@ -18,7 +18,7 @@ class RiskManagementSpec extends GebReportingSpec {
   Actions actions = new Actions()
 
   def setupSpec() {
-    testData.loadLicence('assessment/unstarted')
+    testData.loadLicence('assessment/risk-with-version')
     actions.logIn('RO')
   }
 
@@ -74,7 +74,6 @@ class RiskManagementSpec extends GebReportingSpec {
     emsInformationForm.isDisplayed()
   }
 
-
   def 'EMS Information text box shown when address suitable is Yes'() {
 
     when: 'At risk management page'
@@ -113,8 +112,6 @@ class RiskManagementSpec extends GebReportingSpec {
     then: 'I see the non-disclosable information text box'
     nonDisclosableInformationForm.isDisplayed()
   }
-
-
 
   def 'Modified choices are saved after save and continue'() {
 

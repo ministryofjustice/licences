@@ -15,8 +15,12 @@ class RiskManagementPage extends Page {
   static content = {
     header { module(HeaderModule) }
 
+    hasConsideredChecksRadios { $(name: "hasConsideredChecks").module(RadioButtons) }
+    awaitingOtherInformationRadios { $(name: "awaitingOtherInformation").module(RadioButtons) }
+
     riskManagementRadios { $(name: "planningActions").module(RadioButtons) }
     awaitingInformationRadios { $(name: "awaitingInformation").module(RadioButtons) }
+
     addressSuitableRadios { $(name: "proposedAddressSuitable").module(RadioButtons) }
     emsInformationRadios(required: false) { $(name: "emsInformation").module(RadioButtons) }
     nonDisclosableInformationRadios { $(name: "nonDisclosableInformation").module(RadioButtons) }
