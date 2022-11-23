@@ -146,7 +146,8 @@ function getApprovalStageState(licence) {
 }
 
 function getRoStageState(licence) {
-  const { riskManagementNeeded, awaitingRiskInformation } = getRiskManagementState(licence)
+  const { riskManagementNeeded, awaitingRiskInformation, mandatoryAddressChecksNotCompleted, riskManagementVersion } =
+    getRiskManagementState(licence)
   const { decision: victimLiaisonNeeded, task: victim } = getTaskState(licence.victim?.victimLiaison?.decision)
   const {
     approvedPremisesRequired,
@@ -163,8 +164,10 @@ function getRoStageState(licence) {
 
   return {
     decisions: {
+      riskManagementVersion,
       riskManagementNeeded,
       awaitingRiskInformation,
+      mandatoryAddressChecksNotCompleted,
       victimLiaisonNeeded,
       standardOnly,
       additional,
@@ -227,16 +230,20 @@ function getCaStageState(licence) {
 
 function getRiskManagementState(licence) {
   const riskManagement = licence.risk?.riskManagement
-  const riskManagementAnswer = riskManagement?.planningActions || riskManagement?.hasConsideredChecks
+  const riskManagementVersion = riskManagement?.version
+  const riskManagementAnswer = riskManagement?.planningActions
+  const checksConsideredAnswer = riskManagement?.hasConsideredChecks
   const awaitingInformationAnswer = riskManagement?.awaitingInformation || riskManagement?.awaitingOtherInformation
   const { proposedAddressSuitable } = riskManagement || {}
 
   return {
     riskManagementNeeded: riskManagementAnswer === 'Yes',
+    mandatoryAddressChecksNotCompleted: checksConsideredAnswer === 'No',
     proposedAddressSuitable: proposedAddressSuitable === 'Yes',
     awaitingRiskInformation: awaitingInformationAnswer === 'Yes',
     riskManagement: getState(),
     addressUnsuitable: proposedAddressSuitable === 'No',
+    riskManagementVersion,
   }
 
   function getState() {
@@ -244,7 +251,7 @@ function getRiskManagementState(licence) {
       return TaskState.UNSTARTED
     }
 
-    if (riskManagementAnswer && awaitingInformationAnswer && proposedAddressSuitable) {
+    if ((riskManagementAnswer || checksConsideredAnswer) && awaitingInformationAnswer && proposedAddressSuitable) {
       return TaskState.DONE
     }
 

@@ -14,15 +14,28 @@ describe('risk management task', () => {
     })
   })
 
-  test('should return No risks if risk management not needed', () => {
+  test('should return No risks if risk management not needed and risk management version not 2', () => {
     expect(
       riskManagement.view({
-        decisions: { addressReviewFailed: false, riskManagementNeeded: false },
+        decisions: { addressReviewFailed: false, riskManagementNeeded: false, riskManagementVersion: '1' },
         tasks: { riskManagement: 'DONE' },
       })
     ).toStrictEqual({
       action: { href: '/hdc/review/risk/', text: 'View', type: 'btn-secondary' },
       label: 'No risks',
+      title: 'Risk management',
+    })
+  })
+
+  test('should return Completed if risk management not needed and risk management version is 2', () => {
+    expect(
+      riskManagement.view({
+        decisions: { addressReviewFailed: false, riskManagementNeeded: false, riskManagementVersion: '2' },
+        tasks: { riskManagement: 'DONE' },
+      })
+    ).toStrictEqual({
+      action: { href: '/hdc/review/risk/', text: 'View', type: 'btn-secondary' },
+      label: 'Completed',
       title: 'Risk management',
     })
   })
@@ -49,6 +62,19 @@ describe('risk management task', () => {
     ).toStrictEqual({
       action: { href: '/hdc/review/risk/', text: 'View', type: 'btn-secondary' },
       label: 'Not completed',
+      title: 'Risk management',
+    })
+  })
+
+  test('should return warning if mandatory address checks not completed', () => {
+    expect(
+      riskManagement.view({
+        decisions: { mandatoryAddressChecksNotCompleted: true },
+        tasks: {},
+      })
+    ).toStrictEqual({
+      action: { href: '/hdc/review/risk/', text: 'View', type: 'btn-secondary' },
+      label: 'WARNING||Mandatory address checks not completed',
       title: 'Risk management',
     })
   })
