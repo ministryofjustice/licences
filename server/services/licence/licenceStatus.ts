@@ -227,8 +227,8 @@ function getCaStageState(licence) {
 
 function getRiskManagementState(licence) {
   const riskManagement = licence.risk?.riskManagement
-  const riskManagementAnswer = riskManagement?.planningActions
-  const awaitingInformationAnswer = riskManagement?.awaitingInformation
+  const riskManagementAnswer = riskManagement?.planningActions || riskManagement?.hasConsideredChecks
+  const awaitingInformationAnswer = riskManagement?.awaitingInformation || riskManagement?.awaitingOtherInformation
   const { proposedAddressSuitable } = riskManagement || {}
 
   return {

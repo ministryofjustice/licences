@@ -251,8 +251,10 @@ export interface Reporting {
 export interface RiskManagement {
   version?: RiskVersion
   awaitingInformation?: string
+  awaitingOtherInformation?: string
   emsInformation?: string
   emsInformationDetails?: string
+  hasConsideredChecks?: string
   nonDisclosableInformation?: string
   nonDisclosableInformationDetails?: string
   planningActions?: string
