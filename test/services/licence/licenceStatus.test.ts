@@ -723,6 +723,103 @@ describe('getLicenceStatus', () => {
       expect(status.decisions.bespokeRejected).toBe(1)
     })
 
+    describe('riskManagement task', () => {
+      test('should show riskManagement UNSTARTED when empty', () => {
+        const licence = {
+          stage: 'PROCESSING_RO',
+          licence: {
+            risk: {},
+          },
+        }
+
+        const status = getLicenceStatus(licence)
+
+        expect(status.tasks.riskManagement).toEqual(TaskState.UNSTARTED)
+      })
+
+      test('should show risk management version 1 STARTED when planning actions confirmed but proposedAddressSuitable and awaitingRiskInformation remain unanswered', () => {
+        const licence = {
+          stage: 'PROCESSING_RO',
+          licence: {
+            risk: {
+              riskManagement: {
+                planningActions: 'Yes',
+              },
+            },
+          },
+        }
+
+        const status = getLicenceStatus(licence)
+
+        expect(status.tasks.riskManagement).toEqual(TaskState.STARTED)
+        expect(status.decisions.riskManagementNeeded).toBe(true)
+        expect(status.decisions.mandatoryAddressChecksNotCompleted).toBe(false)
+        expect(status.decisions.awaitingRiskInformation).toBe(false)
+      })
+
+      test('should show risk management version 2 STARTED when mandatory address checks have been considered but proposedAddressSuitable and awaitingRiskInformation remain unanswered', () => {
+        const licence = {
+          stage: 'PROCESSING_RO',
+          licence: {
+            risk: {
+              riskManagement: {
+                hasConsideredChecks: 'No',
+              },
+            },
+          },
+        }
+
+        const status = getLicenceStatus(licence)
+
+        expect(status.tasks.riskManagement).toEqual(TaskState.STARTED)
+        expect(status.decisions.mandatoryAddressChecksNotCompleted).toBe(true)
+        expect(status.decisions.riskManagementNeeded).toBe(false)
+        expect(status.decisions.awaitingRiskInformation).toBe(false)
+      })
+
+      test('should show risk management version 1 DONE when planning actions check has been completed and proposedAddressSuitable and awaitingRiskInformation answered', () => {
+        const licence = {
+          stage: 'PROCESSING_RO',
+          licence: {
+            risk: {
+              riskManagement: {
+                planningActions: 'Yes',
+                awaitingInformation: 'Yes',
+                proposedAddressSuitable: 'Yes',
+              },
+            },
+          },
+        }
+
+        const status = getLicenceStatus(licence)
+
+        expect(status.tasks.riskManagement).toEqual(TaskState.DONE)
+        expect(status.decisions.riskManagementNeeded).toBe(true)
+        expect(status.decisions.awaitingRiskInformation).toBe(true)
+      })
+
+      test('should show risk management version 2 DONE when mandatory address checks have been considered and proposedAddressSuitable and awaitingRiskInformation answered', () => {
+        const licence = {
+          stage: 'PROCESSING_RO',
+          licence: {
+            risk: {
+              riskManagement: {
+                hasConsideredChecks: 'No',
+                awaitingOtherInformation: 'No',
+                proposedAddressSuitable: 'Yes',
+              },
+            },
+          },
+        }
+
+        const status = getLicenceStatus(licence)
+
+        expect(status.tasks.riskManagement).toEqual(TaskState.DONE)
+        expect(status.decisions.mandatoryAddressChecksNotCompleted).toBe(true)
+        expect(status.decisions.awaitingRiskInformation).toBe(false)
+      })
+    })
+
     describe('curfewAddressReview task', () => {
       describe('offender is main occupier', () => {
         test('should be UNSTARTED when electricity not answered', () => {
