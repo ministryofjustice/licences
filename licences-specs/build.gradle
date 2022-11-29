@@ -1,7 +1,7 @@
 plugins {
   id 'groovy'
-  id("org.owasp.dependencycheck") version "6.1.5"
-  id("com.github.ben-manes.versions") version "0.38.0"
+  id("org.owasp.dependencycheck") version "7.3.2"
+  id("com.github.ben-manes.versions") version "0.44.0"
 }
 
 ext {
@@ -17,8 +17,8 @@ repositories {
   mavenCentral()
 }
 
-project.sourceCompatibility = 11
-project.targetCompatibility = 11
+project.sourceCompatibility = 18
+project.targetCompatibility = 18
 
 dependencies {
 
