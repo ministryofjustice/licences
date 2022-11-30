@@ -1,5 +1,6 @@
-/** @typedef {import('../../../types/licences').Destination} Destination */
+/** @typedef {import("../../../types/licences").Destination} Destination */
 
+// eslint-disable-next-line no-unused-vars
 const { TelemetryClient } = require('applicationinsights')
 
 const flattenDestination = (type, destination) =>
@@ -7,7 +8,7 @@ const flattenDestination = (type, destination) =>
 
 class EventPublisher {
   /**
-   * @param {import('../../data/audit')} audit
+   * @param {import("../../data/audit")} audit
    * @param {TelemetryClient | undefined} telemetryClient
    */
   constructor(audit, telemetryClient) {

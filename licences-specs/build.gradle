@@ -1,7 +1,7 @@
 plugins {
   id 'groovy'
-  id("org.owasp.dependencycheck") version "6.1.5"
-  id("com.github.ben-manes.versions") version "0.38.0"
+  id("org.owasp.dependencycheck") version "7.3.2"
+  id("com.github.ben-manes.versions") version "0.44.0"
 }
 
 ext {
@@ -36,5 +36,10 @@ dependencies {
 
 task mockTest(type: Test) {
   systemProperty 'geb.env', 'chromeHeadless'
+  group = 'verification'
+}
+
+task mockTestUi(type: Test) {
+  systemProperty 'geb.env', 'chrome'
   group = 'verification'
 }
