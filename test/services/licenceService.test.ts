@@ -92,6 +92,7 @@ describe('licenceService', () => {
           vary_version: 5,
           version: 2,
           additional_conditions_version: 3,
+          standard_conditions_version: 1,
         },
       })
     })
@@ -109,6 +110,7 @@ describe('licenceService', () => {
           vary_version: 5,
           version: 2,
           additional_conditions_version: 3,
+          standard_conditions_version: 1,
         },
       })
     })
