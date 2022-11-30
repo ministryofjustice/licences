@@ -17,8 +17,8 @@ repositories {
   mavenCentral()
 }
 
-project.sourceCompatibility = 18
-project.targetCompatibility = 18
+project.sourceCompatibility = 11
+project.targetCompatibility = 11
 
 dependencies {
 
@@ -36,5 +36,10 @@ dependencies {
 
 task mockTest(type: Test) {
   systemProperty 'geb.env', 'chromeHeadless'
+  group = 'verification'
+}
+
+task mockTestUi(type: Test) {
+  systemProperty 'geb.env', 'chrome'
   group = 'verification'
 }
