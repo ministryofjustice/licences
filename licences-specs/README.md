@@ -23,7 +23,7 @@ An easy way to do this is to run start-mocks and the application hence the 3 com
 ```
 npm run start-mocks
 docker-compose up
-npm run feature:dev
+npm run start:feature
 ```
 
 

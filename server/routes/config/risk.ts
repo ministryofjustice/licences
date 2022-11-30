@@ -17,13 +17,14 @@ export default {
       {
         hasConsideredChecks: {
           responseType: 'requiredYesNoIf_version_2',
-          validationMessage: 'Say if there is risk information to be considered from police and children’s services',
+          validationMessage:
+            'Say if you have requested and considered risk information related to the proposed address',
         },
       },
       {
         awaitingOtherInformation: {
           responseType: 'requiredYesNoIf_version_2',
-          validationMessage: 'Say if you are still awaiting other information',
+          validationMessage: 'Say if you are still awaiting information',
         },
       },
       {

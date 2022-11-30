@@ -332,8 +332,8 @@ describe('validation', () => {
             },
             outcome: {
               hasConsideredChecks:
-                'Say if there is risk information to be considered from police and children’s services',
-              awaitingOtherInformation: 'Say if you are still awaiting other information',
+                'Say if you have requested and considered risk information related to the proposed address',
+              awaitingOtherInformation: 'Say if you are still awaiting information',
               proposedAddressSuitable: 'Say if the proposed address is suitable',
               nonDisclosableInformation: 'Say if you want to add information that cannot be disclosed to the offender',
             },

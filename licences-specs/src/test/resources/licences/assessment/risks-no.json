@@ -92,8 +92,9 @@
     },
     "risk": {
       "riskManagement": {
-        "planningActions": "No",
-        "awaitingInformation": "No",
+        "version": "2",
+        "hasConsideredChecks": "Yes",
+        "awaitingOtherInformation": "No",
         "proposedAddressSuitable": "Yes"
       }
     },
