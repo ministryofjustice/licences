@@ -1,6 +1,6 @@
 import { Licence, LicenceStage } from './licenceTypes'
 
-export type ConditionVersion = 1 | 2
+export type AdditionalConditionsVersion = 1 | 2
 
 export type StandardConditionsVersion = 1
 
@@ -21,7 +21,7 @@ export interface Case {
   booking_id: number
   stage: LicenceStage
   version: number
-  additional_conditions_version: ConditionVersion
+  additional_conditions_version: AdditionalConditionsVersion
   standard_conditions_version: StandardConditionsVersion
 }
 

@@ -1,4 +1,4 @@
-import { ConditionVersion } from '../../server/data/licenceClientTypes'
+import { AdditionalConditionsVersion } from '../../server/data/licenceClientTypes'
 import { Licence } from '../../server/data/licenceTypes'
 import { ConditionsService, ConditionsServiceFactory } from '../../server/services/conditionsService'
 import { pssConditions } from '../../server/services/config/conditions/v1/conditions'
@@ -31,7 +31,7 @@ describe('conditionsService', () => {
       test('reads version from licence when set', () => {
         const licence = {} as LicenceRecord
         licence.versionDetails = {} as any
-        licence.versionDetails.additional_conditions_version = 1234 as ConditionVersion
+        licence.versionDetails.additional_conditions_version = 1234 as AdditionalConditionsVersion
 
         const version = factory.getVersion(licence)
 
@@ -51,7 +51,7 @@ describe('conditionsService', () => {
       test('reads version from licence when set', () => {
         const licence = {} as LicenceRecord
         licence.versionDetails = {} as any
-        licence.versionDetails.additional_conditions_version = 1234 as ConditionVersion
+        licence.versionDetails.additional_conditions_version = 1234 as AdditionalConditionsVersion
 
         const version = factory.getNewVersion(licence)
 
@@ -61,7 +61,7 @@ describe('conditionsService', () => {
 
     describe('forVersion', () => {
       test('version for new service', () => {
-        const createdService = factory.forVersion(1234 as ConditionVersion)
+        const createdService = factory.forVersion(1234 as AdditionalConditionsVersion)
 
         expect(createdService.version).toBe(1234)
       })
@@ -79,7 +79,7 @@ describe('conditionsService', () => {
       test('version for new service reads version from licence when set', () => {
         const licence = {} as LicenceRecord
         licence.versionDetails = {} as any
-        licence.versionDetails.additional_conditions_version = 1234 as ConditionVersion
+        licence.versionDetails.additional_conditions_version = 1234 as AdditionalConditionsVersion
 
         const createdService = factory.forLicence(licence)
 

@@ -1,10 +1,10 @@
 import { getIn, isEmpty, interleave } from '../utils/functionalHelpers'
 import { getAdditionalConditionsConfig, applyModifications, multiFields } from './config/conditionsConfig'
 import { AdditionalConditions, Licence } from '../data/licenceTypes'
-import { ConditionVersion } from '../data/licenceClientTypes'
+import { AdditionalConditionsVersion } from '../data/licenceClientTypes'
 
 export class LicenceWithConditionsBuilder {
-  constructor(private readonly conditionVersion: ConditionVersion) {}
+  constructor(private readonly conditionVersion: AdditionalConditionsVersion) {}
 
   populateLicenceWithApprovedConditions(licence: Licence) {
     return this.populateLicenceWithConditions(licence, null, true)

@@ -321,7 +321,7 @@ describe('/hdc/licenceConditions', () => {
           .send({ bookingId: 2 })
           .expect(302)
           .expect(() => {
-            expect(licenceService.setConditionsVersion).toHaveBeenCalledWith(2, 1)
+            expect(licenceService.setAdditionalConditionsVersion).toHaveBeenCalledWith(2, 1)
           })
       })
 
@@ -335,7 +335,7 @@ describe('/hdc/licenceConditions', () => {
           .send({ bookingId: 2 })
           .expect(302)
           .expect(() => {
-            expect(licenceService.setConditionsVersion).toHaveBeenCalledWith(2, 1)
+            expect(licenceService.setAdditionalConditionsVersion).toHaveBeenCalledWith(2, 1)
           })
       })
 
@@ -349,7 +349,7 @@ describe('/hdc/licenceConditions', () => {
           .send({ bookingId: 2 })
           .expect(302)
           .expect(() => {
-            expect(licenceService.setConditionsVersion).not.toHaveBeenCalled()
+            expect(licenceService.setAdditionalConditionsVersion).not.toHaveBeenCalled()
           })
       })
     })

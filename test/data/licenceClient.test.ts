@@ -315,9 +315,9 @@ describe('licenceClient', () => {
     })
   })
 
-  describe('setConditionsVersion', () => {
+  describe('setAdditionalConditionsVersion', () => {
     test('should pass in the correct parameters', async () => {
-      await licenceClient.setConditionsVersion(10001, 2)
+      await licenceClient.setAdditionalConditionsVersion(10001, 2)
 
       expect(db.query).toHaveBeenCalledWith({
         text: 'update licences l set additional_conditions_version = $1 where booking_id = $2',

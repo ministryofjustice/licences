@@ -3,7 +3,7 @@ import {
   ApprovedLicenceVersion,
   CaseWithApprovedVersion,
   CaseWithVaryVersion,
-  ConditionVersion,
+  AdditionalConditionsVersion,
   DeliusIds,
   StandardConditionsVersion,
 } from './licenceClientTypes'
@@ -170,10 +170,13 @@ export class LicenceClient {
     return rows
   }
 
-  async setConditionsVersion(bookingId: number, conditionVersion: ConditionVersion): Promise<void> {
+  async setAdditionalConditionsVersion(
+    bookingId: number,
+    additionalConditionsVersion: AdditionalConditionsVersion
+  ): Promise<void> {
     const query = {
       text: `update licences l set additional_conditions_version = $1 where booking_id = $2`,
-      values: [conditionVersion, bookingId],
+      values: [additionalConditionsVersion, bookingId],
     }
 
     await db.query(query)

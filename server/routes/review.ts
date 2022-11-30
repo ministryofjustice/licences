@@ -8,7 +8,7 @@ import type { LicenceService } from '../services/licenceService'
 import type { Response } from 'express'
 import type { ConditionsServiceFactory } from '../services/conditionsService'
 import { Licence, LicenceStage } from '../data/licenceTypes'
-import { ConditionVersion } from '../data/licenceClientTypes'
+import { AdditionalConditionsVersion } from '../data/licenceClientTypes'
 import { LicenceStatus } from '../services/licence/licenceStatusTypes'
 
 function shouldValidate(role, stage, postApproval) {
@@ -36,7 +36,7 @@ export = ({
     showErrors,
     licence: Licence,
     stage: LicenceStage,
-    conditionVersion: ConditionVersion
+    conditionVersion: AdditionalConditionsVersion
   ) {
     const { decisions, tasks } = licenceStatus
     return showErrors ? licenceService.validateFormGroup({ licence, stage, decisions, tasks, conditionVersion }) : {}
