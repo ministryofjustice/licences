@@ -2,6 +2,8 @@ import { Licence, LicenceStage } from './licenceTypes'
 
 export type ConditionVersion = 1 | 2
 
+export type StandardConditionsVersion = 1
+
 export type ConditionMetadata = {
   id: string
   text: string
@@ -20,6 +22,7 @@ export interface Case {
   stage: LicenceStage
   version: number
   additional_conditions_version: ConditionVersion
+  standard_conditions_version: StandardConditionsVersion
 }
 
 export interface CaseWithApprovedVersion extends Case {

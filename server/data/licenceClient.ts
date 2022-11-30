@@ -5,6 +5,7 @@ import {
   CaseWithVaryVersion,
   ConditionVersion,
   DeliusIds,
+  StandardConditionsVersion,
 } from './licenceClientTypes'
 import { Licence, LicenceStage } from './licenceTypes'
 
@@ -22,19 +23,16 @@ async function updateVersion(bookingId, postRelease = false): Promise<void> {
 }
 
 export class LicenceClient {
-  // eslint-disable-next-line class-methods-use-this
   deleteAll() {
     return db.query(`delete from licences where booking_id != 1200635;
         delete from licence_versions where booking_id != 1200635`)
   }
 
-  // eslint-disable-next-line class-methods-use-this
   deleteAllTest() {
     return db.query(`delete from licences where booking_id < 23 or booking_id = '1200635';
           delete from licence_versions where booking_id < 23 or booking_id = '1200635'`)
   }
 
-  // eslint-disable-next-line class-methods-use-this
   async getLicences(bookingIds): Promise<Array<CaseWithApprovedVersion>> {
     const query = {
       text: `select l.licence, l.booking_id, l.stage, l.version, l.transition_date,
@@ -52,10 +50,9 @@ export class LicenceClient {
     return rows
   }
 
-  // eslint-disable-next-line class-methods-use-this
   async getLicence(bookingId: number): Promise<CaseWithVaryVersion> {
     const query = {
-      text: `select licence, booking_id, stage, version, vary_version, additional_conditions_version from licences where booking_id = $1`,
+      text: `select licence, booking_id, stage, version, vary_version, additional_conditions_version, standard_conditions_version from licences where booking_id = $1`,
       values: [bookingId],
     }
 
@@ -68,7 +65,6 @@ export class LicenceClient {
     return undefined
   }
 
-  // eslint-disable-next-line class-methods-use-this
   async getApprovedLicenceVersion(bookingId): Promise<ApprovedLicenceVersion> {
     const query = {
       text: `select version, vary_version, template, timestamp from licence_versions
@@ -85,7 +81,6 @@ export class LicenceClient {
     return null
   }
 
-  // eslint-disable-next-line class-methods-use-this
   createLicence(
     bookingId: number,
     licence: Licence = {},
@@ -101,7 +96,6 @@ export class LicenceClient {
     return db.query(query)
   }
 
-  // eslint-disable-next-line class-methods-use-this
   async updateLicence(bookingId: number, licence: Licence = {}, postRelease: boolean = false): Promise<void> {
     const query = {
       text: 'UPDATE licences SET licence = $1 where booking_id=$2;',
@@ -112,7 +106,6 @@ export class LicenceClient {
     return updateVersion(bookingId, postRelease)
   }
 
-  // eslint-disable-next-line class-methods-use-this
   async updateSection(section, bookingId: number, object, postRelease: boolean = false) {
     const path = `{${section}}`
 
@@ -125,7 +118,6 @@ export class LicenceClient {
     return updateVersion(bookingId, postRelease)
   }
 
-  // eslint-disable-next-line class-methods-use-this
   updateStage(bookingId: number, stage): Promise<void> {
     const query = {
       text: 'update licences set (stage, transition_date) = ($1, current_timestamp) where booking_id = $2',
@@ -135,7 +127,6 @@ export class LicenceClient {
     return db.query(query)
   }
 
-  // eslint-disable-next-line class-methods-use-this
   async getDeliusIds(nomisUserName): Promise<DeliusIds[]> {
     const query = {
       text: 'select staff_identifier "staffIdentifier", delius_username "deliusUsername" from v_staff_ids where upper(nomis_id) = upper($1)',
@@ -146,7 +137,6 @@ export class LicenceClient {
     return rows
   }
 
-  // eslint-disable-next-line class-methods-use-this
   saveApprovedLicenceVersion(bookingId, template) {
     const query = {
       text: `insert into licence_versions (booking_id, licence, version, vary_version, template)
@@ -158,7 +148,6 @@ export class LicenceClient {
     return db.query(query)
   }
 
-  // eslint-disable-next-line class-methods-use-this
   async getLicencesInStageBetweenDates(stage, from, upto) {
     const query = {
       text: `select l.booking_id, l.transition_date
@@ -170,7 +159,6 @@ export class LicenceClient {
     return rows
   }
 
-  // eslint-disable-next-line class-methods-use-this
   async getLicencesInStageBeforeDate(stage, upto) {
     const query = {
       text: `select l.booking_id, l.transition_date
@@ -186,6 +174,20 @@ export class LicenceClient {
     const query = {
       text: `update licences l set additional_conditions_version = $1 where booking_id = $2`,
       values: [conditionVersion, bookingId],
+    }
+
+    await db.query(query)
+  }
+
+  async setStandardConditionsVersion(
+    bookingId: number,
+    standardConditionsVersion: StandardConditionsVersion
+  ): Promise<void> {
+    const query = {
+      text: `update licences l
+             set standard_conditions_version = $1
+             where booking_id = $2`,
+      values: [standardConditionsVersion, bookingId],
     }
 
     await db.query(query)
