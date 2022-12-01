@@ -8,15 +8,15 @@ import {
 } from './config/conditionsConfig'
 import { AdditionalConditions, Licence } from '../data/licenceTypes'
 import { LicenceRecord } from './licenceService'
-import { ConditionMetadata, ConditionVersion } from '../data/licenceClientTypes'
+import { ConditionMetadata, AdditionalConditionsVersion } from '../data/licenceClientTypes'
 import { LicenceWithConditionsBuilder } from './licenceWithConditionsBuilder'
 
 export class ConditionsServiceFactory {
-  getVersion(licence: LicenceRecord): ConditionVersion {
+  getVersion(licence: LicenceRecord): AdditionalConditionsVersion {
     return licence.versionDetails?.additional_conditions_version || CURRENT_CONDITION_VERSION
   }
 
-  forVersion(version: ConditionVersion) {
+  forVersion(version: AdditionalConditionsVersion) {
     return new ConditionsService(version)
   }
 
@@ -25,7 +25,7 @@ export class ConditionsServiceFactory {
     return this.forVersion(version)
   }
 
-  getNewVersion(licence: LicenceRecord): ConditionVersion {
+  getNewVersion(licence: LicenceRecord): AdditionalConditionsVersion {
     const version = licence.versionDetails?.additional_conditions_version
     return version == null ? CURRENT_CONDITION_VERSION : null
   }
@@ -34,7 +34,7 @@ export class ConditionsServiceFactory {
 export class ConditionsService {
   private readonly builder: LicenceWithConditionsBuilder
 
-  constructor(readonly version: ConditionVersion) {
+  constructor(readonly version: AdditionalConditionsVersion) {
     this.builder = new LicenceWithConditionsBuilder(version)
   }
 

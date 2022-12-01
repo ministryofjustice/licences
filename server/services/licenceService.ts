@@ -7,7 +7,7 @@ import * as formValidation from './utils/formValidation'
 import { LicenceClient } from '../data/licenceClient'
 import { Licence, LicenceConditions, LicenceStage, RiskManagement } from '../data/licenceTypes'
 import { pickCurfewAddressPath } from './utils/pdfFormatter'
-import { ConditionVersion } from '../data/licenceClientTypes'
+import { AdditionalConditionsVersion, StandardConditionsVersion } from '../data/licenceClientTypes'
 import { Decisions, Tasks } from './licence/licenceStatusTypes'
 import { riskManagementVersion } from '../config'
 
@@ -37,7 +37,12 @@ export interface LicenceRecord {
   licence: Licence
   stage: LicenceStage
   version: string
-  versionDetails: { version: number; vary_version: number; additional_conditions_version: ConditionVersion }
+  versionDetails: {
+    version: number
+    vary_version: number
+    additional_conditions_version: AdditionalConditionsVersion
+    standard_conditions_version: StandardConditionsVersion
+  }
   approvedVersion: string
   approvedVersionDetails: ApprovedVersionDetails
 }
@@ -100,6 +105,7 @@ export class LicenceService {
         version: rawLicence.version,
         vary_version: rawLicence.vary_version,
         additional_conditions_version: rawLicence.additional_conditions_version,
+        standard_conditions_version: rawLicence.standard_conditions_version,
       }
       const approvedVersion = isEmpty(approvedVersionDetails)
         ? ''
@@ -263,7 +269,8 @@ export class LicenceService {
       Promise.all([
         this.licenceClient.updateLicence(bookingId, {}, postRelease),
         this.licenceClient.updateStage(bookingId, LicenceStage.ELIGIBILITY),
-        this.licenceClient.setConditionsVersion(bookingId, null),
+        this.licenceClient.setAdditionalConditionsVersion(bookingId, null),
+        this.licenceClient.setStandardConditionsVersion(bookingId, null),
       ])
     } catch (error) {
       logger.error('Error during licence reset', error.stack)
@@ -477,7 +484,7 @@ export class LicenceService {
     stage: LicenceStage
     decisions?: Decisions
     tasks?: Tasks
-    conditionVersion: ConditionVersion
+    conditionVersion: AdditionalConditionsVersion
   }) {
     const {
       addressUnsuitable,
@@ -580,8 +587,12 @@ export class LicenceService {
     return this.licenceClient.saveApprovedLicenceVersion(bookingId, template)
   }
 
-  setConditionsVersion(bookingId: number, conditionVersion: ConditionVersion) {
-    return this.licenceClient.setConditionsVersion(bookingId, conditionVersion)
+  setAdditionalConditionsVersion(bookingId: number, additionalConditionVersion: AdditionalConditionsVersion) {
+    return this.licenceClient.setAdditionalConditionsVersion(bookingId, additionalConditionVersion)
+  }
+
+  setStandardConditionsVersion(bookingId: number, standardConditionVersion: StandardConditionsVersion) {
+    return this.licenceClient.setStandardConditionsVersion(bookingId, standardConditionVersion)
   }
 }
 

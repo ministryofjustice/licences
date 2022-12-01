@@ -34,7 +34,7 @@ export const createLicenceServiceStub = () => ({
   withdrawBass: jest.fn(),
   reinstateBass: jest.fn(),
   resetLicence: jest.fn(),
-  setConditionsVersion: jest.fn(),
+  setAdditionalConditionsVersion: jest.fn(),
 })
 
 export const createLduServiceStub = () => ({

@@ -1,4 +1,4 @@
-import { ConditionVersion, ConditionMetadata } from '../../data/licenceClientTypes'
+import { AdditionalConditionsVersion, ConditionMetadata } from '../../data/licenceClientTypes'
 import { AdditionalConditions } from '../../data/licenceTypes'
 import * as v1 from './conditions/v1/conditions'
 import * as v2 from './conditions/v2/conditions'
@@ -6,25 +6,26 @@ import { standardConditions as stdConditions } from './conditions/standardCondit
 
 export const standardConditions = stdConditions
 
-export const CURRENT_CONDITION_VERSION: ConditionVersion = 2
+export const CURRENT_CONDITION_VERSION: AdditionalConditionsVersion = 2
 
-const pssConditions: Map<ConditionVersion, string[]> = new Map([
+const pssConditions: Map<AdditionalConditionsVersion, string[]> = new Map([
   [1, v1.pssConditions],
   [2, v2.pssConditions],
 ])
-export const getPssConditions = (version: ConditionVersion) => pssConditions.get(version)
+export const getPssConditions = (version: AdditionalConditionsVersion) => pssConditions.get(version)
 
-const additionalConditions: Map<ConditionVersion, ConditionMetadata[]> = new Map([
+const additionalConditions: Map<AdditionalConditionsVersion, ConditionMetadata[]> = new Map([
   [1, v1.conditions],
   [2, v2.conditions],
 ])
-export const getAdditionalConditionsConfig = (version: ConditionVersion) => additionalConditions.get(version)
+export const getAdditionalConditionsConfig = (version: AdditionalConditionsVersion) => additionalConditions.get(version)
 
-const modifyAdditionalConditions: Map<ConditionVersion, (conditions: AdditionalConditions) => void> = new Map([
-  [1, v1.modifyAdditionalConditions],
-  [2, v2.modifyAdditionalConditions],
-])
-export const applyModifications = (version: ConditionVersion, conditions: AdditionalConditions) =>
+const modifyAdditionalConditions: Map<AdditionalConditionsVersion, (conditions: AdditionalConditions) => void> =
+  new Map([
+    [1, v1.modifyAdditionalConditions],
+    [2, v2.modifyAdditionalConditions],
+  ])
+export const applyModifications = (version: AdditionalConditionsVersion, conditions: AdditionalConditions) =>
   modifyAdditionalConditions.get(version)(conditions)
 
 export const multiFields = {

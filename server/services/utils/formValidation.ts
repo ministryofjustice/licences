@@ -22,7 +22,7 @@ import reportingConfig from '../../routes/config/reporting'
 import bassConfig from '../../routes/config/bassReferral'
 import * as conditionsConfig from '../../routes/config/licenceConditions'
 import { Licence } from '../../data/licenceTypes'
-import { ConditionVersion } from '../../data/licenceClientTypes'
+import { AdditionalConditionsVersion } from '../../data/licenceClientTypes'
 
 const postcode = joi
   .string()
@@ -210,7 +210,7 @@ export function validateGroup({
   licence: Licence
   group: string
   bespokeConditions: any
-  conditionVersion: ConditionVersion
+  conditionVersion: AdditionalConditionsVersion
 }) {
   const groups = {
     ELIGIBILITY: [

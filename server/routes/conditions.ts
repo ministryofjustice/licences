@@ -117,7 +117,7 @@ export default ({
       const newVersion = conditionsServiceFactory.getNewVersion(res.locals.licence)
 
       if (newVersion) {
-        await licenceService.setConditionsVersion(Number(bookingId), newVersion)
+        await licenceService.setAdditionalConditionsVersion(Number(bookingId), newVersion)
       }
 
       res.redirect(`/hdc/licenceConditions/conditionsSummary/${destination}`)

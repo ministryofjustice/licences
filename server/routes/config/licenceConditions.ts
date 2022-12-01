@@ -1,4 +1,4 @@
-import type { ConditionVersion } from '../../data/licenceClientTypes'
+import type { AdditionalConditionsVersion } from '../../data/licenceClientTypes'
 import { additionalConditionsV1 } from '../../services/config/conditions/v1/fieldConfig'
 import { additionalConditionsV2 } from '../../services/config/conditions/v2/fieldConfig'
 
@@ -14,7 +14,7 @@ export const standard = {
   modificationRequiresApproval: true,
 }
 
-export const additional = new Map<ConditionVersion, any>([
+export const additional = new Map<AdditionalConditionsVersion, any>([
   [1, additionalConditionsV1],
   [2, additionalConditionsV2],
 ])

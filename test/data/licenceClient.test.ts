@@ -55,6 +55,16 @@ describe('licenceClient', () => {
     })
   })
 
+  describe('getLicence', () => {
+    test('should pass in the correct parameters', async () => {
+      await licenceClient.getLicence(10001)
+      expect(db.query).toHaveBeenCalledWith({
+        text: `select licence, booking_id, stage, version, vary_version, additional_conditions_version, standard_conditions_version from licences where booking_id = $1`,
+        values: [10001],
+      })
+    })
+  })
+
   describe('createLicence', () => {
     const LICENCE_SAMPLE: Licence = { eligibility: { excluded: { decision: 'Yes' } } }
 
@@ -305,13 +315,26 @@ describe('licenceClient', () => {
     })
   })
 
-  describe('setConditionsVersion', () => {
+  describe('setAdditionalConditionsVersion', () => {
     test('should pass in the correct parameters', async () => {
-      await licenceClient.setConditionsVersion(10001, 2)
+      await licenceClient.setAdditionalConditionsVersion(10001, 2)
 
       expect(db.query).toHaveBeenCalledWith({
         text: 'update licences l set additional_conditions_version = $1 where booking_id = $2',
         values: [2, 10001],
+      })
+    })
+  })
+
+  describe('setStandardConditionsVersion', () => {
+    test('should pass in the correct parameters', async () => {
+      await licenceClient.setStandardConditionsVersion(10001, 1)
+
+      expect(db.query).toHaveBeenCalledWith({
+        text: `update licences l
+             set standard_conditions_version = $1
+             where booking_id = $2`,
+        values: [1, 10001],
       })
     })
   })
