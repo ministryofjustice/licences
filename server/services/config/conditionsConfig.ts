@@ -2,9 +2,9 @@ import { AdditionalConditionsVersion, ConditionMetadata } from '../../data/licen
 import { AdditionalConditions } from '../../data/licenceTypes'
 import * as v1 from './conditions/v1/conditions'
 import * as v2 from './conditions/v2/conditions'
-import { standardConditions as stdConditions } from './conditions/standardConditions'
+import { standardConditions as stdConditionsV1 } from './conditions/standardConditions/v1/standardConditions'
 
-export const standardConditions = stdConditions
+export const standardConditionsV1 = stdConditionsV1
 
 export const CURRENT_CONDITION_VERSION: AdditionalConditionsVersion = 2
 

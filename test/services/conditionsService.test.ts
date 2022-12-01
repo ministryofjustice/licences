@@ -2,7 +2,7 @@ import { AdditionalConditionsVersion } from '../../server/data/licenceClientType
 import { Licence } from '../../server/data/licenceTypes'
 import { ConditionsService, ConditionsServiceFactory } from '../../server/services/conditionsService'
 import { pssConditions } from '../../server/services/config/conditions/v1/conditions'
-import { CURRENT_CONDITION_VERSION, standardConditions } from '../../server/services/config/conditionsConfig'
+import { CURRENT_CONDITION_VERSION, standardConditionsV1 } from '../../server/services/config/conditionsConfig'
 import { LicenceRecord } from '../../server/services/licenceService'
 import {
   additionalConditionsObject,
@@ -90,7 +90,7 @@ describe('conditionsService', () => {
 
   describe('getStandardConditions', () => {
     test('should return the conditions', () => {
-      return expect(service.getStandardConditions()).toEqual(standardConditions)
+      return expect(service.getStandardConditions()).toEqual(standardConditionsV1)
     })
   })
 
@@ -155,7 +155,7 @@ describe('conditionsService', () => {
   })
 
   describe('getFullTextForApprovedConditions', () => {
-    const standardConditionsText = standardConditions.map((it) => it.text.replace(/\.+$/, ''))
+    const standardConditionsText = standardConditionsV1.map((it) => it.text.replace(/\.+$/, ''))
 
     test('should always return standard conditions even for empty licence', () => {
       const licence = {

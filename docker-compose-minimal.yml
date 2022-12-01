@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  licence-db:
+    image: postgres
+    networks:
+      - hmpps
+    container_name: licence-db
+    restart: always
+    ports:
+      - '5432:5432'
+    environment:
+      - POSTGRES_PASSWORD=licences
+      - POSTGRES_USER=licences
+      - POSTGRES_DB=licences
+
+  licence-redis:
+    image: 'bitnami/redis:5.0'
+    networks:
+      - hmpps
+    container_name: licence-redis
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    ports:
+      - '6379:6379'
+
+networks:
+  hmpps:

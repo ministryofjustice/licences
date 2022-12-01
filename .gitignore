@@ -29,5 +29,6 @@ out
 .gradle
 test-results/
 licences\.iml
-licence-specs/src/*.iml
+licences-specs/src/*.iml
+licences-specs/bin/
 **/.project
