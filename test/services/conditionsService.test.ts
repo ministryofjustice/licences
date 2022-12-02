@@ -1,7 +1,7 @@
 import { AdditionalConditionsVersion } from '../../server/data/licenceClientTypes'
 import { Licence } from '../../server/data/licenceTypes'
 import { ConditionsService, ConditionsServiceFactory } from '../../server/services/conditionsService'
-import { pssConditions } from '../../server/services/config/conditions/v1/conditions'
+import { pssConditions } from '../../server/services/config/conditions/additionalConditions/v1/conditions'
 import { CURRENT_CONDITION_VERSION, standardConditionsV1 } from '../../server/services/config/conditionsConfig'
 import { LicenceRecord } from '../../server/services/licenceService'
 import {

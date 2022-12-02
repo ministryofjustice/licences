@@ -1,4 +1,4 @@
-const v1 = require('../../../server/services/config/conditions/v1/conditions')
+const v1 = require('../../../server/services/config/conditions/additionalConditions/v1/conditions')
 const { formatPdfData, getConditionText } = require('../../../server/services/utils/pdfFormatter/pdfFormatter')
 
 describe('pdfFormatter', () => {
