@@ -148,7 +148,6 @@ function getApprovalStageState(licence) {
 function getRoStageState(licence) {
   const { riskManagementNeeded, awaitingRiskInformation, mandatoryAddressChecksNotCompleted, riskManagementVersion } =
     getRiskManagementState(licence)
-  const { bassAreaSuitable } = getBassAreaState(licence)
   const { decision: victimLiaisonNeeded, task: victim } = getTaskState(licence.victim?.victimLiaison?.decision)
   const {
     approvedPremisesRequired,
@@ -161,7 +160,7 @@ function getRoStageState(licence) {
   const { reportingInstructions } = getReportingInstructionsState(licence)
   const { licenceConditions, standardOnly, additional, bespoke, bespokeRejected, bespokePending } =
     getLicenceConditionsState(licence)
-  const { bassAreaCheck } = getBassAreaState(licence)
+  const { bassAreaCheck, bassAreaSuitable } = getBassAreaState(licence)
 
   return {
     decisions: {
