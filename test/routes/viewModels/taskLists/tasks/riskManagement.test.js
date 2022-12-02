@@ -66,10 +66,10 @@ describe('risk management task', () => {
     })
   })
 
-  test('should return warning if mandatory address checks not completed', () => {
+  test('should return warning if mandatory address checks not completed and BASS address suitable is false', () => {
     expect(
       riskManagement.view({
-        decisions: { mandatoryAddressChecksNotCompleted: true },
+        decisions: { mandatoryAddressChecksNotCompleted: true, bassAreaSuitable: false },
         tasks: {},
       })
     ).toStrictEqual({

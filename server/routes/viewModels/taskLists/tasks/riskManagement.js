@@ -7,6 +7,7 @@ const getLabel = ({ decisions, tasks }) => {
     riskManagementNeeded,
     mandatoryAddressChecksNotCompleted,
     riskManagementVersion,
+    bassAreaSuitable,
   } = decisions
   const { riskManagement } = tasks
 
@@ -14,7 +15,7 @@ const getLabel = ({ decisions, tasks }) => {
     return 'Address unsuitable'
   }
 
-  if (mandatoryAddressChecksNotCompleted) {
+  if (mandatoryAddressChecksNotCompleted && !bassAreaSuitable) {
     return 'WARNING||Mandatory address checks not completed'
   }
 
