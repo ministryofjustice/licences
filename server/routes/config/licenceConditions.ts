@@ -1,6 +1,6 @@
 import type { AdditionalConditionsVersion } from '../../data/licenceClientTypes'
-import { additionalConditionsV1 } from '../../services/config/conditions/v1/fieldConfig'
-import { additionalConditionsV2 } from '../../services/config/conditions/v2/fieldConfig'
+import { additionalConditionsV1 } from '../../services/config/conditions/additionalConditions/v1/fieldConfig'
+import { additionalConditionsV2 } from '../../services/config/conditions/additionalConditions/v2/fieldConfig'
 
 export const standard = {
   fields: [

@@ -1,4 +1,4 @@
-import { StandardCondition } from '../../../data/licenceClientTypes'
+import { StandardCondition } from '../../../../../data/licenceClientTypes'
 
 export const standardConditions: StandardCondition[] = [
   {
@@ -21,5 +21,11 @@ export const standardConditions: StandardCondition[] = [
   },
   {
     text: 'Not travel outside the United Kingdom, the Channel Islands or the Isle of Man except with the prior permission of your supervising officer or for the purposes of immigration deportation or removal.',
+  },
+  {
+    text: 'Tell your supervising officer if you use a name which is different to the name or names which appear on your licence.',
+  },
+  {
+    text: 'Tell your supervising officer if you change or add any contact details, including phone number or email.',
   },
 ]

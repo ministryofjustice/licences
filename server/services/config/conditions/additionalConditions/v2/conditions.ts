@@ -1,7 +1,7 @@
 import moment from 'moment'
-import { ConditionMetadata } from '../../../../data/licenceClientTypes'
-import { AdditionalConditions, AdditionalConditionsV2 } from '../../../../data/licenceTypes'
-import { isEmpty } from '../../../../utils/functionalHelpers'
+import { ConditionMetadata } from '../../../../../data/licenceClientTypes'
+import { AdditionalConditions, AdditionalConditionsV2 } from '../../../../../data/licenceTypes'
+import { isEmpty } from '../../../../../utils/functionalHelpers'
 
 enum GroupName {
   RESIDENCE_AT_A_SPECIFIC_PLACE = 'Residence at a specific place',
