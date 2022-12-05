@@ -21,7 +21,7 @@ describe('/hdc/licenceConditions', () => {
   let conditionsServiceFactory = createConditionsServiceFactoryStub()
 
   beforeEach(() => {
-    conditionsService.getStandardConditions.mockReturnValue([{ text: 'Not commit any offence' }])
+    conditionsService.getStandardConditionsByVersion.mockReturnValue([{ text: 'Not commit any offence' }])
     conditionsService.getAdditionalConditions.mockReturnValue({
       base: {
         base: [{ text: 'hi', id: 'ho', user_input: {} }],

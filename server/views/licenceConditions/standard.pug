@@ -1,15 +1,15 @@
 extends ../layout
 
-block content 
+block content
   include ./includes/additionalConditions
   include ../includes/backToTaskList
   include ../includes/personalDetailsSummary
-  
+
   - var additionalConditionsValue = additionalConditionsRequired || null;
 
   h1.heading-large Standard licence conditions
 
-  div.pure-g.paddingBottom
+  div#standardConditions.pure-g.paddingBottom
     div.pure-u-1.pure-u-md-2-3
       P The following conditions are always included on the licence:
 

@@ -2,7 +2,7 @@ import { Licence, LicenceStage } from './licenceTypes'
 
 export type AdditionalConditionsVersion = 1 | 2
 
-export type StandardConditionsVersion = 1
+export type StandardConditionsVersion = 1 | 2
 
 export type ConditionMetadata = {
   id: string

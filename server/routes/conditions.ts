@@ -23,10 +23,12 @@ export default ({
 
     function getStandard(req, res: Response<any, LicenceLocals>) {
       logger.debug('GET /standard/:bookingId')
-
+      const licence = res.locals.licence
       const { action, bookingId } = req.params
-      const conditionsService = conditionsServiceFactory.forLicence(res.locals.licence)
-      const standardConditions = conditionsService.getStandardConditions()
+      const conditionsService = conditionsServiceFactory.forLicence(licence)
+      const standardConditions = conditionsService.getStandardConditionsByVersion(
+        licence?.versionDetails?.standard_conditions_version
+      )
       const { additionalConditionsRequired } = res.locals.licence?.licence?.licenceConditions?.standard || {}
       const { additionalConditions, pssConditions, bespokeConditions, unapprovedBespokeConditions } =
         conditionsService.getNonStandardConditions(res.locals.licence.licence)

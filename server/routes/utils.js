@@ -45,7 +45,7 @@ module.exports = () => {
       logger.info('Creating test licence record')
 
       const { bookingId } = req.params
-      const { licence, stage } = req.body
+      const { licence, stage, standardConditionsVersion } = req.body
 
       if (!bookingId || !licence || !stage) {
         logger.warn('Missing input for create test licence')
@@ -53,7 +53,7 @@ module.exports = () => {
       }
 
       try {
-        await licenceClient.createLicence(bookingId, licence, stage)
+        await licenceClient.createLicence(bookingId, licence, stage, 1, 0, standardConditionsVersion)
         logger.info('Created licence')
         return res.status(201).send({})
       } catch (error) {

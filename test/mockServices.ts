@@ -46,7 +46,7 @@ export const createLduServiceStub = () => ({
 
 export const createConditionsServiceStub = () =>
   ({
-    getStandardConditions: jest.fn(),
+    getStandardConditionsByVersion: jest.fn(),
     getAdditionalConditions: jest.fn(),
     formatConditionInputs: jest.fn(),
     populateLicenceWithConditions: jest.fn().mockReturnValue({}),

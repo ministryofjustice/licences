@@ -4,7 +4,7 @@ import { AdditionalConditions, Licence } from '../data/licenceTypes'
 import { AdditionalConditionsVersion } from '../data/licenceClientTypes'
 
 export class LicenceWithConditionsBuilder {
-  constructor(private readonly conditionVersion: AdditionalConditionsVersion) {}
+  constructor(private readonly additionalConditionsVersion: AdditionalConditionsVersion) {}
 
   populateLicenceWithApprovedConditions(licence: Licence) {
     return this.populateLicenceWithConditions(licence, null, true)
@@ -25,8 +25,8 @@ export class LicenceWithConditionsBuilder {
     }
 
     const conditionIdsSelected = Object.keys(licenceAdditionalConditions)
-    const selectedConditionsConfig = getAdditionalConditionsConfig(this.conditionVersion).filter((condition) =>
-      conditionIdsSelected.includes(condition.id)
+    const selectedConditionsConfig = getAdditionalConditionsConfig(this.additionalConditionsVersion).filter(
+      (condition) => conditionIdsSelected.includes(condition.id)
     )
 
     this.applyModifications(licence?.licenceConditions?.additional)
@@ -36,7 +36,7 @@ export class LicenceWithConditionsBuilder {
 
   // Only exported for testing
   applyModifications(conditions: AdditionalConditions) {
-    return applyModifications(this.conditionVersion, conditions)
+    return applyModifications(this.additionalConditionsVersion, conditions)
   }
 
   // Only exported for testing
@@ -53,7 +53,9 @@ export class LicenceWithConditionsBuilder {
     const getObjectForAdditional = this.createAdditionalMethod(rawLicence, selectedConditionsConfig, inputErrors)
 
     const populatedAdditional = Object.keys(additional)
-      .sort(orderForView(getAdditionalConditionsConfig(this.conditionVersion).map((condition) => condition.id)))
+      .sort(
+        orderForView(getAdditionalConditionsConfig(this.additionalConditionsVersion).map((condition) => condition.id))
+      )
       .map(getObjectForAdditional)
 
     const populatedBespoke = bespoke ? bespoke.map(this.getObjectForBespoke) : []

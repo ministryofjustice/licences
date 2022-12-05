@@ -16,5 +16,7 @@ class LicenceConditionsStandardPage extends Page {
     header { module(HeaderModule) }
 
     additionalConditionsRadios { $(name: "additionalConditionsRequired").module(RadioButtons) }
+
+    standardConditionsItems { $("#standardConditions").find('li') }
   }
 }

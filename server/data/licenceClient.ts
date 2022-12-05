@@ -86,11 +86,12 @@ export class LicenceClient {
     licence: Licence = {},
     stage: string = LicenceStage.DEFAULT,
     version: number = 1,
-    varyVersion: number = 0
+    varyVersion: number = 0,
+    standardConditionsVersion: StandardConditionsVersion = undefined
   ): Promise<number> {
     const query = {
-      text: 'insert into licences (booking_id, licence, stage, version, vary_version) values ($1, $2, $3, $4, $5)',
-      values: [bookingId, licence, stage, version, varyVersion],
+      text: 'insert into licences (booking_id, licence, stage, version, vary_version, standard_conditions_version) values ($1, $2, $3, $4, $5, $6)',
+      values: [bookingId, licence, stage, version, varyVersion, standardConditionsVersion],
     }
 
     return db.query(query)

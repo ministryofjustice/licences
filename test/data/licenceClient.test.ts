@@ -70,7 +70,7 @@ describe('licenceClient', () => {
 
     test('should pass in the correct sql', async () => {
       const expectedClause =
-        'insert into licences (booking_id, licence, stage, version, vary_version) values ($1, $2, $3, $4, $5)'
+        'insert into licences (booking_id, licence, stage, version, vary_version, standard_conditions_version) values ($1, $2, $3, $4, $5, $6)'
 
       await licenceClient.createLicence(BOOKING_ID)
 

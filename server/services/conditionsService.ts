@@ -5,10 +5,11 @@ import {
   standardConditionsV1,
   getPssConditions,
   CURRENT_CONDITION_VERSION,
+  standardConditionsV2,
 } from './config/conditionsConfig'
 import { AdditionalConditions, Licence } from '../data/licenceTypes'
 import { LicenceRecord } from './licenceService'
-import { ConditionMetadata, AdditionalConditionsVersion } from '../data/licenceClientTypes'
+import { ConditionMetadata, AdditionalConditionsVersion, StandardConditionsVersion } from '../data/licenceClientTypes'
 import { LicenceWithConditionsBuilder } from './licenceWithConditionsBuilder'
 
 export class ConditionsServiceFactory {
@@ -16,13 +17,18 @@ export class ConditionsServiceFactory {
     return licence.versionDetails?.additional_conditions_version || CURRENT_CONDITION_VERSION
   }
 
-  forVersion(version: AdditionalConditionsVersion) {
-    return new ConditionsService(version)
+  forVersion(
+    additionalConditionsVersion: AdditionalConditionsVersion,
+    standardConditionsVersion: StandardConditionsVersion
+  ) {
+    return new ConditionsService(additionalConditionsVersion, standardConditionsVersion)
   }
 
   forLicence(licence: LicenceRecord) {
-    const version = licence.versionDetails?.additional_conditions_version || CURRENT_CONDITION_VERSION
-    return this.forVersion(version)
+    const additionalConditionsVersion =
+      licence.versionDetails?.additional_conditions_version || CURRENT_CONDITION_VERSION
+    const standardConditionsVersion = licence.versionDetails?.standard_conditions_version
+    return this.forVersion(additionalConditionsVersion, standardConditionsVersion)
   }
 
   getNewVersion(licence: LicenceRecord): AdditionalConditionsVersion {
@@ -34,8 +40,11 @@ export class ConditionsServiceFactory {
 export class ConditionsService {
   private readonly builder: LicenceWithConditionsBuilder
 
-  constructor(readonly version: AdditionalConditionsVersion) {
-    this.builder = new LicenceWithConditionsBuilder(version)
+  constructor(
+    readonly additionalConditionsVersion: AdditionalConditionsVersion,
+    readonly standardConditionsVersion: StandardConditionsVersion
+  ) {
+    this.builder = new LicenceWithConditionsBuilder(additionalConditionsVersion)
   }
 
   // condition routes / review routes / pdf generation
@@ -45,7 +54,9 @@ export class ConditionsService {
 
   // form generation
   getFullTextForApprovedConditions(licence: Licence) {
-    const standardConditionsText = standardConditionsV1.map((it) => it.text.replace(/\.+$/, ''))
+    const standardConditionsText = this.getStandardConditionsByVersion(this.standardConditionsVersion).map((it) =>
+      it.text.replace(/\.+$/, '')
+    )
 
     // could be undefined, 'No' or 'Yes'
     const standardOnly = licence?.licenceConditions?.standard?.additionalConditionsRequired !== 'Yes'
@@ -75,17 +86,19 @@ export class ConditionsService {
     }
   }
 
-  getStandardConditions() {
+  getStandardConditionsByVersion(standardConditionsVersion: StandardConditionsVersion) {
+    if (standardConditionsVersion == 1) return standardConditionsV1
+    if (standardConditionsVersion == 2) return standardConditionsV2
     return standardConditionsV1
   }
 
   getPssConditions(): string[] {
-    return getPssConditions(this.version)
+    return getPssConditions(this.additionalConditionsVersion)
   }
 
   getAdditionalConditions(licence: Licence = null) {
     const licenceAdditionalConditions = licence?.licenceConditions?.additional
-    const additionalConditions = getAdditionalConditionsConfig(this.version)
+    const additionalConditions = getAdditionalConditionsConfig(this.additionalConditionsVersion)
     if (licenceAdditionalConditions) {
       return additionalConditions
         .map(populateFromSavedLicence(licenceAdditionalConditions))
@@ -96,8 +109,8 @@ export class ConditionsService {
   }
 
   formatConditionInputs(requestBody) {
-    const selectedConditionsConfig = getAdditionalConditionsConfig(this.version).filter((condition) =>
-      requestBody.additionalConditions.includes(condition.id)
+    const selectedConditionsConfig = getAdditionalConditionsConfig(this.additionalConditionsVersion).filter(
+      (condition) => requestBody.additionalConditions.includes(condition.id)
     )
 
     return formatConditionsInput(requestBody, selectedConditionsConfig)
@@ -109,8 +122,8 @@ export class ConditionsService {
     }
 
     const conditionIds = additional.additionalConditions
-    const selectedConditionsConfig = getAdditionalConditionsConfig(this.version).filter((condition) =>
-      conditionIds.includes(condition.id)
+    const selectedConditionsConfig = getAdditionalConditionsConfig(this.additionalConditionsVersion).filter(
+      (condition) => conditionIds.includes(condition.id)
     )
     const additionalConditionsObject = this.createAdditionalConditionsObject(selectedConditionsConfig, additional)
 

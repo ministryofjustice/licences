@@ -2,7 +2,11 @@ import { AdditionalConditionsVersion } from '../../server/data/licenceClientType
 import { Licence } from '../../server/data/licenceTypes'
 import { ConditionsService, ConditionsServiceFactory } from '../../server/services/conditionsService'
 import { pssConditions } from '../../server/services/config/conditions/additionalConditions/v1/conditions'
-import { CURRENT_CONDITION_VERSION, standardConditionsV1 } from '../../server/services/config/conditionsConfig'
+import {
+  CURRENT_CONDITION_VERSION,
+  standardConditionsV1,
+  standardConditionsV2,
+} from '../../server/services/config/conditionsConfig'
 import { LicenceRecord } from '../../server/services/licenceService'
 import {
   additionalConditionsObject,
@@ -14,7 +18,7 @@ describe('conditionsService', () => {
   let service: ConditionsService
 
   beforeEach(() => {
-    service = new ConditionsServiceFactory().forVersion(1)
+    service = new ConditionsServiceFactory().forVersion(1, 1)
   })
 
   describe('ConditionServiceFactory', () => {
@@ -61,9 +65,9 @@ describe('conditionsService', () => {
 
     describe('forVersion', () => {
       test('version for new service', () => {
-        const createdService = factory.forVersion(1234 as AdditionalConditionsVersion)
+        const createdService = factory.forVersion(1234 as AdditionalConditionsVersion, 1)
 
-        expect(createdService.version).toBe(1234)
+        expect(createdService.additionalConditionsVersion).toBe(1234)
       })
     })
 
@@ -73,7 +77,7 @@ describe('conditionsService', () => {
 
         const createdService = factory.forLicence(licence)
 
-        expect(createdService.version).toBe(CURRENT_CONDITION_VERSION)
+        expect(createdService.additionalConditionsVersion).toBe(CURRENT_CONDITION_VERSION)
       })
 
       test('version for new service reads version from licence when set', () => {
@@ -83,14 +87,20 @@ describe('conditionsService', () => {
 
         const createdService = factory.forLicence(licence)
 
-        expect(createdService.version).toBe(1234)
+        expect(createdService.additionalConditionsVersion).toBe(1234)
       })
     })
   })
 
-  describe('getStandardConditions', () => {
-    test('should return the conditions', () => {
-      return expect(service.getStandardConditions()).toEqual(standardConditionsV1)
+  describe('getStandardConditionsByVersion', () => {
+    test('should return v1 of standard conditions as fallback', () => {
+      return expect(service.getStandardConditionsByVersion(undefined)).toEqual(standardConditionsV1)
+    })
+    test('should return v1 of standard conditions when 1 is passed', () => {
+      return expect(service.getStandardConditionsByVersion(1)).toEqual(standardConditionsV1)
+    })
+    test('should return v2 of standard conditions when 2 is passed', () => {
+      return expect(service.getStandardConditionsByVersion(2)).toEqual(standardConditionsV2)
     })
   })
 
@@ -155,8 +165,22 @@ describe('conditionsService', () => {
   })
 
   describe('getFullTextForApprovedConditions', () => {
-    const standardConditionsText = standardConditionsV1.map((it) => it.text.replace(/\.+$/, ''))
+    const standardConditionsV1Text = standardConditionsV1.map((it) => it.text.replace(/\.+$/, ''))
+    const standardConditionsV2Text = standardConditionsV2.map((it) => it.text.replace(/\.+$/, ''))
 
+    test('should always return V2 of standard conditions when built with V2 specified', () => {
+      const serviceWithV2StandardConditions = new ConditionsServiceFactory().forVersion(1, 2)
+      const licence = {
+        licenceConditions: {
+          standard: {},
+        },
+      }
+
+      return expect(serviceWithV2StandardConditions.getFullTextForApprovedConditions(licence)).toEqual({
+        standardConditions: standardConditionsV2Text,
+        additionalConditions: [],
+      })
+    })
     test('should always return standard conditions even for empty licence', () => {
       const licence = {
         licenceConditions: {
@@ -165,7 +189,7 @@ describe('conditionsService', () => {
       }
 
       return expect(service.getFullTextForApprovedConditions(licence)).toEqual({
-        standardConditions: standardConditionsText,
+        standardConditions: standardConditionsV1Text,
         additionalConditions: [],
       })
     })
@@ -176,7 +200,7 @@ describe('conditionsService', () => {
       } as Licence
 
       return expect(service.getFullTextForApprovedConditions(licence)).toEqual({
-        standardConditions: standardConditionsText,
+        standardConditions: standardConditionsV1Text,
         additionalConditions: [],
       })
     })
@@ -190,7 +214,7 @@ describe('conditionsService', () => {
       } as Licence
 
       return expect(service.getFullTextForApprovedConditions(licence)).toEqual({
-        standardConditions: standardConditionsText,
+        standardConditions: standardConditionsV1Text,
         additionalConditions: [
           'Attend  on 12/03/1985 at , as directed, to address your dependency on, or propensity to misuse, a controlled drug',
         ],
@@ -211,7 +235,7 @@ describe('conditionsService', () => {
       } as Licence
 
       return expect(service.getFullTextForApprovedConditions(licence)).toEqual({
-        standardConditions: standardConditionsText,
+        standardConditions: standardConditionsV1Text,
         additionalConditions: ['approved text'],
       })
     })
