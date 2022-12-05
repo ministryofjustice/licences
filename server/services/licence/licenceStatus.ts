@@ -239,7 +239,7 @@ function getRiskManagementState(licence) {
 
   return {
     riskManagementNeeded: riskManagementAnswer === 'Yes',
-    mandatoryAddressChecksNotCompleted: checksConsideredAnswer === 'No',
+    mandatoryAddressChecksNotCompleted: riskManagementVersion === '2' && checksConsideredAnswer !== 'Yes',
     proposedAddressSuitable: proposedAddressSuitable === 'Yes',
     awaitingRiskInformation: awaitingInformationAnswer === 'Yes',
     riskManagement: getState(),

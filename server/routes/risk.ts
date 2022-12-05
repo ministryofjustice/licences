@@ -23,7 +23,11 @@ export default ({ licenceService }: { licenceService: LicenceService }) =>
         version: riskVersion,
       }
 
-      res.render(`risk/riskManagement`, viewData)
+      if (riskVersion === '2') {
+        res.render(`risk/riskManagementV2`, viewData)
+      } else {
+        res.render(`risk/riskManagementV1`, viewData)
+      }
     }
 
     router.post('/riskManagement/:bookingId', audited, asyncMiddleware(postStandard))

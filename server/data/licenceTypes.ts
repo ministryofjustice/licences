@@ -267,7 +267,7 @@ export interface Risk {
   riskManagement?: RiskManagement
 }
 
-export type RiskVersion = '' | '1' | '2'
+export type RiskVersion = '1' | '2'
 
 export interface Vary {
   approval?: { jobTitle?: string; name?: string }

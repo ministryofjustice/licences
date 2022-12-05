@@ -757,12 +757,13 @@ describe('getLicenceStatus', () => {
         expect(status.decisions.awaitingRiskInformation).toBe(false)
       })
 
-      test('should show risk management version 2 STARTED when mandatory address checks have been considered but proposedAddressSuitable and awaitingRiskInformation remain unanswered', () => {
+      test('should show risk management version 2 STARTED when mandatory address checks question has been answered but proposedAddressSuitable and awaitingRiskInformation remain unanswered', () => {
         const licence = {
           stage: 'PROCESSING_RO',
           licence: {
             risk: {
               riskManagement: {
+                version: '2',
                 hasConsideredChecks: 'No',
               },
             },
@@ -804,7 +805,8 @@ describe('getLicenceStatus', () => {
           licence: {
             risk: {
               riskManagement: {
-                hasConsideredChecks: 'No',
+                version: '2',
+                hasConsideredChecks: 'Yes',
                 awaitingOtherInformation: 'No',
                 proposedAddressSuitable: 'Yes',
               },
@@ -815,7 +817,7 @@ describe('getLicenceStatus', () => {
         const status = getLicenceStatus(licence)
 
         expect(status.tasks.riskManagement).toEqual(TaskState.DONE)
-        expect(status.decisions.mandatoryAddressChecksNotCompleted).toBe(true)
+        expect(status.decisions.mandatoryAddressChecksNotCompleted).toBe(false)
         expect(status.decisions.awaitingRiskInformation).toBe(false)
       })
     })

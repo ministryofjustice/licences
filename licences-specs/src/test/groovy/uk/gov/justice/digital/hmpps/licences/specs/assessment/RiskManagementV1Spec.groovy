@@ -18,7 +18,7 @@ class RiskManagementV1Spec extends GebReportingSpec {
   Actions actions = new Actions()
 
   def setupSpec() {
-    testData.loadLicence('assessment/risk-with-version')
+    testData.loadLicence('assessment/risk-with-version-1')
     actions.logIn('RO')
   }
 

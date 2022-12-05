@@ -283,7 +283,7 @@ describe('validation', () => {
         const options = [
           {
             formResponse: {
-              version: '',
+              version: '1',
               planningActions: 'No',
               awaitingInformation: 'No',
               proposedAddressSuitable: 'No',
@@ -294,7 +294,7 @@ describe('validation', () => {
           },
           {
             formResponse: {
-              version: '',
+              version: '1',
               planningActions: 'No',
               awaitingInformation: 'No',
               proposedAddressSuitable: 'No',
@@ -305,7 +305,7 @@ describe('validation', () => {
           },
           {
             formResponse: {
-              version: '',
+              version: '1',
               planningActions: '',
               awaitingInformation: '',
               hasConsideredChecks: '',
@@ -340,7 +340,7 @@ describe('validation', () => {
           },
           {
             formResponse: {
-              version: '',
+              version: '1',
               planningActions: 'Yes',
               awaitingInformation: 'Yes',
               proposedAddressSuitable: 'Yes',
@@ -351,7 +351,7 @@ describe('validation', () => {
           },
           {
             formResponse: {
-              version: '',
+              version: '1',
               planningActions: 'Yes',
               awaitingInformation: 'Yes',
               proposedAddressSuitable: 'Yes',
@@ -364,7 +364,7 @@ describe('validation', () => {
           },
           {
             formResponse: {
-              version: '',
+              version: '1',
               planningActions: 'Yes',
               awaitingInformation: 'Yes',
               proposedAddressSuitable: 'Yes',
@@ -376,7 +376,7 @@ describe('validation', () => {
           },
           {
             formResponse: {
-              version: '',
+              version: '1',
               planningActions: 'Yes',
               awaitingInformation: 'Yes',
               proposedAddressSuitable: 'Yes',
@@ -387,7 +387,7 @@ describe('validation', () => {
           },
           {
             formResponse: {
-              version: '',
+              version: '1',
               planningActions: 'Yes',
               awaitingInformation: 'Yes',
               proposedAddressSuitable: 'Yes',
@@ -399,7 +399,7 @@ describe('validation', () => {
           },
           {
             formResponse: {
-              version: '',
+              version: '1',
               planningActions: 'Yes',
               awaitingInformation: 'Yes',
               proposedAddressSuitable: 'Yes',
@@ -1609,7 +1609,7 @@ describe('validation', () => {
       const invalidLicence: Licence = {
         risk: {
           riskManagement: {
-            version: '',
+            version: '1',
             planningActions: '',
             awaitingInformation: 'No',
             nonDisclosableInformation: 'No',
