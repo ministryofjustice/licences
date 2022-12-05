@@ -60,6 +60,10 @@ Then login as NOMIS_BATCHLOAD user and go to ‘manage locations’ and then 'AB
 - `npm run typecheck` -> runs typescript type checking
 - `npm run start:feature` -> runs the application configured to run integration tests
 
+## Docker Compose Files
+- [docker-compose.yml](./docker-compose.yml) -> used for integration tests. More information can be found in the [./licences-specs/Readme.md](./licences-specs/Readme.md).
+- [docker-compose-full.yml](./docker-compose-full.yml) -> used to spin up the licences service and all dependencies locally.
+- [docker-compose-minimal](./docker-compose-minimal.yml) -> used to spin up a local `Redis` and `Postgres` instance. Useful for when wanting to connect to a development environment for all other dependencies.
 
 # Environment variables
 
@@ -133,6 +137,3 @@ then writes every row in the JSON file into the table.
 
 Running the command `npm link` will add these scripts to your PATH as `saveLicences` and `loadLicences`
 You can then run either of these scripts from any location that has a suitably configured `.env` file.
-
-
-
