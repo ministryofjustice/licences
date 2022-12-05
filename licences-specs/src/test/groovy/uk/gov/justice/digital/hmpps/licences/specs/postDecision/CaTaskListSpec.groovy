@@ -102,7 +102,7 @@ class CaTaskListSpec extends GebReportingSpec {
     task              | page
     tasks.eligibility | EligibilityExclusionPage
     tasks.address     | ReviewAddressPage
-    tasks.risk        | RiskManagementPage
+    tasks.risk        | RiskManagementV1Page
     tasks.victim      | VictimLiaisonPage
     tasks.curfew      | CurfewHoursPage
     tasks.conditions  | LicenceConditionsStandardPage
@@ -219,7 +219,7 @@ class CaTaskListSpec extends GebReportingSpec {
     task              | page
     tasks.eligibility | EligibilityExclusionPage
     tasks.address     | ReviewAddressPage
-    tasks.risk        | RiskManagementPage
+    tasks.risk        | RiskManagementV1Page
     tasks.victim      | VictimLiaisonPage
     tasks.curfew      | CurfewHoursPage
     tasks.conditions  | LicenceConditionsStandardPage

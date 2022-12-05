@@ -3,7 +3,7 @@ package uk.gov.justice.digital.hmpps.licences.specs.assessment
 import geb.spock.GebReportingSpec
 import spock.lang.Shared
 import spock.lang.Stepwise
-import uk.gov.justice.digital.hmpps.licences.pages.assessment.RiskManagementPage
+import uk.gov.justice.digital.hmpps.licences.pages.assessment.RiskManagementV2Page
 import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
 import uk.gov.justice.digital.hmpps.licences.util.Actions
 import uk.gov.justice.digital.hmpps.licences.util.TestData
@@ -35,7 +35,7 @@ class RiskManagementV2Spec extends GebReportingSpec {
     taskListAction('Risk management').click()
 
     then: 'I see the risk management page'
-    at RiskManagementPage
+    at RiskManagementV2Page
 
     and: 'The options are unset'
     hasConsideredChecksRadios.checked == null
@@ -47,7 +47,7 @@ class RiskManagementV2Spec extends GebReportingSpec {
   def 'Address suitability reasons shown when No'() {
 
     when: 'At risk management page'
-    at RiskManagementPage
+    at RiskManagementV2Page
 
     then: 'I dont see the reason form'
     !addressSuitableForm.isDisplayed()
@@ -62,7 +62,7 @@ class RiskManagementV2Spec extends GebReportingSpec {
   def 'EMS Information radios shown when address suitable is Yes'() {
 
     when: 'At risk management page'
-    at RiskManagementPage
+    at RiskManagementV2Page
 
     then: 'I dont see the EMS information radio buttons'
     !emsInformationForm.isDisplayed()
@@ -77,7 +77,7 @@ class RiskManagementV2Spec extends GebReportingSpec {
   def 'EMS Information text box shown when address suitable is Yes'() {
 
     when: 'At risk management page'
-    at RiskManagementPage
+    at RiskManagementV2Page
     and: 'I select Yes for address suitability'
     addressSuitableRadios.checked = 'Yes'
 
@@ -101,7 +101,7 @@ class RiskManagementV2Spec extends GebReportingSpec {
   def 'Non-disclosable information shown when Yes'() {
 
     when: 'At risk management page'
-    at RiskManagementPage
+    at RiskManagementV2Page
 
     then: 'I don\'t see the non-disclosable text box'
     !nonDisclosableInformationForm.isDisplayed()
@@ -116,7 +116,7 @@ class RiskManagementV2Spec extends GebReportingSpec {
   def 'Modified choices are saved after save and continue'() {
 
     given: 'At risk management page'
-    at RiskManagementPage
+    at RiskManagementV2Page
 
     when: 'I select new options'
     hasConsideredChecksRadios.checked = 'Yes'
@@ -126,7 +126,7 @@ class RiskManagementV2Spec extends GebReportingSpec {
     find('#continueBtn').click()
 
     and: 'I return to the risk management page'
-    to RiskManagementPage, testData.markAndrewsBookingId
+    to RiskManagementV2Page, testData.markAndrewsBookingId
 
     then: 'I see the previously entered values'
     hasConsideredChecksRadios.checked == 'Yes'
