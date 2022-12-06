@@ -16,7 +16,7 @@
     "build": "npm run clean && npm run css-build && tsc && npm run copy-views",
     "start": "node dist/server.js",
     "start:dev": "npm run build && concurrently -k -p \"[{name}]\" -n \"Views,TypeScript,Node\" -c \"yellow.bold,cyan.bold,green.bold\" \"npm run watch-views\" \"npm run watch-ts\" \"npm run watch-node\"",
-    "start:feature": "set -a; source feature.env; set +a && npm run build && npm start",
+    "start:feature": "set -a; export $(cat feature.env); set +a && npm run build && npm start",
     "start-mocks": "node mock-server/start.js",
     "test": "jest --runInBand --testPathPattern=/test/.*",
     "integration-test": "jest --runInBand --testPathPattern=/integration_test/.*",
