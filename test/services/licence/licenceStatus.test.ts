@@ -820,6 +820,35 @@ describe('getLicenceStatus', () => {
         expect(status.decisions.mandatoryAddressChecksNotCompletedV2).toBe(false)
         expect(status.decisions.awaitingRiskInformation).toBe(false)
       })
+
+      test('should show risk management version 2 STARTED if all questions answered but mandatory address checks answer is No', () => {
+        const licence = {
+          stage: 'PROCESSING_RO',
+          licence: {
+            risk: {
+              riskManagement: {
+                version: '2',
+                hasConsideredChecks: 'No',
+                awaitingOtherInformation: 'No',
+                emsInformation: 'Yes',
+                emsInformationDetails: 'some details',
+                nonDisclosableInformation: 'No',
+                nonDisclosableInformationDetails: '',
+                proposedAddressSuitable: 'Yes',
+                riskManagementDetails: 'some details',
+                unsuitableReason: '',
+              },
+            },
+          },
+        }
+
+        const status = getLicenceStatus(licence)
+
+        expect(status.tasks.riskManagement).toEqual(TaskState.STARTED)
+        expect(status.decisions.mandatoryAddressChecksNotCompletedV2).toBe(true)
+        expect(status.decisions.riskManagementNeededV1).toBe(false)
+        expect(status.decisions.awaitingRiskInformation).toBe(false)
+      })
     })
 
     describe('curfewAddressReview task', () => {
