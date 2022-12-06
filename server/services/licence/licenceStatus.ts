@@ -252,7 +252,11 @@ function getRiskManagementState(licence) {
       return TaskState.UNSTARTED
     }
 
-    if ((riskManagementAnswer || checksConsideredAnswer) && awaitingInformationAnswer && proposedAddressSuitable) {
+    if (
+      (riskManagementAnswer || checksConsideredAnswer === 'Yes') &&
+      awaitingInformationAnswer &&
+      proposedAddressSuitable
+    ) {
       return TaskState.DONE
     }
 
