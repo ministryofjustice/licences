@@ -3,13 +3,13 @@ package uk.gov.justice.digital.hmpps.licences.specs.assessment
 import geb.spock.GebReportingSpec
 import spock.lang.Shared
 import spock.lang.Stepwise
-import uk.gov.justice.digital.hmpps.licences.pages.assessment.RiskManagementPage
 import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
+import uk.gov.justice.digital.hmpps.licences.pages.assessment.RiskManagementV1Page
 import uk.gov.justice.digital.hmpps.licences.util.Actions
 import uk.gov.justice.digital.hmpps.licences.util.TestData
 
 @Stepwise
-class RiskManagementSpec extends GebReportingSpec {
+class RiskManagementV1Spec extends GebReportingSpec {
 
   @Shared
   TestData testData = new TestData()
@@ -18,7 +18,7 @@ class RiskManagementSpec extends GebReportingSpec {
   Actions actions = new Actions()
 
   def setupSpec() {
-    testData.loadLicence('assessment/unstarted')
+    testData.loadLicence('assessment/risk-with-version-1')
     actions.logIn('RO')
   }
 
@@ -35,7 +35,7 @@ class RiskManagementSpec extends GebReportingSpec {
     taskListAction('Risk management').click()
 
     then: 'I see the risk management page'
-    at RiskManagementPage
+    at RiskManagementV1Page
 
     and: 'The options are unset'
     riskManagementRadios.checked == null
@@ -47,7 +47,7 @@ class RiskManagementSpec extends GebReportingSpec {
   def 'Address suitability reasons shown when No'() {
 
     when: 'At risk management page'
-    at RiskManagementPage
+    at RiskManagementV1Page
 
     then: 'I dont see the reason form'
     !addressSuitableForm.isDisplayed()
@@ -62,7 +62,7 @@ class RiskManagementSpec extends GebReportingSpec {
   def 'EMS Information radios shown when address suitable is Yes'() {
 
     when: 'At risk management page'
-    at RiskManagementPage
+    at RiskManagementV1Page
 
     then: 'I dont see the EMS information radio buttons'
     !emsInformationForm.isDisplayed()
@@ -74,11 +74,10 @@ class RiskManagementSpec extends GebReportingSpec {
     emsInformationForm.isDisplayed()
   }
 
-
   def 'EMS Information text box shown when address suitable is Yes'() {
 
     when: 'At risk management page'
-    at RiskManagementPage
+    at RiskManagementV1Page
     and: 'I select Yes for address suitability'
     addressSuitableRadios.checked = 'Yes'
 
@@ -102,7 +101,7 @@ class RiskManagementSpec extends GebReportingSpec {
   def 'Non-disclosable information shown when Yes'() {
 
     when: 'At risk management page'
-    at RiskManagementPage
+    at RiskManagementV1Page
 
     then: 'I don\'t see the non-disclosable text box'
     !nonDisclosableInformationForm.isDisplayed()
@@ -114,12 +113,10 @@ class RiskManagementSpec extends GebReportingSpec {
     nonDisclosableInformationForm.isDisplayed()
   }
 
-
-
   def 'Modified choices are saved after save and continue'() {
 
     given: 'At risk management page'
-    at RiskManagementPage
+    at RiskManagementV1Page
 
     when: 'I select new options'
     riskManagementRadios.checked = 'Yes'
@@ -129,7 +126,7 @@ class RiskManagementSpec extends GebReportingSpec {
     find('#continueBtn').click()
 
     and: 'I return to the risk management page'
-    to RiskManagementPage, testData.markAndrewsBookingId
+    to RiskManagementV1Page, testData.markAndrewsBookingId
 
     then: 'I see the previously entered values'
     riskManagementRadios.checked == 'Yes'

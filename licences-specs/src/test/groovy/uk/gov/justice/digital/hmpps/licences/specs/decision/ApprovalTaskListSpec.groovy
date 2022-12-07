@@ -78,7 +78,7 @@ class ApprovalTaskListSpec extends GebReportingSpec {
   }
 
 
-  def 'When Risk Management rejects address, reduced task set shown wiht Risk Management section'() {
+  def 'When Risk Management rejects address, reduced task set shown with Risk Management section'() {
 
     given: 'The address has been rejected'
     testData.loadLicence('decision/risks-rejected')
@@ -93,7 +93,7 @@ class ApprovalTaskListSpec extends GebReportingSpec {
     taskListAction(tasks.decision).text() == 'Refuse HDC'
   }
 
-  def 'When CRD time insufficent, reduced task set shown'() {
+  def 'When CRD time insufficient, reduced task set shown'() {
 
     given: 'The address has been rejected'
     testData.loadLicence('decision/insufficientTime')

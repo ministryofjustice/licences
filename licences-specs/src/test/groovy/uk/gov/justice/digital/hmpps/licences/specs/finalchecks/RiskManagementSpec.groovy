@@ -4,7 +4,7 @@ import geb.spock.GebReportingSpec
 import spock.lang.Shared
 import spock.lang.Stepwise
 import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
-import uk.gov.justice.digital.hmpps.licences.pages.assessment.RiskManagementPage
+import uk.gov.justice.digital.hmpps.licences.pages.assessment.RiskManagementV1Page
 import uk.gov.justice.digital.hmpps.licences.util.Actions
 import uk.gov.justice.digital.hmpps.licences.util.TestData
 
@@ -36,7 +36,7 @@ class RiskManagementSpec extends GebReportingSpec {
     taskListAction('Risk management').click()
 
     then: 'I see the risk management page'
-    at RiskManagementPage
+    at RiskManagementV1Page
 
     then: 'I see the non-disclosable information text box'
     nonDisclosableInformationView.isDisplayed()

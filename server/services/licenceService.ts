@@ -80,7 +80,13 @@ export class LicenceService {
   }
 
   getRiskVersion(licence: Licence): RiskManagement['version'] {
-    return licence.risk?.riskManagement?.version || riskManagementVersion
+    if (licence.risk?.riskManagement?.version) {
+      return licence.risk?.riskManagement?.version
+    } else if (licence.risk?.riskManagement && !licence.risk?.riskManagement?.version) {
+      return '1'
+    } else {
+      return riskManagementVersion
+    }
   }
 
   async getLicence(bookingId: number): Promise<LicenceRecord> {

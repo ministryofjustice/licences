@@ -211,5 +211,5 @@ module.exports = {
     ),
   },
 
-  riskManagementVersion: get('LICENCE_RISK_MANAGEMENT_VERSION', 2),
+  riskManagementVersion: get('LICENCE_RISK_MANAGEMENT_VERSION', '2'),
 }

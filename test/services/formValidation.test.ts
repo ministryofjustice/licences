@@ -17,7 +17,7 @@ import { confiscationOrder, onRemand, seriousOffence } from '../../server/routes
 import { bassAreaCheck, bassOffer, bassRequest } from '../../server/routes/config/bassReferral'
 import { release } from '../../server/routes/config/approval'
 import { licenceDetails } from '../../server/routes/config/vary'
-import { CurfewAddress, Licence, LicenceStage } from '../../server/data/licenceTypes'
+import { CurfewAddress, Licence, LicenceStage, RiskVersion } from '../../server/data/licenceTypes'
 
 describe('validation', () => {
   const service = createLicenceService(null)
@@ -283,6 +283,7 @@ describe('validation', () => {
         const options = [
           {
             formResponse: {
+              version: '1',
               planningActions: 'No',
               awaitingInformation: 'No',
               proposedAddressSuitable: 'No',
@@ -293,6 +294,7 @@ describe('validation', () => {
           },
           {
             formResponse: {
+              version: '1',
               planningActions: 'No',
               awaitingInformation: 'No',
               proposedAddressSuitable: 'No',
@@ -303,8 +305,11 @@ describe('validation', () => {
           },
           {
             formResponse: {
+              version: '1',
               planningActions: '',
               awaitingInformation: '',
+              hasConsideredChecks: '',
+              awaitingOtherInformation: '',
               proposedAddressSuitable: '',
               nonDisclosableInformation: '',
             },
@@ -317,6 +322,25 @@ describe('validation', () => {
           },
           {
             formResponse: {
+              version: '2',
+              planningActions: '',
+              awaitingInformation: '',
+              hasConsideredChecks: '',
+              awaitingOtherInformation: '',
+              proposedAddressSuitable: '',
+              nonDisclosableInformation: '',
+            },
+            outcome: {
+              hasConsideredChecks:
+                'Say if you have requested and considered risk information related to the proposed address',
+              awaitingOtherInformation: 'Say if you are still awaiting information',
+              proposedAddressSuitable: 'Say if the proposed address is suitable',
+              nonDisclosableInformation: 'Say if you want to add information that cannot be disclosed to the offender',
+            },
+          },
+          {
+            formResponse: {
+              version: '1',
               planningActions: 'Yes',
               awaitingInformation: 'Yes',
               proposedAddressSuitable: 'Yes',
@@ -327,6 +351,7 @@ describe('validation', () => {
           },
           {
             formResponse: {
+              version: '1',
               planningActions: 'Yes',
               awaitingInformation: 'Yes',
               proposedAddressSuitable: 'Yes',
@@ -339,6 +364,7 @@ describe('validation', () => {
           },
           {
             formResponse: {
+              version: '1',
               planningActions: 'Yes',
               awaitingInformation: 'Yes',
               proposedAddressSuitable: 'Yes',
@@ -350,6 +376,7 @@ describe('validation', () => {
           },
           {
             formResponse: {
+              version: '1',
               planningActions: 'Yes',
               awaitingInformation: 'Yes',
               proposedAddressSuitable: 'Yes',
@@ -360,6 +387,7 @@ describe('validation', () => {
           },
           {
             formResponse: {
+              version: '1',
               planningActions: 'Yes',
               awaitingInformation: 'Yes',
               proposedAddressSuitable: 'Yes',
@@ -371,6 +399,7 @@ describe('validation', () => {
           },
           {
             formResponse: {
+              version: '1',
               planningActions: 'Yes',
               awaitingInformation: 'Yes',
               proposedAddressSuitable: 'Yes',
@@ -1489,6 +1518,7 @@ describe('validation', () => {
       const stage = LicenceStage.PROCESSING_RO
       const conditionVersion = 1
       const validRiskManagement = {
+        version: '' as RiskVersion,
         planningActions: 'No',
         awaitingInformation: 'No',
         proposedAddressSuitable: 'Yes',
@@ -1578,7 +1608,12 @@ describe('validation', () => {
 
       const invalidLicence: Licence = {
         risk: {
-          riskManagement: { planningActions: '', awaitingInformation: 'No', nonDisclosableInformation: 'No' },
+          riskManagement: {
+            version: '1',
+            planningActions: '',
+            awaitingInformation: 'No',
+            nonDisclosableInformation: 'No',
+          },
         },
         victim: { victimLiaison: { decision: 'No' } },
         curfew: {

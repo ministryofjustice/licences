@@ -4,7 +4,7 @@ describe('risk management task', () => {
   test('should return Address unsuitable if addressUnsuitable = true', () => {
     expect(
       riskManagement.view({
-        decisions: { addressUnsuitable: true },
+        decisions: { addressUnsuitable: true, riskManagementVersion: '1' },
         tasks: {},
       })
     ).toStrictEqual({
@@ -14,10 +14,10 @@ describe('risk management task', () => {
     })
   })
 
-  test('should return No risks if risk management not needed', () => {
+  test('should return No risks if risk management not needed and risk management version not 2', () => {
     expect(
       riskManagement.view({
-        decisions: { addressReviewFailed: false, riskManagementNeeded: false },
+        decisions: { addressReviewFailed: false, riskManagementNeeded: false, riskManagementVersion: '1' },
         tasks: { riskManagement: 'DONE' },
       })
     ).toStrictEqual({
@@ -27,10 +27,27 @@ describe('risk management task', () => {
     })
   })
 
+  test('should return Completed if risk management section is done and risk management version is 2', () => {
+    expect(
+      riskManagement.view({
+        decisions: {
+          addressReviewFailed: false,
+          showMandatoryAddressChecksNotCompletedWarning: false,
+          riskManagementVersion: '2',
+        },
+        tasks: { riskManagement: 'DONE' },
+      })
+    ).toStrictEqual({
+      action: { href: '/hdc/review/risk/', text: 'View', type: 'btn-secondary' },
+      label: 'Completed',
+      title: 'Risk management',
+    })
+  })
+
   test('should return Risk management required if risk management needed', () => {
     expect(
       riskManagement.view({
-        decisions: { addressReviewFailed: false, riskManagementNeeded: true },
+        decisions: { addressReviewFailed: false, riskManagementNeeded: true, riskManagementVersion: '1' },
         tasks: { riskManagement: 'DONE' },
       })
     ).toStrictEqual({
@@ -53,10 +70,23 @@ describe('risk management task', () => {
     })
   })
 
+  test('should return warning if mandatory address checks not completed and BASS address suitable is false', () => {
+    expect(
+      riskManagement.view({
+        decisions: { showMandatoryAddressChecksNotCompletedWarning: true, riskManagementVersion: '2' },
+        tasks: {},
+      })
+    ).toStrictEqual({
+      action: { href: '/hdc/review/risk/', text: 'View', type: 'btn-secondary' },
+      label: 'WARNING||Mandatory address checks not completed',
+      title: 'Risk management',
+    })
+  })
+
   test('should return warning if still waiting for information', () => {
     expect(
       riskManagement.view({
-        decisions: { awaitingRiskInformation: true },
+        decisions: { awaitingRiskInformation: true, riskManagementVersion: '1' },
         tasks: {},
       })
     ).toStrictEqual({

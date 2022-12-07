@@ -146,7 +146,12 @@ function getApprovalStageState(licence) {
 }
 
 function getRoStageState(licence) {
-  const { riskManagementNeeded, awaitingRiskInformation } = getRiskManagementState(licence)
+  const {
+    riskManagementNeeded,
+    awaitingRiskInformation,
+    showMandatoryAddressChecksNotCompletedWarning,
+    riskManagementVersion,
+  } = getRiskManagementState(licence)
   const { decision: victimLiaisonNeeded, task: victim } = getTaskState(licence.victim?.victimLiaison?.decision)
   const {
     approvedPremisesRequired,
@@ -163,8 +168,10 @@ function getRoStageState(licence) {
 
   return {
     decisions: {
+      riskManagementVersion,
       riskManagementNeeded,
       awaitingRiskInformation,
+      showMandatoryAddressChecksNotCompletedWarning,
       victimLiaisonNeeded,
       standardOnly,
       additional,
@@ -227,12 +234,18 @@ function getCaStageState(licence) {
 
 function getRiskManagementState(licence) {
   const riskManagement = licence.risk?.riskManagement
+  const riskManagementVersion = riskManagement?.version
   const riskManagementAnswer = riskManagement?.planningActions
-  const awaitingInformationAnswer = riskManagement?.awaitingInformation
+  const checksConsideredAnswer = riskManagement?.hasConsideredChecks
+  const awaitingInformationAnswer = riskManagement?.awaitingInformation || riskManagement?.awaitingOtherInformation
   const { proposedAddressSuitable } = riskManagement || {}
+  const { bassAreaSuitable } = getBassAreaState(licence)
 
   return {
+    riskManagementVersion,
     riskManagementNeeded: riskManagementAnswer === 'Yes',
+    showMandatoryAddressChecksNotCompletedWarning:
+      riskManagementVersion === '2' && checksConsideredAnswer !== 'Yes' && !bassAreaSuitable,
     proposedAddressSuitable: proposedAddressSuitable === 'Yes',
     awaitingRiskInformation: awaitingInformationAnswer === 'Yes',
     riskManagement: getState(),
@@ -244,7 +257,11 @@ function getRiskManagementState(licence) {
       return TaskState.UNSTARTED
     }
 
-    if (riskManagementAnswer && awaitingInformationAnswer && proposedAddressSuitable) {
+    if (
+      (riskManagementAnswer || checksConsideredAnswer === 'Yes') &&
+      awaitingInformationAnswer &&
+      proposedAddressSuitable
+    ) {
       return TaskState.DONE
     }
 

@@ -10,7 +10,7 @@ import uk.gov.justice.digital.hmpps.licences.pages.SentPage
 import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.CurfewHoursPage
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.LicenceConditionsStandardPage
-import uk.gov.justice.digital.hmpps.licences.pages.assessment.RiskManagementPage
+import uk.gov.justice.digital.hmpps.licences.pages.assessment.RiskManagementV1Page
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.VictimLiaisonPage
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.ReportingInstructionsPage
 import uk.gov.justice.digital.hmpps.licences.pages.eligibility.EligibilityExclusionPage
@@ -180,7 +180,7 @@ class FinalChecksTaskListSpec extends GebReportingSpec {
     'address'      | tasks.address     | ReviewAddressPage
     'curfew'       | tasks.curfewHours | CurfewHoursPage
     'conditions'   | tasks.conditions  | LicenceConditionsStandardPage
-    'risk'         | tasks.risk        | RiskManagementPage
+    'risk'         | tasks.risk        | RiskManagementV1Page
     'victim'       | tasks.victim      | VictimLiaisonPage
     'reporting'    | tasks.reporting   | ReportingInstructionsPage
     'final checks' | tasks.final       | FinalChecksSeriousOffencePage

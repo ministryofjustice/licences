@@ -2,17 +2,13 @@ import { LicenceService } from '../services/licenceService'
 import type { Response } from 'express'
 import type { LicenceLocals } from '../utils/middleware'
 import { asyncMiddleware } from '../utils/middleware'
-import createStandardRoutes from './routeWorkers/standard'
 import formConfig from './config/risk'
 import { firstItem } from '../utils/functionalHelpers'
 
-const sectionName = 'risk'
-
 export default ({ licenceService }: { licenceService: LicenceService }) =>
   (router, audited) => {
-    const standard = createStandardRoutes({ formConfig, licenceService, sectionName })
-
     router.get('/riskManagement/:bookingId', asyncMiddleware(getStandard))
+    router.get('/riskManagement/:action/:bookingId', asyncMiddleware(getStandard))
 
     function getStandard(req, res: Response<any, LicenceLocals>) {
       const { bookingId, action } = req.params
@@ -27,10 +23,15 @@ export default ({ licenceService }: { licenceService: LicenceService }) =>
         version: riskVersion,
       }
 
-      res.render(`risk/riskManagement`, viewData)
+      if (riskVersion === '2') {
+        res.render(`risk/riskManagementV2`, viewData)
+      } else {
+        res.render(`risk/riskManagementV1`, viewData)
+      }
     }
 
     router.post('/riskManagement/:bookingId', audited, asyncMiddleware(postStandard))
+    router.post('/riskManagement/:action/:bookingId', audited, asyncMiddleware(postStandard))
 
     async function postStandard(req, res: Response<any, LicenceLocals>) {
       const { bookingId, action } = req.params
@@ -48,9 +49,6 @@ export default ({ licenceService }: { licenceService: LicenceService }) =>
 
       return res.redirect(isChange ? `/hdc/review/risk/${bookingId}` : `/hdc/taskList/${bookingId}`)
     }
-
-    router.get('/riskManagement/:action/:bookingId', asyncMiddleware(standard.get))
-    router.post('/riskManagement/:action/:bookingId', audited, asyncMiddleware(standard.post))
 
     return router
   }

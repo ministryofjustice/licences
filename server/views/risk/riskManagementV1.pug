@@ -1,0 +1,93 @@
+extends ../layout
+
+include mixins
+
+block content
+
+  div.pure-g
+    .pure-u-1
+      include ../includes/backToTaskList
+      include ../includes/personalDetailsSummary
+
+      h2.heading-large Risk management
+
+    .pure-u-1.pure-u-md-1-2
+      form(method="post")
+        input(type="hidden" name="_csrf" value=csrfToken)
+        input(type="hidden" name="bookingId" value=bookingId || '')
+        input(type="hidden" name="version" value=version || '')
+        div.paddingBottom.largeMarginBottom
+
+          div.form-group.inline.smallPaddingTop
+            p Are there checks you need to carry out to decide if the address is suitable?
+              span.form-hint.smallMarginTop For example, police or social services checks.
+
+            div.multiple-choice
+              input#planningYes(type="radio" checked=data.planningActions === 'Yes' name="planningActions" value="Yes")
+              label(for="planningYes") Yes
+            
+            div.multiple-choice
+              input#planningNo(type="radio" checked=data.planningActions === 'No' name="planningActions" value="No")
+              label(for="planningNo") No
+
+          div.form-group.inline.smallPaddingTop
+            p Are you still waiting for information?
+
+            div.multiple-choice
+              input#awaitingYes(type="radio" checked=data.awaitingInformation === 'Yes' name="awaitingInformation" value="Yes")
+              label(for="awaitingYes") Yes
+            div.multiple-choice
+              input#awaitingNo(type="radio" checked=data.awaitingInformation === 'No' name="awaitingInformation" value="No")
+              label(for="awaitingNo") No
+
+          div.form-group
+            label(for='riskManagementDetails') Provide details of your checks
+              span.form-hint.midMarginBottom.smallMarginTop You must confirm here that you have considered information from the police and social services when assessing the suitability of the proposed address.
+              span.form-hint.smallMarginBottom Also include details of information you're waiting for and when you should get it.
+            textarea(name='riskManagementDetails' id='riskManagementDetails' class='form-control' rows='5' aria-label="Provide details of when you expect to get the information")
+              if data.riskManagementDetails
+                | #{data.riskManagementDetails}
+
+          div.form-group.inline.smallPaddingTop
+            p Is the address proposed by the offender suitable?
+
+            div.multiple-choice(data-target='emsInformationForm')
+              input#suitableYes(type="radio" checked=data.proposedAddressSuitable === 'Yes' name="proposedAddressSuitable" value="Yes")
+              label(for="suitableYes") Yes
+            div.multiple-choice(data-target="reasonForm")
+              input#suitableNo(type="radio" checked=data.proposedAddressSuitable === 'No' name="proposedAddressSuitable" value="No")
+              label(for="suitableNo") No
+
+            div#reasonForm.panel.panel-border-narrow.js-hidden
+              label(for='unsuitableReason') Please explain why you have made this decision
+                textarea(name='unsuitableReason' id='unsuitableReason' class='form-control' rows='5' aria-label="Explain why the address is unsuitable")
+                  if data.unsuitableReason
+                    | #{data.unsuitableReason}
+
+          div#emsInformationForm.form-group.inline.smallPaddingTop.js-hidden
+            p Is there any additional information about the offender or the address (e.g. if it is difficult to access) to assist the EMS provider on the day of release?
+
+            div.multiple-choice(data-target="emsInformationFormDetails")
+              input#emsInformationYes(type="radio" checked=data.emsInformation === 'Yes' name="emsInformation" value="Yes")
+              label(for="emsInformationYes") Yes
+
+            div.multiple-choice
+              input#emsInformationNo(type="radio" checked=data.emsInformation === 'No' name="emsInformation" value="No")
+              label(for="emsInformationNo") No
+
+            div#emsInformationFormDetails.panel.panel-border-narrow.js-hidden
+              textarea(name='emsInformationDetails' id='emsInformationDetails' class='form-control' rows='5' aria-label='Provide the information')
+                if data.emsInformationDetails
+                  | #{data.emsInformationDetails}
+
+          if user.role === 'RO'
+            +nonDisclosableInformation(data)
+          else
+            input(type="hidden" name='nonDisclosableInformation' id='nonDisclosableInformation' value=data.nonDisclosableInformation)
+            input(type="hidden" name='nonDisclosableInformationDetails'    id='nonDisclosableInformationDetails'    value=data.nonDisclosableInformationDetails)
+            +readOnlyNonDisclosableInformation(data)
+
+        if (action === 'change')
+          include ../includes/formSubmit
+        else
+          include ../includes/saveAndReturn

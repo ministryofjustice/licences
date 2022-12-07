@@ -62,15 +62,25 @@ describe('licenceService', () => {
       expect(version).toBe(riskManagementVersion)
     })
 
+    test('reads version 1 when licence and risk management section has been started with old version questions but risk management version 1 not yet assigned', () => {
+      const licence = {} as Licence
+      licence.risk = {} as Risk
+      licence.risk.riskManagement = {} as RiskManagement
+
+      const version = service.getRiskVersion(licence)
+
+      expect(version).toBe('1')
+    })
+
     test('reads risk version from licence when set', () => {
       const licence = {} as Licence
       licence.risk = {} as Risk
       licence.risk.riskManagement = {} as RiskManagement
-      licence.risk.riskManagement.version = 1 as RiskVersion
+      licence.risk.riskManagement.version = '1' as RiskVersion
 
       const version = service.getRiskVersion(licence)
 
-      expect(version).toBe(1)
+      expect(version).toBe('1')
     })
   })
 
