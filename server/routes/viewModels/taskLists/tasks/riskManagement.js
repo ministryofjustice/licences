@@ -10,11 +10,21 @@ const getLabel = ({ decisions, tasks }) => {
   } = decisions
   const { riskManagement } = tasks
 
-  if (riskManagementVersion === '2') {
-    if (addressUnsuitable) {
-      return 'Address unsuitable'
+  if (addressUnsuitable) {
+    return 'Address unsuitable'
+  }
+
+  if (riskManagementVersion === '1') {
+    if (awaitingRiskInformation) {
+      return 'WARNING||Still waiting for information'
     }
 
+    if (riskManagement === 'DONE') {
+      return riskManagementNeeded ? 'Risk management required' : 'No risks'
+    }
+  }
+
+  if (riskManagementVersion === '2') {
     if (showMandatoryAddressChecksNotCompletedWarning) {
       return 'WARNING||Mandatory address checks not completed'
     }
@@ -25,18 +35,6 @@ const getLabel = ({ decisions, tasks }) => {
 
     if (riskManagement === 'DONE') {
       return 'Completed'
-    }
-  } else {
-    if (addressUnsuitable) {
-      return 'Address unsuitable'
-    }
-
-    if (awaitingRiskInformation) {
-      return 'WARNING||Still waiting for information'
-    }
-
-    if (riskManagement === 'DONE') {
-      return riskManagementNeeded ? 'Risk management required' : 'No risks'
     }
   }
 
