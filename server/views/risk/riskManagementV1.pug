@@ -42,11 +42,8 @@ block content
 
           div.form-group
             label(for='riskManagementDetails') Provide details of your checks
-              if version == '2'
-                span.form-hint.midMarginBottom.smallMarginTop If you're waiting for information include details of what you're waiting for and when you should get it.
-              else
-                span.form-hint.midMarginBottom.smallMarginTop You must confirm here that you have considered information from the police and social services when assessing the suitability of the proposed address.
-                span.form-hint.smallMarginBottom Also include details of information you're waiting for and when you should get it.
+              span.form-hint.midMarginBottom.smallMarginTop You must confirm here that you have considered information from the police and social services when assessing the suitability of the proposed address.
+              span.form-hint.smallMarginBottom Also include details of information you're waiting for and when you should get it.
             textarea(name='riskManagementDetails' id='riskManagementDetails' class='form-control' rows='5' aria-label="Provide details of when you expect to get the information")
               if data.riskManagementDetails
                 | #{data.riskManagementDetails}
