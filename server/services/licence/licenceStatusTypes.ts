@@ -54,9 +54,9 @@ export type Decisions = {
   refusalReason?: string
   decisionComments?: string
 
-  riskManagementNeededV1?: boolean
+  riskManagementNeeded?: boolean
   awaitingRiskInformation?: boolean
-  mandatoryAddressChecksNotCompletedV2?: boolean
+  showMandatoryAddressChecksNotCompletedWarning?: boolean
   victimLiaisonNeeded?: boolean
   optedOut?: boolean
 

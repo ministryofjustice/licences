@@ -3,32 +3,41 @@ const { standardAction, viewEdit, view } = require('./utils/actions')
 const getLabel = ({ decisions, tasks }) => {
   const {
     riskManagementVersion,
-    riskManagementNeededV1,
-    mandatoryAddressChecksNotCompletedV2,
+    riskManagementNeeded,
+    showMandatoryAddressChecksNotCompletedWarning,
     addressUnsuitable,
     awaitingRiskInformation,
-    bassAreaSuitable,
   } = decisions
   const { riskManagement } = tasks
 
-  if (addressUnsuitable) {
-    return 'Address unsuitable'
-  }
+  if (riskManagementVersion === '2') {
+    if (addressUnsuitable) {
+      return 'Address unsuitable'
+    }
 
-  if (mandatoryAddressChecksNotCompletedV2 && !bassAreaSuitable) {
-    return 'WARNING||Mandatory address checks not completed'
-  }
+    if (showMandatoryAddressChecksNotCompletedWarning) {
+      return 'WARNING||Mandatory address checks not completed'
+    }
 
-  if (awaitingRiskInformation) {
-    return 'WARNING||Still waiting for information'
-  }
+    if (awaitingRiskInformation) {
+      return 'WARNING||Still waiting for information'
+    }
 
-  if (riskManagement === 'DONE' && riskManagementVersion !== '2') {
-    return riskManagementNeededV1 ? 'Risk management required' : 'No risks'
-  }
+    if (riskManagement === 'DONE') {
+      return 'Completed'
+    }
+  } else {
+    if (addressUnsuitable) {
+      return 'Address unsuitable'
+    }
 
-  if (riskManagement === 'DONE' && riskManagementVersion === '2') {
-    return 'Completed'
+    if (awaitingRiskInformation) {
+      return 'WARNING||Still waiting for information'
+    }
+
+    if (riskManagement === 'DONE') {
+      return riskManagementNeeded ? 'Risk management required' : 'No risks'
+    }
   }
 
   return 'Not completed'

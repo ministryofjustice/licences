@@ -147,9 +147,9 @@ function getApprovalStageState(licence) {
 
 function getRoStageState(licence) {
   const {
-    riskManagementNeededV1,
+    riskManagementNeeded,
     awaitingRiskInformation,
-    mandatoryAddressChecksNotCompletedV2,
+    showMandatoryAddressChecksNotCompletedWarning,
     riskManagementVersion,
   } = getRiskManagementState(licence)
   const { decision: victimLiaisonNeeded, task: victim } = getTaskState(licence.victim?.victimLiaison?.decision)
@@ -164,15 +164,14 @@ function getRoStageState(licence) {
   const { reportingInstructions } = getReportingInstructionsState(licence)
   const { licenceConditions, standardOnly, additional, bespoke, bespokeRejected, bespokePending } =
     getLicenceConditionsState(licence)
-  const { bassAreaCheck, bassAreaSuitable } = getBassAreaState(licence)
+  const { bassAreaCheck } = getBassAreaState(licence)
 
   return {
     decisions: {
       riskManagementVersion,
-      riskManagementNeededV1,
+      riskManagementNeeded,
       awaitingRiskInformation,
-      mandatoryAddressChecksNotCompletedV2,
-      bassAreaSuitable,
+      showMandatoryAddressChecksNotCompletedWarning,
       victimLiaisonNeeded,
       standardOnly,
       additional,
@@ -236,15 +235,17 @@ function getCaStageState(licence) {
 function getRiskManagementState(licence) {
   const riskManagement = licence.risk?.riskManagement
   const riskManagementVersion = riskManagement?.version
-  const riskManagementAnswerV1 = riskManagement?.planningActions
-  const checksConsideredAnswerV2 = riskManagement?.hasConsideredChecks
+  const riskManagementAnswer = riskManagement?.planningActions
+  const checksConsideredAnswer = riskManagement?.hasConsideredChecks
   const awaitingInformationAnswer = riskManagement?.awaitingInformation || riskManagement?.awaitingOtherInformation
   const { proposedAddressSuitable } = riskManagement || {}
+  const { bassAreaSuitable } = getBassAreaState(licence)
 
   return {
     riskManagementVersion,
-    riskManagementNeededV1: riskManagementAnswerV1 === 'Yes',
-    mandatoryAddressChecksNotCompletedV2: riskManagementVersion === '2' && checksConsideredAnswerV2 !== 'Yes',
+    riskManagementNeeded: riskManagementAnswer === 'Yes',
+    showMandatoryAddressChecksNotCompletedWarning:
+      riskManagementVersion === '2' && checksConsideredAnswer !== 'Yes' && !bassAreaSuitable,
     proposedAddressSuitable: proposedAddressSuitable === 'Yes',
     awaitingRiskInformation: awaitingInformationAnswer === 'Yes',
     riskManagement: getState(),
@@ -257,7 +258,7 @@ function getRiskManagementState(licence) {
     }
 
     if (
-      (riskManagementAnswerV1 || checksConsideredAnswerV2 === 'Yes') &&
+      (riskManagementAnswer || checksConsideredAnswer === 'Yes') &&
       awaitingInformationAnswer &&
       proposedAddressSuitable
     ) {

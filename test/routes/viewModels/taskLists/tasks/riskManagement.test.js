@@ -4,7 +4,7 @@ describe('risk management task', () => {
   test('should return Address unsuitable if addressUnsuitable = true', () => {
     expect(
       riskManagement.view({
-        decisions: { addressUnsuitable: true },
+        decisions: { addressUnsuitable: true, riskManagementVersion: '1' },
         tasks: {},
       })
     ).toStrictEqual({
@@ -17,7 +17,7 @@ describe('risk management task', () => {
   test('should return No risks if risk management not needed and risk management version not 2', () => {
     expect(
       riskManagement.view({
-        decisions: { addressReviewFailed: false, riskManagementNeededV1: false, riskManagementVersion: '1' },
+        decisions: { addressReviewFailed: false, riskManagementNeeded: false, riskManagementVersion: '1' },
         tasks: { riskManagement: 'DONE' },
       })
     ).toStrictEqual({
@@ -32,7 +32,7 @@ describe('risk management task', () => {
       riskManagement.view({
         decisions: {
           addressReviewFailed: false,
-          mandatoryAddressChecksNotCompletedV2: false,
+          showMandatoryAddressChecksNotCompletedWarning: false,
           riskManagementVersion: '2',
         },
         tasks: { riskManagement: 'DONE' },
@@ -47,7 +47,7 @@ describe('risk management task', () => {
   test('should return Risk management required if risk management needed', () => {
     expect(
       riskManagement.view({
-        decisions: { addressReviewFailed: false, riskManagementNeededV1: true },
+        decisions: { addressReviewFailed: false, riskManagementNeeded: true, riskManagementVersion: '1' },
         tasks: { riskManagement: 'DONE' },
       })
     ).toStrictEqual({
@@ -60,7 +60,7 @@ describe('risk management task', () => {
   test('should return Not completed if risk task not done', () => {
     expect(
       riskManagement.view({
-        decisions: { addressReviewFailed: false, riskManagementNeededV1: true },
+        decisions: { addressReviewFailed: false, riskManagementNeeded: true },
         tasks: { riskManagement: 'UNSTARTED' },
       })
     ).toStrictEqual({
@@ -73,7 +73,7 @@ describe('risk management task', () => {
   test('should return warning if mandatory address checks not completed and BASS address suitable is false', () => {
     expect(
       riskManagement.view({
-        decisions: { mandatoryAddressChecksNotCompletedV2: true, bassAreaSuitable: false },
+        decisions: { showMandatoryAddressChecksNotCompletedWarning: true, riskManagementVersion: '2' },
         tasks: {},
       })
     ).toStrictEqual({
@@ -86,7 +86,7 @@ describe('risk management task', () => {
   test('should return warning if still waiting for information', () => {
     expect(
       riskManagement.view({
-        decisions: { awaitingRiskInformation: true },
+        decisions: { awaitingRiskInformation: true, riskManagementVersion: '1' },
         tasks: {},
       })
     ).toStrictEqual({

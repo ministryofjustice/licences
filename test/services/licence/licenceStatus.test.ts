@@ -171,7 +171,7 @@ describe('getLicenceStatus', () => {
       expect(status.decisions.addressReviewFailed).toBe(false)
       expect(status.decisions.addressWithdrawn).toBe(false)
       expect(status.decisions.addressUnsuitable).toBe(false)
-      expect(status.decisions.riskManagementNeededV1).toBe(true)
+      expect(status.decisions.riskManagementNeeded).toBe(true)
       expect(status.decisions.awaitingRiskInformation).toBe(true)
       expect(status.decisions.victimLiaisonNeeded).toBe(true)
       expect(status.decisions.seriousOffence).toBe(true)
@@ -277,7 +277,7 @@ describe('getLicenceStatus', () => {
       expect(status.decisions.addressReviewFailed).toBe(true)
       expect(status.decisions.addressWithdrawn).toBe(false)
       expect(status.decisions.addressUnsuitable).toBe(true)
-      expect(status.decisions.riskManagementNeededV1).toBe(false)
+      expect(status.decisions.riskManagementNeeded).toBe(false)
       expect(status.decisions.awaitingRiskInformation).toBe(false)
       expect(status.decisions.victimLiaisonNeeded).toBe(false)
       expect(status.decisions.seriousOffence).toBe(false)
@@ -743,6 +743,7 @@ describe('getLicenceStatus', () => {
           licence: {
             risk: {
               riskManagement: {
+                version: '1',
                 planningActions: 'Yes',
               },
             },
@@ -752,8 +753,8 @@ describe('getLicenceStatus', () => {
         const status = getLicenceStatus(licence)
 
         expect(status.tasks.riskManagement).toEqual(TaskState.STARTED)
-        expect(status.decisions.riskManagementNeededV1).toBe(true)
-        expect(status.decisions.mandatoryAddressChecksNotCompletedV2).toBe(false)
+        expect(status.decisions.riskManagementNeeded).toBe(true)
+        expect(status.decisions.showMandatoryAddressChecksNotCompletedWarning).toBe(false)
         expect(status.decisions.awaitingRiskInformation).toBe(false)
       })
 
@@ -773,8 +774,8 @@ describe('getLicenceStatus', () => {
         const status = getLicenceStatus(licence)
 
         expect(status.tasks.riskManagement).toEqual(TaskState.STARTED)
-        expect(status.decisions.mandatoryAddressChecksNotCompletedV2).toBe(true)
-        expect(status.decisions.riskManagementNeededV1).toBe(false)
+        expect(status.decisions.showMandatoryAddressChecksNotCompletedWarning).toBe(true)
+        expect(status.decisions.riskManagementNeeded).toBe(false)
         expect(status.decisions.awaitingRiskInformation).toBe(false)
       })
 
@@ -784,6 +785,7 @@ describe('getLicenceStatus', () => {
           licence: {
             risk: {
               riskManagement: {
+                version: '1',
                 planningActions: 'Yes',
                 awaitingInformation: 'Yes',
                 proposedAddressSuitable: 'Yes',
@@ -795,7 +797,7 @@ describe('getLicenceStatus', () => {
         const status = getLicenceStatus(licence)
 
         expect(status.tasks.riskManagement).toEqual(TaskState.DONE)
-        expect(status.decisions.riskManagementNeededV1).toBe(true)
+        expect(status.decisions.riskManagementNeeded).toBe(true)
         expect(status.decisions.awaitingRiskInformation).toBe(true)
       })
 
@@ -817,7 +819,7 @@ describe('getLicenceStatus', () => {
         const status = getLicenceStatus(licence)
 
         expect(status.tasks.riskManagement).toEqual(TaskState.DONE)
-        expect(status.decisions.mandatoryAddressChecksNotCompletedV2).toBe(false)
+        expect(status.decisions.showMandatoryAddressChecksNotCompletedWarning).toBe(false)
         expect(status.decisions.awaitingRiskInformation).toBe(false)
       })
 
@@ -845,8 +847,8 @@ describe('getLicenceStatus', () => {
         const status = getLicenceStatus(licence)
 
         expect(status.tasks.riskManagement).toEqual(TaskState.STARTED)
-        expect(status.decisions.mandatoryAddressChecksNotCompletedV2).toBe(true)
-        expect(status.decisions.riskManagementNeededV1).toBe(false)
+        expect(status.decisions.showMandatoryAddressChecksNotCompletedWarning).toBe(true)
+        expect(status.decisions.riskManagementNeeded).toBe(false)
         expect(status.decisions.awaitingRiskInformation).toBe(false)
       })
     })
