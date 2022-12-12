@@ -8,5 +8,6 @@ exports.up = async function up(knex) {
 exports.down = async function down(knex) {
   await knex.schema.raw(`
     update licences set licence = jsonb_set(licence,'{risk, riskManagement, version}','null')
+    where licence -> 'risk' -> 'riskManagement' -> 'version' = 1
 `)
 }
