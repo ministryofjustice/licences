@@ -1,4 +1,5 @@
 include additionalConditions
+-var riskVersion1 = data.risk && data.risk.riskManagement && data.risk && data.risk.riskManagement.version === '1'
 
 mixin change(url, anchorId)
   a(id=anchorId href=url) Change
@@ -71,10 +72,13 @@ div.largeMarginBottom
     div.borderBottom
       +titleRow('Risk', 'riskDetails')
         +roCase
-          +change("/hdc/risk/riskManagement/change/" + bookingId, 'riskEditLink')
+          +change("/hdc/risk/riskManagement/change/" + bookingId, 'riskEditLink')   
 
       +errorMessageOrBlock(errorObject.risk && errorObject.risk.riskManagement, 'risk-error')
-        include riskManagement
+        if riskVersion1
+          include riskManagementV1 
+        else
+          include riskManagementV2
 
   if sections.victimLiaison
     div.borderBottom

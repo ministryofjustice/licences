@@ -24,7 +24,10 @@ block content
 
   include includes/conditions
 
-  include includes/risk
+  if riskManagement.version === '2'
+    include includes/riskV2
+  else
+    include includes/riskV1
 
   include includes/victim
 

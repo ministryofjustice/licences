@@ -247,6 +247,53 @@ describe('/forms/', () => {
       expect(pdfText).toContain('STANDARD CONDITION')
       expect(pdfText).toContain('ADDITIONAL CONDITION')
     })
+
+    test('Generates a PDF - with risk management version 1 content when risk version is 1', async () => {
+      const curfewDataWithRiskV1 = { ...curfewData, riskManagement: { ...curfewData.riskManagement, version: '1' } }
+
+      formService.getCurfewAddressCheckData = jest.fn().mockReturnValue(curfewDataWithRiskV1)
+
+      app = createApp('roUser')
+
+      const res = await request(app).get('/hdc/forms/curfewAddress/1')
+
+      const pdf = await pdfParse(res.body)
+      const pdfText = pdf.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
+
+      expect(pdfText).toContain('Home detention curfew - Address checks')
+      expect(pdfText).toContain(
+        'Are there any risk management planning actions that must take place prior to release before the address can be considered suitable?'
+      )
+      expect(pdfText).toContain('Are you still waiting for information?')
+      expect(pdfText).not.toContain(
+        'Have you requested and considered current risk information from the police and children’s services related to the proposed address?'
+      )
+      expect(pdfText).not.toContain('Are you waiting for any other information?')
+    })
+
+    test('Generates a PDF - with risk management version 2 content when risk version is 2', async () => {
+      const curfewDataWithRiskV2 = { ...curfewData, riskManagement: { ...curfewData.riskManagement, version: '2' } }
+
+      formService.getCurfewAddressCheckData = jest.fn().mockReturnValue(curfewDataWithRiskV2)
+
+      app = createApp('roUser')
+
+      const res = await request(app).get('/hdc/forms/curfewAddress/1')
+
+      const pdf = await pdfParse(res.body)
+      const pdfText = pdf.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
+
+      expect(pdfText).toContain('Home detention curfew - Address checks')
+      expect(pdfText).toContain(
+        'Have you requested and considered current risk information from the police and children’s services related to the proposed address?'
+      )
+      expect(pdfText).toContain('Are you waiting for any other information?')
+      expect(pdfText).not.toContain(
+        'Are there any risk management planning actions that must take place prior to release?'
+      )
+      expect(pdfText).not.toContain('Are you still waiting for information to inform risk management planning?')
+    })
+
     test('Generates a PDF of licence_variation form - acquisitive question text appears in the output', async () => {
       app = createApp('roUser')
 
