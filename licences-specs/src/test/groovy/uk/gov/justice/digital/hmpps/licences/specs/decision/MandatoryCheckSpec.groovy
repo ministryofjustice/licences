@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.licences.specs.decision
 import geb.spock.GebReportingSpec
 import spock.lang.Shared
 import spock.lang.Stepwise
+import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
 import uk.gov.justice.digital.hmpps.licences.pages.decision.ApprovalMandatoryCheckPage
 import uk.gov.justice.digital.hmpps.licences.pages.decision.ApprovalReleasePage
 import uk.gov.justice.digital.hmpps.licences.util.Actions
@@ -25,7 +26,7 @@ class MandatoryCheckSpec extends GebReportingSpec {
     actions.logOut()
   }
 
-  def 'Mandatory check page is displayed before approval release page when Mandatory risk check has not been completed'() {
+  def 'Incomplete mandatory checks - continue journey'() {
 
     given: 'Mandatory check not complete'
     testData.loadLicence('decision/mandatory-check-required')
@@ -34,9 +35,24 @@ class MandatoryCheckSpec extends GebReportingSpec {
     to ApprovalMandatoryCheckPage, testData.markAndrewsBookingId
 
     and: 'I click the continue button'
-    $('#continueBtn').click()
+    find('#continueBtn').click()
 
     then: 'I go to the approval release page'
     at ApprovalReleasePage
+  }
+
+  def 'Incomplete mandatory checks - return to task list journey'() {
+
+    given: 'Mandatory check not complete'
+    testData.loadLicence('decision/mandatory-check-required')
+
+    when: 'I view the mandatory check page'
+    to ApprovalMandatoryCheckPage, testData.markAndrewsBookingId
+
+    and: 'I click the Return to task list button'
+    $('#backBtn',1).click()
+
+    then: 'I go to the task list page'
+    at TaskListPage
   }
 }
