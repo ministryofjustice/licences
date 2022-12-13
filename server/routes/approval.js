@@ -25,6 +25,7 @@ module.exports =
     })
 
     router.get('/release/:bookingId', asyncMiddleware(approvalGets('release')))
+    router.get('/mandatoryCheck/:bookingId', asyncMiddleware(approvalGets('mandatoryCheck')))
     router.get('/refuseReason/:bookingId', asyncMiddleware(approvalGets('refuseReason')))
 
     function approvalGets(formName) {

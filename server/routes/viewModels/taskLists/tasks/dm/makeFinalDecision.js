@@ -28,4 +28,15 @@ module.exports = {
       },
     }
   },
+  mandatoryCheck: (licenceStatus) => {
+    return {
+      title: 'Final decision',
+      label: getLabel(licenceStatus),
+      action: {
+        type: 'btn',
+        href: '/hdc/approval/mandatoryCheck/',
+        text: 'Continue ',
+      },
+    }
+  },
 }
