@@ -17,7 +17,7 @@ import { confiscationOrder, onRemand, seriousOffence } from '../../server/routes
 import { bassAreaCheck, bassOffer, bassRequest } from '../../server/routes/config/bassReferral'
 import { release } from '../../server/routes/config/approval'
 import { licenceDetails } from '../../server/routes/config/vary'
-import { CurfewAddress, Licence, LicenceStage, RiskVersion } from '../../server/data/licenceTypes'
+import { CurfewAddress, Licence, LicenceStage, RiskManagement } from '../../server/data/licenceTypes'
 
 describe('validation', () => {
   const service = createLicenceService(null)
@@ -323,8 +323,6 @@ describe('validation', () => {
           {
             formResponse: {
               version: '2',
-              planningActions: '',
-              awaitingInformation: '',
               hasConsideredChecks: '',
               awaitingOtherInformation: '',
               proposedAddressSuitable: '',
@@ -1517,8 +1515,8 @@ describe('validation', () => {
     describe('processing_ro', () => {
       const stage = LicenceStage.PROCESSING_RO
       const conditionVersion = 1
-      const validRiskManagement = {
-        version: '' as RiskVersion,
+      const validRiskManagement: RiskManagement = {
+        version: '1',
         planningActions: 'No',
         awaitingInformation: 'No',
         proposedAddressSuitable: 'Yes',
