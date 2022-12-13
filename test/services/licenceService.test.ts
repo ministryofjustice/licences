@@ -12,7 +12,7 @@ import {
   AdditionalConditionsVersion,
   StandardConditionsVersion,
 } from '../../server/data/licenceClientTypes'
-import { Licence, LicenceStage, Risk, RiskManagement, RiskVersion } from '../../server/data/licenceTypes'
+import { Licence, LicenceStage, Risk, RiskManagement } from '../../server/data/licenceTypes'
 import { TaskState } from '../../server/services/config/taskState'
 import { riskManagementVersion } from '../../server/config'
 
@@ -76,7 +76,7 @@ describe('licenceService', () => {
       const licence = {} as Licence
       licence.risk = {} as Risk
       licence.risk.riskManagement = {} as RiskManagement
-      licence.risk.riskManagement.version = '1' as RiskVersion
+      licence.risk.riskManagement.version = '1'
 
       const version = service.getRiskVersion(licence)
 
