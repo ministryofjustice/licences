@@ -26,6 +26,14 @@ module.exports =
 
     router.get('/release/:bookingId', asyncMiddleware(approvalGets('release')))
     router.get('/refuseReason/:bookingId', asyncMiddleware(approvalGets('refuseReason')))
+    router.get(
+      '/mandatoryCheck/:bookingId',
+      asyncMiddleware(async (req, res) => {
+        const { bookingId } = req.params
+        const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, res.locals.token)
+        res.render('approval/mandatoryCheck', { bookingId, prisonerInfo })
+      })
+    )
 
     function approvalGets(formName) {
       return async (req, res) => {
