@@ -258,9 +258,14 @@ function getRiskManagementState(licence) {
     }
 
     if (
-      (riskManagementAnswer || checksConsideredAnswer === 'Yes') &&
-      awaitingInformationAnswer &&
-      proposedAddressSuitable
+      ((riskManagementAnswer || checksConsideredAnswer === 'Yes') &&
+        awaitingInformationAnswer &&
+        proposedAddressSuitable) ||
+      (riskManagementVersion === '2' &&
+        checksConsideredAnswer === 'No' &&
+        awaitingInformationAnswer &&
+        proposedAddressSuitable &&
+        bassAreaSuitable)
     ) {
       return TaskState.DONE
     }
