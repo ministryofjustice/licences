@@ -73,6 +73,7 @@ describe('/hdc/approval', () => {
           expect(res.text).toContain('23/12/1971')
         })
     })
+
     test('should display the offender details - refuseReason', () => {
       return request(app)
         .get('/hdc/approval/refuseReason/1')
@@ -121,13 +122,6 @@ describe('/hdc/approval', () => {
         section: 'release',
         nextPath: '/hdc/send/decided/1',
         formName: 'release',
-      },
-      {
-        url: '/hdc/approval/mandatoryCheck/1',
-        body: { decision: 'No' },
-        section: 'mandatoryCheck',
-        nextPath: '/hdc/send/decided/1',
-        formName: 'mandatoryCheck',
       },
       {
         url: '/hdc/approval/refuseReason/1',

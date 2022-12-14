@@ -3,18 +3,9 @@ include ../includes/errorBannerWithDetail
 
 block content
 
-  - var risk = data.risk && data.risk.riskManagement || {}
-  - var releaseValue = data.decision || null;
-  - var notedCommentsValue = data.notedComments || null;
-
   div.pure-g.pure-u-1.largeMarginBottom
 
     include ../includes/backToCheckList
-    +errorBannerWithDetail(errorObject, [
-      { field: 'decision' },
-      { field: 'notedComments' },
-      { field: 'reason' }
-    ])
     include ../taskList/prisonerDetails
 
     div.pure-u-md-1
@@ -26,17 +17,10 @@ block content
                 | Mandatory address checks have not been completed.
           p You must not approve this application until police and children’s services address checks are complete.
 
-              if errorObject.decision
-                p.error-message #{errorObject.decision}
-              form(method="post").largeMarginTop
-                input(type="hidden" name="_csrf" value=csrfToken)
-                input(type="hidden" name="bookingId" value=bookingId || '')
-                input(type="hidden" name="decisionMaker" value=user.name)
-
           div.paddingBottom.smallPaddingTop
             div.pure-u-1.inlineButtons
               a#continueBtn.requiredButton.button.smallMarginTop(href="/hdc/approval/release/" + bookingId role="button") Continue
-              a#backBtn.requiredButton.button.button-secondary.smallMarginTop(href="/hdc/taskList/" + bookingId role="button") Return to task list
+              a#returnToChecklistBtn.requiredButton.button.button-secondary.smallMarginTop(href="/hdc/taskList/" + bookingId role="button") Return to task list
 
 block append scripts
   script(src="/public/javascripts/decisionReason.js?" + version)

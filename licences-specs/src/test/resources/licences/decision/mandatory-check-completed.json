@@ -92,7 +92,7 @@
     "risk": {
       "riskManagement": {
         "version": "2",
-        "hasConsideredChecks": "No",
+        "hasConsideredChecks": "Yes",
         "awaitingOtherInformation": "No",
         "proposedAddressSuitable": "Yes"
       }

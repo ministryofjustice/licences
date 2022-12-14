@@ -18,7 +18,6 @@ class MandatoryCheckSpec extends GebReportingSpec {
   Actions actions = new Actions()
 
   def setupSpec() {
-    testData.loadLicence('decision/unstarted')
     actions.logIn('DM')
   }
 
@@ -26,33 +25,43 @@ class MandatoryCheckSpec extends GebReportingSpec {
     actions.logOut()
   }
 
-  def 'Incomplete mandatory checks - continue journey'() {
+  def 'Mandatory check page is displayed when mandatory address checks not completed'() {
 
-    given: 'Mandatory check not complete'
+    given: 'At tasklist page but mandatory check not complete'
     testData.loadLicence('decision/mandatory-check-required')
+    to TaskListPage, testData.markAndrewsBookingId
 
-    when: 'I view the mandatory check page'
-    to ApprovalMandatoryCheckPage, testData.markAndrewsBookingId
+    when: 'I click the final decision continue button'
+    taskListAction('Final decision').click()
 
-    and: 'I click the continue button'
-    find('#continueBtn').click()
-
-    then: 'I go to the approval release page'
-    at ApprovalReleasePage
+    then: 'I see the mandatory checks page'
+    at ApprovalMandatoryCheckPage
   }
 
-  def 'Incomplete mandatory checks - return to task list journey'() {
+  def 'Return to the tasklist page from the mandatory check page'() {
 
-    given: 'Mandatory check not complete'
+    given: 'At mandatory check page'
     testData.loadLicence('decision/mandatory-check-required')
+    at ApprovalMandatoryCheckPage
 
-    when: 'I view the mandatory check page'
-    to ApprovalMandatoryCheckPage, testData.markAndrewsBookingId
-
-    and: 'I click the Return to task list button'
-    $('#backBtn',1).click()
+    when: 'I click the return to checklist button'
+    $('#returnToChecklistBtn').click()
 
     then: 'I go to the task list page'
     at TaskListPage
   }
+
+  def 'Mandatory check page is not displayed when mandatory address checks are completed'() {
+
+    given: 'At tasklist page when mandatory check is complete'
+    testData.loadLicence('decision/mandatory-check-completed')
+    to TaskListPage, testData.markAndrewsBookingId
+
+    when: 'I click the final decision continue button'
+    taskListAction('Final decision').click()
+
+    then: 'I do not see the mandatory checks page and I go to the approval release page'
+    at ApprovalReleasePage
+  }
+
 }
