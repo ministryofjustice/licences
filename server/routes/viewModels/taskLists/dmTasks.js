@@ -45,9 +45,33 @@ const standardTaskList = (licenceStatus) => {
   ])
 }
 
+const mandatoryCheckTaskList = (licenceStatus) => {
+  const {
+    decisions: { approvedPremisesRequired, bassReferralNeeded },
+  } = licenceStatus
+  return tasklist(licenceStatus, [
+    [bassAddress.view, bassReferralNeeded],
+    [proposedAddress.dm.view, !bassReferralNeeded],
+    [riskManagement.view, !approvedPremisesRequired],
+    [victimLiaison.view],
+    [curfewHours.view],
+    [additionalConditions.view],
+    [reportingInstructions.view],
+    [finalChecks.view],
+    [returnToCa],
+    [makeFinalDecision.mandatoryCheck],
+  ])
+}
+
 module.exports = (licenceStatus) => {
   const {
-    decisions: { addressWithdrawn, bassAccepted, curfewAddressRejected, insufficientTimeStop },
+    decisions: {
+      addressWithdrawn,
+      bassAccepted,
+      curfewAddressRejected,
+      insufficientTimeStop,
+      showMandatoryAddressChecksNotCompletedWarning,
+    },
   } = licenceStatus
 
   if (insufficientTimeStop) {
@@ -56,6 +80,10 @@ module.exports = (licenceStatus) => {
 
   if (bassAccepted !== 'Yes' && (addressWithdrawn || curfewAddressRejected)) {
     return rejectedAddressTaskList(licenceStatus)
+  }
+
+  if (showMandatoryAddressChecksNotCompletedWarning) {
+    return mandatoryCheckTaskList(licenceStatus)
   }
 
   return standardTaskList(licenceStatus)

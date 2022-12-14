@@ -57,6 +57,7 @@ describe('/hdc/approval', () => {
     const routes = [
       { url: '/hdc/approval/release/1', content: 'Do you approve HDC release for this offender?' },
       { url: '/hdc/approval/refuseReason/1', content: 'HDC refused' },
+      { url: '/hdc/approval/mandatoryCheck/1', content: 'Mandatory address checks have not been completed' },
     ]
 
     testFormPageGets(app, routes, service)
@@ -72,9 +73,20 @@ describe('/hdc/approval', () => {
           expect(res.text).toContain('23/12/1971')
         })
     })
+
     test('should display the offender details - refuseReason', () => {
       return request(app)
         .get('/hdc/approval/refuseReason/1')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect((res) => {
+          expect(res.text).toContain('23/12/1971')
+        })
+    })
+
+    test('should display the offender details - MandatoryCheck', () => {
+      return request(app)
+        .get('/hdc/approval/mandatoryCheck/1')
         .expect(200)
         .expect('Content-Type', /html/)
         .expect((res) => {

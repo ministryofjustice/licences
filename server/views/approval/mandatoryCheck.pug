@@ -1,0 +1,26 @@
+extends ../layout
+include ../includes/errorBannerWithDetail
+
+block content
+
+  div.pure-g.pure-u-1.largeMarginBottom
+
+    include ../includes/backToCheckList
+    include ../taskList/prisonerDetails
+
+    div.pure-u-md-1
+        div.paddingBottom.smallPaddingTop
+          div.mandatory-warning-container
+            div.notice
+              i.icon.icon-important
+              strong.bold-small
+                | Mandatory address checks have not been completed.
+          p You must not approve this application until police and children’s services address checks are complete.
+
+          div.paddingBottom.smallPaddingTop
+            div.pure-u-1.inlineButtons
+              a#continueBtn.requiredButton.button.smallMarginTop(href="/hdc/approval/release/" + bookingId role="button") Continue
+              a#returnToChecklistBtn.requiredButton.button.button-secondary.smallMarginTop(href="/hdc/taskList/" + bookingId role="button") Return to task list
+
+block append scripts
+  script(src="/public/javascripts/decisionReason.js?" + version)

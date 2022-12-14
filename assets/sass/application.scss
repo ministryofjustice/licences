@@ -450,6 +450,12 @@ input[type="time"] {
   background-color: #FFF0D5;
 }
 
+.mandatory-warning-container {
+  @extend %container-shared;
+  background-color: #ffffff;
+  padding-left: 0%;
+}
+
 .warning-container {
   @extend %container-shared;
   background-color: $mellow-red-25;
