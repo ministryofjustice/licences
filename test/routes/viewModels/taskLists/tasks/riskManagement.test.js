@@ -70,7 +70,7 @@ describe('risk management task', () => {
     })
   })
 
-  test('should return warning if mandatory address checks not completed and BASS address suitable is false', () => {
+  test('should return warning if mandatory address checks not completed and a bass property has not been requested', () => {
     expect(
       riskManagement.view({
         decisions: { showMandatoryAddressChecksNotCompletedWarning: true, riskManagementVersion: '2' },

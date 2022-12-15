@@ -239,13 +239,13 @@ function getRiskManagementState(licence) {
   const checksConsideredAnswer = riskManagement?.hasConsideredChecks
   const awaitingInformationAnswer = riskManagement?.awaitingInformation || riskManagement?.awaitingOtherInformation
   const { proposedAddressSuitable } = riskManagement || {}
-  const { bassAreaSuitable } = getBassAreaState(licence)
+  const { bassRequested } = getBassRequestState(licence)
 
   return {
     riskManagementVersion,
     riskManagementNeeded: riskManagementAnswer === 'Yes',
     showMandatoryAddressChecksNotCompletedWarning:
-      riskManagementVersion === '2' && checksConsideredAnswer !== 'Yes' && !bassAreaSuitable,
+      riskManagementVersion === '2' && checksConsideredAnswer !== 'Yes' && !bassRequested,
     proposedAddressSuitable: proposedAddressSuitable === 'Yes',
     awaitingRiskInformation: awaitingInformationAnswer === 'Yes',
     riskManagement: getState(),
@@ -265,7 +265,7 @@ function getRiskManagementState(licence) {
         checksConsideredAnswer === 'No' &&
         awaitingInformationAnswer &&
         proposedAddressSuitable &&
-        bassAreaSuitable)
+        bassRequested)
     ) {
       return TaskState.DONE
     }

@@ -852,13 +852,13 @@ describe('getLicenceStatus', () => {
         expect(status.decisions.awaitingRiskInformation).toBe(false)
       })
 
-      test('should show risk management version 2 DONE if all questions answered when mandatory address checks answer is No but bass area is suitable', () => {
+      test('should show risk management version 2 DONE if all questions answered when mandatory address checks answer is No but bass property has been requested', () => {
         const licence = {
           stage: 'PROCESSING_RO',
           licence: {
             bassReferral: {
-              bassAreaCheck: {
-                bassAreaSuitable: 'Yes',
+              bassRequest: {
+                bassRequested: 'Yes',
               },
             },
             risk: {
