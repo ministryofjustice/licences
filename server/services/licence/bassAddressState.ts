@@ -8,10 +8,12 @@ export function getBassRequestState(licence) {
   const addressProposedAnswer = getIn(licence, ['proposedAddress', 'addressProposed', 'decision'])
 
   const bassReferralNeeded = bassRequestAnswer === 'Yes' && addressProposedAnswer === 'No'
+  const bassRequested = bassRequestAnswer && bassRequestAnswer === 'Yes'
   const bassAreaSpecified = getIn(licence, ['bassReferral', 'bassRequest', 'specificArea']) !== 'No'
   const bassRequest = getTaskState()
 
   return {
+    bassRequested,
     bassReferralNeeded,
     bassAreaSpecified,
     bassRequest,

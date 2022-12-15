@@ -20,6 +20,7 @@ export type Decisions = {
   insufficientTimeStop?: boolean
 
   // BASS address related
+  bassRequested?: boolean
   bassReferralNeeded?: boolean
   bassAreaSpecified?: boolean
   bassAreaSuitable?: boolean
