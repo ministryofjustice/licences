@@ -92,6 +92,7 @@
     },
     "risk": {
       "riskManagement": {
+        "version": "1",
         "planningActions": "Yes",
         "planningActionsDetails": "Risk management detail",
         "awaitingInformation": "Yes",

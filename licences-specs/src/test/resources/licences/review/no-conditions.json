@@ -47,6 +47,7 @@
     },
     "risk": {
       "riskManagement": {
+        "version": "1",
         "planningActions": "Yes",
         "planningActionsDetails": "Risk details",
         "awaitingInformation": "Yes",
