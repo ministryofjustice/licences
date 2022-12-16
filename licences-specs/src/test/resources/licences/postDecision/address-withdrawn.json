@@ -3,6 +3,7 @@
   "licence": {
     "risk": {
       "riskManagement": {
+        "version": "1",
         "victimLiaison": "No",
         "planningActions": "No",
         "awaitingInformation": "No"

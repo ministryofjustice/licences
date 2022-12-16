@@ -3,6 +3,7 @@
   "licence": {
     "risk": {
       "riskManagement": {
+        "version": "1",
         "emsInformation": "No",
         "planningActions": "No",
         "unsuitableReason": "",
