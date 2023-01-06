@@ -11,8 +11,6 @@ describe('notificationSender', () => {
     config = {
       notifications: {
         notifyKey: 'dummy-key',
-        clearingOfficeEmail: 'HDC.ClearingOffice@justice.gov.uk',
-        clearingOfficeEmailEnabled: 'YES',
         activeNotificationTypes: [
           'CA_RETURN',
           'CA_DECISION',

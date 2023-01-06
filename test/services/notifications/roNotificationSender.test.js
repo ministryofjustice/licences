@@ -9,7 +9,6 @@ describe('sendRoNotifications', () => {
     config = {
       notifications: {
         notifyKey: 'dummy-key',
-        clearingOfficeEmailEnabled: 'YES',
         activeNotificationTypes: [
           'CA_RETURN',
           'CA_DECISION',
@@ -151,25 +150,6 @@ describe('sendRoNotifications', () => {
       })
 
       test('should generate RO notification data when no orgEmail', async () => {
-        const data = service.getNotifications(
-          { ...responsibleOfficer, functionalMailbox: null },
-          personalisation,
-          service.notificationTypes.RO_NEW
-        )
-
-        expect(data).toEqual([
-          {
-            email: 'ro@ro.email',
-            templateName: 'RO_NEW',
-            personalisation,
-          },
-        ])
-      })
-
-      test('should no generate RO clearing office notification data if the co email is disabled', async () => {
-        config.notifications.clearingOfficeEmailEnabled = 'No'
-        service = createSendRoNotifications(notificationSender, config)
-
         const data = service.getNotifications(
           { ...responsibleOfficer, functionalMailbox: null },
           personalisation,
