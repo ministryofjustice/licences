@@ -13,7 +13,7 @@ block content
       p Notify the COM that they have been sent the offender's case.
       p Pressing the button below will send an email to 
         a(href="/hdc/contact/" + bookingId) #{prisonerInfo.com.name}
-        |, their functional mailbox and the clearing office.
+        |, their functional mailbox.
       form(method='POST' action='/admin/licences/' + bookingId + '/notifyRo')
         input(type="hidden" name="_csrf" value=csrfToken)
         input.requiredButton.button(type="submit" value="Send emails")
