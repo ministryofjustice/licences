@@ -4,6 +4,10 @@ generic-prometheus-alerts:
   targetApplication: licences
   alertSeverity: digital-prison-service-dev
 
+generic-data-analytics-extractor:
+  databaseSecretName: dps-rds-instance-output
+  analyticalPlatformSecretName: licences-analytical-platform-reporting-s3-bucket
+
 ingress:
   annotations:
     external-dns.alpha.kubernetes.io/aws-weight: "100"
