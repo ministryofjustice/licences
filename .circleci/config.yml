@@ -132,6 +132,8 @@ jobs:
       HDC_URL: http://localhost:3000
     steps:
       - browser-tools/install-browser-tools
+      - run:
+          command: ls -ahl /home/circleci/app
       - checkout
       - attach_workspace:
           at: ~/app
