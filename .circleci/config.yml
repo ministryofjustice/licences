@@ -131,12 +131,12 @@ jobs:
       GOTENBERG_API_URL: http://localhost:3001
       HDC_URL: http://localhost:3000
     steps:
-      - browser-tools/install-browser-tools
       - run:
           command: ls -ahl /home/circleci/app
       - checkout
       - attach_workspace:
-          at: ~/app
+            at: ~/app
+      - browser-tools/install-browser-tools
       - run:
           name: Run the mock server.
           command: npm run start-mocks
