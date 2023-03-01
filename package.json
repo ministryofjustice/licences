@@ -4,8 +4,8 @@
   "description": "Licences  Application",
   "main": "server.js",
   "engines": {
-    "node": "^14.16.0",
-    "npm": "^7.2.4"
+    "node": "^18",
+    "npm": "^8"
   },
   "scripts": {
     "postinstall": "husky install",
@@ -149,7 +149,7 @@
   "devDependencies": {
     "@types/connect-flash": "^0.0.37",
     "@types/jest": "^29.2.3",
-    "@types/node": "14.14.31",
+    "@types/node": "^18.14.2",
     "@types/passport": "^1.0.11",
     "@typescript-eslint/eslint-plugin": "^5.30.6",
     "@typescript-eslint/parser": "^5.30.6",
