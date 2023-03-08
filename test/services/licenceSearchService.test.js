@@ -1,28 +1,31 @@
 const createLicenceSearchService = require('../../server/services/licenceSearchService')
 
-const licenceClient = {
-  getLicence: jest.fn(),
-}
-
-const signInService = {
-  getClientCredentialsTokens: jest.fn().mockReturnValue('a token'),
-}
-
-const nomisClient = {
-  getBookingByOffenderNumber: jest.fn().mockReturnValue({ bookingId: 1 }),
-}
-
-const nomisClientBuilder = jest.fn().mockReturnValue(nomisClient)
-
 let licenceSearchService
+let licenceClient
+let signInService
+let nomisClient
+let nomisClientBuilder
 
 describe('licenceSearchService', () => {
   beforeEach(async () => {
+    licenceClient = {
+      getLicence: jest.fn(),
+    }
+
+    signInService = {
+      getClientCredentialsTokens: jest.fn().mockReturnValue('a token'),
+    }
+
+    nomisClient = {
+      getBookingByOffenderNumber: jest.fn().mockReturnValue({ bookingId: 1 }),
+    }
+
+    nomisClientBuilder = jest.fn().mockReturnValue(nomisClient)
     licenceSearchService = await createLicenceSearchService(licenceClient, signInService, nomisClientBuilder)
   })
 
   afterEach(() => {
-    jest.restoreAllMocks()
+    jest.resetAllMocks()
   })
 
   describe('findLicenceFor', () => {

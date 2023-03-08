@@ -1,4 +1,4 @@
-FROM node:14.17-buster as builder
+FROM node:18.12-bullseye-slim as builder
 
 ARG BUILD_NUMBER
 ARG GIT_REF
@@ -22,7 +22,7 @@ RUN npm ci --no-audit && \
 
 RUN npm prune --production
 
-FROM node:14.17-buster-slim
+FROM node:18.12-bullseye-slim
 
 ARG BUILD_NUMBER
 ARG GIT_REF
