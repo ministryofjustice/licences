@@ -12,6 +12,9 @@ RUN apt-get install -y curl
 
 RUN curl https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem > /app/root.cert
 
+RUN apt-get update && \
+    apt-get install -y make python g++
+
 COPY . .
 
 RUN npm ci --no-audit && \
