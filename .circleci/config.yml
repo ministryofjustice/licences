@@ -59,6 +59,9 @@ jobs:
       tag: << pipeline.parameters.node-version >>
     steps:
       - checkout
+      - run:
+          name: Update npm
+          command: 'sudo npm install -g npm@9'
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
