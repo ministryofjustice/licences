@@ -1,5 +1,5 @@
 # Stage: base image
-FROM node:18.12-bullseye-slim as base
+FROM node:18.15-bullseye-slim as base
 
 ARG BUILD_NUMBER=1_0_0
 ARG GIT_REF=not-available
@@ -31,8 +31,6 @@ FROM base as build
 
 ARG BUILD_NUMBER=1_0_0
 ARG GIT_REF=not-available
-
-RUN npm install -g npm@9
 
 RUN apt-get install -y make python3 g++
 
@@ -77,4 +75,4 @@ EXPOSE 3000
 ENV NODE_ENV='production'
 USER 2000
 
-CMD [ "node", "server.js" ]
+CMD [ "npm", "start" ]
