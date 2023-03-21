@@ -1,8 +1,8 @@
 version: 2.1
 
 orbs:
-  hmpps: ministryofjustice/hmpps@7
-  browser-tools: circleci/browser-tools@1.4.0
+  hmpps: ministryofjustice/hmpps@7.2.1
+  browser-tools: circleci/browser-tools@1.4.1
 
 parameters:
   alerts-slack-channel:
@@ -200,7 +200,7 @@ workflows:
           filters:
             branches:
               only:
-                - main
+                - DCS-2041-v2
       - hmpps/deploy_env:
           name: deploy_dev
           env: "dev"
@@ -209,7 +209,7 @@ workflows:
           filters:
             branches:
               only:
-                - main
+                - DCS-2041-v2
           requires:
             - helm_lint
             - unit_test

@@ -1,5 +1,4 @@
 ---
-
 generic-prometheus-alerts:
   targetApplication: licences
   alertSeverity: digital-prison-service-dev
