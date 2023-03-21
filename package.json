@@ -26,7 +26,6 @@
     "css-build": "./bin/build-css",
     "clean": "rm -rf dist/* public/* .port.tmp *.log build/* uploads/* test-results.xml",
     "db:knex": "knex",
-    "db:knex-migrate": "ls -R && knex-migrate --debug",
     "db:seed": "knex seed:run --env standard",
     "security_audit": "npx audit-ci --config audit-ci.json"
   },
