@@ -26,7 +26,7 @@
     "css-build": "./bin/build-css",
     "clean": "rm -rf dist/* public/* .port.tmp *.log build/* uploads/* test-results.xml",
     "db:knex": "knex",
-    "db:knex-migrate": "knex-migrate",
+    "db:knex-migrate": "ls -R && knex-migrate --debug",
     "db:seed": "knex seed:run --env standard",
     "security_audit": "npx audit-ci --config audit-ci.json"
   },
@@ -120,7 +120,7 @@
     "jquery": "^3.6.1",
     "jsonwebtoken": "^9.0.0",
     "jwt-decode": "^3.1.2",
-    "knex": "^2.3.0",
+    "knex": "^2.4.2",
     "knex-migrate": "^1.7.4",
     "moment": "2.29.4",
     "moment-business-days": "^1.2.0",
