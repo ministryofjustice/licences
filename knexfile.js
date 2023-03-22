@@ -17,6 +17,9 @@ module.exports = {
           }
         : false,
   },
+  migrations: {
+    directory: 'app/dist/migrations',
+  },
   acquireConnectionTimeout: 5000,
 
   // don't really need this - could just use the above?
