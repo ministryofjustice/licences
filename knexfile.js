@@ -17,6 +17,9 @@ module.exports = {
           }
         : false,
   },
+  migrations: {
+    directory: '/app/dist/migrations',
+  },
   acquireConnectionTimeout: 5000,
   // don't really need this - could just use the above?
   standard: {
@@ -27,9 +30,6 @@ module.exports = {
       password: config.db.password,
       database: config.db.database,
       ssl: config.db.sslEnabled === 'true',
-    },
-    migrations: {
-      directory: 'app/dist/migrations',
     },
     acquireConnectionTimeout: 5000,
   },
