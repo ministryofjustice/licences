@@ -49,10 +49,6 @@ RUN npm prune --no-audit --production
 # Stage: copy production assets and dependencies
 FROM base
 
-# Create app directory
-RUN mkdir /app && \
-    chown appuser:appgroup /app \
-
 COPY --from=build --chown=appuser:appgroup \
         /app/package.json \
         /app/build-info.json \
