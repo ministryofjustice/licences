@@ -24,9 +24,6 @@ RUN apt-get install -y curl
 
 RUN curl https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem > /app/root.cert
 
-RUN apt-get autoremove -y && \
-        rm -rf /var/lib/apt/lists/*
-
 # Stage: build assets
 FROM base as build
 
@@ -79,4 +76,7 @@ EXPOSE 3000
 ENV NODE_ENV='production'
 USER 2000
 
+RUN apt-get autoremove -y && \
+        rm -rf /var/lib/apt/lists/* \
+    
 CMD [ "npm", "start" ]
