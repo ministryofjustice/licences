@@ -18,9 +18,9 @@ WORKDIR /app
 ENV BUILD_NUMBER ${BUILD_NUMBER:-1_0_0}
 
 RUN apt-get update && \
-        apt-get upgrade -y 
-        # apt-get autoremove -y && \
-        # rm -rf /var/lib/apt/lists/*
+        apt-get upgrade -y \
+        apt-get autoremove -y && \
+        rm -rf /var/lib/apt/lists/*
 
 RUN apt-get install -y curl
 
@@ -63,6 +63,9 @@ COPY --from=build --chown=appuser:appgroup \
 
 COPY --from=build --chown=appuser:appgroup \
         /app/assets ./assets
+
+COPY --from=build --chown=appuser:appgroup \
+        /app/migrations ./migrations
 
 COPY --from=build --chown=appuser:appgroup \
         /app/node_modules ./node_modules
