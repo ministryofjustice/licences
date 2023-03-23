@@ -76,7 +76,4 @@ EXPOSE 3000
 ENV NODE_ENV='production'
 USER 2000
 
-RUN apt-get autoremove -y && \
-        rm -rf /var/lib/apt/lists/* \
-    
 CMD [ "npm", "start" ]
