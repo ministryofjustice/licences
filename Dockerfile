@@ -44,6 +44,9 @@ RUN export BUILD_NUMBER=${BUILD_NUMBER} && \
 
 RUN npm prune --no-audit --production
 
+RUN apt-get autoremove -y && \
+        rm -rf /var/lib/apt/lists/* \
+
 # Stage: copy production assets and dependencies
 FROM base
 
