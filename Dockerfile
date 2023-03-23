@@ -51,7 +51,6 @@ COPY --from=build --chown=appuser:appgroup \
         /app/package.json \
         /app/package-lock.json \
         /app/root.cert \
-        /app/migrations \
         ./
 
 COPY --from=build --chown=appuser:appgroup \
@@ -59,6 +58,9 @@ COPY --from=build --chown=appuser:appgroup \
 
 COPY --from=build --chown=appuser:appgroup \
         /app/dist ./dist
+
+COPY --from=build --chown=appuser:appgroup \
+        /app/migrations ./migrations
 
 COPY --from=build --chown=appuser:appgroup \
         /app/assets ./assets
