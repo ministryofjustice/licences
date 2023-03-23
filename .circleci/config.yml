@@ -200,7 +200,7 @@ workflows:
           filters:
             branches:
               only:
-                - DCS-2041-v7
+                - main
       - hmpps/deploy_env:
           name: deploy_dev
           env: "dev"
@@ -209,7 +209,7 @@ workflows:
           filters:
             branches:
               only:
-                - DCS-2041-v7
+                - main
           requires:
             - helm_lint
             - unit_test
