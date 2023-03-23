@@ -18,7 +18,7 @@ WORKDIR /app
 ENV BUILD_NUMBER ${BUILD_NUMBER:-1_0_0}
 
 RUN apt-get update && \
-        apt-get upgrade -y \
+        apt-get upgrade -y && \
         apt-get autoremove -y && \
         rm -rf /var/lib/apt/lists/*
 
