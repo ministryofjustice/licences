@@ -18,13 +18,14 @@ WORKDIR /app
 ENV BUILD_NUMBER ${BUILD_NUMBER:-1_0_0}
 
 RUN apt-get update && \
-        apt-get upgrade -y \
-        apt-get autoremove -y && \
-        rm -rf /var/lib/apt/lists/*
+        apt-get upgrade -y
 
 RUN apt-get install -y curl
 
 RUN curl https://s3.amazonaws.com/rds-downloads/rds-ca-2019-root.pem > /app/root.cert
+
+RUN apt-get autoremove -y && \
+        rm -rf /var/lib/apt/lists/*
 
 # Stage: build assets
 FROM base as build
@@ -32,7 +33,13 @@ FROM base as build
 ARG BUILD_NUMBER=1_0_0
 ARG GIT_REF=not-available
 
+RUN apt-get update && \
+        apt-get upgrade -y
+
 RUN apt-get install -y make python3 g++
+
+RUN apt-get autoremove -y && \
+        rm -rf /var/lib/apt/lists/*
 
 COPY package*.json ./
 RUN npm ci --no-audit
