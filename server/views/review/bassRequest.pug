@@ -18,7 +18,7 @@ block content
 
     div.pure-g.borderBottomLight
       div.pure-u-1.pure-u-md-1-2
-        h2#bassRequestDetails.heading-medium Proposed BASS area
+        h2#bassRequestDetails.heading-medium Proposed CAS2 area
       div.pure-u-1.pure-u-md-1-2.alignRight
         div.change-details
           if(user.role === 'CA' && stage === 'ELIGIBILITY')
@@ -26,9 +26,9 @@ block content
 
       div.pure-u-1
         if typeof errorObject.bassReferral === 'string'
-          p.alert.bold(id='proposed-bass-error') Enter a BASS area
+          p.alert.bold(id='proposed-bass-error') Enter a CAS2 area
         else if errorObject.bassReferral && typeof errorObject.bassReferral.bassRequest === 'string'
-          p.alert.bold(id='proposed-bass-error') Enter a BASS area
+          p.alert.bold(id='proposed-bass-error') Enter a CAS2 area
         else
           include ./includes/bassRequest
 
@@ -36,7 +36,7 @@ block content
     h2.heading-medium Now send the case
 
     div.pure-u-1.pure-u-md-3-4
-      | The case is ready to send for BASS area checks.
+      | The case is ready to send for CAS2 area checks.
 
     div.paddingBottom.smallPaddingTop
       form#addressReviewForm(method='POST', action='/hdc/send/bassReview/' + bookingId)
