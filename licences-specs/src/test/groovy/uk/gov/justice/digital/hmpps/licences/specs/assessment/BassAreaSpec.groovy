@@ -33,7 +33,7 @@ class BassAreaSpec extends GebReportingSpec {
     to TaskListPage, testData.markAndrewsBookingId
 
     when: 'I start the BASS area task'
-    taskListAction('BASS area check').click()
+    taskListAction('CAS2 area check').click()
 
     then: 'I see the bass area page'
     at BassAreaCheckPage
@@ -49,7 +49,7 @@ class BassAreaSpec extends GebReportingSpec {
       to TaskListPage, testData.markAndrewsBookingId
 
       when: 'I start the BASS area task'
-      taskListAction('BASS area check').click()
+      taskListAction('CAS2 area check').click()
 
       then: 'I see the bass area page'
       at BassAreaCheckPage
@@ -65,7 +65,7 @@ class BassAreaSpec extends GebReportingSpec {
       to TaskListPage, testData.markAndrewsBookingId
 
       when: 'I start the BASS area task'
-      taskListAction('BASS area check').click()
+      taskListAction('CAS2 area check').click()
 
       then: 'I see the bass area page'
       at BassAreaCheckPage
@@ -93,7 +93,7 @@ class BassAreaSpec extends GebReportingSpec {
     to TaskListPage, testData.markAndrewsBookingId
 
     when: 'I start the BASS area task'
-    taskListAction('BASS area check').click()
+    taskListAction('CAS2 area check').click()
 
     then: 'I see the bass area page'
     at BassAreaCheckPage
@@ -133,7 +133,7 @@ class BassAreaSpec extends GebReportingSpec {
     to TaskListPage, testData.markAndrewsBookingId
 
     when: 'I start the BASS area task'
-    taskListAction('BASS area check').click()
+    taskListAction('CAS2 area check').click()
 
     then: 'I see the bass area page'
     at BassAreaCheckPage

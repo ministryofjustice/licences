@@ -24,7 +24,7 @@ class TaskListSpec extends GebReportingSpec {
   @Shared
   def tasks = [
     address   : 'Proposed curfew address',
-    bass      : 'BASS area check',
+    bass      : 'CAS2 area check',
     conditions: 'Additional conditions',
     risk      : 'Risk management',
     victim    : 'Victim liaison',
