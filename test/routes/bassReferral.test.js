@@ -21,7 +21,7 @@ describe('/hdc/bassReferral', () => {
       const app = createApp({ licenceServiceStub: licenceService }, 'caUser')
 
       const routes = [
-        { url: '/hdc/bassReferral/bassRequest/1', content: 'Does the offender have a preferred BASS area' },
+        { url: '/hdc/bassReferral/bassRequest/1', content: 'Does the offender have a preferred CAS2 area' },
         { url: '/hdc/bassReferral/bassOffer/1', content: 'BASS address' },
         { url: '/hdc/bassReferral/rejected/1', content: 'BASS area rejected' },
         { url: '/hdc/bassReferral/unsuitable/1', content: 'Unsuitable for BASS' },
