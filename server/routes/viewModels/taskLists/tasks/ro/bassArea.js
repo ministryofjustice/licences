@@ -23,7 +23,7 @@ const getLabel = ({ decisions, tasks }) => {
 module.exports = ({ decisions, tasks }) => {
   const { bassAreaCheck, approvedPremisesAddress } = tasks
   return {
-    title: 'BASS area check',
+    title: 'CAS2 area check',
     label: getLabel({ decisions, tasks }),
     action:
       approvedPremisesAddress === 'DONE'

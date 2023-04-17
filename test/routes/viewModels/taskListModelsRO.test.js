@@ -23,7 +23,7 @@ describe('TaskList models', () => {
       type: 'btn',
     },
     label: 'Not completed',
-    title: 'BASS area check',
+    title: 'CAS2 area check',
   }
 
   const bassAreaCheckWithApprovedAddress = {
@@ -33,7 +33,7 @@ describe('TaskList models', () => {
       type: 'link',
     },
     label: 'Approved premises required',
-    title: 'BASS area check',
+    title: 'CAS2 area check',
   }
 
   const riskManagement = {
@@ -354,7 +354,7 @@ describe('TaskList models', () => {
             type: 'btn',
           },
           label: 'Not completed',
-          title: 'BASS area check',
+          title: 'CAS2 area check',
         },
         riskManagement,
         victimLiasion,
