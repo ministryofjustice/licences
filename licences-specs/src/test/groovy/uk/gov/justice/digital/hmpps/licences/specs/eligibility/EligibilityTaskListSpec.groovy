@@ -193,7 +193,7 @@ class EligibilityTaskListSpec extends GebReportingSpec {
     to TaskListPage, testData.markAndrewsBookingId
 
     then: 'The submit task is shown'
-    $('h2', text: contains('Send for BASS area checks')).isDisplayed()
+    $('h2', text: contains('Send for CAS2 area checks')).isDisplayed()
   }
 
   def 'When BASS is rejected, BASS task shows rejection page'() {

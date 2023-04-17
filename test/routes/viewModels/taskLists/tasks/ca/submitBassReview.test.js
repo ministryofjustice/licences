@@ -10,7 +10,7 @@ describe('ca submit for bass review task', () => {
     ).toStrictEqual({
       action: null,
       label: 'Submission unavailable - Offender has opted out of HDC',
-      title: 'Send for BASS area checks',
+      title: 'Send for CAS2 area checks',
     })
   })
 
@@ -23,7 +23,7 @@ describe('ca submit for bass review task', () => {
     ).toStrictEqual({
       action: { dataQa: 'continue', href: '/hdc/review/bassRequest/', text: 'Continue', type: 'btn' },
       label: 'Ready to submit',
-      title: 'Send for BASS area checks',
+      title: 'Send for CAS2 area checks',
     })
   })
 
@@ -36,7 +36,7 @@ describe('ca submit for bass review task', () => {
     ).toStrictEqual({
       action: { dataQa: 'continue', href: '/hdc/review/bassRequest/', text: 'Continue', type: 'btn' },
       label: 'Ready to submit',
-      title: 'Send for BASS area checks',
+      title: 'Send for CAS2 area checks',
     })
   })
 
@@ -46,6 +46,6 @@ describe('ca submit for bass review task', () => {
         decisions: { optedOut: false },
         tasks: { bassRequest: 'SOMETHING' },
       })
-    ).toStrictEqual({ action: null, label: 'Not completed', title: 'Send for BASS area checks' })
+    ).toStrictEqual({ action: null, label: 'Not completed', title: 'Send for CAS2 area checks' })
   })
 })

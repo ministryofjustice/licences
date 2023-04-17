@@ -59,7 +59,7 @@ describe('TaskList models', () => {
   const sendBassAreaChecks = {
     action: null,
     label: 'Not completed',
-    title: 'Send for BASS area checks',
+    title: 'Send for CAS2 area checks',
   }
   const submitDecisionMaker = {
     action: null,

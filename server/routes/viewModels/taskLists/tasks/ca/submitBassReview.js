@@ -19,7 +19,7 @@ module.exports = ({ decisions, tasks }) => {
   const { optedOut } = decisions
   const { bassRequest } = tasks
   return {
-    title: 'Send for BASS area checks',
+    title: 'Send for CAS2 area checks',
     label: getLabel(optedOut, bassRequest),
     action: getCaAction(optedOut, bassRequest),
   }
