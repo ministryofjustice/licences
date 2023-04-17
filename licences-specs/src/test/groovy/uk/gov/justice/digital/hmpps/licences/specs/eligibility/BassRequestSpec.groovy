@@ -92,7 +92,7 @@ class BassRequestSpec extends GebReportingSpec {
     to TaskListPage, testData.markAndrewsBookingId
 
     and: 'I click to continue to submission'
-    taskListAction('Send for BASS area checks').click()
+    taskListAction('Send for CAS2 area checks').click()
 
     then: 'I see the review BASS request page'
     at ReviewBassRequestPage
