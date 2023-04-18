@@ -22,7 +22,7 @@ block content
         div.error-summary.pure-u-1.center(role="alert" aria-labelledby="error-summary-heading" tabindex="-1")
           h2.heading-medium.error-summary-heading.noMargin#error-summary-heading #{message}
 
-    h2.heading-large BASS address
+    h2.heading-large CAS2 address
 
     div.pure-u-1-2
       if bassRequest.specificArea === 'No'
@@ -36,7 +36,7 @@ block content
 
       else
         if bassAreaCheck.bassAreaSuitable === 'Yes'
-          | The community offender manager has approved the following BASS area:
+          | The community offender manager has approved the following CAS2 area:
 
         div.paddingTop.paddingBottom
           div.pure-u-1-2
@@ -64,7 +64,7 @@ block content
       include ../includes/taskListReturn
 
     else
-      h2.heading-medium Has BASS made an offer to the offender?
+      h2.heading-medium Has CAS2 made an offer to the offender?
 
       form(method="post")
         input(type="hidden" name="_csrf" value=csrfToken)
@@ -74,7 +74,7 @@ block content
           div.form-group.smallPaddingTop
             div.multiple-choice(data-target="bassAddressForm")
               input#waiting(type="radio" checked=bassOffer.bassAccepted === 'Yes' name="bassAccepted" value="Yes")
-              label(for="waiting") Yes, BASS made an offer
+              label(for="waiting") Yes, CAS2 made an offer
             div.multiple-choice
               input#unsuitable(type="radio" checked=bassOffer.bassAccepted === 'Unsuitable' name="bassAccepted" value="Unsuitable")
               label(for="unsuitable") No, offender not suitable
@@ -83,8 +83,8 @@ block content
               label(for="unavailable") No, address not available
 
           div#bassAreaDetails.panel.panel-border-narrow
-            label(for='bassOfferDetails') Provide details of the BASS decision (optional)
-              textarea(name='bassOfferDetails' id='bassOfferDetails' class='form-control' rows='2' aria-label="Provide details of the BASS decision (optional)")
+            label(for='bassOfferDetails') Provide details of the CAS2 decision (optional)
+              textarea(name='bassOfferDetails' id='bassOfferDetails' class='form-control' rows='2' aria-label="Provide details of the CAS2 decision (optional)")
                 if bassOffer.bassOfferDetails
                   | #{bassOffer.bassOfferDetails}
 

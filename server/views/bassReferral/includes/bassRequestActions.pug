@@ -2,20 +2,20 @@ div
   if !bassWithdrawn
     div.pure-g
       div.pure-u-1.pure-u-md-1-2
-        p BASS offer withdrawn
+        p CAS2 offer withdrawn
         div
           form(method="post", name="withdrawBass", action="/hdc/bassReferral/bassOffer/withdraw/" + bookingId)
             input(type="hidden" name="_csrf" value=csrfToken)
             input(type="hidden" name="withdrawalType" value="offer")
-            button#withdrawBassOffer.button.largeMarginBottom(type='submit', role='button', data-element-id="continue-button") Withdraw BASS request
+            button#withdrawBassOffer.button.largeMarginBottom(type='submit', role='button', data-element-id="continue-button") Withdraw CAS2 request
 
       div.pure-u-1.pure-u-md-1-2
-        p Offender has withdrawn BASS request
+        p Offender has withdrawn CAS2 request
         div
           form(method="post", name="withdrawBass", action="/hdc/bassReferral/bassOffer/withdraw/" + bookingId)
             input(type="hidden" name="_csrf" value=csrfToken)
             input(type="hidden" name="withdrawalType" value="request")
-            button#withdrawBassRequest.button.largeMarginBottom(type='submit', role='button', data-element-id="continue-button") Withdraw BASS request
+            button#withdrawBassRequest.button.largeMarginBottom(type='submit', role='button', data-element-id="continue-button") Withdraw CAS2 request
   else
     div.pure-g
       div.pure-u-1.pure-u-md-1-2
