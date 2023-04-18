@@ -6,7 +6,7 @@ const getLabel = ({ decisions, tasks }) => {
 
   if (bassAreaCheck === 'DONE' && approvedPremisesAddress !== 'DONE') {
     if (bassAreaSpecified) {
-      return bassAreaSuitable ? 'BASS area suitable' : 'BASS area is not suitable'
+      return bassAreaSuitable ? 'CAS2 area suitable' : 'CAS2 area is not suitable'
     }
     if (!bassAreaSpecified && approvedPremisesRequired === true) {
       return 'Approved premises required'
@@ -23,7 +23,7 @@ const getLabel = ({ decisions, tasks }) => {
 module.exports = ({ decisions, tasks }) => {
   const { bassAreaCheck, approvedPremisesAddress } = tasks
   return {
-    title: 'BASS area check',
+    title: 'CAS2 area check',
     label: getLabel({ decisions, tasks }),
     action:
       approvedPremisesAddress === 'DONE'

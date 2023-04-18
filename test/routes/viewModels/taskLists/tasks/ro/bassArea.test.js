@@ -20,22 +20,22 @@ describe('bass area task', () => {
       ).toBe('No specific BASS area requested')
     })
 
-    test('should return BASS area suitable if decision is true', () => {
+    test('should return CAS2 (BASS) area suitable if decision is true', () => {
       expect(
         bassArea({
           decisions: { bassAreaSpecified: true, bassAreaSuitable: true },
           tasks: { bassAreaCheck: 'DONE' },
         }).label
-      ).toBe('BASS area suitable')
+      ).toBe('CAS2 area suitable')
     })
 
-    test('should return BASS area is not suitable if decision is false', () => {
+    test('should return CAS2 (BASS) area is not suitable if decision is false', () => {
       expect(
         bassArea({
           decisions: { bassAreaSpecified: true, bassAreaSuitable: false },
           tasks: { bassAreaCheck: 'DONE' },
         }).label
-      ).toBe('BASS area is not suitable')
+      ).toBe('CAS2 area is not suitable')
     })
   })
 
