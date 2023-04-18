@@ -32,7 +32,7 @@ class FinalChecksTaskListSpec extends GebReportingSpec {
   @Shared
   def tasks = [
     address    : 'Proposed curfew address',
-    bass       : 'BASS address',
+    bass       : 'CAS2 address',
     curfewHours: 'Curfew hours',
     conditions : 'Additional conditions',
     risk       : 'Risk management',

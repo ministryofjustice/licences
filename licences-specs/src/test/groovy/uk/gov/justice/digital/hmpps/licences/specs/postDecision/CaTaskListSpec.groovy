@@ -29,7 +29,7 @@ class CaTaskListSpec extends GebReportingSpec {
   def tasks = [
     eligibility : 'Eligibility and presumed suitability',
     address     : 'Proposed curfew address',
-    bass        : 'BASS address',
+    bass        : 'CAS2 address',
     conditions  : 'Additional conditions',
     risk        : 'Risk management',
     victim      : 'Victim liaison',
