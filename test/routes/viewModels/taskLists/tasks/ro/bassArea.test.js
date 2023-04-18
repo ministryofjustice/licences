@@ -29,13 +29,13 @@ describe('bass area task', () => {
       ).toBe('CAS2 area suitable')
     })
 
-    test('should return BASS area is not suitable if decision is false', () => {
+    test('should return CAS2 (BASS) area is not suitable if decision is false', () => {
       expect(
         bassArea({
           decisions: { bassAreaSpecified: true, bassAreaSuitable: false },
           tasks: { bassAreaCheck: 'DONE' },
         }).label
-      ).toBe('BASS area is not suitable')
+      ).toBe('CAS2 area is not suitable')
     })
   })
 
