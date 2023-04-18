@@ -108,7 +108,7 @@ describe('TaskList models', () => {
   }
 
   const bassAddress = {
-    title: 'BASS address',
+    title: 'CAS2 address',
     label: 'BASS referral requested',
     action: {
       href: '/hdc/bassReferral/bassOffer/',
@@ -117,7 +117,7 @@ describe('TaskList models', () => {
     },
   }
   const bassAddressRejected = {
-    title: 'BASS address',
+    title: 'CAS2 address',
     label: 'BASS referral requested',
     action: {
       href: '/hdc/proposedAddress/curfewAddressChoice/',
@@ -128,7 +128,7 @@ describe('TaskList models', () => {
   }
 
   const bassAddressWithApprovedAddress = {
-    title: 'BASS address',
+    title: 'CAS2 address',
     label: 'Approved premises required',
     action: {
       href: '/hdc/bassReferral/approvedPremisesChoice/',
@@ -256,7 +256,7 @@ describe('TaskList models', () => {
       type: 'btn',
     },
     label: 'WARNING||Address not available',
-    title: 'BASS address',
+    title: 'CAS2 address',
   }
 
   describe('caEligibility', () => {
@@ -617,7 +617,7 @@ describe('TaskList models', () => {
       ).toEqual([eligibility, proposedCurfewAddress, refuse, submitDecisionMaker])
     })
 
-    test('should show  Bass Address task with Approved Premises label and View/Edit button if AP input', () => {
+    test('should show CAS2 (BASS) Address task with Approved Premises label and View/Edit button if AP input', () => {
       expect(
         taskListModel(
           'CA',

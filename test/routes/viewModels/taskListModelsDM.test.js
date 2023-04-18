@@ -65,7 +65,7 @@ describe('TaskList models', () => {
   }
 
   const bassAddress = {
-    title: 'BASS address',
+    title: 'CAS2 address',
     label: 'BASS referral requested',
     action: { href: '/hdc/review/bassOffer/', text: 'View', type: 'btn-secondary' },
   }
