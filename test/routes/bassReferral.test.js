@@ -266,7 +266,7 @@ describe('/hdc/bassReferral', () => {
 
       const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
 
-      const routes = [{ url: '/hdc/bassReferral/bassAreaCheck/1', content: 'BASS area check' }]
+      const routes = [{ url: '/hdc/bassReferral/bassAreaCheck/1', content: 'CAS2 area check' }]
 
       testFormPageGets(app, routes, licenceService)
     })
