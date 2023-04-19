@@ -114,7 +114,7 @@ const getOfferAction = ({ decisions, tasks }) => {
   return { text: 'Continue', href: '/hdc/proposedAddress/curfewAddressChoice/', type: 'btn', dataQa: 'bass-address' }
 }
 
-const title = 'BASS address'
+const title = 'CAS2 address'
 
 module.exports = {
   ca: {

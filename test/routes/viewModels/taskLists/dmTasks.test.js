@@ -48,14 +48,14 @@ describe('dmTasks', () => {
       ])
     })
 
-    test('Accepted BASS address', () => {
+    test('Accepted CAS2 (BASS) address', () => {
       const results = dmTasks({
         tasks,
         decisions: { bassReferralNeeded: true, bassAccepted: 'Yes' },
       })
 
       expect(results.map(({ task, title }) => task || title)).toStrictEqual([
-        'BASS address',
+        'CAS2 address',
         'Risk management',
         'Victim liaison',
         'Curfew hours',
@@ -86,14 +86,14 @@ describe('dmTasks', () => {
       ])
     })
 
-    test('previously rejected address with bass accepted', () => {
+    test('previously rejected address with CAS2 (BASS) accepted', () => {
       const results = dmTasks({
         tasks,
         decisions: { curfewAddressRejected: true, bassReferralNeeded: true, bassAccepted: 'Yes' },
       })
 
       expect(results.map(({ task, title }) => task || title)).toStrictEqual([
-        'BASS address',
+        'CAS2 address',
         'Risk management',
         'Victim liaison',
         'Curfew hours',
