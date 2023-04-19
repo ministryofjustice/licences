@@ -17,7 +17,7 @@ describe('bass area task', () => {
           decisions: { bassAreaSpecified: false },
           tasks: { bassAreaCheck: 'DONE' },
         }).label
-      ).toBe('No specific BASS area requested')
+      ).toBe('No specific CAS2 area requested')
     })
 
     test('should return CAS2 (BASS) area suitable if decision is true', () => {
