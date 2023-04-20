@@ -56,7 +56,7 @@ const getOfferLabel = ({ decisions, tasks }) => {
 
   if (bassWithdrawn) {
     if (bassWithdrawalReason === 'offer') {
-      return 'BASS offer withdrawn'
+      return 'CAS2 offer withdrawn'
     }
     return 'BASS request withdrawn'
   }
