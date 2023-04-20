@@ -11,7 +11,7 @@ const getLabel = ({ decisions, tasks }) => {
     if (!bassAreaSpecified && approvedPremisesRequired === true) {
       return 'Approved premises required'
     }
-    return 'No specific BASS area requested'
+    return 'No specific CAS2 area requested'
   }
 
   if (approvedPremisesAddress === 'DONE') {

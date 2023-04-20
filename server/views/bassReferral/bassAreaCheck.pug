@@ -28,7 +28,7 @@ block content
             div.bold#proposedCounty #{bassRequest.proposedCounty}
       else
         div.pure-u-1-2
-        div#noSpecificAreaMessage Offender does not have a preferred BASS area
+        div#noSpecificAreaMessage Offender does not have a preferred CAS2 area
 
     if  additionalInformation
      div.pure-u-1.pure-u-md-2-3.smallPaddingTop
@@ -72,9 +72,9 @@ block content
             if bassRequest.specificArea === 'Yes'
               label(for='bassAreaReason') Explain your decision
             else
-              label(for='bassAreaReason') Enter any information that may affect the choice of BASS accommodation (optional)
+              label(for='bassAreaReason') Enter any information that may affect the choice of CAS2 accommodation (optional)
         
-            textarea(name='bassAreaReason' id='bassAreaReason' class='form-control' rows='2' aria-label="Provide reasons why the BASS area is unsuitable")
+            textarea(name='bassAreaReason' id='bassAreaReason' class='form-control' rows='2' aria-label="Provide reasons why the CAS2 area is unsuitable")
               if bassAreaCheck.bassAreaReason
                 | #{bassAreaCheck.bassAreaReason}
 
