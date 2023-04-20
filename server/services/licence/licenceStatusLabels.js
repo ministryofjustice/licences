@@ -29,7 +29,7 @@ const status = {
   notEnoughTime: { statusLabel: 'Not enough time', activeCase: false },
   optedOut: { statusLabel: 'Opted out', activeCase: false },
   refused: { statusLabel: 'Refused', activeCase: false },
-  bassOfferWithdrawn: { statusLabel: 'BASS offer withdrawn', activeCase: false },
+  bassOfferWithdrawn: { statusLabel: 'CAS2 offer withdrawn', activeCase: false },
   bassRequestWithdrawn: { statusLabel: 'BASS request withdrawn', activeCase: false },
 }
 
