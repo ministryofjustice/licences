@@ -46,8 +46,8 @@ const labels = {
     'Licence created': 'Continue',
     'Presumed unsuitable': 'Change',
     'Opted out': 'Change',
-    'BASS offer withdrawn': 'Change',
-    'BASS request withdrawn': 'Change',
+    'CAS2 offer withdrawn': 'Change',
+    'CAS2 request withdrawn': 'Change',
     Postponed: 'Change',
   },
   ro: {

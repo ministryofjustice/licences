@@ -11,22 +11,22 @@ describe('bass address task', () => {
       ).toBe('BASS area rejected')
     })
 
-    test('should return BASS offer withdrawn if suitable, withdrawn and bassWithdrawalReason === offer', () => {
+    test('should return CAS2 offer withdrawn if suitable, withdrawn and bassWithdrawalReason === offer', () => {
       expect(
         bassAddress.ca.standard({
           decisions: { bassAreaNotSuitable: false, bassWithdrawn: true, bassWithdrawalReason: 'offer' },
           tasks: {},
         }).label
-      ).toBe('BASS offer withdrawn')
+      ).toBe('CAS2 offer withdrawn')
     })
 
-    test('should return BASS request withdrawn if suitable, withdrawn and bassWithdrawalReason !== offer', () => {
+    test('should return CAS2 request withdrawn if suitable, withdrawn and bassWithdrawalReason !== offer', () => {
       expect(
         bassAddress.ca.standard({
           decisions: { bassAreaNotSuitable: false, bassWithdrawn: true, bassWithdrawalReason: 'something' },
           tasks: {},
         }).label
-      ).toBe('BASS request withdrawn')
+      ).toBe('CAS2 request withdrawn')
     })
 
     test('should return Offer made and address provided if bass offer made and bass address DONE', () => {
@@ -129,22 +129,22 @@ describe('bass offer', () => {
         ).toBe('BASS area rejected')
       })
 
-      test('should return BASS offer withdrawn if bassWithdrawalReason = offer', () => {
+      test('should return CAS2 offer withdrawn if bassWithdrawalReason = offer', () => {
         expect(
           bassAddress.ca.standard({
             decisions: { bassWithdrawn: true, bassWithdrawalReason: 'offer' },
             tasks: {},
           }).label
-        ).toBe('BASS offer withdrawn')
+        ).toBe('CAS2 offer withdrawn')
       })
 
-      test('should return BASS offer withdrawn if bassWithdrawalReason != offer', () => {
+      test('should return CAS2 offer withdrawn if bassWithdrawalReason != offer', () => {
         expect(
           bassAddress.ca.standard({
             decisions: { bassWithdrawn: true, bassWithdrawalReason: 'something else' },
             tasks: {},
           }).label
-        ).toBe('BASS request withdrawn')
+        ).toBe('CAS2 request withdrawn')
       })
     })
 

@@ -147,7 +147,7 @@ describe('licenceStatusLabels', () => {
               decisions: { bassReferralNeeded: true, bassWithdrawalReason: 'request' },
               tasks: {},
             },
-            label: 'BASS request withdrawn',
+            label: 'CAS2 request withdrawn',
           },
           {
             status: {

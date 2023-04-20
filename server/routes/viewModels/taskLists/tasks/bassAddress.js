@@ -13,7 +13,7 @@ const getLabel = ({ decisions, tasks }) => {
   }
 
   if (bassWithdrawn) {
-    return bassWithdrawalReason === 'offer' ? 'BASS offer withdrawn' : 'BASS request withdrawn'
+    return bassWithdrawalReason === 'offer' ? 'CAS2 offer withdrawn' : 'CAS2 request withdrawn'
   }
 
   if (bassOffer === 'DONE') {
@@ -58,7 +58,7 @@ const getOfferLabel = ({ decisions, tasks }) => {
     if (bassWithdrawalReason === 'offer') {
       return 'CAS2 offer withdrawn'
     }
-    return 'BASS request withdrawn'
+    return 'CAS2 request withdrawn'
   }
 
   if (bassOffer === 'DONE') {

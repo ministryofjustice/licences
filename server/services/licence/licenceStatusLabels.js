@@ -30,7 +30,7 @@ const status = {
   optedOut: { statusLabel: 'Opted out', activeCase: false },
   refused: { statusLabel: 'Refused', activeCase: false },
   bassOfferWithdrawn: { statusLabel: 'CAS2 offer withdrawn', activeCase: false },
-  bassRequestWithdrawn: { statusLabel: 'BASS request withdrawn', activeCase: false },
+  bassRequestWithdrawn: { statusLabel: 'CAS2 request withdrawn', activeCase: false },
 }
 
 function getStatusLabel(licenceStatus, role) {
