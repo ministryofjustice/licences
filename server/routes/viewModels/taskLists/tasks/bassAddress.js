@@ -9,18 +9,18 @@ const getLabel = ({ decisions, tasks }) => {
   }
 
   if (bassAreaNotSuitable) {
-    return 'BASS area rejected'
+    return 'CAS2 area rejected'
   }
 
   if (bassWithdrawn) {
-    return bassWithdrawalReason === 'offer' ? 'BASS offer withdrawn' : 'BASS request withdrawn'
+    return bassWithdrawalReason === 'offer' ? 'CAS2 offer withdrawn' : 'CAS2 request withdrawn'
   }
 
   if (bassOffer === 'DONE') {
     if (bassAccepted === 'Yes') {
       return bassAddress === 'DONE' ? 'Offer made and address provided' : 'Offer made, awaiting address'
     }
-    return bassAccepted === 'Unsuitable' ? 'WARNING||Not suitable for BASS' : 'WARNING||Address not available'
+    return bassAccepted === 'Unsuitable' ? 'WARNING||Not suitable for CAS2' : 'WARNING||Address not available'
   }
 
   return 'Not completed'
@@ -51,14 +51,14 @@ const getOfferLabel = ({ decisions, tasks }) => {
   }
 
   if (bassAreaNotSuitable) {
-    return 'BASS area rejected'
+    return 'CAS2 area rejected'
   }
 
   if (bassWithdrawn) {
     if (bassWithdrawalReason === 'offer') {
       return 'CAS2 offer withdrawn'
     }
-    return 'BASS request withdrawn'
+    return 'CAS2 request withdrawn'
   }
 
   if (bassOffer === 'DONE') {
@@ -66,7 +66,7 @@ const getOfferLabel = ({ decisions, tasks }) => {
       return 'Offer made'
     }
     if (bassAccepted === 'Unsuitable') {
-      return 'WARNING||Not suitable for BASS'
+      return 'WARNING||Not suitable for CAS2'
     }
     return 'WARNING||Address not available'
   }

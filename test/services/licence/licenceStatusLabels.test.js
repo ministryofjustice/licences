@@ -147,7 +147,7 @@ describe('licenceStatusLabels', () => {
               decisions: { bassReferralNeeded: true, bassWithdrawalReason: 'request' },
               tasks: {},
             },
-            label: 'BASS request withdrawn',
+            label: 'CAS2 request withdrawn',
           },
           {
             status: {
@@ -343,7 +343,7 @@ describe('licenceStatusLabels', () => {
               decisions: { bassReferralNeeded: true, bassAreaNotSuitable: true },
               tasks: {},
             },
-            label: 'BASS area rejected',
+            label: 'CAS2 area rejected',
           },
           {
             status: {

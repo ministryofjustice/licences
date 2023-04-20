@@ -9,8 +9,8 @@ const status = {
   eligible: { statusLabel: 'Eligible', activeCase: true },
   approvedPremisesRequired: { statusLabel: 'Approved premises', activeCase: true },
   addressRejected: { statusLabel: 'Address not suitable', activeCase: true },
-  bassRequest: { statusLabel: 'BASS request', activeCase: true },
-  bassAreaRejected: { statusLabel: 'BASS area rejected', activeCase: true },
+  bassRequest: { statusLabel: 'CAS2 request', activeCase: true },
+  bassAreaRejected: { statusLabel: 'CAS2 area rejected', activeCase: true },
   approved: { statusLabel: 'Approved', activeCase: true },
   postponed: { statusLabel: 'Postponed', activeCase: true },
   addressSuitable: { statusLabel: 'Address suitable', activeCase: true },
@@ -30,7 +30,7 @@ const status = {
   optedOut: { statusLabel: 'Opted out', activeCase: false },
   refused: { statusLabel: 'Refused', activeCase: false },
   bassOfferWithdrawn: { statusLabel: 'CAS2 offer withdrawn', activeCase: false },
-  bassRequestWithdrawn: { statusLabel: 'BASS request withdrawn', activeCase: false },
+  bassRequestWithdrawn: { statusLabel: 'CAS2 request withdrawn', activeCase: false },
 }
 
 function getStatusLabel(licenceStatus, role) {

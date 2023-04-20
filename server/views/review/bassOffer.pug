@@ -27,7 +27,7 @@ block content
       div.pure-u-1.pure-u-md-2-3.paddingTop
 
         if licenceStatus.decisions.bassAreaNotSuitable
-          div#bassOfferOutcome.bold BASS area rejected
+          div#bassOfferOutcome.bold CAS2 area rejected
 
         -var offer = licenceStatus.decisions.bassAccepted
         if offer === 'Yes'
@@ -35,7 +35,7 @@ block content
         else if offer === 'Waiting'
           div#bassOfferOutcome.bold Offer made and on waiting list
         else if offer === 'Unsuitable'
-          div#bassOfferOutcome.bold Not suitable for BASS
+          div#bassOfferOutcome.bold Not suitable for CAS2
         else if offer === 'Unavailable'
           div#bassOfferOutcome.bold Address not available
 
@@ -47,13 +47,13 @@ block content
 
       if bassOffer.bassAccepted === 'Yes' && bassAddress.bassArea && bassAddress.addressLine1
         div.pure-u-1.pure-u-md-1-3.paddingTop
-          span Bass offer area
+          span CAS2 offer area
         div.pure-u-1.pure-u-md-2-3.paddingTop#bassOfferArea
           if bassAddress.bassArea
             div.bold #{bassAddress.bassArea}
 
         div.pure-u-1.pure-u-md-1-3.paddingTop
-          span Bass offer address
+          span CAS2 offer address
         div.pure-u-1.pure-u-md-2-3.paddingTop#bassOfferAddress
           if bassAddress.addressLine1
             div.bold #{bassAddress.addressLine1}
