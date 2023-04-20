@@ -79,7 +79,7 @@ const getOfferLabel = ({ decisions, tasks }) => {
     return approvedPremisesAddress === 'DONE' ? 'Approved premises required' : 'Not completed'
   }
 
-  return 'BASS referral requested'
+  return 'CAS2 referral requested'
 }
 
 const getOfferAction = ({ decisions, tasks }) => {

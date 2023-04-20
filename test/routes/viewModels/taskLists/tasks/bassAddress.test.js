@@ -185,22 +185,22 @@ describe('bass offer', () => {
         ).toBe('Not completed')
       })
 
-      test('should return BASS referral requested if bassAreaCheck == DONE && !bassAreaSuitable', () => {
+      test('should return CAS2 referral requested if bassAreaCheck == DONE && !bassAreaSuitable', () => {
         expect(
           bassAddress.ca.postApproval({
             decisions: { bassAreaSuitable: false },
             tasks: { bassOffer: 'UNSTARTED' },
           }).label
-        ).toBe('BASS referral requested')
+        ).toBe('CAS2 referral requested')
       })
 
-      test('should return BASS referral requested if !bassAreaNotSuitable, !bassWithdrawn, bassOffer !== DONE, bassAreaCheck !== DONE', () => {
+      test('should return CAS2 referral requested if !bassAreaNotSuitable, !bassWithdrawn, bassOffer !== DONE, bassAreaCheck !== DONE', () => {
         expect(
           bassAddress.ca.postApproval({
             decisions: { bassAreaNotSuitable: false, bassWithdrawn: false },
             tasks: { bassOffer: 'UNSTARTED', bassAreaCheck: 'UNSTARTED' },
           }).label
-        ).toBe('BASS referral requested')
+        ).toBe('CAS2 referral requested')
       })
     })
   })

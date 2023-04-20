@@ -109,7 +109,7 @@ describe('TaskList models', () => {
 
   const bassAddress = {
     title: 'CAS2 address',
-    label: 'BASS referral requested',
+    label: 'CAS2 referral requested',
     action: {
       href: '/hdc/bassReferral/bassOffer/',
       text: 'Continue',
@@ -118,7 +118,7 @@ describe('TaskList models', () => {
   }
   const bassAddressRejected = {
     title: 'CAS2 address',
-    label: 'BASS referral requested',
+    label: 'CAS2 referral requested',
     action: {
       href: '/hdc/proposedAddress/curfewAddressChoice/',
       text: 'Continue',
