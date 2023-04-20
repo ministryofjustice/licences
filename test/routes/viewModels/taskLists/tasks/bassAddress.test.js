@@ -53,7 +53,7 @@ describe('bass address task', () => {
           decisions: { bassAreaNotSuitable: false, bassWithdrawn: false, bassAccepted: 'Unsuitable' },
           tasks: { bassOffer: 'DONE' },
         }).label
-      ).toBe('WARNING||Not suitable for BASS')
+      ).toBe('WARNING||Not suitable for CAS2')
     })
 
     test('should return warning if Offer not made but not deemed unsuitable', () => {
@@ -158,13 +158,13 @@ describe('bass offer', () => {
         ).toBe('Offer made')
       })
 
-      test('should return Not suitable for BASS if bassOffer = DONE && bassAccepted === Unsuitable', () => {
+      test('should return Not suitable for CAS2 if bassOffer = DONE && bassAccepted === Unsuitable', () => {
         expect(
           bassAddress.ca.postApproval({
             decisions: { bassAccepted: 'Unsuitable' },
             tasks: { bassOffer: 'DONE' },
           }).label
-        ).toBe('WARNING||Not suitable for BASS')
+        ).toBe('WARNING||Not suitable for CAS2')
       })
 
       test('should return Address not available if bassOffer = DONE && bassAccepted !== Unsuitable or Yes', () => {

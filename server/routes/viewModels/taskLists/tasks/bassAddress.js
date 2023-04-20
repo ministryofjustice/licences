@@ -20,7 +20,7 @@ const getLabel = ({ decisions, tasks }) => {
     if (bassAccepted === 'Yes') {
       return bassAddress === 'DONE' ? 'Offer made and address provided' : 'Offer made, awaiting address'
     }
-    return bassAccepted === 'Unsuitable' ? 'WARNING||Not suitable for BASS' : 'WARNING||Address not available'
+    return bassAccepted === 'Unsuitable' ? 'WARNING||Not suitable for CAS2' : 'WARNING||Address not available'
   }
 
   return 'Not completed'
@@ -66,7 +66,7 @@ const getOfferLabel = ({ decisions, tasks }) => {
       return 'Offer made'
     }
     if (bassAccepted === 'Unsuitable') {
-      return 'WARNING||Not suitable for BASS'
+      return 'WARNING||Not suitable for CAS2'
     }
     return 'WARNING||Address not available'
   }
