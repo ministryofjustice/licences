@@ -10,7 +10,7 @@ const status = {
   approvedPremisesRequired: { statusLabel: 'Approved premises', activeCase: true },
   addressRejected: { statusLabel: 'Address not suitable', activeCase: true },
   bassRequest: { statusLabel: 'BASS request', activeCase: true },
-  bassAreaRejected: { statusLabel: 'BASS area rejected', activeCase: true },
+  bassAreaRejected: { statusLabel: 'CAS2 area rejected', activeCase: true },
   approved: { statusLabel: 'Approved', activeCase: true },
   postponed: { statusLabel: 'Postponed', activeCase: true },
   addressSuitable: { statusLabel: 'Address suitable', activeCase: true },

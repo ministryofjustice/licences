@@ -2,13 +2,13 @@ const bassAddress = require('../../../../../server/routes/viewModels/taskLists/t
 
 describe('bass address task', () => {
   describe('getLabel', () => {
-    test('should return BASS area rejected if decision = true', () => {
+    test('should return CAS2 area rejected if decision = true', () => {
       expect(
         bassAddress.ca.standard({
           decisions: { bassAreaNotSuitable: true },
           tasks: {},
         }).label
-      ).toBe('BASS area rejected')
+      ).toBe('CAS2 area rejected')
     })
 
     test('should return CAS2 offer withdrawn if suitable, withdrawn and bassWithdrawalReason === offer', () => {
@@ -120,13 +120,13 @@ describe('bass address task', () => {
 describe('bass offer', () => {
   describe('getLabel', () => {
     describe('standard', () => {
-      test('should return Bass area rejected if bassAreaNotSuitable = true', () => {
+      test('should return CAS2 area rejected if bassAreaNotSuitable = true', () => {
         expect(
           bassAddress.ca.standard({
             decisions: { bassAreaNotSuitable: true },
             tasks: {},
           }).label
-        ).toBe('BASS area rejected')
+        ).toBe('CAS2 area rejected')
       })
 
       test('should return CAS2 offer withdrawn if bassWithdrawalReason = offer', () => {

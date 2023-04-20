@@ -9,7 +9,7 @@ const getLabel = ({ decisions, tasks }) => {
   }
 
   if (bassAreaNotSuitable) {
-    return 'BASS area rejected'
+    return 'CAS2 area rejected'
   }
 
   if (bassWithdrawn) {
@@ -51,7 +51,7 @@ const getOfferLabel = ({ decisions, tasks }) => {
   }
 
   if (bassAreaNotSuitable) {
-    return 'BASS area rejected'
+    return 'CAS2 area rejected'
   }
 
   if (bassWithdrawn) {
