@@ -10,7 +10,7 @@ const getLabel = ({ decisions, tasks }) => {
 
   if (bassReferralNeeded) {
     if (bassAreaNotSuitable) {
-      return 'ALERT||BASS area rejected'
+      return 'ALERT||CAS2 area rejected'
     }
     if (bassRequest === 'DONE') {
       return 'Completed'

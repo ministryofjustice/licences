@@ -11,13 +11,13 @@ describe('curfew address task', () => {
       ).toBe('Offender has opted out of HDC')
     })
 
-    test('should return BASS area rejected if bassReferralNeeded and bassAreaNotSuitable', () => {
+    test('should return CAS2 area rejected if bassReferralNeeded and bassAreaNotSuitable', () => {
       expect(
         curfewAddress({
           decisions: { optedOut: false, bassReferralNeeded: true, bassAreaNotSuitable: true },
           tasks: {},
         }).label
-      ).toBe('ALERT||BASS area rejected')
+      ).toBe('ALERT||CAS2 area rejected')
     })
 
     test('should return Completed if bassReferralNeeded && bassRequest = DONE', () => {
