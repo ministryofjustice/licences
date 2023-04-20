@@ -52,7 +52,7 @@ const labels = {
   },
   ro: {
     'Not started': 'Start now',
-    'BASS request': 'Start now',
+    'CAS2 request': 'Start now',
     'In progress': 'Continue',
   },
   dm: {
