@@ -231,7 +231,7 @@ describe('formService', () => {
         EST_PREMISE: '',
         OFF_NAME: '',
         OFF_NOMS: '',
-        UNSUITABLE_REASON: 'you have a history of terrorism or terrorism-related offending',
+        UNSUITABLE_REASON: 'of your terrorist or terrorist connected offending history',
       }
 
       const data = await service.getTemplateData('unsuitable', licence, prisoner)
