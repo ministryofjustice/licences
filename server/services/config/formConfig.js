@@ -57,6 +57,6 @@ module.exports = {
     immigrationStatusUnclear: 'your immigration status is not clear',
     recalled: 'you were recalled to prison for poor behaviour during your previous early release',
     sentenceCategory: 'of the type of offence you were convicted of',
-    historyOfTerrorism: 'you have a history of terrorism or terrorism-related offending',
+    historyOfTerrorism: 'of your terrorist or terrorist connected offending history',
   },
 }
