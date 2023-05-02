@@ -2,10 +2,17 @@ extends forms-layout
 
 block content
 
-  +header('not eligible')
+  +header('Not Eligible')
 
-  p We checked to see if you're eligible for release from prison on home detention curfew (tagging).
+  p We checked to see if you're eligible for release from prison on Home Detention Curfew (tagging).
 
   p By law you are not eligible because #{INELIGIBLE_REASON}.
 
-  p You cannot challenge this because it is based on the law, not on a decision by prison staff.
+  p.largeMarginBottom You cannot challenge this because it is based on the law, not on a decision by prison staff.
+
+    ul.byHand
+      li Signed:
+      li Name:
+      li Grade:
+      li Date:
+        
