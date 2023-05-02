@@ -116,7 +116,7 @@ describe('/forms/', () => {
       const pdf = await pdfParse(res.body)
       const pdfText = pdf.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
 
-      expect(pdfText).toContain('Home detention curfew (tagging): eligible')
+      expect(pdfText).toContain('Home Detention Curfew (tagging): Eligible')
       expect(pdfText).toContain('Name: Mark Andrews')
       expect(pdfText).toContain('Location: HMP Albany')
       expect(pdfText).toContain('Prison no: A5001DY')
