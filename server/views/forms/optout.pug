@@ -2,18 +2,20 @@ extends forms-layout
 
 block content
 
-  +header('opt out')
+  +header('Opt out')
 
-  p I do not want to be considered for home detention curfew (tagging) because:
+  p I do not want to be considered for Home Detention Curfew (tagging) because:
 
   p
     input#tick(type='checkbox')
     label(for="tick") I have nowhere to stay
 
-  p Other reason:
+  p 
+    input#tick(type='checkbox')
+    label(for="tick") Other reason:
   div.box(style={height: '3cm'})
 
-  p If you don't have an address, Bail and Accommodation Support Services (BASS) will try to help you find somewhere to stay. Ask prison staff for more information.
+  p If you don't have an address, the Community Accommodation Service Tier 2 (CAS2) will try to help you find somewhere to stay. Ask prison staff for more information.
 
   p I understand that I will not be released until #{SENT_CRD}.
 
