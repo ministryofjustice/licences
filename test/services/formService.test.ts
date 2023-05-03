@@ -182,8 +182,7 @@ describe('formService', () => {
         EST_PREMISE: '',
         OFF_NAME: '',
         OFF_NOMS: '',
-        INELIGIBLE_REASON:
-          'you are currently serving for a terrorism or terrorism-related offence in schedule 19ZA of the Criminal Justice Act 2003',
+        INELIGIBLE_REASON: 'you are serving a sentence for a specified terrorist or terrorist connected offence',
       }
 
       const data = await service.getTemplateData('ineligible', licence, prisoner)
