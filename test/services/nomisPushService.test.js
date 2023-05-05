@@ -128,12 +128,12 @@ describe('nomisPushService', () => {
         {
           example: 'Unsuitable - categoryA',
           data: { type: 'exceptionalCircumstances', status: 'No', reason: 'categoryA' },
-          approvalStatus: { approvalStatus: 'PRES UNSUIT', refusedReason: 'CAT_A' },
+          approvalStatus: { approvalStatus: 'PRES UNSUIT', refusedReason: 'CATEGORY_A' },
         },
         {
           example: 'Unsuitable - serving4YearsOrMoreOverseas',
           data: { type: 'exceptionalCircumstances', status: 'No', reason: 'serving4YearsOrMoreOverseas' },
-          approvalStatus: { approvalStatus: 'PRES UNSUIT', refusedReason: 'SERVING_4_OR_MORE' },
+          approvalStatus: { approvalStatus: 'PRES UNSUIT', refusedReason: 'OVERALL_4YRS' },
         },
         {
           example: 'Postponed - investigation',
