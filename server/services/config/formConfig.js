@@ -1,6 +1,6 @@
 const headerFields = ['OFF_NAME', 'OFF_NOMS', 'EST_PREMISE', 'CREATION_DATE']
 
-const noAddress = 'there is no suitable address for you to live at'
+const noAddress = 'there is no approved address for you to live at'
 const noTime = 'there is not enough time before you’re due to be released'
 
 module.exports = {

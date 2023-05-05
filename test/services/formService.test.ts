@@ -129,7 +129,7 @@ describe('formService', () => {
         EST_PREMISE: '',
         OFF_NAME: '',
         OFF_NOMS: '',
-        REFUSAL_REASON: 'there is no suitable address for you to live at',
+        REFUSAL_REASON: 'there is no approved address for you to live at',
         SENT_CRD: '',
       }
 
@@ -149,7 +149,7 @@ describe('formService', () => {
         EST_PREMISE: '',
         OFF_NAME: '',
         OFF_NOMS: '',
-        REFUSAL_REASON: 'there is no suitable address for you to live at',
+        REFUSAL_REASON: 'there is no approved address for you to live at',
         SENT_CRD: '',
       }
 
