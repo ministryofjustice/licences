@@ -121,6 +121,21 @@ describe('nomisPushService', () => {
           approvalStatus: { approvalStatus: 'PRES UNSUIT', refusedReason: 'UNSUIT_OFF' },
         },
         {
+          example: 'Unsuitable - historyOfTerrorism',
+          data: { type: 'exceptionalCircumstances', status: 'No', reason: 'historyOfTerrorism' },
+          approvalStatus: { approvalStatus: 'PRES UNSUIT', refusedReason: 'HIST_TERROR' },
+        },
+        {
+          example: 'Unsuitable - categoryA',
+          data: { type: 'exceptionalCircumstances', status: 'No', reason: 'categoryA' },
+          approvalStatus: { approvalStatus: 'PRES UNSUIT', refusedReason: 'CAT_A' },
+        },
+        {
+          example: 'Unsuitable - serving4YearsOrMoreOverseas',
+          data: { type: 'exceptionalCircumstances', status: 'No', reason: 'serving4YearsOrMoreOverseas' },
+          approvalStatus: { approvalStatus: 'PRES UNSUIT', refusedReason: 'SERVING_4_OR_MORE' },
+        },
+        {
           example: 'Postponed - investigation',
           data: { type: 'postpone', status: 'Yes', reason: 'investigation' },
           approvalStatus: { approvalStatus: 'PP INVEST', refusedReason: 'OUTSTANDING' },
