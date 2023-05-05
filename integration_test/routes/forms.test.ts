@@ -294,7 +294,7 @@ describe('/forms/', () => {
       expect(pdfText).not.toContain('Are you still waiting for information to inform risk management planning?')
     })
 
-    test('Generates a PDF of licence_variation form - acquisitive question text appears in the output', async () => {
+    test('Generates a PDF of licence_variation form', async () => {
       app = createApp('roUser')
 
       const res = await request(app).get('/hdc/forms/licence_variation/1')
@@ -302,9 +302,7 @@ describe('/forms/', () => {
       const pdf = await pdfParse(res.body)
       const pdfText = pdf.text.replace(/([\t\n])/gm, ' ')
 
-      expect(pdfText).toContain(
-        'Is the prisoner partaking in the Acquisitive Crime project with a mandatory trail monitoring  condition? Yes No'
-      )
+      expect(pdfText).toContain('The following changes have been made to the above’s licence conditions')
     })
     test('Presents a PDF of agency_notification form', async () => {
       app = createApp('roUser')
