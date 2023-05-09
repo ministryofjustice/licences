@@ -2,36 +2,59 @@ extends forms-layout
 
 block content
 
-  +header('address form')
+  +header('Address Form')
 
-  p During your first week in prison we said you're eligible for home detention curfew (tagging).
+  h2 What you need to know
 
-  p Under home detention curfew you would have to:
+  p We previously told you that you're eligible for Home Detention Curfew (tagging).
+
+  p Under Home Detention Curfew you would have to:
 
   ul.disc
-    li stay at home during certain hours (your curfew)
+    li stay at home during certain hours (your curfew); and
     li wear an electronic tag - to make sure you follow your curfew
+    li allow EMS provider staff access to your home to check the equipment
 
   p It would mean you could be released on #{SENT_HDCED}.
 
   h2 What you need to do now
 
-  p You now need to fill in this address form and return it by
+  p You now need to fill in the 'Address Form' below and return it by 
+  
+  p If you need help filling out the form, please ask prison staff for help.
 
   p Try to provide details of at least one address where you could live. If you can, think of a second address in case your first choice is not suitable.
 
-  p If you don't have a place to stay, Bail and Accommodation Support Services (BASS) will try to help you find somewhere to stay.
+  p If you don't have a place to stay, the Community Accommodation Service Tier 2 (CAS2) will try to help you find somewhere to stay.
 
-  h2 I do not have an address
+  h2 What we will do
 
+  p We will:
+
+  ol
+    li Ask probation to check that the address you provided is suitable - this includes talking to anyone else who lives there.
+    li Assess any risks of releasing you on Home Detention Curfew to the proposed address.
+    li Let you know our final decision (in writing).
+
+  h2.pagebreak Not interested?
+
+  p Not interested in being released early with Home Detention Curfew (tagging)? Just fill in the 'Opt out' form.
+
+  h2
+    input#tick(type='checkbox')
+    label(for="tick") I do not have an address
+  
   p Where would you like to live?
-  ul.byHand
-    li Town:
-    li County:
-    li Signed:
-    li Date:
+  div.box(style={height: '4cm'}).no-break
+    ul.byHand
+      li Town:
+      li County:
+      li Signed:
+      li Date:
 
-  h2 I can provide an address
+  h2 
+    input#tick(type='checkbox')
+    label(for="tick", class="underline") I can provide an address
 
   p What address would you prefer to live at?
   include includes/addressEntry
@@ -42,8 +65,12 @@ block content
     include includes/addressEntry
 
   div.no-break
-    p As far as I know the information I provided is correct. I am happy for the main person living at the address or the landlord to be contacted.
+    p As far as I know the information I provided is correct. 
+    
+    p I am happy for the main person living at the address or the landlord to be contacted.
 
+    p I am happy for details of my offending behaviour to be disclosed to the main person living at the address so that they can give informed consent to me staying there on HDC.
+    
     ul.byHand
       li Signed:
       li Date:
