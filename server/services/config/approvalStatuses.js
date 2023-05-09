@@ -57,6 +57,8 @@ module.exports = {
         recalled: { approvalStatus: 'PRES UNSUIT', refusedReason: 'CUR' },
         sentenceCategory: { approvalStatus: 'PRES UNSUIT', refusedReason: 'UNSUIT_OFF' },
         historyOfTerrorism: { approvalStatus: 'PRES UNSUIT', refusedReason: 'HIST_TERROR' },
+        categoryA: { approvalStatus: 'PRES UNSUIT', refusedReason: 'CATEGORY_A' },
+        serving4YearsOrMoreOverseas: { approvalStatus: 'PRES UNSUIT', refusedReason: 'OVERALL_4YRS' },
       },
     },
   },

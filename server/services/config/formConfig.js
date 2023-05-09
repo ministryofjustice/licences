@@ -57,5 +57,7 @@ module.exports = {
     recalled: 'you were recalled to prison for poor behaviour during your previous early release',
     sentenceCategory: 'of the type of offence you were convicted of',
     historyOfTerrorism: 'of your terrorist or terrorist connected offending history',
+    categoryA: 'you are a category A prisoner',
+    serving4YearsOrMoreOverseas: 'you are serving a sentence of 4 or more years',
   },
 }
