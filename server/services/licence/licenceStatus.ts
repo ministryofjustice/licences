@@ -33,6 +33,7 @@ export = function getLicenceStatus(licenceRecord): LicenceStatus {
         seriousOffenceCheck: TaskState.UNSTARTED,
         onRemandCheck: TaskState.UNSTARTED,
         confiscationOrderCheck: TaskState.UNSTARTED,
+        undulyLenientSentenceCheck: TaskState.UNSTARTED,
         finalChecks: TaskState.UNSTARTED,
         approval: TaskState.UNSTARTED,
         createLicence: TaskState.UNSTARTED,
@@ -202,6 +203,9 @@ function getCaStageState(licence) {
   const { decision: confiscationOrder, task: confiscationOrderCheck } = getTaskState(
     finalChecks?.confiscationOrder?.decision
   )
+  const { decision: undulyLenientSentence, task: undulyLenientSentenceCheck } = getTaskState(
+    finalChecks?.undulyLenientSentence?.decision
+  )
 
   const { finalChecksPass, finalChecksRefused, postponed } = getFinalChecksState(licence, seriousOffence, onRemand)
   const { bassAccepted, bassOffer, bassWithdrawn, bassWithdrawalReason } = getBassState(licence)
@@ -213,6 +217,7 @@ function getCaStageState(licence) {
       seriousOffence,
       onRemand,
       confiscationOrder,
+      undulyLenientSentence,
       postponed,
       finalChecksPass,
       finalChecksRefused,
@@ -226,7 +231,13 @@ function getCaStageState(licence) {
       seriousOffenceCheck,
       onRemandCheck,
       confiscationOrderCheck,
-      finalChecks: getOverallState([seriousOffenceCheck, onRemandCheck, confiscationOrderCheck]),
+      undulyLenientSentenceCheck,
+      finalChecks: getOverallState([
+        seriousOffenceCheck,
+        onRemandCheck,
+        confiscationOrderCheck,
+        undulyLenientSentenceCheck,
+      ]),
       bassOffer,
     },
   }

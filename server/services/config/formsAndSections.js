@@ -31,6 +31,7 @@ const sectionContaining = {
   seriousOffence: 'finalChecks',
   onRemand: 'finalChecks',
   confiscationOrder: 'finalChecks',
+  undulyLenientSentence: 'undulyLenientSentence',
   release: 'approval',
   taggingCompany: 'monitoring',
 }

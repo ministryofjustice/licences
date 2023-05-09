@@ -35,6 +35,8 @@ const isBASSRequested = (licence: Licence): boolean => licence?.bassReferral?.ba
 const isOnRemand = (licence: Licence): boolean => licence?.finalChecks?.onRemand?.decision === YES
 const hasConfiscationOrder = (licence: Licence): boolean => licence?.finalChecks?.confiscationOrder?.decision === YES
 const hasSeriousOffence = (licence: Licence): boolean => licence?.finalChecks?.seriousOffence?.decision === YES
+const hasUndulyLenientSentence = (licence: Licence): boolean =>
+  licence?.finalChecks?.undulyLenientSentence?.decision === YES
 
 const isPostponed = (licence: Licence): boolean => licence?.finalChecks?.postpone?.decision === YES
 
@@ -138,7 +140,12 @@ export class LicenceStatisticsCollector implements RowConsumer<LicenceRow> {
 
   private countFailedFinalChecks(row: LicenceRow) {
     const { licence } = row
-    if (isOnRemand(licence) || hasConfiscationOrder(licence) || hasSeriousOffence(licence)) {
+    if (
+      isOnRemand(licence) ||
+      hasConfiscationOrder(licence) ||
+      hasSeriousOffence(licence) ||
+      hasUndulyLenientSentence(licence)
+    ) {
       this.statistics.failedFinalChecks += 1
     }
   }

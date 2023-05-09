@@ -120,6 +120,7 @@ export interface FinalChecks {
   postpone?: { decision?: YesNo; postponeReason?: string }
   refusal?: { decision?: YesNo; outOfTimeReasons?: string; reason?: string }
   seriousOffence?: { decision?: YesNo }
+  undulyLenientSentence?: { decision?: YesNo }
 }
 
 export type BespokeCondition = { approved?: string; text?: string }
