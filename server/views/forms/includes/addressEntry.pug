@@ -1,30 +1,41 @@
-ul.byHand.no-break
-  li Address line 1
-  li Address line 2
-  li Town or city
-  li County
-  li Postcode
-  li Telephone
+div.box(style={height: '5cm'}).no-break
+  ul.byHand
+    li Address line 1:
+    li Address line 2:
+    li Town or city:
+    li County:
+    li Postcode:
+    li Telephone:
 
 div.no-break
-  h2 Who is the main person living at this address?
-  p We will contact them to make sure the address is suitable for you to live there. Provide the landlord's details if no one else lives there.
+  h2 Who is the main person living at this address? You should provide the landlord's details if no one else lives there.
 
   include mainOccupier
 
 div.no-break
   h2 Does anyone else live at this address?
 
-  p Yes &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;No
+  p.inline
+    input#tick(type='checkbox')
+    label(for="tick") Yes &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+    input#tick(type='checkbox')
+    label(for="tick") No
 
-  include otherResident
-  include otherResident
-  include otherResident
+  div.box(style={height: '10cm'})
+    p.smallPaddingBottom If you answered yes, provide details:
+
+    include otherResident
+    include otherResident
+    include otherResident
 
 div.no-break
-  h2 Have you ever been in trouble with the people living here or with the neighbours?
+  h2 Have you ever been in trouble with or offended against the people living here or with the neighbours?
 
-  p Yes &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;No
+  p.inline
+    input#tick(type='checkbox')
+    label(for="tick") Yes &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+    input#tick(type='checkbox')
+    label(for="tick") No
 
   p If you answered yes, provide details:
 

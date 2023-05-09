@@ -2,34 +2,44 @@ extends forms-layout
 
 block content
 
-  +header('address unsuitable')
+  +header('Address Unsuitable')
 
-  p We have checked the address you gave us and decided it is not a suitable place for you to live while under home detention curfew (tagging).
+  p We have checked the address you gave us and decided it is not a suitable place for you to live while under Home Detention Curfew (tagging).
 
   p You need to provide details of another address where you could live if you still want to be considered for tagging.
 
-  p If you cannot provide an address, Bail and Accommodation Support Services (BASS) could help you find somewhere to stay.
+  p If you cannot provide an address, Community Accommodation Service Tier 2 (CAS2) could help you find somewhere to stay.
 
-  h2 I no longer want to be considered for tagging
+  h2 
+    input#tick(type='checkbox')
+    label(for="tick") I no longer want to be considered for tagging
 
-  h2 I still want to be considered but do not have another address
-
-  div.no-break
-    p What address would you prefer to live at?
+  h2 
+    input#tick(type='checkbox')
+    label(for="tick") I still want to be considered but do not have another address
+    
+  p What address would you prefer to live at?
+  div.box(style={height: '3.5cm'}).no-break
     ul.byHand
       li Town:
       li County:
       li Signed:
       li Date:
 
-  h2 I can provide another address
+  h2 
+    input#tick(type='checkbox')
+    label(for="tick") I can provide another address
 
   p What address would you prefer to live at?
   include includes/addressEntry
 
   div.no-break
-    p As far as I know the information I provided is correct. I am happy for the main person living at the address or the landlord to be contacted.
+    p As far as I know the information I provided is correct. 
+    
+    p I am happy for the main person living at the address or the landlord to be contacted.
 
+    p I am happy for details of my offending behaviour to be disclosed to the main person living at the address so that they can give informed consent to me staying there on HDC.
+    
     ul.byHand
       li Signed:
       li Date:
