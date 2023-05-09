@@ -315,7 +315,7 @@ describe('/forms/', () => {
       const pdfText = pdf.text.replace(/([\t\n])/gm, ' ')
 
       expect(pdfText).toContain(
-        'This form must be sent to the EMS provider (LPAdmin@ems.co.uk.cjsm.net), probation provider  and the home police force'
+        'This form must be sent to the EMS provider, probation service and the home police force'
       )
     })
   })
