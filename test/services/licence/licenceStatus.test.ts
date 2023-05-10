@@ -143,6 +143,9 @@ describe('getLicenceStatus', () => {
             confiscationOrder: {
               decision: 'Yes',
             },
+            undulyLenientSentence: {
+              decision: 'Yes',
+            },
             postpone: {
               decision: 'Yes',
             },
@@ -177,6 +180,7 @@ describe('getLicenceStatus', () => {
       expect(status.decisions.seriousOffence).toBe(true)
       expect(status.decisions.onRemand).toBe(true)
       expect(status.decisions.confiscationOrder).toBe(true)
+      expect(status.decisions.undulyLenientSentence).toBe(true)
       expect(status.decisions.finalChecksPass).toBe(false)
       expect(status.decisions.postponed).toBe(true)
       expect(status.decisions.approved).toBe(true)
@@ -248,6 +252,9 @@ describe('getLicenceStatus', () => {
             confiscationOrder: {
               decision: 'No',
             },
+            undulyLenientSentence: {
+              decision: 'No',
+            },
             postpone: {
               decision: 'No',
             },
@@ -283,6 +290,7 @@ describe('getLicenceStatus', () => {
       expect(status.decisions.seriousOffence).toBe(false)
       expect(status.decisions.onRemand).toBe(false)
       expect(status.decisions.confiscationOrder).toBe(false)
+      expect(status.decisions.undulyLenientSentence).toBe(false)
       expect(status.decisions.finalChecksPass).toBe(true)
       expect(status.decisions.postponed).toBe(false)
       expect(status.decisions.approved).toBe(false)
@@ -356,6 +364,9 @@ describe('getLicenceStatus', () => {
             confiscationOrder: {
               decision: 'No',
             },
+            undulyLenientSentence: {
+              decision: 'No',
+            },
             postpone: {
               decision: 'No',
             },
@@ -398,6 +409,7 @@ describe('getLicenceStatus', () => {
       expect(status.tasks.seriousOffenceCheck).toEqual(TaskState.UNSTARTED)
       expect(status.tasks.onRemandCheck).toEqual(TaskState.UNSTARTED)
       expect(status.tasks.confiscationOrderCheck).toEqual(TaskState.UNSTARTED)
+      expect(status.tasks.undulyLenientSentenceCheck).toEqual(TaskState.UNSTARTED)
       expect(status.tasks.finalChecks).toEqual(TaskState.UNSTARTED)
       expect(status.tasks.approval).toEqual(TaskState.UNSTARTED)
       expect(status.tasks.createLicence).toEqual(TaskState.UNSTARTED)
@@ -430,6 +442,7 @@ describe('getLicenceStatus', () => {
       expect(status.tasks.seriousOffenceCheck).toEqual(TaskState.UNSTARTED)
       expect(status.tasks.onRemandCheck).toEqual(TaskState.UNSTARTED)
       expect(status.tasks.confiscationOrderCheck).toEqual(TaskState.UNSTARTED)
+      expect(status.tasks.undulyLenientSentenceCheck).toEqual(TaskState.UNSTARTED)
       expect(status.tasks.finalChecks).toEqual(TaskState.UNSTARTED)
       expect(status.tasks.approval).toEqual(TaskState.UNSTARTED)
       expect(status.tasks.createLicence).toEqual(TaskState.UNSTARTED)
@@ -608,6 +621,9 @@ describe('getLicenceStatus', () => {
             confiscationOrder: {
               decision: 'Yes',
             },
+            undulyLenientSentence: {
+              decision: 'Yes',
+            },
             postpone: {
               decision: 'Yes',
             },
@@ -640,6 +656,7 @@ describe('getLicenceStatus', () => {
       expect(status.tasks.seriousOffenceCheck).toEqual(TaskState.DONE)
       expect(status.tasks.onRemandCheck).toEqual(TaskState.DONE)
       expect(status.tasks.confiscationOrderCheck).toEqual(TaskState.DONE)
+      expect(status.tasks.undulyLenientSentenceCheck).toEqual(TaskState.DONE)
       expect(status.tasks.finalChecks).toEqual(TaskState.DONE)
       expect(status.tasks.approval).toEqual(TaskState.DONE)
       expect(status.tasks.createLicence).toEqual(TaskState.DONE)
@@ -660,6 +677,9 @@ describe('getLicenceStatus', () => {
               decision: 'Yes',
             },
             confiscationOrder: {
+              decision: 'Yes',
+            },
+            undulyLenientSentence: {
               decision: 'Yes',
             },
             postpone: {

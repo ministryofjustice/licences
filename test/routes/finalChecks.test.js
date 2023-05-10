@@ -23,6 +23,11 @@ describe('/hdc/finalChecks', () => {
         url: '/hdc/finalChecks/confiscationOrder/1',
         content: 'Is the offender subject to a confiscation order?',
       },
+      {
+        url: '/hdc/finalChecks/undulyLenientSentence/1',
+        content:
+          'Is there an outstanding application under the unduly lenient sentence (ULS) scheme for this offender?',
+      },
       { url: '/hdc/finalChecks/postpone/1', content: 'Postpone' },
     ]
 
@@ -60,6 +65,12 @@ describe('/hdc/finalChecks', () => {
         url: '/hdc/finalChecks/confiscationOrder/1',
         body: {},
         formName: 'confiscationOrder',
+        nextPath: '/hdc/finalChecks/undulyLenientSentence/1',
+      },
+      {
+        url: '/hdc/finalChecks/undulyLenientSentence/1',
+        body: {},
+        formName: 'undulyLenientSentence',
         nextPath: '/hdc/taskList/1',
       },
       {
@@ -150,6 +161,19 @@ describe('/hdc/finalChecks', () => {
           .send({})
           .expect(302)
           .expect('Location', '/hdc/finalChecks/confiscationOrder/1')
+      })
+
+      test('should redirect back to undulyLenientSentence page if there is an error', () => {
+        const licenceService = createLicenceServiceStub()
+        licenceService.update.mockResolvedValue({ finalChecks: { undulyLenientSentence: {} } })
+        licenceService.validateForm = jest.fn().mockReturnValue({ reason: 'error' })
+        const app = createApp({ licenceServiceStub: licenceService })
+
+        return request(app)
+          .post('/hdc/finalChecks/undulyLenientSentence/1')
+          .send({})
+          .expect(302)
+          .expect('Location', '/hdc/finalChecks/undulyLenientSentence/1')
       })
 
       test('should redirect back to refuse page if nothing is selected and error flashed', () => {
