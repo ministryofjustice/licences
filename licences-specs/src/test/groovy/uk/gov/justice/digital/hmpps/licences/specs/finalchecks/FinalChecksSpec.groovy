@@ -7,7 +7,7 @@ import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
 import uk.gov.justice.digital.hmpps.licences.pages.finalchecks.FinalChecksOnRemandPage
 import uk.gov.justice.digital.hmpps.licences.pages.finalchecks.FinalChecksConfiscationOrderPage
 import uk.gov.justice.digital.hmpps.licences.pages.finalchecks.FinalChecksSeriousOffencePage
-import uk.gov.justice.digital.hmpps.licences.pages.finalChecks.FinalChecksUndulyLenientSentencePage
+import uk.gov.justice.digital.hmpps.licences.pages.finalchecks.FinalChecksUndulyLenientSentencePage
 import uk.gov.justice.digital.hmpps.licences.util.Actions
 import uk.gov.justice.digital.hmpps.licences.util.TestData
 
