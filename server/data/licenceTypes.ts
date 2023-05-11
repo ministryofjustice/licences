@@ -121,6 +121,7 @@ export interface FinalChecks {
   refusal?: { decision?: YesNo; outOfTimeReasons?: string; reason?: string }
   seriousOffence?: { decision?: YesNo }
   undulyLenientSentence?: { decision?: YesNo }
+  segregation?: { decision?: YesNo }
 }
 
 export type BespokeCondition = { approved?: string; text?: string }

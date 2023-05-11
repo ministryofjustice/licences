@@ -124,6 +124,9 @@
       },
       "undulyLenientSentence": {
         "decision": "Yes"
+      },
+      "segregation": {
+        "decision": "Yes"
       }
     }
   }

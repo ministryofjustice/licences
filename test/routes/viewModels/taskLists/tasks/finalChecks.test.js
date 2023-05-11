@@ -40,7 +40,13 @@ describe('final checks task', () => {
     test('should return multiple warning messages when multiple checks failed', () => {
       const labels = finalChecks
         .review({
-          decisions: { seriousOffence: true, onRemand: true, confiscationOrder: true, undulyLenientSentence: true },
+          decisions: {
+            seriousOffence: true,
+            onRemand: true,
+            confiscationOrder: true,
+            undulyLenientSentence: true,
+            segregation: false,
+          },
           tasks: { finalChecks: 'DONE' },
         })
         .label.split('||')
@@ -51,6 +57,9 @@ describe('final checks task', () => {
       expect(labels).toContain('The offender is on remand')
       expect(labels).toContain('The offender is subject to a confiscation order')
       expect(labels).toContain('There is an outstanding unduly lenient sentence application for this offender')
+      expect(labels).not.toContain(
+        'The offender is currently segregated (for a reason other than their own protection)'
+      )
     })
   })
 
@@ -93,7 +102,13 @@ describe('final checks task', () => {
     test('should return multiple warning messages when multiple checks failed', () => {
       const labels = finalChecks
         .view({
-          decisions: { seriousOffence: true, onRemand: true, confiscationOrder: true, undulyLenientSentence: true },
+          decisions: {
+            seriousOffence: true,
+            onRemand: true,
+            confiscationOrder: true,
+            undulyLenientSentence: true,
+            segregation: false,
+          },
           tasks: { finalChecks: 'DONE' },
         })
         .label.split('||')
@@ -104,6 +119,9 @@ describe('final checks task', () => {
       expect(labels).toContain('The offender is on remand')
       expect(labels).toContain('The offender is subject to a confiscation order')
       expect(labels).toContain('There is an outstanding unduly lenient sentence application for this offender')
+      expect(labels).not.toContain(
+        'The offender is currently segregated (for a reason other than their own protection)'
+      )
     })
   })
 })

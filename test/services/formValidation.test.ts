@@ -18,6 +18,7 @@ import {
   onRemand,
   seriousOffence,
   undulyLenientSentence,
+  segregation,
 } from '../../server/routes/config/finalChecks'
 import { bassAreaCheck, bassOffer, bassRequest } from '../../server/routes/config/bassReferral'
 import { release } from '../../server/routes/config/approval'
@@ -1020,6 +1021,21 @@ describe('validation', () => {
 
     describe('undulyLenientSentence', () => {
       const pageConfig = undulyLenientSentence
+      const options = [
+        { formResponse: { decision: 'Yes' }, outcome: {} },
+        { formResponse: { decision: '' }, outcome: { decision: 'Select yes or no' } },
+      ]
+
+      options.forEach((option) => {
+        test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
+          const { outcome, formResponse } = option
+          expect(service.validateForm({ formResponse, pageConfig })).toEqual(outcome)
+        })
+      })
+    })
+
+    describe('segregation', () => {
+      const pageConfig = segregation
       const options = [
         { formResponse: { decision: 'Yes' }, outcome: {} },
         { formResponse: { decision: '' }, outcome: { decision: 'Select yes or no' } },
