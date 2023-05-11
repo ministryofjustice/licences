@@ -35,4 +35,7 @@ block content
             span.block Comments
             span#comments.block.bold
               | #{finalChecks.confiscationOrder.comments}
-
+    
+    div.smallPaddingTop
+      span.block.smallMarginBottom Is there an outstanding application under the unduly lenient sentence (ULS) scheme for this offender?
+      +booleanYesNo("undulyLenientSentence",licenceStatus.decisions.undulyLenientSentence)

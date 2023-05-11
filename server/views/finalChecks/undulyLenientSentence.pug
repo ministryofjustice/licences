@@ -1,0 +1,15 @@
+extends ../formTemplates/formTemplate
+
+block question
+  | Is there an outstanding application under the unduly lenient sentence (ULS) scheme for this offender?
+
+block formItems
+  - var undulyLenientSentenceValue = data.decision || null;
+
+  div.form-group.inline
+    div.multiple-choice
+      input#undulyLenientSentenceYes(type="radio" checked=undulyLenientSentenceValue === 'Yes'  name="decision" value="Yes")
+      label(for="undulyLenientSentenceYes") Yes
+    div.multiple-choice
+      input#undulyLenientSentenceNo(type="radio" checked=undulyLenientSentenceValue === 'No' name="decision" value="No")
+      label(for="undulyLenientSentenceNo") No

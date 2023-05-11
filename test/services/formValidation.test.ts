@@ -13,7 +13,12 @@ import {
   firstNight,
 } from '../../server/routes/config/curfew'
 import { additional, standard } from '../../server/routes/config/licenceConditions'
-import { confiscationOrder, onRemand, seriousOffence } from '../../server/routes/config/finalChecks'
+import {
+  confiscationOrder,
+  onRemand,
+  seriousOffence,
+  undulyLenientSentence,
+} from '../../server/routes/config/finalChecks'
 import { bassAreaCheck, bassOffer, bassRequest } from '../../server/routes/config/bassReferral'
 import { release } from '../../server/routes/config/approval'
 import { licenceDetails } from '../../server/routes/config/vary'
@@ -1009,6 +1014,21 @@ describe('validation', () => {
             const { outcome, formResponse } = option
             expect(service.validateForm({ formResponse, pageConfig })).toEqual(outcome)
           })
+        })
+      })
+    })
+
+    describe('undulyLenientSentence', () => {
+      const pageConfig = undulyLenientSentence
+      const options = [
+        { formResponse: { decision: 'Yes' }, outcome: {} },
+        { formResponse: { decision: '' }, outcome: { decision: 'Select yes or no' } },
+      ]
+
+      options.forEach((option) => {
+        test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
+          const { outcome, formResponse } = option
+          expect(service.validateForm({ formResponse, pageConfig })).toEqual(outcome)
         })
       })
     })

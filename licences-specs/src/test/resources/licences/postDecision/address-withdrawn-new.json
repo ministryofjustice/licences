@@ -71,6 +71,9 @@
       },
       "confiscationOrder": {
         "decision": "No"
+      },
+      "undulyLenientSentence": {
+        "decision": "No"
       }
     },
     "proposedAddress": {

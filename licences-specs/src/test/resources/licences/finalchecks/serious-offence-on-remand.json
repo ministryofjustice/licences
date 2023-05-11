@@ -121,6 +121,9 @@
       },
       "confiscationOrder": {
         "decision": "Yes"
+      },
+      "undulyLenientSentence": {
+        "decision": "Yes"
       }
     }
   }

@@ -57,6 +57,21 @@ module.exports = {
       },
     ],
     nextPath: {
+      path: '/hdc/finalChecks/undulyLenientSentence/',
+    },
+  },
+  undulyLenientSentence: {
+    licenceSection: 'undulyLenientSentence',
+    validate: true,
+    fields: [
+      {
+        decision: {
+          responseType: 'requiredYesNo',
+          validationMessage: 'Select yes or no',
+        },
+      },
+    ],
+    nextPath: {
       path: '/hdc/taskList/',
     },
   },

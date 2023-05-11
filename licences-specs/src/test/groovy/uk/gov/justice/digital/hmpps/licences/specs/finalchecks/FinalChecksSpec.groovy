@@ -7,6 +7,7 @@ import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
 import uk.gov.justice.digital.hmpps.licences.pages.finalchecks.FinalChecksOnRemandPage
 import uk.gov.justice.digital.hmpps.licences.pages.finalchecks.FinalChecksConfiscationOrderPage
 import uk.gov.justice.digital.hmpps.licences.pages.finalchecks.FinalChecksSeriousOffencePage
+import uk.gov.justice.digital.hmpps.licences.pages.finalchecks.FinalChecksUndulyLenientSentencePage
 import uk.gov.justice.digital.hmpps.licences.util.Actions
 import uk.gov.justice.digital.hmpps.licences.util.TestData
 
@@ -78,13 +79,26 @@ class FinalChecksSpec extends GebReportingSpec {
     at FinalChecksConfiscationOrderPage
   }
 
-  def 'Saved answers shown on tasklist'() {
+  def 'Unduly lenient sentence shown next'() {
 
-    given: 'Viewing confiscation order page'
+    given: 'On confiscation order page'
     at FinalChecksConfiscationOrderPage
 
     when: 'I choose a value and continue'
     confiscationOrderRadios.checked = 'No'
+    find('#continueBtn').click()
+
+    then: 'I see the unduly lenient sentence page'
+    at FinalChecksUndulyLenientSentencePage
+  }
+
+  def 'Saved answers shown on tasklist'() {
+
+    given: 'Viewing unduly lenient sentence page'
+    at FinalChecksUndulyLenientSentencePage
+
+    when: 'I choose a value and continue'
+    undulyLenientSentenceRadios.checked = 'No'
     find('#continueBtn').click()
 
     then: 'I see the task list'

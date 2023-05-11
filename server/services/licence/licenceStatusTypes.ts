@@ -64,6 +64,7 @@ export type Decisions = {
   seriousOffence?: boolean
   onRemand?: boolean
   confiscationOrder?: boolean
+  undulyLenientSentence?: boolean
   postponed?: boolean
 }
 
@@ -86,6 +87,7 @@ export type Tasks = {
   seriousOffenceCheck?: TaskState
   onRemandCheck?: TaskState
   confiscationOrderCheck?: TaskState
+  undulyLenientSentenceCheck?: TaskState
   finalChecks?: TaskState
   approval?: TaskState
   createLicence?: TaskState

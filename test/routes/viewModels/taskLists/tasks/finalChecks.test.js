@@ -40,14 +40,17 @@ describe('final checks task', () => {
     test('should return multiple warning messages when multiple checks failed', () => {
       const labels = finalChecks
         .review({
-          decisions: { seriousOffence: true, onRemand: true, confiscationOrder: true },
+          decisions: { seriousOffence: true, onRemand: true, confiscationOrder: true, undulyLenientSentence: true },
           tasks: { finalChecks: 'DONE' },
         })
         .label.split('||')
 
       expect(labels[0]).toBe('WARNING')
-      expect(labels.length).toBe(4)
+      expect(labels.length).toBe(5)
+      expect(labels).toContain('The offender is under investigation or been charged for a serious offence in custody')
       expect(labels).toContain('The offender is on remand')
+      expect(labels).toContain('The offender is subject to a confiscation order')
+      expect(labels).toContain('There is an outstanding unduly lenient sentence application for this offender')
     })
   })
 
@@ -90,14 +93,17 @@ describe('final checks task', () => {
     test('should return multiple warning messages when multiple checks failed', () => {
       const labels = finalChecks
         .view({
-          decisions: { seriousOffence: true, onRemand: true, confiscationOrder: true },
+          decisions: { seriousOffence: true, onRemand: true, confiscationOrder: true, undulyLenientSentence: true },
           tasks: { finalChecks: 'DONE' },
         })
         .label.split('||')
 
       expect(labels[0]).toBe('WARNING')
-      expect(labels.length).toBe(4)
+      expect(labels.length).toBe(5)
+      expect(labels).toContain('The offender is under investigation or been charged for a serious offence in custody')
       expect(labels).toContain('The offender is on remand')
+      expect(labels).toContain('The offender is subject to a confiscation order')
+      expect(labels).toContain('There is an outstanding unduly lenient sentence application for this offender')
     })
   })
 })
