@@ -74,6 +74,9 @@
       },
       "undulyLenientSentence": {
         "decision": "No"
+      },
+      "segregation": {
+        "decision": "No"
       }
     },
     "proposedAddress": {
