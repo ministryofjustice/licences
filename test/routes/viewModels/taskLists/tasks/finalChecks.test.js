@@ -45,19 +45,21 @@ describe('final checks task', () => {
             onRemand: true,
             confiscationOrder: true,
             undulyLenientSentence: true,
-            segregation: true,
+            segregation: false,
           },
           tasks: { finalChecks: 'DONE' },
         })
         .label.split('||')
 
       expect(labels[0]).toBe('WARNING')
-      expect(labels.length).toBe(6)
+      expect(labels.length).toBe(5)
       expect(labels).toContain('The offender is under investigation or been charged for a serious offence in custody')
       expect(labels).toContain('The offender is on remand')
       expect(labels).toContain('The offender is subject to a confiscation order')
       expect(labels).toContain('There is an outstanding unduly lenient sentence application for this offender')
-      expect(labels).toContain('The offender is currently segregated (for a reason other than their own protection)')
+      expect(labels).not.toContain(
+        'The offender is currently segregated (for a reason other than their own protection)'
+      )
     })
   })
 
@@ -105,19 +107,21 @@ describe('final checks task', () => {
             onRemand: true,
             confiscationOrder: true,
             undulyLenientSentence: true,
-            segregation: true,
+            segregation: false,
           },
           tasks: { finalChecks: 'DONE' },
         })
         .label.split('||')
 
       expect(labels[0]).toBe('WARNING')
-      expect(labels.length).toBe(6)
+      expect(labels.length).toBe(5)
       expect(labels).toContain('The offender is under investigation or been charged for a serious offence in custody')
       expect(labels).toContain('The offender is on remand')
       expect(labels).toContain('The offender is subject to a confiscation order')
       expect(labels).toContain('There is an outstanding unduly lenient sentence application for this offender')
-      expect(labels).toContain('The offender is currently segregated (for a reason other than their own protection)')
+      expect(labels).not.toContain(
+        'The offender is currently segregated (for a reason other than their own protection)'
+      )
     })
   })
 })
