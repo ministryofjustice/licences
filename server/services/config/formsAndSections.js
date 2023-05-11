@@ -32,6 +32,7 @@ const sectionContaining = {
   onRemand: 'finalChecks',
   confiscationOrder: 'finalChecks',
   undulyLenientSentence: 'undulyLenientSentence',
+  segregation: 'segregation',
   release: 'approval',
   taggingCompany: 'monitoring',
 }

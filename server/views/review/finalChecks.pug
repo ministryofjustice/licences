@@ -39,3 +39,7 @@ block content
     div.smallPaddingTop
       span.block.smallMarginBottom Is there an outstanding application under the unduly lenient sentence (ULS) scheme for this offender?
       +booleanYesNo("undulyLenientSentence",licenceStatus.decisions.undulyLenientSentence)
+
+    div.smallPaddingTop
+      span.block.smallMarginBottom Is the offender currently segregated (except solely for their own protection)?
+      +booleanYesNo("segregation",licenceStatus.decisions.segregation)

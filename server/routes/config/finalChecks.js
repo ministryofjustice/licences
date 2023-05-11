@@ -72,6 +72,21 @@ module.exports = {
       },
     ],
     nextPath: {
+      path: '/hdc/finalChecks/segregation/',
+    },
+  },
+  segregation: {
+    licenceSection: 'segregation',
+    validate: true,
+    fields: [
+      {
+        decision: {
+          responseType: 'requiredYesNo',
+          validationMessage: 'Select yes or no',
+        },
+      },
+    ],
+    nextPath: {
       path: '/hdc/taskList/',
     },
   },

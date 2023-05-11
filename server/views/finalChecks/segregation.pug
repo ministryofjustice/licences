@@ -1,0 +1,15 @@
+extends ../formTemplates/formTemplate
+
+block question
+  | Is the offender currently segregated (except solely for their own protection)?
+
+block formItems
+  - var segregationValue = data.decision || null;
+
+  div.form-group.inline
+    div.multiple-choice
+      input#segregationYes(type="radio" checked=segregationValue === 'Yes'  name="decision" value="Yes")
+      label(for="segregationYes") Yes
+    div.multiple-choice
+      input#segregationNo(type="radio" checked=segregationValue === 'No' name="decision" value="No")
+      label(for="segregationNo") No
