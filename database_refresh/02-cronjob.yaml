@@ -1,5 +1,5 @@
 ---
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: db-refresh-job
@@ -18,7 +18,7 @@ spec:
             runAsUser: 999
           containers:
           - name: dbrefresh
-            image: "postgres:11.4"
+            image: "postgres:14.3"
             command:
             - /bin/entrypoint.sh
             volumeMounts:
