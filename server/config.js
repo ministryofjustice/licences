@@ -212,4 +212,5 @@ module.exports = {
   },
 
   riskManagementVersion: get('LICENCE_RISK_MANAGEMENT_VERSION', '3'),
+  curfewAddressReviewVersion: get('CURFEW_ADDRESS_REVIEW_VERSION', '2'),
 }

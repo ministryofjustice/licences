@@ -91,7 +91,16 @@ module.exports =
         const data = getIn(res.locals.licence, ['licence', 'curfew', formName]) || {}
         const { nextPath } = formConfig[formName]
 
-        res.render(`curfew/${formName}`, { bookingId, data, proposedAddress, nextPath, action })
+        const curfewAddressReviewVersion = licenceService.getCurfewAddressReviewVersion(res.locals.licence.licence)
+
+        res.render(`curfew/${formName}`, {
+          bookingId,
+          data,
+          proposedAddress,
+          nextPath,
+          action,
+          curfewAddressReviewVersion,
+        })
       }
     }
 

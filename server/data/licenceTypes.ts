@@ -73,6 +73,7 @@ export interface AddressReview {
   consent?: string
   electricity?: string
   homeVisitConducted?: string
+  version?: string
 }
 
 export interface Curfew {
@@ -249,6 +250,7 @@ export interface Reporting {
     townOrCity?: string
   }
 }
+export type CurfewAddressManagement = { version: string }
 
 export type RiskManagement = RiskManagementV1 | RiskManagementV2 | RiskManagementV3
 

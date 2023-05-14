@@ -101,6 +101,7 @@ module.exports = {
         },
       },
       { addressReviewComments: {} },
+      { version: '' },
     ],
     nextPath: {
       decisions: [
@@ -126,6 +127,57 @@ module.exports = {
       modify: '/hdc/taskList/',
     },
   },
+
+  curfewAddressReviewVersion2: {
+    pageDataMap: ['licence'],
+    fields: [
+      {
+        consent: {
+          validationMessage: 'Say if you were able to speak to the main occupier and if they consented to HDC',
+        },
+      },
+      {
+        electricity: {
+          dependentOn: 'consent',
+          predicate: 'Yes',
+          validationMessage: 'Say if there is an electricity supply',
+        },
+      },
+      {
+        homeVisitConducted: {
+          dependentOn: 'consent',
+          predicate: 'Yes',
+          validationMessage: 'Say if you did a home visit',
+        },
+      },
+      { addressReviewComments: {} },
+      { version: '' },
+    ],
+    nextPath: {
+      decisions: [
+        {
+          discriminator: 'consent',
+          No: {
+            path: '/hdc/taskList/',
+            change: '/hdc/review/licenceDetails/',
+            modify: '/hdc/taskList/',
+          },
+        },
+        {
+          discriminator: 'electricity',
+          No: {
+            path: '/hdc/taskList/',
+            change: '/hdc/review/licenceDetails/',
+            modify: '/hdc/taskList/',
+          },
+        },
+      ],
+      path: '/hdc/taskList/',
+      change: '/hdc/review/licenceDetails/',
+      modify: '/hdc/taskList/',
+    },
+  },
+
   curfewHours: {
     licenceSection: 'curfewHours',
     fields: [

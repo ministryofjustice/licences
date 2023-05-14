@@ -238,6 +238,69 @@ describe('/review/', () => {
           expect(res.text).toContain('/hdc/send/finalChecks/1')
         })
     })
+    test('to contain version 1 of the main occupier question', () => {
+      licenceService.getLicence = jest.fn().mockReturnValue({
+        licence: {
+          proposedAddress: {
+            curfewAddress: {
+              addresses: [{ consent: 'Yes' }],
+            },
+          },
+          curfew: {
+            curfewAddressReview: {
+              version: '1',
+            },
+          },
+        },
+        stage: 'PROCESSING_RO',
+      })
+      conditionsService.populateLicenceWithConditions = jest.fn().mockReturnValue({
+        curfew: {
+          curfewAddressReview: {
+            version: '1',
+            addressReviewComments: '',
+          },
+        },
+      })
+
+      return request(app)
+        .get('/hdc/review/licenceDetails/1')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect((res) => {
+          expect(res.text).toContain('Does the main occupier consent to HDC?')
+        })
+    })
+
+    test('to contain version 2 of the main occupier question', () => {
+      licenceService.getLicence = jest.fn().mockReturnValue({
+        licence: {
+          proposedAddress: {
+            curfewAddress: {
+              addresses: [{ consent: 'Yes' }],
+            },
+          },
+        },
+        stage: 'PROCESSING_RO',
+      })
+
+      conditionsService.populateLicenceWithConditions = jest.fn().mockReturnValue({
+        curfew: {
+          curfewAddressReview: {
+            version: '2',
+            addressReviewComments: '',
+          },
+        },
+      })
+
+      return request(app)
+        .get('/hdc/review/licenceDetails/1')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect((res) => {
+          expect(res.text).toContain('Have you spoken to the main occupier and do they consent to HDC?')
+        })
+    })
   })
 
   describe('/address/', () => {
@@ -284,6 +347,68 @@ describe('/review/', () => {
         .expect('Content-Type', /html/)
         .expect((res) => {
           expect(res.text).toEqual(expect.not.arrayContaining(['id="withdrawAddress"']))
+        })
+    })
+    test('Shows version 1 of the occupiers consent to HDC text', () => {
+      licenceService.getLicence = jest.fn().mockReturnValue({
+        licence: {
+          eligibility: {
+            proposedAddress: {
+              addressLine1: 'line1',
+            },
+          },
+        },
+        stage: 'APPROVAL',
+      })
+      conditionsService.populateLicenceWithConditions = jest.fn().mockReturnValue({
+        curfew: {
+          curfewAddressReview: {
+            version: '1',
+            addressReviewComments: '',
+            consent: true,
+          },
+        },
+        proposedAddress: { curfewAddress: { addressLine1: 'line1' } },
+      })
+
+      return request(app)
+        .get('/hdc/review/address/1')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect((res) => {
+          expect(res.text).toContain('Does the main occupier consent to HDC?')
+        })
+    })
+
+    test('Shows version 2 of the occupiers consent to HDC text', () => {
+      licenceService.getLicence = jest.fn().mockReturnValue({
+        licence: {
+          eligibility: {
+            proposedAddress: {
+              addressLine1: 'line1',
+            },
+          },
+        },
+        stage: 'APPROVAL',
+      })
+
+      conditionsService.populateLicenceWithConditions = jest.fn().mockReturnValue({
+        curfew: {
+          curfewAddressReview: {
+            version: '2',
+            addressReviewComments: '',
+            consent: true,
+          },
+        },
+        proposedAddress: { curfewAddress: { addressLine1: 'line1' } },
+      })
+
+      return request(app)
+        .get('/hdc/review/address/1')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect((res) => {
+          expect(res.text).toContain('Have you spoken to the main occupier and do they consent to HDC?')
         })
     })
   })
