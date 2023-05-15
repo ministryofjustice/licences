@@ -25,8 +25,10 @@ export default ({ licenceService }: { licenceService: LicenceService }) =>
 
       if (riskVersion === '1') {
         res.render(`risk/riskManagementV1`, viewData)
-      } else {
+      } else if (riskVersion === '2') {
         res.render(`risk/riskManagementV2`, viewData)
+      } else {
+        res.render(`risk/riskManagementV3`, viewData)
       }
     }
 

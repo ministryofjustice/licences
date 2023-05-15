@@ -1,0 +1,83 @@
+
+include ./itemAndError
+-var risk = data.risk && data.risk.riskManagement || {}
+-var bass = data.bassReferral && data.bassReferral.bassAreaCheck || {}
+-var errors = errorObject.risk && errorObject.risk.riskManagement || {}
+
+div.pure-g.borderBottomLight.midPaddingTopBottom
+  div.pure-u-1-2
+    div.pure-g
+      span.pure-u-3-4 Have you requested and considered current risk information from the police and children’s services related to the proposed address?
+  div.pure-u-1-2
+    if risk.hasConsideredChecks === 'No' && bass.bassAreaSuitable !== 'Yes'
+      div.pure-g
+        div.pure-u-1.pure-u-sm-3-5.notice-container
+          div.notice
+            i.icon.icon-important
+              span.visually-hidden Warning
+
+            strong.bold-small Mandatory address checks not completed
+    else
+      +itemAndError(risk.hasConsideredChecks, errors.hasConsideredChecks, "hasConsideredChecks")
+
+div.pure-g.borderBottomLight.midPaddingTopBottom
+  div.pure-u-1-2
+    div.pure-g
+      span.pure-u-3-4 Are you waiting for any other information?
+
+  div.pure-u-1-2
+    if risk.awaitingOtherInformation === 'Yes'
+      div.pure-g
+        div.pure-u-1.pure-u-sm-3-5.notice-container
+          div.notice
+            i.icon.icon-important
+              span.visually-hidden Warning
+
+            strong.bold-small Still waiting for information
+    else
+      +itemAndError(risk.awaitingOtherInformation, errors.awaitingOtherInformation, "awaitingOtherInformation")
+
+if risk.riskManagementDetails
+  div.pure-g.borderBottomLight.midPaddingTopBottom
+    div.pure-u-1-2
+      div.pure-g
+        span.pure-u-3-4 Provide details of your checks
+    div.pure-u-1-2
+      +itemAndError(risk.riskManagementDetails, errors.riskManagementDetails, "riskManagementDetails")
+
+div.pure-g.borderBottomLight.midPaddingTopBottom
+  div.pure-u-1-2
+    div.pure-g
+      span.pure-u-3-4 Is the address proposed by the offender suitable?
+  div.pure-u-1-2
+    +itemAndError(risk.proposedAddressSuitable, errors.proposedAddressSuitable, "proposedAddressSuitable")
+    if risk.proposedAddressSuitable === 'No'
+      +itemAndError(risk.unsuitableReason, errors.unsuitableReason, "unsuitableReason")
+
+if risk.proposedAddressSuitable === 'Yes'
+  div.pure-g.borderBottomLight.midPaddingTopBottom
+    div.pure-u-1-2
+      div.pure-g
+        span.pure-u-3-4 Is there any additional information about the offender or the address (e.g. if it is difficult to access) to assist the EMS provider on the day of release?
+    div.pure-u-1-2
+      +itemAndError(risk.emsInformation, errors.emsInformation, 'emsInformation')
+      if risk.emsInformation ==='Yes'
+        +itemAndError(risk.emsInformationDetails, errors.emsInformationDetails, 'emsInformationDetails')
+
+div.pure-g.borderBottomLight.midPaddingTopBottom
+  div.pure-u-1-2
+    div.pure-g
+      span.pure-u-3-4 Is it possible to manage the offender safely in the community if released to the proposed address?
+  div.pure-u-1-2
+    +itemAndError(risk.manageInTheCommunity, errors.manageInTheCommunity, "manageInTheCommunity")
+    if risk.manageInTheCommunity === 'No'
+      +itemAndError(risk.manageInTheCommunityNotPossibleReason, errors.manageInTheCommunityNotPossibleReason, "manageInTheCommunityNotPossibleReason")
+
+div.pure-g.borderBottomLight.midPaddingTopBottom
+  div.pure-u-1-2
+    div.pure-g
+      span.pure-u-3-4 Do you have information that cannot be disclosed to the offender?
+  div.pure-u-1-2
+    +itemAndError(risk.nonDisclosableInformation, errors.nonDisclosableInformation, "nonDisclosableInformation")
+    if risk.nonDisclosableInformation === 'Yes' && errors.nonDisclosableInformationDetails
+      +itemAndError(risk.nonDisclosableInformationDetails, errors.nonDisclosableInformationDetails, "nonDisclosableInformationDetails")

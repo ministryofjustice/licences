@@ -24,7 +24,7 @@ const getLabel = ({ decisions, tasks }) => {
     }
   }
 
-  if (riskManagementVersion === '2') {
+  if (riskManagementVersion === '2' || riskManagementVersion === '3') {
     if (showMandatoryAddressChecksNotCompletedWarning) {
       return 'WARNING||Mandatory address checks not completed'
     }

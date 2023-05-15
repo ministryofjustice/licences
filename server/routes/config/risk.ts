@@ -61,6 +61,19 @@ export default {
         },
       },
       {
+        manageInTheCommunity: {
+          responseType: 'requiredYesNoIf_version_3',
+          validationMessage:
+            'Say if it is possible to manage the offender in the community safely at the proposed address',
+        },
+      },
+      {
+        manageInTheCommunityNotPossibleReason: {
+          responseType: 'requiredStringIf_manageInTheCommunity_No',
+          validationMessage: 'Provide details of why you made this decision',
+        },
+      },
+      {
         nonDisclosableInformation: {
           responseType: 'requiredYesNo',
           validationMessage: 'Say if you want to add information that cannot be disclosed to the offender',

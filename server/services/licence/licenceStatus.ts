@@ -254,7 +254,7 @@ function getRiskManagementState(licence) {
   const riskManagementAnswer = riskManagement?.planningActions
   const checksConsideredAnswer = riskManagement?.hasConsideredChecks
   const awaitingInformationAnswer = riskManagement?.awaitingInformation || riskManagement?.awaitingOtherInformation
-  const { proposedAddressSuitable } = riskManagement || {}
+  const { proposedAddressSuitable, manageInTheCommunity } = riskManagement || {}
   const { bassRequested } = getBassRequestState(licence)
 
   return {
@@ -265,7 +265,7 @@ function getRiskManagementState(licence) {
     proposedAddressSuitable: proposedAddressSuitable === 'Yes',
     awaitingRiskInformation: awaitingInformationAnswer === 'Yes',
     riskManagement: getState(),
-    addressUnsuitable: proposedAddressSuitable === 'No',
+    addressUnsuitable: proposedAddressSuitable === 'No' || manageInTheCommunity === 'No',
   }
 
   function getState() {

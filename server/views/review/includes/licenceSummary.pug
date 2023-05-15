@@ -1,5 +1,6 @@
 include additionalConditions
 -var riskVersion1 = data.risk && data.risk.riskManagement && data.risk && data.risk.riskManagement.version === '1'
+-var riskVersion2 = data.risk && data.risk.riskManagement && data.risk && data.risk.riskManagement.version === '2'
 
 mixin change(url, anchorId)
   a(id=anchorId href=url) Change
@@ -77,8 +78,10 @@ div.largeMarginBottom
       +errorMessageOrBlock(errorObject.risk && errorObject.risk.riskManagement, 'risk-error')
         if riskVersion1
           include riskManagementV1 
-        else
+        else if riskVersion2 
           include riskManagementV2
+        else 
+          include riskManagementV3
 
   if sections.victimLiaison
     div.borderBottom

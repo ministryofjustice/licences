@@ -61,5 +61,16 @@ block content
       div.smallPaddingTop
         span#emsInformationDetails.block.bold #{risk.emsInformationDetails}
 
+    if risk.version == '3'
+      div.smallPaddingTop
+        p Is it possible to manage the offender safely in the community if released to the proposed address?
+
+        span#manageInTheCommunity.block.bold #{risk.manageInTheCommunity}
+
+      if risk.manageInTheCommunity === 'No'
+        div.smallPaddingTop
+          p Explain why you made your decision
+
+          span#unsuitableReason.block.bold #{risk.manageInTheCommunityNotPossibleReason}
 
   +readOnlyNonDisclosableInformation(risk)
