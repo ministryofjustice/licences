@@ -86,9 +86,9 @@ describe('licenceService', () => {
 
   describe('getCurfewAddressReviewVersion', () => {
     test('return the actual version of the curfewAddressReview if it has been set', () => {
-      const licence = { curfew: { curfewAddressReview: { version: '99' } } } as Licence
+      const licence = { curfew: { curfewAddressReview: { version: '2' } } } as Licence
       const version = service.getCurfewAddressReviewVersion(licence)
-      expect(version).toBe('99')
+      expect(version).toBe('2')
     })
     test('returns the default curfewAddressReview version when not set on licence', () => {
       const licence = {} as Licence
@@ -97,7 +97,7 @@ describe('licenceService', () => {
     })
 
     test("returns 1 curfewAddressReview's version is falsey", () => {
-      const licence = { curfew: { curfewAddressReview: { version: '' } } } as Licence
+      const licence = { curfew: { curfewAddressReview: {} } } as Licence
       const version = service.getCurfewAddressReviewVersion(licence)
       expect(version).toBe('1')
     })

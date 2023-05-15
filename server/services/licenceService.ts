@@ -5,7 +5,7 @@ import { transitions } from './config/licenceStage'
 import recordList from './utils/recordList'
 import * as formValidation from './utils/formValidation'
 import { LicenceClient } from '../data/licenceClient'
-import { Licence, LicenceConditions, LicenceStage, RiskManagement, CurfewAddressManagement } from '../data/licenceTypes'
+import { Licence, LicenceConditions, LicenceStage, RiskManagement, AddressReview } from '../data/licenceTypes'
 import { pickCurfewAddressPath } from './utils/pdfFormatter'
 import { AdditionalConditionsVersion, StandardConditionsVersion } from '../data/licenceClientTypes'
 import { Decisions, Tasks } from './licence/licenceStatusTypes'
@@ -89,7 +89,7 @@ export class LicenceService {
     }
   }
 
-  getCurfewAddressReviewVersion(licence: Licence): CurfewAddressManagement['version'] {
+  getCurfewAddressReviewVersion(licence: Licence): AddressReview['version'] {
     if (licence.curfew?.curfewAddressReview?.version) {
       return licence.curfew.curfewAddressReview.version
     } else if (licence.curfew?.curfewAddressReview && !licence.curfew?.curfewAddressReview?.version) {
