@@ -155,5 +155,5 @@ env:
     value: {{ .Values.env.LICENCE_RISK_MANAGEMENT_VERSION | quote }}
 
   - name: CURFEW_ADDRESS_REVIEW_VERSION
-  value: {{ .Values.env.CURFEW_ADDRESS_REVIEW_VERSION | quote }}
+    value: {{ .Values.env.CURFEW_ADDRESS_REVIEW_VERSION | quote }}
 {{- end -}}
