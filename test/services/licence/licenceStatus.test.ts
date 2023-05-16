@@ -863,6 +863,29 @@ describe('getLicenceStatus', () => {
         expect(status.decisions.awaitingRiskInformation).toBe(false)
       })
 
+      test('should show risk management version 3 DONE when mandatory address checks have been considered and proposedAddressSuitable, awaitingRiskInformation and manageInTheCommunity answered', () => {
+        const licence = {
+          stage: 'PROCESSING_RO',
+          licence: {
+            risk: {
+              riskManagement: {
+                version: '3',
+                hasConsideredChecks: 'Yes',
+                awaitingOtherInformation: 'No',
+                proposedAddressSuitable: 'Yes',
+                manageInTheCommunity: 'Yes',
+              },
+            },
+          },
+        }
+
+        const status = getLicenceStatus(licence)
+
+        expect(status.tasks.riskManagement).toEqual(TaskState.DONE)
+        expect(status.decisions.showMandatoryAddressChecksNotCompletedWarning).toBe(false)
+        expect(status.decisions.awaitingRiskInformation).toBe(false)
+      })
+
       test('should show risk management version 2 STARTED if all questions answered but mandatory address checks answer is No', () => {
         const licence = {
           stage: 'PROCESSING_RO',
@@ -888,6 +911,35 @@ describe('getLicenceStatus', () => {
 
         expect(status.tasks.riskManagement).toEqual(TaskState.STARTED)
         expect(status.decisions.showMandatoryAddressChecksNotCompletedWarning).toBe(true)
+        expect(status.decisions.riskManagementNeeded).toBe(false)
+        expect(status.decisions.awaitingRiskInformation).toBe(false)
+      })
+
+      test('should show risk management version 3 STARTED if all questions answered apart from manageInTheCommunity', () => {
+        const licence = {
+          stage: 'PROCESSING_RO',
+          licence: {
+            risk: {
+              riskManagement: {
+                version: '3',
+                hasConsideredChecks: 'Yes',
+                awaitingOtherInformation: 'No',
+                emsInformation: 'Yes',
+                emsInformationDetails: 'some details',
+                nonDisclosableInformation: 'No',
+                nonDisclosableInformationDetails: '',
+                proposedAddressSuitable: 'Yes',
+                riskManagementDetails: 'some details',
+                unsuitableReason: '',
+              },
+            },
+          },
+        }
+
+        const status = getLicenceStatus(licence)
+
+        expect(status.tasks.riskManagement).toEqual(TaskState.STARTED)
+        expect(status.decisions.showMandatoryAddressChecksNotCompletedWarning).toBe(false)
         expect(status.decisions.riskManagementNeeded).toBe(false)
         expect(status.decisions.awaitingRiskInformation).toBe(false)
       })

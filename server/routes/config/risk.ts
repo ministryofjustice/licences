@@ -1,29 +1,31 @@
+import { riskManagementVersion } from '../../config'
+
 export default {
   riskManagement: {
     licenceSection: 'riskManagement',
     fields: [
       {
         planningActions: {
-          responseType: 'requiredYesNoIfNot_version_2',
+          responseType: 'requiredYesNoIf_version_1',
           validationMessage: 'Say if there are risk management actions',
         },
       },
       {
         awaitingInformation: {
-          responseType: 'requiredYesNoIfNot_version_2',
+          responseType: 'requiredYesNoIf_version_1',
           validationMessage: 'Say if you are still awaiting information',
         },
       },
       {
         hasConsideredChecks: {
-          responseType: 'requiredYesNoIf_version_2',
+          responseType: 'requiredYesNoIfNot_version_1',
           validationMessage:
             'Say if you have requested and considered risk information related to the proposed address',
         },
       },
       {
         awaitingOtherInformation: {
-          responseType: 'requiredYesNoIf_version_2',
+          responseType: 'requiredYesNoIfNot_version_1',
           validationMessage: 'Say if you are still awaiting information',
         },
       },
