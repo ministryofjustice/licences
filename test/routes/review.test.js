@@ -238,7 +238,7 @@ describe('/review/', () => {
           expect(res.text).toContain('/hdc/send/finalChecks/1')
         })
     })
-    test('to contain version 1 of the main occupier question', () => {
+    test('to contain version 1 of the main occupier consent text', () => {
       licenceService.getLicence = jest.fn().mockReturnValue({
         licence: {
           proposedAddress: {
@@ -272,7 +272,7 @@ describe('/review/', () => {
         })
     })
 
-    test('to contain version 2 of the main occupier question', () => {
+    test('to contain version 2 of the main occupier consent text', () => {
       licenceService.getLicence = jest.fn().mockReturnValue({
         licence: {
           proposedAddress: {
@@ -349,7 +349,7 @@ describe('/review/', () => {
           expect(res.text).toEqual(expect.not.arrayContaining(['id="withdrawAddress"']))
         })
     })
-    test('Shows version 1 of the occupiers consent to HDC text', () => {
+    test('Shows version 1 of the main occupier consent to HDC text', () => {
       licenceService.getLicence = jest.fn().mockReturnValue({
         licence: {
           eligibility: {
@@ -380,7 +380,7 @@ describe('/review/', () => {
         })
     })
 
-    test('Shows version 2 of the occupiers consent to HDC text', () => {
+    test('Shows version 2 of the main occupier consent to HDC text', () => {
       licenceService.getLicence = jest.fn().mockReturnValue({
         licence: {
           eligibility: {
