@@ -21,6 +21,7 @@ class RiskManagementV3Page extends Page {
     addressSuitableRadios { $(name: "proposedAddressSuitable").module(RadioButtons) }
     emsInformationRadios(required: false) { $(name: "emsInformation").module(RadioButtons) }
     manageInTheCommunityRadios { $(name: "manageInTheCommunity").module(RadioButtons) }
+    pomConsultationRadios { $(name: "pomConsultation").module(RadioButtons) }
     nonDisclosableInformationRadios { $(name: "nonDisclosableInformation").module(RadioButtons) }
 
     riskManagementForm { $("#riskManagementDetails") }
