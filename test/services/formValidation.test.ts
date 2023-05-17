@@ -344,6 +344,25 @@ describe('validation', () => {
           },
           {
             formResponse: {
+              version: '3',
+              hasConsideredChecks: '',
+              awaitingOtherInformation: '',
+              proposedAddressSuitable: '',
+              nonDisclosableInformation: '',
+              manageInTheCommunity: '',
+            },
+            outcome: {
+              hasConsideredChecks:
+                'Say if you have requested and considered risk information related to the proposed address',
+              awaitingOtherInformation: 'Say if you are still awaiting information',
+              proposedAddressSuitable: 'Say if the proposed address is suitable',
+              nonDisclosableInformation: 'Say if you want to add information that cannot be disclosed to the offender',
+              manageInTheCommunity:
+                'Say if it is possible to manage the offender in the community safely at the proposed address',
+            },
+          },
+          {
+            formResponse: {
               version: '1',
               planningActions: 'Yes',
               awaitingInformation: 'Yes',

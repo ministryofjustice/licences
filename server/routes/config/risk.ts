@@ -1,29 +1,31 @@
+import { riskManagementVersion } from '../../config'
+
 export default {
   riskManagement: {
     licenceSection: 'riskManagement',
     fields: [
       {
         planningActions: {
-          responseType: 'requiredYesNoIfNot_version_2',
+          responseType: 'requiredYesNoIf_version_1',
           validationMessage: 'Say if there are risk management actions',
         },
       },
       {
         awaitingInformation: {
-          responseType: 'requiredYesNoIfNot_version_2',
+          responseType: 'requiredYesNoIf_version_1',
           validationMessage: 'Say if you are still awaiting information',
         },
       },
       {
         hasConsideredChecks: {
-          responseType: 'requiredYesNoIf_version_2',
+          responseType: 'requiredYesNoIfNot_version_1',
           validationMessage:
             'Say if you have requested and considered risk information related to the proposed address',
         },
       },
       {
         awaitingOtherInformation: {
-          responseType: 'requiredYesNoIf_version_2',
+          responseType: 'requiredYesNoIfNot_version_1',
           validationMessage: 'Say if you are still awaiting information',
         },
       },
@@ -58,6 +60,19 @@ export default {
           predicate: 'Yes',
           responseType: 'requiredStringIf_emsInformation_Yes',
           validationMessage: 'Provide information about the offender or the address',
+        },
+      },
+      {
+        manageInTheCommunity: {
+          responseType: 'requiredYesNoIf_version_3',
+          validationMessage:
+            'Say if it is possible to manage the offender in the community safely at the proposed address',
+        },
+      },
+      {
+        manageInTheCommunityNotPossibleReason: {
+          responseType: 'requiredStringIf_manageInTheCommunity_No',
+          validationMessage: 'Provide details of why you made this decision',
         },
       },
       {

@@ -1,0 +1,27 @@
+div.no-break.smallPaddingBottom#risk
+  h2 Risk management
+  p Have you requested and considered current risk information from the police and children’s services related to the proposed address?
+    br
+    span.entry #{riskManagement.hasConsideredChecks}
+
+  p Are you waiting for any other information?
+    br
+    span.entry #{riskManagement.awaitingOtherInformation}
+
+  p Details of outstanding actions or information
+    br
+    if riskManagement.riskManagementDetails
+      span.entry #{riskManagement.riskManagementDetails}
+    else
+      span.entry None
+
+  p Additional information about the offender or the address to assist the EMS provider on the day of release
+    br
+    if riskManagement.emsInformation === 'Yes'
+      span.entry #{riskManagement.emsInformationDetails}
+    else
+      span.entry None
+
+  p Is it possible to manage the offender safely in the community if released to the proposed address?
+    br
+    span.entry #{riskManagement.manageInTheCommunity}

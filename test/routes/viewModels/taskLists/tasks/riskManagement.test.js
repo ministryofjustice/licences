@@ -27,13 +27,28 @@ describe('risk management task', () => {
     })
   })
 
-  test('should return Completed if risk management section is done and risk management version is 2', () => {
+  test('should return Completed if risk management section is done and risk management version is 2 or 3', () => {
     expect(
       riskManagement.view({
         decisions: {
           addressReviewFailed: false,
           showMandatoryAddressChecksNotCompletedWarning: false,
           riskManagementVersion: '2',
+        },
+        tasks: { riskManagement: 'DONE' },
+      })
+    ).toStrictEqual({
+      action: { href: '/hdc/review/risk/', text: 'View', type: 'btn-secondary' },
+      label: 'Completed',
+      title: 'Risk management',
+    })
+
+    expect(
+      riskManagement.view({
+        decisions: {
+          addressReviewFailed: false,
+          showMandatoryAddressChecksNotCompletedWarning: false,
+          riskManagementVersion: '3',
         },
         tasks: { riskManagement: 'DONE' },
       })

@@ -254,7 +254,8 @@ function getRiskManagementState(licence) {
   const riskManagementAnswer = riskManagement?.planningActions
   const checksConsideredAnswer = riskManagement?.hasConsideredChecks
   const awaitingInformationAnswer = riskManagement?.awaitingInformation || riskManagement?.awaitingOtherInformation
-  const { proposedAddressSuitable } = riskManagement || {}
+  const manageInTheCommunityAnswer = riskManagement?.manageInTheCommunity
+  const { proposedAddressSuitable, manageInTheCommunity } = riskManagement || {}
   const { bassRequested } = getBassRequestState(licence)
 
   return {
@@ -262,10 +263,12 @@ function getRiskManagementState(licence) {
     riskManagementNeeded: riskManagementAnswer === 'Yes',
     showMandatoryAddressChecksNotCompletedWarning:
       riskManagementVersion === '2' && checksConsideredAnswer !== 'Yes' && !bassRequested,
-    proposedAddressSuitable: proposedAddressSuitable === 'Yes',
+    proposedAddressSuitable:
+      proposedAddressSuitable === 'Yes' || (riskManagementVersion === '3' && manageInTheCommunity === 'Yes'),
     awaitingRiskInformation: awaitingInformationAnswer === 'Yes',
     riskManagement: getState(),
-    addressUnsuitable: proposedAddressSuitable === 'No',
+    addressUnsuitable:
+      proposedAddressSuitable === 'No' || (riskManagementVersion === '3' && manageInTheCommunity === 'No'),
   }
 
   function getState() {
@@ -274,9 +277,15 @@ function getRiskManagementState(licence) {
     }
 
     if (
-      ((riskManagementAnswer || checksConsideredAnswer === 'Yes') &&
+      (riskManagementVersion !== '3' &&
+        (riskManagementAnswer || checksConsideredAnswer === 'Yes') &&
         awaitingInformationAnswer &&
         proposedAddressSuitable) ||
+      (riskManagementVersion === '3' &&
+        (riskManagementAnswer || checksConsideredAnswer === 'Yes') &&
+        awaitingInformationAnswer &&
+        proposedAddressSuitable &&
+        manageInTheCommunityAnswer) ||
       (riskManagementVersion === '2' &&
         checksConsideredAnswer === 'No' &&
         awaitingInformationAnswer &&
