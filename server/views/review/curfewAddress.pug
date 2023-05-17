@@ -31,7 +31,7 @@ block content
         else if errorObject.proposedAddress && typeof errorObject.proposedAddress.curfewAddress === 'string'
           p.alert.bold(id='proposed-address-error') Enter a curfew address
         else
-          include ./includes/curfewAddress
+          include ./includes/curfewAddressV1
 
   if !errorsOnPage
     h2.heading-medium Now send the case

@@ -4,7 +4,6 @@ include ./itemAndError
 -var errors = errorObject.curfew || {}
 - var reviewErrors = errors.curfewAddressReview || {}
 - var offenderIsMainOccupier = licenceStatus.decisions.offenderIsMainOccupier;
-- var curfewAddressReviewVersion1 = data.curfew && data.curfew.curfewAddressReview && data.curfew.curfewAddressReview.version === '1'
 
 div.pure-g.borderBottomLight.midPaddingTopBottom
   div.pure-u-1-2
@@ -77,10 +76,7 @@ if licenceStatus.stage !== 'ELIGIBILITY' && !addressReviewNeeded
   if !offenderIsMainOccupier
     div.pure-g.borderBottomLight.midPaddingTopBottom
       div.pure-u-1-2
-        if curfewAddressReviewVersion1
-          span.pure-u-3-4 Does the main occupier consent to HDC?
-        else 
-          span.pure-u-3-4 Have you spoken to the main occupier and do they consent to HDC?
+        span.pure-u-3-4 Have you spoken to the main occupier and do they consent to HDC?
 
       div.pure-u-1-2
         div#dischargeHomeAddress

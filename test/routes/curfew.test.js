@@ -473,7 +473,7 @@ describe('/hdc/curfew', () => {
           })
       })
 
-      test('shows version 2 of the main question text', () => {
+      test('shows version 2 of the main occupier consent question text', () => {
         const licenceService = createLicenceServiceStub()
         licenceService.getCurfewAddressReviewVersion = jest.fn().mockReturnValue('2')
         const app = createApp({ licenceServiceStub: licenceService }, 'roUser')

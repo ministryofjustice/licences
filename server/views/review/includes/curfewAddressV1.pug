@@ -1,0 +1,105 @@
+include ./itemAndError
+-var address = data.proposedAddress && data.proposedAddress.curfewAddress || {}
+-var addressReview = data.curfew && data.curfew.curfewAddressReview || {}
+-var errors = errorObject.curfew || {}
+- var reviewErrors = errors.curfewAddressReview || {}
+- var offenderIsMainOccupier = licenceStatus.decisions.offenderIsMainOccupier;
+
+div.pure-g.borderBottomLight.midPaddingTopBottom
+  div.pure-u-1-2
+    | Address
+  div.pure-u-1-2#addressDetails
+
+    +itemAndError(address.addressLine1, errors.addressLine1, "address1-curfew")
+    if address.addressLine2
+      span#address2-curfew.block.bold #{address.addressLine2}
+    +itemAndError(address.addressTown, errors.addressTown, "town-curfew")
+    +itemAndError(address.postCode, errors.postCode, "postCode-curfew")
+
+div.pure-g.borderBottomLight.midPaddingTopBottom
+  div.pure-u-1-2
+    | Contact number
+  div.pure-u-1-2
+    div#dischargeContactName
+      +itemAndError(address.telephone, errors.telephone, "telephone-curfew")
+
+div.pure-g.borderBottomLight.midPaddingTopBottom
+  div.pure-u-1-2
+    | Main occupier
+  div.pure-u-1-2
+    div.pure-g
+      if typeof errors.occupier === 'string'
+        div.pure-u-1.pure-u-md-2-5
+          span#occupierFull-error.alert.bold #{errors.occupier}
+      else if offenderIsMainOccupier
+        div.pure-u-1.pure-u-md-2-5.bold
+          | The offender is the main occupier
+      else if address.occupier
+        div.pure-u-1.pure-u-md-2-5
+          span#occupierName-curfew.bold #{address.occupier.name}
+          if errors.occupier && errors.occupier.name
+            span#occupierName-error.alert.bold #{errors.occupier.name}
+        div.pure-u-1.pure-u-md-2-5
+          span#occupierRelation-curfew.bold #{address.occupier.relationship}
+          if errors.occupier && errors.occupier.relationship
+            span#occupierRelation-error.alert.bold #{errors.occupier.relationship}
+
+div.pure-g.borderBottomLight.midPaddingTopBottom
+  div.pure-u-1-2
+    | Other occupants
+  div.pure-u-1-2
+    div.pure-g
+      if address.residents
+        for resident, index in address.residents
+          -var errorObj = errors.residents && errors.residents[index] || {}
+          if(resident.name != '' || resident.age != '' || resident.relationship != '')
+            div.pure-u-1.resident
+              div.pure-u-1.pure-u-md-2-5
+                +itemAndError(resident.name, errorObj.name, "residentName-curfew-" + index)
+              div.pure-u-1.pure-u-md-2-5
+                +itemAndError(resident.relationship, errorObj.relationship, "residentRelation-curfew-" + index)
+              div.pure-u-1.pure-u-md-1-5
+                +itemAndError(resident.age, errorObj.age, "residentAge-curfew-" + index)
+
+div.pure-g.borderBottomLight.midPaddingTopBottom
+  div.pure-u-1-2
+    span.pure-u-3-4 According to the offender, have they been convicted or cautioned for an offence against the residents or neighbours at this address?
+  div.pure-u-1-2
+    div#dischargeContactNumber
+      +itemAndError(address.cautionedAgainstResident, errors.cautionedAgainstResident, "cautioned-curfew")
+      if address.cautionedAgainstResident === 'Yes'
+        +itemAndError(address.residentOffenceDetails, errors.residentOffenceDetails, "residentOffenceDetails")
+
+- var addressReviewNeeded = licenceStatus.stage !== 'PROCESSING_RO' && licenceStatus.tasks.curfewAddressReview === 'UNSTARTED';
+
+if licenceStatus.stage !== 'ELIGIBILITY' && !addressReviewNeeded
+  if !offenderIsMainOccupier
+    div.pure-g.borderBottomLight.midPaddingTopBottom
+      div.pure-u-1-2
+        span.pure-u-3-4 Does the main occupier consent to HDC?
+
+      div.pure-u-1-2
+        div#dischargeHomeAddress
+          #{errors.electricity}
+          +itemAndError(addressReview.consent, reviewErrors.consent, "consent-curfew")
+
+  if(addressReview.consent === 'Yes' || offenderIsMainOccupier)
+    div.pure-g.borderBottomLight.midPaddingTopBottom
+      div.pure-u-1-2
+        | Is there an electricity supply?
+      div.pure-u-1-2
+        +itemAndError(addressReview.electricity, reviewErrors.electricity, "electricity-curfew")
+
+    if(addressReview.electricity === 'Yes')
+      div.pure-g.borderBottomLight.midPaddingTopBottom
+        div.pure-u-1-2
+          | Was a home visit conducted in this case?
+        div.pure-u-1-2
+          +itemAndError(addressReview.homeVisitConducted, reviewErrors.homeVisitConducted, "homeVisit-curfew")
+
+  if addressReview.addressReviewComments
+    div.pure-g.borderBottomLight.midPaddingTopBottom
+      div.pure-u-1-2
+        | Address review details
+      div.pure-u-1-2
+        span.bold #{addressReview.addressReviewComments}
