@@ -863,7 +863,7 @@ describe('getLicenceStatus', () => {
         expect(status.decisions.awaitingRiskInformation).toBe(false)
       })
 
-      test('should show risk management version 3 DONE when mandatory address checks have been considered and proposedAddressSuitable, awaitingRiskInformation and manageInTheCommunity answered', () => {
+      test('should show risk management version 3 DONE when mandatory address checks have been considered and proposedAddressSuitable, awaitingRiskInformation, manageInTheCommunity and pomConsultation answered', () => {
         const licence = {
           stage: 'PROCESSING_RO',
           licence: {
@@ -874,6 +874,7 @@ describe('getLicenceStatus', () => {
                 awaitingOtherInformation: 'No',
                 proposedAddressSuitable: 'Yes',
                 manageInTheCommunity: 'Yes',
+                pomConsultation: 'Yes',
               },
             },
           },
@@ -915,7 +916,7 @@ describe('getLicenceStatus', () => {
         expect(status.decisions.awaitingRiskInformation).toBe(false)
       })
 
-      test('should show risk management version 3 STARTED if all questions answered apart from manageInTheCommunity', () => {
+      test('should show risk management version 3 STARTED if all questions answered apart from manageInTheCommunity and pomConsultation', () => {
         const licence = {
           stage: 'PROCESSING_RO',
           licence: {

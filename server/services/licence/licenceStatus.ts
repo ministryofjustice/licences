@@ -257,6 +257,7 @@ function getRiskManagementState(licence) {
   const checksConsideredAnswer = riskManagement?.hasConsideredChecks
   const awaitingInformationAnswer = riskManagement?.awaitingInformation || riskManagement?.awaitingOtherInformation
   const manageInTheCommunityAnswer = riskManagement?.manageInTheCommunity
+  const pomConsultationAnswer = riskManagement?.pomConsultation
   const { proposedAddressSuitable, manageInTheCommunity, pomConsultation } = riskManagement || {}
   const { bassRequested } = getBassRequestState(licence)
 
@@ -290,7 +291,8 @@ function getRiskManagementState(licence) {
         (riskManagementAnswer || checksConsideredAnswer === 'Yes') &&
         awaitingInformationAnswer &&
         proposedAddressSuitable &&
-        manageInTheCommunityAnswer) ||
+        manageInTheCommunityAnswer &&
+        pomConsultationAnswer) ||
       (riskManagementVersion === '2' &&
         checksConsideredAnswer === 'No' &&
         awaitingInformationAnswer &&

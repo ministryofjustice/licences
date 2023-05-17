@@ -111,6 +111,32 @@ describe('risk management task', () => {
     })
   })
 
+  test('should return warning if version 3 and pom not consulted about the offender’s current progress in custody', () => {
+    expect(
+      riskManagement.view({
+        decisions: { pomNotConsulted: true, riskManagementVersion: '3' },
+        tasks: {},
+      })
+    ).toStrictEqual({
+      action: { href: '/hdc/review/risk/', text: 'View', type: 'btn-secondary' },
+      label: 'WARNING||POM has not been consulted about offender’s progress',
+      title: 'Risk management',
+    })
+  })
+
+  test('should return multiple warnings if version 3, still waiting for information and pom not consulted about the offender’s current progress in custody', () => {
+    expect(
+      riskManagement.view({
+        decisions: { pomNotConsulted: true, awaitingRiskInformation: true, riskManagementVersion: '3' },
+        tasks: {},
+      })
+    ).toStrictEqual({
+      action: { href: '/hdc/review/risk/', text: 'View', type: 'btn-secondary' },
+      label: 'WARNING||Still waiting for information||POM has not been consulted about offender’s progress',
+      title: 'Risk management',
+    })
+  })
+
   test('should show continue btn to curfewAddressReview if curfewAddressReview: !DONE || UNSTARTED', () => {
     expect(
       riskManagement.view({
