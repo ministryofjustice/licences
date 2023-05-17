@@ -58,6 +58,7 @@ export type Decisions = {
   riskManagementNeeded?: boolean
   awaitingRiskInformation?: boolean
   showMandatoryAddressChecksNotCompletedWarning?: boolean
+  pomNotConsulted?: boolean
   victimLiaisonNeeded?: boolean
   optedOut?: boolean
 

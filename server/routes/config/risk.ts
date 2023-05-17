@@ -76,6 +76,12 @@ export default {
         },
       },
       {
+        pomConsultation: {
+          responseType: 'requiredYesNoIf_version_3',
+          validationMessage: 'Say if you have consulted the POM about the offender’s progress in custody',
+        },
+      },
+      {
         nonDisclosableInformation: {
           responseType: 'requiredYesNo',
           validationMessage: 'Say if you want to add information that cannot be disclosed to the offender',
