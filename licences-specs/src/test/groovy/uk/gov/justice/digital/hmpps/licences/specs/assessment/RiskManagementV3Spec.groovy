@@ -148,6 +148,6 @@ class RiskManagementV3Spec extends GebReportingSpec {
     then: 'I see the previously entered values'
     hasConsideredChecksRadios.checked == 'Yes'
     addressSuitableRadios.checked == 'No'
-    pomConsultationRadios.checked = 'Yes'
+    pomConsultationRadios.checked == 'Yes'
   }
 }
