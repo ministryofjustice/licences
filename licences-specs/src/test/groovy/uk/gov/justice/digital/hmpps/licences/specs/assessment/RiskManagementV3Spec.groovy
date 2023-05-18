@@ -42,6 +42,8 @@ class RiskManagementV3Spec extends GebReportingSpec {
     awaitingOtherInformationRadios.checked == null
     addressSuitableRadios.checked == null
     manageInTheCommunityRadios.checked == null
+    mentalHealthPlanRadios.checked == null
+    pomConsultationRadios.checked == null
     nonDisclosableInformationRadios.checked == null
   }
 
@@ -99,7 +101,7 @@ class RiskManagementV3Spec extends GebReportingSpec {
     emsInformationDetails.isDisplayed()
   }
 
-    def 'Managing offender in the community not possible reasons shown when No'() {
+  def 'Managing offender in the community not possible reasons shown when No'() {
 
     when: 'At risk management page'
     at RiskManagementV3Page
@@ -112,6 +114,21 @@ class RiskManagementV3Spec extends GebReportingSpec {
 
     then: 'I see the reason form'
     manageInTheCommunityNotPossibleForm.isDisplayed()
+  }
+
+  def 'Mental health plan question to check consulted with prison healthcare shown when Yes'() {
+
+    when: 'At risk management page'
+    at RiskManagementV3Page
+
+    then: 'I dont see the consulted with prison healthcare question'
+    !prisonHealthcareConsultationRadios.isDisplayed()
+
+    when: 'I select yes for mental health plan essential on release'
+    mentalHealthPlanRadios.checked = 'Yes'
+
+    then: 'I see the reason form'
+    prisonHealthcareConsultationRadios.isDisplayed()
   }
 
   def 'Non-disclosable information shown when Yes'() {
