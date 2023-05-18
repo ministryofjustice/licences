@@ -30,7 +30,7 @@ class RiskManagementV3Page extends Page {
     emsInformationForm(required: false) { $("#emsInformationForm") }
     emsInformationDetails(required: false) { $("#emsInformationDetails") }
     manageInTheCommunityNotPossibleForm(required: false) { $("#manageInTheCommunityNotPossibleReason") }
-    prisonHealthcareConsultationRadios(requiredL false) { $("prisonHealthcareConsultation") }
+    prisonHealthcareConsultationRadios(required: false) { $("prisonHealthcareConsultation") }
 
     nonDisclosableInformationForm (required: false) { $("#nonDisclosableInformationDetails") }
     nonDisclosableInformationView (required: false) { $("#nonDisclosableInformationDetailsView") }
