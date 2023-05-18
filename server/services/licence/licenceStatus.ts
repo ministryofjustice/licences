@@ -153,6 +153,7 @@ function getRoStageState(licence) {
     awaitingRiskInformation,
     showMandatoryAddressChecksNotCompletedWarning,
     pomNotConsulted,
+    prisonHealthcareNotConsulted,
     riskManagementVersion,
   } = getRiskManagementState(licence)
   const { decision: victimLiaisonNeeded, task: victim } = getTaskState(licence.victim?.victimLiaison?.decision)
@@ -176,6 +177,7 @@ function getRoStageState(licence) {
       awaitingRiskInformation,
       showMandatoryAddressChecksNotCompletedWarning,
       pomNotConsulted,
+      prisonHealthcareNotConsulted,
       victimLiaisonNeeded,
       standardOnly,
       additional,
@@ -258,7 +260,9 @@ function getRiskManagementState(licence) {
   const awaitingInformationAnswer = riskManagement?.awaitingInformation || riskManagement?.awaitingOtherInformation
   const manageInTheCommunityAnswer = riskManagement?.manageInTheCommunity
   const pomConsultationAnswer = riskManagement?.pomConsultation
-  const { proposedAddressSuitable, manageInTheCommunity, pomConsultation } = riskManagement || {}
+  const mentalHealthPlanAnswer = riskManagement?.mentalHealthPlan
+  const { proposedAddressSuitable, manageInTheCommunity, pomConsultation, prisonHealthcareConsultation } =
+    riskManagement || {}
   const { bassRequested } = getBassRequestState(licence)
 
   return {
@@ -275,6 +279,7 @@ function getRiskManagementState(licence) {
     addressUnsuitable:
       proposedAddressSuitable === 'No' || (riskManagementVersion === '3' && manageInTheCommunity === 'No'),
     pomNotConsulted: pomConsultation === 'No',
+    prisonHealthcareNotConsulted: prisonHealthcareConsultation === 'No',
   }
 
   function getState() {
@@ -292,7 +297,8 @@ function getRiskManagementState(licence) {
         awaitingInformationAnswer &&
         proposedAddressSuitable &&
         manageInTheCommunityAnswer &&
-        pomConsultationAnswer) ||
+        pomConsultationAnswer &&
+        (mentalHealthPlanAnswer === 'No' || (mentalHealthPlanAnswer && prisonHealthcareConsultation))) ||
       (riskManagementVersion === '2' &&
         checksConsideredAnswer === 'No' &&
         awaitingInformationAnswer &&

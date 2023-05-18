@@ -59,6 +59,7 @@ export type Decisions = {
   awaitingRiskInformation?: boolean
   showMandatoryAddressChecksNotCompletedWarning?: boolean
   pomNotConsulted?: boolean
+  prisonHealthcareNotConsulted?: boolean
   victimLiaisonNeeded?: boolean
   optedOut?: boolean
 

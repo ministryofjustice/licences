@@ -74,6 +74,17 @@ block content
           span#manageInTheCommunityNotPossibleReason.block.bold #{risk.manageInTheCommunityNotPossibleReason}
       
       div.smallPaddingTop
+        p Is it essential to the offender’s risk management that there is a plan in place to treat their mental health on release?
+
+        span#mentalHealthPlan.block.bold #{risk.mentalHealthPlan}
+
+      if risk.mentalHealthPlan === 'Yes'
+        div.smallPaddingTop
+          p Have you consulted with prison healthcare?
+
+          span#prisonHealthcareConsultation.block.bold #{risk.prisonHealthcareConsultation}
+
+      div.smallPaddingTop
         p Have you consulted the POM for information about the offender’s current progress in custody?
 
         span#pomConsultation.block.bold #{risk.pomConsultation}

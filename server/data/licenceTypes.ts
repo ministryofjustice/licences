@@ -292,6 +292,8 @@ type RiskManagementV3 = {
   manageInTheCommunity?: string
   manageInTheCommunityNotPossibleReason?: string
   pomConsultation?: string
+  mentalHealthPlan?: string
+  prisonHealthcareConsultation?: string
 }
 
 export interface Risk {
