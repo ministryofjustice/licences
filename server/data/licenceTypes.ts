@@ -250,7 +250,7 @@ export interface Reporting {
   }
 }
 
-export type RiskManagement = RiskManagementV1 | RiskManagementV2
+export type RiskManagement = RiskManagementV1 | RiskManagementV2 | RiskManagementV3
 
 type RiskManagementV1 = {
   version: '1'
@@ -276,6 +276,22 @@ type RiskManagementV2 = {
   proposedAddressSuitable?: string
   riskManagementDetails?: string
   unsuitableReason?: string
+}
+
+type RiskManagementV3 = {
+  version: '3'
+  awaitingOtherInformation?: string
+  emsInformation?: string
+  emsInformationDetails?: string
+  hasConsideredChecks?: string
+  nonDisclosableInformation?: string
+  nonDisclosableInformationDetails?: string
+  proposedAddressSuitable?: string
+  riskManagementDetails?: string
+  unsuitableReason?: string
+  manageInTheCommunity?: string
+  manageInTheCommunityNotPossibleReason?: string
+  pomConsultation?: string
 }
 
 export interface Risk {

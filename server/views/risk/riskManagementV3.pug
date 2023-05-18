@@ -98,6 +98,18 @@ block content
                   if data.manageInTheCommunityNotPossibleReason
                     | #{data.manageInTheCommunityNotPossibleReason}
 
+          div.form-group.inline.smallPaddingTop
+            h3.heading-small Prison offender manager (POM) consultation
+            p Have you consulted the POM for information about the offender’s current progress in custody?
+
+            div.multiple-choice
+              input#pomConsultationYes(type="radio" checked=data.pomConsultation === 'Yes' name="pomConsultation" value="Yes")
+              label(for="pomConsultationYes") Yes
+
+            div.multiple-choice
+              input#pomConsultationNo(type="radio" checked=data.pomConsultation === 'No' name="pomConsultation" value="No")
+              label(for="pomConsultationNo") No
+
           if user.role === 'RO'
             +nonDisclosableInformation(data)
           else

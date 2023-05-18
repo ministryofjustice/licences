@@ -137,6 +137,7 @@ class RiskManagementV3Spec extends GebReportingSpec {
     when: 'I select new options'
     hasConsideredChecksRadios.checked = 'Yes'
     addressSuitableRadios.checked = 'No'
+    pomConsultationRadios.checked = 'Yes'
 
     and: 'I save and continue'
     find('#continueBtn').click()
@@ -147,5 +148,6 @@ class RiskManagementV3Spec extends GebReportingSpec {
     then: 'I see the previously entered values'
     hasConsideredChecksRadios.checked == 'Yes'
     addressSuitableRadios.checked == 'No'
+    pomConsultationRadios.checked == 'Yes'
   }
 }

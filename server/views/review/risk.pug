@@ -71,6 +71,11 @@ block content
         div.smallPaddingTop
           p Explain why you made your decision
 
-          span#unsuitableReason.block.bold #{risk.manageInTheCommunityNotPossibleReason}
+          span#manageInTheCommunityNotPossibleReason.block.bold #{risk.manageInTheCommunityNotPossibleReason}
+      
+      div.smallPaddingTop
+        p Have you consulted the POM for information about the offender’s current progress in custody?
+
+        span#pomConsultation.block.bold #{risk.pomConsultation}
 
   +readOnlyNonDisclosableInformation(risk)

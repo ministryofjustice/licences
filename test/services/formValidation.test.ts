@@ -350,6 +350,7 @@ describe('validation', () => {
               proposedAddressSuitable: '',
               nonDisclosableInformation: '',
               manageInTheCommunity: '',
+              pomConsultation: '',
             },
             outcome: {
               hasConsideredChecks:
@@ -359,6 +360,7 @@ describe('validation', () => {
               nonDisclosableInformation: 'Say if you want to add information that cannot be disclosed to the offender',
               manageInTheCommunity:
                 'Say if it is possible to manage the offender in the community safely at the proposed address',
+              pomConsultation: 'Say if you have consulted the POM about the offender’s progress in custody',
             },
           },
           {

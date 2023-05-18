@@ -5,10 +5,23 @@ const getLabel = ({ decisions, tasks }) => {
     riskManagementVersion,
     riskManagementNeeded,
     showMandatoryAddressChecksNotCompletedWarning,
+    pomNotConsulted,
     addressUnsuitable,
     awaitingRiskInformation,
   } = decisions
   const { riskManagement } = tasks
+
+  const labels = {
+    awaitingRiskInformation: { true: 'Still waiting for information' },
+    pomNotConsulted: { true: 'POM has not been consulted about offender’s progress' },
+  }
+
+  const warningLabel = [
+    labels.awaitingRiskInformation[awaitingRiskInformation],
+    labels.pomNotConsulted[pomNotConsulted],
+  ]
+    .filter(Boolean)
+    .join('||')
 
   if (addressUnsuitable) {
     return 'Address unsuitable'
@@ -29,8 +42,8 @@ const getLabel = ({ decisions, tasks }) => {
       return 'WARNING||Mandatory address checks not completed'
     }
 
-    if (awaitingRiskInformation) {
-      return 'WARNING||Still waiting for information'
+    if (warningLabel) {
+      return `WARNING||${warningLabel}`
     }
 
     if (riskManagement === 'DONE') {

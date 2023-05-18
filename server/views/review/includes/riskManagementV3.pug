@@ -76,6 +76,23 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
 div.pure-g.borderBottomLight.midPaddingTopBottom
   div.pure-u-1-2
     div.pure-g
+      span.pure-u-3-4 Have you consulted the POM for information about the offender’s current progress in custody?
+
+  div.pure-u-1-2
+    if risk.pomConsultation === 'No'
+      div.pure-g
+        div.pure-u-1.pure-u-sm-3-5.notice-container
+          div.notice
+            i.icon.icon-important
+              span.visually-hidden Warning
+
+            strong.bold-small POM has not been consulted about offender’s progress
+    else
+      +itemAndError(risk.pomConsultation, errors.pomConsultation, "pomConsultation")
+
+div.pure-g.borderBottomLight.midPaddingTopBottom
+  div.pure-u-1-2
+    div.pure-g
       span.pure-u-3-4 Do you have information that cannot be disclosed to the offender?
   div.pure-u-1-2
     +itemAndError(risk.nonDisclosableInformation, errors.nonDisclosableInformation, "nonDisclosableInformation")

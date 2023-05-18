@@ -152,6 +152,7 @@ function getRoStageState(licence) {
     riskManagementNeeded,
     awaitingRiskInformation,
     showMandatoryAddressChecksNotCompletedWarning,
+    pomNotConsulted,
     riskManagementVersion,
   } = getRiskManagementState(licence)
   const { decision: victimLiaisonNeeded, task: victim } = getTaskState(licence.victim?.victimLiaison?.decision)
@@ -174,6 +175,7 @@ function getRoStageState(licence) {
       riskManagementNeeded,
       awaitingRiskInformation,
       showMandatoryAddressChecksNotCompletedWarning,
+      pomNotConsulted,
       victimLiaisonNeeded,
       standardOnly,
       additional,
@@ -255,20 +257,24 @@ function getRiskManagementState(licence) {
   const checksConsideredAnswer = riskManagement?.hasConsideredChecks
   const awaitingInformationAnswer = riskManagement?.awaitingInformation || riskManagement?.awaitingOtherInformation
   const manageInTheCommunityAnswer = riskManagement?.manageInTheCommunity
-  const { proposedAddressSuitable, manageInTheCommunity } = riskManagement || {}
+  const pomConsultationAnswer = riskManagement?.pomConsultation
+  const { proposedAddressSuitable, manageInTheCommunity, pomConsultation } = riskManagement || {}
   const { bassRequested } = getBassRequestState(licence)
 
   return {
     riskManagementVersion,
     riskManagementNeeded: riskManagementAnswer === 'Yes',
     showMandatoryAddressChecksNotCompletedWarning:
-      riskManagementVersion === '2' && checksConsideredAnswer !== 'Yes' && !bassRequested,
+      (riskManagementVersion === '2' || riskManagementVersion === '3') &&
+      checksConsideredAnswer !== 'Yes' &&
+      !bassRequested,
     proposedAddressSuitable:
       proposedAddressSuitable === 'Yes' || (riskManagementVersion === '3' && manageInTheCommunity === 'Yes'),
     awaitingRiskInformation: awaitingInformationAnswer === 'Yes',
     riskManagement: getState(),
     addressUnsuitable:
       proposedAddressSuitable === 'No' || (riskManagementVersion === '3' && manageInTheCommunity === 'No'),
+    pomNotConsulted: pomConsultation === 'No',
   }
 
   function getState() {
@@ -285,7 +291,8 @@ function getRiskManagementState(licence) {
         (riskManagementAnswer || checksConsideredAnswer === 'Yes') &&
         awaitingInformationAnswer &&
         proposedAddressSuitable &&
-        manageInTheCommunityAnswer) ||
+        manageInTheCommunityAnswer &&
+        pomConsultationAnswer) ||
       (riskManagementVersion === '2' &&
         checksConsideredAnswer === 'No' &&
         awaitingInformationAnswer &&
