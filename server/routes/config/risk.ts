@@ -1,5 +1,3 @@
-import { riskManagementVersion } from '../../config'
-
 export default {
   riskManagement: {
     licenceSection: 'riskManagement',
