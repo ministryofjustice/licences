@@ -523,7 +523,15 @@ describe('validation', () => {
             outcome: {},
           },
           {
+            formResponse: { consentHavingSpoken: 'No' },
+            outcome: {},
+          },
+          {
             formResponse: { consent: 'Yes' },
+            outcome: { electricity: 'Say if there is an electricity supply' },
+          },
+          {
+            formResponse: { consentHavingSpoken: 'Yes' },
             outcome: { electricity: 'Say if there is an electricity supply' },
           },
           {
@@ -531,11 +539,23 @@ describe('validation', () => {
             outcome: { homeVisitConducted: 'Say if you did a home visit' },
           },
           {
+            formResponse: { consentHavingSpoken: 'Yes', electricity: 'Yes' },
+            outcome: { homeVisitConducted: 'Say if you did a home visit' },
+          },
+          {
             formResponse: { consent: 'Yes', electricity: 'No' },
             outcome: {},
           },
           {
+            formResponse: { consentHavingSpoken: 'Yes', electricity: 'No' },
+            outcome: {},
+          },
+          {
             formResponse: { consent: 'Yes', electricity: 'Yes', homeVisitConducted: 'Yes' },
+            outcome: {},
+          },
+          {
+            formResponse: { consentHavingSpoken: 'Yes', electricity: 'Yes', homeVisitConducted: 'Yes' },
             outcome: {},
           },
         ]

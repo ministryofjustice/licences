@@ -26,18 +26,18 @@ block content
 
               h3.heading-medium Have you spoken to the main occupier and do they consent to HDC?
 
-              div.multiple-choice(data-target="consentForm")
-                input#hdcConsentYes(type="radio" checked=data.consent === 'Yes' name="consent" value="Yes")
-                label(for="hdcConsentYes") Yes
+              div.multiple-choice(data-target="consentHavingSpokenForm")
+                input#hdcConsentHavingSpokenYes(type="radio" checked=data.consentHavingSpoken === 'Yes' name="consentHavingSpoken" value="Yes")
+                label(for="hdcConsentHavingSpokenYes") Yes
               div.multiple-choice
-                input#hdcConsentNo(type="radio" checked=data.consent === 'No' name="consent" value="No")
-                label(for="hdcConsentNo") No
+                input#hdcConsentHavingSpokenNo(type="radio" checked=data.consentHavingSpoken === 'No' name="consentHavingSpoken" value="No")
+                label(for="hdcConsentHavingSpokenNo") No
 
-              div#consentForm.panel.panel-border-narrow.js-hidden
+              div#consentHavingSpokenForm.panel.panel-border-narrow.js-hidden
                 include includes/consentForm
 
             else
-              div#consentForm
+              div#consentHavingSpokenForm
                 h3.heading-medium Curfew address review
                 include includes/consentForm
 

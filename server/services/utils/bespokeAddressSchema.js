@@ -58,12 +58,26 @@ module.exports = {
 
   // complex structure due to cascading requirements
   addressReviewSchema: joi.object().keys({
-    consent: joi.valid('Yes', 'No').required(),
+    consent: joi.when('version', {
+      is: '1',
+      then: joi.valid('Yes', 'No').required(),
+      otherwise: joi.any(),
+    }),
+
+    consentHavingSpoken: joi.when('version', {
+      is: '2',
+      then: joi.valid('Yes', 'No').required(),
+      otherwise: joi.any(),
+    }),
 
     electricity: joi.when('consent', {
       is: 'Yes',
       then: joi.valid('Yes', 'No').required(),
-      otherwise: joi.any().optional(),
+      otherwise: joi.when('consentHavingSpoken', {
+        is: 'Yes',
+        then: joi.valid('Yes', 'No').required(),
+        otherwise: joi.any().optional(),
+      }),
     }),
 
     homeVisitConducted: joi.when('consent', {
@@ -71,11 +85,16 @@ module.exports = {
       then: joi.when('electricity', {
         is: 'Yes',
         then: joi.valid('Yes', 'No').required(),
-        otherwise: joi.any().optional(),
       }),
-      otherwise: joi.any().optional(),
+      otherwise: joi.when('consentHavingSpoken', {
+        is: 'Yes',
+        then: joi.when('electricity', {
+          is: 'Yes',
+          then: joi.valid('Yes', 'No').required(),
+          otherwise: joi.any().optional(),
+        }),
+      }),
     }),
-
     addressReviewComments: joi.string().allow('').optional(),
     version: joi.string().allow('').optional(),
   }),

@@ -12,7 +12,6 @@ export enum LicenceStage {
 }
 
 export type YesNo = 'Yes' | 'No'
-export type OneOrTwo = '1' | '2'
 
 export interface AddressAndPhone {
   addressLine1?: string
@@ -69,12 +68,22 @@ export interface RejectedBassReferral extends BassReferral {
   withdrawal?: 'offer' | 'request'
 }
 
-export interface AddressReview {
+export type AddressReview = AddressReviewV1 | AddressReviewV2
+
+export interface AddressReviewV1 {
+  version?: '1'
   addressReviewComments?: string
   consent?: string
   electricity?: string
   homeVisitConducted?: string
-  version?: OneOrTwo
+}
+
+export interface AddressReviewV2 {
+  version?: '2'
+  addressReviewComments?: string
+  consentHavingSpoken?: string
+  electricity?: string
+  homeVisitConducted?: string
 }
 
 export interface Curfew {
@@ -252,7 +261,7 @@ export interface Reporting {
   }
 }
 
-export type RiskManagement = RiskManagementV1 | RiskManagementV2 | RiskManagementV3
+export type RiskManagement = RiskManagementV1 | RiskManagementV2
 
 type RiskManagementV1 = {
   version: '1'
@@ -278,22 +287,6 @@ type RiskManagementV2 = {
   proposedAddressSuitable?: string
   riskManagementDetails?: string
   unsuitableReason?: string
-}
-
-type RiskManagementV3 = {
-  version: '3'
-  awaitingOtherInformation?: string
-  emsInformation?: string
-  emsInformationDetails?: string
-  hasConsideredChecks?: string
-  nonDisclosableInformation?: string
-  nonDisclosableInformationDetails?: string
-  proposedAddressSuitable?: string
-  riskManagementDetails?: string
-  unsuitableReason?: string
-  manageInTheCommunity?: string
-  manageInTheCommunityNotPossibleReason?: string
-  pomConsultation?: string
 }
 
 export interface Risk {

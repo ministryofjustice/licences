@@ -231,10 +231,7 @@ export function validateGroup({
       {
         formResponse: getIn(licence, ['curfew', 'curfewAddressReview']),
         formType: 'curfewAddressReview',
-        pageConfig:
-          licence.curfew?.curfewAddressReview?.version === '1'
-            ? curfewConfig.curfewAddressReview
-            : curfewConfig.curfewAddressReviewVersion2,
+        pageConfig: curfewConfig.curfewAddressReview,
         section: 'curfew',
         missingMessage: 'Enter the curfew address review details',
       },

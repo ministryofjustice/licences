@@ -81,9 +81,9 @@ if licenceStatus.stage !== 'ELIGIBILITY' && !addressReviewNeeded
       div.pure-u-1-2
         div#dischargeHomeAddress
           #{errors.electricity}
-          +itemAndError(addressReview.consent, reviewErrors.consent, "consent-curfew")
+          +itemAndError(addressReview.consentHavingSpoken, reviewErrors.consentHavingSpoken, "consentHavingSpoken-curfew")
 
-  if(addressReview.consent === 'Yes' || offenderIsMainOccupier)
+  if(addressReview.consentHavingSpoken === 'Yes' || offenderIsMainOccupier)
     div.pure-g.borderBottomLight.midPaddingTopBottom
       div.pure-u-1-2
         | Is there an electricity supply?
