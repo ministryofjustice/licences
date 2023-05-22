@@ -1,5 +1,3 @@
-import { riskManagementVersion } from '../../config'
-
 export default {
   riskManagement: {
     licenceSection: 'riskManagement',
@@ -73,6 +71,19 @@ export default {
         manageInTheCommunityNotPossibleReason: {
           responseType: 'requiredStringIf_manageInTheCommunity_No',
           validationMessage: 'Provide details of why you made this decision',
+        },
+      },
+      {
+        mentalHealthPlan: {
+          responseType: 'requiredYesNoIf_version_3',
+          validationMessage:
+            'Say if it is essential to the offender’s risk management that there is a plan in place to treat their mental health on release',
+        },
+      },
+      {
+        prisonHealthcareConsultation: {
+          responseType: 'requiredStringIf_mentalHealthPlan_Yes',
+          validationMessage: 'Say if you have consulted prison healthcare',
         },
       },
       {

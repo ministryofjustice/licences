@@ -863,7 +863,7 @@ describe('getLicenceStatus', () => {
         expect(status.decisions.awaitingRiskInformation).toBe(false)
       })
 
-      test('should show risk management version 3 DONE when mandatory address checks have been considered and proposedAddressSuitable, awaitingRiskInformation, manageInTheCommunity and pomConsultation answered', () => {
+      test('should show risk management version 3 DONE when mandatory address checks have been considered and proposedAddressSuitable, awaitingRiskInformation, manageInTheCommunity, mentalHealthPlan and pomConsultation answered', () => {
         const licence = {
           stage: 'PROCESSING_RO',
           licence: {
@@ -874,6 +874,7 @@ describe('getLicenceStatus', () => {
                 awaitingOtherInformation: 'No',
                 proposedAddressSuitable: 'Yes',
                 manageInTheCommunity: 'Yes',
+                mentalHealthPlan: 'No',
                 pomConsultation: 'Yes',
               },
             },
@@ -916,7 +917,7 @@ describe('getLicenceStatus', () => {
         expect(status.decisions.awaitingRiskInformation).toBe(false)
       })
 
-      test('should show risk management version 3 STARTED if all questions answered apart from manageInTheCommunity and pomConsultation', () => {
+      test('should show risk management version 3 STARTED if questions answered apart from manageInTheCommunity, mentalHealthPlan and pomConsultation', () => {
         const licence = {
           stage: 'PROCESSING_RO',
           licence: {
@@ -932,6 +933,39 @@ describe('getLicenceStatus', () => {
                 proposedAddressSuitable: 'Yes',
                 riskManagementDetails: 'some details',
                 unsuitableReason: '',
+              },
+            },
+          },
+        }
+
+        const status = getLicenceStatus(licence)
+
+        expect(status.tasks.riskManagement).toEqual(TaskState.STARTED)
+        expect(status.decisions.showMandatoryAddressChecksNotCompletedWarning).toBe(false)
+        expect(status.decisions.riskManagementNeeded).toBe(false)
+        expect(status.decisions.awaitingRiskInformation).toBe(false)
+      })
+
+      test('should show risk management version 3 STARTED if all questions answered including mentalHealthPlan as Yes but prisonHealthcareConsultation not answered', () => {
+        const licence = {
+          stage: 'PROCESSING_RO',
+          licence: {
+            risk: {
+              riskManagement: {
+                version: '3',
+                hasConsideredChecks: 'Yes',
+                awaitingOtherInformation: 'No',
+                emsInformation: 'Yes',
+                emsInformationDetails: 'some details',
+                nonDisclosableInformation: 'No',
+                nonDisclosableInformationDetails: '',
+                proposedAddressSuitable: 'Yes',
+                riskManagementDetails: 'some details',
+                unsuitableReason: '',
+                manageInTheCommunity: 'Yes',
+                mentalHealthPlan: 'Yes',
+                prisonHealthcareConsultation: '',
+                pomConsultation: 'Yes',
               },
             },
           },

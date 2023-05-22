@@ -350,6 +350,7 @@ describe('validation', () => {
               proposedAddressSuitable: '',
               nonDisclosableInformation: '',
               manageInTheCommunity: '',
+              mentalHealthPlan: '',
               pomConsultation: '',
             },
             outcome: {
@@ -360,7 +361,44 @@ describe('validation', () => {
               nonDisclosableInformation: 'Say if you want to add information that cannot be disclosed to the offender',
               manageInTheCommunity:
                 'Say if it is possible to manage the offender in the community safely at the proposed address',
+              mentalHealthPlan:
+                'Say if it is essential to the offender’s risk management that there is a plan in place to treat their mental health on release',
               pomConsultation: 'Say if you have consulted the POM about the offender’s progress in custody',
+            },
+          },
+          {
+            formResponse: {
+              version: '3',
+              hasConsideredChecks: 'Yes',
+              awaitingOtherInformation: 'No',
+              proposedAddressSuitable: 'Yes',
+              emsInformation: 'No',
+              nonDisclosableInformation: 'No',
+              manageInTheCommunity: 'No',
+              manageInTheCommunityNotPossibleReason: '',
+              mentalHealthPlan: 'No',
+              prisonHealthcareConsultation: '',
+              pomConsultation: 'Yes',
+            },
+            outcome: {
+              manageInTheCommunityNotPossibleReason: 'Provide details of why you made this decision',
+            },
+          },
+          {
+            formResponse: {
+              version: '3',
+              hasConsideredChecks: 'Yes',
+              awaitingOtherInformation: 'No',
+              proposedAddressSuitable: 'Yes',
+              emsInformation: 'No',
+              nonDisclosableInformation: 'No',
+              manageInTheCommunity: 'Yes',
+              mentalHealthPlan: 'Yes',
+              prisonHealthcareConsultation: '',
+              pomConsultation: 'Yes',
+            },
+            outcome: {
+              prisonHealthcareConsultation: 'Say if you have consulted prison healthcare',
             },
           },
           {

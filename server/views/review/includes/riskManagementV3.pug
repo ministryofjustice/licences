@@ -76,6 +76,30 @@ div.pure-g.borderBottomLight.midPaddingTopBottom
 div.pure-g.borderBottomLight.midPaddingTopBottom
   div.pure-u-1-2
     div.pure-g
+      span.pure-u-3-4 Is it essential to the offender’s risk management that there is a plan in place to treat their mental health on release?
+  div.pure-u-1-2
+    +itemAndError(risk.mentalHealthPlan, errors.mentalHealthPlan, "mentalHealthPlan")
+
+if risk.mentalHealthPlan === 'Yes'
+  div.pure-g.borderBottomLight.midPaddingTopBottom
+    div.pure-u-1-2
+      div.pure-g
+        span.pure-u-3-4 Have you consulted with prison healthcare?
+    div.pure-u-1-2
+      if risk.prisonHealthcareConsultation === 'No'
+        div.pure-g
+          div.pure-u-1.pure-u-sm-3-5.notice-container
+            div.notice
+              i.icon.icon-important
+                span.visually-hidden Warning
+
+              strong.bold-small Prison healthcare has not been consulted on essential mental health plan
+      else
+        +itemAndError(risk.prisonHealthcareConsultation, errors.prisonHealthcareConsultation, 'prisonHealthcareConsultation')
+
+div.pure-g.borderBottomLight.midPaddingTopBottom
+  div.pure-u-1-2
+    div.pure-g
       span.pure-u-3-4 Have you consulted the POM for information about the offender’s current progress in custody?
 
   div.pure-u-1-2

@@ -99,6 +99,28 @@ block content
                     | #{data.manageInTheCommunityNotPossibleReason}
 
           div.form-group.inline.smallPaddingTop
+            h3.heading-small Mental health plan
+            p Is it essential to the offender’s risk management that there is a plan in place to treat their mental health on release?
+
+            div.multiple-choice(data-target='prisonHealthcareConsultationCheck')
+              input#mentalHealthPlanYes(type="radio" checked=data.mentalHealthPlan === 'Yes' name="mentalHealthPlan" value="Yes")
+              label(for="mentalHealthPlanYes") Yes
+            div.multiple-choice
+              input#mentalHealthPlanNo(type="radio" checked=data.mentalHealthPlan === 'No' name="mentalHealthPlan" value="No")
+              label(for="mentalHealthPlanNo") No
+
+            div#prisonHealthcareConsultationCheck.panel.panel-border-narrow.js-hidden
+              p Have you consulted with prison healthcare?
+
+              div.multiple-choice
+                input#prisonHealthcareConsultationYes(type="radio" checked=data.prisonHealthcareConsultation === 'Yes' name="prisonHealthcareConsultation" value="Yes")
+                label(for="prisonHealthcareConsultationYes") Yes
+
+              div.multiple-choice
+                input#prisonHealthcareConsultationNo(type="radio" checked=data.prisonHealthcareConsultation === 'No' name="prisonHealthcareConsultation" value="No")
+                label(for="prisonHealthcareConsultationNo") No
+
+          div.form-group.inline.smallPaddingTop
             h3.heading-small Prison offender manager (POM) consultation
             p Have you consulted the POM for information about the offender’s current progress in custody?
 

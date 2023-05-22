@@ -6,6 +6,7 @@ const getLabel = ({ decisions, tasks }) => {
     riskManagementNeeded,
     showMandatoryAddressChecksNotCompletedWarning,
     pomNotConsulted,
+    prisonHealthcareNotConsulted,
     addressUnsuitable,
     awaitingRiskInformation,
   } = decisions
@@ -14,11 +15,13 @@ const getLabel = ({ decisions, tasks }) => {
   const labels = {
     awaitingRiskInformation: { true: 'Still waiting for information' },
     pomNotConsulted: { true: 'POM has not been consulted about offender’s progress' },
+    prisonHealthcareNotConsulted: { true: 'Prison healthcare has not been consulted on essential mental health plan' },
   }
 
   const warningLabel = [
     labels.awaitingRiskInformation[awaitingRiskInformation],
     labels.pomNotConsulted[pomNotConsulted],
+    labels.prisonHealthcareNotConsulted[prisonHealthcareNotConsulted],
   ]
     .filter(Boolean)
     .join('||')

@@ -21,6 +21,7 @@ class RiskManagementV3Page extends Page {
     addressSuitableRadios { $(name: "proposedAddressSuitable").module(RadioButtons) }
     emsInformationRadios(required: false) { $(name: "emsInformation").module(RadioButtons) }
     manageInTheCommunityRadios { $(name: "manageInTheCommunity").module(RadioButtons) }
+    mentalHealthPlanRadios { $(name: "mentalHealthPlan").module(RadioButtons) }
     pomConsultationRadios { $(name: "pomConsultation").module(RadioButtons) }
     nonDisclosableInformationRadios { $(name: "nonDisclosableInformation").module(RadioButtons) }
 
@@ -29,6 +30,7 @@ class RiskManagementV3Page extends Page {
     emsInformationForm(required: false) { $("#emsInformationForm") }
     emsInformationDetails(required: false) { $("#emsInformationDetails") }
     manageInTheCommunityNotPossibleForm(required: false) { $("#manageInTheCommunityNotPossibleReason") }
+    prisonHealthcareConsultationRadios(required: false) { $("#prisonHealthcareConsultationCheck") }
 
     nonDisclosableInformationForm (required: false) { $("#nonDisclosableInformationDetails") }
     nonDisclosableInformationView (required: false) { $("#nonDisclosableInformationDetailsView") }

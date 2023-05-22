@@ -124,6 +124,19 @@ describe('risk management task', () => {
     })
   })
 
+  test('should return warning if version 3 and mental healthcare plan is essential but prison healthcare not consulted', () => {
+    expect(
+      riskManagement.view({
+        decisions: { prisonHealthcareNotConsulted: true, riskManagementVersion: '3' },
+        tasks: {},
+      })
+    ).toStrictEqual({
+      action: { href: '/hdc/review/risk/', text: 'View', type: 'btn-secondary' },
+      label: 'WARNING||Prison healthcare has not been consulted on essential mental health plan',
+      title: 'Risk management',
+    })
+  })
+
   test('should return multiple warnings if version 3, still waiting for information and pom not consulted about the offender’s current progress in custody', () => {
     expect(
       riskManagement.view({
