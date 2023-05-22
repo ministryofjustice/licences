@@ -19,10 +19,10 @@ class CurfewAddressReviewPage extends Page {
 
     curfew { module(CurfewDetailsModule) }
 
-    landlordConsentRadios { $(name: "consent").module(RadioButtons) }
+    landlordConsentRadios { $(name: "consentHavingSpoken").module(RadioButtons) }
     electricitySupplyRadios(required: false) { $(name: "electricity").module(RadioButtons) }
     homeVisitRadios(required: false) { $(name: "homeVisitConducted").module(RadioButtons) }
 
-    landlordConsentForm(required: false) { $("#consentForm") }
+    landlordConsentForm(required: false) { $("#consentHavingSpokenForm") }
   }
 }

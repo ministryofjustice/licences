@@ -1,5 +1,4 @@
-mixin addressDetail(type, address, review)
-  - var curfewAddressReviewVersion1 = data.curfew && data.curfew.curfewAddressReview && data.curfew.curfewAddressReview.version === '1'
+mixin addressDetailV2(type, address, review)
 
   div.pure-g.smallPaddingBottom(id="addressDetails")
     div.pure-u-1.pure-u-sm-1-2.pure-g
@@ -60,17 +59,14 @@ mixin addressDetail(type, address, review)
             if address.cautionedAgainstResident === 'Yes'
               p.bold.noMargin #{address.residentOffenceDetails}
 
-  if review.consent
+  if review.consentHavingSpoken
     div.pure-g.largeMarginTop.paddingTop.smallPaddingBottom.borderTopLight
       div.pure-u-1.pure-u-md-1-2
         div.pure-u-md-4-5
-          if curfewAddressReviewVersion1
-            | Does the main occupier consent to HDC?
-          else 
-            | Have you spoken to the main occupier and do they consent to HDC?
-          p.bold(id="consent-" + type) #{review.consent}
+          | Have you spoken to the main occupier and do they consent to HDC?
+          p.bold(id="consentHavingSpoken-" + type) #{review.consentHavingSpoken}
 
-      if(review.consent === 'Yes')
+      if(review.consentHavingSpoken === 'Yes')
         div.pure-u-1.pure-u-md-1-2.midPaddingBottom
           if review.electricity
             div.pure-u-md-4-5

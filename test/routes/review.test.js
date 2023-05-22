@@ -365,7 +365,7 @@ describe('/review/', () => {
           curfewAddressReview: {
             version: '1',
             addressReviewComments: '',
-            consent: true,
+            consent: 'Yes',
           },
         },
         proposedAddress: { curfewAddress: { addressLine1: 'line1' } },
@@ -397,7 +397,7 @@ describe('/review/', () => {
           curfewAddressReview: {
             version: '2',
             addressReviewComments: '',
-            consent: true,
+            consentHavingSpoken: 'Yes',
           },
         },
         proposedAddress: { curfewAddress: { addressLine1: 'line1' } },

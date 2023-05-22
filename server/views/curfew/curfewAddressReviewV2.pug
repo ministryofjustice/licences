@@ -1,5 +1,5 @@
 extends ../layout
-include ../proposedAddress/includes/addressDetail
+include ../proposedAddress/includes/addressDetailV2
 
 block content
 
@@ -13,7 +13,7 @@ block content
       h2.heading-large Proposed curfew address
 
       if address
-        +addressDetail('curfew', address, {}, {})
+        +addressDetailV2('curfew', address, {}, {})
 
     form(method="post")
       input(type="hidden" name="_csrf" value=csrfToken)

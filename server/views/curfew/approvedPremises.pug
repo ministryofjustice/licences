@@ -1,9 +1,13 @@
 extends ../layout
-include ../proposedAddress/includes/addressDetail
+include ../proposedAddress/includes/addressDetailV1
+include ../proposedAddress/includes/addressDetailV2
+
 
 block content
 
   -var address = proposedAddress || {}
+  -var curfewAddressReviewVersion1 = data.curfew && data.curfew.curfewAddressReview && data.curfew.curfewAddressReview.version === '1'
+
 
   div.pure-g.pure-u-1
     div.borderBottomLight
@@ -12,8 +16,10 @@ block content
 
       h2.heading-large Proposed curfew address
 
-      if address
-        +addressDetail('curfew', address, {}, {})
+      if address && curfewAddressReviewVersion1
+        +addressDetailV1('curfew', address, {}, {})
+      else
+        +addressDetailV2('curfew', address, {}, {})
 
     form(method="post")
       input(type="hidden" name="_csrf" value=csrfToken)

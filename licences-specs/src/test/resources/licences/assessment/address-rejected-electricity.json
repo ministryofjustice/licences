@@ -52,7 +52,8 @@
     },
     "curfew": {
       "curfewAddressReview": {
-        "consent": "Yes",
+        "version": "2",
+        "consentHavingSpoken": "Yes",
         "electricity": "No",
         "homeVisit": "Yes"
       }

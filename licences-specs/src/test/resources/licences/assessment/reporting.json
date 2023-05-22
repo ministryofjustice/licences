@@ -65,7 +65,8 @@
         "sundayUntil": "06:07"
       },
       "curfewAddressReview": {
-        "consent": "Yes",
+        "version": "2",
+        "consentHavingSpoken": "Yes",
         "electricity": "Yes",
         "homeVisitConducted": "Yes"
       },

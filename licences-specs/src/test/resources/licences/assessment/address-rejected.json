@@ -53,7 +53,8 @@
     },
     "curfew": {
       "curfewAddressReview": {
-        "consent": "No"
+        "version": "2",
+        "consentHavingSpoken": "No"
       }
     }
   }
