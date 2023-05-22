@@ -5,7 +5,7 @@ import geb.module.RadioButtons
 import uk.gov.justice.digital.hmpps.licences.modules.CurfewDetailsModule
 import uk.gov.justice.digital.hmpps.licences.modules.HeaderModule
 
-class CurfewAddressReviewPage extends Page {
+class CurfewAddressReviewPageV1 extends Page {
 
   static url = '/hdc/curfew/curfewAddressReview'
 
@@ -19,10 +19,10 @@ class CurfewAddressReviewPage extends Page {
 
     curfew { module(CurfewDetailsModule) }
 
-    landlordConsentRadios { $(name: "consentHavingSpoken").module(RadioButtons) }
+    landlordConsentRadios { $(name: "consent").module(RadioButtons) }
     electricitySupplyRadios(required: false) { $(name: "electricity").module(RadioButtons) }
     homeVisitRadios(required: false) { $(name: "homeVisitConducted").module(RadioButtons) }
 
-    landlordConsentForm(required: false) { $("#consentHavingSpokenForm") }
+    landlordConsentForm(required: false) { $("#consentForm") }
   }
 }

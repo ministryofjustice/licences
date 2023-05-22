@@ -119,6 +119,14 @@ module.exports = {
           },
         },
         {
+          discriminator: 'consentHavingSpoken',
+          No: {
+            path: '/hdc/taskList/',
+            change: '/hdc/review/licenceDetails/',
+            modify: '/hdc/taskList/',
+          },
+        },
+        {
           discriminator: 'electricity',
           No: {
             path: '/hdc/taskList/',

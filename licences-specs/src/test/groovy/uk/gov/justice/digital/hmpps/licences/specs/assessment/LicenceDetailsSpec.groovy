@@ -66,7 +66,7 @@ class LicenceDetailsSpec extends GebReportingSpec {
 
     and: 'I see the review details'
     curfew.reviewAnswers.cautioned == 'No'
-    curfew.reviewAnswers.consentHavingSpoken == 'Yes'
+    curfew.reviewAnswers.consent == 'Yes'
     curfew.reviewAnswers.homeVisit == 'Yes'
     curfew.reviewAnswers.electricity == 'Yes'
   }
@@ -192,8 +192,8 @@ class LicenceDetailsSpec extends GebReportingSpec {
 
     where:
     reason           | sample                                    | answers
-    'no consent'     | 'assessment/address-rejected'             | [version:"2", consentHavingSpoken: 'No', electricity: null, homeVisit: null, cautioned: 'No']
-    'no electricity' | 'assessment/address-rejected-electricity' | [version:"2", consentHavingSpoken: 'Yes', electricity: 'No', homeVisit: null, cautioned: 'No']
+    'no consent'     | 'assessment/address-rejected'             | [ consent: 'No', electricity: null, homeVisit: null, cautioned: 'No']
+    'no electricity' | 'assessment/address-rejected-electricity' | [ consent: 'Yes', electricity: 'No', homeVisit: null, cautioned: 'No']
   }
 
   def 'Shows BASS details when BASS referral'() {

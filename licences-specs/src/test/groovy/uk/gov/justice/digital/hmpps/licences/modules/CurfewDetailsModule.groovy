@@ -37,10 +37,9 @@ class CurfewDetailsModule extends Module {
     reviewAnswers {
       [
         cautioned  : $("#cautioned-curfew").text(),
-        consentHavingSpoken    : $("#consentHavingSpoken-curfew").text(),
+        consent   : $("#consent-curfew").text(),
         homeVisit  : $("#homeVisit-curfew").text(),
-        electricity: $("#electricity-curfew").text(),
-        version: "2"
+        electricity: $("#electricity-curfew").text()
       ]
     }
 

@@ -1,14 +1,22 @@
 {
   "stage": "PROCESSING_RO",
   "licence": {
+    "curfew": {
+      "approvedPremises": {
+        "required": "No"
+      },
+      "curfewAddressReview": {
+        "version": "1"
+      }
+    },
     "eligibility": {
+      "crdTime": {
+        "decision": "No"
+      },
       "excluded": {
         "decision": "No"
       },
       "suitability": {
-        "decision": "No"
-      },
-      "crdTime": {
         "decision": "No"
       }
     },
@@ -20,41 +28,35 @@
         "decision": "No"
       },
       "curfewAddress": {
-        "addressLine1": "Street",
-        "addressLine2": "",
-        "addressTown": "Town",
-        "postCode": "AB1 1AB",
-        "telephone": "0123 456789",
-        "electricity": "Yes",
         "occupier": {
-          "name": "Main Occupier",
           "age": "21",
+          "name": "Main Occupier",
           "relationship": "Brother"
         },
+        "postCode": "AB1 1AB",
         "residents": [
           {
-            "name": "Other resident",
             "age": "10",
+            "name": "Other resident",
             "relationship": "Son"
           },
           {
-            "name": "",
             "age": "",
+            "name": "",
             "relationship": ""
           },
           {
-            "name": "",
             "age": "",
+            "name": "",
             "relationship": ""
           }
         ],
+        "telephone": "0123 456789",
+        "addressTown": "Town",
+        "addressLine1": "Street",
+        "addressLine2": "",
+        "additionalInformation": "",
         "cautionedAgainstResident": "No"
-      }
-    },
-    "curfew": {
-      "curfewAddressReview": {
-        "version": "1",
-        "consent": "No"
       }
     }
   }
