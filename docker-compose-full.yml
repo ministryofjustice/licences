@@ -110,7 +110,7 @@ services:
       test: [ "CMD", "curl", "-f", "http://localhost:8080/health/ping" ]
     environment:
       SPRING_PROFILES_ACTIVE: local-redis
-      SPRING_REDIS_HOST: token-verification-api-db
+      SPRING_DATA_REDIS_HOST: token-verification-api-db
       SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: "http://hmpps-auth:8080/auth/.well-known/jwks.json"
 
   token-verification-api-db:
