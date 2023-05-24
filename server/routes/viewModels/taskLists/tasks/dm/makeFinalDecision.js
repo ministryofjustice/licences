@@ -12,7 +12,7 @@ module.exports = {
       label: getLabel(licenceStatus),
       action: {
         type: 'btn',
-        href: '/hdc/approval/release/',
+        href: '/hdc/approval/consideration/',
         text: 'Continue',
       },
     }

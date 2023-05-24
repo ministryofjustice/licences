@@ -1,0 +1,94 @@
+package uk.gov.justice.digital.hmpps.licences.specs.decision
+
+import geb.spock.GebReportingSpec
+import spock.lang.Shared
+import spock.lang.Stepwise
+import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
+import uk.gov.justice.digital.hmpps.licences.pages.decision.ApprovalConsiderationPage
+import uk.gov.justice.digital.hmpps.licences.pages.decision.ApprovalReleasePage
+import uk.gov.justice.digital.hmpps.licences.util.Actions
+import uk.gov.justice.digital.hmpps.licences.util.TestData
+
+@Stepwise
+class ConsiderationSpec extends GebReportingSpec {
+
+  @Shared
+  TestData testData = new TestData()
+  @Shared
+  Actions actions = new Actions()
+
+  def setupSpec() {
+    testData.loadLicence('decision/unstarted')
+    actions.logIn('DM')
+  }
+
+  def cleanupSpec() {
+    actions.logOut()
+  }
+
+  def 'Starts with nothing selected'() {
+
+    when: 'I view the consideration page'
+    to ApprovalConsiderationPage, testData.markAndrewsBookingId
+
+    then: 'Neither radio option is selected'
+    considerationRadios.checked == null
+  }
+
+  def 'Shows previously saved values'() {
+
+    given: 'already selected Yes to considered'
+    testData.loadLicence('decision/consideration')
+
+    when: 'I view the DM consideration page'
+    to ApprovalConsiderationPage, testData.markAndrewsBookingId
+
+    then: 'I see the previous values'
+    considerationRadios.checked == 'Yes'
+  }
+
+  def 'Returns to task list if No selected'() {
+    testData.loadLicence('decision/unstarted')
+
+    when: 'I view the consideration page'
+    to ApprovalConsiderationPage, testData.markAndrewsBookingId
+
+    and: 'I select No and continue'
+    considerationRadios.checked = 'No'
+    saveAndContinue.click()
+
+    then: 'I am returned to the task list'
+    at TaskListPage
+
+    and: 'I see the correct label'
+    taskListLabel('Final decision', "You need to consider changes to the offender's circumstances first") == true
+  }
+
+  def 'Selecting Yes retains the Not Started task list label'() {
+
+    when: 'I view the consideration page'
+    to ApprovalConsiderationPage, testData.markAndrewsBookingId
+
+    and: 'I select Yes and continue'
+    considerationRadios.checked = 'Yes'
+    saveAndContinue.click()
+
+    then: 'I navigate to the tasklist'
+    to TaskListPage , testData.markAndrewsBookingId
+
+    and: 'I see the correct label'
+    taskListLabel('Final decision', "Not started") == true
+  }
+
+  def 'Continues to approval if Yes selected'() {
+
+    when: 'I view the consideration page'
+    to ApprovalConsiderationPage, testData.markAndrewsBookingId
+
+    considerationRadios.checked = 'Yes'
+    saveAndContinue.click()
+
+    then: 'I am returned to the Approval Release page'
+    at ApprovalReleasePage
+  }
+}
