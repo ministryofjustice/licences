@@ -43,7 +43,7 @@ module.exports = {
     rotlFail: 'you did not return from release on temporary licence (ROTL)',
     communityCurfew: 'you breached your community order curfew',
     returnedAtRisk: 'you were returned to custody by the court during the at risk period',
-    serving4YearsOrMore: 'you are serving a sentence of 4 or more years',
+    serving4YearsOrMore: 'your original sentence was of 4 or more years',
     hdcCurfewConditions: 'you broke home detention curfew conditions and were recalled to prison',
     servingRecall: 'you were recalled from early release on compassionate grounds',
     deportation: 'the court recommended you should be deported from the UK',
@@ -52,12 +52,12 @@ module.exports = {
 
   unsuitableReasonlabels: {
     sexOffender: 'of your conviction history',
-    deportationLiable: 'you are likely to be deported',
+    deportationLiable: 'you are being considered for deportation',
     immigrationStatusUnclear: 'your immigration status is not clear',
-    recalled: 'you were recalled to prison for poor behaviour during your previous early release',
+    recalled: 'you were recalled to prison for poor behaviour during your previous home detention curfew release',
     sentenceCategory: 'of the type of offence you were convicted of',
     historyOfTerrorism: 'of your terrorist or terrorist connected offending history',
     categoryA: 'you are a category A prisoner',
-    serving4YearsOrMoreOverseas: 'you are serving a sentence of 4 or more years',
+    serving4YearsOrMoreOverseas: 'your original sentence was of 4 or more years',
   },
 }

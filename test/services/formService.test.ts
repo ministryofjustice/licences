@@ -214,7 +214,7 @@ describe('formService', () => {
         EST_PREMISE: '',
         OFF_NAME: '',
         OFF_NOMS: '',
-        UNSUITABLE_REASON: 'you are likely to be deported',
+        UNSUITABLE_REASON: 'you are being considered for deportation',
       }
 
       const data = await service.getTemplateData('unsuitable', licence, prisoner)
@@ -246,7 +246,7 @@ describe('formService', () => {
         EST_PREMISE: '',
         OFF_NAME: '',
         OFF_NOMS: '',
-        UNSUITABLE_REASON: 'you are likely to be deported',
+        UNSUITABLE_REASON: 'you are being considered for deportation',
       }
 
       const data = await service.getTemplateData('unsuitable', licence, prisoner)
