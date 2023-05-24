@@ -23,7 +23,7 @@ const status = {
   notComplete: { statusLabel: 'Not complete', activeCase: true },
   inProgress: { statusLabel: 'In progress', activeCase: true },
   dmNotConsidered: {
-    statusLabel: "You need to consider changes to the offender's circumstances first",
+    statusLabel: "Consider changes to offender's circumstances",
     activeCase: true,
   },
 

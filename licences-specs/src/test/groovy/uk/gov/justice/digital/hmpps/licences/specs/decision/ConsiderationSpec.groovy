@@ -61,7 +61,7 @@ class ConsiderationSpec extends GebReportingSpec {
     at TaskListPage
 
     and: 'I see the correct label'
-    taskListLabel('Final decision', "You need to consider changes to the offender's circumstances first") == true
+    taskListLabel('Final decision', "Consider changes to offender's circumstances") == true
   }
 
   def 'Selecting Yes retains the Not Started task list label'() {
