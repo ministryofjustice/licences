@@ -38,8 +38,8 @@ module.exports = {
   },
 
   ineligibleReasonlabels: {
-    sexOffenderRegister: 'of your conviction history',
-    convictedSexOffences: 'of the type of offence you were convicted of',
+    sexOffenderRegister: 'you will be subject to sex offender registration on release',
+    convictedSexOffences: 'you are serving an extended sentence',
     rotlFail: 'you did not return from release on temporary licence (ROTL)',
     communityCurfew: 'you breached your community order curfew',
     returnedAtRisk: 'you were returned to custody by the court during the at risk period',

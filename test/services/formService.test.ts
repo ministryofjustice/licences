@@ -166,7 +166,7 @@ describe('formService', () => {
         EST_PREMISE: '',
         OFF_NAME: '',
         OFF_NOMS: '',
-        INELIGIBLE_REASON: 'of your conviction history',
+        INELIGIBLE_REASON: 'you will be subject to sex offender registration on release',
       }
 
       const data = await service.getTemplateData('ineligible', licence, prisoner)
@@ -191,14 +191,16 @@ describe('formService', () => {
 
     test('should map first excluded reason when multiple', async () => {
       const prisoner = {}
-      const licence = { eligibility: { excluded: { reason: ['sexOffenderRegister', 'other', 'other'] } } }
+      const licence = {
+        eligibility: { excluded: { reason: ['sexOffenderRegister', 'convictedSexOffences', 'other'] } },
+      }
 
       const expectedData = {
         CREATION_DATE: creationDate,
         EST_PREMISE: '',
         OFF_NAME: '',
         OFF_NOMS: '',
-        INELIGIBLE_REASON: 'of your conviction history',
+        INELIGIBLE_REASON: 'you will be subject to sex offender registration on release',
       }
 
       const data = await service.getTemplateData('ineligible', licence, prisoner)
