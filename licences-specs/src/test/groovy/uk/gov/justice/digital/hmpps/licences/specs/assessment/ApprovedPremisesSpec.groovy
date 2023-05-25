@@ -3,16 +3,10 @@ package uk.gov.justice.digital.hmpps.licences.specs.assessment
 import geb.spock.GebReportingSpec
 import spock.lang.Shared
 import spock.lang.Stepwise
-import uk.gov.justice.digital.hmpps.licences.pages.CaselistPage
-import uk.gov.justice.digital.hmpps.licences.pages.SentPage
 import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.ApprovedPremisesAddressPage
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.ApprovedPremisesPage
-import uk.gov.justice.digital.hmpps.licences.pages.assessment.CurfewAddressReviewPage
-import uk.gov.justice.digital.hmpps.licences.pages.eligibility.BassRequestPage
-import uk.gov.justice.digital.hmpps.licences.pages.eligibility.CurfewAddressChoicePage
-import uk.gov.justice.digital.hmpps.licences.pages.eligibility.ProposedAddressCurfewAddressPage
-import uk.gov.justice.digital.hmpps.licences.pages.review.ReviewCurfewAddressPage
+import uk.gov.justice.digital.hmpps.licences.pages.assessment.CurfewAddressReviewPageV1
 import uk.gov.justice.digital.hmpps.licences.util.Actions
 import uk.gov.justice.digital.hmpps.licences.util.TestData
 
@@ -64,7 +58,7 @@ class ApprovedPremisesSpec extends GebReportingSpec {
     find('#continueBtn').click()
 
     then: 'I see the curfew address review page'
-    at CurfewAddressReviewPage
+    at CurfewAddressReviewPageV1
   }
 
   def 'The AP address page is shown next if decision is Yes'() {

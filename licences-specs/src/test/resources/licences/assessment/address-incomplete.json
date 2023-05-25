@@ -55,6 +55,7 @@
         "required": "No"
       },
       "curfewAddressReview": {
+        "version": "1",
         "consent": "Yes",
         "addressReviewComments": ""
       }

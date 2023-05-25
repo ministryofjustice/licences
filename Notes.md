@@ -1011,3 +1011,7 @@ POST /selectLicenceType/:bookingId { offenceBeforeCutoff, licenceTypeRadio }
 GET /taskList/:templateName/:bookingId
 GET /missing/:section/:templateName/:bookingId
 GET /create/:templateName/:bookingId
+
+
+### Versions
+The occupier consent question on hdc/curfew/curfewAddressReview/change/:bookingId  was 'versioned' on 6 June 2023 following policy instruction. This means HDC applications started before that date had and will retain different question text compared to subsequent applications. 

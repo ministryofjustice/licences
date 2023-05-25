@@ -192,8 +192,8 @@ class LicenceDetailsSpec extends GebReportingSpec {
 
     where:
     reason           | sample                                    | answers
-    'no consent'     | 'assessment/address-rejected'             | [consent: 'No', electricity: null, homeVisit: null, cautioned: 'No']
-    'no electricity' | 'assessment/address-rejected-electricity' | [consent: 'Yes', electricity: 'No', homeVisit: null, cautioned: 'No']
+    'no consent'     | 'assessment/address-rejected'             | [ consent: 'No', electricity: null, homeVisit: null, cautioned: 'No']
+    'no electricity' | 'assessment/address-rejected-electricity' | [ consent: 'Yes', electricity: 'No', homeVisit: null, cautioned: 'No']
   }
 
   def 'Shows BASS details when BASS referral'() {
@@ -269,5 +269,27 @@ class LicenceDetailsSpec extends GebReportingSpec {
 
     then: 'I see an error message for incomplete details'
     addressDetails.electricitySupplyError == 'Say if there is an electricity supply'
+  }
+
+  def 'Shows version 1 of the error when curfew address review started but nothing submitted'() {
+    given: 'Proposed curfew address section is incomplete'
+    testData.loadLicence('assessment/curfewAddressReview-with-version-1')
+
+    when: 'I view the licence details summary page for the licence record'
+    to LicenceDetailsPage, testData.markAndrewsBookingId
+
+    then: 'I see an error message for incomplete details'
+    curfew.consentV1Error == 'Say if the homeowner consents to HDC'
+  }
+
+  def 'Shows version 2 of the error when curfew address review started but nothing submitted'() {
+    given: 'Proposed curfew address section is incomplete'
+    testData.loadLicence('assessment/curfewAddressReview-with-version-2')
+
+    when: 'I view the licence details summary page for the licence record'
+    to LicenceDetailsPage, testData.markAndrewsBookingId
+
+    then: 'I see an error message for incomplete details'
+    curfew.consentV2Error == 'Say if you were able to speak to the main occupier and if they consented to HDC'
   }
 }

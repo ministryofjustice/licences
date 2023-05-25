@@ -68,9 +68,20 @@ export interface RejectedBassReferral extends BassReferral {
   withdrawal?: 'offer' | 'request'
 }
 
-export interface AddressReview {
+export type AddressReview = AddressReviewV1 | AddressReviewV2
+
+export interface AddressReviewV1 {
+  version?: '1'
   addressReviewComments?: string
   consent?: string
+  electricity?: string
+  homeVisitConducted?: string
+}
+
+export interface AddressReviewV2 {
+  version?: '2'
+  addressReviewComments?: string
+  consentHavingSpoken?: string
   electricity?: string
   homeVisitConducted?: string
 }

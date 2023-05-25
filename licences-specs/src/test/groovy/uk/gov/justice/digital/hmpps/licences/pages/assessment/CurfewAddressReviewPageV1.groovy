@@ -5,7 +5,7 @@ import geb.module.RadioButtons
 import uk.gov.justice.digital.hmpps.licences.modules.CurfewDetailsModule
 import uk.gov.justice.digital.hmpps.licences.modules.HeaderModule
 
-class CurfewAddressReviewPage extends Page {
+class CurfewAddressReviewPageV1 extends Page {
 
   static url = '/hdc/curfew/curfewAddressReview'
 

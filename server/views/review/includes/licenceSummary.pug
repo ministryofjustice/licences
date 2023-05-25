@@ -1,6 +1,7 @@
 include additionalConditions
 -var riskVersion1 = data.risk && data.risk.riskManagement && data.risk && data.risk.riskManagement.version === '1'
 -var riskVersion2 = data.risk && data.risk.riskManagement && data.risk && data.risk.riskManagement.version === '2'
+-var curfewAddressReviewVersion1 = data.curfew && data.curfew.curfewAddressReview && data.curfew.curfewAddressReview.version === '1'
 
 mixin change(url, anchorId)
   a(id=anchorId href=url) Change
@@ -67,7 +68,10 @@ div.largeMarginBottom
           +change("/hdc/proposedAddress/curfewAddress/change/" + bookingId, 'addressEditLink')
 
       +errorMessageOrBlock(errorObject.curfew && errorObject.curfew.curfewAddressReview, 'proposed-address-error')
-        include curfewAddress
+        if curfewAddressReviewVersion1
+          include curfewAddressV1
+        else 
+          include curfewAddressV2
 
   if sections.riskManagement
     div.borderBottom
