@@ -192,8 +192,8 @@ class LicenceDetailsSpec extends GebReportingSpec {
 
     where:
     reason           | sample                                    | answers
-    'no consent'     | 'assessment/address-rejected'             | [ consent: 'No', electricity: null, homeVisit: null, cautioned: 'No']
-    'no electricity' | 'assessment/address-rejected-electricity' | [ consent: 'Yes', electricity: 'No', homeVisit: null, cautioned: 'No']
+    'no consent'     | 'assessment/address-rejected'             | [consent: 'No', electricity: null, homeVisit: null, cautioned: 'No']
+    'no electricity' | 'assessment/address-rejected-electricity' | [consent: 'Yes', electricity: 'No', homeVisit: null, cautioned: 'No']
   }
 
   def 'Shows BASS details when BASS referral'() {
