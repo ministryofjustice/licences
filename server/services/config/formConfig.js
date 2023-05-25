@@ -52,12 +52,12 @@ module.exports = {
 
   unsuitableReasonlabels: {
     sexOffender: 'of your conviction history',
-    deportationLiable: 'you are likely to be deported',
+    deportationLiable: 'you are being considered for deportation',
     immigrationStatusUnclear: 'your immigration status is not clear',
-    recalled: 'you were recalled to prison for poor behaviour during your previous early release',
+    recalled: 'you were recalled to prison for poor behaviour during your previous home detention curfew release',
     sentenceCategory: 'of the type of offence you were convicted of',
     historyOfTerrorism: 'of your terrorist or terrorist connected offending history',
     categoryA: 'you are a category A prisoner',
-    serving4YearsOrMoreOverseas: 'you are serving a sentence of 4 or more years',
+    serving4YearsOrMoreOverseas: 'your original sentence was of 4 or more years',
   },
 }
