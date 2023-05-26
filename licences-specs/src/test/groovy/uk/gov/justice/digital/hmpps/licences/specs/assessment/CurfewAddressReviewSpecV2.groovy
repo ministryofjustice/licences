@@ -3,12 +3,12 @@ package uk.gov.justice.digital.hmpps.licences.specs.assessment
 import geb.spock.GebReportingSpec
 import spock.lang.Shared
 import spock.lang.Stepwise
-import uk.gov.justice.digital.hmpps.licences.pages.assessment.CurfewAddressReviewPage
+import uk.gov.justice.digital.hmpps.licences.pages.assessment.CurfewAddressReviewPageV2
 import uk.gov.justice.digital.hmpps.licences.util.Actions
 import uk.gov.justice.digital.hmpps.licences.util.TestData
 
 @Stepwise
-class CurfewAddressReviewSpec extends GebReportingSpec {
+class CurfewAddressReviewSpecV2 extends GebReportingSpec {
 
   @Shared
   TestData testData = new TestData()
@@ -30,7 +30,7 @@ class CurfewAddressReviewSpec extends GebReportingSpec {
     testData.loadLicence('assessment/unstarted')
 
     when: 'I go to the address review page'
-    to CurfewAddressReviewPage, testData.markAndrewsBookingId
+    to CurfewAddressReviewPageV2, testData.markAndrewsBookingId
 
     then: 'I see the address details'
     curfew.address.line1 == 'Street'
@@ -42,40 +42,40 @@ class CurfewAddressReviewSpec extends GebReportingSpec {
   def 'Confirmation options initially unselected'() {
 
     when: 'At address review page'
-    at CurfewAddressReviewPage
+    at CurfewAddressReviewPageV2
 
     then: 'Options not set'
-    landlordConsentRadios.checked == null
+    landlordConsentHavingSpokenRadios.checked == null
   }
 
   def 'Further questions not shown when landlord consent is no'() {
 
     when: 'At address review page'
-    at CurfewAddressReviewPage
+    at CurfewAddressReviewPageV2
 
     then: 'I do not see the further questions'
-    !landlordConsentForm.isDisplayed()
+    !landlordConsentHavingSpokenForm.isDisplayed()
   }
 
   def 'Further questions shown when landlord consent is yes'() {
 
     when: 'At address review page'
-    at CurfewAddressReviewPage
+    at CurfewAddressReviewPageV2
 
     and: 'I select yes for consent'
-    landlordConsentRadios.checked = 'Yes'
+    landlordConsentHavingSpokenRadios.checked = 'Yes'
 
     then: 'I see the further questions'
-    landlordConsentForm.isDisplayed()
+    landlordConsentHavingSpokenForm.isDisplayed()
   }
 
   def 'Modified choices are saved after save and continue'() {
 
     given: 'At address review page'
-    to CurfewAddressReviewPage, testData.markAndrewsBookingId
+    to CurfewAddressReviewPageV2, testData.markAndrewsBookingId
 
     when: 'I select new options'
-    landlordConsentRadios.checked = 'Yes'
+    landlordConsentHavingSpokenRadios.checked = 'Yes'
     electricitySupplyRadios.checked = 'Yes'
     homeVisitRadios.checked = 'No'
 
@@ -83,10 +83,10 @@ class CurfewAddressReviewSpec extends GebReportingSpec {
     find('#continueBtn').click()
 
     and: 'I move to the address review page'
-    to CurfewAddressReviewPage, testData.markAndrewsBookingId
+    to CurfewAddressReviewPageV2, testData.markAndrewsBookingId
 
     then: 'I see the previously entered values'
-    landlordConsentRadios.checked == 'Yes'
+    landlordConsentHavingSpokenRadios.checked == 'Yes'
     electricitySupplyRadios.checked == 'Yes'
     homeVisitRadios.checked == 'No'
   }

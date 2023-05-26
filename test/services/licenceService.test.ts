@@ -14,7 +14,7 @@ import {
 } from '../../server/data/licenceClientTypes'
 import { Licence, LicenceStage, Risk, RiskManagement } from '../../server/data/licenceTypes'
 import { TaskState } from '../../server/services/config/taskState'
-import { riskManagementVersion } from '../../server/config'
+import { riskManagementVersion, curfewAddressReviewVersion } from '../../server/config'
 
 jest.mock('../../server/services/utils/formValidation')
 
@@ -80,6 +80,25 @@ describe('licenceService', () => {
 
       const version = service.getRiskVersion(licence)
 
+      expect(version).toBe('1')
+    })
+  })
+
+  describe('getCurfewAddressReviewVersion', () => {
+    test('return the actual version of the curfewAddressReview if it has been set', () => {
+      const licence = { curfew: { curfewAddressReview: { version: '2' } } } as Licence
+      const version = service.getCurfewAddressReviewVersion(licence)
+      expect(version).toBe('2')
+    })
+    test('returns the default curfewAddressReview version when not set on licence', () => {
+      const licence = {} as Licence
+      const version = service.getCurfewAddressReviewVersion(licence)
+      expect(version).toBe(curfewAddressReviewVersion)
+    })
+
+    test("returns 1 curfewAddressReview's version is falsey", () => {
+      const licence = { curfew: { curfewAddressReview: {} } } as Licence
+      const version = service.getCurfewAddressReviewVersion(licence)
       expect(version).toBe('1')
     })
   })

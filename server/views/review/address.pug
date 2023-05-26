@@ -1,5 +1,6 @@
 extends ../layout
-include ../proposedAddress/includes/addressDetail
+include ../proposedAddress/includes/addressDetailV1
+include ../proposedAddress/includes/addressDetailV2
 
 block content
 
@@ -10,6 +11,7 @@ block content
   -var addressWithdrawn = withdrawnAddressObj.withdrawalReason === 'withdrawAddress'
   -var consentWithdrawn = withdrawnAddressObj.withdrawalReason === 'withdrawConsent'
   -var showAddressActions = postApproval || stage === 'PROCESSING_CA'
+  -var curfewAddressReviewVersion = data.curfew && data.curfew.curfewAddressReview && data.curfew.curfewAddressReview.version
 
 
   div.pure-g.pure-u-1
@@ -25,18 +27,21 @@ block content
 
       h2.heading-large Proposed address
 
-
       div.pure-u-1.pure-u-1-2.midPaddingBottom
         p The following address has been requested by the offender
         if licenceStatus.tasks.curfewAddressReview === 'DONE'
           | and checked by the community offender manager.
 
-      if address.addressLine1
-        +addressDetail('curfew', address, review)
+        if address.addressLine1 && curfewAddressReviewVersion === '1'
+            +addressDetailV1('curfew', address, review)
+        else if address.addressLine1 && curfewAddressReviewVersion === '2'
+            +addressDetailV2('curfew', address, review)       
+        else  
+          if showAddressActions && curfewAddressReviewVersion === '1'
+            +addressDetailV1('curfew', withdrawnAddress, review)  
+          else if showAddressActions && curfewAddressReviewVersion === '2'
+            +addressDetailV2('curfew', withdrawnAddress, review)
 
-      else if showAddressActions
-        +addressDetail('curfew', withdrawnAddress, review)
-
-      if showAddressActions
-        div.borderBottomLightMedium.borderTopLight.marginBottomLarge
-          include ./includes/addressActions
+        if showAddressActions
+          div.borderBottomLightMedium.borderTopLight.marginBottomLarge
+            include ./includes/addressActions

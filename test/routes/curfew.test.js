@@ -359,19 +359,19 @@ describe('/hdc/curfew', () => {
     const routes = [
       {
         url: '/hdc/curfew/curfewAddressReview/1',
-        body: { bookingId: 1, consent: 'No' },
+        body: { bookingId: 1, consent: 'No', version: '' },
         formName: 'curfewAddressReview',
         nextPath: '/hdc/taskList/1',
       },
       {
         url: '/hdc/curfew/curfewAddressReview/1',
-        body: { bookingId: 1, consent: 'Yes', electricity: 'No' },
+        body: { bookingId: 1, consent: 'Yes', electricity: 'No', version: '1' },
         formName: 'curfewAddressReview',
         nextPath: '/hdc/taskList/1',
       },
       {
         url: '/hdc/curfew/curfewAddressReview/1',
-        body: { bookingId: 1, consent: 'Yes' },
+        body: { bookingId: 1, consent: 'Yes', version: '2' },
         formName: 'curfewAddressReview',
         nextPath: '/hdc/taskList/1',
         nextPathCa: '/hdc/taskList/1',
@@ -449,7 +449,7 @@ describe('/hdc/curfew', () => {
     })
 
     describe('curfewAddressReview', () => {
-      test('shows three questions if main occupier is not the offender', () => {
+      test('shows three questions if main occupier is not the offender with version 1 of the main question text', () => {
         const licence = {
           licence: {
             proposedAddress: {
@@ -461,6 +461,7 @@ describe('/hdc/curfew', () => {
 
         const licenceService = createLicenceServiceStub()
         licenceService.getLicence = jest.fn().mockReturnValue(licence)
+        licenceService.getCurfewAddressReviewVersion = jest.fn().mockReturnValue('1')
         const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
         return request(app)
           .get('/hdc/curfew/curfewAddressReview/1')
@@ -472,6 +473,17 @@ describe('/hdc/curfew', () => {
           })
       })
 
+      test('shows version 2 of the main occupier consent question text', () => {
+        const licenceService = createLicenceServiceStub()
+        licenceService.getCurfewAddressReviewVersion = jest.fn().mockReturnValue('2')
+        const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
+        return request(app)
+          .get('/hdc/curfew/curfewAddressReview/1')
+          .expect(200)
+          .expect((res) => {
+            expect(res.text).toContain('Have you spoken to the main occupier and do they consent to HDC?')
+          })
+      })
       test('shows two questions if main occupier is the offender', () => {
         const licence = {
           licence: {

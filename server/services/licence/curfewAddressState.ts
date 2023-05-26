@@ -73,17 +73,17 @@ const approvedPremisesAddressState = (licence) => {
 }
 
 const taskCompletion = (licence) => {
-  const { consent, electricity } = getIn(licence, ['curfew', 'curfewAddressReview']) || {}
+  const { consent, consentHavingSpoken, electricity } = getIn(licence, ['curfew', 'curfewAddressReview']) || {}
   const curfewAddress = getIn(licence, ['proposedAddress', 'curfewAddress']) || {}
   const offenderIsOccupier = getIn(curfewAddress, ['occupier', 'isOffender']) === 'Yes'
 
   if (offenderIsOccupier && electricity) {
     return TaskState.DONE
   }
-  if (consent && electricity) {
+  if ((consent && electricity) || (consentHavingSpoken && electricity)) {
     return TaskState.DONE
   }
-  if (consent || electricity) {
+  if (consent || consentHavingSpoken || electricity) {
     return TaskState.STARTED
   }
   return TaskState.UNSTARTED
@@ -115,7 +115,10 @@ export function getCurfewAddressReviewState(licence) {
     approvedPremisesAddress: TaskState.UNSTARTED,
     curfewAddressReview: taskCompletion(licence),
     curfewAddressApproved: isAcceptedAddress(addressReview, addressSuitable, offenderIsOccupier),
-    addressReviewFailed: addressReview.consent === 'No' || addressReview.electricity === 'No',
+    addressReviewFailed:
+      addressReview.consent === 'No' ||
+      addressReview.consentHavingSpoken === 'No' ||
+      addressReview.electricity === 'No',
     addressWithdrawn: isEmpty(curfewAddress) && rejectedAddresses && rejectedAddresses.length > 0,
   }
 }

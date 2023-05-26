@@ -10,8 +10,25 @@ module.exports =
   (router, audited, { pushToNomis }) => {
     const standard = createStandardRoutes({ formConfig, licenceService, sectionName: 'curfew' })
 
-    router.get('/approvedPremises/:bookingId', addressReviewGets('approvedPremises'))
-    router.get('/approvedPremises/:action/:bookingId', addressReviewGets('approvedPremises'))
+    router.get('/approvedPremises/:bookingId', approvedPremisesGets('approvedPremises'))
+    router.get('/approvedPremises/:action/:bookingId', approvedPremisesGets('approvedPremises'))
+    function approvedPremisesGets(formName) {
+      return (req, res) => {
+        const { action, bookingId } = req.params
+
+        const proposedAddress = getIn(res.locals.licence, ['licence', 'proposedAddress', 'curfewAddress'])
+        const data = getIn(res.locals.licence, ['licence', 'curfew', formName]) || {}
+        const { nextPath } = formConfig[formName]
+
+        res.render(`curfew/${formName}`, {
+          bookingId,
+          data,
+          proposedAddress,
+          nextPath,
+          action,
+        })
+      }
+    }
 
     router.get('/approvedPremisesChoice/:action/:bookingId', asyncMiddleware(getChoice))
     router.get('/approvedPremisesChoice/:bookingId', asyncMiddleware(getChoice))
@@ -80,10 +97,10 @@ module.exports =
       ApprovedPremises: { optOut: { decision: 'No' } },
     }
 
-    router.get('/curfewAddressReview/:bookingId', addressReviewGets('curfewAddressReview'))
-    router.get('/curfewAddressReview/:action/:bookingId', addressReviewGets('curfewAddressReview'))
+    router.get('/curfewAddressReview/:bookingId', curfewAddressReviewGets('curfewAddressReview'))
+    router.get('/curfewAddressReview/:action/:bookingId', curfewAddressReviewGets('curfewAddressReview'))
 
-    function addressReviewGets(formName) {
+    function curfewAddressReviewGets(formName) {
       return (req, res) => {
         const { action, bookingId } = req.params
 
@@ -91,7 +108,20 @@ module.exports =
         const data = getIn(res.locals.licence, ['licence', 'curfew', formName]) || {}
         const { nextPath } = formConfig[formName]
 
-        res.render(`curfew/${formName}`, { bookingId, data, proposedAddress, nextPath, action })
+        const curfewAddressReviewVersion = licenceService.getCurfewAddressReviewVersion(res.locals.licence.licence)
+        const viewData = {
+          bookingId,
+          data,
+          proposedAddress,
+          nextPath,
+          action,
+          version: curfewAddressReviewVersion,
+        }
+        if (curfewAddressReviewVersion === '1') {
+          res.render('curfew/curfewAddressReviewV1', viewData)
+        } else {
+          res.render('curfew/curfewAddressReviewV2', viewData)
+        }
       }
     }
 

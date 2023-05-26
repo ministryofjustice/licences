@@ -37,11 +37,14 @@ class CurfewDetailsModule extends Module {
     reviewAnswers {
       [
         cautioned  : $("#cautioned-curfew").text(),
-        consent    : $("#consent-curfew").text(),
+        consent   : $("#consent-curfew").text(),
         homeVisit  : $("#homeVisit-curfew").text(),
         electricity: $("#electricity-curfew").text()
       ]
     }
+
+    consentV1Error(required:false) { $('#consent-curfew-error').text() }
+    consentV2Error(required:false) { $('#consentHavingSpoken-curfew-error').text() }
 
     curfewHours { day ->
       $("#${day.uncapitalize().replaceAll("\\s", "")}").text()
