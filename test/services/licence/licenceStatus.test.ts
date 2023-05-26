@@ -157,6 +157,9 @@ describe('getLicenceStatus', () => {
             release: {
               decision: 'Yes',
             },
+            consideration: {
+              decision: 'No',
+            },
           },
         },
       }
@@ -191,6 +194,7 @@ describe('getLicenceStatus', () => {
       expect(status.decisions.refused).toBe(false)
       expect(status.decisions.dmRefused).toBe(false)
       expect(status.decisions.offenderIsMainOccupier).toBe(true)
+      expect(status.decisions.dmNotConsidered).toBe(true)
     })
 
     test('should show false decisions when decision data is present for false', () => {
@@ -271,6 +275,9 @@ describe('getLicenceStatus', () => {
               decision: 'No',
               reason: ['noAvailableAddress', 'addressUnsuitable', 'outOfTime', 'insufficientTime'],
             },
+            consideration: {
+              decision: 'Yes',
+            },
           },
         },
       }
@@ -310,6 +317,7 @@ describe('getLicenceStatus', () => {
         'No available address, address unsuitable, out of time, insufficient time'
       )
       expect(status.decisions.approvedPremisesRequired).toBe(false)
+      expect(status.decisions.dmNotConsidered).toBe(false)
     })
 
     test('should show DM refusal reason if not in array', () => {

@@ -6,6 +6,7 @@ import spock.lang.Stepwise
 import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
 import uk.gov.justice.digital.hmpps.licences.pages.decision.ApprovalMandatoryCheckPage
 import uk.gov.justice.digital.hmpps.licences.pages.decision.ApprovalReleasePage
+import uk.gov.justice.digital.hmpps.licences.pages.decision.ApprovalConsiderationPage
 import uk.gov.justice.digital.hmpps.licences.util.Actions
 import uk.gov.justice.digital.hmpps.licences.util.TestData
 
@@ -60,8 +61,8 @@ class MandatoryCheckSpec extends GebReportingSpec {
     when: 'I click the final decision continue button'
     taskListAction('Final decision').click()
 
-    then: 'I do not see the mandatory checks page and I go to the approval release page'
-    at ApprovalReleasePage
+    then: 'I do not see the mandatory checks page and I go to the approval consideration page'
+    at ApprovalConsiderationPage
   }
 
 }

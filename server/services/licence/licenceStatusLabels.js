@@ -22,6 +22,10 @@ const status = {
   licenceCreated: { statusLabel: 'Licence created', activeCase: true },
   notComplete: { statusLabel: 'Not complete', activeCase: true },
   inProgress: { statusLabel: 'In progress', activeCase: true },
+  dmNotConsidered: {
+    statusLabel: "Consider changes to offender's circumstances",
+    activeCase: true,
+  },
 
   // inactive
   notEligible: { statusLabel: 'Not eligible', activeCase: false },
@@ -198,7 +202,10 @@ function roProcessingCaLabel(licenceStatus) {
 }
 
 function dmProcessingLabel(licenceStatus) {
-  const labels = [{ decision: 'insufficientTimeStop', label: status.awaitingRefusal }]
+  const labels = [
+    { decision: 'insufficientTimeStop', label: status.awaitingRefusal },
+    { decision: 'dmNotConsidered', label: status.dmNotConsidered },
+  ]
 
   return getLabel(labels, licenceStatus) || status.notStarted
 }

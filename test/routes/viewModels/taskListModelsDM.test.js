@@ -73,7 +73,7 @@ describe('TaskList models', () => {
   const finalDecision = {
     title: 'Final decision',
     label: 'Not started',
-    action: { href: '/hdc/approval/release/', text: 'Continue', type: 'btn' },
+    action: { href: '/hdc/approval/consideration/', text: 'Continue', type: 'btn' },
   }
   const finalDecisionAwaitingRefusal = {
     title: 'Final decision',

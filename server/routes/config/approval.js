@@ -1,4 +1,30 @@
 module.exports = {
+  consideration: {
+    licenceSection: 'consideration',
+    validate: true,
+    fields: [
+      {
+        decision: {
+          responseType: 'requiredYesNo',
+          validationMessage: 'Select yes or no',
+        },
+      },
+    ],
+
+    nextPath: {
+      decisions: [
+        {
+          discriminator: 'decision',
+          No: {
+            path: '/hdc/taskList/',
+          },
+          Yes: {
+            path: '/hdc/approval/release/',
+          },
+        },
+      ],
+    },
+  },
   release: {
     licenceSection: 'release',
     validate: true,

@@ -1,0 +1,39 @@
+extends ../layout
+include ../includes/errorBannerWithDetail
+
+block content
+
+  - var decisionValue = data.decision || null;
+
+  div.pure-g.pure-u-1.largeMarginBottom
+
+    include ../includes/backToCheckList
+    +errorBannerWithDetail(errorObject, [
+      { field: 'decision' }
+    ])
+    include ../taskList/prisonerDetails
+
+    div.pure-u-md-1-2
+      h2.heading-large Have you considered whether the offender’s circumstances or behaviour have significantly changed since the COM’s assessment?
+
+
+      if errorObject.decision
+        p.error-message #{errorObject.decision}
+      form(method="post").largeMarginTop
+        input(type="hidden" name="_csrf" value=csrfToken)
+        input(type="hidden" name="bookingId" value=bookingId || '')
+        input(type="hidden" name="decisionMaker" value=user.name)
+        div.paddingBottom.largeMarginBottom
+
+          div#error-anchor.form-group
+            div.multiple-choice
+              input#considerationYes(type="radio" checked=decisionValue === 'Yes'  name="decision" value="Yes")
+              label(for="considerationYes") Yes
+            
+            div.multiple-choice
+              input#considerationNo(type="radio" checked=decisionValue === 'No'  name="decision" value="No")
+              label(for="considerationNo") No
+ 
+
+          div.paddingBottom.smallPaddingTop
+            input#continueBtn.requiredButton.button(type="submit" value="Save and continue")

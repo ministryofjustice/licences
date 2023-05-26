@@ -417,6 +417,10 @@ describe('licenceStatusLabels', () => {
       describe('Approval stage', () => {
         const examples = [
           {
+            status: { stage: LicenceStage.APPROVAL, decisions: { dmNotConsidered: true }, tasks: {} },
+            label: "Consider changes to offender's circumstances",
+          },
+          {
             status: { stage: LicenceStage.APPROVAL, decisions: {}, tasks: {} },
             label: 'Not started',
           },
