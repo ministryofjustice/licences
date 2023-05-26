@@ -261,8 +261,13 @@ function getRiskManagementState(licence) {
   const manageInTheCommunityAnswer = riskManagement?.manageInTheCommunity
   const pomConsultationAnswer = riskManagement?.pomConsultation
   const mentalHealthPlanAnswer = riskManagement?.mentalHealthPlan
-  const { proposedAddressSuitable, manageInTheCommunity, pomConsultation, prisonHealthcareConsultation } =
-    riskManagement || {}
+  const {
+    proposedAddressSuitable,
+    manageInTheCommunity,
+    pomConsultation,
+    mentalHealthPlan,
+    prisonHealthcareConsultation,
+  } = riskManagement || {}
   const { bassRequested } = getBassRequestState(licence)
 
   return {
@@ -279,7 +284,7 @@ function getRiskManagementState(licence) {
     addressUnsuitable:
       proposedAddressSuitable === 'No' || (riskManagementVersion === '3' && manageInTheCommunity === 'No'),
     pomNotConsulted: pomConsultation === 'No',
-    prisonHealthcareNotConsulted: prisonHealthcareConsultation === 'No',
+    prisonHealthcareNotConsulted: mentalHealthPlan === 'Yes' && prisonHealthcareConsultation === 'No',
   }
 
   function getState() {

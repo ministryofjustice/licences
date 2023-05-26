@@ -979,6 +979,36 @@ describe('getLicenceStatus', () => {
         expect(status.decisions.awaitingRiskInformation).toBe(false)
       })
 
+      test('should show risk management prisonHealthcareNotConsulted warning when version 3, mentalHealthPlan answered as Yes and prisonHealthcareConsultation answered as No', () => {
+        const licence = {
+          stage: 'PROCESSING_RO',
+          licence: {
+            risk: {
+              riskManagement: {
+                version: '3',
+                hasConsideredChecks: 'Yes',
+                awaitingOtherInformation: 'No',
+                emsInformation: 'Yes',
+                emsInformationDetails: 'some details',
+                nonDisclosableInformation: 'No',
+                nonDisclosableInformationDetails: '',
+                proposedAddressSuitable: 'Yes',
+                riskManagementDetails: 'some details',
+                unsuitableReason: '',
+                manageInTheCommunity: 'Yes',
+                mentalHealthPlan: 'Yes',
+                prisonHealthcareConsultation: 'No',
+                pomConsultation: 'Yes',
+              },
+            },
+          },
+        }
+
+        const status = getLicenceStatus(licence)
+
+        expect(status.decisions.prisonHealthcareNotConsulted).toBe(true)
+      })
+
       test('should show risk management version 2 DONE if all questions answered when mandatory address checks answer is No but bass property has been requested', () => {
         const licence = {
           stage: 'PROCESSING_RO',
