@@ -10,7 +10,7 @@ import uk.gov.justice.digital.hmpps.licences.util.Actions
 import uk.gov.justice.digital.hmpps.licences.util.TestData
 
 @Stepwise
-class ConsiderationSpec extends GebReportingSpec {
+class ApprovalConsiderationSpec extends GebReportingSpec {
 
   @Shared
   TestData testData = new TestData()
