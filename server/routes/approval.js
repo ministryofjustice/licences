@@ -34,6 +34,7 @@ module.exports =
         res.render('approval/mandatoryCheck', { bookingId, prisonerInfo })
       })
     )
+    router.get('/consideration/:bookingId', asyncMiddleware(approvalGets('consideration')))
 
     function approvalGets(formName) {
       return async (req, res) => {
@@ -43,7 +44,7 @@ module.exports =
         const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, res.locals.token)
 
         const { nextPath, pageDataMap } = formConfig[formName]
-        const dataPath = pageDataMap || ['licence', 'approval', 'release']
+        const dataPath = pageDataMap || ['licence', 'approval', formName]
         const data = firstItem(req.flash('userInput')) || getIn(res.locals.licence, dataPath) || {}
         const errorObject = firstItem(req.flash('errors')) || {}
 

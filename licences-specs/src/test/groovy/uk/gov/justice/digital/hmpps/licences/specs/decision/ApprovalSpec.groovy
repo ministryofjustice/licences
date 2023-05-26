@@ -88,7 +88,7 @@ class ApprovalSpec extends GebReportingSpec {
     reasonsForm.isDisplayed()
 
     reasonsItem('insufficientTime').checked
-    
+
     !reasonsItem('addressUnsuitable').checked
     !reasonsItem('noAvailableAddress').checked
     !reasonsItem('outOfTime').checked

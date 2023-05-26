@@ -122,6 +122,8 @@ const combiner = (acc, data) => {
 
 function getApprovalStageState(licence) {
   const approvalRelease = licence.approval?.release || {}
+  const dmConsideration = licence.approval?.consideration || {}
+
   const finalChecksRefusal = licence.finalChecks?.refusal || {}
 
   const dmRefusalReasonText = extractDmRefusalReasonsText(approvalRelease.reason)
@@ -135,6 +137,7 @@ function getApprovalStageState(licence) {
       approved: approvalRelease.decision === 'Yes' && finalChecksRefusal.decision !== 'Yes',
       refused: approvalRelease.decision === 'No' || finalChecksRefusal.decision === 'Yes',
       dmRefused: approvalRelease.decision === 'No',
+      dmNotConsidered: dmConsideration.decision === 'No',
       refusalReason,
       bassAccepted,
       decisionComments: approvalRelease.reasonForDecision ? approvalRelease.reasonForDecision.trim() : null,

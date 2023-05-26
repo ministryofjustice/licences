@@ -58,12 +58,29 @@ describe('/hdc/approval', () => {
       { url: '/hdc/approval/release/1', content: 'Do you approve HDC release for this offender?' },
       { url: '/hdc/approval/refuseReason/1', content: 'HDC refused' },
       { url: '/hdc/approval/mandatoryCheck/1', content: 'Mandatory address checks have not been completed' },
+      {
+        url: '/hdc/approval/consideration/1',
+        content:
+          'Have you considered whether the offender’s circumstances or behaviour have significantly changed since the COM’s assessment?',
+      },
     ]
 
     testFormPageGets(app, routes, service)
   })
 
   describe('GET /approval/routes/:bookingId', () => {
+    test('should display the offender details and question text- consideration', () => {
+      return request(app)
+        .get('/hdc/approval/consideration/1')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect((res) => {
+          expect(res.text).toContain('23/12/1971')
+          expect(res.text).toContain(
+            'Have you considered whether the offender’s circumstances or behaviour have significantly'
+          )
+        })
+    })
     test('should display the offender details - release', () => {
       return request(app)
         .get('/hdc/approval/release/1')

@@ -54,6 +54,7 @@ export type Decisions = {
   dmRefused?: boolean
   refusalReason?: string
   decisionComments?: string
+  dmNotConsidered?: boolean
 
   riskManagementNeeded?: boolean
   awaitingRiskInformation?: boolean
