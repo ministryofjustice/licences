@@ -1,18 +1,18 @@
-const request = require('supertest')
-const { mockAudit } = require('../mockClients')
-const { appSetup } = require('../supertestSetup')
+import request from 'supertest'
+import { mockAudit } from '../mockClients'
+import { appSetup } from '../supertestSetup'
 
-const {
+import {
   createPrisonerServiceStub,
   createLicenceServiceStub,
   createSignInServiceStub,
   createNomisPushServiceStub,
-} = require('../mockServices')
+} from '../mockServices'
 
-const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
-const createRoute = require('../../server/routes/finalChecks')
-const formConfig = require('../../server/routes/config/finalChecks')
-const NullTokenVerifier = require('../../server/authentication/tokenverifier/NullTokenVerifier')
+import standardRouter from '../../server/routes/routeWorkers/standardRouter'
+import createRoute from '../../server/routes/finalChecks'
+import formConfig from '../../server/routes/config/finalChecks'
+import NullTokenVerifier from '../../server/authentication/tokenverifier/NullTokenVerifier'
 
 describe('/hdc/finalChecks', () => {
   describe('routes', () => {
@@ -48,6 +48,20 @@ describe('/hdc/finalChecks', () => {
             expect(res.text).toContain(route.content)
           })
       })
+    })
+  })
+
+  describe('GET /finalChecks/postpone/:bookingId', () => {
+    test('should get postpone version from licence and call service method correctly', () => {
+      const licenceService = createLicenceServiceStub()
+      const licence = { key: 'value' }
+      const app = createApp({ licenceServiceStub: licenceService }, 'caUser')
+      return request(app)
+        .get('/hdc/finalChecks/postpone/1')
+        .expect('Content-Type', 'text/html; charset=utf-8')
+        .expect((res) => {
+          expect(licenceService.getPostponeVersion).toHaveBeenCalledWith(licence)
+        })
     })
   })
 
@@ -116,7 +130,7 @@ describe('/hdc/finalChecks', () => {
               originalLicence: { licence: { key: 'value' } },
               config: route.fieldMap || formConfig[route.formName],
               userInput: route.body,
-              licenceSection: route.sectionName || 'finalChecks',
+              licenceSection: 'finalChecks',
               formName: route.formName,
               postRelease: false,
             })
@@ -283,7 +297,7 @@ describe('/hdc/finalChecks', () => {
   })
 })
 
-function createApp({ licenceServiceStub = null, nomisPushServiceStub = null }, user, config = {}) {
+function createApp({ licenceServiceStub = null, nomisPushServiceStub = null }, user = 'caUser', config = {}) {
   const prisonerService = createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()

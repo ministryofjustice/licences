@@ -12,9 +12,9 @@ import {
   AdditionalConditionsVersion,
   StandardConditionsVersion,
 } from '../../server/data/licenceClientTypes'
-import { Licence, LicenceStage, Risk, RiskManagement } from '../../server/data/licenceTypes'
+import { Licence, LicenceStage, Risk, RiskManagement, FinalChecks, Postpone } from '../../server/data/licenceTypes'
 import { TaskState } from '../../server/services/config/taskState'
-import { riskManagementVersion, curfewAddressReviewVersion } from '../../server/config'
+import { riskManagementVersion, curfewAddressReviewVersion, postponeVersion } from '../../server/config'
 
 jest.mock('../../server/services/utils/formValidation')
 
@@ -99,6 +99,37 @@ describe('licenceService', () => {
     test("returns 1 curfewAddressReview's version is falsey", () => {
       const licence = { curfew: { curfewAddressReview: {} } } as Licence
       const version = service.getCurfewAddressReviewVersion(licence)
+      expect(version).toBe('1')
+    })
+  })
+
+  describe('getPostponeVersion', () => {
+    test('defaults to current postpone version when not set on licence', () => {
+      const licence = {} as Licence
+
+      const version = service.getPostponeVersion(licence)
+
+      expect(version).toBe(postponeVersion)
+    })
+
+    test('reads version 1 when licence and postpone section has been started with old version reasons but postpone version 1 not yet assigned', () => {
+      const licence = {} as Licence
+      licence.finalChecks = {} as FinalChecks
+      licence.finalChecks.postpone = {} as Postpone
+
+      const version = service.getPostponeVersion(licence)
+
+      expect(version).toBe('1')
+    })
+
+    test('reads postpone version from licence when set', () => {
+      const licence = {} as Licence
+      licence.finalChecks = {} as FinalChecks
+      licence.finalChecks.postpone = {} as Postpone
+      licence.finalChecks.postpone.version = '1'
+
+      const version = service.getPostponeVersion(licence)
+
       expect(version).toBe('1')
     })
   })

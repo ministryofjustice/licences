@@ -1,0 +1,39 @@
+extends ../formTemplates/formTemplate
+
+block question
+  | Postpone
+
+block formItems
+  - var postponed = data.decision || null;
+  - var postponeReason = data.postponeReason || null;
+
+  div.form-group.inline
+    div.multiple-choice(data-target="postponeReasonForm")
+      input#postponeYes(type="radio" checked=postponed === 'Yes' name="decision" value="Yes")
+      label(for="postponeYes") Yes
+    div.multiple-choice
+      input#postponeNo(type="radio" checked=postponed !== 'Yes' name="decision" value="No")
+      label(for="postponeNo") No
+
+  div#postponeReasonForm(class=errorObject.postponeReason ? 'form-group-error' : 'panel panel-border-narrow js-hidden')
+    div.pure-g
+      div.pure-u-1.pure-u-md-10-24
+        p Select a reason
+        div.multiple-choice
+          input#reasonInformation(type="radio" checked=postponeReason === 'awaitingInformation' name="postponeReason" value="awaitingInformation")
+          label(for="reasonInformation") Awaiting information to decide if suitable to release
+        div.multiple-choice
+          input#reasonCommittedOffenceInPrison(type="radio" checked=postponeReason === 'committedOffenceWhileInPrison' name="postponeReason" value="committedOffenceWhileInPrison")
+          label(for="reasonCommittedOffenceInPrison") Committed an offence while in prison and proceedings are still outstanding
+        div.multiple-choice
+          input#reasonRemanded(type="radio" checked=postponeReason === 'remandedInCustodyOnOtherMatters' name="postponeReason" value="remandedInCustodyOnOtherMatters")
+          label(for="reasonRemanded") Remanded in custody on other matters
+        div.multiple-choice
+          input#reasonConfiscationOrder(type="radio" checked=postponeReason === 'confiscationOrderOutstanding' name="postponeReason" value="confiscationOrderOutstanding")
+          label(for="reasonConfiscationOrder") Confiscation order proceedings outstanding
+        div.multiple-choice
+          input#reasonSegregated(type="radio" checked=postponeReason === 'segregatedForReasonsOtherThanProtection' name="postponeReason" value="segregatedForReasonsOtherThanProtection")
+          label(for="reasonSegregated") Segregated for reasons other than their own protection
+        div.multiple-choice
+          input#reasonULSScheme(type="radio" checked=postponeReason === 'sentenceReviewedUnderULSScheme' name="postponeReason" value="sentenceReviewedUnderULSScheme")
+          label(for="reasonULSScheme") Sentence is being reviewed under the unduly lenient sentence (ULS) scheme

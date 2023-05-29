@@ -5,11 +5,11 @@ import { transitions } from './config/licenceStage'
 import recordList from './utils/recordList'
 import * as formValidation from './utils/formValidation'
 import { LicenceClient } from '../data/licenceClient'
-import { Licence, LicenceConditions, LicenceStage, RiskManagement, AddressReview } from '../data/licenceTypes'
+import { Licence, LicenceConditions, LicenceStage, RiskManagement, AddressReview, Postpone } from '../data/licenceTypes'
 import { pickCurfewAddressPath } from './utils/pdfFormatter'
 import { AdditionalConditionsVersion, StandardConditionsVersion } from '../data/licenceClientTypes'
 import { Decisions, Tasks } from './licence/licenceStatusTypes'
-import { riskManagementVersion, curfewAddressReviewVersion } from '../config'
+import { riskManagementVersion, curfewAddressReviewVersion, postponeVersion } from '../config'
 
 const {
   getIn,
@@ -96,6 +96,16 @@ export class LicenceService {
       return '1'
     } else {
       return curfewAddressReviewVersion
+    }
+  }
+
+  getPostponeVersion(licence: Licence): Postpone['version'] {
+    if (licence.finalChecks?.postpone?.version) {
+      return licence.finalChecks?.postpone?.version
+    } else if (licence.finalChecks?.postpone && !licence.finalChecks?.postpone?.version) {
+      return '1'
+    } else {
+      return postponeVersion
     }
   }
 

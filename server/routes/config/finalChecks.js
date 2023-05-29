@@ -108,6 +108,11 @@ module.exports = {
           validationMessage: 'Select a reason',
         },
       },
+      {
+        version: {
+          responseType: 'optionalString',
+        },
+      },
     ],
     nomisPush: {
       status: ['finalChecks', 'postpone', 'decision'],

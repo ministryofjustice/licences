@@ -18,6 +18,7 @@ block content
   form(method="post")
     input(type="hidden" name="_csrf" value=csrfToken)
     input(type="hidden" name="bookingId" value=bookingId || '')
+    input(type="hidden" name="version" value=version || '')
     div#error-anchor.smallPaddingTop.paddingBottom.largeMarginBottom
       div.largePaddingBottom
 
