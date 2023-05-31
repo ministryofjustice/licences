@@ -7,7 +7,7 @@ exports.up = async function up(knex) {
 
 exports.down = async function down(knex) {
   await knex.schema.raw(`
-      update licences set licence = licence #- '{curfew, curfewAddressReview, version'
+      update licences set licence = licence #- '{curfew, curfewAddressReview, version}'
       where licence -> 'curfew' -> 'curfewAddressReview' ->> 'version' = '"1"'
   `)
 }
