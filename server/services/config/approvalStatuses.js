@@ -27,6 +27,12 @@ module.exports = {
       Yes: {
         investigation: { approvalStatus: 'PP INVEST', refusedReason: 'OUTSTANDING' },
         outstandingRisk: { approvalStatus: 'PP OUT RISK', refusedReason: 'OUTSTANDING' },
+        awaitingInformation: { approvalStatus: 'PP AWAITING', refusedReason: 'OUTSTANDING' },
+        committedOffenceWhileInPrison: { approvalStatus: 'PP PROC OUT', refusedReason: 'OUTSTANDING' },
+        remandedInCustodyOnOtherMatters: { approvalStatus: 'PP REMANDED', refusedReason: 'OUTSTANDING' },
+        confiscationOrderOutstanding: { approvalStatus: 'PP CONFISC', refusedReason: 'OUTSTANDING' },
+        segregatedForReasonsOtherThanProtection: { approvalStatus: 'PP SEG', refusedReason: 'OUTSTANDING' },
+        sentenceReviewedUnderULSScheme: { approvalStatus: 'PP ULS', refusedReason: 'OUTSTANDING' },
       },
     },
     refusal: {

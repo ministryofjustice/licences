@@ -13,6 +13,7 @@ export const createLicenceServiceStub = () => ({
   getLicence: jest.fn().mockReturnValue({ licence: { key: 'value' } }),
   getRiskVersion: jest.fn(),
   getCurfewAddressReviewVersion: jest.fn(),
+  getPostponeVersion: jest.fn(),
   update: jest.fn(),
   updateSection: jest.fn(),
   updateLicenceConditions: jest.fn(),

@@ -146,6 +146,36 @@ describe('nomisPushService', () => {
           approvalStatus: { approvalStatus: 'PP OUT RISK', refusedReason: 'OUTSTANDING' },
         },
         {
+          example: 'Postponed - awaitingInformation',
+          data: { type: 'postpone', status: 'Yes', reason: 'awaitingInformation' },
+          approvalStatus: { approvalStatus: 'PP AWAITING', refusedReason: 'OUTSTANDING' },
+        },
+        {
+          example: 'Postponed - committedOffenceWhileInPrison',
+          data: { type: 'postpone', status: 'Yes', reason: 'committedOffenceWhileInPrison' },
+          approvalStatus: { approvalStatus: 'PP PROC OUT', refusedReason: 'OUTSTANDING' },
+        },
+        {
+          example: 'Postponed - remandedInCustodyOnOtherMatters',
+          data: { type: 'postpone', status: 'Yes', reason: 'remandedInCustodyOnOtherMatters' },
+          approvalStatus: { approvalStatus: 'PP REMANDED', refusedReason: 'OUTSTANDING' },
+        },
+        {
+          example: 'Postponed - confiscationOrderOutstanding',
+          data: { type: 'postpone', status: 'Yes', reason: 'confiscationOrderOutstanding' },
+          approvalStatus: { approvalStatus: 'PP CONFISC', refusedReason: 'OUTSTANDING' },
+        },
+        {
+          example: 'Postponed - segregatedForReasonsOtherThanProtection',
+          data: { type: 'postpone', status: 'Yes', reason: 'segregatedForReasonsOtherThanProtection' },
+          approvalStatus: { approvalStatus: 'PP SEG', refusedReason: 'OUTSTANDING' },
+        },
+        {
+          example: 'Postponed - sentenceReviewedUnderULSScheme',
+          data: { type: 'postpone', status: 'Yes', reason: 'sentenceReviewedUnderULSScheme' },
+          approvalStatus: { approvalStatus: 'PP ULS', refusedReason: 'OUTSTANDING' },
+        },
+        {
           example: 'Refused - addressUnsuitable',
           data: { type: 'refusal', status: 'Yes', reason: 'addressUnsuitable' },
           approvalStatus: { approvalStatus: 'REJECTED', refusedReason: 'ADDRESS' },

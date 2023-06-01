@@ -125,10 +125,24 @@ export interface Eligibility {
   suitability?: { decision?: YesNo; reason?: Array<string> }
 }
 
+export type Postpone = PostponeV1 | PostponeV2
+
+export type PostponeV1 = {
+  version: '1'
+  decision?: YesNo
+  postponeReason?: string
+}
+
+export type PostponeV2 = {
+  version: '2'
+  decision?: YesNo
+  postponeReason?: string
+}
+
 export interface FinalChecks {
   confiscationOrder?: { comments?: string; confiscationUnitConsulted?: YesNo; decision?: YesNo }
   onRemand?: { decision?: YesNo }
-  postpone?: { decision?: YesNo; postponeReason?: string }
+  postpone?: Postpone
   refusal?: { decision?: YesNo; outOfTimeReasons?: string; reason?: string }
   seriousOffence?: { decision?: YesNo }
   undulyLenientSentence?: { decision?: YesNo }
