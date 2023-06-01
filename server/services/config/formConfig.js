@@ -7,7 +7,7 @@ module.exports = {
   requiredFields: {
     eligible: [...headerFields, 'SENT_HDCED', 'SENT_CRD'],
     optout: [...headerFields, 'SENT_CRD'],
-    postponed: headerFields,
+    postponed: [...headerFields, 'POSTPONE_REASON'],
     refused: [...headerFields, 'REFUSAL_REASON', 'SENT_CRD'],
     approved: [...headerFields, 'CURFEW_ADDRESS', 'SENT_HDCED', 'SENT_CRD'],
     address_checks: [...headerFields, 'SENT_HDCED'],
@@ -59,5 +59,16 @@ module.exports = {
     historyOfTerrorism: 'of your terrorist or terrorist connected offending history',
     categoryA: 'you are a category A prisoner',
     serving4YearsOrMoreOverseas: 'your original sentence was of 4 or more years',
+  },
+
+  postponedReasonlabels: {
+    awaitingInformation: 'we are awaiting information in order to decide if you are suitable to release',
+    committedOffenceWhileInPrison:
+      'you committed an offence while you’ve been in prison and the criminal/Independent Adjudication proceedings are still outstanding',
+    remandedInCustodyOnOtherMatters: 'you are remanded in custody on other matters',
+    confiscationOrderOutstanding: 'we think you will frustrate your outstanding confiscation order proceedings',
+    segregatedForReasonsOtherThanProtection:
+      'you are currently segregated from the general population for reasons other than your own protection',
+    sentenceReviewedUnderULSScheme: 'your sentence is being reviewed under the unduly lenient sentence (ULS) scheme',
   },
 }
