@@ -63,6 +63,44 @@ describe('/hdc/finalChecks', () => {
           expect(licenceService.getPostponeVersion).toHaveBeenCalledWith(licence)
         })
     })
+
+    test('should only provide the radio button options applicable to version 1', () => {
+      const licenceService = createLicenceServiceStub()
+      const app = createApp({ licenceServiceStub: licenceService }, 'caUser')
+      licenceService.getPostponeVersion.mockReturnValue('1')
+      return request(app)
+        .get('/hdc/finalChecks/postpone/1')
+        .expect('Content-Type', 'text/html; charset=utf-8')
+        .expect((res) => {
+          expect(res.text).toContain('value="outstandingRisk')
+          expect(res.text).toContain('value="investigation"')
+          expect(res.text).not.toContain('value="awaitingInformation')
+          expect(res.text).not.toContain('value="committedOffenceWhileInPrison')
+          expect(res.text).not.toContain('value="remandedInCustodyOnOtherMatters')
+          expect(res.text).not.toContain('value="confiscationOrderOutstanding')
+          expect(res.text).not.toContain('value="segregatedForReasonsOtherThanProtection')
+          expect(res.text).not.toContain('value="sentenceReviewedUnderULSScheme')
+        })
+    })
+
+    test('should only provide the radio button options applicable to version 2', () => {
+      const licenceService = createLicenceServiceStub()
+      const app = createApp({ licenceServiceStub: licenceService }, 'caUser')
+      licenceService.getPostponeVersion.mockReturnValue('2')
+      return request(app)
+        .get('/hdc/finalChecks/postpone/1')
+        .expect('Content-Type', 'text/html; charset=utf-8')
+        .expect((res) => {
+          expect(res.text).not.toContain('value="outstandingRisk')
+          expect(res.text).not.toContain('value="investigation"')
+          expect(res.text).toContain('value="awaitingInformation')
+          expect(res.text).toContain('value="committedOffenceWhileInPrison')
+          expect(res.text).toContain('value="remandedInCustodyOnOtherMatters')
+          expect(res.text).toContain('value="confiscationOrderOutstanding')
+          expect(res.text).toContain('value="segregatedForReasonsOtherThanProtection')
+          expect(res.text).toContain('value="sentenceReviewedUnderULSScheme')
+        })
+    })
   })
 
   describe('POST /hdc/finalChecks/:section/:bookingId', () => {

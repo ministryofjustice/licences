@@ -21,7 +21,11 @@ export default ({ licenceService, nomisPushService }: { licenceService: LicenceS
     })
 
     router.get('/postpone/:bookingId', asyncMiddleware(getPostpone(licenceService)))
-    router.post('/postpone/:bookingId', audited, asyncMiddleware(postPostpone(licenceService, nomisPushService)))
+    router.post(
+      '/postpone/:bookingId',
+      audited,
+      asyncMiddleware(postPostpone(licenceService, nomisPushService, config))
+    )
 
     router.post('/refuse/:bookingId', audited, asyncMiddleware(postRefusal(licenceService, nomisPushService)))
 
@@ -56,19 +60,19 @@ function getPostpone(licenceService) {
   return get
 }
 
-function postPostpone(licenceService, nomisPushService) {
+function postPostpone(licenceService, nomisPushService, config) {
   async function post(req, res) {
     const { bookingId } = req.params
     const { username } = req.user
     const originalLicence = res.locals.licence
-    const config = formConfig.postpone
+    const postponeConfig = formConfig.postpone
     const { postRelease } = res.locals
     const userInput = req.body
 
     const updatedLicence = await licenceService.update({
       bookingId,
       originalLicence,
-      config,
+      config: postponeConfig,
       userInput,
       licenceSection: 'finalChecks',
       formName: 'postpone',
@@ -102,7 +106,7 @@ function postPostpone(licenceService, nomisPushService) {
   async function pushStatus(updatedLicence, bookingId, username) {
     const pushConfig = getIn(formConfig, ['postpone', 'nomisPush'])
 
-    if (getIn(formConfig.postpone, ['pushToNomis']) && pushConfig) {
+    if (config.pushToNomis && pushConfig) {
       const status = !isEmpty(pushConfig.status) ? getIn(updatedLicence, pushConfig.status) : undefined
       const reason = !isEmpty(pushConfig.reason) ? getIn(updatedLicence, pushConfig.reason) : undefined
 
