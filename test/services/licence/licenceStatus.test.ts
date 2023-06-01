@@ -279,6 +279,11 @@ describe('getLicenceStatus', () => {
               decision: 'Yes',
             },
           },
+          victim: {
+            victimLiaison: {
+              decision: 'No',
+            },
+          },
         },
       }
 
@@ -318,6 +323,30 @@ describe('getLicenceStatus', () => {
       )
       expect(status.decisions.approvedPremisesRequired).toBe(false)
       expect(status.decisions.dmNotConsidered).toBe(false)
+    })
+
+    test('should be undefined when decision is not provided', () => {
+      const licence = {
+        stage: 'APPROVAL',
+        licence: {
+          finalChecks: {
+            seriousOffence: {
+              decision: 'Yes',
+            },
+            onRemand: {
+              decision: 'No',
+            },
+            undulyLenientSentence: {},
+          },
+        },
+      }
+
+      const status = getLicenceStatus(licence)
+
+      expect(status.decisions.seriousOffence).toBe(true)
+      expect(status.decisions.onRemand).toBe(false)
+      expect(status.decisions.undulyLenientSentence).toBe(undefined)
+      expect(status.decisions.segregation).toBe(undefined)
     })
 
     test('should show DM refusal reason if not in array', () => {
