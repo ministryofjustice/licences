@@ -416,10 +416,20 @@ function getLicenceConditionsState(licence) {
   }
 }
 
-const getTaskState = (answer: any) => ({
-  decision: answer === 'Yes',
-  task: answer ? TaskState.DONE : TaskState.UNSTARTED,
-})
+const getTaskState = (answer: any) => {
+  let decision
+
+  if (answer === 'Yes') {
+    decision = true
+  } else if (answer === 'No') {
+    decision = false
+  } else decision = undefined
+
+  return {
+    decision,
+    task: answer ? TaskState.DONE : TaskState.UNSTARTED,
+  }
+}
 
 function getFinalChecksState(licence, seriousOffence, onRemand) {
   const finalChecksPass = !(seriousOffence || onRemand)
