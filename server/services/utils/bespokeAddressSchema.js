@@ -111,5 +111,6 @@ module.exports = {
     }),
 
     addressReviewComments: joi.string().allow('').optional(),
+    version: joi.string().allow('').optional(),
   }),
 }
