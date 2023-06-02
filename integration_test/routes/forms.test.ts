@@ -123,6 +123,65 @@ describe('/forms/', () => {
       expect(pdfText).toContain('Mark Andrews You are eligible for early release')
       expect(pdfText).toContain('you could be released from prison on 23rd August 2019')
     })
+
+    test('Generates Postponed PDF - with postpone version 1 content only when postpone version is 1', async () => {
+      const licenceWithPostponeV2 = {
+        licence: {
+          finalChecks: { postpone: { version: '1', decision: 'Yes', postponeReason: 'investigation' } },
+          stage: 'PROCESSING_CA',
+        },
+      }
+      licenceService.getLicence = jest.fn().mockReturnValue(licenceWithPostponeV2)
+      app = createApp('caUser')
+
+      const res = await request(app).get('/hdc/forms/postponed/1')
+
+      const pdf = await pdfParse(res.body)
+      const pdfText = pdf.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
+
+      expect(pdfText).toContain('Home Detention Curfew (tagging): Postponed')
+      expect(pdfText).toContain(
+        'Mark Andrews We are still reviewing your case for release on home detention curfew (tagging)'
+      )
+      expect(pdfText).toContain('We will let you know our decision when we have all the information we need')
+    })
+
+    test('Generates Postponed PDF - with postpone version 2 content when postpone version is 2', async () => {
+      const licenceWithPostponeV2 = {
+        licence: {
+          finalChecks: { postpone: { version: '2', decision: 'Yes', postponeReason: 'awaitingInformation' } },
+          stage: 'PROCESSING_CA',
+        },
+      }
+      licenceService.getLicence = jest.fn().mockReturnValue(licenceWithPostponeV2)
+      app = createApp('caUser')
+
+      const res = await request(app).get('/hdc/forms/postponed/1')
+
+      const pdf = await pdfParse(res.body)
+      const pdfText = pdf.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
+
+      expect(pdfText).toContain('Home Detention Curfew (tagging): Postponed')
+      expect(pdfText).toContain('Mark Andrews The decision to release you on HDC has been postponed because')
+      expect(pdfText).toContain(
+        'If this is resolved in time to allow release, we will then make the decision and notify you'
+      )
+    })
+
+    test('Generates Postponed PDF - with postpone version 2 content as default', async () => {
+      app = createApp('caUser')
+
+      const res = await request(app).get('/hdc/forms/postponed/1')
+
+      const pdf = await pdfParse(res.body)
+      const pdfText = pdf.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
+
+      expect(pdfText).toContain('Home Detention Curfew (tagging): Postponed')
+      expect(pdfText).toContain('Mark Andrews The decision to release you on HDC has been postponed because')
+      expect(pdfText).toContain(
+        'If this is resolved in time to allow release, we will then make the decision and notify you'
+      )
+    })
   })
 
   describe('/forms/:bookingId/', () => {

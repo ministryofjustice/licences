@@ -2,11 +2,17 @@ extends forms-layout
 
 block content
 
-  +header('postponed')
+  - var postpone = licence.licence.finalChecks && licence.licence.finalChecks.postpone ? licence.licence.finalChecks.postpone : {}
 
-  p We are still reviewing your case for release on home detention curfew (tagging).
 
-  p We will let you know our decision when we have all the information we need.
+  +header('Postponed')
+
+  if postpone.version == '1'
+     p We are still reviewing your case for release on home detention curfew (tagging).
+     p We will let you know our decision when we have all the information we need.
+  else
+     p The decision to release you on HDC has been postponed because #{POSTPONE_REASON}.
+     p If this is resolved in time to allow release, we will then make the decision and notify you.
 
   ul.byHand
     li Signed:

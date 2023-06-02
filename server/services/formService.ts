@@ -6,6 +6,7 @@ import {
   refusalReasonlabels,
   ineligibleReasonlabels,
   unsuitableReasonlabels,
+  postponedReasonlabels,
 } from './config/formConfig'
 import logger from '../../log'
 import type { PrisonerService } from './prisonerService'
@@ -80,6 +81,7 @@ export default class FormService {
       REFUSAL_REASON: () => this.getRefusalReason(licence),
       INELIGIBLE_REASON: () => this.getIneligibleReason(licence),
       UNSUITABLE_REASON: () => this.getUnsuitableReason(licence),
+      POSTPONE_REASON: () => this.getPostponedReason(licence),
       CURFEW_HOURS: () => this.getValue(licence, ['curfew', 'curfewHours']),
       CURFEW_FIRST: () => this.getValue(licence, ['curfew', 'firstNight']),
     }
@@ -121,6 +123,10 @@ export default class FormService {
 
   private getUnsuitableReason(licence) {
     return this.getReasonLabel(licence, ['eligibility', 'suitability', 'reason'], unsuitableReasonlabels)
+  }
+
+  private getPostponedReason(licence) {
+    return this.getReasonLabel(licence, ['finalChecks', 'postpone', 'postponeReason'], postponedReasonlabels)
   }
 
   private getReasonLabel(licence, path, labels) {
