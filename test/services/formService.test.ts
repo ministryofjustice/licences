@@ -255,6 +255,24 @@ describe('formService', () => {
       expect(data).toEqual(expectedData)
     })
 
+    test('should map postpone reason', async () => {
+      const prisoner = {}
+      const licence = {
+        finalChecks: { postpone: { version: '2', decision: 'Yes', postponeReason: 'awaitingInformation' } },
+      }
+
+      const expectedData = {
+        CREATION_DATE: creationDate,
+        EST_PREMISE: '',
+        OFF_NAME: '',
+        OFF_NOMS: '',
+        POSTPONE_REASON: 'we are awaiting information in order to decide if you are suitable to release',
+      }
+
+      const data = await service.getTemplateData('postponed', licence, prisoner)
+      expect(data).toEqual(expectedData)
+    })
+
     test('should format dates', async () => {
       const licence = {}
       const prisoner = { sentenceDetail: { homeDetentionCurfewEligibilityDate: '1/5/2019', releaseDate: '3/12/2019' } }
