@@ -57,6 +57,14 @@ block content
             div.multiple-choice
               input(type='checkbox' name='outOfTimeReasons[]' id='onRemand' value='onRemand' checked=outOfTimeReasonsValue.indexOf('onRemand') !== -1)
               label(for='onRemand') The offender is currently on remand
+
+            div.multiple-choice
+              input(type='checkbox' name='outOfTimeReasons[]' id='ulsScheme' value='ulsScheme' checked=outOfTimeReasonsValue.indexOf('ulsScheme') !== -1)
+              label(for='ulsScheme') There is an outstanding application under the unduly lenient sentence (ULS) scheme for this offender
+
+            div.multiple-choice
+              input(type='checkbox' name='outOfTimeReasons[]' id='segregated' value='segregated' checked=outOfTimeReasonsValue.indexOf('segregated') !== -1)
+              label(for='segregated') The offender is currently segregated for a reason other than their own protection
             
             div.multiple-choice
               input(type='checkbox' name='outOfTimeReasons[]' id='riskManagement' value='riskManagement' checked=outOfTimeReasonsValue.indexOf('riskManagement') !== -1)
