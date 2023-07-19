@@ -6,7 +6,7 @@ const express = require('express')
 const path = require('path')
 const flash = require('connect-flash')
 const session = require('express-session')
-const ConnectRedis = require('connect-redis')
+const RedisStore = require('connect-redis').default
 
 const helmet = require('helmet').default
 const noCache = require('nocache')
@@ -138,8 +138,7 @@ module.exports = function createApp({
     next()
   })
 
-  const RedisStore = ConnectRedis(session)
-  const client = createRedisClient({ legacyMode: true })
+  const client = createRedisClient()
   client.connect()
 
   app.use(

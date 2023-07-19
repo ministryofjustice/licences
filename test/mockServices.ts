@@ -7,7 +7,7 @@ export const createSignInServiceStub = () =>
     signIn: jest.fn(),
     refresh: jest.fn(),
     getClientCredentialsTokens: jest.fn().mockReturnValue('system-token'),
-  } as unknown as jest.Mocked<SignInService>)
+  }) as unknown as jest.Mocked<SignInService>
 
 export const createLicenceServiceStub = () => ({
   getLicence: jest.fn().mockReturnValue({ licence: { key: 'value' } }),
@@ -55,7 +55,7 @@ export const createConditionsServiceStub = () =>
     getNonStandardConditions: jest.fn(),
     getFullTextForApprovedConditions: jest.fn(),
     createConditionsObjectForLicence: jest.fn(),
-  } as unknown as jest.Mocked<ConditionsService>)
+  }) as unknown as jest.Mocked<ConditionsService>
 
 export const createConditionsServiceFactoryStub = () =>
   ({
@@ -63,7 +63,7 @@ export const createConditionsServiceFactoryStub = () =>
     forLicence: jest.fn(),
     getNewVersion: jest.fn(),
     getVersion: jest.fn(),
-  } as unknown as jest.Mocked<ConditionsServiceFactory>)
+  }) as unknown as jest.Mocked<ConditionsServiceFactory>
 
 export const createPrisonerServiceStub = () => ({
   getOrganisationContactDetails: jest.fn(),
@@ -83,7 +83,7 @@ export const createPdfServiceStub = () =>
     getPdf: jest.fn(),
     generatePdf: jest.fn(),
     updateLicenceType: jest.fn(),
-  } as unknown as jest.Mocked<PdfService>)
+  }) as unknown as jest.Mocked<PdfService>
 
 export const createFormServiceStub = () => ({
   generatePdf: jest.fn(),

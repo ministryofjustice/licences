@@ -1,6 +1,6 @@
 import R from 'ramda'
 
-import { Result, Error } from '../../types/licences'
+import type { Result, Error } from '../../types/licences'
 
 export {
   flatten,
