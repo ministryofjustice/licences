@@ -54,7 +54,7 @@ const tokenVerifierFactory = require('./authentication/tokenverifier/tokenVerifi
 const { default: TokenStore } = require('./data/tokenStore')
 const { createRedisClient } = require('./data/redisClient')
 
-const signInService = new SignInService(new TokenStore(createRedisClient({ legacyMode: false })))
+const signInService = new SignInService(new TokenStore(createRedisClient()))
 const licenceService = createLicenceService(licenceClient)
 const conditionsServiceFactory = new ConditionServiceFactory()
 

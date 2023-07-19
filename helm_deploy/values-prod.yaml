@@ -105,4 +105,5 @@ allowlist:
 # determine which slack channel alerts are sent to, via the correct Alert Manager receiver
 generic-prometheus-alerts:
   targetApplication: licences
-  alertSeverity: elp_alerts
+  alertSeverity: cvl-alerts
+

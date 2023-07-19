@@ -29,7 +29,7 @@ import { createRedisClient } from './data/redisClient'
 const writeStdOut = (data) => new Promise<void>((resolve) => process.stdout.write(data, () => resolve()))
 
 const oauthRestClient = buildRestClient(
-  clientCredentialsTokenSource(new SignInService(new TokenStore(createRedisClient({ legacyMode: false }))), 'nomis'),
+  clientCredentialsTokenSource(new SignInService(new TokenStore(createRedisClient())), 'nomis'),
   `${config.nomis.authUrl}`,
   'OAuth API',
   { timeout: config.nomis.timeout, agent: config.nomis.agent }

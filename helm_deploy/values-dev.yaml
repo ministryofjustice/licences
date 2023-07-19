@@ -47,3 +47,6 @@ env:
   LICENCE_RISK_MANAGEMENT_VERSION: '3'
   CURFEW_ADDRESS_REVIEW_VERSION: '2'
   LICENCE_POSTPONE_VERSION: '2'
+
+generic-prometheus-alerts:
+  alertSeverity: cvl-alerts-non-prod

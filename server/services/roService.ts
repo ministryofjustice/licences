@@ -7,7 +7,10 @@ const { NO_OFFENDER_NUMBER, NO_COM_ASSIGNED, STAFF_NOT_PRESENT } = require('./se
 
 // eslint-disable-next-line import/prefer-default-export
 export class RoService {
-  constructor(readonly deliusClient: DeliusClient, readonly nomisClientBuilder) {}
+  constructor(
+    readonly deliusClient: DeliusClient,
+    readonly nomisClientBuilder
+  ) {}
 
   private async getROPrisonersFromDeliusForStaffIdentifier(staffIdentifier: number): Promise<Array<any>> {
     try {

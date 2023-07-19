@@ -2,16 +2,16 @@ version: 2.1
 
 orbs:
   hmpps: ministryofjustice/hmpps@7
-  browser-tools: circleci/browser-tools@1.4.0
+  browser-tools: circleci/browser-tools@1.4.2
 
 parameters:
   alerts-slack-channel:
     type: string
-    default: elp_alerts_security
+    default: cvl_alerts_security
 
   releases-slack-channel:
     type: string
-    default: dps-releases
+    default: the_elephants_devs
 
   node-version:
     type: string
@@ -101,7 +101,7 @@ jobs:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: unit tests
-          command: npm run test
+          command: npm run test:ci
       - store_test_results:
           path: test-results
       - store_artifacts:
@@ -137,7 +137,6 @@ jobs:
       - checkout
       - attach_workspace:
           at: ~/app
-      - browser-tools/install-browser-tools
       - run:
           name: Run the mock server.
           command: npm run start-mocks
@@ -156,6 +155,8 @@ jobs:
           key: gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
       - restore_cache:
           key: gradle-cache-{{ checksum "licences-specs/build.gradle" }}
+      - browser-tools/install-chrome
+      - browser-tools/install-chromedriver
       - run:
           name: Run Integration Tests
           command: ./gradlew mockTest --info

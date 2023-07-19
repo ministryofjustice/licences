@@ -4,7 +4,7 @@ import nomisClientBuilder = require('../data/nomisClientBuilder')
 import TokenStore from '../data/tokenStore'
 import { createRedisClient } from '../data/redisClient'
 
-const signInService = new SignInService(new TokenStore(createRedisClient({ legacyMode: false })))
+const signInService = new SignInService(new TokenStore(createRedisClient()))
 
 export default class SentenceSource {
   async getOffenderSentencesByBookingId(bookingIds: number[]): Promise<Map<number, OffenderSentence>> {
