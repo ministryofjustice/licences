@@ -293,6 +293,46 @@ describe('/hdc/proposedAddress', () => {
         })
     })
 
+    test('should display the rejection reason when curfewAddressReview version 1', () => {
+      const licenceService = createLicenceServiceStub()
+      licenceService.getLicence = jest.fn().mockReturnValue({
+        licence: {
+          curfew: { curfewAddressReview: { version: '1', consent: 'No' } },
+        },
+      })
+      const app = createApp({ licenceServiceStub: licenceService }, 'caUser')
+
+      return request(app)
+        .get('/hdc/proposedAddress/rejected/1')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect((res) => {
+          expect(res.text).toContain(
+            'id="rejectionConsentNotGiven">The homeowner/landlord does not give informed consent</p>'
+          )
+        })
+    })
+
+    test('should display the rejection reason when curfewAddressReview version 2', () => {
+      const licenceService = createLicenceServiceStub()
+      licenceService.getLicence = jest.fn().mockReturnValue({
+        licence: {
+          curfew: { curfewAddressReview: { version: '2', consentHavingSpoken: 'No' } },
+        },
+      })
+      const app = createApp({ licenceServiceStub: licenceService }, 'caUser')
+
+      return request(app)
+        .get('/hdc/proposedAddress/rejected/1')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect((res) => {
+          expect(res.text).toContain(
+            'id="rejectionConsentNotGiven">The homeowner/landlord does not give informed consent</p>'
+          )
+        })
+    })
+
     test('should show the form to enter new address', () => {
       const licenceService = createLicenceServiceStub()
       licenceService.getLicence.mockResolvedValue({
