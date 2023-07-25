@@ -6,9 +6,10 @@ div.no-break.smallPaddingBottom#curfewAddressReview
       td.entry
         if occupier.isOffender === 'Yes'
           | Offender is main occupier
-        else
+        else if curfewAddressReview.version === '1'
           | #{curfewAddressReview.consent}
-
+        else 
+          | #{curfewAddressReview.consentHavingSpoken}
     tr
       td Was a home visit conducted in this case?
       td.entry #{curfewAddressReview.homeVisitConducted}
