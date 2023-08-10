@@ -454,7 +454,15 @@ export class LicenceService {
     const addressReview = curfew ? pick(['curfewAddressReview'], curfew) : null
     const riskManagementInputs = getIn(licence, ['risk', 'riskManagement'])
     const riskManagement = riskManagementInputs
-      ? pick(['proposedAddressSuitable', 'unsuitableReason'], riskManagementInputs)
+      ? pick(
+          [
+            'proposedAddressSuitable',
+            'unsuitableReason',
+            'manageInTheCommunity',
+            'manageInTheCommunityNotPossibleReason',
+          ],
+          riskManagementInputs
+        )
       : null
 
     const addressToStore = pickBy((val) => val, { address, addressReview, riskManagement, withdrawalReason })
@@ -467,6 +475,8 @@ export class LicenceService {
         ['proposedAddress', 'curfewAddress'],
         ['risk', 'riskManagement', 'proposedAddressSuitable'],
         ['risk', 'riskManagement', 'unsuitableReason'],
+        ['risk', 'riskManagement', 'manageInTheCommunity'],
+        ['risk', 'riskManagement', 'manageInTheCommunityNotPossibleReason'],
         ['curfew', 'curfewAddressReview'],
       ],
       licenceWithAddressRejection
@@ -490,6 +500,11 @@ export class LicenceService {
         [['proposedAddress', 'curfewAddress'], address],
         [['risk', 'riskManagement', 'proposedAddressSuitable'], getIn(riskManagement, ['proposedAddressSuitable'])],
         [['risk', 'riskManagement', 'unsuitableReason'], getIn(riskManagement, ['unsuitableReason'])],
+        [['risk', 'riskManagement', 'manageInTheCommunity'], getIn(riskManagement, ['manageInTheCommunity'])],
+        [
+          ['risk', 'riskManagement', 'manageInTheCommunityNotPossibleReason'],
+          getIn(riskManagement, ['manageInTheCommunityNotPossibleReason']),
+        ],
         [['curfew', 'curfewAddressReview'], curfewAddressReview],
       ].filter((argument) => argument[1]),
       licenceAfterRemoval

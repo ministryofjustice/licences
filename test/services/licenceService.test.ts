@@ -1577,6 +1577,8 @@ describe('licenceService', () => {
             planningActions: 'Yes',
             proposedAddressSuitable: 'No',
             unsuitableReason: 'Reasons',
+            manageInTheCommunity: 'No',
+            manageInTheCommunityNotPossibleReason: 'reasons',
           },
         },
       }
@@ -1594,6 +1596,8 @@ describe('licenceService', () => {
               riskManagement: {
                 proposedAddressSuitable: 'No',
                 unsuitableReason: 'Reasons',
+                manageInTheCommunity: 'No',
+                manageInTheCommunityNotPossibleReason: 'reasons',
               },
               withdrawalReason: 'consentWithdrawn',
             },
