@@ -1579,6 +1579,7 @@ describe('licenceService', () => {
             unsuitableReason: 'Reasons',
             manageInTheCommunity: 'No',
             manageInTheCommunityNotPossibleReason: 'reasons',
+            hasConsideredChecks: 'Yes',
           },
         },
       }
@@ -1598,6 +1599,7 @@ describe('licenceService', () => {
                 unsuitableReason: 'Reasons',
                 manageInTheCommunity: 'No',
                 manageInTheCommunityNotPossibleReason: 'reasons',
+                hasConsideredChecks: 'Yes',
               },
               withdrawalReason: 'consentWithdrawn',
             },
