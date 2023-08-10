@@ -460,6 +460,7 @@ export class LicenceService {
             'unsuitableReason',
             'manageInTheCommunity',
             'manageInTheCommunityNotPossibleReason',
+            'hasConsideredChecks',
           ],
           riskManagementInputs
         )
@@ -477,6 +478,7 @@ export class LicenceService {
         ['risk', 'riskManagement', 'unsuitableReason'],
         ['risk', 'riskManagement', 'manageInTheCommunity'],
         ['risk', 'riskManagement', 'manageInTheCommunityNotPossibleReason'],
+        ['risk', 'riskManagement', 'hasConsideredChecks'],
         ['curfew', 'curfewAddressReview'],
       ],
       licenceWithAddressRejection
@@ -505,6 +507,7 @@ export class LicenceService {
           ['risk', 'riskManagement', 'manageInTheCommunityNotPossibleReason'],
           getIn(riskManagement, ['manageInTheCommunityNotPossibleReason']),
         ],
+        [['risk', 'riskManagement', 'hasConsideredChecks'], getIn(riskManagement, ['hasConsideredChecks'])],
         [['curfew', 'curfewAddressReview'], curfewAddressReview],
       ].filter((argument) => argument[1]),
       licenceAfterRemoval
