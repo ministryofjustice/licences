@@ -2,7 +2,7 @@ import { formatConditionsInput, getConditionText, formatConditionsText } from '.
 import { isEmpty } from '../utils/functionalHelpers'
 import {
   getAdditionalConditionsConfig,
-  standardConditionsV1,
+  standardConditions,
   getPssConditions,
   CURRENT_CONDITION_VERSION,
 } from './config/conditionsConfig'
@@ -45,7 +45,7 @@ export class ConditionsService {
 
   // form generation
   getFullTextForApprovedConditions(licence: Licence) {
-    const standardConditionsText = standardConditionsV1.map((it) => it.text.replace(/\.+$/, ''))
+    const standardConditionsText = standardConditions.map((it) => it.text.replace(/\.+$/, ''))
 
     // could be undefined, 'No' or 'Yes'
     const standardOnly = licence?.licenceConditions?.standard?.additionalConditionsRequired !== 'Yes'
@@ -76,7 +76,7 @@ export class ConditionsService {
   }
 
   getStandardConditions() {
-    return standardConditionsV1
+    return standardConditions
   }
 
   getPssConditions(): string[] {
