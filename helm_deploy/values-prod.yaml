@@ -101,6 +101,8 @@ allowlist:
   fivewells-4: "195.59.215.184/29"
   global-protect: "35.176.93.186/32"
   petty-france-wifi: "213.121.161.112/28"
+  azure-landing-zone-public-egress-1: "20.26.11.71/32"
+  azure-landing-zone-public-egress-2: "20.26.11.108/32"
 
 # determine which slack channel alerts are sent to, via the correct Alert Manager receiver
 generic-prometheus-alerts:

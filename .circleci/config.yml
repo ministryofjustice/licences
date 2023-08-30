@@ -2,7 +2,7 @@ version: 2.1
 
 orbs:
   hmpps: ministryofjustice/hmpps@7
-  browser-tools: circleci/browser-tools@1.4.2
+  browser-tools: circleci/browser-tools@1.4.4
 
 parameters:
   alerts-slack-channel:
@@ -15,7 +15,7 @@ parameters:
 
   node-version:
     type: string
-    default: 18.15-browsers
+    default: 18.16-browsers
 
 executors:
   javascript-integration-tests:
@@ -155,8 +155,8 @@ jobs:
           key: gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
       - restore_cache:
           key: gradle-cache-{{ checksum "licences-specs/build.gradle" }}
-      - browser-tools/install-chrome
-      - browser-tools/install-chromedriver
+      - browser-tools/install-browser-tools:
+          chrome-version: 116.0.5845.96
       - run:
           name: Run Integration Tests
           command: ./gradlew mockTest --info

@@ -36,7 +36,7 @@ dependencies {
 
 task mockTest(type: Test) {
   systemProperty 'geb.env', 'chromeHeadless'
-  systemProperty 'webdriver.chrome.driver', '/usr/local/bin/chromedriver/chromedriver'
+  systemProperty 'webdriver.chrome.driver', '/usr/local/bin/chromedriver'
   group = 'verification'
 }
 
