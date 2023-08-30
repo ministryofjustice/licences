@@ -15,7 +15,7 @@ parameters:
 
   node-version:
     type: string
-    default: 20.4.0-browsers
+    default: 18.16-browsers
 
 executors:
   javascript-integration-tests:
@@ -90,6 +90,16 @@ jobs:
             - dist
             - assets/stylesheets
             - .cache/Cypress
+  test:
+    executor: browser-tools/default
+    steps:
+      - browser-tools/install-browser-tools:
+          chrome-version: 116.0.5845.96
+      - run:
+          command: |
+            google-chrome --version
+            chromedriver --version
+          name: Check install
 
   unit_test:
     executor:
