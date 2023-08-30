@@ -15,7 +15,7 @@ parameters:
 
   node-version:
     type: string
-    default: 18.16-browsers
+    default: 20.4.0-browsers
 
 executors:
   javascript-integration-tests:
