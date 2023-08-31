@@ -316,7 +316,7 @@ describe('PDF:', () => {
 
       // Just enough to verify that we made a PDF with some text and some licence data in it
       expect(pdfText).toContain('Name: NAMEPrison no: NOMSDate of Birth: DOB')
-      expect(pdfText).toContain('Page 1 of 3 - Basic licence v1.0')
+      expect(pdfText).toContain('Page 1 of 3 - Basic licence v2.0')
     })
   })
 
