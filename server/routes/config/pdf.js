@@ -3,13 +3,13 @@ module.exports = {
     {
       id: 'hdc_ap',
       label: 'Basic licence',
-      version: '1.0',
+      version: '2.0',
       validForNewOffence: true,
     },
     {
       id: 'hdc_ap_pss',
       label: 'Basic licence with top-up supervision',
-      version: '1.0',
+      version: '2.0',
       validForNewOffence: true,
     },
     {
