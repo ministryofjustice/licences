@@ -102,7 +102,7 @@ create table licence_versions
 
 The prisoner object is an OffenderSentenceDetail object in prisonApi:
 
-For reference, it looks like this: (from https://api-dev.prison.service.justice.gov.uk/swagger-ui.html#//offender-sentences/postOffenderSentencesBookings)
+For reference, it looks like this: (from https://prison-api-dev.prison.service.justice.gov.uk/swagger-ui.html#//offender-sentences/postOffenderSentencesBookings)
 
 ```
 {

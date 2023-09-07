@@ -28,7 +28,7 @@ ingress:
 
 env:
   DOMAIN:
-  NOMIS_API_URL: "https://api-dev.prison.service.justice.gov.uk"
+  NOMIS_API_URL: "https://prison-api-dev.prison.service.justice.gov.uk"
   NOMIS_AUTH_URL: "https://sign-in-dev.hmpps.service.justice.gov.uk/auth"
   GLOBAL_SEARCH_URL: "https://digital-dev.prison.service.justice.gov.uk/global-search"
   PUSH_TO_NOMIS: "yes"
