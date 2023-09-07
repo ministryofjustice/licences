@@ -131,6 +131,7 @@ function caProcessingLabel(licenceStatus) {
   const addressRouteLabels = [
     { decision: 'curfewAddressWithdrawn', label: status.addressRejected },
     { decision: 'curfewAddressRejected', label: status.addressRejected },
+    { decision: 'unsuitableResult', label: status.presumedUnsuitable },
   ]
 
   const commonLabels = [
