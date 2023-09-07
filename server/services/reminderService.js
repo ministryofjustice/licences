@@ -50,7 +50,7 @@ module.exports = function createReminderService(
     }
   }
 
-  async function sendReminder(token, notificationType, bookingId, transitionDate) {
+  async function sendReminder(token, notificationType, bookingId, offenderNo, transitionDate) {
     const [[responsibleOfficer, prison] = [], error] = unwrapResult(await getNotificationData(bookingId, token))
 
     if (error || isEmpty(prison)) {
@@ -62,6 +62,7 @@ module.exports = function createReminderService(
       prison,
       notificationType,
       bookingId,
+      offenderNo,
       sendingUserName: 'NOTIFICATION_SERVICE',
       transitionDate,
     })
@@ -71,7 +72,13 @@ module.exports = function createReminderService(
     // This is intentionally sequential to avoid timeouts sometimes arising from multiple quick calls to NOMIS API
     await licences.reduce(async (previous, nextLicence) => {
       await previous
-      return sendReminder(token, notificationType, nextLicence.booking_id, nextLicence.transition_date)
+      return sendReminder(
+        token,
+        notificationType,
+        nextLicence.booking_id,
+        nextLicence.offenderNo,
+        nextLicence.transition_date
+      )
     }, Promise.resolve())
   }
 

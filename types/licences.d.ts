@@ -46,6 +46,7 @@ export interface RoContactDetailsService {
 type NotificationArgs = {
   responsibleOfficer: ResponsibleOfficerAndContactDetails
   bookingId: number
+  offenderNo: string
   notificationType: string
   prison: string
   transitionDate?: string

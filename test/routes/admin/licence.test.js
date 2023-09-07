@@ -138,7 +138,7 @@ describe('/licences/', () => {
 
   describe('POST notify Ro', () => {
     test('Renders HTML output', () => {
-      prisonerService.getPrisonerDetails.mockReturnValue({ com: { name: 'Bob' } })
+      prisonerService.getPrisonerDetails.mockReturnValue({ offenderNo: 'AB1234A' })
       const app = createApp('batchUser')
       return request(app)
         .post('/admin/licences/1/notifyRo')
@@ -147,6 +147,7 @@ describe('/licences/', () => {
         .expect((res) => {
           expect(roNotificationHandler.sendRoEmail).toHaveBeenCalledWith({
             bookingId: '1',
+            offenderNo: 'AB1234A',
             token: 'system-token',
             transition: { notificationType: 'RO_NEW', sender: 'CA', receiver: 'RO', type: 'caToRo' },
             user: {

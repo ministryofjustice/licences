@@ -85,7 +85,7 @@ module.exports = function createRoNotificationHandler(
   }
 
   return {
-    async sendRo({ transition, bookingId, token, user }) {
+    async sendRo({ transition, bookingId, offenderNo, token, user }) {
       const [responsibleOfficerAndPrison, error] = unwrapResult(await loadResponsibleOfficer(bookingId, token))
 
       if (error) {
@@ -119,6 +119,7 @@ module.exports = function createRoNotificationHandler(
 
       await roNotificationSender.sendNotifications({
         bookingId,
+        offenderNo,
         responsibleOfficer,
         prison,
         notificationType: transition.notificationType,
@@ -131,7 +132,7 @@ module.exports = function createRoNotificationHandler(
     /**
      * Once an unlinked account has been linked, this provides a mechanism to re-send the RO email.
      */
-    async sendRoEmail({ transition, bookingId, token, user }) {
+    async sendRoEmail({ transition, bookingId, offenderNo, token, user }) {
       const [responsibleOfficerAndPrison, error] = unwrapResult(await loadResponsibleOfficer(bookingId, token))
 
       if (error) {
@@ -146,6 +147,7 @@ module.exports = function createRoNotificationHandler(
 
       await roNotificationSender.sendNotifications({
         bookingId,
+        offenderNo,
         responsibleOfficer,
         prison,
         notificationType: transition.notificationType,

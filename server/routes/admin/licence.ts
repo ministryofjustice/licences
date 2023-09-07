@@ -113,10 +113,12 @@ export = (licenceService, signInService, prisonerService, audit, roNotificationH
       asyncMiddleware(async (req, res) => {
         const { abookingId: bookingId } = req.params
         const systemToken = await signInService.getClientCredentialsTokens(req.user.username)
+        const { offenderNo } = await prisonerService.getPrisonerDetails(bookingId, systemToken)
         const [, error] = unwrapResult(
           await roNotificationHandler.sendRoEmail({
             transition: transitionsForDestinations.addressReview,
             bookingId,
+            offenderNo,
             token: systemToken,
             user: req.user,
           })

@@ -147,6 +147,7 @@ describe('send', () => {
           .expect(() => {
             expect(notificationService.send).toHaveBeenCalledWith({
               bookingId: '123',
+              offenderNo: 'AB1234A',
               transition: transitionsForDestinations.addressReview,
               licence: { licence: { key: 'value' } },
               prisoner,
@@ -167,6 +168,7 @@ describe('send', () => {
           .expect(() => {
             expect(notificationService.send).toHaveBeenCalledWith({
               bookingId: '123',
+              offenderNo: 'AB1234A',
               transition: transitionsForDestinations.finalChecks,
               licence: { licence: { key: 'value' } },
               prisoner,
@@ -192,6 +194,7 @@ describe('send', () => {
             expect(res.header.location).toBe('/hdc/sent/CA/dmToCaReturn/123')
             expect(notificationService.send).toHaveBeenCalledWith({
               bookingId: '123',
+              offenderNo: 'AB1234A',
               transition: transitionsForDestinations.return,
               licence: { licence: { key: 'value' } },
               prisoner,

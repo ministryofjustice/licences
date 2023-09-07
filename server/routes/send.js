@@ -29,11 +29,13 @@ module.exports =
       asyncMiddleware(async (req, res) => {
         const { destination, bookingId } = req.params
         const { token, licence, prisoner } = res.locals
+        const { offenderNo } = prisoner
         const transition = transitionsForDestinations[destination]
 
         await notificationService.send({
           transition,
           bookingId,
+          offenderNo,
           token,
           licence,
           prisoner,
