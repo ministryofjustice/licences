@@ -43,10 +43,20 @@ export interface RoContactDetailsService {
   ) => Promise<ResponsibleOfficerAndContactDetailsResult>
 }
 
+interface PrisonerDetails {
+  firstName: string
+  lastname: string
+  offenderNo: stiring
+}
+
+interface Prisoner extends PrisonerDetails {
+  any
+}
+
 type NotificationArgs = {
   responsibleOfficer: ResponsibleOfficerAndContactDetails
   bookingId: number
-  offenderNo: string
+  prisoner: Prisoner
   notificationType: string
   prison: string
   transitionDate?: string

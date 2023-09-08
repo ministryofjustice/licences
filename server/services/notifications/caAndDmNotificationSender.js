@@ -22,7 +22,6 @@ module.exports = function createCaAndDmNotificationSender(
     notificationType,
     submissionTarget,
     bookingId,
-    offenderNo,
     transitionDate,
     sendingUserName,
   }) {
@@ -40,7 +39,6 @@ module.exports = function createCaAndDmNotificationSender(
           token,
           submissionTarget,
           bookingId,
-          offenderNo,
           transitionDate,
           sendingUserName,
         })
@@ -124,7 +122,6 @@ module.exports = function createCaAndDmNotificationSender(
     notificationType,
     submissionTarget,
     bookingId,
-    offenderNo,
     transitionDate,
     sendingUserName,
   }) {
@@ -139,7 +136,6 @@ module.exports = function createCaAndDmNotificationSender(
         notificationType,
         submissionTarget,
         bookingId,
-        offenderNo,
         transitionDate,
         sendingUserName,
       })

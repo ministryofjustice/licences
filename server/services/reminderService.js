@@ -50,7 +50,7 @@ module.exports = function createReminderService(
     }
   }
 
-  async function sendReminder(token, notificationType, bookingId, offenderNo, transitionDate) {
+  async function sendReminder(token, notificationType, bookingId, prisoner, transitionDate) {
     const [[responsibleOfficer, prison] = [], error] = unwrapResult(await getNotificationData(bookingId, token))
 
     if (error || isEmpty(prison)) {
@@ -62,7 +62,7 @@ module.exports = function createReminderService(
       prison,
       notificationType,
       bookingId,
-      offenderNo,
+      prisoner,
       sendingUserName: 'NOTIFICATION_SERVICE',
       transitionDate,
     })

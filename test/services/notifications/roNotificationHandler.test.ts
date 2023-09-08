@@ -100,6 +100,7 @@ describe('roNotificationHandler', () => {
 
       expect(roNotificationSender.sendNotifications).toHaveBeenCalledWith({
         bookingId,
+        prisoner,
         responsibleOfficer,
         prison: 'HMP Blah',
         notificationType: 'RO_NEW',
@@ -207,6 +208,7 @@ describe('roNotificationHandler', () => {
 
       expect(roNotificationSender.sendNotifications).toHaveBeenCalledWith({
         bookingId,
+        prisoner,
         responsibleOfficer,
         prison: 'HMP Blah',
         notificationType: 'RO_NEW',
@@ -313,6 +315,7 @@ describe('roNotificationHandler', () => {
 
       expect(roNotificationSender.sendNotifications).toHaveBeenCalledWith({
         bookingId,
+        prisoner,
         responsibleOfficer,
         prison: 'HMP Blah',
         notificationType: 'RO_NEW',

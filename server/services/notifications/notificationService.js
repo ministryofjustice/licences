@@ -20,11 +20,11 @@ module.exports = function createNotificationService(
     DM: sendCaOrDm,
   }
 
-  async function send({ transition, bookingId, offenderNo, token, licence, prisoner, user }) {
-    return receiverToSender[transition.receiver]({ transition, bookingId, offenderNo, token, licence, prisoner, user })
+  async function send({ transition, bookingId, token, licence, prisoner, user }) {
+    return receiverToSender[transition.receiver]({ transition, bookingId, token, licence, prisoner, user })
   }
 
-  async function sendCaOrDm({ transition, bookingId, offenderNo, token, licence, prisoner, user }) {
+  async function sendCaOrDm({ transition, bookingId, token, licence, prisoner, user }) {
     const { submissionTarget, source, target } = await prisonerService.getDestinations(
       transition.sender,
       transition.receiver,
@@ -49,7 +49,6 @@ module.exports = function createNotificationService(
 
     caAndDmNotificationSender.sendNotifications({
       bookingId,
-      offenderNo,
       prisoner,
       notificationType: transition.notificationType,
       submissionTarget,
