@@ -132,6 +132,7 @@ function caProcessingLabel(licenceStatus) {
     { decision: 'curfewAddressWithdrawn', label: status.addressRejected },
     { decision: 'curfewAddressRejected', label: status.addressRejected },
     { decision: 'unsuitableResult', label: status.presumedUnsuitable },
+    { decision: 'insufficientTime', label: status.notEnoughTime },
   ]
 
   const commonLabels = [
