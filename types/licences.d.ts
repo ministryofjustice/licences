@@ -46,17 +46,13 @@ export interface RoContactDetailsService {
 interface PrisonerDetails {
   firstName: string
   lastname: string
-  offenderNo: stiring
-}
-
-interface Prisoner extends PrisonerDetails {
-  any
+  offenderNo: string
 }
 
 type NotificationArgs = {
   responsibleOfficer: ResponsibleOfficerAndContactDetails
   bookingId: number
-  prisoner: Prisoner
+  prisoner: PrisonerDetails
   notificationType: string
   prison: string
   transitionDate?: string
