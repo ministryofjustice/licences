@@ -20,10 +20,12 @@ module.exports = function createRoNotificationSender(
     RO_OVERDUE: { templateNames: { STANDARD: 'RO_OVERDUE', COPY: 'RO_OVERDUE_COPY' } },
   }
 
-  function variables(bookingId, roName, organisation, prison, transitionDate) {
+  function variables(bookingId, prisoner, roName, organisation, prison, transitionDate) {
     const date = transitionDate ? getRoCaseDueDate(moment(transitionDate)) : getRoNewCaseDueDate()
     return {
       booking_id: bookingId,
+      offenderNo: prisoner.offenderNo,
+      offender_name: [prisoner.firstName, prisoner.lastName].join(' '),
       domain,
       ro_name: roName,
       organisation,
@@ -51,6 +53,7 @@ module.exports = function createRoNotificationSender(
       responsibleOfficer,
       notificationType,
       bookingId,
+      prisoner,
       prison,
       transitionDate,
       sendingUserName,
@@ -63,6 +66,7 @@ module.exports = function createRoNotificationSender(
 
       const personalisation = variables(
         bookingId,
+        prisoner,
         responsibleOfficer.name,
         responsibleOfficer.organisation,
         prison,
