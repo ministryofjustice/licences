@@ -244,7 +244,6 @@ function decisionLabel(licenceStatus) {
 }
 
 function getLabel(labels, licenceStatus) {
-  console.log(licenceStatus)
   const found = labels.find((label) => {
     const value = label.value || true
     return licenceStatus.decisions[label.decision] === value

@@ -168,7 +168,7 @@ describe('licenceStatusLabels', () => {
           {
             status: {
               stage: LicenceStage.PROCESSING_CA,
-              decisions: { insufficientTime: true },
+              decisions: { insufficientTimeStop: true },
               tasks: {},
             },
             label: 'Not enough time',
