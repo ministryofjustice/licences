@@ -132,7 +132,7 @@ function caProcessingLabel(licenceStatus) {
     { decision: 'curfewAddressWithdrawn', label: status.addressRejected },
     { decision: 'curfewAddressRejected', label: status.addressRejected },
     { decision: 'unsuitableResult', label: status.presumedUnsuitable },
-    { decision: 'insufficientTime', label: status.notEnoughTime },
+    { decision: 'insufficientTimeStop', label: status.notEnoughTime },
   ]
 
   const commonLabels = [
@@ -244,6 +244,7 @@ function decisionLabel(licenceStatus) {
 }
 
 function getLabel(labels, licenceStatus) {
+  console.log(licenceStatus)
   const found = labels.find((label) => {
     const value = label.value || true
     return licenceStatus.decisions[label.decision] === value
