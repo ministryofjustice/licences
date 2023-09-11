@@ -157,6 +157,22 @@ describe('licenceStatusLabels', () => {
             },
             label: 'Approved premises',
           },
+          {
+            status: {
+              stage: LicenceStage.PROCESSING_CA,
+              decisions: { unsuitableResult: true },
+              tasks: {},
+            },
+            label: 'Presumed unsuitable',
+          },
+          {
+            status: {
+              stage: LicenceStage.PROCESSING_CA,
+              decisions: { insufficientTimeStop: true },
+              tasks: {},
+            },
+            label: 'Not enough time',
+          },
         ]
 
         assertLabels(examples, 'CA')
