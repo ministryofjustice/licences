@@ -112,6 +112,9 @@ env:
   - name: PROBATION_TEAMS_API_URL
     value: {{ .Values.env.PROBATION_TEAMS_API_URL | quote }}
 
+  - name: PRISONER_SEARCH_API_URL
+    value: {{ .Values.env.PRISONER_SEARCH_API_URL | quote }}
+
   - name: EXIT_LOCATION_URL
     value: {{ .Values.env.EXIT_LOCATION_URL | quote }}
 
