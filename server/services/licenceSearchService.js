@@ -44,6 +44,7 @@ module.exports = function createLicenceSearchService(
 
   const getPrisonerDecoratedLicences = (prisoners) => (licencesAcc, licence) => {
     const prisoner = prisoners.find((p) => p.bookingId === licence.booking_id.toString())
+    if (!prisoner) return licencesAcc
     return [
       ...licencesAcc,
       {
