@@ -170,6 +170,16 @@ export class LicenceClient {
     return rows
   }
 
+  async getLicencesInStage(stage) {
+    const query = {
+      text: `select l.booking_id , l.transition_date from licences l where stage = $1`,
+      values: [stage],
+    }
+
+    const { rows } = await db.query(query)
+    return rows
+  }
+
   async setAdditionalConditionsVersion(
     bookingId: number,
     additionalConditionsVersion: AdditionalConditionsVersion

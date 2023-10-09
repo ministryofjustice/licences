@@ -113,6 +113,13 @@ interface ActiveLdu {
   code: string
 }
 
+interface LicenceDetailsforCSV {
+  prisonerNumber: string
+  prisonId: string
+  transitionDate: string
+  HDCEDate: string
+}
+
 interface ProbationArea {
   code: string
   description: string
@@ -133,6 +140,7 @@ export interface LduService {
 
 export interface LicenceSearchService {
   findForId: (username: string, id: string) => Promise<number | undefined>
+  getLicencesInStageCOM: (username: string) => Promise<string>
 }
 
 export interface ActiveLduClient {

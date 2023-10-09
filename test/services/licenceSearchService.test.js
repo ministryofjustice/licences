@@ -1,3 +1,4 @@
+const moment = require('moment')
 const createLicenceSearchService = require('../../server/services/licenceSearchService')
 
 let licenceSearchService
@@ -5,11 +6,18 @@ let licenceClient
 let signInService
 let nomisClient
 let nomisClientBuilder
+let prisonerSearchAPI
+let restClientBuilder
 
 describe('licenceSearchService', () => {
   beforeEach(async () => {
     licenceClient = {
       getLicence: jest.fn(),
+      getLicencesInStage: jest.fn().mockReturnValue([
+        { booking_id: 1, transitionDate: '01-01-2020' },
+        { booking_id: 2, transitionDate: '01-01-2020' },
+        { booking_id: 3, transitionDate: '01-01-2020' },
+      ]),
     }
 
     signInService = {
@@ -20,8 +28,27 @@ describe('licenceSearchService', () => {
       getBookingByOffenderNumber: jest.fn().mockReturnValue({ bookingId: 1 }),
     }
 
+    prisonerSearchAPI = {
+      getPrisoners: jest.fn().mockReturnValue([
+        {
+          bookingId: '1',
+          prisonerNumber: 'AAAA11',
+          prisonId: 'MDI',
+          homeDetentionCurfewEligibilityDate: '01-01-2021',
+        },
+        { bookingId: '2', prisonerNumber: 'AAAA12', prisonId: 'MDI', homeDetentionCurfewEligibilityDate: '01-01-2021' },
+        { bookingId: '3', prisonerNumber: 'AAAA13', prisonId: 'MDI', homeDetentionCurfewEligibilityDate: '01-01-2021' },
+      ]),
+    }
+
     nomisClientBuilder = jest.fn().mockReturnValue(nomisClient)
-    licenceSearchService = await createLicenceSearchService(licenceClient, signInService, nomisClientBuilder)
+    restClientBuilder = jest.fn().mockReturnValue(prisonerSearchAPI)
+    licenceSearchService = await createLicenceSearchService(
+      licenceClient,
+      signInService,
+      nomisClientBuilder,
+      restClientBuilder
+    )
   })
 
   afterEach(() => {
@@ -72,6 +99,23 @@ describe('licenceSearchService', () => {
       nomisClient.getBookingByOffenderNumber.mockRejectedValue({ status: 500 })
 
       return expect(licenceSearchService.findForId('user-1', 'ABC1234')).rejects.toStrictEqual({ status: 500 })
+    })
+  })
+
+  describe('getLicencesInStageCOM', () => {
+    test('should request licence and prisoner details from client', async () => {
+      await licenceSearchService.getLicencesInStageCOM('user-1')
+
+      expect(licenceClient.getLicencesInStage).toHaveBeenCalledWith('PROCESSING_RO', 'a token')
+      expect(prisonerSearchAPI.getPrisoners).toHaveBeenCalledWith([1, 2, 3])
+    })
+
+    test('should decorate licences with prisoner details and return csv string', async () => {
+      const result = await licenceSearchService.getLicencesInStageCOM('user-1')
+
+      expect(result).toContain(
+        'PRISON_NUMBER,PRISON_ID,TRANSITION_DATE,HDCE_DATE\nAAAA11,MDI,09-10-2023,01-01-2021\nAAAA12,MDI,09-10-2023,01-01-2021\nAAAA13,MDI,09-10-2023,01-01-2021'
+      )
     })
   })
 })
