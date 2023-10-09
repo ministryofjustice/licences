@@ -80,6 +80,19 @@ module.exports = {
     responsibleOfficerVaryRoleId: get('DELIUS_RO_VARY_ROLE_ID', 'LHDCBT003'),
   },
 
+  prisonerSearchApi: {
+    apiUrl: get('PRISONER_SEARCH_API_URL', 'http://localhost:8083'),
+    timeout: {
+      response: Number(get('PRISONER_SEARCH_API_TIMEOUT_RESPONSE', 30000)),
+      deadline: Number(get('PRISONER_SEARCH_API_TIMEOUT_DEADLINE', 30000)),
+    },
+    agent: {
+      maxSockets: 100,
+      maxFreeSockets: 10,
+      freeSocketTimeout: 30000,
+    },
+  },
+
   probationTeams: {
     apiUrl: get('PROBATION_TEAMS_API_URL', 'http://localhost:8080/probationteams'),
     authUrl: get('PROBATION_TEAMS_AUTH_URL', get('NOMIS_AUTH_URL', 'http://localhost:9090/auth')),

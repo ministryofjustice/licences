@@ -47,6 +47,7 @@ describe('licenceService', () => {
       saveApprovedLicenceVersion: undefined,
       getLicencesInStageBetweenDates: undefined,
       getLicencesInStageBeforeDate: undefined,
+      getLicencesInStage: undefined,
       setAdditionalConditionsVersion: jest.fn(),
       setStandardConditionsVersion: jest.fn(),
     }

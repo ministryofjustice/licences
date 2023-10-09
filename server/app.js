@@ -34,6 +34,7 @@ const deliusAdminRouter = require('./routes/admin/delius')
 const locationsRouter = require('./routes/admin/locations')
 const warningsRouter = require('./routes/admin/warnings')
 const licenceSearchRouter = require('./routes/admin/licenceSearch')
+const licencesWithCOMRouter = require('./routes/admin/licencesWithCOM')
 const licenceRouter = require('./routes/admin/licence')
 const { functionalMailboxRouter } = require('./routes/admin/functionalMailboxes')
 const apiRouter = require('./routes/api')
@@ -383,6 +384,10 @@ module.exports = function createApp({
   app.use(
     '/admin/licenceSearch/',
     secureRoute(licenceSearchRouter(licenceSearchService), { auditKey: 'LICENCE_SEARCH' })
+  )
+  app.use(
+    '/admin/licencesWithCOM/',
+    secureRoute(licencesWithCOMRouter(licenceSearchService), { auditKey: 'LICENCE_STAGE_COM_DOWNLOAD' })
   )
   app.use(
     '/admin/licences/',

@@ -53,6 +53,7 @@ const createLicenceSearchService = require('./services/licenceSearchService')
 const tokenVerifierFactory = require('./authentication/tokenverifier/tokenVerifierFactory')
 const { default: TokenStore } = require('./data/tokenStore')
 const { createRedisClient } = require('./data/redisClient')
+const prisonerSearchApi = require('./data/prisonerSearchApi')
 
 const signInService = new SignInService(new TokenStore(createRedisClient()))
 const licenceService = createLicenceService(licenceClient)
@@ -133,7 +134,12 @@ const notificationJobs = createNotificationJobs(reminderService, signInService)
 const jobSchedulerService = createJobSchedulerService(dbLockingClient, configClient, notificationJobs)
 const lduService = createLduService(deliusClient, activeLduClient)
 const functionalMailboxService = new FunctionalMailboxService(deliusClient, probationTeamsClient, audit)
-const licenceSearchService = createLicenceSearchService(licenceClient, signInService, nomisClientBuilder)
+const licenceSearchService = createLicenceSearchService(
+  licenceClient,
+  signInService,
+  nomisClientBuilder,
+  prisonerSearchApi
+)
 const tokenVerifier = tokenVerifierFactory(config.tokenVerification)
 
 const app = createApp({
