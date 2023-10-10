@@ -126,7 +126,7 @@ describe('licenceSearchService', () => {
       const result = await licenceSearchService.getLicencesInStageCOM('user-1')
 
       expect(result).toContain(
-        'PRISON_NUMBER,PRISON_ID,TRANSITION_DATE,HDCED\nAAAA11,MDI,09-10-2023,01-01-2021\nAAAA12,MDI,09-10-2023,01-01-2021\nAAAA13,MDI,09-10-2023,01-01-2021'
+        'PRISON_NUMBER,PRISON_ID,PRISON_NAME,HANDOVER_DATE,HDCED\nAAAA11,MDI,Moorland (HMP & YOI),01-01-2020,01-01-2021\nAAAA12,MDI,Moorland (HMP & YOI),01-01-2020,01-01-2021\nAAAA13,MDI,Moorland (HMP & YOI),01-01-2020,01-01-2021'
       )
     })
 
