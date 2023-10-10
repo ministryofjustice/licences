@@ -44,14 +44,15 @@ module.exports = function createLicenceSearchService(
 
   const getPrisonerDecoratedLicences = (prisoners) => (licencesAcc, licence) => {
     const prisoner = prisoners.find((p) => p.bookingId === licence.booking_id.toString())
-    if (!prisoner) return licencesAcc
+    if (!prisoner || prisoner.status === 'INACTIVE OUT') return licencesAcc
     return [
       ...licencesAcc,
       {
         prisonerNumber: prisoner.prisonerNumber,
         prisonId: prisoner.prisonId,
-        transitionDate: moment(licence.transition_date).format('DD-MM-YYYY'),
-        HDCEDate: moment(prisoner.homeDetentionCurfewEligibilityDate).format('DD-MM-YYYY'),
+        prisonName: prisoner.prisonName,
+        handoverDate: moment(licence.transition_date).format('DD-MM-YYYY'),
+        HDCED: moment(prisoner.homeDetentionCurfewEligibilityDate).format('DD-MM-YYYY'),
       },
     ]
   }
@@ -61,8 +62,9 @@ module.exports = function createLicenceSearchService(
       header: [
         { id: 'prisonerNumber', title: 'PRISON_NUMBER' },
         { id: 'prisonId', title: 'PRISON_ID' },
-        { id: 'transitionDate', title: 'TRANSITION_DATE' },
-        { id: 'HDCEDate', title: 'HDCE_DATE' },
+        { id: 'prisonName', title: 'PRISON_NAME' },
+        { id: 'handoverDate', title: 'HANDOVER_DATE' },
+        { id: 'HDCED', title: 'HDCED' },
       ],
     })
     return writer.getHeaderString() + writer.stringifyRecords(records)

@@ -1,4 +1,3 @@
-const moment = require('moment')
 const createLicenceSearchService = require('../../server/services/licenceSearchService')
 
 let licenceSearchService
@@ -14,9 +13,9 @@ describe('licenceSearchService', () => {
     licenceClient = {
       getLicence: jest.fn(),
       getLicencesInStage: jest.fn().mockReturnValue([
-        { booking_id: 1, transitionDate: '01-01-2020' },
-        { booking_id: 2, transitionDate: '01-01-2020' },
-        { booking_id: 3, transitionDate: '01-01-2020' },
+        { booking_id: 1, transition_date: '01-01-2020' },
+        { booking_id: 2, transition_date: '01-01-2020' },
+        { booking_id: 3, transition_date: '01-01-2020' },
       ]),
     }
 
@@ -34,10 +33,23 @@ describe('licenceSearchService', () => {
           bookingId: '1',
           prisonerNumber: 'AAAA11',
           prisonId: 'MDI',
+          prisonName: 'Moorland (HMP & YOI)',
           homeDetentionCurfewEligibilityDate: '01-01-2021',
         },
-        { bookingId: '2', prisonerNumber: 'AAAA12', prisonId: 'MDI', homeDetentionCurfewEligibilityDate: '01-01-2021' },
-        { bookingId: '3', prisonerNumber: 'AAAA13', prisonId: 'MDI', homeDetentionCurfewEligibilityDate: '01-01-2021' },
+        {
+          bookingId: '2',
+          prisonerNumber: 'AAAA12',
+          prisonId: 'MDI',
+          prisonName: 'Moorland (HMP & YOI)',
+          homeDetentionCurfewEligibilityDate: '01-01-2021',
+        },
+        {
+          bookingId: '3',
+          prisonerNumber: 'AAAA13',
+          prisonId: 'MDI',
+          prisonName: 'Moorland (HMP & YOI)',
+          homeDetentionCurfewEligibilityDate: '01-01-2021',
+        },
       ]),
     }
 
@@ -114,8 +126,41 @@ describe('licenceSearchService', () => {
       const result = await licenceSearchService.getLicencesInStageCOM('user-1')
 
       expect(result).toContain(
-        'PRISON_NUMBER,PRISON_ID,TRANSITION_DATE,HDCE_DATE\nAAAA11,MDI,09-10-2023,01-01-2021\nAAAA12,MDI,09-10-2023,01-01-2021\nAAAA13,MDI,09-10-2023,01-01-2021'
+        'PRISON_NUMBER,PRISON_ID,PRISON_NAME,HANDOVER_DATE,HDCED\nAAAA11,MDI,Moorland (HMP & YOI),01-01-2020,01-01-2021\nAAAA12,MDI,Moorland (HMP & YOI),01-01-2020,01-01-2021\nAAAA13,MDI,Moorland (HMP & YOI),01-01-2020,01-01-2021'
       )
+    })
+
+    test('should not add released prisoners to csv string', async () => {
+      prisonerSearchAPI.getPrisoners.mockReturnValue([
+        {
+          bookingId: '1',
+          prisonerNumber: 'AAAA11',
+          prisonId: 'MDI',
+          prisonName: 'Moorland (HMP & YOI)',
+          homeDetentionCurfewEligibilityDate: '01-01-2021',
+        },
+        {
+          bookingId: '2',
+          prisonerNumber: 'AAAA12',
+          prisonId: 'MDI',
+          prisonName: 'Moorland (HMP & YOI)',
+          homeDetentionCurfewEligibilityDate: '01-01-2021',
+        },
+        {
+          bookingId: '3',
+          prisonerNumber: 'AAAA13',
+          prisonId: 'MDI',
+          prisonName: 'Moorland (HMP & YOI)',
+          homeDetentionCurfewEligibilityDate: '01-01-2021',
+          status: 'INACTIVE OUT',
+        },
+      ])
+      const result = await licenceSearchService.getLicencesInStageCOM('user-1')
+
+      expect(result).toContain(
+        'PRISON_NUMBER,PRISON_ID,PRISON_NAME,HANDOVER_DATE,HDCED\nAAAA11,MDI,Moorland (HMP & YOI),01-01-2020,01-01-2021\nAAAA12,MDI,Moorland (HMP & YOI),01-01-2020,01-01-2021'
+      )
+      expect(result).not.toContain('AAAA13,MDI,Moorland (HMP & YOI),01-01-2020,01-01-2021')
     })
   })
 })
