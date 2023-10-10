@@ -30,12 +30,7 @@ describe('licenceSearchService', () => {
 
     prisonerSearchAPI = {
       getPrisoners: jest.fn().mockReturnValue([
-        {
-          bookingId: '1',
-          prisonerNumber: 'AAAA11',
-          prisonId: 'MDI',
-          homeDetentionCurfewEligibilityDate: '01-01-2021',
-        },
+        { bookingId: '1', prisonerNumber: 'AAAA11', prisonId: 'MDI', homeDetentionCurfewEligibilityDate: '01-01-2021' },
         { bookingId: '2', prisonerNumber: 'AAAA12', prisonId: 'MDI', homeDetentionCurfewEligibilityDate: '01-01-2021' },
         { bookingId: '3', prisonerNumber: 'AAAA13', prisonId: 'MDI', homeDetentionCurfewEligibilityDate: '01-01-2021' },
       ]),
@@ -114,7 +109,22 @@ describe('licenceSearchService', () => {
       const result = await licenceSearchService.getLicencesInStageCOM('user-1')
 
       expect(result).toContain(
-        'PRISON_NUMBER,PRISON_ID,TRANSITION_DATE,HDCE_DATE\nAAAA11,MDI,09-10-2023,01-01-2021\nAAAA12,MDI,09-10-2023,01-01-2021\nAAAA13,MDI,09-10-2023,01-01-2021'
+        'PRISON_NUMBER,PRISON_ID,TRANSITION_DATE,HDCED\nAAAA11,MDI,09-10-2023,01-01-2021\nAAAA12,MDI,09-10-2023,01-01-2021\nAAAA13,MDI,09-10-2023,01-01-2021'
+      )
+    })
+
+    test('should not add released prisoners (with no matching bookingId from licences) to csv string', async () => {
+      prisonerSearchAPI.getPrisoners.mockReturnValue([
+        { bookingId: '1', prisonerNumber: 'AAAA11', prisonId: 'MDI', homeDetentionCurfewEligibilityDate: '01-01-2021' },
+        { bookingId: '2', prisonerNumber: 'AAAA12', prisonId: 'MDI', homeDetentionCurfewEligibilityDate: '01-01-2021' },
+        { bookingId: '3', prisonerNumber: 'AAAA13', prisonId: 'MDI', homeDetentionCurfewEligibilityDate: '01-01-2021' },
+        { bookingId: '4', prisonerNumber: 'AAAA14', prisonId: 'MDI', homeDetentionCurfewEligibilityDate: '01-01-2021' },
+        { bookingId: '5', prisonerNumber: 'AAAA15', prisonId: 'MDI', homeDetentionCurfewEligibilityDate: '01-01-2021' },
+      ])
+      const result = await licenceSearchService.getLicencesInStageCOM('user-1')
+
+      expect(result).toContain(
+        'PRISON_NUMBER,PRISON_ID,TRANSITION_DATE,HDCED\nAAAA11,MDI,09-10-2023,01-01-2021\nAAAA12,MDI,09-10-2023,01-01-2021\nAAAA13,MDI,09-10-2023,01-01-2021'
       )
     })
   })
