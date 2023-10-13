@@ -15,7 +15,7 @@ describe('/licencesWithCOM/', () => {
     test('Renders HTML output', () => {
       const app = createApp('batchUser')
       return request(app)
-        .get('/admin/downloadLicencesWithCOM')
+        .get('/admin/downloadCasesWithCOM')
         .expect(200)
         .expect('Content-Type', /html/)
         .expect((res) => {
@@ -25,7 +25,7 @@ describe('/licencesWithCOM/', () => {
 
     test('should throw if submitted by non-authorised user', () => {
       const app = createApp('roUser')
-      return request(app).get('/admin/downloadLicencesWithCOM').expect(403)
+      return request(app).get('/admin/downloadCasesWithCOM').expect(403)
     })
   })
 
@@ -34,7 +34,7 @@ describe('/licencesWithCOM/', () => {
       licenceSearchService.getLicencesInStageCOM.mockReturnValue('1')
       const app = createApp('batchUser')
       return request(app)
-        .post('/admin/downloadLicencesWithCOM')
+        .post('/admin/downloadCasesWithCOM')
         .expect(200)
         .expect(() => {
           expect(licenceSearchService.getLicencesInStageCOM).toHaveBeenCalledWith('NOMIS_BATCHLOAD')
@@ -43,9 +43,9 @@ describe('/licencesWithCOM/', () => {
 
     test('should throw if submitted by non-authorised user', () => {
       const app = createApp('roUser')
-      return request(app).post('/admin/downloadLicencesWithCOM').expect(403)
+      return request(app).post('/admin/downloadCasesWithCOM').expect(403)
     })
   })
 
-  const createApp = (user) => startRoute(createAdminRoute(licenceSearchService), '/admin/downloadLicencesWithCOM', user)
+  const createApp = (user) => startRoute(createAdminRoute(licenceSearchService), '/admin/downloadCasesWithCOM', user)
 })
