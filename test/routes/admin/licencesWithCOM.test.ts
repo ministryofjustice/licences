@@ -19,7 +19,7 @@ describe('/licencesWithCOM/', () => {
         .expect(200)
         .expect('Content-Type', /html/)
         .expect((res) => {
-          expect(res.text).toContain('Download licences sitting with COM')
+          expect(res.text).toContain('Download HDC cases sitting with COM')
         })
     })
 
