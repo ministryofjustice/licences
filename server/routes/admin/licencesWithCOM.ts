@@ -15,7 +15,7 @@ export = (licenceSearchService) => (router) => {
     asyncMiddleware(async (req, res) => {
       const licenceswithCOM = await licenceSearchService.getLicencesInStageCOM(req.user.username)
       res.contentType('text/csv')
-      res.set('Content-Disposition', `attachment;filename=licences-with-com.csv`)
+      res.set('Content-Disposition', `attachment;filename=HDC-cases-with-COM.csv`)
       res.send(licenceswithCOM)
     })
   )
