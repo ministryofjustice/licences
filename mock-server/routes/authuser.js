@@ -64,6 +64,7 @@ const findFirstFromToken = (token, roleHash) => {
   const accessToken = token.split(' ')[1]
   try {
     // try for a real jwt to get the roles from
+    /** @type {any} */
     const jwt = jwtDecode(accessToken)
     const lookup = jwt.user_name.substring(0, 2)
     return roleHash[lookup]
