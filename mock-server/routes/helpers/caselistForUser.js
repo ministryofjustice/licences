@@ -1,5 +1,5 @@
 /** @type {any} */
-const jwtDecode = require('jwt-decode')
+const { jwtDecode } = require('jwt-decode')
 const hdcDemoCandidates = require('../stubs/hdcDemoCandidates')
 const hdcTestCandidates = require('../stubs/hdcTestCandidates')
 const hdcMultiCandidates = require('../stubs/hdcMultiCandidates')
@@ -10,6 +10,7 @@ module.exports = (token) => {
   let username
   try {
     // try for a real jwt to get the roles from
+    /** @type {any} */
     const jwt = jwtDecode(accessToken)
     username = jwt.user_name
   } catch (error) {
