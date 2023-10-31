@@ -1,6 +1,6 @@
 const express = require('express')
 /** @type {any} */
-const jwtDecode = require('jwt-decode')
+const { jwtDecode } = require('jwt-decode')
 
 const router = express.Router()
 const profiles = {
