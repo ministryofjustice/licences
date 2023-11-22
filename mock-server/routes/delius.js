@@ -5,19 +5,17 @@ const teamC01T04 = {
   code: 'C01T04',
   description: 'OMU A',
   telephone: '01234567890',
-  localDeliveryUnit: { code: 'ABC124', description: 'ABC124 delivery unit' },
-  district: { code: 'D', description: 'E' },
-  borough: { code: 'F', description: 'G' },
+  localAdminUnit: { code: 'ABC124', description: 'ABC124 delivery unit' },
 }
 
 const deliusTeams = [teamC01T04]
 
 const AUTH_RO_USER_TEST = {
   username: 'AUTH_RO_USER_TEST',
-  staffCode: 'DELIUS_ID_TEST',
-  staffIdentifier: 1,
+  code: 'DELIUS_ID_TEST',
+  staffId: 1,
   email: 'hdc_test+RO_USER_TEST@digital.justice.gov.uk',
-  staff: {
+  name: {
     forenames: 'FIRSTA',
     surname: 'LASTA',
   },
@@ -26,10 +24,10 @@ const AUTH_RO_USER_TEST = {
 
 const RO_USER_TEST = {
   username: 'RO_USER_TEST',
-  staffCode: 'AUTH_DELIUS_ID_TEST',
-  staffIdentifier: 2,
+  code: 'AUTH_DELIUS_ID_TEST',
+  staffId: 2,
   email: 'hdc_test+RO_USER_TEST@digital.justice.gov.uk',
-  staff: {
+  name: {
     forenames: 'FIRSTA',
     surname: 'LASTA',
   },
@@ -38,10 +36,10 @@ const RO_USER_TEST = {
 
 const RO_USER = {
   username: 'RO_USER',
-  staffCode: 'DELIUS_ID',
-  staffIdentifier: 3,
+  code: 'DELIUS_ID',
+  staffId: 3,
   email: 'hdc_test+RO_USER@digital.justice.gov.uk',
-  staff: {
+  name: {
     forenames: 'JESSY',
     surname: 'SMITH',
   },
@@ -69,14 +67,22 @@ const staffDetailsByStaffIdentifier = {
 
 const router = express.Router()
 
-router.get('/staff/username/:username', (req, res) => {
-  const { username } = req.params
-  const staffDetails = staffDetailsByUsername[username]
-  if (staffDetails) {
-    res.send(staffDetails)
-  } else {
-    res.sendStatus(404)
+router.get('/staff', (req, res) => {
+  const { username, id } = req.query
+  if (username) {
+    const staffDetails = staffDetailsByUsername[username]
+    if (staffDetails) {
+      res.send(staffDetails)
+      return
+    }
+  } else if (id) {
+    const staffDetails = staffDetailsByStaffIdentifier[id]
+    if (staffDetails) {
+      res.send(staffDetails)
+      return
+    }
   }
+  res.sendStatus(404)
 })
 
 /*
@@ -112,55 +118,23 @@ router.get('/staff/staffCode/:staffCode/managedOffenders', (req, res) => {
 })
 */
 
-router.get('/staff/staffIdentifier/:staffIdentifier', (req, res) => {
-  const { staffIdentifier } = req.params
-  const staffDetails = staffDetailsByStaffIdentifier[staffIdentifier]
-  if (staffDetails) {
-    res.send(staffDetails)
-  } else {
-    res.sendStatus(404)
-  }
+router.get('/managedPrisonerIds', (req, res) => {
+  res.send(['A5001DY'])
 })
 
-router.get('/staff/staffIdentifier/:staffIdentifier/managedOffenders', (req, res) => {
-  const { staffIdentifier } = req.params
-
-  const offenders = [
-    {
-      staffIdentifier,
-      offenderId: 1234567,
-      nomsNumber: 'A5001DY',
-      crnNumber: 1234567,
-      offenderSurname: 'Andrews',
-      isCurrentRo: true,
-      isCurrentOm: true,
-      isCurrentPom: true,
-      omStartDate: '01/01/2001',
-      omEndDate: '01/01/2001',
-    },
-  ]
-
-  res.send(offenders)
+router.get('/case/:nomsNumber/communityManager', (req, res) => {
+  res.send({
+    code: 'DELIUS_ID',
+    staffId: 2,
+    name: { forenames: 'Ryan', surname: 'Orton' },
+    team: teamC01T04,
+    provider: { code: 'ABC', description: 'ABC probation area' },
+    localAdminUnit: { code: 'ABC124', description: 'ABC124 delivery unit' },
+    isUnallocated: false,
+  })
 })
 
-router.get('/offenders/nomsNumber/:nomsNumber/allOffenderManagers', (req, res) => {
-  const ros = [
-    {
-      isPrisonOffenderManager: false,
-      isUnallocated: false,
-      isResponsibleOfficer: true,
-      staff: { forenames: 'Ryan', surname: 'Orton' },
-      staffCode: 'DELIUS_ID',
-      staffId: 2,
-      team: teamC01T04,
-      probationArea: { code: 'ABC', description: 'ABC probation area' },
-    },
-  ]
-
-  res.send(ros)
-})
-
-router.get('/probationAreas', (req, res) => {
+router.get('/providers', (req, res) => {
   // return all probation areas
   const allProbationAreas = probationAreas.map((probArea) => ({
     code: probArea.code,
@@ -170,11 +144,15 @@ router.get('/probationAreas', (req, res) => {
   res.send(response)
 })
 
-router.get('/probationAreas/code/:code/localDeliveryUnits', (req, res) => {
+router.get('/providers/:code', (req, res) => {
   // return the LDUs for a specific probation area
   const { code: probationAreaCode } = req.params
   const probationArea = probationAreas.filter((probArea) => probArea.code === probationAreaCode)
-  const response = { content: probationArea[0].ldus }
+  const response = {
+    code: probationArea[0].code,
+    description: probationArea[0].description,
+    localAdminUnits: probationArea[0].ldus,
+  }
   res.send(response)
 })
 

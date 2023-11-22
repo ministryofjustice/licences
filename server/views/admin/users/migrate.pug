@@ -41,13 +41,13 @@ block content
           h3.heading-medium Delius record
           if deliusUser
             div.pure-u-1-3 Name
-            div.pure-u-2-3.bold #{deliusUser.staff.forenames} #{deliusUser.staff.surname}
+            div.pure-u-2-3.bold #{deliusUser.name.forenames} #{deliusUser.name.surname}
 
             div.pure-u-1-3 Delius staff code
-            div.pure-u-2-3.bold #{deliusUser.staffCode}
+            div.pure-u-2-3.bold #{deliusUser.code}
 
             div.pure-u-1-3 Delius staff identifier
-            div.pure-u-2-3.bold #{deliusUser.staffIdentifier}
+            div.pure-u-2-3.bold #{deliusUser.staffId}
 
             if !flags.includes('UNLINKED_ACCOUNT')
                 div.pure-u-1-3 Delius username

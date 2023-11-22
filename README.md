@@ -37,7 +37,7 @@ To run locally you need:
 - redis
 - auth server
 - nomis
-- community api
+- delius api
 - probation teams
 - gotenberg
 - nomis-user-roles-api

@@ -1,12 +1,12 @@
 import * as R from 'ramda'
 
 import {
-  LocalDeliveryUnitDto,
-  ProbationTeamsClient,
   LduIdentifier,
+  LocalDeliveryUnitDto,
   ProbationTeamIdentifier,
+  ProbationTeamsClient,
 } from '../data/probationTeamsClient'
-import { DeliusClient, Ldu, ProbationArea, ProbationTeam } from '../data/deliusClient'
+import { DeliusClient, KeyValue } from '../data/deliusClient'
 
 export interface LduMap {
   [code: string]: {
@@ -33,7 +33,7 @@ export interface ProbationTeamMap {
 }
 
 export const mergeLduData = (
-  ldus: Ldu[],
+  ldus: KeyValue[],
   lduDtos: { [localDeliveryUnitCode: string]: LocalDeliveryUnitDto }
 ): LduMap => {
   const lduMap = ldus.reduce((map, { code, description }) => ({ ...map, [code]: { description } }), {})
@@ -44,7 +44,7 @@ export const mergeLduData = (
   return R.mergeDeepRight(lduMap, filteredDtos)
 }
 
-export const mergeProbationTeams = (probationTeams: ProbationTeam[], localDeliveryUnitDto: LocalDeliveryUnitDto) => {
+export const mergeProbationTeams = (probationTeams: KeyValue[], localDeliveryUnitDto: LocalDeliveryUnitDto) => {
   const probationTeamMap = probationTeams.reduce(
     (map, { code, description }) => ({ ...map, [code]: { description } }),
     {}
@@ -53,7 +53,7 @@ export const mergeProbationTeams = (probationTeams: ProbationTeam[], localDelive
   return R.mergeDeepRight(probationTeamMap, probationTeamDtoMap)
 }
 
-export function mergeProbationAreaData(probationAreas: ProbationArea[], probationAreaCodes: string[]) {
+export function mergeProbationAreaData(probationAreas: KeyValue[], probationAreaCodes: string[]) {
   const probationCodeMap = probationAreaCodes.reduce((map, code) => ({ ...map, [code]: {} }), {})
   const probationAreaMap = probationAreas.reduce(
     (map, { code, description }) => ({ ...map, [code]: { description } }),
@@ -78,7 +78,7 @@ export class FunctionalMailboxService {
   ) {}
 
   getAllProbationAreas = async () => {
-    const [{ content: probationAreas } = { content: [] }, probationAreaCodes = []] = await Promise.all([
+    const [probationAreas = [], probationAreaCodes = []] = await Promise.all([
       this.deliusClient.getAllProbationAreas(),
       this.probationTeamsClient.getProbationAreaCodes(),
     ])
@@ -86,8 +86,8 @@ export class FunctionalMailboxService {
   }
 
   getLdusForProbationArea = async (probationAreaCode): Promise<LduMap> => {
-    const [{ content: ldus }, { localDeliveryUnits = {} } = {}] = await Promise.all([
-      this.deliusClient.getAllLdusForProbationArea(probationAreaCode),
+    const [{ localAdminUnits: ldus }, { localDeliveryUnits = {} } = {}] = await Promise.all([
+      this.deliusClient.getProbationArea(probationAreaCode),
       this.probationTeamsClient.getProbationArea(probationAreaCode),
     ])
 
@@ -95,16 +95,15 @@ export class FunctionalMailboxService {
   }
 
   getLduWithProbationTeams = async ({ probationAreaCode, lduCode }): Promise<LduWithTeams> => {
-    const [{ content: ldus }, { content: probationTeams }, localDeliveryUnitDto] = await Promise.all([
-      this.deliusClient.getAllLdusForProbationArea(probationAreaCode),
-      this.deliusClient.getAllTeamsForLdu(probationAreaCode, lduCode),
+    const [ldu, localDeliveryUnitDto] = await Promise.all([
+      this.deliusClient.getLduWithTeams(probationAreaCode, lduCode),
       this.probationTeamsClient.getLduWithProbationTeams({ probationAreaCode, lduCode }),
     ])
 
     return {
-      description: getDescription(ldus, lduCode),
+      description: ldu.description ?? '',
       functionalMailbox: R.propOr('', 'functionalMailbox', localDeliveryUnitDto),
-      probationTeams: mergeProbationTeams(probationTeams, localDeliveryUnitDto),
+      probationTeams: mergeProbationTeams(ldu.teams, localDeliveryUnitDto),
     }
   }
 

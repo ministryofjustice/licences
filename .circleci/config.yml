@@ -128,7 +128,7 @@ jobs:
       ENABLE_TEST_UTILS: true
       NOMIS_API_URL: http://localhost:8080/prisonApi
       NOMIS_AUTH_URL: http://hmpps-auth:9090/auth
-      DELIUS_API_URL: http://localhost:8080/communityapi
+      DELIUS_API_URL: http://localhost:8080/delius
       PROBATION_TEAMS_API_URL: http://localhost:8080/probationteams
       TOKENVERIFICATION_API_ENABLED: false
       GOTENBERG_API_URL: http://localhost:3001

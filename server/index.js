@@ -62,8 +62,8 @@ const conditionsServiceFactory = new ConditionServiceFactory()
 const deliusClient = new DeliusClient(
   buildRestClient(
     clientCredentialsTokenSource(signInService, 'delius'),
-    `${config.delius.apiUrl}${config.delius.apiPrefix}`,
-    'Delius community API',
+    config.delius.apiUrl,
+    'Delius Integration API',
     { timeout: config.delius.timeout, agent: config.delius.agent }
   )
 )
