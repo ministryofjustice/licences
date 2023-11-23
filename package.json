@@ -135,7 +135,7 @@
     "moment-business-days": "^1.2.0",
     "nocache": "^4.0.0",
     "node-schedule": "^2.1.1",
-    "notifications-node-client": "^7.0.3",
+    "notifications-node-client": "^7.0.6",
     "passport": "^0.6.0",
     "passport-oauth2": "^1.7.0",
     "path": "^0.12.7",
