@@ -1,4 +1,4 @@
-import { CommunityOrPrisonOffenderManager, DeliusClient, StaffDetails } from '../data/deliusClient'
+import { CommunityManager, DeliusClient, StaffDetails } from '../data/deliusClient'
 import { ResponsibleOfficer, ResponsibleOfficerResult, Result } from '../../types/licences'
 
 const setCase = require('case')
@@ -12,9 +12,9 @@ export class RoService {
     readonly nomisClientBuilder
   ) {}
 
-  private async getROPrisonersFromDeliusForStaffIdentifier(staffIdentifier: number): Promise<Array<any>> {
+  private async getROPrisonersFromDeliusForStaffIdentifier(staffIdentifier: number): Promise<string[]> {
     try {
-      return await this.deliusClient.getROPrisonersByStaffIdentifier(staffIdentifier)
+      return await this.deliusClient.getManagedPrisonerIdsByStaffId(staffIdentifier)
     } catch (error) {
       logger.error(`Problem retrieving RO prisoners for: ${staffIdentifier}`, error.stack)
       throw error
@@ -42,14 +42,10 @@ export class RoService {
 
   async getROPrisonersForStaffIdentifier(staffIdentifier: number, token: string) {
     const nomisClient = this.nomisClientBuilder(token)
-    const requiredPrisoners = await this.getROPrisonersFromDeliusForStaffIdentifier(staffIdentifier)
-    if (!requiredPrisoners) {
+    const requiredIDs = await this.getROPrisonersFromDeliusForStaffIdentifier(staffIdentifier)
+    if (!requiredIDs) {
       return null
     }
-
-    const requiredIDs = requiredPrisoners
-      .filter((prisoner) => prisoner.nomsNumber)
-      .map((prisoner) => prisoner.nomsNumber)
     return nomisClient.getOffenderSentencesByNomisId(requiredIDs)
   }
 
@@ -63,12 +59,12 @@ export class RoService {
     logger.info(`findResponsibleOfficerWithOffenderNo: ${offenderNo}`)
 
     try {
-      const offenderManagers = await this.deliusClient.getAllOffenderManagers(offenderNo)
-      if (!offenderManagers) {
+      const communityManager = await this.deliusClient.getCommunityManager(offenderNo)
+      if (!communityManager) {
         logger.error(`Offender not present in delius: ${offenderNo}`)
         return { code: NO_OFFENDER_NUMBER, message: 'Offender number not entered in delius' }
       }
-      return extractCommunityOffenderManager(offenderNo, offenderManagers)
+      return toResponsibleOfficer(offenderNo, communityManager)
     } catch (error) {
       logger.error(`findResponsibleOfficer for: ${offenderNo}`, error.stack)
       throw error
@@ -76,37 +72,25 @@ export class RoService {
   }
 }
 
-function extractCommunityOffenderManager(
-  offenderNumber: string,
-  offenderManagers: CommunityOrPrisonOffenderManager[]
-): ResponsibleOfficerResult {
-  const responsibleOfficer = offenderManagers.find((manager) => !manager.isPrisonOffenderManager)
-  return !responsibleOfficer
-    ? { code: NO_COM_ASSIGNED, message: `Offender has not been assigned a COM: ${offenderNumber}` }
-    : toResponsibleOfficer(offenderNumber, responsibleOfficer)
-}
-
-function toResponsibleOfficer(
-  offenderNumber: string,
-  offenderManager: CommunityOrPrisonOffenderManager
-): ResponsibleOfficer {
+function toResponsibleOfficer(offenderNumber: string, offenderManager: CommunityManager): ResponsibleOfficer {
   const {
-    staff: { forenames, surname },
-    staffCode,
+    name: { forenames, surname },
+    code,
     staffId,
     isUnallocated,
-    team: { localDeliveryUnit, code, description },
-    probationArea,
+    team,
+    localAdminUnit: localDeliveryUnit,
+    provider: probationArea,
   } = offenderManager
   const name = setCase.capital([forenames, surname].join(' ').trim().toLowerCase())
   return {
     name,
     isAllocated: !isUnallocated,
-    deliusId: staffCode,
+    deliusId: code,
     staffIdentifier: staffId,
     nomsNumber: offenderNumber,
-    teamCode: code,
-    teamDescription: description,
+    teamCode: team.code,
+    teamDescription: team.description,
     lduCode: localDeliveryUnit.code,
     lduDescription: localDeliveryUnit.description,
     probationAreaCode: probationArea.code,

@@ -1,4 +1,4 @@
-import { DeliusClient } from '../data/deliusClient'
+import { DeliusClient, DeliusUser, StaffDetails } from '../data/deliusClient'
 import UserAdminService from './userAdminService'
 import logger from '../../log'
 import config from '../config'
@@ -66,7 +66,7 @@ export default class MigrationService {
     return { licenceUser, deliusUser: deliusStaffDetails, authUser, flags }
   }
 
-  private async getDeliusStaffDetails(licenceUser) {
+  private async getDeliusStaffDetails(licenceUser): Promise<StaffDetails> {
     const { staffIdentifier, deliusId } = licenceUser
     if (staffIdentifier)
       try {
@@ -86,9 +86,9 @@ export default class MigrationService {
     return null
   }
 
-  private getFlags(deliusUser, authUser, licenceUser, deliusStaffDetails, failedToLoadAuth: boolean) {
+  private getFlags(deliusUser: DeliusUser, authUser, licenceUser, deliusStaffDetails, failedToLoadAuth: boolean) {
     const deliusRoles = deliusUser ? deliusUser.roles : []
-    const hasRoRole = deliusRoles.map((r) => r.name).includes(config.delius.responsibleOfficerRoleId)
+    const hasRoRole = deliusRoles.includes(config.delius.responsibleOfficerRoleId)
 
     const hasVaryRole = authUser?.roles.includes('LICENCE_VARY')
 
@@ -121,15 +121,12 @@ export default class MigrationService {
     await this.deliusClient.addRole(deliusUsername, role)
   }
 
-  public async getDeliusRoles(deliusUsername): Promise<string[]> {
+  public async getDeliusRoles(deliusUsername: string): Promise<string[]> {
     const user = await this.getUserFromDelius(deliusUsername)
     if (!user) {
       return null
     }
-    const deliusRoles = user.roles || []
-    return deliusRoles
-      .map((r) => r.name)
-      .filter((r) => [config.delius.responsibleOfficerRoleId, config.delius.responsibleOfficerVaryRoleId].includes(r))
+    return user.roles || []
   }
 
   public async disableAuthAccount(token, nomisUsername) {
@@ -151,10 +148,9 @@ export default class MigrationService {
     }
   }
 
-  private async getUserFromDelius(username) {
+  private async getUserFromDelius(username: string): Promise<DeliusUser> {
     try {
-      const result = await this.deliusClient.getUser(username)
-      return result
+      return await this.deliusClient.getUser(username)
     } catch (error) {
       logger.warn(`Problem retrieving user from delius for username: ${username}`, error.stack)
       return null

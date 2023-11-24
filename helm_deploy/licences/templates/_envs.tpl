@@ -106,9 +106,6 @@ env:
   - name: DELIUS_API_URL
     value: {{ .Values.env.DELIUS_API_URL | quote }}
 
-  - name: DELIUS_API_PREFIX
-    value: {{ .Values.env.DELIUS_API_PREFIX | quote }}
-
   - name: PROBATION_TEAMS_API_URL
     value: {{ .Values.env.PROBATION_TEAMS_API_URL | quote }}
 

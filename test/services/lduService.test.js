@@ -1,7 +1,7 @@
 const createLduService = require('../../server/services/lduService')
 /** @type {any} */
 const deliusClient = {
-  getAllLdusForProbationArea: jest.fn(),
+  getProbationArea: jest.fn(),
   getAllProbationAreas: jest.fn(),
 }
 const activeLduClient = {
@@ -17,12 +17,10 @@ let lduService
 describe('lduService', () => {
   beforeEach(async () => {
     lduService = await createLduService(deliusClient, activeLduClient)
-    deliusClient.getAllProbationAreas.mockResolvedValue({
-      content: [
-        { code: 'ABC123', description: 'desc-1' },
-        { code: 'DEF345', description: 'desc-2' },
-      ],
-    })
+    deliusClient.getAllProbationAreas.mockResolvedValue([
+      { code: 'ABC123', description: 'desc-1' },
+      { code: 'DEF345', description: 'desc-2' },
+    ])
   })
 
   afterEach(() => {
@@ -49,10 +47,12 @@ describe('lduService', () => {
   })
 
   describe('getProbationArea', () => {
-    it(`Should return all the LDUs from Delius for London and cross match with those in active_local_delivery_units table in DB. 
+    it(`Should return all the LDUs from Delius for London and cross match with those in active_local_delivery_units table in DB.
     Those that cross-matchs will have a 'active = true' status`, async () => {
-      deliusClient.getAllLdusForProbationArea.mockResolvedValue({
-        content: [
+      deliusClient.getProbationArea.mockResolvedValue({
+        code: 'Lon',
+        description: 'London',
+        localAdminUnits: [
           { code: 'ham', description: 'Hampstead' },
           { code: 'wtl', description: 'Waterloo' },
           { code: 'pic', description: 'Picadilly' },
@@ -76,8 +76,10 @@ describe('lduService', () => {
     })
 
     it('Should remove duplicate ldus and only show the first description', async () => {
-      deliusClient.getAllLdusForProbationArea.mockResolvedValue({
-        content: [
+      deliusClient.getProbationArea.mockResolvedValue({
+        code: 'Lon',
+        description: 'London',
+        localAdminUnits: [
           { code: 'ham', description: 'Hampstead' },
           { code: 'pic', description: 'Picadilly' },
           { code: 'ham', description: 'Hampstead2' },

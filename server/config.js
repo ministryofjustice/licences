@@ -58,7 +58,7 @@ module.exports = {
   },
 
   delius: {
-    apiUrl: get('DELIUS_API_URL', 'http://localhost:8080/communityapi'),
+    apiUrl: get('DELIUS_API_URL', 'http://localhost:8080/delius'),
     authUrl: get('DELIUS_AUTH_URL', get('NOMIS_AUTH_URL', 'http://localhost:9090/auth')),
     admin: {
       apiClientId: get('DELIUS_API_CLIENT_ID', get('ADMIN_API_CLIENT_ID', 'licencesadmin')),
@@ -73,7 +73,6 @@ module.exports = {
       maxFreeSockets: 10,
       freeSocketTimeout: 30000,
     },
-    apiPrefix: get('DELIUS_API_PREFIX', '/api'),
     // this refers to the 'HDC Digital Update' RBAC which is mapped to LICENCE_RO and GLOBAL_SEARCH in the auth server
     responsibleOfficerRoleId: get('DELIUS_RO_ROLE_ID', 'LHDCBT002'),
     // this refers to the 'HDC Digital Update' RBAC which is mapped to LICENCE_RO, GLOBAL_SEARCH and LICENCE_VARY in the auth server

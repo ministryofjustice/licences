@@ -80,14 +80,14 @@ describe('caseListService', () => {
   const staffDetailsNoStaffIdentifier = {
     username: 'username',
     email: 'email',
-    staffCode: 'ABC123',
-    staff: { forenames: 'user', surname: 'name' },
+    code: 'ABC123',
+    name: { forenames: 'user', surname: 'name' },
     teams: [],
   } as StaffDetails
 
   const staffDetails: StaffDetails = {
     ...staffDetailsNoStaffIdentifier,
-    staffIdentifier: 2,
+    staffId: 2,
   }
 
   const deliusId1: DeliusIds = { staffIdentifier: 1, deliusUsername: 'deliusUser' }

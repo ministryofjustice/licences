@@ -54,10 +54,10 @@ export = function createCaseListService(
   const getIdsFromDelius = async (username: string): Promise<Result<DeliusIds, string>> => {
     const staffDetailsResult = await getStaffDetailsFromDelius(username)
 
-    return staffDetailsResult.flatMap(({ staffIdentifier }) =>
-      isEmpty(staffIdentifier)
+    return staffDetailsResult.flatMap(({ staffId }) =>
+      isEmpty(staffId)
         ? Fail(`Delius did not supply a staff identifier for username ${username}`)
-        : Success({ staffIdentifier })
+        : Success({ staffIdentifier: staffId })
     )
   }
 

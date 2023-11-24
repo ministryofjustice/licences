@@ -42,7 +42,7 @@ app.use('/prisonApi/api/agencies', agenciesRouter)
 app.use('/prisonApi/api/movements', movementsRouter)
 app.use('/prisonApi/api/prisoners', prisonersRouter)
 
-app.use('/communityapi/api', deliusRouter)
+app.use('/delius', deliusRouter)
 app.use('/probationteams', probationteamsRouter)
 
 app.get('/prisonApi/health/ping', (req, res) => {
@@ -53,7 +53,7 @@ app.get('/probationteams/health/ping', (req, res) => {
   res.send({ status: 'UP' })
 })
 
-app.get('/communityapi/health/ping', (req, res) => {
+app.get('/delius/health/ping', (req, res) => {
   res.send('pong')
 })
 

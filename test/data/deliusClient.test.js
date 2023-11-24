@@ -13,13 +13,13 @@ describe('deliusClient', () => {
   let signInService
 
   beforeEach(() => {
-    fakeDelius = nock(`${config.delius.apiUrl}${config.delius.apiPrefix}`)
+    fakeDelius = nock(config.delius.apiUrl)
     signInService = new SignInService(null)
     signInService.getAnonymousClientCredentialsTokens = jest.fn().mockResolvedValue('token')
     const restClient = buildRestClient(
       clientCredentialsTokenSource(signInService, 'delius'),
-      `${config.delius.apiUrl}${config.delius.apiPrefix}`,
-      'Delius community API',
+      config.delius.apiUrl,
+      'Delius Integration API',
       { timeout: config.delius.timeout, agent: config.delius.agent }
     )
     deliusClient = new DeliusClient(restClient)
@@ -32,19 +32,19 @@ describe('deliusClient', () => {
   describe('deliusClient', () => {
     test('should throw error on GET when no token', () => {
       signInService.getAnonymousClientCredentialsTokens.mockReturnValue(null)
-      return expect(deliusClient.getROPrisonersByStaffIdentifier(1)).rejects.toThrow('Error obtaining OAuth token')
+      return expect(deliusClient.getManagedPrisonerIdsByStaffId(1)).rejects.toThrow('Error obtaining OAuth token')
     })
   })
 
   describe('getStaffBystaffIdentifier', () => {
     test('should return data from api', () => {
-      fakeDelius.get(`/staff/staffIdentifier/1`).reply(200, { key: 'value' })
+      fakeDelius.get(`/staff?id=1`).reply(200, { key: 'value' })
 
       return expect(deliusClient.getStaffDetailsByStaffIdentifier(1)).resolves.toStrictEqual({ key: 'value' })
     })
 
     test('should reject if api fails', () => {
-      fakeDelius.get(`/staff/staffIdentifier/1`).thrice().reply(500, '1')
+      fakeDelius.get(`/staff?id=1`).thrice().reply(500, '1')
 
       return expect(deliusClient.getStaffDetailsByStaffIdentifier(1)).rejects.toStrictEqual(
         Error('Internal Server Error')
@@ -54,13 +54,13 @@ describe('deliusClient', () => {
 
   describe('getStaffByUsername', () => {
     test('should return data from api', () => {
-      fakeDelius.get(`/staff/username/1`).reply(200, { key: 'value' })
+      fakeDelius.get(`/staff?username=1`).reply(200, { key: 'value' })
 
       return expect(deliusClient.getStaffDetailsByUsername('1')).resolves.toStrictEqual({ key: 'value' })
     })
 
     test('should reject if api fails', () => {
-      fakeDelius.get(`/staff/username/1`).thrice().reply(500)
+      fakeDelius.get(`/staff?username=1`).thrice().reply(500)
 
       return expect(deliusClient.getStaffDetailsByUsername('1')).rejects.toStrictEqual(Error('Internal Server Error'))
     })
@@ -68,15 +68,15 @@ describe('deliusClient', () => {
 
   describe('getROPrisoners', () => {
     test('should return data from api', () => {
-      fakeDelius.get(`/staff/staffIdentifier/1/managedOffenders`).reply(200, { key: 'value' })
+      fakeDelius.get(`/managedPrisonerIds?staffId=1`).reply(200, { key: 'value' })
 
-      return expect(deliusClient.getROPrisonersByStaffIdentifier(1)).resolves.toStrictEqual({ key: 'value' })
+      return expect(deliusClient.getManagedPrisonerIdsByStaffId(1)).resolves.toStrictEqual({ key: 'value' })
     })
 
     test('should reject if api fails', () => {
-      fakeDelius.get(`/staff/staffIdentifier/1/managedOffenders`).thrice().reply(500)
+      fakeDelius.get(`/managedPrisonerIds?staffId=1`).thrice().reply(500)
 
-      return expect(deliusClient.getROPrisonersByStaffIdentifier(1)).rejects.toStrictEqual(
+      return expect(deliusClient.getManagedPrisonerIdsByStaffId(1)).rejects.toStrictEqual(
         Error('Internal Server Error')
       )
     })
@@ -84,29 +84,27 @@ describe('deliusClient', () => {
 
   describe('getAllOffenderManagers', () => {
     test('should return data from api', () => {
-      fakeDelius.get(`/offenders/nomsNumber/1/allOffenderManagers`).reply(200, [{ key: 'value' }])
+      fakeDelius.get(`/case/1/communityManager`).reply(200, [{ key: 'value' }])
 
-      return expect(deliusClient.getAllOffenderManagers('1')).resolves.toStrictEqual([{ key: 'value' }])
+      return expect(deliusClient.getCommunityManager('1')).resolves.toStrictEqual([{ key: 'value' }])
     })
 
     test('should return undefined when not found', () => {
-      fakeDelius.get(`/offenders/nomsNumber/1/allOffenderManagers`).reply(404)
+      fakeDelius.get(`/case/1/communityManager`).reply(404)
 
-      return expect(deliusClient.getAllOffenderManagers('1')).resolves.toBeUndefined()
+      return expect(deliusClient.getCommunityManager('1')).resolves.toBeUndefined()
     })
 
     test('should reject if api fails', () => {
-      fakeDelius.get(`/offenders/nomsNumber/1/allOffenderManagers`).thrice().reply(500)
+      fakeDelius.get(`/case/1/communityManager`).thrice().reply(500)
 
-      return expect(deliusClient.getAllOffenderManagers('1')).rejects.toStrictEqual(Error('Internal Server Error'))
+      return expect(deliusClient.getCommunityManager('1')).rejects.toStrictEqual(Error('Internal Server Error'))
     })
   })
 
   describe('getAllProbationAreas', () => {
     test('should return list of all probation areas', () => {
-      fakeDelius
-        .get(`/probationAreas?excludeEstablishments=true&active=true`)
-        .reply(200, [{ code: 'some code', description: 'some description' }])
+      fakeDelius.get(`/providers`).reply(200, [{ code: 'some code', description: 'some description' }])
 
       return expect(deliusClient.getAllProbationAreas()).resolves.toStrictEqual([
         { code: 'some code', description: 'some description' },
@@ -116,58 +114,35 @@ describe('deliusClient', () => {
 
   describe('getAllLdusForProbationArea', () => {
     test('should return list of all probation codes', () => {
-      fakeDelius
-        .get(`/probationAreas/code/N02/localDeliveryUnits`)
-        .reply(200, { content: [{ code: 'some code', description: 'some description' }] })
+      fakeDelius.get(`/providers/N02`).reply(200, { content: [{ code: 'some code', description: 'some description' }] })
 
-      return expect(deliusClient.getAllLdusForProbationArea('N02')).resolves.toStrictEqual({
+      return expect(deliusClient.getProbationArea('N02')).resolves.toStrictEqual({
         content: [{ code: 'some code', description: 'some description' }],
       })
     })
 
     test('Probation code not known to Delius', () => {
-      fakeDelius.get(`/probationAreas/code/N02/localDeliveryUnits`).reply(404)
+      fakeDelius.get(`/providers/N02`).reply(404)
 
-      return expect(deliusClient.getAllLdusForProbationArea('N02')).resolves.toStrictEqual({ content: [] })
+      return expect(deliusClient.getProbationArea('N02')).resolves.toStrictEqual({ localAdminUnits: [] })
     })
   })
 
   describe('getAllTeamsForLdu', () => {
     test('should return list of all probation codes', () => {
       fakeDelius
-        .get('/probationAreas/code/N02/localDeliveryUnits/code/LDU/teams')
-        .reply(200, { content: [{ code: 'some code', description: 'some description' }] })
+        .get('/providers/N02/localAdminUnits/LDU')
+        .reply(200, { localAdminUnits: [{ code: 'some code', description: 'some description' }] })
 
-      return expect(deliusClient.getAllTeamsForLdu('N02', 'LDU')).resolves.toStrictEqual({
-        content: [{ code: 'some code', description: 'some description' }],
+      return expect(deliusClient.getLduWithTeams('N02', 'LDU')).resolves.toStrictEqual({
+        localAdminUnits: [{ code: 'some code', description: 'some description' }],
       })
-    })
-
-    test('LDU not known to Delius: 200, but no "content" field', () => {
-      fakeDelius.get('/probationAreas/code/N02/localDeliveryUnits/code/LDU/teams').reply(200, {
-        pageable: 'INSTANCE',
-        totalElements: 0,
-        last: true,
-        totalPages: 1,
-        sort: {
-          sorted: false,
-          unsorted: true,
-          empty: true,
-        },
-        first: true,
-        number: 0,
-        size: 0,
-        numberOfElements: 0,
-        empty: true,
-      })
-
-      return expect(deliusClient.getAllTeamsForLdu('N02', 'LDU')).resolves.toStrictEqual({ content: [] })
     })
 
     test('LDU not known to Delius: 404', () => {
-      fakeDelius.get('/probationAreas/code/N02/localDeliveryUnits/code/LDU/teams').reply(404)
+      fakeDelius.get('/providers/N02/localAdminUnits/LDU').reply(404)
 
-      return expect(deliusClient.getAllTeamsForLdu('N02', 'LDU')).resolves.toStrictEqual({ content: [] })
+      return expect(deliusClient.getLduWithTeams('N02', 'LDU')).resolves.toStrictEqual({ teams: [] })
     })
   })
 

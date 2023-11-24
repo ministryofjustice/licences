@@ -34,17 +34,16 @@ describe('/contact', () => {
     roService.getStaffByStaffIdentifier.mockResolvedValue({
       username: 'username',
       email: '123456@somewhere.com',
-      staffCode: 'DELIUS_ID',
-      staffIdentifier: 999,
-      staff: { forenames: 'RO', surname: 'Name' },
+      code: 'DELIUS_ID',
+      staffId: 999,
+      name: { forenames: 'RO', surname: 'Name' },
       teams: [
         {
           code: 'TEAM_CODE',
           description: 'The Team',
           telephone: '01234567890',
-          localDeliveryUnit: { code: 'ABC123', description: 'LDU Description' },
-          district: { code: 'D', description: 'District' },
-          borough: { code: 'B', description: 'Borough' },
+          probationDeliveryUnit: { code: 'ABC123', description: 'PDU Description' },
+          localAdminUnit: { code: 'ABC123', description: 'LDU Description' },
         },
       ],
     })

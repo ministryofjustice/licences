@@ -15,19 +15,16 @@ const logger = require('../../log')
 module.exports = function createLduService(deliusClient, activeLduClient) {
   return {
     async getAllProbationAreas() {
-      const { content: probationAreas } = await deliusClient.getAllProbationAreas()
+      const probationAreas = await deliusClient.getAllProbationAreas()
       probationAreas.sort((a, b) => a.description.localeCompare(b.description, 'en', { ignorePunctuation: true }))
       return probationAreas
     },
 
     async getProbationArea(probationAreaCode) {
-      const { content: probationAreas } = await deliusClient.getAllProbationAreas()
-      const probationAreaDescription = probationAreas.find((area) => probationAreaCode === area.code).description
-
       const activeLdus = await activeLduClient.allActiveLdusInArea(probationAreaCode)
       const activeLdusCodes = activeLdus.map((ldu) => ldu.code)
 
-      const { content: ldus } = await deliusClient.getAllLdusForProbationArea(probationAreaCode)
+      const { description, localAdminUnits: ldus } = await deliusClient.getProbationArea(probationAreaCode)
 
       const allLdus = ldus.map((ldu) => ({
         code: ldu.code,
@@ -41,7 +38,7 @@ module.exports = function createLduService(deliusClient, activeLduClient) {
 
       return {
         code: probationAreaCode,
-        description: probationAreaDescription,
+        description,
         ldus: uniqueLdus,
       }
     },

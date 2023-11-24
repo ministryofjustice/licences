@@ -1,4 +1,4 @@
-import { ProbationAreaSummary } from '../server/data/deliusClient'
+import { KeyValue } from '../server/data/deliusClient'
 
 export interface ResponsibleOfficer {
   deliusId: string
@@ -133,7 +133,7 @@ export interface LduStatus {
 }
 
 export interface LduService {
-  getAllProbationAreas: () => Promise<Array<ProbationAreaSummary>>
+  getAllProbationAreas: () => Promise<Array<KeyValue>>
   getProbationArea: (probationAreaCode: string) => Promise<ProbationArea>
   updateActiveLdus: (probationAreaCode: string, activeLdus: string[]) => Promise<void>
 }

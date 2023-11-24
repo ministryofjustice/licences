@@ -1,11 +1,39 @@
 import config from '../config'
 
+export interface DeliusUser {
+  username: string
+  enabled: boolean
+  roles: string[]
+}
+
+export interface LocalAdminUnit {
+  description: string
+  teams: KeyValue[]
+}
+
+export interface ProviderWithLaus {
+  code: string
+  description: string
+  localAdminUnits: KeyValue[]
+}
+
+export interface CommunityManager {
+  code: string
+  /** @deprecated use code instead */
+  staffId: number
+  name: Name
+  team: KeyValue
+  provider: KeyValue
+  localAdminUnit: KeyValue
+  isUnallocated: boolean
+}
+
 export interface KeyValue {
   code: string
   description: string
 }
 
-export interface Human {
+export interface Name {
   forenames: string
   surname: string
 }
@@ -14,140 +42,65 @@ export interface Team {
   code: string
   description: string
   telephone: string
-  localDeliveryUnit: KeyValue
-  district: KeyValue
-  borough: KeyValue
+  probationDeliveryUnit: KeyValue
+  localAdminUnit: KeyValue
 }
 
 export interface StaffDetails {
+  code: string
+  /** @deprecated use code instead */
+  staffId: number
+  name: Name
+  teams: Team[]
   username?: string
   email?: string
-  staffCode: string
-  staffIdentifier: number
-  staff: Human
-  teams: Team[]
-}
-
-interface Institution {
-  institutionId: number
-  isEstablishment: boolean
-  code: string
-  description: string
-  institutionName: string
-  establishmentType: KeyValue
-  isPrivate: boolean
-}
-
-interface AllTeam {
-  providerTeamId: number
-  teamId: number
-  code: string
-  description: string
-  name: string
-  isPrivate: boolean
-  externalProvider: KeyValue
-  scProvider: KeyValue
-  localDeliveryUnit: KeyValue
-  district: KeyValue
-  borough: KeyValue
-}
-
-export interface ProbationArea {
-  probationAreaId: number
-  code: string
-  description: string
-  nps: boolean
-  organisation: KeyValue
-  institution: Institution
-  teams: AllTeam[]
-}
-
-export interface CommunityOrPrisonOffenderManager {
-  staffCode: string
-  staffId: number
-  isResponsibleOfficer: boolean
-  isPrisonOffenderManager: boolean
-  isUnallocated: boolean
-  staff: Human
-  team: Team
-  probationArea: ProbationArea
-  fromDate: Date
-}
-
-export interface ProbationAreaSummary {
-  code: string
-  description: string
-}
-
-export interface Ldu {
-  code: string
-  description: string
-}
-
-export interface ProbationTeam {
-  code: string
-  description: string
-}
-
-export interface ManagedOffender {
-  staffCode: string
-  staffIdentifier: number
-  offenderId: number
-  nomsNumber: string
-  crnNumber: string
-  offenderSurname: string
-  isCurrentRo: boolean
-  isCurrentOm: boolean
-  isCurrentPom: boolean
-  omStartDate: Date
-  omEndDate: Date
-}
-
-export interface Page<T> {
-  content?: T[]
 }
 
 export class DeliusClient {
   constructor(readonly restClient) {}
 
-  getStaffDetailsByStaffCode(staffCode): Promise<any> {
-    return this.restClient.getResource(`/staff/staffCode/${staffCode}`)
+  getStaffDetailsByStaffCode(staffCode: string): Promise<StaffDetails> {
+    return this.restClient.getResource(`/staff/${staffCode}`)
   }
 
+  /** @deprecated use getStaffDetailsByStaffCode instead */
   getStaffDetailsByStaffIdentifier(staffIdentifier: number): Promise<StaffDetails> {
-    return this.restClient.getResource(`/staff/staffIdentifier/${staffIdentifier}`)
+    return this.restClient.getResource(`/staff?id=${staffIdentifier}`)
   }
 
   getStaffDetailsByUsername(username: string): Promise<StaffDetails> {
-    return this.restClient.getResource(`/staff/username/${username}`)
+    return this.restClient.getResource(`/staff?username=${username}`)
   }
 
-  getROPrisonersByStaffIdentifier(staffIdentifier: number): Promise<Array<ManagedOffender>> {
-    return this.restClient.getResource(`/staff/staffIdentifier/${staffIdentifier}/managedOffenders`)
+  getManagedPrisonerIdsByStaffCode(staffCode: string): Promise<string[]> {
+    return this.restClient.getResource(`/staff/${staffCode}/managedPrisonerIds`)
   }
 
-  getAllOffenderManagers(offenderNo: string): Promise<Array<CommunityOrPrisonOffenderManager>> {
-    return this.restClient.getResource(`/offenders/nomsNumber/${offenderNo}/allOffenderManagers`)
+  /** @deprecated use getStaffDetailsByStaffCode instead */
+  getManagedPrisonerIdsByStaffId(staffIdentifier: number): Promise<string[]> {
+    return this.restClient.getResource(`/managedPrisonerIds?staffId=${staffIdentifier}`)
   }
 
-  getAllProbationAreas(): Promise<Page<ProbationArea>> {
-    return this.restClient.getResource(`/probationAreas?excludeEstablishments=true&active=true`)
+  getCommunityManager(offenderNo: string): Promise<CommunityManager> {
+    return this.restClient.getResource(`/case/${offenderNo}/communityManager`)
   }
 
-  async getAllLdusForProbationArea(probationAreaCode: string): Promise<Page<Ldu>> {
-    const ldus = await this.restClient.getResource(`/probationAreas/code/${probationAreaCode}/localDeliveryUnits`)
-    return ldus?.content ? ldus : { content: [] }
+  getAllProbationAreas(): Promise<KeyValue[]> {
+    return this.restClient.getResource(`/providers`)
   }
 
-  async getAllTeamsForLdu(probationAreaCode: string, lduCode: string): Promise<Page<ProbationTeam>> {
-    const teams = await this.restClient.getResource(
-      `/probationAreas/code/${probationAreaCode}/localDeliveryUnits/code/${lduCode}/teams`
+  async getProbationArea(probationAreaCode: string): Promise<ProviderWithLaus> {
+    return (await this.restClient.getResource(`/providers/${probationAreaCode}`)) ?? { localAdminUnits: [] }
+  }
+
+  async getLduWithTeams(probationAreaCode: string, lauCode: string): Promise<LocalAdminUnit> {
+    return (
+      (await this.restClient.getResource(`/providers/${probationAreaCode}/localAdminUnits/${lauCode}`)) ?? { teams: [] }
     )
-    return teams?.content ? teams : { content: [] }
   }
 
-  async addResponsibleOfficerRole(username: string): Promise<void> {
-    await this.addRole(username, config.delius.responsibleOfficerRoleId)
+  addResponsibleOfficerRole(username: string): Promise<void> {
+    return this.addRole(username, config.delius.responsibleOfficerRoleId)
   }
 
   async addRole(username: string, code: string): Promise<void> {
@@ -158,7 +111,7 @@ export class DeliusClient {
     }
   }
 
-  async getUser(username: string): Promise<any> {
+  getUser(username: string): Promise<DeliusUser> {
     return this.restClient.getResource(`/users/${username}/details`)
   }
 }
