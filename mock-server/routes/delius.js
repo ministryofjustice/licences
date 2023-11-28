@@ -140,8 +140,7 @@ router.get('/providers', (req, res) => {
     code: probArea.code,
     description: probArea.description,
   }))
-  const response = { content: allProbationAreas }
-  res.send(response)
+  res.send(allProbationAreas)
 })
 
 router.get('/providers/:code', (req, res) => {
