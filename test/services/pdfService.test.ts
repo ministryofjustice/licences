@@ -51,10 +51,13 @@ describe('pdfService', () => {
       formatPdfData: jest.fn().mockReturnValue({ values }),
       DEFAULT_PLACEHOLDER: 'placeholder',
     }
+    const signInService = {
+      getClientCredentialsTokens: jest.fn().mockReturnValue('systemToken'),
+    }
 
     const conditionServiceFactory = createConditionsServiceFactoryStub()
     conditionServiceFactory.forLicence.mockReturnValue(conditionsService)
-    service = new PdfService(logger, licenceService, conditionServiceFactory, prisonerService, pdfFormatter)
+    service = new PdfService(logger, licenceService, conditionServiceFactory, prisonerService, pdfFormatter, signInService)
   })
 
   afterEach(() => {

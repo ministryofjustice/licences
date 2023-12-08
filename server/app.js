@@ -365,7 +365,7 @@ module.exports = function createApp({
 
   app.use(
     '/hdc/taskList/',
-    secureRoute(taskListRouter(prisonerService, licenceService, audit, caService), {
+    secureRoute(taskListRouter(prisonerService, licenceService, audit, caService, signInService), {
       licenceRequired: false,
     })
   )

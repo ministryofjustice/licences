@@ -79,10 +79,17 @@ const probationTeamsClient = new ProbationTeamsClient(
 
 const roService = new RoService(deliusClient, nomisClientBuilder)
 const caService = createCaService(roService, activeLduClient)
-const prisonerService = createPrisonerService(nomisClientBuilder, roService)
+const prisonerService = createPrisonerService(nomisClientBuilder, roService, signInService)
 const caseListFormatter = createCaseListFormatter(licenceClient)
 const caseListService = createCaseListService(nomisClientBuilder, roService, licenceClient, caseListFormatter)
-const pdfService = new PdfService(logger, licenceService, conditionsServiceFactory, prisonerService, pdfFormatter)
+const pdfService = new PdfService(
+  logger,
+  licenceService,
+  conditionsServiceFactory,
+  prisonerService,
+  pdfFormatter,
+  signInService
+)
 const formService = new FormService(pdfFormatter, prisonerService, configClient)
 const reportingService = createReportingService(audit)
 const userAdminService = new UserAdminService(nomisClientBuilder, userClient, probationTeamsClient)
