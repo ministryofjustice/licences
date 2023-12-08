@@ -76,7 +76,7 @@ describe('prisonerDetailsService', () => {
     roService = new RoService(undefined, undefined)
     roService.findResponsibleOfficer.mockReturnValue(responsibleOfficerResponse)
     const signInService = {
-      getClientCredentialsTokens: jest.fn().mockResolvedValue('systemToken' )
+      getClientCredentialsTokens: jest.fn().mockResolvedValue('systemToken'),
     }
 
     service = createPrisonerService(nomisClientBuilder, roService, signInService)
