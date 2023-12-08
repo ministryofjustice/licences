@@ -92,7 +92,7 @@ describe('pdfService', () => {
       expect(prisonerService.getEstablishmentForPrisoner).toHaveBeenCalledWith('123', 'token')
 
       expect(prisonerService.getPrisonerImage).toHaveBeenCalled()
-      expect(prisonerService.getPrisonerImage).toHaveBeenCalledWith('imageId', 'token')
+      expect(prisonerService.getPrisonerImage).toHaveBeenCalledWith('imageId', 'systemToken')
 
       expect(pdfFormatter.formatPdfData).toHaveBeenCalled()
       expect(pdfFormatter.formatPdfData).toHaveBeenCalledWith(
