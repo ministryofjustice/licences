@@ -51,10 +51,20 @@ describe('pdfService', () => {
       formatPdfData: jest.fn().mockReturnValue({ values }),
       DEFAULT_PLACEHOLDER: 'placeholder',
     }
+    const signInService = {
+      getClientCredentialsTokens: jest.fn().mockReturnValue('systemToken'),
+    }
 
     const conditionServiceFactory = createConditionsServiceFactoryStub()
     conditionServiceFactory.forLicence.mockReturnValue(conditionsService)
-    service = new PdfService(logger, licenceService, conditionServiceFactory, prisonerService, pdfFormatter)
+    service = new PdfService(
+      logger,
+      licenceService,
+      conditionServiceFactory,
+      prisonerService,
+      pdfFormatter,
+      signInService
+    )
   })
 
   afterEach(() => {
@@ -82,7 +92,7 @@ describe('pdfService', () => {
       expect(prisonerService.getEstablishmentForPrisoner).toHaveBeenCalledWith('123', 'token')
 
       expect(prisonerService.getPrisonerImage).toHaveBeenCalled()
-      expect(prisonerService.getPrisonerImage).toHaveBeenCalledWith('imageId', 'token')
+      expect(prisonerService.getPrisonerImage).toHaveBeenCalledWith('imageId', 'systemToken')
 
       expect(pdfFormatter.formatPdfData).toHaveBeenCalled()
       expect(pdfFormatter.formatPdfData).toHaveBeenCalledWith(

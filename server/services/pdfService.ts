@@ -11,7 +11,8 @@ export default class PdfService {
     private readonly licenceService: LicenceService,
     private readonly conditionsServiceFactory: ConditionsServiceFactory,
     private readonly prisonerService: PrisonerService,
-    private readonly pdfFormatter
+    private readonly pdfFormatter,
+    private readonly signInService
   ) {}
 
   async getPdfLicenceData(bookingId, rawLicence: LicenceRecord, token) {
@@ -22,8 +23,9 @@ export default class PdfService {
       this.prisonerService.getPrisonerDetails(bookingId, token),
       this.prisonerService.getEstablishmentForPrisoner(bookingId, token),
     ])
+    const systemToken = await this.signInService.getClientCredentialsTokens()
 
-    const image = prisonerInfo.facialImageId ? await this.getImage(prisonerInfo.facialImageId, token) : null
+    const image = prisonerInfo.facialImageId ? await this.getImage(prisonerInfo.facialImageId, systemToken) : null
     const pssConditions = conditionsService.getPssConditions()
 
     return this.pdfFormatter.formatPdfData(

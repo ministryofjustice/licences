@@ -722,7 +722,9 @@ function createApp({ licenceServiceStub, prisonerServiceStub, caServiceStub, aud
     tokenVerifier: new NullTokenVerifier(),
     config: null,
   })
-  const route = baseRouter(createRoute(prisonerService, licenceService, audit, caService), { licenceRequired: false })
+  const route = baseRouter(createRoute(prisonerService, licenceService, audit, caService, signInService), {
+    licenceRequired: false,
+  })
 
   return appSetup(route, user, '/taskList/')
 }

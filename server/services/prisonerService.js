@@ -13,7 +13,7 @@ module.exports = { createPrisonerService }
  * @param {RoService} roService
  * @return {PrisonerService}
  */
-function createPrisonerService(nomisClientBuilder, roService) {
+function createPrisonerService(nomisClientBuilder, roService, signInService) {
   function selectEntriesWithTypes(identifiers, types) {
     return identifiers.reduce((selected, element) => {
       if (types.includes(element.type)) {
@@ -27,8 +27,10 @@ function createPrisonerService(nomisClientBuilder, roService) {
     async getPrisonerDetails(bookingId, token) {
       try {
         logger.info(`getPrisonerDetail: ${bookingId}`)
+        const systemToken = await signInService.getClientCredentialsTokens()
 
         const nomisClient = nomisClientBuilder(token)
+        const nomisSystemClient = nomisClientBuilder(systemToken)
 
         const prisoners = await nomisClient.getOffenderSentencesByBookingId(bookingId)
         const prisoner = prisoners.length > 0 && prisoners[0]
@@ -45,7 +47,7 @@ function createPrisonerService(nomisClientBuilder, roService) {
         const { CRO, PNC } = selectEntriesWithTypes(await nomisClient.getIdentifiers(bookingId), ['PNC', 'CRO'])
 
         const image = prisoner.facialImageId
-          ? await nomisClient.getImageInfo(prisoner.facialImageId)
+          ? await nomisSystemClient.getImageInfo(prisoner.facialImageId)
           : { imageId: false }
 
         return formatObjectForView({

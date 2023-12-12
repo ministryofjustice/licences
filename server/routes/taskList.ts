@@ -81,7 +81,7 @@ const determineAccessLevel = (licence, postRelease, role) => {
   }
 }
 
-export = (prisonerService: PrisonerService, licenceService, audit, caService: CaService) => (router) => {
+export = (prisonerService: PrisonerService, licenceService, audit, caService: CaService, signInService) => (router) => {
   router.get(
     '/:bookingId',
     asyncMiddleware(async (req, res) => {
@@ -178,7 +178,8 @@ export = (prisonerService: PrisonerService, licenceService, audit, caService: Ca
   router.get(
     '/image/:imageId',
     asyncMiddleware(async (req, res) => {
-      const prisonerImage = await prisonerService.getPrisonerImage(req.params.imageId, res.locals.token)
+      const systemToken = await signInService.getClientCredentialsTokens()
+      const prisonerImage = await prisonerService.getPrisonerImage(req.params.imageId, systemToken)
 
       if (!prisonerImage) {
         const placeHolder = path.join(process.cwd(), '/assets/images/no-photo.png')
