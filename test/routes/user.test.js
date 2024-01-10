@@ -119,8 +119,7 @@ describe('/user', () => {
         .send({ caseLoadId: 'caseLoadId2' })
         .expect(302)
         .expect(() => {
-          expect(userService.setActiveCaseLoad).toHaveBeenCalled()
-          expect(userService.setActiveCaseLoad).toHaveBeenCalledWith('caseLoadId2', users.caUser, 'token')
+          expect(userService.setActiveCaseLoad).toHaveBeenCalledWith('caseLoadId2', users.caUser)
         })
     })
 

@@ -4,7 +4,7 @@ const logger = require('../../log')
 const { getIn } = require('../utils/functionalHelpers')
 const { forenameToInitial } = require('../utils/userProfile')
 
-module.exports = (nomisClientBuilder) => {
+module.exports = (nomisClientBuilder, signInService) => {
   async function getUserProfile(token, refreshToken, username) {
     const nomisClient = nomisClientBuilder(token)
 
@@ -73,13 +73,14 @@ module.exports = (nomisClientBuilder) => {
     return nomisClient.getUserCaseLoads()
   }
 
-  async function setActiveCaseLoad(id, user, token) {
+  async function setActiveCaseLoad(id, user) {
     // set active caseload
-    const nomisClient = nomisClientBuilder(token)
-    await nomisClient.putActiveCaseLoad(id)
+    const systemToken = await signInService.getClientCredentialsTokens(user.username)
+    const nomisSystemClient = nomisClientBuilder(systemToken)
+    await nomisSystemClient.putActiveCaseLoad(id)
 
     // find active caseload
-    const caseLoads = await nomisClient.getUserCaseLoads()
+    const caseLoads = await nomisSystemClient.getUserCaseLoads()
 
     user.activeCaseLoad = caseLoads.find((cl) => cl.currentlyActive)
     user.activeCaseLoadId = getIn(user.activeCaseLoad, ['caseLoadId'])
