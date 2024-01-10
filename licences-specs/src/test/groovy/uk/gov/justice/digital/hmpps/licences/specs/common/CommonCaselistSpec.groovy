@@ -4,6 +4,7 @@ import geb.spock.GebReportingSpec
 import spock.lang.Shared
 import spock.lang.Unroll
 import uk.gov.justice.digital.hmpps.licences.pages.CaselistPage
+import uk.gov.justice.digital.hmpps.licences.pages.ChangeLocationPage
 import uk.gov.justice.digital.hmpps.licences.util.Actions
 import uk.gov.justice.digital.hmpps.licences.util.TestData
 
@@ -139,24 +140,29 @@ class CommonCaselistSpec extends GebReportingSpec {
     changeLocationLink.click()
 
     and: 'I am taken to the Change location page'
-     $('h2').text() == 'Change location'
+    at ChangeLocationPage
+    $('h2').text() == 'Change location'
 
     where:
     user << ['CA', 'DM', 'RO_USER']
   }
 
-  def 'Change location link displays correct text - user has multiple roles'() {
+  def 'Change location link works - user has multiple roles'() {
 
     when: 'I go to the case list page'
-    actions.logIn(user)
+    actions.logIn('CA_RO_DM')
     via CaselistPage
 
     then: 'I can see the Change location link'
     changeLocationLink.text() == 'Change your role or location'
 
-    where:
-    user << ['CA_RO_DM']
+    when: 'I change location'
+    changeLocationLink.click()
+    at ChangeLocationPage
+    selector.value('Askham Grange')
+    submit.click()
+
+    then: 'I am taken back to the case list page'
+    at CaselistPage
   }
-
-
 }

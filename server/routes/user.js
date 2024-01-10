@@ -27,7 +27,7 @@ module.exports =
         const caseLoadId = getIn(req, ['body', 'caseLoadId'])
 
         if (caseLoadId && caseLoadId !== req.user.activeCaseLoadId) {
-          await userService.setActiveCaseLoad(caseLoadId, req.user, res.locals.token)
+          await userService.setActiveCaseLoad(caseLoadId, req.user)
         }
 
         res.redirect('/')

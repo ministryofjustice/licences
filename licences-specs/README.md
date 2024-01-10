@@ -40,7 +40,7 @@ Run with gradle or execute a specific test using your IDE.
 ## Writing Specs
 
 - See http://www.gebish.org/manual/current/
-- See http://spockframework.org/spock/docs/1.1/all_in_one.html
+- See http://spockframework.org/spock/docs/1.3/all_in_one.html
 
 - Where specs relate to a particular user type, put them in a subdir named for that user type
 - Use the PageObject style

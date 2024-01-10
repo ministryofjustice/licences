@@ -3,6 +3,7 @@ const createUserService = require('../../server/services/userService')
 describe('userServiceTest', () => {
   let service
   let nomisClient
+  let signInService
 
   let user = { token: 'token' }
   const nomisUser = { token: 'token', authSource: 'nomis' }
@@ -17,8 +18,11 @@ describe('userServiceTest', () => {
       putActiveCaseLoad: jest.fn().mockReturnValue({}),
       getLoggedInUserInfo: jest.fn().mockReturnValue({ name: 'User Name' }),
     }
+    signInService = {
+      getClientCredentialsTokens: jest.fn().mockResolvedValue('systemToken'),
+    }
     const nomisClientBuilder = jest.fn().mockReturnValue(nomisClient)
-    service = createUserService(nomisClientBuilder)
+    service = createUserService(nomisClientBuilder, signInService)
   })
 
   describe('getUserProfile', () => {
