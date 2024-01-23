@@ -107,12 +107,16 @@ export default ({
       const additional = additionalConditions ? conditionsService.formatConditionInputs(req.body) : {}
       const newConditionsObject = conditionsService.createConditionsObjectForLicence(additional, bespoke)
 
-      await licenceService.updateLicenceConditions(
+      const updateOccurred = await licenceService.updateLicenceConditions(
         bookingId,
         res.locals.licence,
         newConditionsObject,
         res.locals.postRelease
       )
+      if (updateOccurred) {
+        const { username, role } = req.user
+        logger.info(`conditions - updated conditions - ${username} - ${role} - ${bookingId}`)
+      }
 
       const newVersion = conditionsServiceFactory.getNewVersion(res.locals.licence)
 
@@ -157,6 +161,8 @@ export default ({
       const { action } = req.params
 
       if (conditionId) {
+        const { username, role } = req.user
+        logger.info(`conditions - delete condition - ${username} - ${role} - ${bookingId}`)
         await licenceService.deleteLicenceCondition(bookingId, res.locals.licence, conditionId)
       }
 
