@@ -83,14 +83,15 @@ export class LicenceClient {
 
   createLicence(
     bookingId: number,
+    prisonNumber,
     licence: Licence = {},
     stage: string = LicenceStage.DEFAULT,
     version: number = 1,
     varyVersion: number = 0
   ): Promise<number> {
     const query = {
-      text: 'insert into licences (booking_id, licence, stage, version, vary_version) values ($1, $2, $3, $4, $5)',
-      values: [bookingId, licence, stage, version, varyVersion],
+      text: 'insert into licences (booking_id, prison_number, licence, stage, version, vary_version) values ($1, $2, $3, $4, $5, $6)',
+      values: [bookingId, prisonNumber, licence, stage, version, varyVersion],
     }
 
     return db.query(query)

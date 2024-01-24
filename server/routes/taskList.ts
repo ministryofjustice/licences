@@ -9,6 +9,7 @@ import getTaskListModel from './viewModels/taskListModels'
 import logger from '../../log'
 import { getTasksForBlocked } from './viewModels/taskLists/caTasks'
 import { LicenceStage } from '../data/licenceTypes'
+import { LicenceService } from '../services/licenceService'
 
 const { APPROVAL, DECIDED, ELIGIBILITY, MODIFIED, MODIFIED_APPROVAL, PROCESSING_CA, PROCESSING_RO } = LicenceStage
 
@@ -81,115 +82,125 @@ const determineAccessLevel = (licence, postRelease, role) => {
   }
 }
 
-export = (prisonerService: PrisonerService, licenceService, audit, caService: CaService, signInService) => (router) => {
-  router.get(
-    '/:bookingId',
-    asyncMiddleware(async (req, res) => {
-      const { bookingId } = req.params
-      const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, res.locals.token)
-      if (isEmpty(prisonerInfo)) {
-        logger.info('Prisoner not found for task list', bookingId)
-        return res.redirect('/caseList')
-      }
-
-      const postRelease = prisonerInfo.agencyLocationId ? prisonerInfo.agencyLocationId.toUpperCase() === 'OUT' : false
-      const licence = await licenceService.getLicence(bookingId)
-
-      const access = determineAccessLevel(licence, postRelease, req.user.role)
-
-      if (access === NONE) {
-        return res.redirect('/caseList/active')
-      }
-
-      if (access === READ_ONLY) {
-        return res.redirect(`/hdc/review/licence/${bookingId}`)
-      }
-
-      const licenceStatus = getLicenceStatus(licence)
-      const { statusLabel } = getStatusLabel(licenceStatus, req.user.role)
-
-      const model = {
-        licenceStatus,
-        licenceVersion: licence ? licence.version : 0,
-        approvedVersionDetails: licence ? licence.approvedVersionDetails : 0,
-        statusLabel,
-        prisonerInfo,
-        bookingId,
-        postApproval: licenceStatus.postApproval,
-      }
-
-      if (
-        req.user.role === 'CA' &&
-        licenceStatus.stage === 'ELIGIBILITY' &&
-        licenceStatus.tasks.eligibility === 'DONE'
-      ) {
-        const errorCode = await caService.getReasonForNotContinuing(bookingId, res.locals.token)
-
-        if (errorCode) {
-          return res.render('taskList/taskListBuilder', {
-            ...model,
-            taskListModel: getTasksForBlocked(errorCode),
-            errors: [],
-          })
+export = (
+    prisonerService: PrisonerService,
+    licenceService: LicenceService,
+    audit,
+    caService: CaService,
+    signInService
+  ) =>
+  (router) => {
+    router.get(
+      '/:bookingId',
+      asyncMiddleware(async (req, res) => {
+        const { bookingId } = req.params
+        const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, res.locals.token)
+        if (isEmpty(prisonerInfo)) {
+          logger.info('Prisoner not found for task list', bookingId)
+          return res.redirect('/caseList')
         }
-      }
 
-      const taskListModel = getTaskListModel(req.user.role, postRelease, licenceStatus, licence || {})
+        const postRelease = prisonerInfo.agencyLocationId
+          ? prisonerInfo.agencyLocationId.toUpperCase() === 'OUT'
+          : false
+        const licence = await licenceService.getLicence(bookingId)
 
-      return res.render('taskList/taskListBuilder', {
-        ...model,
-        taskListModel,
-        errors: [],
+        const access = determineAccessLevel(licence, postRelease, req.user.role)
+
+        if (access === NONE) {
+          return res.redirect('/caseList/active')
+        }
+
+        if (access === READ_ONLY) {
+          return res.redirect(`/hdc/review/licence/${bookingId}`)
+        }
+
+        const licenceStatus = getLicenceStatus(licence)
+        const { statusLabel } = getStatusLabel(licenceStatus, req.user.role)
+
+        const model = {
+          licenceStatus,
+          licenceVersion: licence ? licence.version : 0,
+          approvedVersionDetails: licence ? licence.approvedVersionDetails : 0,
+          statusLabel,
+          prisonerInfo,
+          bookingId,
+          postApproval: licenceStatus.postApproval,
+        }
+
+        if (
+          req.user.role === 'CA' &&
+          licenceStatus.stage === 'ELIGIBILITY' &&
+          licenceStatus.tasks.eligibility === 'DONE'
+        ) {
+          const errorCode = await caService.getReasonForNotContinuing(bookingId, res.locals.token)
+
+          if (errorCode) {
+            return res.render('taskList/taskListBuilder', {
+              ...model,
+              taskListModel: getTasksForBlocked(errorCode),
+              errors: [],
+            })
+          }
+        }
+
+        const taskListModel = getTaskListModel(req.user.role, postRelease, licenceStatus, licence || {})
+
+        return res.render('taskList/taskListBuilder', {
+          ...model,
+          taskListModel,
+          errors: [],
+        })
       })
-    })
-  )
+    )
 
-  router.post(
-    '/eligibilityStart',
-    asyncMiddleware(async (req, res) => {
-      const { bookingId } = req.body
+    router.post(
+      '/eligibilityStart',
+      asyncMiddleware(async (req, res) => {
+        const { bookingId, prisonNumber } = req.body
 
-      const existingLicence = await licenceService.getLicence(bookingId)
+        const existingLicence = await licenceService.getLicence(bookingId)
 
-      if (!existingLicence) {
-        await licenceService.createLicence({ bookingId })
-        audit.record('LICENCE_RECORD_STARTED', req.user.username, { bookingId })
-      }
+        if (!existingLicence) {
+          await licenceService.createLicence({ bookingId, prisonNumber })
+          audit.record('LICENCE_RECORD_STARTED', req.user.username, { bookingId })
+        }
 
-      res.redirect(`/hdc/eligibility/excluded/${bookingId}`)
-    })
-  )
-
-  router.post(
-    '/varyStart',
-    asyncMiddleware(async (req, res) => {
-      const { bookingId } = req.body
-      await licenceService.createLicence({
-        bookingId,
-        data: { variedFromLicenceNotInSystem: true },
-        stage: 'VARY',
+        res.redirect(`/hdc/eligibility/excluded/${bookingId}`)
       })
-      audit.record('VARY_NOMIS_LICENCE_CREATED', req.user.username, { bookingId })
+    )
 
-      res.redirect(`/hdc/vary/evidence/${bookingId}`)
-    })
-  )
+    router.post(
+      '/varyStart',
+      asyncMiddleware(async (req, res) => {
+        const { bookingId, prisonNumber } = req.body
+        await licenceService.createLicence({
+          bookingId,
+          prisonNumber,
+          data: { variedFromLicenceNotInSystem: true },
+          stage: 'VARY',
+        })
+        audit.record('VARY_NOMIS_LICENCE_CREATED', req.user.username, { bookingId })
 
-  router.get(
-    '/image/:imageId',
-    asyncMiddleware(async (req, res) => {
-      const systemToken = await signInService.getClientCredentialsTokens()
-      const prisonerImage = await prisonerService.getPrisonerImage(req.params.imageId, systemToken)
+        res.redirect(`/hdc/vary/evidence/${bookingId}`)
+      })
+    )
 
-      if (!prisonerImage) {
-        const placeHolder = path.join(process.cwd(), '/assets/images/no-photo.png')
-        res.status(302)
-        return res.sendFile(placeHolder)
-      }
-      res.contentType('image/jpeg')
-      return res.send(prisonerImage)
-    })
-  )
+    router.get(
+      '/image/:imageId',
+      asyncMiddleware(async (req, res) => {
+        const systemToken = await signInService.getClientCredentialsTokens()
+        const prisonerImage = await prisonerService.getPrisonerImage(req.params.imageId, systemToken)
 
-  return router
-}
+        if (!prisonerImage) {
+          const placeHolder = path.join(process.cwd(), '/assets/images/no-photo.png')
+          res.status(302)
+          return res.sendFile(placeHolder)
+        }
+        res.contentType('image/jpeg')
+        return res.send(prisonerImage)
+      })
+    )
+
+    return router
+  }

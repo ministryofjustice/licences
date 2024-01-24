@@ -10,6 +10,7 @@ div.largeMarginBottom
             input(type="hidden" name="_csrf" value=csrfToken)
             if prisonerInfo
               input(type="hidden" name="bookingId" value=prisonerInfo.bookingId || '')
+              input(type="hidden" name="prisonNumber" value=prisonerInfo.offenderNo || '')
             if licenceStatus.tasks.eligibility === 'UNSTARTED'
               input.taskListAction.requiredButton.button(type='submit', value='Start now', id='eligibilityCheckStart')
         else

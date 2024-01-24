@@ -9,4 +9,5 @@ div.taskListSingleLineItem.u-paddingBottom.sm-midPaddingBottom.pure-g
       form(method="post", name="varyStart", action="/hdc/taskList/varyStart/")
         input(type="hidden" name="_csrf" value=csrfToken)
         input(type="hidden" name="bookingId" value=prisonerInfo.bookingId || '')
+        input(type="hidden" name="prisonNumber" value=prisonerInfo.offenderNo || '')
         input.taskListAction.requiredButton.button(type='submit', value='Start now', id='varyStart')

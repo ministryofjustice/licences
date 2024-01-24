@@ -151,9 +151,19 @@ export class LicenceService {
     }
   }
 
-  createLicence({ bookingId, data = {}, stage = null }: { bookingId: number; data?: Licence; stage?: string }) {
+  createLicence({
+    bookingId,
+    prisonNumber,
+    data = {},
+    stage = null,
+  }: {
+    bookingId: number
+    prisonNumber: string
+    data?: Licence
+    stage?: string
+  }) {
     const varyVersion = stage === 'VARY' ? 1 : 0
-    return this.licenceClient.createLicence(bookingId, data, LicenceStage[stage], 1, varyVersion)
+    return this.licenceClient.createLicence(bookingId, prisonNumber, data, LicenceStage[stage], 1, varyVersion)
   }
 
   async updateLicenceConditions(

@@ -5,6 +5,7 @@ import { query } from '../../server/data/dataAccess/db'
 jest.mock('../../server/data/dataAccess/db')
 
 const BOOKING_ID = 123456
+const PRISON_NUMBER = 'A1234AA'
 
 const db = { query: query as jest.Mock<Promise<any>> }
 
@@ -70,44 +71,44 @@ describe('licenceClient', () => {
 
     test('should pass in the correct sql', async () => {
       const expectedClause =
-        'insert into licences (booking_id, licence, stage, version, vary_version) values ($1, $2, $3, $4, $5)'
+        'insert into licences (booking_id, prison_number, licence, stage, version, vary_version) values ($1, $2, $3, $4, $5, $6)'
 
-      await licenceClient.createLicence(BOOKING_ID)
+      await licenceClient.createLicence(BOOKING_ID, PRISON_NUMBER)
 
       expect(db.query.mock.calls[0][0].text).toContain(expectedClause)
     })
 
     test('should pass in the correct parameters', async () => {
-      const expectedParameters = [BOOKING_ID, {}, 'ELIGIBILITY', 1, 0]
+      const expectedParameters = [BOOKING_ID, PRISON_NUMBER, {}, 'ELIGIBILITY', 1, 0]
 
-      await licenceClient.createLicence(BOOKING_ID)
+      await licenceClient.createLicence(BOOKING_ID, PRISON_NUMBER)
 
       const { values } = db.query.mock.calls[0][0]
       expect(values).toEqual(expectedParameters)
     })
 
     test('should pass in the correct parameters if licence passed in', async () => {
-      const expectedParameters = [BOOKING_ID, LICENCE_SAMPLE, 'ELIGIBILITY', 1, 0]
+      const expectedParameters = [BOOKING_ID, PRISON_NUMBER, LICENCE_SAMPLE, 'ELIGIBILITY', 1, 0]
 
-      await licenceClient.createLicence(BOOKING_ID, LICENCE_SAMPLE)
+      await licenceClient.createLicence(BOOKING_ID, PRISON_NUMBER, LICENCE_SAMPLE)
 
       const { values } = db.query.mock.calls[0][0]
       expect(values).toEqual(expectedParameters)
     })
 
     test('should pass in the correct parameters if stage passed in', async () => {
-      const expectedParameters = [BOOKING_ID, LICENCE_SAMPLE, 'SENT', 1, 0]
+      const expectedParameters = [BOOKING_ID, PRISON_NUMBER, LICENCE_SAMPLE, 'SENT', 1, 0]
 
-      await licenceClient.createLicence(BOOKING_ID, LICENCE_SAMPLE, 'SENT')
+      await licenceClient.createLicence(BOOKING_ID, PRISON_NUMBER, LICENCE_SAMPLE, 'SENT')
 
       const { values } = db.query.mock.calls[0][0]
       expect(values).toEqual(expectedParameters)
     })
 
     test('should pass in the correct parameters if varyVersion passed in', async () => {
-      const expectedParameters = [BOOKING_ID, LICENCE_SAMPLE, 'SENT', 1, 1]
+      const expectedParameters = [BOOKING_ID, PRISON_NUMBER, LICENCE_SAMPLE, 'SENT', 1, 1]
 
-      await licenceClient.createLicence(BOOKING_ID, LICENCE_SAMPLE, 'SENT', 1, 1)
+      await licenceClient.createLicence(BOOKING_ID, PRISON_NUMBER, LICENCE_SAMPLE, 'SENT', 1, 1)
 
       const { values } = db.query.mock.calls[0][0]
       expect(values).toEqual(expectedParameters)
