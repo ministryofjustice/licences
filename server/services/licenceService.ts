@@ -177,12 +177,12 @@ export class LicenceService {
       const licenceConditions = { ...existingLicenceConditions, ...newConditionsObject }
 
       if (equals(existingLicenceConditions, licenceConditions)) {
-        return null
+        return false
       }
-
       await this.updateModificationStage(bookingId, existingLicence.stage, { requiresApproval: true })
 
-      return await this.licenceClient.updateSection('licenceConditions', bookingId, licenceConditions, postRelease)
+      await this.licenceClient.updateSection('licenceConditions', bookingId, licenceConditions, postRelease)
+      return true
     } catch (error) {
       logger.error('Error during updateAdditionalConditions', error.stack)
       throw error

@@ -26,7 +26,7 @@ ingress:
     external-dns.alpha.kubernetes.io/set-identifier: licences-licences-preprod-green
 
 env:
-  NOMIS_API_URL: "https://api-preprod.prison.service.justice.gov.uk"
+  NOMIS_API_URL: "https://prison-api-preprod.prison.service.justice.gov.uk"
   NOMIS_AUTH_URL: "https://sign-in-preprod.hmpps.service.justice.gov.uk/auth"
   GLOBAL_SEARCH_URL: "https://digital-preprod.prison.service.justice.gov.uk/global-search"
   PUSH_TO_NOMIS: "yes"
