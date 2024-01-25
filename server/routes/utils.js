@@ -8,6 +8,8 @@ const activeLduClient = require('../data/activeLduClient')
 const auditClient = require('../data/audit')
 const warningClient = require('../data/warningClient')
 
+const TEST_PRISON_NUMBER = 'A1234AA'
+
 module.exports = () => {
   const router = express.Router()
 
@@ -53,7 +55,7 @@ module.exports = () => {
       }
 
       try {
-        await licenceClient.createLicence(bookingId, licence, stage)
+        await licenceClient.createLicence(bookingId, TEST_PRISON_NUMBER, licence, stage)
         logger.info('Created licence')
         return res.status(201).send({})
       } catch (error) {
