@@ -140,8 +140,8 @@ export class LicenceClient {
 
   saveApprovedLicenceVersion(bookingId, template) {
     const query = {
-      text: `insert into licence_versions (booking_id, licence, version, vary_version, template)
-                    select booking_id, licence, version, vary_version, $1
+      text: `insert into licence_versions (prison_number, booking_id, licence, version, vary_version, template)
+                    select prison_number, booking_id, licence, version, vary_version, $1
                     from licences where booking_id = $2`,
       values: [template, bookingId],
     }
