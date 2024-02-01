@@ -204,7 +204,7 @@ describe('licenceClient', () => {
   describe('saveApprovedVersion', () => {
     test('should pass in the correct sql', async () => {
       const expectedVersionUpdate = 'insert into licence_versions'
-      const expectedSelect = 'select booking_id, licence, version, vary_version, $1'
+      const expectedSelect = 'select prison_number, booking_id, licence, version, vary_version, $1'
       const expectedWhere = 'where booking_id = $2'
 
       await licenceClient.saveApprovedLicenceVersion(BOOKING_ID, 'templateName')
