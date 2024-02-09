@@ -1,28 +1,37 @@
+---
+title: HDC Sequence diagram in AFER/CVL system (happy path)
+---
+
 sequenceDiagram
   autonumber
   %%actor POM
+  box rgb(191, 223, 255) People
   actor DM
   actor PIP
   actor PP
   actor PCA
+  end
+ box rgb(19, 223, 255) Our service
 
-  participant CRDS
-  participant NOMIS
   participant S&E
   participant Address Service
   participant CVL
+  end
+
+  participant NOMIS
+  participant CRDS
+
   %% START HDCED CALCULATED BLOCK
   Note right of CRDS: HDCED calculated
   CRDS->>NOMIS: Store HDCED
-  S&E->>+NOMIS: [API call] Fetch HDCED
-  NOMIS->>-S&E: return HDCED
-  CVL->>+NOMIS: [API call] Fetch HDCED
-  NOMIS->>-CVL: return HDCED
   Note right of S&E: Can start HDC
   Note right of CVL: PP Can start HDC licence
+  Note right of PP: PP Can start HDC licence
   %% END HDCED CALCULATED BLOCK
 
   PCA->>+S&E: Request case list
+  S&E->>+NOMIS: Request case list
+  NOMIS->>-S&E: Return case list (only people with HDCED)
   S&E->>-PCA: Return case list (only people with HDCED)
 
   PCA->>+S&E: Select case
@@ -33,6 +42,7 @@ sequenceDiagram
   PCA->>S&E: Update Suitability
   Note right of S&E: Suitability Confirmed
 
+  %% NOTE: for simplicity, not modelling eligibility letter
   PCA->>+PIP: request address
   PIP->>-PCA: return address options
 
@@ -49,15 +59,29 @@ sequenceDiagram
 
   S&E->+DM: Prompt to review HDC & make a decision
   DM->>S&E: Review HDC
-  DM->>-S&E: Record decision
+  DM->>-S&E: Approve HDC
+  activate S&E
 
-  PP->>CVL: Create licence
+  S&E->>-CVL: [event] HDC approved
+  Note right of CVL: HDC licence can now be approved
+
+  %% licence creation block
+  %% NOTE: this can happen in paralell. Also, question about whether CVL should check HDC or nomis re whether an HDC licence can be produced.
+  PP->>+CVL: Start licence
+  CVL->>+S&E: [API call] Is HDC in progress or approved?
+  S&E->>-CVL: [Return] HDC in progress or approved
+  deactivate CVL
+  PP->>+CVL: Add address details (& more?)
   CVL->>+S&E: [API call] Request address details (& more?)
   S&E->>+Address Service: [API call] Request Address Details
   Address Service->-S&E: Return Address Details
   S&E->>-CVL: Return Address details
+  deactivate CVL
 
-  S&E->>CVL: [event] HDC approved
-  Note right of CVL: HDC licence can now be approved
-  CVL->CVL: HDC licence approved
+  PP->>CVL: Submit Licence for approval
+  CVL->>+S&E: [EVENT] Licence ready for approval
+  S&E->>-DM: [PROMPT] Licence ready for approval
+
+
+
 
