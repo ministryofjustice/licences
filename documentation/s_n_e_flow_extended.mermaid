@@ -13,7 +13,7 @@ sequenceDiagram
   end
  box rgb(19, 223, 255) Our service
 
-  participant S&E
+  participant AFER
   participant Address Service
   participant CVL
   end
@@ -24,63 +24,76 @@ sequenceDiagram
   %% START HDCED CALCULATED BLOCK
   Note right of CRDS: HDCED calculated
   CRDS->>NOMIS: Store HDCED
-  Note right of S&E: Can start HDC
+  Note right of AFER: Can start HDC
   Note right of CVL: PP Can start HDC licence
   Note right of PP: PP Can start HDC licence
   %% END HDCED CALCULATED BLOCK
 
-  PCA->>+S&E: Request case list
-  S&E->>+NOMIS: Request case list
-  NOMIS->>-S&E: Return case list (only people with HDCED)
-  S&E->>-PCA: Return case list (only people with HDCED)
+  PCA->>+AFER: Request case list
+  AFER->>+NOMIS: Request case list
+  NOMIS->>-AFER: Return case list (only people with HDCED)
+  AFER->>-PCA: Return case list (only people with HDCED)
 
-  PCA->>+S&E: Select case
-  S&E->>-PCA: Return case detail
+  PCA->>+AFER: Select case
+  AFER->>-PCA: Return case detail
 
-  PCA->>S&E: Update Eligibility
-  Note right of S&E: Eligibility Confirmed
-  PCA->>S&E: Update Suitability
-  Note right of S&E: Suitability Confirmed
+  PCA->>AFER: Update Eligibility
+  Note right of AFER: Eligibility Confirmed
+  PCA->>AFER: Update Suitability
+  Note right of AFER: Suitability Confirmed
 
   %% NOTE: for simplicity, not modelling eligibility letter
   PCA->>+PIP: request address
   PIP->>-PCA: return address options
 
-  PCA->>S&E: Enter addresses
-  S&E->>+Address Service: [API call] Store Addresses
+  PCA->>AFER: Enter addresses
+  AFER->>+Address Service: [API call] Store Addresses
   Address Service->>Address Service: Validate address (use OS API?)
-  Address Service->>-S&E: [return] addresses valid
+  Address Service->>-AFER: [return] addresses valid
 
   %% Address check section. TODO: put in a loop block, or enumerate individual steps
-  S&E->+PP: Prompt that addresses have been entered
-  PP->PP: Performs address checks<br/>[loop until success or no more addresses]
-  PP->-S&E: Enter results of address checks<br/>[in reality, multiple interactions as checks progress]
-  S&E->Address Service: [API call] Store address check results (approval)
+  AFER->+PP: Prompt that addresses have been entered
+  PP->PP: Performs address checks<br/>[loop until success or no more addresses]<br/>Should add call to either address service or address service via AFER to retrieve address history etc
+  PP->-AFER: Enter results of address checks<br/>[in reality, multiple interactions as checks progress]
+  activate AFER
+  AFER->Address Service: [API call] Store address check results (approval)
+  deactivate AFER
 
-  S&E->+DM: Prompt to review HDC & make a decision
-  DM->>S&E: Review HDC
-  DM->>-S&E: Approve HDC
-  activate S&E
+  AFER->+DM: Prompt to review HDC & make a decision
+  DM->>AFER: Review HDC
+  DM->>-AFER: Approve HDC
+  activate AFER
 
-  S&E->>-CVL: [event] HDC approved
-  Note right of CVL: HDC licence can now be approved
+  AFER->>-PP: [prompt] HDC licence can now be submitted for approval
 
   %% licence creation block
   %% NOTE: this can happen in paralell. Also, question about whether CVL should check HDC or nomis re whether an HDC licence can be produced.
   PP->>+CVL: Start licence
-  CVL->>+S&E: [API call] Is HDC in progress or approved?
-  S&E->>-CVL: [Return] HDC in progress or approved
+  CVL->>+AFER: [API call] Is HDC in progress or approved?
+  AFER->>-CVL: [Return] HDC in progress or approved
   deactivate CVL
-  PP->>+CVL: Add address details (& more?)
-  CVL->>+S&E: [API call] Request address details (& more?)
-  S&E->>+Address Service: [API call] Request Address Details
-  Address Service->-S&E: Return Address Details
-  S&E->>-CVL: Return Address details
+  PP->>+CVL: Complete licence by Adding approved address details (& more?)
+  CVL->>+AFER: [API call] Request approved Address details (& more?)
+  AFER->>+Address Service: [API call] Request Approved Address Details
+  Address Service->-AFER: Return Approved Address Details
+  AFER->>-CVL: Return Approved Address details
   deactivate CVL
 
-  PP->>CVL: Submit Licence for approval
-  CVL->>+S&E: [EVENT] Licence ready for approval
-  S&E->>-DM: [PROMPT] Licence ready for approval
+  PP->>+CVL: Submit Licence for approval
+  CVL->>+AFER: [API Call]: Is HDC approved?
+  AFER->>-CVL: HDC approval
+  CVL->>-AFER: [EVENT] Licence ready for approval
+  activate AFER
+  AFER->>-DM: [PROMPT] Licence ready for approval
+  DM->>+AFER: Review licence
+  AFER->>+CVL: [API call] Request Licence
+  CVL->>-AFER: Return Licence
+  AFER->>-DM: Display Licence
+
+  DM->>+AFER: Approve Licence
+  AFER->>+CVL: [API call] Approve Licence
+  CVL->>-AFER: Confirm success
+  AFER->>-DM: Confirm success
 
 
 
