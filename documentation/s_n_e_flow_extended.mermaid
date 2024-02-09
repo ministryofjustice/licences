@@ -1,0 +1,63 @@
+sequenceDiagram
+  autonumber
+  %%actor POM
+  actor DM
+  actor PIP
+  actor PP
+  actor PCA
+
+  participant CRDS
+  participant NOMIS
+  participant S&E
+  participant Address Service
+  participant CVL
+  %% START HDCED CALCULATED BLOCK
+  Note right of CRDS: HDCED calculated
+  CRDS->>NOMIS: Store HDCED
+  S&E->>+NOMIS: [API call] Fetch HDCED
+  NOMIS->>-S&E: return HDCED
+  CVL->>+NOMIS: [API call] Fetch HDCED
+  NOMIS->>-CVL: return HDCED
+  Note right of S&E: Can start HDC
+  Note right of CVL: PP Can start HDC licence
+  %% END HDCED CALCULATED BLOCK
+
+  PCA->>+S&E: Request case list
+  S&E->>-PCA: Return case list (only people with HDCED)
+
+  PCA->>+S&E: Select case
+  S&E->>-PCA: Return case detail
+
+  PCA->>S&E: Update Eligibility
+  Note right of S&E: Eligibility Confirmed
+  PCA->>S&E: Update Suitability
+  Note right of S&E: Suitability Confirmed
+
+  PCA->>+PIP: request address
+  PIP->>-PCA: return address options
+
+  PCA->>S&E: Enter addresses
+  S&E->>+Address Service: [API call] Store Addresses
+  Address Service->>Address Service: Validate address (use OS API?)
+  Address Service->>-S&E: [return] addresses valid
+
+  %% Address check section. TODO: put in a loop block, or enumerate individual steps
+  S&E->+PP: Prompt that addresses have been entered
+  PP->PP: Performs address checks<br/>[loop until success or no more addresses]
+  PP->-S&E: Enter results of address checks<br/>[in reality, multiple interactions as checks progress]
+  S&E->Address Service: [API call] Store address check results (approval)
+
+  S&E->+DM: Prompt to review HDC & make a decision
+  DM->>S&E: Review HDC
+  DM->>-S&E: Record decision
+
+  PP->>CVL: Create licence
+  CVL->>+S&E: [API call] Request address details (& more?)
+  S&E->>+Address Service: [API call] Request Address Details
+  Address Service->-S&E: Return Address Details
+  S&E->>-CVL: Return Address details
+
+  S&E->>CVL: [event] HDC approved
+  Note right of CVL: HDC licence can now be approved
+  CVL->CVL: HDC licence approved
+
