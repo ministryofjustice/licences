@@ -1,0 +1,20 @@
+sequenceDiagram
+  participant CRDS
+  participant S&E
+  participant CVL
+  autonumber
+  par
+  Note right of CRDS: HDCED calculated
+  and
+  CRDS->>S&E: HDCED calculated
+  and
+  Note right of S&E: Can start HDC
+  and
+  CRDS->>CVL: HDCED calculated
+  and
+  Note right of CVL: PP Can start HDC licence
+  end
+  S&E->>CVL: DM approves HDC
+  Note right of CVL: Can approve HDC licence
+  CVL->CVL: HDC licence approved
+
