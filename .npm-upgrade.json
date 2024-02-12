@@ -1,8 +1,0 @@
-{
-  "ignore": {
-    "notifications-node-client": {
-      "versions": "8.0.0",
-      "reason": ""
-    }
-  }
-}
