@@ -156,7 +156,7 @@ jobs:
       - restore_cache:
           key: gradle-cache-{{ checksum "licences-specs/build.gradle" }}
       - browser-tools/install-browser-tools:
-          chrome-version: 116.0.5845.96
+          chrome-version: latest
           replace-existing-chrome: true
       - run:
           name: Run Integration Tests
