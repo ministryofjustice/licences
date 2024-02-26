@@ -4,30 +4,30 @@ title: HDC Sequence diagram in AFER/CVL system (happy path)
 
 sequenceDiagram
   autonumber
-  %%actor POM
+%%actor POM
   box rgb(191, 223, 255) People
-  actor DM
-  actor PIP
-  actor PP
-  actor PCA
+    actor DM
+    actor PIP
+    actor PP
+    actor PCA
   end
- box rgb(19, 223, 255) Our service
+  box rgb(19, 223, 255) Our service
 
-  participant AFER
-  participant Address Service
-  participant CVL
+    participant AFER
+    participant Address Service
+    participant CVL
   end
 
   participant NOMIS
   participant CRDS
 
-  %% START HDCED CALCULATED BLOCK
+%% START HDCED CALCULATED BLOCK
   Note right of CRDS: HDCED calculated
   CRDS->>NOMIS: Store HDCED
   Note right of AFER: Can start HDC
   Note right of CVL: PP Can start HDC licence
   Note right of PP: PP Can start HDC licence
-  %% END HDCED CALCULATED BLOCK
+%% END HDCED CALCULATED BLOCK
 
   PCA->>+AFER: Request case list
   AFER->>+NOMIS: Request case list
@@ -42,7 +42,9 @@ sequenceDiagram
   PCA->>AFER: Update Suitability
   Note right of AFER: Suitability Confirmed
 
-  %% NOTE: for simplicity, not modelling eligibility letter
+%% NOTE: for simplicity, not modelling eligibility letter
+
+%% BEGIN ADDRESS SECTION
   PCA->>+PIP: request address
   PIP->>-PCA: return address options
 
@@ -51,13 +53,18 @@ sequenceDiagram
   Address Service->>Address Service: Validate address (use OS API?)
   Address Service->>-AFER: [return] addresses valid
 
-  %% Address check section. TODO: put in a loop block, or enumerate individual steps
+%% Address check section. TODO: put in a loop block, or enumerate individual steps
   AFER->+PP: Prompt that addresses have been entered
+  PP->+AFER: Request address details
+  AFER->+Address Service: [API Call] Request address details
+  Address Service->-AFER: Return address details
+  AFER->-PP: Return address details
   PP->PP: Performs address checks<br/>[loop until success or no more addresses]<br/>Should add call to either address service or address service via AFER to retrieve address history etc
   PP->-AFER: Enter results of address checks<br/>[in reality, multiple interactions as checks progress]
   activate AFER
-  AFER->Address Service: [API call] Store address check results (approval)
-  deactivate AFER
+  AFER->-Address Service: [API call] Store address check results (progress, and then approval/not)
+
+%% END ADDRESS SECTION
 
   AFER->+DM: Prompt to review HDC & make a decision
   DM->>AFER: Review HDC
@@ -66,8 +73,8 @@ sequenceDiagram
 
   AFER->>-PP: [prompt] HDC licence can now be submitted for approval
 
-  %% licence creation block
-  %% NOTE: this can happen in paralell. Also, question about whether CVL should check HDC or nomis re whether an HDC licence can be produced.
+%% licence creation block
+%% NOTE: this can happen in paralell. Also, question about whether CVL should check HDC or nomis re whether an HDC licence can be produced.
   PP->>+CVL: Start licence
   CVL->>+AFER: [API call] Is HDC in progress or approved?
   AFER->>-CVL: [Return] HDC in progress or approved
