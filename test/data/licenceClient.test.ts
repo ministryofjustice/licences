@@ -60,7 +60,7 @@ describe('licenceClient', () => {
     test('should pass in the correct parameters', async () => {
       await licenceClient.getLicence(10001)
       expect(db.query).toHaveBeenCalledWith({
-        text: `select licence, booking_id, stage, version, vary_version, additional_conditions_version, standard_conditions_version from licences where booking_id = $1`,
+        text: `select licence, booking_id, stage, version, vary_version, additional_conditions_version, standard_conditions_version from v_licences_excluding_deleted where booking_id = $1`,
         values: [10001],
       })
     })
