@@ -21,6 +21,10 @@ sequenceDiagram
   participant NOMIS
   participant CRDS
 
+  participant External Agencies
+  participant OS Places API
+
+
 %% START HDCED CALCULATED BLOCK
   Note right of CRDS: HDCED calculated
   CRDS->>NOMIS: Store HDCED
@@ -47,25 +51,49 @@ sequenceDiagram
 %% BEGIN ADDRESS SECTION
   PCA->>+PIP: request address
   PIP->>-PCA: return address options
+  activate PCA
 
-  PCA->>AFER: Enter addresses
-  AFER->>+Address Service: [API call] Store Addresses
-  Address Service->>Address Service: Validate address (use OS API?)
-  Address Service->>-AFER: [return] addresses valid
+  alt enter address
+    PCA->>+AFER: Enter postcode
+    AFER->>+Address Service: [API Call] Submit postcode
+    Address Service->>+OS Places API: [API Call] Submit postcode
+    OS Places API->>-Address Service: Return address options
+    Address Service->>-AFER: Return address options
+    AFER->>-PCA: Display address options
+    PCA->>+AFER: Select correct address
+    deactivate PCA
+    AFER->>-Address Service: Store correct address
+  else enter CAS2 region
+    activate PCA
+    PCA->>+AFER: Enter CAS2 Region
+    deactivate PCA
+    AFER->>-Address Service: [API Call] Store CAS2 Region
+  end
 
-%% Address check section. TODO: put in a loop block, or enumerate individual steps
-  AFER->+PP: Prompt that addresses have been entered
-  PP->+AFER: Request address details
-  AFER->+Address Service: [API Call] Request address details
-  Address Service->-AFER: Return address details
-  AFER->-PP: Return address details
-  PP->PP: Performs address checks<br/>[loop until success or no more addresses]<br/>Should add call to either address service or address service via AFER to retrieve address history etc
-  PP->-AFER: Enter results of address checks<br/>[in reality, multiple interactions as checks progress]
-  activate AFER
-  AFER->-Address Service: [API call] Store address check results (progress, and then approval/not)
+%% Address check section.
+  AFER->>+PP: Prompt that addresses have been entered
+  PP->>+AFER: Request address details
+  AFER->>+Address Service: [API Call] Request address details
+  Address Service->>-AFER: Return address details
+  AFER->>-PP: Return address details
+  loop address checks Until one is successful or all are checked
+  %%  PP->>PP: Performs address checks<br/>[loop until success or no more addresses]<br/>Should add call to either address service or address service via AFER to retrieve address history etc
+    PP->>+External Agencies: Request address check
+    PP->>+AFER: Record check in progress
+    AFER->>-Address Service: [Api call] Record check in progress
+    External Agencies->>-PP: Return check results
+    PP->>+AFER: Record check result
+    AFER->>-Address Service: [API call] Record check result
+  %%  PP->>PP: Performs address checks<br/>[loop until success or no more addresses]<br/>Should add call to either address service or address service via AFER to retrieve address history etc
+  end
+
+  PP->>+AFER: Approve address
+  AFER->>-Address Service: [Api Call] Approve Address
+%%  PP->>-AFER: Enter results of address checks<br/>[in reality, multiple interactions as checks progress]
+%%  activate AFER
+%%  AFER->>-Address Service: [API call] Store address check results (progress, and then approval/not)
 
 %% END ADDRESS SECTION
-
   AFER->+DM: Prompt to review HDC & make a decision
   DM->>AFER: Review HDC
   DM->>-AFER: Approve HDC
@@ -78,12 +106,13 @@ sequenceDiagram
   PP->>+CVL: Start licence
   CVL->>+AFER: [API call] Is HDC in progress or approved?
   AFER->>-CVL: [Return] HDC in progress or approved
+
   deactivate CVL
   PP->>+CVL: Complete licence by Adding approved address details (& more?)
-  CVL->>+AFER: [API call] Request approved Address details (& more?)
-  AFER->>+Address Service: [API call] Request Approved Address Details
-  Address Service->-AFER: Return Approved Address Details
-  AFER->>-CVL: Return Approved Address details
+  CVL->>+Address Service: [API call] Request Approved Address Details
+  Address Service->>-CVL: Return Approved Address Details
+  Note right of CVL: Can only submit for approval<br/> if HDC complete
+
   deactivate CVL
 
   PP->>+CVL: Submit Licence for approval
