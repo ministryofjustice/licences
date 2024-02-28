@@ -12,7 +12,7 @@ import { Licence, LicenceStage } from './licenceTypes'
 async function updateVersion(bookingId, postRelease = false): Promise<void> {
   const version = postRelease ? 'vary_version' : 'version'
   const query = {
-    text: `UPDATE licences SET ${version} = ${version} + 1
+    text: `UPDATE v_licences_excluding_deleted SET ${version} = ${version} + 1
                WHERE booking_id = $1 and ${version} in (
                 SELECT max(${version})
                 FROM licence_versions
@@ -99,7 +99,7 @@ export class LicenceClient {
 
   async updateLicence(bookingId: number, licence: Licence = {}, postRelease: boolean = false): Promise<void> {
     const query = {
-      text: 'UPDATE licences SET licence = $1 where booking_id=$2;',
+      text: 'UPDATE v_licences_excluding_deleted SET licence = $1 where booking_id=$2;',
       values: [licence, bookingId],
     }
 
@@ -111,7 +111,7 @@ export class LicenceClient {
     const path = `{${section}}`
 
     const query = {
-      text: 'update licences set licence = jsonb_set(licence, $1, $2) where booking_id=$3',
+      text: 'update v_licences_excluding_deleted set licence = jsonb_set(licence, $1, $2) where booking_id=$3',
       values: [path, object, bookingId],
     }
 
@@ -121,7 +121,7 @@ export class LicenceClient {
 
   updateStage(bookingId: number, stage): Promise<void> {
     const query = {
-      text: 'update licences set (stage, transition_date) = ($1, current_timestamp) where booking_id = $2',
+      text: 'update v_licences_excluding_deleted set (stage, transition_date) = ($1, current_timestamp) where booking_id = $2',
       values: [stage, bookingId],
     }
 
@@ -186,7 +186,7 @@ export class LicenceClient {
     additionalConditionsVersion: AdditionalConditionsVersion
   ): Promise<void> {
     const query = {
-      text: `update licences l set additional_conditions_version = $1 where booking_id = $2`,
+      text: `update v_licences_excluding_deleted l set additional_conditions_version = $1 where booking_id = $2`,
       values: [additionalConditionsVersion, bookingId],
     }
 
@@ -198,7 +198,7 @@ export class LicenceClient {
     standardConditionsVersion: StandardConditionsVersion
   ): Promise<void> {
     const query = {
-      text: `update licences l
+      text: `update v_licences_excluding_deleted l
              set standard_conditions_version = $1
              where booking_id = $2`,
       values: [standardConditionsVersion, bookingId],
