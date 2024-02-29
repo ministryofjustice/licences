@@ -60,7 +60,7 @@ describe('licenceClient', () => {
     test('should pass in the correct parameters', async () => {
       await licenceClient.getLicence(10001)
       expect(db.query).toHaveBeenCalledWith({
-        text: `select licence, booking_id, stage, version, vary_version, additional_conditions_version, standard_conditions_version from licences where booking_id = $1`,
+        text: `select licence, booking_id, stage, version, vary_version, additional_conditions_version, standard_conditions_version from v_licences_excluding_deleted where booking_id = $1`,
         values: [10001],
       })
     })
@@ -117,7 +117,7 @@ describe('licenceClient', () => {
 
   describe('updateSection', () => {
     test('should pass in the correct sql', async () => {
-      const expectedUpdate = 'update licences set licence = jsonb_set(licence, $1, $2)'
+      const expectedUpdate = 'update v_licences_excluding_deleted set licence = jsonb_set(licence, $1, $2)'
       const expectedWhere = 'where booking_id=$3'
 
       await licenceClient.updateSection('section', BOOKING_ID, { hi: 'ho' })
@@ -259,7 +259,7 @@ describe('licenceClient', () => {
     })
 
     test('should first update the licence', async () => {
-      const expectedQuery = 'UPDATE licences SET licence = $1 where booking_id=$2'
+      const expectedQuery = 'UPDATE v_licences_excluding_deleted SET licence = $1 where booking_id=$2'
 
       await licenceClient.updateLicence(BOOKING_ID, {})
 
@@ -332,7 +332,7 @@ describe('licenceClient', () => {
       await licenceClient.setAdditionalConditionsVersion(10001, 2)
 
       expect(db.query).toHaveBeenCalledWith({
-        text: 'update licences l set additional_conditions_version = $1 where booking_id = $2',
+        text: 'update v_licences_excluding_deleted l set additional_conditions_version = $1 where booking_id = $2',
         values: [2, 10001],
       })
     })
@@ -343,7 +343,7 @@ describe('licenceClient', () => {
       await licenceClient.setStandardConditionsVersion(10001, 1)
 
       expect(db.query).toHaveBeenCalledWith({
-        text: `update licences l
+        text: `update v_licences_excluding_deleted l
              set standard_conditions_version = $1
              where booking_id = $2`,
         values: [1, 10001],
