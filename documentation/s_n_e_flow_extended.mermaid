@@ -9,7 +9,7 @@ sequenceDiagram
     actor DM
     actor PIP
     actor PP
-    actor PCA
+    actor CA
   end
   box rgb(19, 223, 255) Our service
 
@@ -32,41 +32,42 @@ sequenceDiagram
   Note right of CVL: PP Can start HDC licence
 %% END HDCED CALCULATED BLOCK
 
-  PCA->>+AFER: Request case list
+  CA->>+AFER: Request case list
   AFER->>+NOMIS: [API Call] Request case list
   NOMIS->>-AFER: Return case list (only people with HDCED)
-  AFER->>-PCA: Return case list (only people with HDCED)
+  AFER->>-CA: Return case list (only people with HDCED)
 
-  PCA->>+AFER: Select case
+  CA->>+AFER: Select case
   Note right of AFER: Makes calls to NOMIS/nDelius<br/> (not illustrated for brevity)
-  AFER->>-PCA: Return case detail
+  AFER->>-CA: Return case detail
 
-  PCA->>AFER: Update Eligibility
+  CA->>AFER: Update Eligibility
   Note right of AFER: Eligibility Confirmed
-  PCA->>AFER: Update Suitability
+  CA->>AFER: Update Suitability
   Note right of AFER: Suitability Confirmed
 
 %% NOTE: for simplicity, not modelling eligibility letter
 
 %% BEGIN ADDRESS SECTION
-  PCA->>+PIP: request address
-  PIP->>-PCA: return address options
-  activate PCA
+  CA->>+PIP: request address
+  Note right of CA: In most cases, POM<br/> will collect addresses & pass on
+  PIP->>-CA: return address options
+  activate CA
 
   alt enter address
-    PCA->>+AFER: Enter postcode
+    CA->>+AFER: Enter postcode
     AFER->>+Address Service: [API Call] Submit postcode
     Address Service->>+OS Places API: [API Call] Submit postcode
     OS Places API->>-Address Service: Return address options
     Address Service->>-AFER: Return address options
-    AFER->>-PCA: Display address options
-    PCA->>+AFER: Select correct address
-    deactivate PCA
+    AFER->>-CA: Display address options
+    CA->>+AFER: Select correct address
+    deactivate CA
     AFER->>-Address Service: Store correct address
   else enter CAS2 region
-    activate PCA
-    PCA->>+AFER: Enter CAS2 Region
-    deactivate PCA
+    activate CA
+    CA->>+AFER: Enter CAS2 Region
+    deactivate CA
     AFER->>-Address Service: [API Call] Store CAS2 Region
   end
 
@@ -93,7 +94,7 @@ sequenceDiagram
 %%  activate AFER
 %%  AFER->>-Address Service: [API call] Store address check results (progress, and then approval/not)
 
-Note left of AFER: HDC S&E complete
+  Note left of AFER: HDC S&E complete
 
 %% END ADDRESS SECTION
   AFER-->>+DM: Prompt to review HDC & make a decision
@@ -120,17 +121,19 @@ Note left of AFER: HDC S&E complete
   PP->>+CVL: Submit Licence for approval
   CVL->>+AFER: [API Call]: Is HDC approved?
   AFER->>-CVL: HDC approval status
-  CVL--)-AFER: [EVENT] Licence ready for approval
-  activate AFER
-  AFER-->>-DM: [PROMPT] Licence ready for approval
-  DM->>+AFER: Review licence
-  AFER->>+CVL: [API call] Request Licence
-  CVL->>-AFER: Return Licence
-  AFER->>-DM: Display Licence
+CVL--)AFER: [EVENT] Licence ready for approval
+deactivate CVL
+activate AFER
+AFER-->>-DM: [PROMPT] Licence ready for approval
+DM->>+AFER: Review licence
+AFER->>+CVL: [API call] Request Licence
+CVL->>-AFER: Return Licence
+AFER->>-DM: Display Licence
 
-  DM->>+AFER: Approve Licence
-  AFER->>+CVL: [API call] Approve Licence
-  CVL--)-AFER: [Event] Licence approved
+DM->>+AFER: Approve Licence
+AFER->>+CVL: [API call] Approve Licence
+CVL--)AFER: [Event] Licence approved
+deactivate CVL
 
 
 
