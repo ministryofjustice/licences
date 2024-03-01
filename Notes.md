@@ -873,7 +873,7 @@ since it was last called. `updateVersion` is only called from within licencesCli
 - `updateLicence(bookingId, licence={}, postRelease)` Replaces licence BSON with supplied value, then calls `updateVersion(bookingId, postRelease)`
 - `updateSection(section, bookingId, object, postRelease)` Replaces that part of the licence BSON selected by `section` with object, then call `updateVersion(bookingId, postRelease)`
 
-So every call to `updateLicence` or `updateSection` will update a version number but _only_ whn preceded by a call to
+So every call to `updateLicence` or `updateSection` will update a version number but _only_ when preceded by a call to
 `saveApprovedLicenceVersion`. In other words, any persisted change to a licences record made after `saveApprovedLicenceVersion`
 has been called will increment the licence version (once only)
 
