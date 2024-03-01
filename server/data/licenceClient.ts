@@ -15,7 +15,7 @@ async function updateVersion(bookingId, postRelease = false): Promise<void> {
     text: `UPDATE v_licences_excluding_deleted SET ${version} = ${version} + 1
                WHERE booking_id = $1 and ${version} in (
                 SELECT max(${version})
-                FROM licence_versions
+                FROM v_licence_versions_excluding_deleted
                 WHERE booking_id = $1);`,
     values: [bookingId],
   }
@@ -38,8 +38,8 @@ export class LicenceClient {
       text: `select l.licence, l.booking_id, l.stage, l.version, l.transition_date,
                    v.version as approved_version
                    from v_licences_excluding_deleted l
-                   left outer join licence_versions v on v.id = (
-                   select id from licence_versions
+                   left outer join v_licence_versions_excluding_deleted v on v.id = (
+                   select id from v_licence_versions_excluding_deleted
                    where booking_id = l.booking_id
                    order by version desc limit 1
                    )
@@ -67,7 +67,7 @@ export class LicenceClient {
 
   async getApprovedLicenceVersion(bookingId): Promise<ApprovedLicenceVersion> {
     const query = {
-      text: `select version, vary_version, template, timestamp from licence_versions
+      text: `select version, vary_version, template, timestamp from v_licence_versions_excluding_deleted
                     where booking_id = $1 order by version desc, vary_version desc limit 1`,
       values: [bookingId],
     }

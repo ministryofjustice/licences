@@ -230,7 +230,8 @@ describe('licenceClient', () => {
     })
 
     test('should pass in the correct sql', async () => {
-      const expectedSelect = 'select version, vary_version, template, timestamp from licence_versions'
+      const expectedSelect =
+        'select version, vary_version, template, timestamp from v_licence_versions_excluding_deleted'
       const expectedWhere = 'where booking_id = $1'
       const expectedOrder = 'order by version desc, vary_version desc limit 1'
 
