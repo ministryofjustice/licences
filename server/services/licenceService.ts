@@ -300,14 +300,9 @@ export class LicenceService {
     }
   }
 
-  resetLicence(bookingId, postRelease = false) {
+  async resetLicence(bookingId) {
     try {
-      Promise.all([
-        this.licenceClient.updateLicence(bookingId, {}, postRelease),
-        this.licenceClient.updateStage(bookingId, LicenceStage.ELIGIBILITY),
-        this.licenceClient.setAdditionalConditionsVersion(bookingId, null),
-        this.licenceClient.setStandardConditionsVersion(bookingId, null),
-      ])
+      await this.licenceClient.softDeleteLicence(bookingId)
     } catch (error) {
       logger.error('Error during licence reset', error.stack)
       throw error

@@ -22,6 +22,14 @@ async function updateVersion(bookingId, postRelease = false): Promise<void> {
   return db.query(query)
 }
 
+async function softDeleteVersions(bookingId): Promise<void> {
+  const query = {
+    text: 'UPDATE v_licence_versions_excluding_deleted SET deleted_at = current_timestamp where booking_id = $1 and deleted_at is null;',
+    values: [bookingId],
+  }
+  return db.query(query)
+}
+
 export class LicenceClient {
   deleteAll() {
     return db.query(`delete from licences where booking_id != 1200635;
@@ -205,6 +213,16 @@ export class LicenceClient {
     }
 
     await db.query(query)
+  }
+
+  async softDeleteLicence(bookingId: number): Promise<void> {
+    const query = {
+      text: 'UPDATE v_licences_excluding_deleted SET deleted_at = current_timestamp where booking_id = $1 and deleted_at is null;',
+      values: [bookingId],
+    }
+
+    await db.query(query)
+    return softDeleteVersions(bookingId)
   }
 }
 

@@ -25,6 +25,7 @@ describe('licenceClient', () => {
           establishment: 'HMP Birmingham',
           dischargeDate: '2017-07-10',
         },
+        deleted_at: null,
       },
     ],
   }
@@ -349,6 +350,33 @@ describe('licenceClient', () => {
              where booking_id = $2`,
         values: [1, 10001],
       })
+    })
+  })
+
+  describe('softDeleteLicence', () => {
+    test('should call db.query twice', async () => {
+      await licenceClient.softDeleteLicence(BOOKING_ID)
+      expect(db.query).toHaveBeenCalledTimes(2)
+    })
+
+    test('should first soft delete the licence', async () => {
+      const expectedQuery =
+        'UPDATE v_licences_excluding_deleted SET deleted_at = current_timestamp where booking_id = $1 and deleted_at is null;'
+
+      await licenceClient.softDeleteLicence(BOOKING_ID)
+
+      const sql = db.query.mock.calls[0][0].text
+      expect(sql).toContain(expectedQuery)
+    })
+
+    test('should then soft delete the versions', async () => {
+      const expectedContents =
+        'UPDATE v_licence_versions_excluding_deleted SET deleted_at = current_timestamp where booking_id = $1 and deleted_at is null;'
+
+      await licenceClient.softDeleteLicence(BOOKING_ID)
+
+      const sql = db.query.mock.calls[1][0].text
+      expect(sql).toContain(expectedContents)
     })
   })
 })
