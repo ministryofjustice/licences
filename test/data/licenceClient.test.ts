@@ -25,7 +25,6 @@ describe('licenceClient', () => {
           establishment: 'HMP Birmingham',
           dischargeDate: '2017-07-10',
         },
-        deleted_at: null,
       },
     ],
   }
