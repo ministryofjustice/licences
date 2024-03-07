@@ -216,13 +216,13 @@ export class LicenceClient {
   }
 
   async softDeleteLicence(bookingId: number): Promise<void> {
-    const query = {
-      text: 'UPDATE v_licences_excluding_deleted SET deleted_at = current_timestamp where booking_id = $1 and deleted_at is null;',
-      values: [bookingId],
-    }
-
-    await db.query(query)
-    return softDeleteVersions(bookingId)
+    await db.inTransaction(async (client) => {
+      await client.query({
+        text: 'UPDATE v_licences_excluding_deleted SET deleted_at = current_timestamp where booking_id = $1 and deleted_at is null;',
+        values: [bookingId],
+      })
+      return softDeleteVersions(bookingId)
+    })
   }
 }
 

@@ -1,16 +1,15 @@
 import { Licence } from '../../server/data/licenceTypes'
 import { licenceClient } from '../../server/data/licenceClient'
-import { query } from '../../server/data/dataAccess/db'
+/** @type {any} */
+const db = require('../../server/data/dataAccess/db')
 
 jest.mock('../../server/data/dataAccess/db')
 
 const BOOKING_ID = 123456
 const PRISON_NUMBER = 'A1234AA'
 
-const db = { query: query as jest.Mock<Promise<any>> }
-
 afterEach(() => {
-  ;(query as jest.Mock<Promise<any>>).mockReset()
+  db.query.mockReset()
 })
 
 describe('licenceClient', () => {
@@ -354,28 +353,30 @@ describe('licenceClient', () => {
 
   describe('softDeleteLicence', () => {
     test('should call db.query twice', async () => {
+      db.inTransaction = (callback) => callback(db)
       await licenceClient.softDeleteLicence(BOOKING_ID)
       expect(db.query).toHaveBeenCalledTimes(2)
     })
 
-    test('should first soft delete the licence', async () => {
-      const expectedQuery =
-        'UPDATE v_licences_excluding_deleted SET deleted_at = current_timestamp where booking_id = $1 and deleted_at is null;'
-
+    test('should send correct SQL', async () => {
+      db.inTransaction = (callback) => callback(db)
       await licenceClient.softDeleteLicence(BOOKING_ID)
-
-      const sql = db.query.mock.calls[0][0].text
-      expect(sql).toContain(expectedQuery)
+      const { text, values } = db.query.mock.calls[0][0]
+      expect(text).toContain(
+        'UPDATE v_licences_excluding_deleted SET deleted_at = current_timestamp where booking_id = $1 and deleted_at is null;'
+      )
+      expect(values).toStrictEqual([BOOKING_ID])
     })
 
     test('should then soft delete the versions', async () => {
-      const expectedContents =
-        'UPDATE v_licence_versions_excluding_deleted SET deleted_at = current_timestamp where booking_id = $1 and deleted_at is null;'
-
+      db.inTransaction = (callback) => callback(db)
       await licenceClient.softDeleteLicence(BOOKING_ID)
+      const { text, values } = db.query.mock.calls[1][0]
 
-      const sql = db.query.mock.calls[1][0].text
-      expect(sql).toContain(expectedContents)
+      expect(text).toContain(
+        'UPDATE v_licence_versions_excluding_deleted SET deleted_at = current_timestamp where booking_id = $1 and deleted_at is null;'
+      )
+      expect(values).toStrictEqual([BOOKING_ID])
     })
   })
 })
