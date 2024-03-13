@@ -150,7 +150,7 @@ export class LicenceClient {
     const query = {
       text: `insert into licence_versions (prison_number, booking_id, licence, version, vary_version, template)
                     select prison_number, booking_id, licence, version, vary_version, $1
-                    from licences where booking_id = $2`,
+                    from v_licences_excluding_deleted where booking_id = $2`,
       values: [template, bookingId],
     }
 
