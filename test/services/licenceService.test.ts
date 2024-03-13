@@ -50,6 +50,7 @@ describe('licenceService', () => {
       getLicencesInStage: undefined,
       setAdditionalConditionsVersion: jest.fn(),
       setStandardConditionsVersion: jest.fn(),
+      softDeleteLicence: jest.fn() as jest.Mock<Promise<void>>,
     }
     service = createLicenceService(licenceClient)
   })
@@ -2017,20 +2018,11 @@ describe('licenceService', () => {
       ).toEqual(['bassReferral', 'approvedPremisesAddress', 'addressLine1'])
     })
   })
+
   describe('resetLicence', () => {
-    it('should call updateClient', () => {
-      service.resetLicence(100, false)
-      expect(licenceClient.updateLicence).toBeCalledWith(100, {}, false)
-    })
-
-    it('should call updateStage', () => {
-      service.resetLicence(100, false)
-      expect(licenceClient.updateStage).toBeCalledWith(100, LicenceStage.ELIGIBILITY)
-    })
-
-    it('should call setAdditionalConditionsVersion', () => {
-      service.resetLicence(100, false)
-      expect(licenceClient.setAdditionalConditionsVersion).toBeCalledWith(100, null)
+    it('should call softDeleteLicence', () => {
+      service.resetLicence(100)
+      expect(licenceClient.softDeleteLicence).toBeCalledWith(100)
     })
   })
 
