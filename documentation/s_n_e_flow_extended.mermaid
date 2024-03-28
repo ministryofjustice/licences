@@ -1,0 +1,140 @@
+---
+title: HDC Sequence diagram in AFER/CVL system (happy path)
+---
+
+sequenceDiagram
+  autonumber
+%%actor POM
+  box rgb(191, 223, 255) People
+    actor DM
+    actor PIP
+    actor PP
+    actor CA
+  end
+  box rgb(19, 223, 255) Our service
+
+    participant AFER
+    participant Address Service
+    participant CVL
+  end
+
+  participant NOMIS
+  participant CRDS
+
+  participant External Agencies
+  participant OS Places API
+
+
+%% START HDCED CALCULATED BLOCK
+  Note right of CRDS: HDCED calculated
+  CRDS->>NOMIS: Store HDCED
+  Note right of AFER: Can start HDC
+  Note right of CVL: PP Can start HDC licence
+%% END HDCED CALCULATED BLOCK
+
+  CA->>+AFER: Request case list
+  AFER->>+NOMIS: [API Call] Request case list
+  NOMIS->>-AFER: Return case list (only people with HDCED)
+  AFER->>-CA: Return case list (only people with HDCED)
+
+  CA->>+AFER: Select case
+  Note right of AFER: Makes calls to NOMIS/nDelius<br/> (not illustrated for brevity)
+  AFER->>-CA: Return case detail
+
+  CA->>AFER: Update Eligibility
+  Note right of AFER: Eligibility Confirmed
+  CA->>AFER: Update Suitability
+  Note right of AFER: Suitability Confirmed
+
+%% NOTE: for simplicity, not modelling eligibility letter
+
+%% BEGIN ADDRESS SECTION
+  CA->>+PIP: request address
+  Note right of CA: In most cases, POM<br/> will collect addresses & pass on
+  PIP->>-CA: return address options
+  activate CA
+
+  alt enter address
+    CA->>+AFER: Enter postcode
+    AFER->>+Address Service: [API Call] Submit postcode
+    Address Service->>+OS Places API: [API Call] Submit postcode
+    OS Places API->>-Address Service: Return address options
+    Address Service->>-AFER: Return address options
+    AFER->>-CA: Display address options
+    CA->>+AFER: Select correct address
+    deactivate CA
+    AFER->>-Address Service: Store correct address
+  else enter CAS2 region
+    activate CA
+    CA->>+AFER: Enter CAS2 Region
+    deactivate CA
+    AFER->>-Address Service: [API Call] Store CAS2 Region
+  end
+
+%% Address check section.
+  AFER-->>+PP: Prompt that addresses have been entered
+  PP->>+AFER: Request address details
+  AFER->>+Address Service: [API Call] Request address details
+  Address Service->>-AFER: Return address details
+  AFER->>-PP: Return address details
+  loop address checks Until one is successful or all are checked
+  %%  PP->>PP: Performs address checks<br/>[loop until success or no more addresses]<br/>Should add call to either address service or address service via AFER to retrieve address history etc
+    PP->>+External Agencies: Request address check
+    PP->>+AFER: Record check in progress
+    AFER->>-Address Service: [Api call] Record check in progress
+    External Agencies->>-PP: Return check results
+    PP->>+AFER: Record check result
+    AFER->>-Address Service: [API call] Record check result
+  %%  PP->>PP: Performs address checks<br/>[loop until success or no more addresses]<br/>Should add call to either address service or address service via AFER to retrieve address history etc
+  end
+
+  PP->>+AFER: Approve address
+  AFER->>-Address Service: [Api Call] Approve Address
+%%  PP->>-AFER: Enter results of address checks<br/>[in reality, multiple interactions as checks progress]
+%%  activate AFER
+%%  AFER->>-Address Service: [API call] Store address check results (progress, and then approval/not)
+
+  Note left of AFER: HDC S&E complete
+
+%% END ADDRESS SECTION
+  AFER-->>+DM: Prompt to review HDC & make a decision
+  DM->>AFER: View & Review HDC
+  DM->>-AFER: Approve HDC
+  activate AFER
+
+  AFER-->>-PP: [prompt] HDC licence can now be submitted for approval
+
+%% licence creation block
+%% NOTE: this can happen in paralell. Also, question about whether CVL should check HDC or nomis re whether an HDC licence can be produced.
+  PP->>+CVL: Start licence
+  CVL->>+AFER: [API call] Is HDC in progress or approved?
+  AFER->>-CVL: [Return] HDC in progress or approved
+
+  deactivate CVL
+  PP->>+CVL: Complete licence by Adding approved address details (& more?)
+  CVL->>+Address Service: [API call] Request Approved Address Details
+  Address Service->>-CVL: Return Approved Address Details
+
+  deactivate CVL
+
+  Note right of CVL: Can only submit for approval<br/> if HDC complete
+  PP->>+CVL: Submit Licence for approval
+  CVL->>+AFER: [API Call]: Is HDC approved?
+  AFER->>-CVL: HDC approval status
+CVL--)AFER: [EVENT] Licence ready for approval
+deactivate CVL
+activate AFER
+AFER-->>-DM: [PROMPT] Licence ready for approval
+DM->>+AFER: Review licence
+AFER->>+CVL: [API call] Request Licence
+CVL->>-AFER: Return Licence
+AFER->>-DM: Display Licence
+
+DM->>+AFER: Approve Licence
+AFER->>+CVL: [API call] Approve Licence
+CVL--)AFER: [Event] Licence approved
+deactivate CVL
+
+
+
+

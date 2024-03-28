@@ -1,0 +1,9 @@
+---
+title: S&E/Licences Service ER sketch licences kept basic for simplicity
+---
+%% This is an attempt to model the data structures across 2 services; AFER & Address service
+erDiagram
+  PIP |o--|| HDC: "Has 0 or more"
+  HDC }|--|| ADDRESS_CHECK : "has 0 or more"
+  ADDRESS_CHECK }|--|| ADDRESS_CRITERIA: "Individual check criteria"
+  ADDRESS_CHECK ||--o| Address : "pertains to"
