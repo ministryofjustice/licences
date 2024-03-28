@@ -12,11 +12,19 @@ import { Licence, LicenceStage } from './licenceTypes'
 async function updateVersion(bookingId, postRelease = false): Promise<void> {
   const version = postRelease ? 'vary_version' : 'version'
   const query = {
-    text: `UPDATE licences SET ${version} = ${version} + 1
+    text: `UPDATE v_licences_excluding_deleted SET ${version} = ${version} + 1
                WHERE booking_id = $1 and ${version} in (
                 SELECT max(${version})
-                FROM licence_versions
+                FROM v_licence_versions_excluding_deleted
                 WHERE booking_id = $1);`,
+    values: [bookingId],
+  }
+  return db.query(query)
+}
+
+async function softDeleteVersions(bookingId): Promise<void> {
+  const query = {
+    text: 'UPDATE v_licence_versions_excluding_deleted SET deleted_at = current_timestamp where booking_id = $1 and deleted_at is null;',
     values: [bookingId],
   }
   return db.query(query)
@@ -37,9 +45,9 @@ export class LicenceClient {
     const query = {
       text: `select l.licence, l.booking_id, l.stage, l.version, l.transition_date,
                    v.version as approved_version
-                   from licences l
-                   left outer join licence_versions v on v.id = (
-                   select id from licence_versions
+                   from v_licences_excluding_deleted l
+                   left outer join v_licence_versions_excluding_deleted v on v.id = (
+                   select id from v_licence_versions_excluding_deleted
                    where booking_id = l.booking_id
                    order by version desc limit 1
                    )
@@ -52,7 +60,7 @@ export class LicenceClient {
 
   async getLicence(bookingId: number): Promise<CaseWithVaryVersion> {
     const query = {
-      text: `select licence, booking_id, stage, version, vary_version, additional_conditions_version, standard_conditions_version from licences where booking_id = $1`,
+      text: `select licence, booking_id, stage, version, vary_version, additional_conditions_version, standard_conditions_version from v_licences_excluding_deleted where booking_id = $1`,
       values: [bookingId],
     }
 
@@ -67,7 +75,7 @@ export class LicenceClient {
 
   async getApprovedLicenceVersion(bookingId): Promise<ApprovedLicenceVersion> {
     const query = {
-      text: `select version, vary_version, template, timestamp from licence_versions
+      text: `select version, vary_version, template, timestamp from v_licence_versions_excluding_deleted
                     where booking_id = $1 order by version desc, vary_version desc limit 1`,
       values: [bookingId],
     }
@@ -99,7 +107,7 @@ export class LicenceClient {
 
   async updateLicence(bookingId: number, licence: Licence = {}, postRelease: boolean = false): Promise<void> {
     const query = {
-      text: 'UPDATE licences SET licence = $1 where booking_id=$2;',
+      text: 'UPDATE v_licences_excluding_deleted SET licence = $1 where booking_id=$2;',
       values: [licence, bookingId],
     }
 
@@ -111,7 +119,7 @@ export class LicenceClient {
     const path = `{${section}}`
 
     const query = {
-      text: 'update licences set licence = jsonb_set(licence, $1, $2) where booking_id=$3',
+      text: 'update v_licences_excluding_deleted set licence = jsonb_set(licence, $1, $2) where booking_id=$3',
       values: [path, object, bookingId],
     }
 
@@ -121,7 +129,7 @@ export class LicenceClient {
 
   updateStage(bookingId: number, stage): Promise<void> {
     const query = {
-      text: 'update licences set (stage, transition_date) = ($1, current_timestamp) where booking_id = $2',
+      text: 'update v_licences_excluding_deleted set (stage, transition_date) = ($1, current_timestamp) where booking_id = $2',
       values: [stage, bookingId],
     }
 
@@ -142,7 +150,7 @@ export class LicenceClient {
     const query = {
       text: `insert into licence_versions (prison_number, booking_id, licence, version, vary_version, template)
                     select prison_number, booking_id, licence, version, vary_version, $1
-                    from licences where booking_id = $2`,
+                    from v_licences_excluding_deleted where booking_id = $2`,
       values: [template, bookingId],
     }
 
@@ -152,7 +160,7 @@ export class LicenceClient {
   async getLicencesInStageBetweenDates(stage, from, upto) {
     const query = {
       text: `select l.booking_id, l.transition_date
-                   from licences l where stage = $1 and transition_date >= $2 and transition_date < $3`,
+                   from v_licences_excluding_deleted l where stage = $1 and transition_date >= $2 and transition_date < $3`,
       values: [stage, from, upto],
     }
 
@@ -163,7 +171,7 @@ export class LicenceClient {
   async getLicencesInStageBeforeDate(stage, upto) {
     const query = {
       text: `select l.booking_id, l.transition_date
-                   from licences l where stage = $1 and transition_date < $2`,
+                   from v_licences_excluding_deleted l where stage = $1 and transition_date < $2`,
       values: [stage, upto],
     }
 
@@ -173,7 +181,7 @@ export class LicenceClient {
 
   async getLicencesInStage(stage) {
     const query = {
-      text: `select l.booking_id , l.transition_date from licences l where stage = $1`,
+      text: `select l.booking_id , l.transition_date from v_licences_excluding_deleted l where stage = $1`,
       values: [stage],
     }
 
@@ -186,7 +194,7 @@ export class LicenceClient {
     additionalConditionsVersion: AdditionalConditionsVersion
   ): Promise<void> {
     const query = {
-      text: `update licences l set additional_conditions_version = $1 where booking_id = $2`,
+      text: `update v_licences_excluding_deleted l set additional_conditions_version = $1 where booking_id = $2`,
       values: [additionalConditionsVersion, bookingId],
     }
 
@@ -198,13 +206,23 @@ export class LicenceClient {
     standardConditionsVersion: StandardConditionsVersion
   ): Promise<void> {
     const query = {
-      text: `update licences l
+      text: `update v_licences_excluding_deleted l
              set standard_conditions_version = $1
              where booking_id = $2`,
       values: [standardConditionsVersion, bookingId],
     }
 
     await db.query(query)
+  }
+
+  async softDeleteLicence(bookingId: number): Promise<void> {
+    await db.inTransaction(async (client) => {
+      await client.query({
+        text: 'UPDATE v_licences_excluding_deleted SET deleted_at = current_timestamp where booking_id = $1 and deleted_at is null;',
+        values: [bookingId],
+      })
+      return softDeleteVersions(bookingId)
+    })
   }
 }
 
