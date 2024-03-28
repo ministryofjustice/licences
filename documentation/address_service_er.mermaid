@@ -2,11 +2,12 @@
 title: Address Service ER
 ---
 erDiagram
-  HDC_ADDRESS_CHECKS }|--|| CURFEW_ADDRESS_CHECK : "refers to to"
-  HDC_ADDRESS_CHECKS {
-    
+  OFFENDER }|--|| HDC_APPLICATION_ID: "has one or more"
+  HDC_APPLICATION_ID }|--|| CURFEW_ADDRESS_CHECK : "has one or more"
+  HDC_APPLICATION_ID {
+
   }
-  CURFEW_ADDRESS_CHECK ||--o| CURFEW_ADDRESS : "pertains to (only 1 of)"
+  CURFEW_ADDRESS_CHECK ||--|{ CURFEW_ADDRESS : "pertains to (only 1 of)"
   CURFEW_ADDRESS_CHECK ||--o| CAS2_ADDRESS : "pertains to (only 1 of)"
 
 
