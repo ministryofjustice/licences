@@ -65,7 +65,7 @@ module.exports = {
         historyOfTerrorism: { approvalStatus: 'PRES UNSUIT', refusedReason: 'HIST_TERROR' },
         categoryA: { approvalStatus: 'PRES UNSUIT', refusedReason: 'CATEGORY_A' },
         serving4YearsOrMoreOverseas: { approvalStatus: 'PRES UNSUIT', refusedReason: 'OVERALL_4YRS' },
-        riskOfHarm: { approvalStatus: 'PRES UNSUIT', refusedReason: 'HARM_RISK' },
+        riskOfHarm: { approvalStatus: 'PRES UNSUIT', refusedReason: 'RISK_OF_HARM' },
       },
     },
   },
