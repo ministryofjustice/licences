@@ -138,7 +138,7 @@ describe('nomisPushService', () => {
         {
           example: 'Unsuitable - riskOfHarm',
           data: { type: 'exceptionalCircumstances', status: 'No', reason: 'riskOfHarm' },
-          approvalStatus: { approvalStatus: 'PRES UNSUIT', refusedReason: 'RISK_OF_HARM' },
+          approvalStatus: { approvalStatus: 'PRES UNSUIT', refusedReason: 'ROSH_MAPPA' },
         },
         {
           example: 'Postponed - investigation',
