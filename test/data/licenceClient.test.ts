@@ -65,6 +65,16 @@ describe('licenceClient', () => {
     })
   })
 
+  describe('getLicenceIncludingSoftDeleted', () => {
+    test('should pass in the correct parameters', async () => {
+      await licenceClient.getLicenceIncludingSoftDeleted(10001)
+      expect(db.query).toHaveBeenCalledWith({
+        text: `select licence, booking_id, stage, version, vary_version, additional_conditions_version, standard_conditions_version from licences where booking_id = $1`,
+        values: [10001],
+      })
+    })
+  })
+
   describe('createLicence', () => {
     const LICENCE_SAMPLE: Licence = { eligibility: { excluded: { decision: 'Yes' } } }
 

@@ -23,6 +23,7 @@ export interface Case {
   version: number
   additional_conditions_version: AdditionalConditionsVersion
   standard_conditions_version: StandardConditionsVersion
+  deleted_at: boolean | string
 }
 
 export interface CaseWithApprovedVersion extends Case {

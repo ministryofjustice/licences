@@ -15,14 +15,14 @@ module.exports = function createLicenceSearchService(
   nomisClientBuilder,
   prisonerSearchApi
 ) {
-  const bookingIdForExistingLicence = async (bookingId) => {
-    const licence = await licenceClient.getLicence(bookingId)
+  const bookingIdForLicenceIncludingSoftDeleted = async (bookingId) => {
+    const licence = await licenceClient.getLicenceIncludingSoftDeleted(bookingId)
     return licence ? licence.booking_id : null
   }
 
   const findByBookingId = async (offenderIdentifier) => {
     const parsedBookingId = parseInt(offenderIdentifier.trim(), 10)
-    return parsedBookingId && bookingIdForExistingLicence(parsedBookingId)
+    return parsedBookingId && bookingIdForLicenceIncludingSoftDeleted(parsedBookingId)
   }
 
   const findByOffenderNumber = async (username, offenderIdentifier) => {
@@ -33,7 +33,7 @@ module.exports = function createLicenceSearchService(
       const booking = await client.getBookingByOffenderNumber(offenderIdentifier)
       if (!booking) return null
       const { bookingId } = booking
-      return bookingId && bookingIdForExistingLicence(bookingId)
+      return bookingId && bookingIdForLicenceIncludingSoftDeleted(bookingId)
     } catch (error) {
       if (error.status === 404) {
         return null

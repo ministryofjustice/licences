@@ -73,6 +73,21 @@ export class LicenceClient {
     return undefined
   }
 
+  async getLicenceIncludingSoftDeleted(bookingId: number): Promise<CaseWithVaryVersion> {
+    const query = {
+      text: `select licence, booking_id, stage, version, vary_version, additional_conditions_version, standard_conditions_version from licences where booking_id = $1`,
+      values: [bookingId],
+    }
+
+    const { rows } = await db.query(query)
+
+    if (rows) {
+      return rows[0]
+    }
+
+    return undefined
+  }
+
   async getApprovedLicenceVersion(bookingId): Promise<ApprovedLicenceVersion> {
     const query = {
       text: `select version, vary_version, template, timestamp from v_licence_versions_excluding_deleted
