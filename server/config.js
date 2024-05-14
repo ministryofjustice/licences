@@ -93,7 +93,7 @@ module.exports = {
   },
 
   manageUsersApi: {
-    apiUrl: get('MANAGE_USERS_API_URL', 'http://localhost:8080'),
+    apiUrl: get('MANAGE_USERS_API_URL', 'http://localhost:8080/manageUsersApi'),
     timeout: {
       response: Number(get('MANAGE_USERS_API_TIMEOUT_RESPONSE', 10000)),
       deadline: Number(get('MANAGE_USERS_API_TIMEOUT_DEADLINE', 10000)),

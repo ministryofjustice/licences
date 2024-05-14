@@ -1,12 +1,12 @@
 import config from '../config'
 import { buildRestClient, constantTokenSource } from './restClientBuilder'
 
-export type PrisonUserDetails = {
+type PrisonUserDetails = {
   name: string
   activeCaseLoadId: string
 }
 
-export type Role = {
+type Role = {
   roleCode: string
 }
 
@@ -23,7 +23,7 @@ const agentOptions = {
   freeSocketTimeout: config.manageUsersApi.agent.freeSocketTimeout,
 }
 
-export default (token) => {
+export = (token) => {
   const tokenSource = constantTokenSource(token)
 
   const oauthRestClient = buildRestClient(tokenSource, apiUrl, 'Manage users API', {
@@ -32,11 +32,11 @@ export default (token) => {
   })
 
   return {
-    getLoggedInUserInfo(): Promise<PrisonUserDetails> {
+    async getLoggedInUserInfo(): Promise<PrisonUserDetails> {
       return oauthRestClient.getResource(`/users/me`)
     },
 
-    getUserRoles(): Promise<Role[]> {
+    async getUserRoles(): Promise<Role[]> {
       return oauthRestClient.getResource(`/users/me/roles`)
     },
   }

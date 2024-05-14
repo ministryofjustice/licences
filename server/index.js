@@ -54,6 +54,7 @@ const tokenVerifierFactory = require('./authentication/tokenverifier/tokenVerifi
 const { default: TokenStore } = require('./data/tokenStore')
 const { createRedisClient } = require('./data/redisClient')
 const prisonerSearchApi = require('./data/prisonerSearchApi')
+const manageUsersApi = require('./data/manageUsersApi')
 
 const signInService = new SignInService(new TokenStore(createRedisClient()))
 const licenceService = createLicenceService(licenceClient)
@@ -93,7 +94,7 @@ const pdfService = new PdfService(
 const formService = new FormService(pdfFormatter, prisonerService, configClient)
 const reportingService = createReportingService(audit)
 const userAdminService = new UserAdminService(nomisClientBuilder, userClient, probationTeamsClient)
-const userService = createUserService(nomisClientBuilder, signInService)
+const userService = createUserService(nomisClientBuilder, signInService, manageUsersApi)
 const deadlineService = createDeadlineService(licenceClient)
 const roContactDetailsService = new RoContactDetailsService(userAdminService, roService, probationTeamsClient)
 const migrationService = new MigrationService(deliusClient, userAdminService, nomisClientBuilder)

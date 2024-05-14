@@ -3,6 +3,7 @@ const createUserService = require('../../server/services/userService')
 describe('userServiceTest', () => {
   let service
   let nomisClient
+  let manageUsersApi
   let signInService
 
   let user = { token: 'token' }
@@ -11,18 +12,21 @@ describe('userServiceTest', () => {
 
   beforeEach(() => {
     nomisClient = {
+      getUserCaseLoads: jest.fn().mockReturnValue(activeCaseLoads),
+      putActiveCaseLoad: jest.fn().mockReturnValue({}),
+    }
+    manageUsersApi = {
+      getLoggedInUserInfo: jest.fn().mockReturnValue({ name: 'User Name' }),
       getUserRoles: jest
         .fn()
         .mockReturnValue([{ roleCode: 'LICENCE_CA' }, { roleCode: 'LICENCE_DM' }, { roleCode: 'PRISON' }]),
-      getUserCaseLoads: jest.fn().mockReturnValue(activeCaseLoads),
-      putActiveCaseLoad: jest.fn().mockReturnValue({}),
-      getLoggedInUserInfo: jest.fn().mockReturnValue({ name: 'User Name' }),
     }
     signInService = {
       getClientCredentialsTokens: jest.fn().mockResolvedValue('systemToken'),
     }
     const nomisClientBuilder = jest.fn().mockReturnValue(nomisClient)
-    service = createUserService(nomisClientBuilder, signInService)
+    const restClientBuilder = jest.fn().mockReturnValue(manageUsersApi)
+    service = createUserService(nomisClientBuilder, signInService, restClientBuilder)
   })
 
   describe('getUserProfile', () => {
@@ -50,7 +54,7 @@ describe('userServiceTest', () => {
     })
 
     test('should allow multiple roles', () => {
-      nomisClient.getUserRoles.mockResolvedValue([
+      manageUsersApi.getUserRoles.mockResolvedValue([
         { roleCode: 'LICENCE_CA' },
         { roleCode: 'LICENCE_RO' },
         { roleCode: 'LICENCE_DM' },
@@ -61,7 +65,7 @@ describe('userServiceTest', () => {
     })
 
     test('should filter invalid roles', () => {
-      nomisClient.getUserRoles.mockResolvedValue([
+      manageUsersApi.getUserRoles.mockResolvedValue([
         {
           roleCode: 'LICENCE_CA',
         },

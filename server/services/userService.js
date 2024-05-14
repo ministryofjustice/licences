@@ -4,12 +4,12 @@ const logger = require('../../log')
 const { getIn } = require('../utils/functionalHelpers')
 const { forenameToInitial } = require('../utils/userProfile')
 
-module.exports = (nomisClientBuilder, signInService) => {
+module.exports = (nomisClientBuilder, signInService, manageUsersApi) => {
   async function getUserProfile(token, refreshToken, username) {
     const nomisClient = nomisClientBuilder(token)
 
     const [profile, { roles, isPrisonUser }] = await Promise.all([
-      nomisClient.getLoggedInUserInfo(),
+      manageUsersApi(token).getLoggedInUserInfo(),
       getAllRoles(token),
     ])
 
@@ -36,8 +36,7 @@ module.exports = (nomisClientBuilder, signInService) => {
    * @returns {Promise<{ roles: string[], isPrisonUser: boolean }>} A sub-set of allowedRoles that have been granted to the holder of the supplied token.
    */
   async function getAllRoles(token) {
-    const nomisClient = nomisClientBuilder(token)
-    const allRoles = await nomisClient.getUserRoles()
+    const allRoles = await manageUsersApi(token).getUserRoles()
 
     const roles = allRoles
       .map((role) => role.roleCode)
