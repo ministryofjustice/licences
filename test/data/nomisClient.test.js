@@ -507,34 +507,6 @@ describe('nomisClient', () => {
     })
   })
 
-  describe('getLoggedInUserInfo', () => {
-    test('should return data from api', () => {
-      fakeAuth.get('/api/user/me').reply(200, { username: 'result' })
-
-      return expect(nomisClient.getLoggedInUserInfo()).resolves.toEqual({ username: 'result' })
-    })
-
-    test('should reject if api fails', () => {
-      fakeAuth.get('/api/user/me').thrice().reply(500)
-
-      return expect(nomisClient.getLoggedInUserInfo()).rejects.toStrictEqual(Error('Internal Server Error'))
-    })
-  })
-
-  describe('getUserRoles', () => {
-    test('should return data from api', () => {
-      fakeAuth.get('/api/user/me/roles').reply(200, { username: 'result' })
-
-      return expect(nomisClient.getUserRoles()).resolves.toEqual({ username: 'result' })
-    })
-
-    test('should reject if api fails', () => {
-      fakeAuth.get('/api/user/me/roles').thrice().reply(500)
-
-      return expect(nomisClient.getUserRoles()).rejects.toStrictEqual(Error('Internal Server Error'))
-    })
-  })
-
   describe('getUserCaseLoads', () => {
     test('should return data from api', () => {
       fakeNomis.get('/api/users/me/caseLoads').reply(200, { username: 'result' })

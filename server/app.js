@@ -287,6 +287,7 @@ module.exports = function createApp({
     auth: `${config.nomis.authUrl}/health/ping`,
     delius: `${config.delius.apiUrl}/health/ping`,
     probationTeams: `${config.probationTeams.apiUrl}/health/ping`,
+    manageUsersApi: `${config.manageUsersApi.apiUrl}/health/ping`,
   })
 
   app.get('/health', (req, res, next) => {

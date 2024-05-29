@@ -32,7 +32,6 @@ app.use((req, res, next) => {
 app.use('/', indexRouter)
 app.use('/prisonApi/api/oauth', oauthRouter)
 app.use('/prisonApi/api/users', usersRouter)
-app.use('/prisonApi/api/user', authUserRouter)
 app.use('/prisonApi/api/offender-sentences', sentencesRouter)
 app.use('/prisonApi/api/bookings', bookingsRouter)
 app.use('/prisonApi/api/persons', personsRouter)
@@ -41,6 +40,8 @@ app.use('/prisonApi/api/offender-relationships', relationshipsRouter)
 app.use('/prisonApi/api/agencies', agenciesRouter)
 app.use('/prisonApi/api/movements', movementsRouter)
 app.use('/prisonApi/api/prisoners', prisonersRouter)
+
+app.use('/manageUsersApi', authUserRouter)
 
 app.use('/delius', deliusRouter)
 app.use('/probationteams', probationteamsRouter)
@@ -53,11 +54,19 @@ app.get('/probationteams/health/ping', (req, res) => {
   res.send({ status: 'UP' })
 })
 
+app.get('/manageUsersApi/health/ping', (req, res) => {
+  res.send({ status: 'UP' })
+})
+
 app.get('/delius/health/ping', (req, res) => {
   res.send('pong')
 })
 
 app.get('/prisonApi/ping', (req, res) => {
+  res.send('pong')
+})
+
+app.get('/manageUsersApi/ping', (req, res) => {
   res.send('pong')
 })
 

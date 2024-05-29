@@ -49,7 +49,7 @@ Run with gradle or execute a specific test using your IDE.
 ### Stepwise specs
 
 This means that the tests in a spec are executed from top to bottom. This means that each test
-depends on the prevous tests. Disadvantage is not being able to run an individual test.
+depends on the previous tests. Disadvantage is not being able to run an individual test.
 Advantage is not having to login and navigate back to the same page again.
 
 When adding or changing tests, consider the context assumed by existing tests.

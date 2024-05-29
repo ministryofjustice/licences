@@ -26,18 +26,18 @@ const agentOptions = {
 export = (token) => {
   const tokenSource = constantTokenSource(token)
 
-  const oauthRestClient = buildRestClient(tokenSource, apiUrl, 'Manage users API', {
+  const manageUsersRestClient = buildRestClient(tokenSource, apiUrl, 'Manage users API', {
     agent: agentOptions,
     timeout: timeoutSpec,
   })
 
   return {
     async getLoggedInUserInfo(): Promise<PrisonUserDetails> {
-      return oauthRestClient.getResource(`/users/me`)
+      return manageUsersRestClient.getResource(`/users/me`)
     },
 
     async getUserRoles(): Promise<Role[]> {
-      return oauthRestClient.getResource(`/users/me/roles`)
+      return manageUsersRestClient.getResource(`/users/me/roles`)
     },
   }
 }

@@ -4,25 +4,35 @@ const { jwtDecode } = require('jwt-decode')
 
 const router = express.Router()
 const profiles = {
+  CA_RO_DM: {
+    name: 'Catherine Ryan Diane',
+    username: 'CA_RO_DM_USER',
+    email: 'CARODM@work',
+    activeCaseLoadId: 'BEL',
+    authSource: 'nomis',
+  },
   CA: {
     name: 'Catherine Amos',
     username: 'CA_USER_TEST',
     email: 'CA-DEMO@work',
     activeCaseLoadId: 'BEL',
+    authSource: 'nomis',
   },
   RO: {
     name: 'Ryan Orton',
     username: 'AUTH_RO_USER_TEST',
     email: 'RO_USER@work',
+    authSource: 'nomis',
   },
   DM: {
     name: 'Diane Matthews',
     username: 'DM_USER_TEST',
     email: 'DM_USER@work',
     activeCaseLoadId: 'BEL',
+    authSource: 'nomis',
   },
   NOMIS: {
-    nomis: 'Norman Bates',
+    name: 'Norman Bates',
     username: 'NOMIS_BATCHLOAD',
     email: 'BATCHLOAD_USER@work',
     activeCaseLoadId: 'BEL',
@@ -33,9 +43,26 @@ const profiles = {
     email: 'BATCHLOAD_USER@work',
     activeCaseLoadId: 'BEL',
   },
+  READONLY: {
+    name: 'Licence Only',
+    username: 'LICENCE_READONLY',
+    email: 'LICENCE_READONLY@work',
+    activeCaseLoadId: 'BEL',
+  },
 }
 
 const roles = {
+  CA_RO_DM: [
+    {
+      roleCode: 'LICENCE_CA',
+    },
+    {
+      roleCode: 'LICENCE_RO',
+    },
+    {
+      roleCode: 'LICENCE_DM',
+    },
+  ],
   CA: [
     {
       roleCode: 'LICENCE_CA',
@@ -57,6 +84,11 @@ const roles = {
     },
   ],
   NONE: [],
+  READONLY: [
+    {
+      roleCode: 'LICENCE_READONLY',
+    },
+  ],
 }
 
 const findFirstFromToken = (token, roleHash) => {
@@ -66,8 +98,8 @@ const findFirstFromToken = (token, roleHash) => {
     // try for a real jwt to get the roles from
     /** @type {any} */
     const jwt = jwtDecode(accessToken)
-    const lookup = jwt.user_name.substring(0, 2)
-    return roleHash[lookup]
+    const found = Object.entries(roleHash).find(([key, value]) => jwt.user_name.includes(key))
+    return found ? found[1] : undefined
   } catch (error) {
     // otherwise fallback to a ca_token, ro_token, dm_token
     const lookup = accessToken.substring(0, accessToken.indexOf('_'))
@@ -81,12 +113,12 @@ const getRoleCode = (token) => {
 }
 
 const getProfile = (token) => findFirstFromToken(token, profiles)
-router.get('/me', (req, res) => {
+router.get('/users/me', (req, res) => {
   const profile = getProfile(req.headers.authorization)
   res.send(profile)
 })
 
-router.get('/me/roles', (req, res) => {
+router.get('/users/me/roles', (req, res) => {
   const role = getRoleCode(req.headers.authorization)
   res.send(role)
 })
