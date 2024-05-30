@@ -112,6 +112,9 @@ env:
   - name: PRISONER_SEARCH_API_URL
     value: {{ .Values.env.PRISONER_SEARCH_API_URL | quote }}
 
+  - name: MANAGE_USERS_API_URL
+    value: {{ .Values.env.MANAGE_USERS_API_URL | quote }}
+
   - name: EXIT_LOCATION_URL
     value: {{ .Values.env.EXIT_LOCATION_URL | quote }}
 
