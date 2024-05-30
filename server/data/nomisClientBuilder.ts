@@ -1,7 +1,6 @@
 import moment from 'moment'
 import config from '../config'
 import { isEmpty, merge, pipe, splitEvery } from '../utils/functionalHelpers'
-import { Profile, Role } from '../../types/prisonApi'
 import { buildRestClient, constantTokenSource } from './restClientBuilder'
 
 const timeoutSpec = {
@@ -181,14 +180,6 @@ export = (token) => {
 
     enableAuthUser(username) {
       return oauthRestClient.putResource(`/api/authuser/${username}/enable`, {})
-    },
-
-    getLoggedInUserInfo(): Promise<Profile> {
-      return oauthRestClient.getResource(`/api/user/me`)
-    },
-
-    getUserRoles(): Promise<Role[]> {
-      return oauthRestClient.getResource(`/api/user/me/roles`)
     },
 
     getUserCaseLoads() {

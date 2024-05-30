@@ -92,6 +92,19 @@ module.exports = {
     },
   },
 
+  manageUsersApi: {
+    apiUrl: get('MANAGE_USERS_API_URL', 'http://localhost:8080/manageUsersApi'),
+    timeout: {
+      response: Number(get('MANAGE_USERS_API_TIMEOUT_RESPONSE', 30000)),
+      deadline: Number(get('MANAGE_USERS_API_TIMEOUT_DEADLINE', 30000)),
+    },
+    agent: {
+      maxSockets: 100,
+      maxFreeSockets: 10,
+      freeSocketTimeout: 30000,
+    },
+  },
+
   probationTeams: {
     apiUrl: get('PROBATION_TEAMS_API_URL', 'http://localhost:8080/probationteams'),
     authUrl: get('PROBATION_TEAMS_AUTH_URL', get('NOMIS_AUTH_URL', 'http://localhost:9090/auth')),

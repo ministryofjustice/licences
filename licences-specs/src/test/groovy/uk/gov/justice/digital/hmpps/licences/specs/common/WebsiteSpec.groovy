@@ -32,15 +32,15 @@ class WebsiteSpec extends GebReportingSpec {
     to CaselistPage
 
     then: 'my user name is shown'
-    header.user.contains(displayName)
+    header.user.equals(displayName)
     actions.logOut()
 
     where:
     user       | displayName
     'CA'       | 'C. Amos'
-    'RO'       | 'R. Orton'
     'DM'       | 'D. Matthews'
     'READONLY' | 'L. Only'
+    'RO'       | 'R. Orton'
   }
 
   def 'User can log out'() {
@@ -74,7 +74,8 @@ class WebsiteSpec extends GebReportingSpec {
       prisonApi     : 'UP',
       auth          : 'UP',
       delius        : 'UP',
-      probationTeams: 'UP'
+      probationTeams: 'UP',
+      manageUsersApi: 'UP'
     ]
   }
 }
