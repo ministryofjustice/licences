@@ -13,7 +13,7 @@ import uk.gov.justice.digital.hmpps.licences.util.TestData
 
 @Stepwise
 class EligibilitySpec extends GebReportingSpec {
-  private static final int EXCLUDED_REASON_COUNT = 10
+  private static final int EXCLUDED_REASON_COUNT = 7
 
   @Shared
   TestData testData = new TestData()
