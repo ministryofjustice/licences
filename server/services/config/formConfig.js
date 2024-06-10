@@ -58,7 +58,6 @@ module.exports = {
     sentenceCategory: 'of the type of offence you were convicted of',
     historyOfTerrorism: 'of your terrorist or terrorist connected offending history',
     categoryA: 'you are a category A prisoner',
-    serving4YearsOrMoreOverseas: 'your original sentence was of 4 or more years',
     riskOfHarm: 'you are at high risk of harm AND subject to MAPPA level 2 or 3 management',
   },
 
