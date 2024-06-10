@@ -76,16 +76,6 @@ describe('nomisPushService', () => {
           approvalStatus: { approvalStatus: 'INELIGIBLE', refusedReason: 'CURFEW' },
         },
         {
-          example: 'Excluded - returnedAtRisk',
-          data: { type: 'excluded', status: 'Yes', reason: 'returnedAtRisk' },
-          approvalStatus: { approvalStatus: 'INELIGIBLE', refusedReason: 'S116' },
-        },
-        {
-          example: 'Excluded - hdcCurfewConditions',
-          data: { type: 'excluded', status: 'Yes', reason: 'hdcCurfewConditions' },
-          approvalStatus: { approvalStatus: 'INELIGIBLE', refusedReason: 'HDC_RECALL' },
-        },
-        {
           example: 'Excluded - servingRecall',
           data: { type: 'excluded', status: 'Yes', reason: 'servingRecall' },
           approvalStatus: { approvalStatus: 'INELIGIBLE', refusedReason: 'LRCOMP' },
