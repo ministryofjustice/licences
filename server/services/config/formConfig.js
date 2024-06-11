@@ -45,6 +45,11 @@ module.exports = {
     servingRecall: 'you were recalled from early release on compassionate grounds',
     deportation: 'the court recommended you should be deported from the UK',
     cja2003_19ZA: 'you are serving a sentence for a specified terrorist or terrorist connected offence',
+    hdcCurfewConditions:
+      'you broke home detention curfew conditions within 2 years of your current sentence date and were recalled to prison',
+    twoThirdsRelease: 'you are required to serve at least two-thirds of your sentence',
+    notice_244zb: 'your release must be approved by the Parole Board',
+    schedule_20B: 'the offence you committed is considered too serious',
   },
 
   unsuitableReasonlabels: {

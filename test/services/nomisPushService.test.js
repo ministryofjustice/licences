@@ -86,6 +86,31 @@ describe('nomisPushService', () => {
           approvalStatus: { approvalStatus: 'INELIGIBLE', refusedReason: 'FNP' },
         },
         {
+          example: 'Excluded - cja2003_19ZA',
+          data: { type: 'excluded', status: 'Yes', reason: 'cja2003_19ZA' },
+          approvalStatus: { approvalStatus: 'INELIGIBLE', refusedReason: 'CJA2003_19ZA' },
+        },
+        {
+          example: 'Excluded - hdcCurfewConditions',
+          data: { type: 'excluded', status: 'Yes', reason: 'hdcCurfewConditions' },
+          approvalStatus: { approvalStatus: 'INELIGIBLE', refusedReason: 'RECALL_2YRS' },
+        },
+        {
+          example: 'Excluded - twoThirdsRelease',
+          data: { type: 'excluded', status: 'Yes', reason: 'twoThirdsRelease' },
+          approvalStatus: { approvalStatus: 'INELIGIBLE', refusedReason: '2_THIRD_REL' },
+        },
+        {
+          example: 'Excluded - notice_244zb',
+          data: { type: 'excluded', status: 'Yes', reason: 'notice_244zb' },
+          approvalStatus: { approvalStatus: 'INELIGIBLE', refusedReason: '244ZB_NOTICE' },
+        },
+        {
+          example: 'Excluded - schedule_20B',
+          data: { type: 'excluded', status: 'Yes', reason: 'schedule_20B' },
+          approvalStatus: { approvalStatus: 'INELIGIBLE', refusedReason: 'SCHEDULE_20B' },
+        },
+        {
           example: 'Unsuitable - sexOffender',
           data: { type: 'exceptionalCircumstances', status: 'No', reason: 'sexOffender' },
           approvalStatus: { approvalStatus: 'PRES UNSUIT', refusedReason: 'UNSUIT_SEX' },
