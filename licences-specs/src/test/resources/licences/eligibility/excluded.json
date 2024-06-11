@@ -4,7 +4,7 @@
     "eligibility": {
       "excluded": {
         "decision": "Yes",
-        "reason": ["sexOffenderRegister", "rotlFail", "deportation"]
+        "reason": ["sexOffenderRegister", "rotlFail", "hdcCurfewConditions", "deportation"]
       }
     }
   }

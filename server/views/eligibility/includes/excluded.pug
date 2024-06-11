@@ -21,16 +21,28 @@ block excludedForm
         input(type='checkbox' name='reason[]' id='communityCurfew' value='communityCurfew' checked=vals.indexOf('communityCurfew') !== -1)
         label(for='communityCurfew') Serving a sentence for breach of the curfew requirement of a
           |  Community Order
+      div.multiple-choice
+        input(type='checkbox' name='reason[]' id='hdcCurfewConditions' value='hdcCurfewConditions' checked=vals.indexOf('hdcCurfewConditions') !== -1)
+        label(for='hdcCurfewConditions') Recalled to prison for failing to comply with their HDC curfew conditions within 2 years of their current sentence date
+      div.multiple-choice
+        input(type='checkbox' name='reason[]' id='deportation' value='deportation' checked=vals.indexOf('deportation') !== -1)
+        label(for='deportation') Foreign national offender recommended for deportation by
+          |  the court and those who are liable to deportation and a decision to deport has been served
+          |  (i.e. not just those with a Deportation Order)
     div.pure-u-4-24
     div.pure-u-1.pure-u-md-10-24
       div.multiple-choice
         input(type='checkbox' name='reason[]' id='servingRecall' value='servingRecall' checked=vals.indexOf('servingRecall') !== -1)
         label(for='servingRecall') Currently serving a recall from early release on compassionate grounds
       div.multiple-choice
-        input(type='checkbox' name='reason[]' id='deportation' value='deportation' checked=vals.indexOf('deportation') !== -1)
-        label(for='deportation') Foreign national offender recommended for deportation by
-          |  the court and those who are liable to deportation and a decision to deport has been served
-          |  (i.e. not just those with a Deportation Order)
-      div.multiple-choice
         input(type='checkbox' name='reason[]' id='cja2003_19ZA' value='cja2003_19ZA' checked=vals.indexOf('cja2003_19ZA') !== -1)
         label(for='cja2003_19ZA') Offender currently serving for a specified terrorism or terrorism connected offence
+      div.multiple-choice
+        input(type='checkbox' name='reason[]' id='twoThirdsRelease' value='twoThirdsRelease' checked=vals.indexOf('twoThirdsRelease') !== -1)
+        label(for='twoThirdsRelease') Only eligible for release after serving two-thirds of their sentence – SDS+, DYOI+ or S250+
+      div.multiple-choice
+        input(type='checkbox' name='reason[]' id='notice_244zb' value='notice_244zb' checked=vals.indexOf('notice_244zb') !== -1)
+        label(for='notice_244zb') A notice under section 244ZB has been served and is still in force
+      div.multiple-choice
+        input(type='checkbox' name='reason[]' id='schedule_20B' value='schedule_20B' checked=vals.indexOf('schedule_20B') !== -1)
+        label(for='schedule_20B') Release is governed by schedule 20B of the Criminal Justice Act 2003
