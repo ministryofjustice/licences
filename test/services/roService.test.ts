@@ -23,6 +23,32 @@ describe('roService', () => {
   }
 
   const roPrisoners = ['A', 'B', 'C']
+  const offenderSentences = [
+    {
+      bookingId: '1',
+      offenderNo: 'A1234BC',
+      firstName: 'x',
+      lastName: 'x',
+      mostRecentActiveBooking: false,
+      sentenceDetail: {},
+    },
+    {
+      bookingId: '2',
+      offenderNo: 'A1234CD',
+      firstName: 'x',
+      lastName: 'x',
+      mostRecentActiveBooking: true,
+      sentenceDetail: {},
+    },
+    {
+      bookingId: '3',
+      offenderNo: 'A1234DC',
+      firstName: 'x',
+      lastName: 'x',
+      mostRecentActiveBooking: false,
+      sentenceDetail: {},
+    },
+  ]
   const staffDetails: StaffDetails = {
     code: 'N02A008',
     staffId: 1,
@@ -81,6 +107,25 @@ describe('roService', () => {
       expect(deliusClient.getManagedPrisonerIdsByStaffId).toHaveBeenCalled()
       expect(nomisClient.getOffenderSentencesByNomisId).toHaveBeenCalled()
       expect(nomisClient.getOffenderSentencesByNomisId).toHaveBeenCalledWith(['A', 'B', 'C'])
+    })
+
+    test('should return only most recent active booking from getOffenderSentencesByNomisId', async () => {
+      deliusClient.getManagedPrisonerIdsByStaffId.mockResolvedValue(roPrisoners)
+      nomisClient.getOffenderSentencesByNomisId.mockResolvedValue(offenderSentences)
+      const result = await service.getROPrisonersForStaffIdentifier(123, 'token')
+      expect(deliusClient.getManagedPrisonerIdsByStaffId).toHaveBeenCalled()
+      expect(nomisClient.getOffenderSentencesByNomisId).toHaveBeenCalled()
+      expect(nomisClient.getOffenderSentencesByNomisId).toHaveBeenCalledWith(['A', 'B', 'C'])
+      expect(result).toStrictEqual([
+        {
+          bookingId: '2',
+          offenderNo: 'A1234CD',
+          firstName: 'x',
+          lastName: 'x',
+          mostRecentActiveBooking: true,
+          sentenceDetail: {},
+        },
+      ])
     })
 
     test('should not call getOffenderSentencesByNomisId when no results from getROPrisoners', async () => {
