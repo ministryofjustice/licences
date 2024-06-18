@@ -59,8 +59,27 @@ class CommonCaselistSpec extends GebReportingSpec {
     where:
     user | sample
     'CA' | 'eligibility/unstarted'
-    'RO' | 'assessment/unstarted'
     'DM' | 'decision/unstarted'
+  }
+
+  @Unroll
+  def 'Shows only licence case summary details (from nomis) for latest booking for RO'() {
+
+    when: 'I view the case list'
+    actions.logIn(user)
+    testData.loadLicence(sample)
+    via CaselistPage
+
+    then: 'I see the expected data for the prisoner'
+    offenders.summary[0].name == 'Mark Andrews'
+    offenders.summary[0].nomisId == 'A5001DY'
+
+    then: 'I do not see data for the prisoner`s previous booking'
+    offenders.summary.size == 1
+
+    where:
+    user | sample
+    'RO' | 'assessment/unstarted'
   }
 
   @Unroll
