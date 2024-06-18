@@ -58,7 +58,7 @@ describe('roService', () => {
 
   beforeEach(() => {
     nomisClient = {
-      getOffenderSentencesByNomisId: jest.fn().mockReturnValue([]),
+      getOffenderSentencesByNomisId: jest.fn().mockResolvedValue([]),
       getBooking: jest.fn().mockReturnValue({ offenderNo: 1 }),
     }
 
