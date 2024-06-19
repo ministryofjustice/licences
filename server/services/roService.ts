@@ -1,6 +1,5 @@
 import { CommunityManager, DeliusClient, StaffDetails } from '../data/deliusClient'
 import { ResponsibleOfficer, ResponsibleOfficerResult, Result } from '../../types/licences'
-import { OffenderSentence } from '../data/nomisClientTypes'
 
 const setCase = require('case')
 const logger = require('../../log')
@@ -20,10 +19,6 @@ export class RoService {
       logger.error(`Problem retrieving RO prisoners for: ${staffIdentifier}`, error.stack)
       throw error
     }
-  }
-
-  private filterMostRecentActiveBooking(offenderSentences: OffenderSentence[]): OffenderSentence[] {
-    return offenderSentences.filter((o) => o.mostRecentActiveBooking === true)
   }
 
   async getStaffByStaffIdentifier(staffIdentifier: number): Promise<Result<StaffDetails>> {
@@ -51,7 +46,7 @@ export class RoService {
     if (!requiredIDs) {
       return null
     }
-    return nomisClient.getOffenderSentencesByNomisId(requiredIDs).then(this.filterMostRecentActiveBooking)
+    return nomisClient.getOffenderSentencesByNomisId(requiredIDs)
   }
 
   async findResponsibleOfficer(bookingId, token): Promise<Result<ResponsibleOfficer>> {
