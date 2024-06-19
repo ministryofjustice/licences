@@ -91,8 +91,8 @@ describe('nomisPushService', () => {
           approvalStatus: { approvalStatus: 'INELIGIBLE', refusedReason: 'CJA2003_19ZA' },
         },
         {
-          example: 'Excluded - hdcCurfewConditions',
-          data: { type: 'excluded', status: 'Yes', reason: 'hdcCurfewConditions' },
+          example: 'Excluded - curfewConditionsRecall',
+          data: { type: 'excluded', status: 'Yes', reason: 'curfewConditionsRecall' },
           approvalStatus: { approvalStatus: 'INELIGIBLE', refusedReason: 'RECALL_2YRS' },
         },
         {

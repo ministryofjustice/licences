@@ -45,7 +45,7 @@ module.exports = {
     servingRecall: 'you were recalled from early release on compassionate grounds',
     deportation: 'the court recommended you should be deported from the UK',
     cja2003_19ZA: 'you are serving a sentence for a specified terrorist or terrorist connected offence',
-    hdcCurfewConditions: 'you previously broke home detention curfew conditions and were recalled to prison',
+    curfewConditionsRecall: 'you previously broke home detention curfew conditions and were recalled to prison',
     twoThirdsRelease: 'you are serving a sentence subject to two thirds release',
     notice_244zb:
       'the Secretary of State has referred your case to the Parole Board under section 244ZB of the Criminal Justice Act 2003',
