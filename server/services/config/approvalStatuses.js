@@ -50,7 +50,7 @@ module.exports = {
         servingRecall: { approvalStatus: 'INELIGIBLE', refusedReason: 'LRCOMP' },
         deportation: { approvalStatus: 'INELIGIBLE', refusedReason: 'FNP' },
         cja2003_19ZA: { approvalStatus: 'INELIGIBLE', refusedReason: 'CJA2003_19ZA' },
-        hdcCurfewConditions: { approvalStatus: 'INELIGIBLE', refusedReason: 'RECALL_2YRS' },
+        curfewConditionsRecall: { approvalStatus: 'INELIGIBLE', refusedReason: 'RECALL_2YRS' },
         twoThirdsRelease: { approvalStatus: 'INELIGIBLE', refusedReason: '2_THIRD_REL' },
         notice_244zb: { approvalStatus: 'INELIGIBLE', refusedReason: '244ZB_NOTICE' },
         schedule_20B: { approvalStatus: 'INELIGIBLE', refusedReason: 'SCHEDULE_20B' },
