@@ -10,6 +10,7 @@ export interface OffenderSentence {
   agencyLocationDesc: string
   internalLocationDesc: string
   facialImageId: number
+  mostRecentActiveBooking: boolean
   sentenceDetail: {
     bookingId: number
     sentenceStartDate: Iso8601DateString
