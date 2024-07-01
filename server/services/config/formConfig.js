@@ -46,7 +46,8 @@ module.exports = {
     deportation: 'the court recommended you should be deported from the UK',
     cja2003_19ZA: 'you are serving a sentence for a specified terrorist or terrorist connected offence',
     curfewConditionsRecall: 'you previously broke home detention curfew conditions and were recalled to prison',
-    twoThirdsRelease: 'you are serving a sentence subject to two thirds release',
+    twoThirdsRelease:
+      'you are serving a sentence subject to two-thirds release criteria (SDS+, DYOI+ or S250+) or would be serving one if you had been sentenced after the Police and Crime Sentencing Act was introduced',
     notice_244zb:
       'the Secretary of State has referred your case to the Parole Board under section 244ZB of the Criminal Justice Act 2003',
     schedule_20B:
