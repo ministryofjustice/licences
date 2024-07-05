@@ -47,7 +47,7 @@ module.exports = {
     cja2003_19ZA: 'you are serving a sentence for a specified terrorist or terrorist connected offence',
     curfewConditionsRecall: 'you previously broke home detention curfew conditions and were recalled to prison',
     twoThirdsRelease:
-      'you are serving a sentence subject to two-thirds release criteria (SDS+, DYOI+ or S250+) or would be serving one if you had been sentenced after the Police and Crime Sentencing Act was introduced',
+      'you are serving a sentence subject to two-thirds release criteria (SDS+, DYOI+ or S250+) or would be serving one if you had been sentenced after the Police, Crime, Sentencing and Courts Act 2022 was introduced',
     notice_244zb:
       'the Secretary of State has referred your case to the Parole Board under section 244ZB of the Criminal Justice Act 2003',
     schedule_20B:
