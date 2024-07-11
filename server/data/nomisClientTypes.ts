@@ -44,5 +44,7 @@ export interface OffenderSentence {
     tariffDate: Iso8601DateString
     tariffEarlyRemovalSchemeEligibilityDate: Iso8601DateString
     effectiveSentenceEndDate: Iso8601DateString
+    topupSupervisionExpiryCalculatedDate: Iso8601DateString
+    licenceExpiryCalculatedDate: Iso8601DateString
   }
 }
