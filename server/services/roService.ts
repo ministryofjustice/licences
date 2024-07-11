@@ -26,20 +26,17 @@ export class RoService {
 
   getLatestSentences(offenderSentences: OffenderSentence[]): OffenderSentence[] {
     const groupedOffenderSentencess = groupBy(offenderSentences, ({ offenderNo }) => offenderNo)
-    let latestOffenderSentences = []
-
-    Array.from(groupedOffenderSentencess.values()).flatMap((sentences) => {
-      const hasNoDatesToCompare = sentences.find((b) => absentDatesToCompare(b))
+    let latestOffenderSentences = Array.from(groupedOffenderSentencess.values()).flatMap((sentences) => {
+      const hasNoDatesToCompare = sentences.find((b) => noDatesToCompare(b))
       if (hasNoDatesToCompare) {
-        sentences.forEach((sentence) => latestOffenderSentences.push(sentence))
+        return sentences
       } else {
         const sortedSentences = sentences.sort((a, b) => {
           return moment(
             a.sentenceDetail.topupSupervisionExpiryCalculatedDate || a.sentenceDetail.licenceExpiryCalculatedDate
           ).diff(b.sentenceDetail.topupSupervisionExpiryCalculatedDate || b.sentenceDetail.licenceExpiryCalculatedDate)
         })
-        const latestSentence = sortedSentences.pop()
-        latestOffenderSentences.push(latestSentence)
+        return [sortedSentences.pop()]
       }
     })
     return latestOffenderSentences
@@ -122,7 +119,7 @@ function toResponsibleOfficer(offenderNumber: string, offenderManager: Community
   }
 }
 
-function absentDatesToCompare(booking): Boolean {
+function noDatesToCompare(booking): Boolean {
   return (
     !booking.sentenceDetail.topupSupervisionExpiryCalculatedDate && !booking.sentenceDetail.licenceExpiryCalculatedDate
   )
