@@ -26,7 +26,7 @@ export class RoService {
 
   getLatestSentences(offenderSentences: OffenderSentence[]): OffenderSentence[] {
     const groupedOffenderSentencess = groupBy(offenderSentences, ({ offenderNo }) => offenderNo)
-    let latestOffenderSentences = Array.from(groupedOffenderSentencess.values()).flatMap((sentences) => {
+    const latestOffenderSentences = Array.from(groupedOffenderSentencess.values()).flatMap((sentences) => {
       const hasNoDatesToCompare = sentences.find((b) => noDatesToCompare(b))
       if (hasNoDatesToCompare) {
         return sentences
@@ -39,6 +39,7 @@ export class RoService {
         return sortedSentences.pop()
       }
     })
+    console.log('RETURNING THESE BOOKINGS:', latestOffenderSentences)
     return latestOffenderSentences
   }
 
