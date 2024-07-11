@@ -36,7 +36,7 @@ export class RoService {
             a.sentenceDetail.topupSupervisionExpiryCalculatedDate || a.sentenceDetail.licenceExpiryCalculatedDate
           ).diff(b.sentenceDetail.topupSupervisionExpiryCalculatedDate || b.sentenceDetail.licenceExpiryCalculatedDate)
         })
-        return [sortedSentences.pop()]
+        return sortedSentences.pop()
       }
     })
     return latestOffenderSentences
