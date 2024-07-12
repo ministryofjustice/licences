@@ -10,6 +10,7 @@ module.exports = [
     agencyLocationDesc: 'HMP Albany',
     internalLocationDesc: 'T-T1-001',
     facialImageId: 1,
+    mostRecentActiveBooking: true,
     sentenceDetail: {
       bookingId: 1200635,
       conditionalReleaseDate: '2019-10-15',
@@ -20,8 +21,6 @@ module.exports = [
       sentenceExpiryDate: '2020-05-24',
       licenceExpiryDate: '2020-05-02',
       topupSupervisionExpiryDate: '2020-10-15',
-      topupSupervisionExpiryCalculatedDate: '2020-11-15',
-      licenceExpiryCalculatedDate: '2020-10-15',
     },
   },
   {
@@ -35,6 +34,7 @@ module.exports = [
     agencyLocationDesc: 'HMP Albany',
     internalLocationDesc: 'T-T1-001',
     facialImageId: 1,
+    mostRecentActiveBooking: false,
     sentenceDetail: {
       bookingId: 1200634,
       conditionalReleaseDate: '2018-10-15',
@@ -45,8 +45,6 @@ module.exports = [
       sentenceExpiryDate: '2019-05-24',
       licenceExpiryDate: '2019-05-02',
       topupSupervisionExpiryDate: '2019-10-15',
-      topupSupervisionExpiryCalculatedDate: '2019-10-15',
-      licenceExpiryCalculatedDate: '2019-11-15',
     },
   },
 ]
