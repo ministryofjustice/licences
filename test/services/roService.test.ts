@@ -1,3 +1,4 @@
+import moment from 'moment'
 import { RoService } from '../../server/services/roService'
 import { DeliusClient, StaffDetails } from '../../server/data/deliusClient'
 
@@ -29,23 +30,84 @@ describe('roService', () => {
       offenderNo: 'A1234BC',
       firstName: 'x',
       lastName: 'x',
-      mostRecentActiveBooking: false,
-      sentenceDetail: {},
+      sentenceDetail: {
+        topupSupervisionExpiryCalculatedDate: moment().add(10, 'months').format('YYYY-MM-DD'),
+        licenceExpiryCalculatedDate: moment().add(11, 'months').format('YYYY-MM-DD'),
+      },
     },
     {
       bookingId: '2',
-      offenderNo: 'A1234CD',
+      offenderNo: 'A1234BC',
       firstName: 'x',
       lastName: 'x',
-      mostRecentActiveBooking: true,
-      sentenceDetail: {},
+      sentenceDetail: {
+        topupSupervisionExpiryCalculatedDate: moment().add(6, 'months').format('YYYY-MM-DD'),
+        licenceExpiryCalculatedDate: moment().add(5, 'months').format('YYYY-MM-DD'),
+      },
     },
     {
       bookingId: '3',
+      offenderNo: 'A1234CD',
+      firstName: 'x',
+      lastName: 'x',
+      sentenceDetail: {
+        topupSupervisionExpiryCalculatedDate: moment().add(4, 'months').format('YYYY-MM-DD'),
+        licenceExpiryCalculatedDate: moment().add(3, 'months').format('YYYY-MM-DD'),
+      },
+    },
+    {
+      bookingId: '4',
+      offenderNo: 'A1234CD',
+      firstName: 'x',
+      lastName: 'x',
+      sentenceDetail: {
+        licenceExpiryCalculatedDate: moment().add(11, 'months').format('YYYY-MM-DD'),
+      },
+    },
+    {
+      bookingId: '5',
+      offenderNo: 'A1234CD',
+      firstName: 'x',
+      lastName: 'x',
+      sentenceDetail: {
+        topupSupervisionExpiryCalculatedDate: moment().add(10, 'months').format('YYYY-MM-DD'),
+      },
+    },
+    {
+      bookingId: '6',
       offenderNo: 'A1234DC',
       firstName: 'x',
       lastName: 'x',
-      mostRecentActiveBooking: false,
+      sentenceDetail: {
+        topupSupervisionExpiryCalculatedDate: moment().add(10, 'months').format('YYYY-MM-DD'),
+        licenceExpiryCalculatedDate: moment().add(11, 'months').format('YYYY-MM-DD'),
+      },
+    },
+    {
+      bookingId: '7',
+      offenderNo: 'A1234DC',
+      firstName: 'x',
+      lastName: 'x',
+      sentenceDetail: {
+        topupSupervisionExpiryCalculatedDate: moment().add(5, 'months').format('YYYY-MM-DD'),
+        licenceExpiryCalculatedDate: moment().add(6, 'months').format('YYYY-MM-DD'),
+      },
+    },
+    {
+      bookingId: '8',
+      offenderNo: 'A1234DC',
+      firstName: 'x',
+      lastName: 'x',
+      sentenceDetail: {
+        topupSupervisionExpiryCalculatedDate: moment().add(2, 'months').format('YYYY-MM-DD'),
+        licenceExpiryCalculatedDate: moment().add(3, 'months').format('YYYY-MM-DD'),
+      },
+    },
+    {
+      bookingId: '9',
+      offenderNo: 'A1234DC',
+      firstName: 'x',
+      lastName: 'x',
       sentenceDetail: {},
     },
   ]
@@ -110,22 +172,72 @@ describe('roService', () => {
     })
 
     test('should return only most recent active booking from getOffenderSentencesByNomisId', async () => {
+      const offenderSentencesResult = [
+        {
+          bookingId: '1',
+          offenderNo: 'A1234BC',
+          firstName: 'x',
+          lastName: 'x',
+          sentenceDetail: {
+            topupSupervisionExpiryCalculatedDate: moment().add(10, 'months').format('YYYY-MM-DD'),
+            licenceExpiryCalculatedDate: moment().add(11, 'months').format('YYYY-MM-DD'),
+          },
+        },
+        {
+          bookingId: '4',
+          offenderNo: 'A1234CD',
+          firstName: 'x',
+          lastName: 'x',
+          sentenceDetail: {
+            licenceExpiryCalculatedDate: moment().add(11, 'months').format('YYYY-MM-DD'),
+          },
+        },
+        {
+          bookingId: '6',
+          offenderNo: 'A1234DC',
+          firstName: 'x',
+          lastName: 'x',
+          sentenceDetail: {
+            topupSupervisionExpiryCalculatedDate: moment().add(10, 'months').format('YYYY-MM-DD'),
+            licenceExpiryCalculatedDate: moment().add(11, 'months').format('YYYY-MM-DD'),
+          },
+        },
+        {
+          bookingId: '7',
+          offenderNo: 'A1234DC',
+          firstName: 'x',
+          lastName: 'x',
+          sentenceDetail: {
+            topupSupervisionExpiryCalculatedDate: moment().add(5, 'months').format('YYYY-MM-DD'),
+            licenceExpiryCalculatedDate: moment().add(6, 'months').format('YYYY-MM-DD'),
+          },
+        },
+        {
+          bookingId: '8',
+          offenderNo: 'A1234DC',
+          firstName: 'x',
+          lastName: 'x',
+          sentenceDetail: {
+            topupSupervisionExpiryCalculatedDate: moment().add(2, 'months').format('YYYY-MM-DD'),
+            licenceExpiryCalculatedDate: moment().add(3, 'months').format('YYYY-MM-DD'),
+          },
+        },
+        {
+          bookingId: '9',
+          offenderNo: 'A1234DC',
+          firstName: 'x',
+          lastName: 'x',
+          sentenceDetail: {},
+        },
+      ]
+
       deliusClient.getManagedPrisonerIdsByStaffId.mockResolvedValue(roPrisoners)
       nomisClient.getOffenderSentencesByNomisId.mockResolvedValue(offenderSentences)
       const result = await service.getROPrisonersForStaffIdentifier(123, 'token')
       expect(deliusClient.getManagedPrisonerIdsByStaffId).toHaveBeenCalled()
       expect(nomisClient.getOffenderSentencesByNomisId).toHaveBeenCalled()
       expect(nomisClient.getOffenderSentencesByNomisId).toHaveBeenCalledWith(['A', 'B', 'C'])
-      expect(result).toStrictEqual([
-        {
-          bookingId: '2',
-          offenderNo: 'A1234CD',
-          firstName: 'x',
-          lastName: 'x',
-          mostRecentActiveBooking: true,
-          sentenceDetail: {},
-        },
-      ])
+      expect(result).toStrictEqual(offenderSentencesResult)
     })
 
     test('should not call getOffenderSentencesByNomisId when no results from getROPrisoners', async () => {

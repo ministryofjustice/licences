@@ -1,6 +1,8 @@
+import moment from 'moment'
 import { CommunityManager, DeliusClient, StaffDetails } from '../data/deliusClient'
 import { ResponsibleOfficer, ResponsibleOfficerResult, Result } from '../../types/licences'
 import { OffenderSentence } from '../data/nomisClientTypes'
+import { groupBy } from '../utils/functionalHelpers'
 
 const setCase = require('case')
 const logger = require('../../log')
@@ -22,8 +24,23 @@ export class RoService {
     }
   }
 
-  private filterMostRecentActiveBooking(offenderSentences: OffenderSentence[]): OffenderSentence[] {
-    return offenderSentences.filter((o) => o.mostRecentActiveBooking === true)
+  getLatestSentences(offenderSentences: OffenderSentence[]): OffenderSentence[] {
+    const groupedOffenderSentencess = groupBy(offenderSentences, ({ offenderNo }) => offenderNo)
+    const latestOffenderSentences = Array.from(groupedOffenderSentencess.values()).flatMap((sentences) => {
+      const hasNoDatesToCompare = sentences.find((b) => noDatesToCompare(b))
+      if (hasNoDatesToCompare) {
+        return sentences
+      } else {
+        const sortedSentences = sentences.sort((a, b) => {
+          return moment(
+            a.sentenceDetail.topupSupervisionExpiryCalculatedDate || a.sentenceDetail.licenceExpiryCalculatedDate
+          ).diff(b.sentenceDetail.topupSupervisionExpiryCalculatedDate || b.sentenceDetail.licenceExpiryCalculatedDate)
+        })
+        return sortedSentences.pop()
+      }
+    })
+    console.log('RETURNING THESE BOOKINGS:', latestOffenderSentences)
+    return latestOffenderSentences
   }
 
   async getStaffByStaffIdentifier(staffIdentifier: number): Promise<Result<StaffDetails>> {
@@ -51,7 +68,7 @@ export class RoService {
     if (!requiredIDs) {
       return null
     }
-    return nomisClient.getOffenderSentencesByNomisId(requiredIDs).then(this.filterMostRecentActiveBooking)
+    return nomisClient.getOffenderSentencesByNomisId(requiredIDs).then(this.getLatestSentences)
   }
 
   async findResponsibleOfficer(bookingId, token): Promise<Result<ResponsibleOfficer>> {
@@ -101,4 +118,10 @@ function toResponsibleOfficer(offenderNumber: string, offenderManager: Community
     probationAreaCode: probationArea.code,
     probationAreaDescription: probationArea.description,
   }
+}
+
+function noDatesToCompare(booking): Boolean {
+  return (
+    !booking.sentenceDetail.topupSupervisionExpiryCalculatedDate && !booking.sentenceDetail.licenceExpiryCalculatedDate
+  )
 }
