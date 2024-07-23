@@ -39,7 +39,6 @@ export class RoService {
         return sortedSentences.pop()
       }
     })
-    console.log('RETURNING THESE BOOKINGS:', latestOffenderSentences)
     return latestOffenderSentences
   }
 
