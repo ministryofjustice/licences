@@ -10,7 +10,6 @@ export interface OffenderSentence {
   agencyLocationDesc: string
   internalLocationDesc: string
   facialImageId: number
-  mostRecentActiveBooking: boolean
   sentenceDetail: {
     bookingId: number
     sentenceStartDate: Iso8601DateString
@@ -44,5 +43,7 @@ export interface OffenderSentence {
     tariffDate: Iso8601DateString
     tariffEarlyRemovalSchemeEligibilityDate: Iso8601DateString
     effectiveSentenceEndDate: Iso8601DateString
+    topupSupervisionExpiryCalculatedDate: Iso8601DateString
+    licenceExpiryCalculatedDate: Iso8601DateString
   }
 }
