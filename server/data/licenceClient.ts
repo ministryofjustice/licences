@@ -75,7 +75,7 @@ export class LicenceClient {
 
   async getLicenceIncludingSoftDeleted(bookingId: number): Promise<CaseWithVaryVersion> {
     const query = {
-      text: `select licence, booking_id, stage, version, vary_version, additional_conditions_version, standard_conditions_version from licences where booking_id = $1`,
+      text: `select licence, booking_id, stage, version, vary_version, additional_conditions_version, standard_conditions_version from licences where booking_id = $1 order by id desc`,
       values: [bookingId],
     }
 
