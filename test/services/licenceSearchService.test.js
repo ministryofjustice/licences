@@ -3,8 +3,6 @@ const createLicenceSearchService = require('../../server/services/licenceSearchS
 let licenceSearchService
 let licenceClient
 let signInService
-let nomisClient
-let nomisClientBuilder
 let prisonerSearchAPI
 let restClientBuilder
 
@@ -12,7 +10,8 @@ describe('licenceSearchService', () => {
   beforeEach(async () => {
     licenceClient = {
       getLicence: jest.fn(),
-      getLicenceIncludingSoftDeleted: jest.fn(),
+      getAllLicencesForBookingId: jest.fn(),
+      getAllLicencesForPrisonNumber: jest.fn(),
       getLicencesInStage: jest.fn().mockReturnValue([
         { booking_id: 1, transition_date: '01-01-2020' },
         { booking_id: 2, transition_date: '01-01-2020' },
@@ -22,10 +21,6 @@ describe('licenceSearchService', () => {
 
     signInService = {
       getClientCredentialsTokens: jest.fn().mockReturnValue('a token'),
-    }
-
-    nomisClient = {
-      getBookingByOffenderNumber: jest.fn().mockReturnValue({ bookingId: 1 }),
     }
 
     prisonerSearchAPI = {
@@ -54,14 +49,8 @@ describe('licenceSearchService', () => {
       ]),
     }
 
-    nomisClientBuilder = jest.fn().mockReturnValue(nomisClient)
     restClientBuilder = jest.fn().mockReturnValue(prisonerSearchAPI)
-    licenceSearchService = await createLicenceSearchService(
-      licenceClient,
-      signInService,
-      nomisClientBuilder,
-      restClientBuilder
-    )
+    licenceSearchService = await createLicenceSearchService(licenceClient, signInService, restClientBuilder)
   })
 
   afterEach(() => {
@@ -69,49 +58,42 @@ describe('licenceSearchService', () => {
   })
 
   describe('findLicenceFor', () => {
+    const someReferences = [{ booking_id: 1234 }]
+
     it('Should find when searching by booking id', async () => {
-      licenceClient.getLicenceIncludingSoftDeleted.mockReturnValue({ booking_id: 1234 })
+      licenceClient.getAllLicencesForBookingId.mockReturnValue(someReferences)
 
-      const bookingId = await licenceSearchService.findForId('user-1', '1234')
+      const bookingId = await licenceSearchService.findForIdentifier('1234')
 
-      expect(bookingId).toBe(1234)
+      expect(licenceClient.getAllLicencesForBookingId).toHaveBeenCalledWith(1234)
+      expect(bookingId).toBe(someReferences)
     })
 
     it('Should trim input when searching by booking id', async () => {
-      licenceClient.getLicenceIncludingSoftDeleted.mockReturnValue({ booking_id: 1234 })
+      licenceClient.getAllLicencesForBookingId.mockReturnValue(someReferences)
 
-      const bookingId = await licenceSearchService.findForId('user-1', '  1234   ')
+      const bookingId = await licenceSearchService.findForIdentifier('  1234   ')
 
-      expect(bookingId).toBe(1234)
+      expect(licenceClient.getAllLicencesForBookingId).toHaveBeenCalledWith(1234)
+      expect(bookingId).toBe(someReferences)
     })
 
-    it('Should find when searching by offender number', async () => {
-      nomisClient.getBookingByOffenderNumber.mockReturnValue({ bookingId: 1234 })
-      licenceClient.getLicenceIncludingSoftDeleted.mockReturnValueOnce({ booking_id: 1234 })
+    it('Should find when searching by prison number', async () => {
+      licenceClient.getAllLicencesForPrisonNumber.mockReturnValue(someReferences)
 
-      const bookingId = await licenceSearchService.findForId('user-1', 'ABC1234')
+      const bookingId = await licenceSearchService.findForIdentifier('A1234AA')
 
-      expect(bookingId).toBe(1234)
-      expect(signInService.getClientCredentialsTokens).toHaveBeenCalledWith('user-1')
-      expect(nomisClient.getBookingByOffenderNumber).toHaveBeenCalledWith('ABC1234')
+      expect(licenceClient.getAllLicencesForPrisonNumber).toHaveBeenCalledWith('A1234AA')
+      expect(bookingId).toBe(someReferences)
     })
 
-    it('Can cope with 404 when searching by offender number', async () => {
-      licenceClient.getLicenceIncludingSoftDeleted.mockReturnValue(null)
-      nomisClient.getBookingByOffenderNumber.mockRejectedValue({ status: 404 })
+    it('Should trim input when searching by prison number', async () => {
+      licenceClient.getAllLicencesForPrisonNumber.mockReturnValue(someReferences)
 
-      const bookingId = await licenceSearchService.findForId('user-1', 'ABC1234')
+      const bookingId = await licenceSearchService.findForIdentifier('  A1234AA   ')
 
-      expect(bookingId).toBe(null)
-      expect(signInService.getClientCredentialsTokens).toHaveBeenCalledWith('user-1')
-      expect(nomisClient.getBookingByOffenderNumber).toHaveBeenCalledWith('ABC1234')
-    })
-
-    it('propagates other http errors when searching by offender number', async () => {
-      licenceClient.getLicenceIncludingSoftDeleted.mockReturnValue(null)
-      nomisClient.getBookingByOffenderNumber.mockRejectedValue({ status: 500 })
-
-      return expect(licenceSearchService.findForId('user-1', 'ABC1234')).rejects.toStrictEqual({ status: 500 })
+      expect(licenceClient.getAllLicencesForPrisonNumber).toHaveBeenCalledWith('A1234AA')
+      expect(bookingId).toBe(someReferences)
     })
   })
 

@@ -67,10 +67,30 @@ describe('licenceClient', () => {
 
   describe('getLicenceIncludingSoftDeleted', () => {
     test('should pass in the correct parameters', async () => {
-      await licenceClient.getLicenceIncludingSoftDeleted(10001)
+      await licenceClient.getLicenceById(10001)
       expect(db.query).toHaveBeenCalledWith({
-        text: `select licence, booking_id, stage, version, vary_version, additional_conditions_version, standard_conditions_version from licences where booking_id = $1 order by id desc`,
+        text: `select licence, booking_id, stage, version, vary_version, additional_conditions_version, standard_conditions_version, deleted_at from licences where id = $1`,
         values: [10001],
+      })
+    })
+  })
+
+  describe('getAllLicencesForBookingId', () => {
+    test('should pass in the correct parameters', async () => {
+      await licenceClient.getAllLicencesForBookingId(10001)
+      expect(db.query).toHaveBeenCalledWith({
+        text: `select id, prison_number, booking_id, deleted_at, transition_date, stage from licences l where booking_id  = $1 order by transition_date desc nulls first, deleted_at desc nulls first;`,
+        values: [10001],
+      })
+    })
+  })
+
+  describe('getAllLicencesForPrisonNumber', () => {
+    test('should pass in the correct parameters', async () => {
+      await licenceClient.getAllLicencesForPrisonNumber('A1234AA')
+      expect(db.query).toHaveBeenCalledWith({
+        text: `select id, prison_number, booking_id, deleted_at, transition_date, stage from licences l where prison_number  = $1 order by transition_date desc nulls first, deleted_at desc nulls first;`,
+        values: ['A1234AA'],
       })
     })
   })

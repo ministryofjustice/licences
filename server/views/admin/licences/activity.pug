@@ -55,27 +55,36 @@ mixin assignedTo(val)
 
 div.borderBottom.paddingBottom
   
-  h2.heading-medium Activity
+  h2.heading-medium Licence status
+    if licence.deleted_at !== null 
+    span.alert.bold.right [DELETED]&nbsp;
+
   div.pure-g
     div.pure-u-1.pure-u-md-1-2
       p
         span.bold Current stage:&nbsp;
         span #{licence.stage}
+      if licence.deleted_at !== null
+        p
+          span.bold Deleted:&nbsp;
+          span #{licence.deleted_at && licence.deleted_at.toLocaleString()}        
       p
         span.bold Currently Assigned to:&nbsp;
         span 
           + assignedTo(licence.stage)
       p
         span
-          a(href='/admin/licences/' + bookingId + '/raw') View raw
+          a(href='/admin/licences/' + licenceId + '/raw') View raw
     div.pure-u-1.pure-u-md-1-2
         if licence && licence.stage === 'PROCESSING_RO'      
             div.alignRight
-                a.button.smallMarginBottom(href='/admin/licences/' + bookingId + '/notifyRo') Notify COM of case handover
+                a.button.smallMarginBottom(href='/admin/licences/' + licence.bookingId + '/notifyRo') Notify COM of case handover
                  
         div.alignRight
-            a.button(id='reset-licence'  href='/admin/licences/events/' + bookingId + '/reset-licence') Reset licence
+            a.button(id='reset-licence'  href='/admin/licences/events/' + licence.bookingId + '/reset-licence') Reset licence
+div.borderBottom.paddingBottom
 
+  h2.heading-medium HDC activity for booking: #{licence.bookingId}
   table.largeMarginBottom
     thead
         tr

@@ -1,0 +1,35 @@
+//- Read only licence view eg from caselist when case is with a different role
+extends ../../layout
+include ../../includes/errorBannerWithDetail
+
+block content
+
+  include ../../includes/back
+
+  +errorBannerWithDetail(errors, [
+    { field: 'notifyError' },
+  ])
+
+  h1.heading-large Licence results 
+
+  table.largeMarginBottom
+    thead
+        tr
+        th Licence Id
+        th Booking Id
+        th Stage
+        th Last Transition date
+        th Deleted date
+    tbody
+      each licence in licences
+        tr
+          td.link
+            a(id='event-'+ licence.id  href='/admin/licences/' + licence.id) #{licence.id}
+          td.bookingId
+            | #{licence.bookingId}
+          td.stage
+            | #{licence.stage}
+          td.transitionDate
+            | #{licence.transitionDate}
+          td.deletedDate
+            | #{licence.deletedAt}
