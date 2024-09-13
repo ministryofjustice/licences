@@ -11,10 +11,12 @@ import {
   CaseWithVaryVersion,
   AdditionalConditionsVersion,
   StandardConditionsVersion,
+  LicenceReference,
 } from '../../server/data/licenceClientTypes'
 import { Licence, LicenceStage, Risk, RiskManagement, FinalChecks, Postpone } from '../../server/data/licenceTypes'
 import { TaskState } from '../../server/services/config/taskState'
 import { riskManagementVersion, curfewAddressReviewVersion, postponeVersion } from '../../server/config'
+import moment from 'moment'
 
 jest.mock('../../server/services/utils/formValidation')
 
@@ -36,7 +38,7 @@ describe('licenceService', () => {
         standard_conditions_version: 1 as StandardConditionsVersion,
         deleted_at: null,
       }),
-      getLicenceIncludingSoftDeleted: (jest.fn() as jest.Mock<Promise<CaseWithVaryVersion>>).mockResolvedValue({
+      getLicenceById: (jest.fn() as jest.Mock<Promise<CaseWithVaryVersion>>).mockResolvedValue({
         licence: LICENCE_SAMPLE,
         booking_id: 1,
         stage: undefined,
@@ -44,8 +46,28 @@ describe('licenceService', () => {
         vary_version: 5,
         additional_conditions_version: 3 as AdditionalConditionsVersion,
         standard_conditions_version: 1 as StandardConditionsVersion,
-        deleted_at: '2024-05-02 15:00:00',
+        deleted_at: null,
       }),
+      getAllLicencesForBookingId: (jest.fn() as jest.Mock<Promise<LicenceReference[]>>).mockResolvedValue([
+        {
+          id: 1,
+          booking_id: 1,
+          prison_number: 'A1234AA',
+          stage: 'ELIGIBILITY',
+          transition_date: moment('2024-04-01 15:00:00').toDate(),
+          deleted_at: moment('2024-05-02 15:00:00').toDate(),
+        },
+      ]),
+      getAllLicencesForPrisonNumber: (jest.fn() as jest.Mock<Promise<LicenceReference[]>>).mockResolvedValue([
+        {
+          id: 2,
+          booking_id: 1,
+          prison_number: 'A1234BB',
+          stage: 'ELIGIBILITY',
+          transition_date: moment('2024-04-01 15:00:00').toDate(),
+          deleted_at: moment('2024-05-02 15:00:00').toDate(),
+        },
+      ]),
       createLicence: jest.fn() as jest.Mock<Promise<number>>,
       updateSection: jest.fn() as jest.Mock<Promise<void>>,
       updateStage: jest.fn() as jest.Mock<Promise<void>>,
@@ -157,6 +179,7 @@ describe('licenceService', () => {
 
     test('should return licence', () => {
       return expect(service.getLicence(123)).resolves.toEqual({
+        bookingId: 1,
         licence: LICENCE_SAMPLE,
         stage: undefined,
         version: '2.5',
@@ -179,6 +202,7 @@ describe('licenceService', () => {
 
       return expect(service.getLicence(123)).resolves.toEqual({
         licence: LICENCE_SAMPLE,
+        bookingId: 1,
         stage: undefined,
         version: '2.5',
         approvedVersion: '',
