@@ -92,7 +92,7 @@ export class LicenceClient {
 
   async getAllLicencesForBookingId(bookingId: number): Promise<LicenceReference[]> {
     const query = {
-      text: `select id, prison_number, booking_id, deleted_at, transition_date, stage from licences l where booking_id  = $1 order by transition_date desc nulls first, deleted_at desc nulls first;`,
+      text: `select id, prison_number, booking_id, deleted_at, transition_date, stage from licences l where booking_id  = $1 order by deleted_at desc nulls first, transition_date desc nulls first;`,
       values: [bookingId],
     }
 
@@ -103,7 +103,7 @@ export class LicenceClient {
 
   async getAllLicencesForPrisonNumber(prisonerNumber: string): Promise<LicenceReference[]> {
     const query = {
-      text: `select id, prison_number, booking_id, deleted_at, transition_date, stage from licences l where prison_number  = $1 order by transition_date desc nulls first, deleted_at desc nulls first;`,
+      text: `select id, prison_number, booking_id, deleted_at, transition_date, stage from licences l where prison_number  = $1 order by deleted_at desc nulls first, transition_date desc nulls first;`,
       values: [prisonerNumber],
     }
 
