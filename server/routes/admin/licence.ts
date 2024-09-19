@@ -128,7 +128,7 @@ export = (licenceService, signInService, prisonerService, audit, roNotificationH
         if (error) {
           req.flash('errors', { notifyError: error.message })
         }
-        return res.redirect(`/admin/licences/${bookingId}`)
+        return res.redirect(`/admin/licenceSearch/${bookingId}`)
       })
     )
 

@@ -150,7 +150,7 @@ describe('/licences/', () => {
       return request(app)
         .post('/admin/licences/1/notifyRo')
         .expect(302)
-        .expect('Location', '/admin/licences/1')
+        .expect('Location', '/admin/licenceSearch/1')
         .expect((res) => {
           expect(roNotificationHandler.sendRoEmail).toHaveBeenCalledWith({
             bookingId: '1',
