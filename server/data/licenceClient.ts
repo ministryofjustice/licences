@@ -6,7 +6,6 @@ import {
   AdditionalConditionsVersion,
   DeliusIds,
   StandardConditionsVersion,
-  LicenceReference,
 } from './licenceClientTypes'
 import { Licence, LicenceStage } from './licenceTypes'
 
@@ -74,11 +73,10 @@ export class LicenceClient {
     return undefined
   }
 
-  /** Will return deleted licences */
-  async getLicenceById(licenceId: number): Promise<CaseWithVaryVersion> {
+  async getLicenceIncludingSoftDeleted(bookingId: number): Promise<CaseWithVaryVersion> {
     const query = {
-      text: `select licence, booking_id, stage, version, vary_version, additional_conditions_version, standard_conditions_version, deleted_at from licences where id = $1`,
-      values: [licenceId],
+      text: `select licence, booking_id, stage, version, vary_version, additional_conditions_version, standard_conditions_version from licences where booking_id = $1`,
+      values: [bookingId],
     }
 
     const { rows } = await db.query(query)
@@ -88,28 +86,6 @@ export class LicenceClient {
     }
 
     return undefined
-  }
-
-  async getAllLicencesForBookingId(bookingId: number): Promise<LicenceReference[]> {
-    const query = {
-      text: `select id, prison_number, booking_id, deleted_at, transition_date, stage from licences l where booking_id  = $1 order by transition_date desc nulls first, deleted_at desc nulls first;`,
-      values: [bookingId],
-    }
-
-    const { rows } = await db.query(query)
-
-    return rows || []
-  }
-
-  async getAllLicencesForPrisonNumber(prisonerNumber: string): Promise<LicenceReference[]> {
-    const query = {
-      text: `select id, prison_number, booking_id, deleted_at, transition_date, stage from licences l where prison_number  = $1 order by transition_date desc nulls first, deleted_at desc nulls first;`,
-      values: [prisonerNumber],
-    }
-
-    const { rows } = await db.query(query)
-
-    return rows || []
   }
 
   async getApprovedLicenceVersion(bookingId): Promise<ApprovedLicenceVersion> {

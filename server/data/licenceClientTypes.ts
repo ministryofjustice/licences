@@ -23,7 +23,7 @@ export interface Case {
   version: number
   additional_conditions_version: AdditionalConditionsVersion
   standard_conditions_version: StandardConditionsVersion
-  deleted_at?: Date
+  deleted_at: boolean | string
 }
 
 export interface CaseWithApprovedVersion extends Case {
@@ -33,15 +33,6 @@ export interface CaseWithApprovedVersion extends Case {
 
 export interface CaseWithVaryVersion extends Case {
   vary_version: number
-}
-
-export interface LicenceReference {
-  id: number
-  prison_number: string
-  booking_id: number
-  deleted_at: Date
-  transition_date: Date
-  stage: string
 }
 
 export interface ApprovedLicenceVersion {

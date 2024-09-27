@@ -21,17 +21,16 @@ export = (licenceService, signInService, prisonerService, audit, roNotificationH
     })
 
     router.get(
-      '/:licenceId',
+      '/:abookingId',
       asyncMiddleware(async (req, res) => {
-        const { licenceId } = req.params
-        const licence = await licenceService.getLicenceById(licenceId)
+        const { abookingId: bookingId } = req.params
+        const licence = await licenceService.getLicence(bookingId)
         const systemToken = await signInService.getClientCredentialsTokens(req.user.username)
-        const prisonerInfo = await prisonerService.getPrisonerDetails(licence?.bookingId, systemToken)
-        const events = await audit.getEventsForBooking(licence?.bookingId)
+        const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, systemToken)
+        const events = await audit.getEventsForBooking(bookingId)
         const errors = firstItem(req.flash('errors')) || {}
         return res.render('admin/licences/view', {
-          licenceId,
-          bookingId: licence?.licence?.bookingId,
+          bookingId,
           licence: licence || {},
           prisonerInfo,
           events: events.map(formatEvent),
@@ -41,14 +40,14 @@ export = (licenceService, signInService, prisonerService, audit, roNotificationH
     )
 
     router.get(
-      '/:licenceId/raw',
+      '/:abookingId/raw',
       asyncMiddleware(async (req, res) => {
-        const { licenceId } = req.params
-        const licence = await licenceService.getLicenceById(licenceId)
+        const { abookingId: bookingId } = req.params
+        const licence = await licenceService.getLicence(bookingId)
         const status = getLicenceStatus(licence)
 
         return res.render('admin/licences/raw', {
-          bookingId: licence.licence.bookingId,
+          bookingId,
           licence: JSON.stringify(sortKeys(licence), null, 4),
           status: JSON.stringify(sortKeys(status), null, 4),
         })
@@ -105,7 +104,7 @@ export = (licenceService, signInService, prisonerService, audit, roNotificationH
           await audit.record('RESET', username, { bookingId })
           await nomisPushService.resetHDC(bookingId, username)
         }
-        return res.redirect(`/admin/licenceSearch/${bookingId}`)
+        return res.redirect(`/admin/licences/${bookingId}`)
       })
     )
 

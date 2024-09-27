@@ -142,7 +142,12 @@ const notificationJobs = createNotificationJobs(reminderService, signInService)
 const jobSchedulerService = createJobSchedulerService(dbLockingClient, configClient, notificationJobs)
 const lduService = createLduService(deliusClient, activeLduClient)
 const functionalMailboxService = new FunctionalMailboxService(deliusClient, probationTeamsClient, audit)
-const licenceSearchService = createLicenceSearchService(licenceClient, signInService, prisonerSearchApi)
+const licenceSearchService = createLicenceSearchService(
+  licenceClient,
+  signInService,
+  nomisClientBuilder,
+  prisonerSearchApi
+)
 const tokenVerifier = tokenVerifierFactory(config.tokenVerification)
 
 const app = createApp({

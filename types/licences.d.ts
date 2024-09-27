@@ -1,5 +1,4 @@
 import { KeyValue } from '../server/data/deliusClient'
-import { LicenceReference } from '../server/data/licenceClientTypes'
 
 export interface ResponsibleOfficer {
   deliusId: string
@@ -140,7 +139,7 @@ export interface LduService {
 }
 
 export interface LicenceSearchService {
-  findForIdentifier: (identifier: string) => Promise<LicenceReference[]>
+  findForId: (username: string, id: string) => Promise<number | undefined>
   getLicencesInStageCOM: (username: string) => Promise<string>
 }
 
