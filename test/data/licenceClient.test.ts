@@ -79,7 +79,7 @@ describe('licenceClient', () => {
     test('should pass in the correct parameters', async () => {
       await licenceClient.getAllLicencesForBookingId(10001)
       expect(db.query).toHaveBeenCalledWith({
-        text: `select id, prison_number, booking_id, deleted_at, transition_date, stage from licences l where booking_id  = $1 order by deleted_at desc nulls first, transition_date desc nulls first;`,
+        text: `select id, prison_number, booking_id, deleted_at, transition_date, stage from licences l where booking_id  = $1 order by transition_date desc nulls first, deleted_at desc nulls first;`,
         values: [10001],
       })
     })
@@ -89,7 +89,7 @@ describe('licenceClient', () => {
     test('should pass in the correct parameters', async () => {
       await licenceClient.getAllLicencesForPrisonNumber('A1234AA')
       expect(db.query).toHaveBeenCalledWith({
-        text: `select id, prison_number, booking_id, deleted_at, transition_date, stage from licences l where prison_number  = $1 order by deleted_at desc nulls first, transition_date desc nulls first;`,
+        text: `select id, prison_number, booking_id, deleted_at, transition_date, stage from licences l where prison_number  = $1 order by transition_date desc nulls first, deleted_at desc nulls first;`,
         values: ['A1234AA'],
       })
     })
