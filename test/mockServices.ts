@@ -11,7 +11,6 @@ export const createSignInServiceStub = () =>
 
 export const createLicenceServiceStub = () => ({
   getLicence: jest.fn().mockReturnValue({ licence: { key: 'value' } }),
-  getLicenceById: jest.fn().mockReturnValue({ licence: { key: 'value' } }),
   getRiskVersion: jest.fn(),
   getCurfewAddressReviewVersion: jest.fn(),
   getPostponeVersion: jest.fn(),

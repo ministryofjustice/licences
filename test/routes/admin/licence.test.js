@@ -52,6 +52,7 @@ describe('/licences/', () => {
         .expect(200)
         .expect('Content-Type', /html/)
         .expect((res) => {
+          expect(res.text).toContain('Licence details')
           expect(res.text).toContain(`3 notifications sent of type: 'RO_NEW'`)
           expect(res.text).toContain(`Provided details for 'aSection'`)
           expect(res.text).not.toContain('Notify RO of case handover')
@@ -59,17 +60,15 @@ describe('/licences/', () => {
     })
 
     test('Renders notify button when assigned to RO', () => {
-      licenceService.getLicenceById.mockResolvedValue({ bookingId: 1, stage: 'PROCESSING_RO', licence: {} })
+      licenceService.getLicence.mockReturnValue({ stage: 'PROCESSING_RO' })
       const app = createApp('batchUser')
-      return (
-        request(app)
-          .get('/admin/licences/1')
-          // .expect(200)
-          .expect('Content-Type', /html/)
-          .expect((res) => {
-            expect(res.text).toContain('Notify COM of case handover')
-          })
-      )
+      return request(app)
+        .get('/admin/licences/1')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect((res) => {
+          expect(res.text).toContain('Notify COM of case handover')
+        })
     })
 
     test('should throw if submitted by non-authorised user', () => {
@@ -81,8 +80,6 @@ describe('/licences/', () => {
   describe('GET raw licence info', () => {
     test('Renders HTML output', () => {
       const app = createApp('batchUser')
-      licenceService.getLicenceById.mockReturnValue({ stage: 'PROCESSING_RO', licence: {} })
-
       return request(app)
         .get('/admin/licences/1/raw')
         .expect(200)
@@ -221,7 +218,7 @@ describe('/licences/', () => {
         .post('/admin/licences/events/100/reset-licence')
         .send({ reset: 'Yes' })
         .expect(302)
-        .expect('Location', '/admin/licenceSearch/100')
+        .expect('Location', '/admin/licences/100')
         .expect(() => {
           expect(licenceService.resetLicence).toHaveBeenCalledWith('100')
           expect(audit.record).toHaveBeenCalledWith('RESET', 'NOMIS_BATCHLOAD', { bookingId: '100' })
@@ -235,7 +232,7 @@ describe('/licences/', () => {
         .post('/admin/licences/events/100/reset-licence')
         .send({ reset: 'Yes' })
         .expect(302)
-        .expect('Location', '/admin/licenceSearch/100')
+        .expect('Location', '/admin/licences/100')
     })
     it('should redirect back to itself', async () => {
       const app = createApp('batchUser')

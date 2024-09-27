@@ -35,8 +35,6 @@ interface ApprovedVersionDetails {
 
 export interface LicenceRecord {
   licence: Licence
-  bookingId: number
-  deleted_at?: Date
   stage: LicenceStage
   version: string
   versionDetails: {
@@ -141,50 +139,6 @@ export class LicenceService {
 
       return {
         licence,
-        bookingId: rawLicence.booking_id,
-        stage,
-        version,
-        versionDetails,
-        approvedVersion,
-        approvedVersionDetails,
-      }
-    } catch (error) {
-      logger.error('Error during getLicence', error.stack)
-      throw error
-    }
-  }
-
-  async getLicenceById(licenceId: number): Promise<LicenceRecord> {
-    try {
-      const rawLicence = await this.licenceClient.getLicenceById(licenceId)
-      const rawVersionDetails =
-        rawLicence && (await this.licenceClient.getApprovedLicenceVersion(rawLicence.booking_id))
-
-      if (!rawLicence) {
-        return null
-      }
-
-      const { licence, stage } = rawLicence
-      if (!licence) {
-        return null
-      }
-
-      const approvedVersionDetails: ApprovedVersionDetails = rawVersionDetails || {}
-      const version = `${rawLicence.version}.${rawLicence.vary_version}`
-      const versionDetails = {
-        version: rawLicence.version,
-        vary_version: rawLicence.vary_version,
-        additional_conditions_version: rawLicence.additional_conditions_version,
-        standard_conditions_version: rawLicence.standard_conditions_version,
-      }
-      const approvedVersion = isEmpty(approvedVersionDetails)
-        ? ''
-        : `${approvedVersionDetails.version}.${approvedVersionDetails.vary_version}`
-
-      return {
-        licence,
-        bookingId: rawLicence.booking_id,
-        deleted_at: rawLicence.deleted_at,
         stage,
         version,
         versionDetails,
