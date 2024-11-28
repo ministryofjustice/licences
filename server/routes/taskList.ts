@@ -131,14 +131,17 @@ export = (
         if (
           req.user.role === 'CA' &&
           licenceStatus.stage === 'ELIGIBILITY' &&
-          licenceStatus.tasks.eligibility === 'DONE'
+          licenceStatus.tasks.eligibility === 'DONE' &&
+          licenceStatus.tasks.curfewAddress === 'DONE'
+          // or cas2 done
         ) {
+          const { decisions, tasks } = licenceStatus
           const errorCode = await caService.getReasonForNotContinuing(bookingId, res.locals.token)
 
           if (errorCode) {
             return res.render('taskList/taskListBuilder', {
               ...model,
-              taskListModel: getTasksForBlocked(errorCode),
+              taskListModel: getTasksForBlocked({ decisions, tasks, errorCode }),
               errors: [],
             })
           }
