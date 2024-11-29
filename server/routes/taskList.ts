@@ -132,8 +132,8 @@ export = (
           req.user.role === 'CA' &&
           licenceStatus.stage === 'ELIGIBILITY' &&
           licenceStatus.tasks.eligibility === 'DONE' &&
+          licenceStatus.decisions.curfewAddressProposed &&
           licenceStatus.tasks.curfewAddress === 'DONE'
-          // or cas2 done
         ) {
           const { decisions, tasks } = licenceStatus
           const errorCode = await caService.getReasonForNotContinuing(bookingId, res.locals.token)

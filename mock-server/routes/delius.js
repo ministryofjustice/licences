@@ -130,7 +130,7 @@ router.get('/case/:nomsNumber/communityManager', (req, res) => {
     team: teamC01T04,
     provider: { code: 'ABC', description: 'ABC probation area' },
     localAdminUnit: { code: 'ABC124', description: 'ABC124 delivery unit' },
-    isUnallocated: true,
+    isUnallocated: false,
   })
 })
 

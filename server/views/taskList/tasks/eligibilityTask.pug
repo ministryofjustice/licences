@@ -1,10 +1,5 @@
 div.largeMarginBottom
   h2.heading-medium Check eligibility
-  div STAGE: #{JSON.stringify(licenceStatus.stage)}
-  div POST APPROVAL: #{JSON.stringify(licenceStatus.postApproval)}
-  div DECISIONS: #{JSON.stringify(licenceStatus.decisions)}
-  div TASKS: #{JSON.stringify(licenceStatus.tasks)}
-
   if licenceStatus.tasks.eligibility !== 'DONE'
     div.pure-g
       div.pure-u-1.pure-u-md-3-4
