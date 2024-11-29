@@ -22,8 +22,11 @@ const eligibilityTask = namedTask('eligibilityTask')
 const eligibilitySummaryTask = namedTask('eligibilitySummaryTask')
 
 module.exports = {
-  getTasksForBlocked: ({ decisions, tasks, errorCode }) =>
+  getTasksForBlockedEligibilityStage: ({ decisions, tasks, errorCode }) =>
     tasklist({ decisions, tasks }, [[eligibilityTask], [informOffenderTask], [curfewAddress], [caBlocked(errorCode)]]),
+
+  getTasksForBlockedCaProcessingStage: ({ decisions, tasks, errorCode }) =>
+    tasklist({ decisions, tasks }, [[eligibilityTask], [curfewAddress], [refuseHdc], [caBlocked(errorCode)]]),
 
   getCaTasksEligibility: ({ decisions, tasks, allowedTransition }) => {
     const { optedOut, eligible, bassReferralNeeded, addressUnsuitable } = decisions

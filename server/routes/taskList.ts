@@ -7,7 +7,7 @@ import { getStatusLabel } from '../services/licence/licenceStatusLabels'
 import { isEmpty } from '../utils/functionalHelpers'
 import getTaskListModel from './viewModels/taskListModels'
 import logger from '../../log'
-import { getTasksForBlocked } from './viewModels/taskLists/caTasks'
+import { getTasksForBlockedEligibilityStage, getTasksForBlockedCaProcessingStage } from './viewModels/taskLists/caTasks'
 import { LicenceStage } from '../data/licenceTypes'
 import { LicenceService } from '../services/licenceService'
 
@@ -141,7 +141,26 @@ export = (
           if (errorCode) {
             return res.render('taskList/taskListBuilder', {
               ...model,
-              taskListModel: getTasksForBlocked({ decisions, tasks, errorCode }),
+              taskListModel: getTasksForBlockedEligibilityStage({ decisions, tasks, errorCode }),
+              errors: [],
+            })
+          }
+        }
+
+        if (
+          req.user.role === 'CA' &&
+          licenceStatus.stage === 'PROCESSING_CA' &&
+          licenceStatus.tasks.eligibility === 'DONE' &&
+          licenceStatus.decisions.curfewAddressProposed &&
+          licenceStatus.tasks.curfewAddress === 'DONE'
+        ) {
+          const { decisions, tasks } = licenceStatus
+          const errorCode = await caService.getReasonForNotContinuing(bookingId, res.locals.token)
+
+          if (errorCode) {
+            return res.render('taskList/taskListBuilder', {
+              ...model,
+              taskListModel: getTasksForBlockedCaProcessingStage({ decisions, tasks, errorCode }),
               errors: [],
             })
           }
