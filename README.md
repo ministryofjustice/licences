@@ -42,8 +42,16 @@ To run locally you need:
 - gotenberg
 - nomis-user-roles-api
 
-You can run local database, redis and configure the application to point to the T3/dev environment for other services.
-Or these can be run locally using `docker-compose` and starting `mock-services`.
+You can run local database, redis and configure the application to point to the T3/dev environment for other services. Or these can be run locally using `docker-compose` and starting `mock-services`.
+
+The 3 commands you require are:
+
+```
+npm run start-mocks
+docker-compose up
+npm run start:dev
+```
+
 Or you can point to mock-services for a subset of services and T3/dev for others..
 
 If you get a ‘You are not authorised to access this application’ when trying to run the app locally, 

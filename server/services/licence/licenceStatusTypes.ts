@@ -30,6 +30,7 @@ export type Decisions = {
   bassWithdrawalReason?: string
 
   // Other address
+  curfewAddressProposed?: boolean
   curfewAddressApproved?: boolean
   curfewAddressRejected?: boolean
   addressUnsuitable?: boolean
