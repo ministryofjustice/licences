@@ -24,6 +24,7 @@ export interface Case {
   additional_conditions_version: AdditionalConditionsVersion
   standard_conditions_version: StandardConditionsVersion
   deleted_at: boolean | string
+  licence_in_cvl: boolean
 }
 
 export interface CaseWithApprovedVersion extends Case {

@@ -43,8 +43,8 @@ export = function getLicenceStatus(licenceRecord): LicenceStatus {
       },
     }
   }
-  const { stage } = licenceRecord
-  const results = getRequiredState(stage, licenceRecord.licence)
+  const { stage, licenceInCvl } = licenceRecord
+  const results = getRequiredState(stage, licenceRecord.licence, licenceInCvl)
   const initialState = getInitialState(stage, licenceRecord)
   return results.reduce(combiner, initialState)
 }
@@ -94,7 +94,7 @@ const getInitialState = (stage, licenceRecord) => {
   }
 }
 
-function getRequiredState(stage, licence) {
+function getRequiredState(stage, licence, licenceInCvl) {
   const config = {
     [LicenceStage.ELIGIBILITY]: [],
     [LicenceStage.PROCESSING_RO]: [getRoStageState],
@@ -106,7 +106,7 @@ function getRequiredState(stage, licence) {
     [LicenceStage.VARY]: [getRoStageState, getCaStageState, getApprovalStageState],
   }
 
-  return config[stage].map((getStateMethod) => getStateMethod(licence))
+  return config[stage].map((getStateMethod) => getStateMethod(licence, licenceInCvl))
 }
 
 const combiner = (acc, data) => {
@@ -120,7 +120,7 @@ const combiner = (acc, data) => {
   }
 }
 
-function getApprovalStageState(licence) {
+function getApprovalStageState(licence, licenceInCvl) {
   const approvalRelease = licence.approval?.release || {}
   const dmConsideration = licence.approval?.consideration || {}
 
@@ -140,6 +140,7 @@ function getApprovalStageState(licence) {
       dmNotConsidered: dmConsideration.decision === 'No',
       refusalReason,
       bassAccepted,
+      useCvlForLicenceCreation: licenceInCvl,
       decisionComments: approvalRelease.reasonForDecision ? approvalRelease.reasonForDecision.trim() : null,
     },
     tasks: {
