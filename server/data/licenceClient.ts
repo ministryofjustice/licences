@@ -60,7 +60,7 @@ export class LicenceClient {
 
   async getLicence(bookingId: number): Promise<CaseWithVaryVersion> {
     const query = {
-      text: `select licence, booking_id, stage, version, vary_version, additional_conditions_version, standard_conditions_version from v_licences_excluding_deleted where booking_id = $1`,
+      text: `select licence, booking_id, stage, version, vary_version, licence_in_cvl, additional_conditions_version, standard_conditions_version from v_licences_excluding_deleted where booking_id = $1`,
       values: [bookingId],
     }
 
@@ -146,6 +146,24 @@ export class LicenceClient {
     const query = {
       text: 'update v_licences_excluding_deleted set (stage, transition_date) = ($1, current_timestamp) where booking_id = $2',
       values: [stage, bookingId],
+    }
+
+    return db.query(query)
+  }
+
+  setLicenceInCvl(bookingId: number, licence_in_cvl): Promise<void> {
+    const query = {
+      text: 'update v_licences_excluding_deleted set (licence_in_cvl) = $1 where booking_id = $2',
+      values: [licence_in_cvl, bookingId],
+    }
+
+    return db.query(query)
+  }
+
+  setLicenceVersionInCvl(bookingId: number, licence_in_cvl): Promise<void> {
+    const query = {
+      text: 'update v_licence_versions_excluding_deleted set (licence_in_cvl) = $1 where booking_id = $2',
+      values: [licence_in_cvl, bookingId],
     }
 
     return db.query(query)
