@@ -151,6 +151,24 @@ export class LicenceClient {
     return db.query(query)
   }
 
+  setLicenceInCvl(bookingId: number, licence_in_cvl): Promise<void> {
+    const query = {
+      text: 'update v_licences_excluding_deleted set (licence_in_cvl) = $1 where booking_id = $2',
+      values: [licence_in_cvl, bookingId],
+    }
+
+    return db.query(query)
+  }
+
+  setLicenceVersionInCvl(bookingId: number, licence_in_cvl): Promise<void> {
+    const query = {
+      text: 'update v_licence_versions_excluding_deleted set (licence_in_cvl) = $1 where booking_id = $2',
+      values: [licence_in_cvl, bookingId],
+    }
+
+    return db.query(query)
+  }
+
   async getDeliusIds(nomisUserName): Promise<DeliusIds[]> {
     const query = {
       text: 'select staff_identifier "staffIdentifier", delius_username "deliusUsername" from v_staff_ids where upper(nomis_id) = upper($1)',

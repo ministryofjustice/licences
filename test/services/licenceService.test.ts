@@ -64,6 +64,8 @@ describe('licenceService', () => {
       setAdditionalConditionsVersion: jest.fn(),
       setStandardConditionsVersion: jest.fn(),
       softDeleteLicence: jest.fn() as jest.Mock<Promise<void>>,
+      setLicenceInCvl: jest.fn(),
+      setLicenceVersionInCvl: jest.fn(),
     }
     service = createLicenceService(licenceClient)
   })

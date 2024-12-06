@@ -174,7 +174,7 @@ describe('licenceClient', () => {
 
   describe('updateStage', () => {
     test('should pass in the correct sql', async () => {
-      const expectedUpdate = 'set (stage, transition_date) = ($1, current_timestamp) '
+      const expectedUpdate = 'set (stage, transition_date) = ($1, current_timestamp)'
       const expectedWhere = 'where booking_id = $2'
 
       await licenceClient.updateStage(BOOKING_ID, 'NEW_STAGE')
@@ -188,6 +188,50 @@ describe('licenceClient', () => {
       const expectedParameters = ['NEW_STAGE', BOOKING_ID]
 
       await licenceClient.updateStage(BOOKING_ID, 'NEW_STAGE')
+
+      const { values } = db.query.mock.calls[0][0]
+      expect(values).toEqual(expectedParameters)
+    })
+  })
+
+  describe('setLicenceInCvl', () => {
+    test('should pass in the correct sql', async () => {
+      const expectedUpdate = 'set (licence_in_cvl) = $1'
+      const expectedWhere = 'where booking_id = $2'
+
+      await licenceClient.setLicenceInCvl(BOOKING_ID, false)
+
+      const sql = db.query.mock.calls[0][0].text
+      expect(sql).toContain(expectedUpdate)
+      expect(sql).toContain(expectedWhere)
+    })
+
+    test('should pass in the correct parameters', async () => {
+      const expectedParameters = [true, BOOKING_ID]
+
+      await licenceClient.setLicenceInCvl(BOOKING_ID, true)
+
+      const { values } = db.query.mock.calls[0][0]
+      expect(values).toEqual(expectedParameters)
+    })
+  })
+
+  describe('setLicenceVersionInCvl', () => {
+    test('should pass in the correct sql', async () => {
+      const expectedUpdate = 'set (licence_in_cvl) = $1'
+      const expectedWhere = 'where booking_id = $2'
+
+      await licenceClient.setLicenceVersionInCvl(BOOKING_ID, false)
+
+      const sql = db.query.mock.calls[0][0].text
+      expect(sql).toContain(expectedUpdate)
+      expect(sql).toContain(expectedWhere)
+    })
+
+    test('should pass in the correct parameters', async () => {
+      const expectedParameters = [true, BOOKING_ID]
+
+      await licenceClient.setLicenceVersionInCvl(BOOKING_ID, true)
 
       const { values } = db.query.mock.calls[0][0]
       expect(values).toEqual(expectedParameters)
