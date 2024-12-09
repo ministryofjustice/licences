@@ -192,6 +192,15 @@ export class LicenceService {
     }
   }
 
+  async setLicenceCompletionDestination(licenceInCvl, bookingId) {
+    try {
+      await this.licenceClient.setLicenceInCvl(licenceInCvl, bookingId)
+    } catch (error) {
+      logger.error('Error during setCompleteDestination', error.stack)
+      throw error
+    }
+  }
+
   async deleteLicenceCondition(bookingId, existingLicence, conditionId): Promise<any> {
     try {
       const existingLicenceConditions = getIn(existingLicence, ['licence', 'licenceConditions'])

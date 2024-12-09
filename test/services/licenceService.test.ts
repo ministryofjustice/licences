@@ -65,7 +65,6 @@ describe('licenceService', () => {
       setStandardConditionsVersion: jest.fn(),
       softDeleteLicence: jest.fn() as jest.Mock<Promise<void>>,
       setLicenceInCvl: jest.fn(),
-      setLicenceVersionInCvl: jest.fn(),
     }
     service = createLicenceService(licenceClient)
   })
@@ -349,6 +348,13 @@ describe('licenceService', () => {
 
         expect(licenceClient.updateStage).not.toHaveBeenCalled()
       })
+    })
+  })
+
+  describe('setLicenceCompletionDestination', () => {
+    it('should call setLicenceCompletionDestination', () => {
+      service.setLicenceCompletionDestination(false, 100)
+      expect(licenceClient.setLicenceInCvl).toBeCalledWith(false, 100)
     })
   })
 

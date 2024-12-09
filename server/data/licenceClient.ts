@@ -30,6 +30,15 @@ async function softDeleteVersions(bookingId): Promise<void> {
   return db.query(query)
 }
 
+async function setLicenceVersionInCvl(licence_in_cvl, bookingId: number): Promise<void> {
+  const query = {
+    text: 'UPDATE v_licence_versions_excluding_deleted SET licence_in_cvl = $1 where booking_id = $2',
+    values: [licence_in_cvl, bookingId],
+  }
+
+  return db.query(query)
+}
+
 export class LicenceClient {
   deleteAll() {
     return db.query(`delete from licences where booking_id != 1200635;
@@ -151,24 +160,6 @@ export class LicenceClient {
     return db.query(query)
   }
 
-  setLicenceInCvl(bookingId: number, licence_in_cvl): Promise<void> {
-    const query = {
-      text: 'update v_licences_excluding_deleted set (licence_in_cvl) = $1 where booking_id = $2',
-      values: [licence_in_cvl, bookingId],
-    }
-
-    return db.query(query)
-  }
-
-  setLicenceVersionInCvl(bookingId: number, licence_in_cvl): Promise<void> {
-    const query = {
-      text: 'update v_licence_versions_excluding_deleted set (licence_in_cvl) = $1 where booking_id = $2',
-      values: [licence_in_cvl, bookingId],
-    }
-
-    return db.query(query)
-  }
-
   async getDeliusIds(nomisUserName): Promise<DeliusIds[]> {
     const query = {
       text: 'select staff_identifier "staffIdentifier", delius_username "deliusUsername" from v_staff_ids where upper(nomis_id) = upper($1)',
@@ -246,6 +237,16 @@ export class LicenceClient {
     }
 
     await db.query(query)
+  }
+
+  async setLicenceInCvl(licence_in_cvl: boolean, bookingId: number): Promise<void> {
+    await db.inTransaction(async (client) => {
+      await client.query({
+        text: 'UPDATE v_licences_excluding_deleted SET licence_in_cvl = $1 where booking_id = $2',
+        values: [licence_in_cvl, bookingId],
+      })
+      return setLicenceVersionInCvl(licence_in_cvl, bookingId)
+    })
   }
 
   async softDeleteLicence(bookingId: number): Promise<void> {
