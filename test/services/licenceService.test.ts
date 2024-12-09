@@ -35,6 +35,7 @@ describe('licenceService', () => {
         additional_conditions_version: 3 as AdditionalConditionsVersion,
         standard_conditions_version: 1 as StandardConditionsVersion,
         deleted_at: null,
+        licence_in_cvl: false,
       }),
       getLicenceIncludingSoftDeleted: (jest.fn() as jest.Mock<Promise<CaseWithVaryVersion>>).mockResolvedValue({
         licence: LICENCE_SAMPLE,
@@ -45,6 +46,7 @@ describe('licenceService', () => {
         additional_conditions_version: 3 as AdditionalConditionsVersion,
         standard_conditions_version: 1 as StandardConditionsVersion,
         deleted_at: '2024-05-02 15:00:00',
+        licence_in_cvl: false,
       }),
       createLicence: jest.fn() as jest.Mock<Promise<number>>,
       updateSection: jest.fn() as jest.Mock<Promise<void>>,
@@ -62,6 +64,7 @@ describe('licenceService', () => {
       setAdditionalConditionsVersion: jest.fn(),
       setStandardConditionsVersion: jest.fn(),
       softDeleteLicence: jest.fn() as jest.Mock<Promise<void>>,
+      setLicenceInCvl: jest.fn(),
     }
     service = createLicenceService(licenceClient)
   })
@@ -171,6 +174,7 @@ describe('licenceService', () => {
           additional_conditions_version: 3,
           standard_conditions_version: 1,
         },
+        licenceInCvl: false,
       })
     })
 
@@ -189,6 +193,7 @@ describe('licenceService', () => {
           additional_conditions_version: 3,
           standard_conditions_version: 1,
         },
+        licenceInCvl: false,
       })
     })
 
@@ -343,6 +348,13 @@ describe('licenceService', () => {
 
         expect(licenceClient.updateStage).not.toHaveBeenCalled()
       })
+    })
+  })
+
+  describe('setLicenceCompletionDestination', () => {
+    it('should call setLicenceCompletionDestination', () => {
+      service.setLicenceCompletionDestination(false, 100)
+      expect(licenceClient.setLicenceInCvl).toBeCalledWith(false, 100)
     })
   })
 

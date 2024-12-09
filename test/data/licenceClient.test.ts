@@ -59,7 +59,7 @@ describe('licenceClient', () => {
     test('should pass in the correct parameters', async () => {
       await licenceClient.getLicence(10001)
       expect(db.query).toHaveBeenCalledWith({
-        text: `select licence, booking_id, stage, version, vary_version, additional_conditions_version, standard_conditions_version from v_licences_excluding_deleted where booking_id = $1`,
+        text: `select licence, booking_id, stage, version, vary_version, licence_in_cvl, additional_conditions_version, standard_conditions_version from v_licences_excluding_deleted where booking_id = $1`,
         values: [10001],
       })
     })
@@ -174,7 +174,7 @@ describe('licenceClient', () => {
 
   describe('updateStage', () => {
     test('should pass in the correct sql', async () => {
-      const expectedUpdate = 'set (stage, transition_date) = ($1, current_timestamp) '
+      const expectedUpdate = 'set (stage, transition_date) = ($1, current_timestamp)'
       const expectedWhere = 'where booking_id = $2'
 
       await licenceClient.updateStage(BOOKING_ID, 'NEW_STAGE')
@@ -191,6 +191,34 @@ describe('licenceClient', () => {
 
       const { values } = db.query.mock.calls[0][0]
       expect(values).toEqual(expectedParameters)
+    })
+  })
+
+  describe('setLicenceInCvl', () => {
+    test('should call db.query twice', async () => {
+      db.inTransaction = (callback) => callback(db)
+      await licenceClient.setLicenceInCvl(false, BOOKING_ID)
+      expect(db.query).toHaveBeenCalledTimes(2)
+    })
+
+    test('should pass in the correct sql and parameters', async () => {
+      db.inTransaction = (callback) => callback(db)
+      await licenceClient.setLicenceInCvl(false, BOOKING_ID)
+      const { text, values } = db.query.mock.calls[0][0]
+
+      expect(text).toContain('UPDATE v_licences_excluding_deleted SET licence_in_cvl = $1 where booking_id = $2')
+      expect(values).toStrictEqual([false, BOOKING_ID])
+    })
+
+    test('should then update the versions', async () => {
+      db.inTransaction = (callback) => callback(db)
+      await licenceClient.setLicenceInCvl(false, BOOKING_ID)
+      const { text, values } = db.query.mock.calls[1][0]
+
+      expect(text).toContain(
+        'UPDATE v_licence_versions_excluding_deleted SET licence_in_cvl = $1 where booking_id = $2'
+      )
+      expect(values).toStrictEqual([false, BOOKING_ID])
     })
   })
 
