@@ -8,6 +8,10 @@ mixin detail(type, details)
         + notify(details)
     when 'RESET'
         | Licence has been reset
+    when 'COMPLETE_IN_HDC'
+        | Licence to be completed in HDC
+    when 'COMPLETE_IN_CVL'
+        | Licence to be completed in CVL
     default
         | &nbsp;   
 

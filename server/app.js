@@ -398,7 +398,7 @@ module.exports = function createApp({
   )
   app.use(
     '/admin/completionDestination/',
-    secureRoute(licenceCompletionDestinationRouter(licenceService, signInService, prisonerService))
+    secureRoute(licenceCompletionDestinationRouter(licenceService, signInService, prisonerService, audit))
   )
   app.use(
     '/admin/licences/',

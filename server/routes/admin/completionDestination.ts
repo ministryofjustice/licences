@@ -1,6 +1,6 @@
 const { asyncMiddleware, authorisationMiddleware } = require('../../utils/middleware')
 
-export = (licenceService, signInService, prisonerService) => (router) => {
+export = (licenceService, signInService, prisonerService, audit) => (router) => {
   router.use(authorisationMiddleware)
 
   router.get(
@@ -20,9 +20,12 @@ export = (licenceService, signInService, prisonerService) => (router) => {
     asyncMiddleware(async (req, res) => {
       const bookingId = req.params.abookingId
       const { licenceInCvl } = req.body
+      const { username } = req.user
 
       const licenceInCvlBoolean = licenceInCvl == 'true' ? true : false
+      const setLicenceCompletionDestination = licenceInCvlBoolean ? 'COMPLETE_IN_CVL' : 'COMPLETE_IN_HDC'
       await licenceService.setLicenceCompletionDestination(licenceInCvlBoolean, bookingId)
+      await audit.record(setLicenceCompletionDestination, username, { bookingId })
       return res.redirect(`/admin`)
     })
   )
