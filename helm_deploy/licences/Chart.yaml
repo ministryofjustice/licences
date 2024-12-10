@@ -9,7 +9,7 @@ dependencies:
     version: "0.1.x"
     repository: file://subcharts/gotenberg
   - name: generic-prometheus-alerts
-    version: 1.4.0
+    version: 1.11.0
     repository: https://ministryofjustice.github.io/hmpps-helm-charts
   - name: generic-data-analytics-extractor
     version: 0.2.0

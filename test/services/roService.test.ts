@@ -9,20 +9,6 @@ describe('roService', () => {
   let nomisClient
   let deliusClient: jest.Mocked<DeliusClient>
 
-  const prototypeRoPrisoner = {
-    staffCode: undefined,
-    staffIdentifier: undefined,
-    offenderId: undefined,
-    nomsNumber: undefined,
-    crnNumber: undefined,
-    offenderSurname: undefined,
-    isCurrentRo: undefined,
-    isCurrentOm: undefined,
-    isCurrentPom: undefined,
-    omStartDate: undefined,
-    omEndDate: undefined,
-  }
-
   const roPrisoners = ['A', 'B', 'C']
   const offenderSentences = [
     {
