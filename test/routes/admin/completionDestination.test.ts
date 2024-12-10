@@ -58,25 +58,25 @@ describe('/completionDestination/', () => {
         .expect('Location', '/admin')
     })
 
-    test('should call audit.record with COMPLETE_IN_HDC if licenceInCvl is false', () => {
+    test('should call audit.record with CREATE_IN_HDC if licenceInCvl is false', () => {
       const app = createApp('batchUser')
       return request(app)
         .post('/admin/completionDestination/1/set-complete-destination')
         .send({ licenceInCvl: 'false' })
         .expect(302)
         .expect(() => {
-          expect(audit.record).toHaveBeenCalledWith('COMPLETE_IN_HDC', 'NOMIS_BATCHLOAD', { bookingId: '1' })
+          expect(audit.record).toHaveBeenCalledWith('CREATE_IN_HDC', 'NOMIS_BATCHLOAD', { bookingId: '1' })
         })
     })
 
-    test('should call audit.record with COMPLETE_IN_CVL if licenceInCvl is true', () => {
+    test('should call audit.record with CREATE_IN_CVL if licenceInCvl is true', () => {
       const app = createApp('batchUser')
       return request(app)
         .post('/admin/completionDestination/1/set-complete-destination')
         .send({ licenceInCvl: 'true' })
         .expect(302)
         .expect(() => {
-          expect(audit.record).toHaveBeenCalledWith('COMPLETE_IN_CVL', 'NOMIS_BATCHLOAD', { bookingId: '1' })
+          expect(audit.record).toHaveBeenCalledWith('CREATE_IN_CVL', 'NOMIS_BATCHLOAD', { bookingId: '1' })
         })
     })
 

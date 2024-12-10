@@ -23,7 +23,7 @@ export = (licenceService, signInService, prisonerService, audit) => (router) => 
       const { username } = req.user
 
       const licenceInCvlBoolean = licenceInCvl == 'true' ? true : false
-      const setLicenceCompletionDestination = licenceInCvlBoolean ? 'COMPLETE_IN_CVL' : 'COMPLETE_IN_HDC'
+      const setLicenceCompletionDestination = licenceInCvlBoolean ? 'CREATE_IN_CVL' : 'CREATE_IN_HDC'
       await licenceService.setLicenceCompletionDestination(licenceInCvlBoolean, bookingId)
       await audit.record(setLicenceCompletionDestination, username, { bookingId })
       return res.redirect(`/admin`)

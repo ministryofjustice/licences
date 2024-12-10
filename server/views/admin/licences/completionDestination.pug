@@ -5,7 +5,7 @@ block content
   include ../../includes/back
 
 
-  h1.heading-large Select where this licence should be completed
+  h1.heading-large Select where this licence should be created
 
    include ../../taskList/prisonerDetails
 
@@ -17,10 +17,10 @@ block content
           
           div.multiple-choice(data-target="setCompleteDestination")
             input#reset(type="radio" name="licenceInCvl" checked=licenceInCvl === false value="false")
-            label(for="setDestinationHDC") Complete in HDC
+            label(for="setDestinationHDC") Create in HDC
           div.multiple-choice
             input(type="radio" name="licenceInCvl" checked=licenceInCvl === true value="true")
-            label(for="setDestinationCVL") Complete in CVL
+            label(for="setDestinationCVL") Create in CVL
               
 
     div.paddingBottom

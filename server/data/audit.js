@@ -15,8 +15,8 @@ const keys = [
   'LOCATIONS',
   'FUNCTIONAL_MAILBOX',
   'RESET',
-  'COMPLETE_IN_HDC',
-  'COMPLETE_IN_CVL',
+  'CREATE_IN_HDC',
+  'CREATE_IN_CVL',
 ]
 
 /**
