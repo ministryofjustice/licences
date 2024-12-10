@@ -24,7 +24,7 @@ describe('/completionDestination/', () => {
         .expect(200)
         .expect('Content-Type', /html/)
         .expect((res) => {
-          expect(res.text).toContain('Select where this licence should be completed')
+          expect(res.text).toContain('Select where this licence should be created')
         })
     })
 
