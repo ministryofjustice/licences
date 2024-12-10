@@ -1,0 +1,29 @@
+extends ../../layout
+
+block content
+
+  include ../../includes/back
+
+
+  h1.heading-large Select where this licence should be created
+
+   include ../../taskList/prisonerDetails
+
+  form(method="post")
+    input(type="hidden" name="_csrf" value=csrfToken)
+    div.pure-g.form-group.largeMarginTop
+      div.form-group.pure-u-1.pure-u-sm-20-24
+        div.govuk-fieldset
+          
+          div.multiple-choice(data-target="setCompleteDestination")
+            input#reset(type="radio" name="licenceInCvl" checked=licenceInCvl === false value="false")
+            label(for="setDestinationHDC") Create in HDC
+          div.multiple-choice
+            input(type="radio" name="licenceInCvl" checked=licenceInCvl === true value="true")
+            label(for="setDestinationCVL") Create in CVL
+              
+
+    div.paddingBottom
+      div.pure-u-1.pure-u-md-1-2
+        input.requiredButton.button(type="submit" value="Save")
+        
