@@ -195,29 +195,12 @@ describe('licenceClient', () => {
   })
 
   describe('setLicenceInCvl', () => {
-    test('should call db.query twice', async () => {
-      db.inTransaction = (callback) => callback(db)
-      await licenceClient.setLicenceInCvl(false, BOOKING_ID)
-      expect(db.query).toHaveBeenCalledTimes(2)
-    })
-
     test('should pass in the correct sql and parameters', async () => {
       db.inTransaction = (callback) => callback(db)
       await licenceClient.setLicenceInCvl(false, BOOKING_ID)
       const { text, values } = db.query.mock.calls[0][0]
 
       expect(text).toContain('UPDATE v_licences_excluding_deleted SET licence_in_cvl = $1 where booking_id = $2')
-      expect(values).toStrictEqual([false, BOOKING_ID])
-    })
-
-    test('should then update the versions', async () => {
-      db.inTransaction = (callback) => callback(db)
-      await licenceClient.setLicenceInCvl(false, BOOKING_ID)
-      const { text, values } = db.query.mock.calls[1][0]
-
-      expect(text).toContain(
-        'UPDATE v_licence_versions_excluding_deleted SET licence_in_cvl = $1 where booking_id = $2'
-      )
       expect(values).toStrictEqual([false, BOOKING_ID])
     })
   })
@@ -241,7 +224,7 @@ describe('licenceClient', () => {
   describe('saveApprovedVersion', () => {
     test('should pass in the correct sql', async () => {
       const expectedVersionUpdate = 'insert into licence_versions'
-      const expectedSelect = 'select prison_number, booking_id, licence, version, vary_version, $1'
+      const expectedSelect = 'select prison_number, booking_id, licence, version, vary_version, licence_in_cvl, $1'
       const expectedWhere = 'where booking_id = $2'
 
       await licenceClient.saveApprovedLicenceVersion(BOOKING_ID, 'templateName')

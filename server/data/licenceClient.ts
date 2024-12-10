@@ -30,15 +30,6 @@ async function softDeleteVersions(bookingId): Promise<void> {
   return db.query(query)
 }
 
-async function setLicenceVersionInCvl(licence_in_cvl, bookingId: number): Promise<void> {
-  const query = {
-    text: 'UPDATE v_licence_versions_excluding_deleted SET licence_in_cvl = $1 where booking_id = $2',
-    values: [licence_in_cvl, bookingId],
-  }
-
-  return db.query(query)
-}
-
 export class LicenceClient {
   deleteAll() {
     return db.query(`delete from licences where booking_id != 1200635;
@@ -172,8 +163,8 @@ export class LicenceClient {
 
   saveApprovedLicenceVersion(bookingId, template) {
     const query = {
-      text: `insert into licence_versions (prison_number, booking_id, licence, version, vary_version, template)
-                    select prison_number, booking_id, licence, version, vary_version, $1
+      text: `insert into licence_versions (prison_number, booking_id, licence, version, vary_version, licence_in_cvl, template)
+                    select prison_number, booking_id, licence, version, vary_version, licence_in_cvl, $1
                     from v_licences_excluding_deleted where booking_id = $2`,
       values: [template, bookingId],
     }
@@ -239,14 +230,13 @@ export class LicenceClient {
     await db.query(query)
   }
 
-  async setLicenceInCvl(licence_in_cvl: boolean, bookingId: number): Promise<void> {
-    await db.inTransaction(async (client) => {
-      await client.query({
-        text: 'UPDATE v_licences_excluding_deleted SET licence_in_cvl = $1 where booking_id = $2',
-        values: [licence_in_cvl, bookingId],
-      })
-      return setLicenceVersionInCvl(licence_in_cvl, bookingId)
-    })
+  setLicenceInCvl(licence_in_cvl: boolean, bookingId: number): Promise<void> {
+    const query = {
+      text: 'UPDATE v_licences_excluding_deleted SET licence_in_cvl = $1 where booking_id = $2',
+      values: [licence_in_cvl, bookingId],
+    }
+
+    return db.query(query)
   }
 
   async softDeleteLicence(bookingId: number): Promise<void> {
