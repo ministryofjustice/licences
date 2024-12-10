@@ -11,7 +11,7 @@ const RedisStore = require('connect-redis').default
 const helmet = require('helmet').default
 const noCache = require('nocache')
 
-const csurf = require('csurf')
+const { csrfSync } = require('csrf-sync')
 const compression = require('compression')
 const passport = require('passport')
 const ensureHttps = require('./utils/ensureHttps')
@@ -164,7 +164,29 @@ module.exports = function createApp({
     app.use('/utils/', utilsRouter())
   }
 
-  app.use(csurf())
+  const testMode = process.env.NODE_ENV === 'test'
+
+  // CSRF protection
+  if (!testMode) {
+    const {
+      csrfSynchronisedProtection, // This is the default CSRF protection middleware.
+    } = csrfSync({
+      // By default, csrf-sync uses x-csrf-token header, but we use the token in forms and send it in the request body, so change getTokenFromRequest so it grabs from there
+      getTokenFromRequest: (req) => {
+        // eslint-disable-next-line no-underscore-dangle
+        return req.body._csrf
+      },
+    })
+
+    app.use(csrfSynchronisedProtection)
+  }
+
+  app.use((req, res, next) => {
+    if (typeof req.csrfToken === 'function') {
+      res.locals.csrfToken = req.csrfToken()
+    }
+    next()
+  })
 
   // Resource Delivery Configuration
   app.use(compression())
