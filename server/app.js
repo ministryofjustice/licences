@@ -35,6 +35,8 @@ const locationsRouter = require('./routes/admin/locations')
 const warningsRouter = require('./routes/admin/warnings')
 const licenceSearchRouter = require('./routes/admin/licenceSearch')
 const licencesWithCOMRouter = require('./routes/admin/licencesWithCOM')
+const licenceCompletionDestinationSearchRouter = require('./routes/admin/completionDestinationSearch')
+const licenceCompletionDestinationRouter = require('./routes/admin/completionDestination')
 const licenceRouter = require('./routes/admin/licence')
 const { functionalMailboxRouter } = require('./routes/admin/functionalMailboxes')
 const apiRouter = require('./routes/api')
@@ -411,6 +413,14 @@ module.exports = function createApp({
   app.use(
     '/admin/downloadCasesWithCOM/',
     secureRoute(licencesWithCOMRouter(licenceSearchService), { auditKey: 'LICENCE_STAGE_COM_DOWNLOAD' })
+  )
+  app.use(
+    '/admin/completionDestinationSearch/',
+    secureRoute(licenceCompletionDestinationSearchRouter(licenceSearchService))
+  )
+  app.use(
+    '/admin/completionDestination/',
+    secureRoute(licenceCompletionDestinationRouter(licenceService, signInService, prisonerService, audit))
   )
   app.use(
     '/admin/licences/',

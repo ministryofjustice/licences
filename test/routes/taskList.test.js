@@ -253,6 +253,167 @@ describe('GET /taskList/:prisonNumber', () => {
         })
     })
 
+    test('should not display the create licence task if the licence is to be created in CVL', async () => {
+      licenceService.getLicence.mockResolvedValue({
+        stage: 'DECIDED',
+        licence: {
+          risk: {
+            riskManagement: {
+              version: '3',
+              emsInformation: 'No',
+              pomConsultation: 'Yes',
+              mentalHealthPlan: 'No',
+              unsuitableReason: '',
+              hasConsideredChecks: 'Yes',
+              manageInTheCommunity: 'Yes',
+              emsInformationDetails: '',
+              riskManagementDetails: '',
+              proposedAddressSuitable: 'Yes',
+              awaitingOtherInformation: 'No',
+              nonDisclosableInformation: 'No',
+              nonDisclosableInformationDetails: '',
+              manageInTheCommunityNotPossibleReason: '',
+            },
+          },
+          curfew: {
+            curfewHours: {
+              allFrom: '19:00',
+              allUntil: '07:00',
+              fridayFrom: '19:00',
+              mondayFrom: '19:00',
+              sundayFrom: '19:00',
+              fridayUntil: '07:00',
+              mondayUntil: '07:00',
+              sundayUntil: '07:00',
+              tuesdayFrom: '19:00',
+              saturdayFrom: '19:00',
+              thursdayFrom: '19:00',
+              tuesdayUntil: '07:00',
+              saturdayUntil: '07:00',
+              thursdayUntil: '07:00',
+              wednesdayFrom: '19:00',
+              wednesdayUntil: '07:00',
+              daySpecificInputs: 'No',
+            },
+            approvedPremises: {
+              required: 'No',
+            },
+            curfewAddressReview: {
+              version: '2',
+              electricity: 'Yes',
+              homeVisitConducted: 'No',
+              consentHavingSpoken: 'Yes',
+              addressReviewComments: '',
+            },
+          },
+          victim: {
+            victimLiaison: {
+              decision: 'No',
+            },
+          },
+          approval: {
+            release: {
+              decision: 'Yes',
+            },
+            consideration: {
+              decision: 'Yes',
+            },
+          },
+          reporting: {
+            reportingInstructions: {
+              name: 'Test Person',
+              postcode: 'B1 2TJ',
+              telephone: '00000000001',
+              townOrCity: 'Test',
+              organisation: 'Test',
+              reportingDate: '01/01/2025',
+              reportingTime: '09:00',
+              buildingAndStreet1: 'Test Street',
+              buildingAndStreet2: '',
+            },
+          },
+          eligibility: {
+            crdTime: {
+              decision: 'No',
+            },
+            excluded: {
+              decision: 'No',
+            },
+            suitability: {
+              decision: 'No',
+            },
+          },
+          finalChecks: {
+            onRemand: {
+              decision: 'No',
+            },
+            segregation: {
+              decision: 'No',
+            },
+            seriousOffence: {
+              decision: 'No',
+            },
+            confiscationOrder: {
+              decision: 'No',
+            },
+            undulyLenientSentence: {
+              decision: 'No',
+            },
+          },
+          bassReferral: {
+            bassRequest: {
+              bassRequested: 'No',
+            },
+          },
+          proposedAddress: {
+            optOut: {
+              decision: 'No',
+            },
+            curfewAddress: {
+              occupier: {
+                name: 'TEST',
+                relationship: 'test',
+              },
+              postCode: 'B1 2TJ',
+              residents: [],
+              telephone: '00000000001',
+              addressTown: 'Test Town',
+              addressLine1: 'Test Street',
+              addressLine2: '',
+              additionalInformation: '',
+              residentOffenceDetails: '',
+              cautionedAgainstResident: 'No',
+            },
+            addressProposed: {
+              decision: 'Yes',
+            },
+          },
+          licenceConditions: {
+            standard: {
+              additionalConditionsRequired: 'No',
+            },
+          },
+        },
+        licenceInCvl: true,
+      })
+      caService.getReasonForNotContinuing.mockResolvedValue([])
+
+      const app = createApp({
+        licenceServiceStub: licenceService,
+        prisonerServiceStub: prisonerService,
+        caServiceStub: caService,
+      })
+
+      return request(app)
+        .get('/taskList/123')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect((res) => {
+          expect(res.text).not.toContain('Create licence')
+          expect(res.text).not.toContain('data-qa="continue"')
+        })
+    })
+
     test('should call getPrisonerDetails from prisonerDetailsService', () => {
       licenceService.getLicence.mockResolvedValue({ stage: 'ELIGIBILITY', licence: {} })
       const app = createApp({
