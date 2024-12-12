@@ -9,6 +9,7 @@ module.exports = (
   role,
   postRelease,
   licenceStatus,
+  errorCode,
   { version = null, versionDetails = null, approvedVersion = {}, approvedVersionDetails = {}, licence = {} } = {}
 ) => {
   const { decisions, tasks, stage } = licenceStatus
@@ -27,12 +28,12 @@ module.exports = (
     switch (stage) {
       case 'UNSTARTED':
       case 'ELIGIBILITY':
-        return getCaTasksEligibility({ decisions, tasks, allowedTransition })
+        return getCaTasksEligibility({ decisions, tasks, allowedTransition, errorCode })
 
       case 'PROCESSING_RO':
       case 'PROCESSING_CA':
       case 'APPROVAL':
-        return getCaTasksFinalChecks({ decisions, tasks, allowedTransition })
+        return getCaTasksFinalChecks({ decisions, tasks, allowedTransition, errorCode })
 
       case 'DECIDED':
       case 'MODIFIED':

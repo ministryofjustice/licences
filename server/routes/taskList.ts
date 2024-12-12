@@ -7,7 +7,6 @@ import { getStatusLabel } from '../services/licence/licenceStatusLabels'
 import { isEmpty } from '../utils/functionalHelpers'
 import getTaskListModel from './viewModels/taskListModels'
 import logger from '../../log'
-import { getTasksForBlockedEligibilityStage, getTasksForBlockedCaProcessingStage } from './viewModels/taskLists/caTasks'
 import { LicenceStage } from '../data/licenceTypes'
 import { LicenceService } from '../services/licenceService'
 
@@ -128,45 +127,48 @@ export = (
           postApproval: licenceStatus.postApproval,
         }
 
-        if (
-          req.user.role === 'CA' &&
-          licenceStatus.stage === 'ELIGIBILITY' &&
-          licenceStatus.tasks.eligibility === 'DONE' &&
-          licenceStatus.decisions.curfewAddressProposed &&
-          licenceStatus.tasks.curfewAddress === 'DONE'
-        ) {
-          const { decisions, tasks } = licenceStatus
-          const errorCode = await caService.getReasonForNotContinuing(bookingId, res.locals.token)
+        const errorCode = await caService.getReasonForNotContinuing(bookingId, res.locals.token)
 
-          if (errorCode) {
-            return res.render('taskList/taskListBuilder', {
-              ...model,
-              taskListModel: getTasksForBlockedEligibilityStage({ decisions, tasks, errorCode }),
-              errors: [],
-            })
-          }
-        }
 
-        if (
-          req.user.role === 'CA' &&
-          licenceStatus.stage === 'PROCESSING_CA' &&
-          licenceStatus.tasks.eligibility === 'DONE' &&
-          licenceStatus.decisions.curfewAddressProposed &&
-          licenceStatus.tasks.curfewAddress === 'DONE'
-        ) {
-          const { decisions, tasks } = licenceStatus
-          const errorCode = await caService.getReasonForNotContinuing(bookingId, res.locals.token)
+        // if (
+        //   req.user.role === 'CA' &&
+        //   licenceStatus.stage === 'ELIGIBILITY' &&
+        //   licenceStatus.tasks.eligibility === 'DONE'
+        // ) {
+        //   const errorCode = await caService.getReasonForNotContinuing(bookingId, res.locals.token)
 
-          if (errorCode) {
-            return res.render('taskList/taskListBuilder', {
-              ...model,
-              taskListModel: getTasksForBlockedCaProcessingStage({ decisions, tasks, errorCode }),
-              errors: [],
-            })
-          }
-        }
+        //   const taskListModel = getTaskListModel(req.user.role, postRelease, licenceStatus, errorCode, licence || {})
 
-        const taskListModel = getTaskListModel(req.user.role, postRelease, licenceStatus, licence || {})
+        //   //think we cabn just move error code out and not have the conditionals if we can get the processing bit working below
+        //   //just send the error code through
+          
+        //   return res.render('taskList/taskListBuilder', {
+        //     ...model,
+        //     taskListModel,
+        //     errors: [],
+        //   })
+        // }
+
+        // if (
+        //   req.user.role === 'CA' &&
+        //   licenceStatus.stage === 'PROCESSING_CA' &&
+        //   licenceStatus.tasks.eligibility === 'DONE' &&
+        //   licenceStatus.decisions.curfewAddressProposed &&
+        //   licenceStatus.tasks.curfewAddress === 'DONE'
+        // ) {
+        //   const { decisions, tasks } = licenceStatus
+        //   const errorCode = await caService.getReasonForNotContinuing(bookingId, res.locals.token)
+
+        //   if (errorCode) {
+        //     return res.render('taskList/taskListBuilder', {
+        //       ...model,
+        //       taskListModel: getTasksForBlockedCaProcessingStage({ decisions, tasks, errorCode }),
+        //       errors: [],
+        //     })
+        //   }
+        // }
+
+        const taskListModel = getTaskListModel(req.user.role, postRelease, licenceStatus, errorCode, licence || {})
 
         return res.render('taskList/taskListBuilder', {
           ...model,
