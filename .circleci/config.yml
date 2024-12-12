@@ -1,22 +1,14 @@
 version: 2.1
-
 orbs:
   hmpps: ministryofjustice/hmpps@8
   browser-tools: circleci/browser-tools@1.4.8
-
 parameters:
-  alerts-slack-channel:
-    type: string
-    default: cvl_alerts_security
-
   releases-slack-channel:
     type: string
     default: the_elephants_devs
-
   node-version:
     type: string
     default: 20.8-browsers
-
 executors:
   javascript-integration-tests:
     docker:
@@ -26,7 +18,6 @@ executors:
         environment:
           DEFAULT_LISTEN_PORT: 3001
     working_directory: ~/app
-
   integration-tests:
     docker:
       - image: cimg/node:<< pipeline.parameters.node-version >>
@@ -48,10 +39,8 @@ executors:
           SERVER_PORT: 9190
           API_BASE_URL_OAUTH: http://hmpps-auth:9090/auth
       - image: bitnami/redis:5.0
-        environment:
-          ALLOW_EMPTY_PASSWORD=yes
+        environment: ALLOW_EMPTY_PASSWORD=yes
     working_directory: ~/app
-
 jobs:
   build:
     executor:
@@ -90,7 +79,6 @@ jobs:
             - dist
             - assets/stylesheets
             - .cache/Cypress
-
   unit_test:
     executor:
       name: hmpps/node
@@ -106,7 +94,6 @@ jobs:
           path: test-results
       - store_artifacts:
           path: test-results/unit-test-reports.html
-
   javascript_integration_test:
     executor: javascript-integration-tests
     steps:
@@ -120,7 +107,6 @@ jobs:
           path: test-results
       - store_artifacts:
           path: test-results/unit-test-reports.html
-
   integration_test:
     executor: integration-tests
     environment:
@@ -175,7 +161,6 @@ jobs:
           destination: integration/geb
       - store_test_results:
           path: licences-specs/build/test-results
-
 workflows:
   version: 2
   build-test-and-deploy:
@@ -241,40 +226,3 @@ workflows:
             - hmpps-common-vars
           requires:
             - request-prod-approval
-
-  security:
-    triggers:
-      - schedule:
-          cron: "11 3 * * 1-5"
-          filters:
-            branches:
-              only:
-                - main
-    jobs:
-      - hmpps/npm_security_audit:
-          slack_channel: << pipeline.parameters.alerts-slack-channel >>
-          context:
-            - hmpps-common-vars
-      - hmpps/trivy_latest_scan:
-          slack_channel: << pipeline.parameters.alerts-slack-channel >>
-          context:
-            - hmpps-common-vars
-      - hmpps/veracode_pipeline_scan:
-          slack_channel: << pipeline.parameters.alerts-slack-channel >>
-          context:
-            - veracode-credentials
-            - hmpps-common-vars
-  security-weekly:
-    triggers:
-      - schedule:
-          cron: "18 4 * * 1"
-          filters:
-            branches:
-              only:
-                - main
-    jobs:
-      - hmpps/veracode_policy_scan:
-          slack_channel: << pipeline.parameters.alerts-slack-channel >>
-          context:
-            - veracode-credentials
-            - hmpps-common-vars

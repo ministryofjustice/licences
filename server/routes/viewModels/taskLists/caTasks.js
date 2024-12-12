@@ -132,6 +132,7 @@ module.exports = {
         dmRefused,
         eligible,
         postponed,
+        useCvlForLicenceCreation,
       } = decisions
 
       const { bassOffer } = tasks
@@ -173,7 +174,8 @@ module.exports = {
           validAddress &&
             !['caToDm', 'caToDmRefusal', 'caToRo'].includes(allowedTransition) &&
             !dmRefused &&
-            !postponed,
+            !postponed &&
+            !useCvlForLicenceCreation,
         ],
       ])
     },

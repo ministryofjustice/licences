@@ -56,6 +56,7 @@ export type Decisions = {
   refusalReason?: string
   decisionComments?: string
   dmNotConsidered?: boolean
+  useCvlForLicenceCreation?: boolean
 
   riskManagementNeeded?: boolean
   awaitingRiskInformation?: boolean
