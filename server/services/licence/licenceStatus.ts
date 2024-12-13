@@ -61,7 +61,7 @@ const getInitialState = (stage, licenceRecord) => {
   const { decision: optedOut, task: optOut } = getTaskState(licence.proposedAddress?.optOut?.decision)
   const { bassReferralNeeded, bassAreaSpecified, bassRequest } = getBassRequestState(licence)
   const { bassAreaSuitable, bassAreaNotSuitable } = getBassAreaState(licence)
-  const { curfewAddress, offenderIsMainOccupier, curfewAddressProposed } = getCurfewAddressState(
+  const { curfewAddress, offenderIsMainOccupier } = getCurfewAddressState(
     licence,
     optedOut,
     bassReferralNeeded,
@@ -82,7 +82,6 @@ const getInitialState = (stage, licenceRecord) => {
       offenderIsMainOccupier,
       curfewAddressRejected,
       addressUnsuitable,
-      curfewAddressProposed,
     },
     tasks: {
       createLicence: postApproval ? getLicenceCreatedTaskState(licenceRecord) : TaskState.UNSTARTED,

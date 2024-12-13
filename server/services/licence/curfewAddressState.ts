@@ -8,7 +8,6 @@ export function getCurfewAddressState(licence, optedOut, bassReferralNeeded, cur
   return {
     offenderIsMainOccupier: getIn(address, ['occupier', 'isOffender']) === 'Yes',
     curfewAddress: getAddressState(),
-    curfewAddressProposed: getIn(licence, ['proposedAddress', 'addressProposed', 'decision']) === 'Yes',
   }
 
   function getAddressState() {
