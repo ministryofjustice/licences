@@ -1,4 +1,4 @@
-const taskListModel = require('../../../server/routes/viewModels/taskListModels')
+const { getCaTaskLists } = require('../../../server/routes/viewModels/taskListModels')
 
 describe('TaskList models', () => {
   const eligibility = { task: 'eligibilityTask' }
@@ -262,9 +262,7 @@ describe('TaskList models', () => {
   describe('caEligibility', () => {
     test('should initially show just eligibility task', () => {
       expect(
-        taskListModel(
-          'CA',
-          false,
+        getCaTaskLists(
           {
             decisions: {
               bassReferralNeeded: false,
@@ -277,16 +275,14 @@ describe('TaskList models', () => {
             },
             stage: 'ELIGIBILITY',
           },
-          {}
+          null
         )
       ).toEqual([eligibility])
     })
 
     test('should show info and address task after eligibility successfully completed', () => {
       expect(
-        taskListModel(
-          'CA',
-          false,
+        getCaTaskLists(
           {
             decisions: {
               bassReferralNeeded: false,
@@ -299,16 +295,14 @@ describe('TaskList models', () => {
             },
             stage: 'ELIGIBILITY',
           },
-          {}
+          null
         )
       ).toEqual([eligibility, informOffender, curfewAddress])
     })
 
     test('should allow submission to RO when optout completed and not opted out', () => {
       expect(
-        taskListModel(
-          'CA',
-          false,
+        getCaTaskLists(
           {
             decisions: {
               bassReferralNeeded: false,
@@ -321,16 +315,14 @@ describe('TaskList models', () => {
             },
             stage: 'ELIGIBILITY',
           },
-          {}
+          null
         )
       ).toEqual([eligibility, curfewAddress, submitCurfewAddress])
     })
 
     test('should allow submission for bass review if bass review selected', () => {
       expect(
-        taskListModel(
-          'CA',
-          false,
+        getCaTaskLists(
           {
             decisions: {
               bassReferralNeeded: true,
@@ -343,16 +335,14 @@ describe('TaskList models', () => {
             },
             stage: 'ELIGIBILITY',
           },
-          {}
+          null
         )
       ).toEqual([eligibility, curfewAddress, sendBassAreaChecks])
     })
 
     test('should not allow submission for if opted out', () => {
       expect(
-        taskListModel(
-          'CA',
-          false,
+        getCaTaskLists(
           {
             decisions: {
               bassReferralNeeded: true,
@@ -365,16 +355,14 @@ describe('TaskList models', () => {
             },
             stage: 'ELIGIBILITY',
           },
-          {}
+          null
         )
       ).toEqual([eligibility, curfewAddressOptedOut])
     })
 
     test('should allow submission for refusal if ineligible', () => {
       expect(
-        taskListModel(
-          'CA',
-          false,
+        getCaTaskLists(
           {
             decisions: {
               bassReferralNeeded: true,
@@ -388,16 +376,14 @@ describe('TaskList models', () => {
             },
             stage: 'ELIGIBILITY',
           },
-          {}
+          null
         )
       ).toEqual([eligibility, submitDecisionMakerRefusal])
     })
 
     test('should allow submission for refusal if address rejected', () => {
       expect(
-        taskListModel(
-          'CA',
-          false,
+        getCaTaskLists(
           {
             decisions: {
               bassReferralNeeded: true,
@@ -411,7 +397,7 @@ describe('TaskList models', () => {
             },
             stage: 'ELIGIBILITY',
           },
-          {}
+          null
         )
       ).toEqual([eligibility, curfewAddressAddressRejected, submitDecisionMakerRefusal])
     })
@@ -420,9 +406,7 @@ describe('TaskList models', () => {
   describe('caTasksFinalChecks', () => {
     test('should return list of tasks for standard route', () => {
       expect(
-        taskListModel(
-          'CA',
-          false,
+        getCaTaskLists(
           {
             decisions: {
               bassReferralNeeded: false,
@@ -437,7 +421,7 @@ describe('TaskList models', () => {
             },
             stage: 'PROCESSING_CA',
           },
-          {}
+          null
         )
       ).toEqual([
         eligibility,
@@ -456,9 +440,7 @@ describe('TaskList models', () => {
 
     test('should return a limited set of tasks of curfew address not approved', () => {
       expect(
-        taskListModel(
-          'CA',
-          false,
+        getCaTaskLists(
           {
             decisions: {
               curfewAddressApproved: false,
@@ -474,16 +456,14 @@ describe('TaskList models', () => {
             },
             stage: 'PROCESSING_CA',
           },
-          {}
+          null
         )
       ).toEqual([eligibility, proposedCurfewAddress, refuse, submitDecisionMaker])
     })
 
     test('should show risk if address unsuitable', () => {
       expect(
-        taskListModel(
-          'CA',
-          false,
+        getCaTaskLists(
           {
             decisions: {
               curfewAddressApproved: false,
@@ -497,27 +477,30 @@ describe('TaskList models', () => {
             tasks: {},
             stage: 'PROCESSING_CA',
           },
-          {}
+          null
         )
       ).toEqual([eligibility, proposedCurfewAddress, riskManagementAddressUnsuitable, refuse, submitDecisionMaker])
     })
 
     test('should return bass specific list of tasks', () => {
       expect(
-        taskListModel('CA', false, {
-          decisions: {
-            curfewAddressApproved: false,
-            bassReferralNeeded: true,
-            bassWithdrawn: false,
-            bassAccepted: null,
-            optedOut: false,
-            eligible: true,
+        getCaTaskLists(
+          {
+            decisions: {
+              curfewAddressApproved: false,
+              bassReferralNeeded: true,
+              bassWithdrawn: false,
+              bassAccepted: null,
+              optedOut: false,
+              eligible: true,
+            },
+            tasks: {
+              bassAreaCheck: 'DONE',
+            },
+            stage: 'PROCESSING_CA',
           },
-          tasks: {
-            bassAreaCheck: 'DONE',
-          },
-          stage: 'PROCESSING_CA',
-        })
+          null
+        )
       ).toEqual([
         eligibility,
         bassAddress,
@@ -535,9 +518,7 @@ describe('TaskList models', () => {
 
     test('should not show submit tasks if opted out', () => {
       expect(
-        taskListModel(
-          'CA',
-          false,
+        getCaTaskLists(
           {
             decisions: {
               curfewAddressApproved: false,
@@ -546,16 +527,14 @@ describe('TaskList models', () => {
             tasks: {},
             stage: 'PROCESSING_CA',
           },
-          {}
+          null
         )
       ).toEqual([proposedCurfewAddressOptedOut, refuse])
     })
 
     test('should return limited bass specific list of tasks when bass area check not done', () => {
       expect(
-        taskListModel(
-          'CA',
-          false,
+        getCaTaskLists(
           {
             decisions: {
               curfewAddressApproved: false,
@@ -570,16 +549,14 @@ describe('TaskList models', () => {
             },
             stage: 'PROCESSING_CA',
           },
-          {}
+          null
         )
       ).toEqual([eligibility, bassAddressRejected, refuse, submitDecisionMaker])
     })
 
     test('should return limited bass specific list of tasks when bass excluded', () => {
       expect(
-        taskListModel(
-          'CA',
-          false,
+        getCaTaskLists(
           {
             decisions: {
               curfewAddressApproved: false,
@@ -594,16 +571,14 @@ describe('TaskList models', () => {
             },
             stage: 'PROCESSING_CA',
           },
-          {}
+          null
         )
       ).toEqual([eligibility, bassAddress, refuse, submitDecisionMakerRefusal])
     })
 
     test('should show proposed address task if caToRo transition - new address added', () => {
       expect(
-        taskListModel(
-          'CA',
-          false,
+        getCaTaskLists(
           {
             decisions: {
               bassReferralNeeded: false,
@@ -612,16 +587,14 @@ describe('TaskList models', () => {
             tasks: {},
             stage: 'PROCESSING_CA',
           },
-          {}
+          null
         )
       ).toEqual([eligibility, proposedCurfewAddress, refuse, submitDecisionMaker])
     })
 
     test('should show CAS2 (BASS) Address task with Approved Premises label and View/Edit button if AP input', () => {
       expect(
-        taskListModel(
-          'CA',
-          false,
+        getCaTaskLists(
           {
             decisions: {
               bassReferralNeeded: true,
@@ -634,7 +607,7 @@ describe('TaskList models', () => {
             },
             stage: 'PROCESSING_CA',
           },
-          {}
+          null
         )
       ).toEqual([
         eligibility,
@@ -652,9 +625,7 @@ describe('TaskList models', () => {
 
     test('Should show the eligiblity task list if Offender is made ineligible at the PROCESSING_CA stage', () => {
       expect(
-        taskListModel(
-          'CA',
-          false,
+        getCaTaskLists(
           {
             decisions: {
               bassReferralNeeded: false,
@@ -669,7 +640,7 @@ describe('TaskList models', () => {
             },
             stage: 'PROCESSING_CA',
           },
-          {}
+          null
         )
       ).toEqual([eligibility, informOffender])
     })
@@ -678,9 +649,7 @@ describe('TaskList models', () => {
   describe('caTasksPostApproval', () => {
     test('should return list of tasks for standard route', () => {
       expect(
-        taskListModel(
-          'CA',
-          false,
+        getCaTaskLists(
           {
             decisions: {
               eligible: true,
@@ -699,7 +668,7 @@ describe('TaskList models', () => {
             },
             stage: 'DECIDED',
           },
-          {}
+          null
         )
       ).toEqual([
         eligibilitySummary,
@@ -719,9 +688,7 @@ describe('TaskList models', () => {
 
     test('should return list of tasks for standard route - postponed', () => {
       expect(
-        taskListModel(
-          'CA',
-          false,
+        getCaTaskLists(
           {
             decisions: {
               eligible: true,
@@ -741,7 +708,7 @@ describe('TaskList models', () => {
             },
             stage: 'DECIDED',
           },
-          {}
+          null
         )
       ).toEqual([
         eligibilitySummary,
@@ -764,9 +731,7 @@ describe('TaskList models', () => {
 
     test('should return bass tasks if required', () => {
       expect(
-        taskListModel(
-          'CA',
-          false,
+        getCaTaskLists(
           {
             decisions: {
               eligible: true,
@@ -785,7 +750,7 @@ describe('TaskList models', () => {
             },
             stage: 'MODIFIED',
           },
-          {}
+          null
         )
       ).toEqual([
         eligibilitySummary,
@@ -804,9 +769,7 @@ describe('TaskList models', () => {
 
     test('should return bass tasks if required', () => {
       expect(
-        taskListModel(
-          'CA',
-          false,
+        getCaTaskLists(
           {
             decisions: {
               eligible: true,
@@ -825,7 +788,7 @@ describe('TaskList models', () => {
             },
             stage: 'MODIFIED',
           },
-          {}
+          null
         )
       ).toEqual([
         eligibilitySummary,
@@ -844,9 +807,7 @@ describe('TaskList models', () => {
 
     test('should return just eligibility and notice if ineligible ', () => {
       expect(
-        taskListModel(
-          'CA',
-          false,
+        getCaTaskLists(
           {
             decisions: {
               eligible: false,
@@ -864,16 +825,14 @@ describe('TaskList models', () => {
             },
             stage: 'MODIFIED_APPROVAL',
           },
-          {}
+          null
         )
       ).toEqual([eligibilitySummary, informOffender])
     })
 
     test('should send for refusal if no approved address and no new one added', () => {
       expect(
-        taskListModel(
-          'CA',
-          false,
+        getCaTaskLists(
           {
             decisions: {
               eligible: true,
@@ -889,16 +848,14 @@ describe('TaskList models', () => {
             tasks: {},
             stage: 'DECIDED',
           },
-          {}
+          null
         )
       ).toEqual([proposedCurfewAddressEdit, refuse, submitDecisionMakerRefusal])
     })
 
     test('should show proposed address task if caToRo transition - new address added', () => {
       expect(
-        taskListModel(
-          'CA',
-          false,
+        getCaTaskLists(
           {
             decisions: {
               approvedPremisesRequired: false,
@@ -918,16 +875,14 @@ describe('TaskList models', () => {
             },
             stage: 'PROCESSING_CA',
           },
-          {}
+          null
         )
       ).toEqual([eligibility, curfewAddress, refuse, submitCurfewAddress])
     })
 
     test('should return list of tasks excluding risk when approved premises required', () => {
       expect(
-        taskListModel(
-          'CA',
-          false,
+        getCaTaskLists(
           {
             decisions: {
               eligible: true,
@@ -945,7 +900,7 @@ describe('TaskList models', () => {
             },
             stage: 'DECIDED',
           },
-          {}
+          null
         )
       ).toEqual([
         eligibilitySummary,
@@ -963,9 +918,7 @@ describe('TaskList models', () => {
     })
     test('should return list of tasks for standard route excluding resubmit to DM', () => {
       expect(
-        taskListModel(
-          'CA',
-          false,
+        getCaTaskLists(
           {
             decisions: {
               eligible: true,
@@ -984,7 +937,7 @@ describe('TaskList models', () => {
             },
             stage: 'PROCESSING_CA',
           },
-          {}
+          null
         )
       ).toEqual([
         eligibility,
@@ -1003,9 +956,7 @@ describe('TaskList models', () => {
 
     test('should return list of tasks for standard route INCLUDING resubmit BUT EXCLUDING Postpone or Refuse', () => {
       expect(
-        taskListModel(
-          'CA',
-          false,
+        getCaTaskLists(
           {
             decisions: {
               eligible: true,
@@ -1024,7 +975,7 @@ describe('TaskList models', () => {
             },
             stage: 'DECIDED',
           },
-          {}
+          null
         )
       ).toEqual([
         eligibilitySummary,
@@ -1042,9 +993,7 @@ describe('TaskList models', () => {
 
   test('should return list of tasks for standard route INCLUDING resubmit AND Postpone or Refuse', () => {
     expect(
-      taskListModel(
-        'CA',
-        false,
+      getCaTaskLists(
         {
           decisions: {
             eligible: true,
@@ -1063,7 +1012,7 @@ describe('TaskList models', () => {
           },
           stage: 'DECIDED',
         },
-        {}
+        null
       )
     ).toEqual([
       eligibilitySummary,
