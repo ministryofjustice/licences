@@ -1,4 +1,4 @@
-const taskListModel = require('../../../server/routes/viewModels/taskListModels')
+const { getTaskLists } = require('../../../server/routes/viewModels/taskListModels')
 
 describe('TaskList models', () => {
   const eligibilitySummary = { task: 'eligibilitySummaryTask' }
@@ -89,7 +89,7 @@ describe('TaskList models', () => {
   describe('dmTasks', () => {
     test('should return eligibility and refusal if there is insufficient time', () => {
       expect(
-        taskListModel(
+        getTaskLists(
           'DM',
           false,
           {
@@ -104,7 +104,7 @@ describe('TaskList models', () => {
 
     test('should display refusal tasks if address withdrawn but not bassReferralNeeded', () => {
       expect(
-        taskListModel(
+        getTaskLists(
           'DM',
           false,
           {
@@ -124,7 +124,7 @@ describe('TaskList models', () => {
 
     test('should display refusal tasks if address rejected by Risk Management test but not bassReferralNeeded', () => {
       expect(
-        taskListModel(
+        getTaskLists(
           'DM',
           false,
           {
@@ -152,7 +152,7 @@ describe('TaskList models', () => {
 
     test('should display refusal tasks if address rejected but not bassReferralNeeded', () => {
       expect(
-        taskListModel(
+        getTaskLists(
           'DM',
           false,
           {
@@ -179,7 +179,7 @@ describe('TaskList models', () => {
 
     test('should display standard tasks if address approved', () => {
       expect(
-        taskListModel(
+        getTaskLists(
           'DM',
           false,
           {
@@ -210,7 +210,7 @@ describe('TaskList models', () => {
 
     test('should display standard tasks if bassReferralNeeded', () => {
       expect(
-        taskListModel(
+        getTaskLists(
           'DM',
           false,
           {
@@ -241,7 +241,7 @@ describe('TaskList models', () => {
 
     test('should display standard tasks if approvedPremisesRequired', () => {
       expect(
-        taskListModel(
+        getTaskLists(
           'DM',
           false,
           {

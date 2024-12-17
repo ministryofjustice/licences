@@ -93,7 +93,7 @@ const caHasRefusedHdcAndProvidedReason = {
   },
 }
 
-const licenceWithEligibilityComplete = {
+const licenceWithEligibilityCompleteAndProposedAddress = {
   eligibility: {
     excluded: {
       decision: 'Yes',
@@ -107,6 +107,57 @@ const licenceWithEligibilityComplete = {
       decision: 'Yes',
     },
     crdTime: {
+      decision: 'No',
+    },
+  },
+  bassReferral: {
+    bassRequest: {
+      bassRequested: 'No',
+    },
+  },
+  proposedAddress: {
+    optOut: {
+      decision: 'No',
+    },
+    curfewAddress: {
+      postCode: 'T1 1TT',
+      telephone: '00000000000',
+      addressTown: 'test address',
+      addressLine1: 'test address',
+    },
+    addressProposed: {
+      decision: 'Yes',
+    },
+  },
+}
+
+const licenceWithEligibilityCompleteAndCAS2Address = {
+  eligibility: {
+    excluded: {
+      decision: 'Yes',
+      reason: 'blah',
+    },
+    suitability: {
+      decision: 'Yes',
+      reason: 'blah',
+    },
+    exceptionalCircumstances: {
+      decision: 'Yes',
+    },
+    crdTime: {
+      decision: 'No',
+    },
+  },
+  bassReferral: {
+    bassRequest: {
+      bassRequested: 'Yes',
+    },
+  },
+  proposedAddress: {
+    optOut: {
+      decision: 'No',
+    },
+    addressProposed: {
       decision: 'No',
     },
   },
@@ -125,37 +176,11 @@ describe('GET /taskList/:prisonNumber', () => {
   })
 
   describe('User is CA', () => {
-    test('should not call caService.getReasonForNotContinuing if eligibility is not complete', async () => {
+    test('should call caService.getReasonForNotContinuing', async () => {
       licenceService.getLicence.mockResolvedValue({
         stage: 'ELIGIBILITY',
-        licence: {
-          eligibility: {
-            suitability: {
-              decision: 'Yes',
-              reason: 'blah',
-            },
-            exceptionalCircumstances: null,
-            crdTime: null,
-          },
-        },
+        licence: licenceWithEligibilityCompleteAndProposedAddress,
       })
-
-      const app = createApp({
-        licenceServiceStub: licenceService,
-        prisonerServiceStub: prisonerService,
-        caServiceStub: caService,
-      })
-
-      return request(app)
-        .get('/taskList/123')
-        .expect(200)
-        .expect('Content-Type', /html/)
-        .expect(() => {
-          expect(caService.getReasonForNotContinuing).not.toHaveBeenCalled()
-        })
-    })
-    test('should call caService.getReasonForNotContinuing', async () => {
-      licenceService.getLicence.mockResolvedValue({ stage: 'ELIGIBILITY', licence: licenceWithEligibilityComplete })
 
       const app = createApp({
         licenceServiceStub: licenceService,
@@ -172,10 +197,10 @@ describe('GET /taskList/:prisonNumber', () => {
         })
     })
 
-    test('should return error message for NO_OFFENDER_NUMBER', async () => {
+    test('should return error message for NO_OFFENDER_NUMBER when curfew address proposed', async () => {
       licenceService.getLicence.mockResolvedValue({
         stage: 'ELIGIBILITY',
-        licence: licenceWithEligibilityComplete,
+        licence: licenceWithEligibilityCompleteAndProposedAddress,
       })
       caService.getReasonForNotContinuing.mockResolvedValue('NO_OFFENDER_NUMBER')
 
@@ -194,8 +219,33 @@ describe('GET /taskList/:prisonNumber', () => {
         })
     })
 
-    test('should return error messages for LDU_INACTIVE', async () => {
-      licenceService.getLicence.mockResolvedValue({ stage: 'ELIGIBILITY', licence: licenceWithEligibilityComplete })
+    test('should return error message for NO_OFFENDER_NUMBER when CAS2 requested', async () => {
+      licenceService.getLicence.mockResolvedValue({
+        stage: 'ELIGIBILITY',
+        licence: licenceWithEligibilityCompleteAndCAS2Address,
+      })
+      caService.getReasonForNotContinuing.mockResolvedValue('NO_OFFENDER_NUMBER')
+
+      const app = createApp({
+        licenceServiceStub: licenceService,
+        prisonerServiceStub: prisonerService,
+        caServiceStub: caService,
+      })
+
+      return request(app)
+        .get('/taskList/123')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect((res) => {
+          expect(res.text).toContain('This is because there is no offender number recorded in Delius')
+        })
+    })
+
+    test('should return error messages for LDU_INACTIVE when curfew address proposed', async () => {
+      licenceService.getLicence.mockResolvedValue({
+        stage: 'ELIGIBILITY',
+        licence: licenceWithEligibilityCompleteAndProposedAddress,
+      })
       caService.getReasonForNotContinuing.mockResolvedValue('LDU_INACTIVE')
 
       const app = createApp({
@@ -215,8 +265,35 @@ describe('GET /taskList/:prisonNumber', () => {
         })
     })
 
-    test('should return error messages for COM_NOT_ALLOCATED', async () => {
-      licenceService.getLicence.mockResolvedValue({ stage: 'ELIGIBILITY', licence: licenceWithEligibilityComplete })
+    test('should return error messages for LDU_INACTIVE when CAS2 requested', async () => {
+      licenceService.getLicence.mockResolvedValue({
+        stage: 'ELIGIBILITY',
+        licence: licenceWithEligibilityCompleteAndCAS2Address,
+      })
+      caService.getReasonForNotContinuing.mockResolvedValue('LDU_INACTIVE')
+
+      const app = createApp({
+        licenceServiceStub: licenceService,
+        prisonerServiceStub: prisonerService,
+        caServiceStub: caService,
+      })
+
+      return request(app)
+        .get('/taskList/123')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect((res) => {
+          expect(res.text).toContain(
+            "You need to contact the probation team to ask them to review this person's Community Offender Manager allocation in Delius."
+          )
+        })
+    })
+
+    test('should return error messages for COM_NOT_ALLOCATED when curfew address proposed', async () => {
+      licenceService.getLicence.mockResolvedValue({
+        stage: 'ELIGIBILITY',
+        licence: licenceWithEligibilityCompleteAndProposedAddress,
+      })
       caService.getReasonForNotContinuing.mockResolvedValue('COM_NOT_ALLOCATED')
 
       const app = createApp({
@@ -234,8 +311,55 @@ describe('GET /taskList/:prisonNumber', () => {
         })
     })
 
-    test('should NOT disable the Start now button if there are no errors', async () => {
-      licenceService.getLicence.mockResolvedValue({ stage: 'ELIGIBILITY', licence: licenceWithEligibilityComplete })
+    test('should return error messages for COM_NOT_ALLOCATED when CAS2 requested', async () => {
+      licenceService.getLicence.mockResolvedValue({
+        stage: 'ELIGIBILITY',
+        licence: licenceWithEligibilityCompleteAndCAS2Address,
+      })
+      caService.getReasonForNotContinuing.mockResolvedValue('COM_NOT_ALLOCATED')
+
+      const app = createApp({
+        licenceServiceStub: licenceService,
+        prisonerServiceStub: prisonerService,
+        caServiceStub: caService,
+      })
+
+      return request(app)
+        .get('/taskList/123')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect((res) => {
+          expect(res.text).toContain('This is because there is no Community Offender Manager showing in Delius')
+        })
+    })
+
+    test('should NOT disable the Start now button if there are no errors when curfew address proposed', async () => {
+      licenceService.getLicence.mockResolvedValue({
+        stage: 'ELIGIBILITY',
+        licence: licenceWithEligibilityCompleteAndProposedAddress,
+      })
+      caService.getReasonForNotContinuing.mockResolvedValue([])
+
+      const app = createApp({
+        licenceServiceStub: licenceService,
+        prisonerServiceStub: prisonerService,
+        caServiceStub: caService,
+      })
+
+      return request(app)
+        .get('/taskList/123')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect((res) => {
+          expect(res.text).not.toContain('button-disabled')
+        })
+    })
+
+    test('should NOT disable the Start now button if there are no errors when CAS2 requested', async () => {
+      licenceService.getLicence.mockResolvedValue({
+        stage: 'ELIGIBILITY',
+        licence: licenceWithEligibilityCompleteAndCAS2Address,
+      })
       caService.getReasonForNotContinuing.mockResolvedValue([])
 
       const app = createApp({

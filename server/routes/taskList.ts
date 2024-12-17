@@ -5,9 +5,8 @@ import getLicenceStatus from '../services/licence/licenceStatus'
 import { getStatusLabel } from '../services/licence/licenceStatusLabels'
 
 import { isEmpty } from '../utils/functionalHelpers'
-import getTaskListModel from './viewModels/taskListModels'
+import { getCaTaskLists, getTaskLists } from './viewModels/taskListModels'
 import logger from '../../log'
-import { getTasksForBlocked } from './viewModels/taskLists/caTasks'
 import { LicenceStage } from '../data/licenceTypes'
 import { LicenceService } from '../services/licenceService'
 
@@ -128,23 +127,16 @@ export = (
           postApproval: licenceStatus.postApproval,
         }
 
-        if (
-          req.user.role === 'CA' &&
-          licenceStatus.stage === 'ELIGIBILITY' &&
-          licenceStatus.tasks.eligibility === 'DONE'
-        ) {
+        if (req.user.role === 'CA') {
           const errorCode = await caService.getReasonForNotContinuing(bookingId, res.locals.token)
-
-          if (errorCode) {
-            return res.render('taskList/taskListBuilder', {
-              ...model,
-              taskListModel: getTasksForBlocked(errorCode),
-              errors: [],
-            })
-          }
+          return res.render('taskList/taskListBuilder', {
+            ...model,
+            taskListModel: getCaTaskLists(licenceStatus, errorCode),
+            errors: [],
+          })
         }
 
-        const taskListModel = getTaskListModel(req.user.role, postRelease, licenceStatus, licence || {})
+        const taskListModel = getTaskLists(req.user.role, postRelease, licenceStatus, licence || {})
 
         return res.render('taskList/taskListBuilder', {
           ...model,

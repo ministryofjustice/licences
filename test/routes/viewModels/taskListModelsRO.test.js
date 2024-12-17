@@ -1,4 +1,4 @@
-const taskListModel = require('../../../server/routes/viewModels/taskListModels')
+const { getTaskLists } = require('../../../server/routes/viewModels/taskListModels')
 
 describe('TaskList models', () => {
   const proposedCurfewAddressRejected = {
@@ -153,7 +153,7 @@ describe('TaskList models', () => {
   describe('roTasksPostApproval', () => {
     test('should return standard tasks', () => {
       expect(
-        taskListModel(
+        getTaskLists(
           'RO',
           false,
           {
@@ -168,7 +168,7 @@ describe('TaskList models', () => {
 
     test('should hide risk and show address taks when approved premises', () => {
       expect(
-        taskListModel(
+        getTaskLists(
           'RO',
           false,
           {
@@ -185,7 +185,7 @@ describe('TaskList models', () => {
   describe('vary', () => {
     test('should return vary licence task if licence is unstarted', () => {
       expect(
-        taskListModel(
+        getTaskLists(
           'RO',
           true,
           {
@@ -200,7 +200,7 @@ describe('TaskList models', () => {
 
     test('should return the rest if licence not unstarted', () => {
       expect(
-        taskListModel(
+        getTaskLists(
           'RO',
           true,
           {
@@ -222,7 +222,7 @@ describe('TaskList models', () => {
 
     test('should show current version if one exists and not show create task if version not different', () => {
       expect(
-        taskListModel(
+        getTaskLists(
           'RO',
           true,
           {
@@ -249,7 +249,7 @@ describe('TaskList models', () => {
 
     test('should not show current version if approved version is empty', () => {
       expect(
-        taskListModel(
+        getTaskLists(
           'RO',
           true,
           {
@@ -276,7 +276,7 @@ describe('TaskList models', () => {
 
     test('should show create licence if version ahead of approved version', () => {
       expect(
-        taskListModel(
+        getTaskLists(
           'RO',
           true,
           {
@@ -305,7 +305,7 @@ describe('TaskList models', () => {
   describe('roTasks', () => {
     test('should show all tasks if address not rejected', () => {
       expect(
-        taskListModel(
+        getTaskLists(
           'RO',
           false,
           {
@@ -332,7 +332,7 @@ describe('TaskList models', () => {
 
     test('should show bass task if bass referral needed', () => {
       expect(
-        taskListModel(
+        getTaskLists(
           'RO',
           false,
           {
@@ -368,7 +368,7 @@ describe('TaskList models', () => {
 
     test('should show only curfew address review task, pdf print task, and send if review failed', () => {
       expect(
-        taskListModel(
+        getTaskLists(
           'RO',
           false,
           {
@@ -388,7 +388,7 @@ describe('TaskList models', () => {
 
     test('should show only risk task, pdf print task, and send if unsuitable failed', () => {
       expect(
-        taskListModel(
+        getTaskLists(
           'RO',
           false,
           {
@@ -408,7 +408,7 @@ describe('TaskList models', () => {
 
     test('should show only bass task, pdf print task, and send if bass failed', () => {
       expect(
-        taskListModel(
+        getTaskLists(
           'RO',
           false,
           {
@@ -426,7 +426,7 @@ describe('TaskList models', () => {
 
     test('should show all tasks except risk if approved premises required', () => {
       expect(
-        taskListModel(
+        getTaskLists(
           'RO',
           false,
           {
@@ -449,7 +449,7 @@ describe('TaskList models', () => {
 
     test('should show the Bass area check task with a label of Approved premises address if approved premises has been input', () => {
       expect(
-        taskListModel(
+        getTaskLists(
           'RO',
           false,
           {
@@ -482,7 +482,7 @@ describe('TaskList models', () => {
   describe('no task list', () => {
     test('should return no licence task', () => {
       expect(
-        taskListModel(
+        getTaskLists(
           'RO',
           false,
           {

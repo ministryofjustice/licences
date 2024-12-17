@@ -22,9 +22,7 @@ const eligibilityTask = namedTask('eligibilityTask')
 const eligibilitySummaryTask = namedTask('eligibilitySummaryTask')
 
 module.exports = {
-  getTasksForBlocked: (errorCode) => tasklist({}, [[eligibilityTask], [informOffenderTask], [caBlocked(errorCode)]]),
-
-  getCaTasksEligibility: ({ decisions, tasks, allowedTransition }) => {
+  getCaTasksEligibility: ({ decisions, tasks, allowedTransition, errorCode }) => {
     const { optedOut, eligible, bassReferralNeeded, addressUnsuitable } = decisions
     const { eligibility, optOut } = tasks
 
@@ -34,18 +32,26 @@ module.exports = {
 
     const context = { decisions, tasks, allowedTransition }
 
+    const eligibleForBassReview = optOutRefused && bassReferralNeeded && allowedTransition !== 'caToDmRefusal'
+    const eligibleForAddressReview = optOutRefused && !bassReferralNeeded && allowedTransition !== 'caToDmRefusal'
+    const eligibleForHandover = eligibleForBassReview || eligibleForAddressReview
+
     return tasklist(context, [
       [eligibilityTask],
-      [informOffenderTask, eligibilityDone && optOutUnstarted && !optedOut],
+      [
+        informOffenderTask,
+        (eligibilityDone && errorCode && !optedOut) || (eligibilityDone && optOutUnstarted && !optedOut),
+      ],
       [curfewAddress, eligible],
       [riskManagement.edit, addressUnsuitable],
       [submitToDm.refusal, allowedTransition === 'caToDmRefusal'],
-      [submitBassReview, optOutRefused && bassReferralNeeded && allowedTransition !== 'caToDmRefusal'],
-      [submitAddressReview, optOutRefused && !bassReferralNeeded && allowedTransition !== 'caToDmRefusal'],
+      [submitBassReview, eligibleForBassReview && !errorCode],
+      [submitAddressReview, eligibleForAddressReview && !errorCode],
+      [caBlocked(errorCode), eligibleForHandover && errorCode],
     ])
   },
 
-  getCaTasksFinalChecks: ({ decisions, tasks, allowedTransition }) => {
+  getCaTasksFinalChecks: ({ decisions, tasks, allowedTransition, errorCode }) => {
     const {
       addressUnsuitable,
       approvedPremisesRequired,
@@ -57,10 +63,11 @@ module.exports = {
       eligible,
     } = decisions
 
-    const { bassAreaCheck } = tasks
+    const { bassAreaCheck, optOut } = tasks
     const bassAreaChecked = bassAreaCheck === 'DONE'
     const bassExcluded = ['Unavailable', 'Unsuitable'].includes(bassAccepted)
     const bassChecksDone = bassReferralNeeded && bassAreaChecked && !bassWithdrawn && !bassExcluded
+    const optOutRefused = optOut === 'DONE' && !optedOut
 
     const validAddress = approvedPremisesRequired || curfewAddressApproved || bassChecksDone
     const context = { decisions, tasks, allowedTransition }
@@ -83,6 +90,10 @@ module.exports = {
       addressUnsuitable ||
       (bassChecksDone && !approvedPremisesRequired)
 
+    const eligibleForBassReview = optOutRefused && bassReferralNeeded && allowedTransition === 'caToRo'
+    const eligibleForAddressReview = optOutRefused && !bassReferralNeeded && allowedTransition === 'caToRo'
+    const eligibleForHandover = eligibleForBassReview || eligibleForAddressReview
+
     return tasklist(context, [
       [eligibilityTask],
       [proposedAddress.ca.processing, !bassReferralNeeded && allowedTransition !== 'caToRo'],
@@ -98,8 +109,9 @@ module.exports = {
       [refuseHdc],
       [submitToDm.approval, allowedTransition !== 'caToDmRefusal' && allowedTransition !== 'caToRo'],
       [submitToDm.refusal, allowedTransition === 'caToDmRefusal'],
-      [submitAddressReview, !bassReferralNeeded && allowedTransition === 'caToRo'],
-      [submitBassReview, bassReferralNeeded && allowedTransition === 'caToRo'],
+      [submitAddressReview, eligibleForAddressReview && !errorCode],
+      [submitBassReview, eligibleForBassReview && !errorCode],
+      [caBlocked(errorCode), eligibleForHandover && errorCode],
     ])
   },
 
