@@ -872,6 +872,7 @@ describe('TaskList models', () => {
               bassAreaCheck: 'UNSTARTED',
               bassOffer: 'DONE',
               curfewAddressReview: 'UNSTARTED',
+              optOut: 'DONE',
             },
             stage: 'PROCESSING_CA',
           },

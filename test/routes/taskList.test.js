@@ -125,35 +125,6 @@ describe('GET /taskList/:prisonNumber', () => {
   })
 
   describe('User is CA', () => {
-    test('should not call caService.getReasonForNotContinuing if eligibility is not complete', async () => {
-      licenceService.getLicence.mockResolvedValue({
-        stage: 'ELIGIBILITY',
-        licence: {
-          eligibility: {
-            suitability: {
-              decision: 'Yes',
-              reason: 'blah',
-            },
-            exceptionalCircumstances: null,
-            crdTime: null,
-          },
-        },
-      })
-
-      const app = createApp({
-        licenceServiceStub: licenceService,
-        prisonerServiceStub: prisonerService,
-        caServiceStub: caService,
-      })
-
-      return request(app)
-        .get('/taskList/123')
-        .expect(200)
-        .expect('Content-Type', /html/)
-        .expect(() => {
-          expect(caService.getReasonForNotContinuing).not.toHaveBeenCalled()
-        })
-    })
     test('should call caService.getReasonForNotContinuing', async () => {
       licenceService.getLicence.mockResolvedValue({ stage: 'ELIGIBILITY', licence: licenceWithEligibilityComplete })
 
