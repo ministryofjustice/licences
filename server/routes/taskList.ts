@@ -10,7 +10,7 @@ import logger from '../../log'
 import { getTasksForBlocked } from './viewModels/taskLists/caTasks'
 import { LicenceStage } from '../data/licenceTypes'
 import { LicenceService } from '../services/licenceService'
-import { comNotAllocatedBlockEnabled } from '../config'
+import config from '../config'
 
 const { APPROVAL, DECIDED, ELIGIBILITY, MODIFIED, MODIFIED_APPROVAL, PROCESSING_CA, PROCESSING_RO } = LicenceStage
 
@@ -128,7 +128,7 @@ export = (
           bookingId,
           postApproval: licenceStatus.postApproval,
         }
-
+        const { comNotAllocatedBlockEnabled } = config
         if (comNotAllocatedBlockEnabled) {
           if (req.user.role === 'CA') {
             const errorCode = await caService.getReasonForNotContinuing(bookingId, res.locals.token)

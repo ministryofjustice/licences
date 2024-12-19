@@ -1,4 +1,4 @@
-const { comNotAllocatedBlockEnabled } = require('../../../config')
+const config = require('../../../config')
 const { tasklist, namedTask } = require('./tasklistBuilder')
 const { postponeOrRefuse } = require('./tasks/postponement')
 const bassAddress = require('./tasks/bassAddress')
@@ -39,6 +39,7 @@ module.exports = {
     const eligibleForBassReview = optOutRefused && bassReferralNeeded && allowedTransition !== 'caToDmRefusal'
     const eligibleForAddressReview = optOutRefused && !bassReferralNeeded && allowedTransition !== 'caToDmRefusal'
     const eligibleForHandover = eligibleForBassReview || eligibleForAddressReview
+    const { comNotAllocatedBlockEnabled } = config
 
     return tasklist(context, [
       [eligibilityTask],
@@ -101,6 +102,7 @@ module.exports = {
     const eligibleForBassReview = optOutRefused && bassReferralNeeded && allowedTransition === 'caToRo'
     const eligibleForAddressReview = optOutRefused && !bassReferralNeeded && allowedTransition === 'caToRo'
     const eligibleForHandover = eligibleForBassReview || eligibleForAddressReview
+    const { comNotAllocatedBlockEnabled } = config
 
     return tasklist(context, [
       [eligibilityTask],
