@@ -26,7 +26,7 @@ module.exports = {
   // remove once comNotAllocatedBlockEnabled feature flag is removed
   getTasksForBlocked: (errorCode) => tasklist({}, [[eligibilityTask], [informOffenderTask], [caBlocked(errorCode)]]),
 
-  getCaTasksEligibility: ({ decisions, tasks, allowedTransition, errorCode }) => {
+  getCaTasksEligibility: ({ decisions, tasks, allowedTransition, errorCode = null }) => {
     const { optedOut, eligible, bassReferralNeeded, addressUnsuitable } = decisions
     const { eligibility, optOut } = tasks
 
@@ -59,7 +59,7 @@ module.exports = {
     ])
   },
 
-  getCaTasksFinalChecks: ({ decisions, tasks, allowedTransition, errorCode }) => {
+  getCaTasksFinalChecks: ({ decisions, tasks, allowedTransition, errorCode = null }) => {
     const {
       addressUnsuitable,
       approvedPremisesRequired,

@@ -5,7 +5,7 @@ import getLicenceStatus from '../services/licence/licenceStatus'
 import { getStatusLabel } from '../services/licence/licenceStatusLabels'
 
 import { isEmpty } from '../utils/functionalHelpers'
-import { getCaTaskLists, getTaskLists } from './viewModels/taskListModels'
+import { getCaTaskLists, getTaskLists, getAllTaskLists } from './viewModels/taskListModels'
 import logger from '../../log'
 import { getTasksForBlocked } from './viewModels/taskLists/caTasks'
 import { LicenceStage } from '../data/licenceTypes'
@@ -158,22 +158,9 @@ export = (
                 errors: [],
               })
             }
-            return res.render('taskList/taskListBuilder', {
-              ...model,
-              taskListModel: getCaTaskLists(licenceStatus, errorCode),
-              errors: [],
-            })
           }
 
-          if (req.user.role === 'CA') {
-            return res.render('taskList/taskListBuilder', {
-              ...model,
-              taskListModel: getCaTaskLists(licenceStatus, {}),
-              errors: [],
-            })
-          }
-
-          const taskListModel = getTaskLists(req.user.role, postRelease, licenceStatus, licence || {})
+          const taskListModel = getAllTaskLists(req.user.role, postRelease, licenceStatus, licence || {})
 
           return res.render('taskList/taskListBuilder', {
             ...model,
