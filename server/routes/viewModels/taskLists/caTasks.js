@@ -1,3 +1,4 @@
+const { comNotAllocatedBlockEnabled } = require('../../../config')
 const { tasklist, namedTask } = require('./tasklistBuilder')
 const { postponeOrRefuse } = require('./tasks/postponement')
 const bassAddress = require('./tasks/bassAddress')
@@ -22,6 +23,9 @@ const eligibilityTask = namedTask('eligibilityTask')
 const eligibilitySummaryTask = namedTask('eligibilitySummaryTask')
 
 module.exports = {
+  // remove once comNotAllocatedBlockEnabled feature flag is removed
+  getTasksForBlocked: (errorCode) => tasklist({}, [[eligibilityTask], [informOffenderTask], [caBlocked(errorCode)]]),
+
   getCaTasksEligibility: ({ decisions, tasks, allowedTransition, errorCode }) => {
     const { optedOut, eligible, bassReferralNeeded, addressUnsuitable } = decisions
     const { eligibility, optOut } = tasks
@@ -40,14 +44,18 @@ module.exports = {
       [eligibilityTask],
       [
         informOffenderTask,
-        (eligibilityDone && errorCode && !optedOut) || (eligibilityDone && optOutUnstarted && !optedOut),
+        comNotAllocatedBlockEnabled &&
+          ((eligibilityDone && errorCode && !optedOut) || (eligibilityDone && optOutUnstarted && !optedOut)),
       ],
+      [informOffenderTask, !comNotAllocatedBlockEnabled && eligibilityDone && optOutUnstarted && !optedOut],
       [curfewAddress, eligible],
       [riskManagement.edit, addressUnsuitable],
       [submitToDm.refusal, allowedTransition === 'caToDmRefusal'],
-      [submitBassReview, eligibleForBassReview && !errorCode],
-      [submitAddressReview, eligibleForAddressReview && !errorCode],
-      [caBlocked(errorCode), eligibleForHandover && errorCode],
+      [submitBassReview, comNotAllocatedBlockEnabled && eligibleForBassReview && !errorCode],
+      [submitBassReview, !comNotAllocatedBlockEnabled && eligibleForBassReview],
+      [submitAddressReview, comNotAllocatedBlockEnabled && eligibleForAddressReview && !errorCode],
+      [submitAddressReview, !comNotAllocatedBlockEnabled && eligibleForAddressReview],
+      [caBlocked(errorCode), comNotAllocatedBlockEnabled && eligibleForHandover && errorCode],
     ])
   },
 
@@ -109,9 +117,11 @@ module.exports = {
       [refuseHdc],
       [submitToDm.approval, allowedTransition !== 'caToDmRefusal' && allowedTransition !== 'caToRo'],
       [submitToDm.refusal, allowedTransition === 'caToDmRefusal'],
-      [submitAddressReview, eligibleForAddressReview && !errorCode],
-      [submitBassReview, eligibleForBassReview && !errorCode],
-      [caBlocked(errorCode), eligibleForHandover && errorCode],
+      [submitAddressReview, comNotAllocatedBlockEnabled && eligibleForAddressReview && !errorCode],
+      [submitAddressReview, !comNotAllocatedBlockEnabled && eligibleForAddressReview],
+      [submitBassReview, comNotAllocatedBlockEnabled && eligibleForBassReview && !errorCode],
+      [submitBassReview, !comNotAllocatedBlockEnabled && eligibleForBassReview],
+      [caBlocked(errorCode), comNotAllocatedBlockEnabled && eligibleForHandover && errorCode],
     ])
   },
 
