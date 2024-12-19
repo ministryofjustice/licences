@@ -1,3 +1,4 @@
+const config = require('../../../config')
 const { tasklist, namedTask } = require('./tasklistBuilder')
 const { postponeOrRefuse } = require('./tasks/postponement')
 const bassAddress = require('./tasks/bassAddress')
@@ -22,7 +23,10 @@ const eligibilityTask = namedTask('eligibilityTask')
 const eligibilitySummaryTask = namedTask('eligibilitySummaryTask')
 
 module.exports = {
-  getCaTasksEligibility: ({ decisions, tasks, allowedTransition, errorCode }) => {
+  // remove once comNotAllocatedBlockEnabled feature flag is removed
+  getTasksForBlocked: (errorCode) => tasklist({}, [[eligibilityTask], [informOffenderTask], [caBlocked(errorCode)]]),
+
+  getCaTasksEligibility: ({ decisions, tasks, allowedTransition, errorCode = null }) => {
     const { optedOut, eligible, bassReferralNeeded, addressUnsuitable } = decisions
     const { eligibility, optOut } = tasks
 
@@ -35,23 +39,28 @@ module.exports = {
     const eligibleForBassReview = optOutRefused && bassReferralNeeded && allowedTransition !== 'caToDmRefusal'
     const eligibleForAddressReview = optOutRefused && !bassReferralNeeded && allowedTransition !== 'caToDmRefusal'
     const eligibleForHandover = eligibleForBassReview || eligibleForAddressReview
+    const { comNotAllocatedBlockEnabled } = config
 
     return tasklist(context, [
       [eligibilityTask],
       [
         informOffenderTask,
-        (eligibilityDone && errorCode && !optedOut) || (eligibilityDone && optOutUnstarted && !optedOut),
+        comNotAllocatedBlockEnabled &&
+          ((eligibilityDone && errorCode && !optedOut) || (eligibilityDone && optOutUnstarted && !optedOut)),
       ],
+      [informOffenderTask, !comNotAllocatedBlockEnabled && eligibilityDone && optOutUnstarted && !optedOut],
       [curfewAddress, eligible],
       [riskManagement.edit, addressUnsuitable],
       [submitToDm.refusal, allowedTransition === 'caToDmRefusal'],
-      [submitBassReview, eligibleForBassReview && !errorCode],
-      [submitAddressReview, eligibleForAddressReview && !errorCode],
-      [caBlocked(errorCode), eligibleForHandover && errorCode],
+      [submitBassReview, comNotAllocatedBlockEnabled && eligibleForBassReview && !errorCode],
+      [submitBassReview, !comNotAllocatedBlockEnabled && eligibleForBassReview],
+      [submitAddressReview, comNotAllocatedBlockEnabled && eligibleForAddressReview && !errorCode],
+      [submitAddressReview, !comNotAllocatedBlockEnabled && eligibleForAddressReview],
+      [caBlocked(errorCode), comNotAllocatedBlockEnabled && eligibleForHandover && errorCode],
     ])
   },
 
-  getCaTasksFinalChecks: ({ decisions, tasks, allowedTransition, errorCode }) => {
+  getCaTasksFinalChecks: ({ decisions, tasks, allowedTransition, errorCode = null }) => {
     const {
       addressUnsuitable,
       approvedPremisesRequired,
@@ -93,6 +102,7 @@ module.exports = {
     const eligibleForBassReview = optOutRefused && bassReferralNeeded && allowedTransition === 'caToRo'
     const eligibleForAddressReview = optOutRefused && !bassReferralNeeded && allowedTransition === 'caToRo'
     const eligibleForHandover = eligibleForBassReview || eligibleForAddressReview
+    const { comNotAllocatedBlockEnabled } = config
 
     return tasklist(context, [
       [eligibilityTask],
@@ -109,9 +119,11 @@ module.exports = {
       [refuseHdc],
       [submitToDm.approval, allowedTransition !== 'caToDmRefusal' && allowedTransition !== 'caToRo'],
       [submitToDm.refusal, allowedTransition === 'caToDmRefusal'],
-      [submitAddressReview, eligibleForAddressReview && !errorCode],
-      [submitBassReview, eligibleForBassReview && !errorCode],
-      [caBlocked(errorCode), eligibleForHandover && errorCode],
+      [submitAddressReview, comNotAllocatedBlockEnabled && eligibleForAddressReview && !errorCode],
+      [submitAddressReview, !comNotAllocatedBlockEnabled && eligibleForAddressReview],
+      [submitBassReview, comNotAllocatedBlockEnabled && eligibleForBassReview && !errorCode],
+      [submitBassReview, !comNotAllocatedBlockEnabled && eligibleForBassReview],
+      [caBlocked(errorCode), comNotAllocatedBlockEnabled && eligibleForHandover && errorCode],
     ])
   },
 

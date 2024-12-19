@@ -1,6 +1,7 @@
 const request = require('supertest')
 const { mockAudit } = require('../mockClients')
 const { appSetup } = require('../supertestSetup')
+const config = require('../../server/config')
 
 const {
   createPrisonerServiceStub,
@@ -163,16 +164,42 @@ const licenceWithEligibilityCompleteAndCAS2Address = {
   },
 }
 
+const licenceWithEligibilityComplete = {
+  eligibility: {
+    excluded: {
+      decision: 'Yes',
+      reason: 'blah',
+    },
+    suitability: {
+      decision: 'Yes',
+      reason: 'blah',
+    },
+    exceptionalCircumstances: {
+      decision: 'Yes',
+    },
+    crdTime: {
+      decision: 'No',
+    },
+  },
+}
+
 describe('GET /taskList/:prisonNumber', () => {
   let prisonerService
   let licenceService
   let caService
+  const existingConfig = config
 
   beforeEach(() => {
     licenceService = createLicenceServiceStub()
     prisonerService = createPrisonerServiceStub()
     prisonerService.getPrisonerDetails = jest.fn().mockResolvedValue(prisonerInfoResponse)
     caService = createCaServiceStub
+    config.comNotAllocatedBlockEnabled = true
+  })
+
+  afterEach(() => {
+    jest.resetAllMocks()
+    config.comNotAllocatedBlockEnabled = existingConfig.comNotAllocatedBlockEnabled
   })
 
   describe('User is CA', () => {
@@ -197,140 +224,206 @@ describe('GET /taskList/:prisonNumber', () => {
         })
     })
 
-    test('should return error message for NO_OFFENDER_NUMBER when curfew address proposed', async () => {
-      licenceService.getLicence.mockResolvedValue({
-        stage: 'ELIGIBILITY',
-        licence: licenceWithEligibilityCompleteAndProposedAddress,
-      })
-      caService.getReasonForNotContinuing.mockResolvedValue('NO_OFFENDER_NUMBER')
-
-      const app = createApp({
-        licenceServiceStub: licenceService,
-        prisonerServiceStub: prisonerService,
-        caServiceStub: caService,
-      })
-
-      return request(app)
-        .get('/taskList/123')
-        .expect(200)
-        .expect('Content-Type', /html/)
-        .expect((res) => {
-          expect(res.text).toContain('This is because there is no offender number recorded in Delius')
+    describe('COM not allocated block enabled', () => {
+      test('should return error message for NO_OFFENDER_NUMBER when curfew address proposed', async () => {
+        licenceService.getLicence.mockResolvedValue({
+          stage: 'ELIGIBILITY',
+          licence: licenceWithEligibilityCompleteAndProposedAddress,
         })
+        caService.getReasonForNotContinuing.mockResolvedValue('NO_OFFENDER_NUMBER')
+
+        const app = createApp({
+          licenceServiceStub: licenceService,
+          prisonerServiceStub: prisonerService,
+          caServiceStub: caService,
+        })
+
+        return request(app)
+          .get('/taskList/123')
+          .expect(200)
+          .expect('Content-Type', /html/)
+          .expect((res) => {
+            expect(res.text).toContain('This is because there is no offender number recorded in Delius')
+          })
+      })
+
+      test('should return error message for NO_OFFENDER_NUMBER when CAS2 requested', async () => {
+        licenceService.getLicence.mockResolvedValue({
+          stage: 'ELIGIBILITY',
+          licence: licenceWithEligibilityCompleteAndCAS2Address,
+        })
+        caService.getReasonForNotContinuing.mockResolvedValue('NO_OFFENDER_NUMBER')
+
+        const app = createApp({
+          licenceServiceStub: licenceService,
+          prisonerServiceStub: prisonerService,
+          caServiceStub: caService,
+        })
+
+        return request(app)
+          .get('/taskList/123')
+          .expect(200)
+          .expect('Content-Type', /html/)
+          .expect((res) => {
+            expect(res.text).toContain('This is because there is no offender number recorded in Delius')
+          })
+      })
+
+      test('should return error messages for LDU_INACTIVE when curfew address proposed', async () => {
+        licenceService.getLicence.mockResolvedValue({
+          stage: 'ELIGIBILITY',
+          licence: licenceWithEligibilityCompleteAndProposedAddress,
+        })
+        caService.getReasonForNotContinuing.mockResolvedValue('LDU_INACTIVE')
+
+        const app = createApp({
+          licenceServiceStub: licenceService,
+          prisonerServiceStub: prisonerService,
+          caServiceStub: caService,
+        })
+
+        return request(app)
+          .get('/taskList/123')
+          .expect(200)
+          .expect('Content-Type', /html/)
+          .expect((res) => {
+            expect(res.text).toContain(
+              "You need to contact the probation team to ask them to review this person's Community Offender Manager allocation in Delius."
+            )
+          })
+      })
+
+      test('should return error messages for LDU_INACTIVE when CAS2 requested', async () => {
+        licenceService.getLicence.mockResolvedValue({
+          stage: 'ELIGIBILITY',
+          licence: licenceWithEligibilityCompleteAndCAS2Address,
+        })
+        caService.getReasonForNotContinuing.mockResolvedValue('LDU_INACTIVE')
+
+        const app = createApp({
+          licenceServiceStub: licenceService,
+          prisonerServiceStub: prisonerService,
+          caServiceStub: caService,
+        })
+
+        return request(app)
+          .get('/taskList/123')
+          .expect(200)
+          .expect('Content-Type', /html/)
+          .expect((res) => {
+            expect(res.text).toContain(
+              "You need to contact the probation team to ask them to review this person's Community Offender Manager allocation in Delius."
+            )
+          })
+      })
+
+      test('should return error messages for COM_NOT_ALLOCATED when curfew address proposed', async () => {
+        licenceService.getLicence.mockResolvedValue({
+          stage: 'ELIGIBILITY',
+          licence: licenceWithEligibilityCompleteAndProposedAddress,
+        })
+        caService.getReasonForNotContinuing.mockResolvedValue('COM_NOT_ALLOCATED')
+
+        const app = createApp({
+          licenceServiceStub: licenceService,
+          prisonerServiceStub: prisonerService,
+          caServiceStub: caService,
+        })
+
+        return request(app)
+          .get('/taskList/123')
+          .expect(200)
+          .expect('Content-Type', /html/)
+          .expect((res) => {
+            expect(res.text).toContain('This is because there is no Community Offender Manager showing in Delius')
+          })
+      })
+
+      test('should return error messages for COM_NOT_ALLOCATED when CAS2 requested', async () => {
+        licenceService.getLicence.mockResolvedValue({
+          stage: 'ELIGIBILITY',
+          licence: licenceWithEligibilityCompleteAndCAS2Address,
+        })
+        caService.getReasonForNotContinuing.mockResolvedValue('COM_NOT_ALLOCATED')
+
+        const app = createApp({
+          licenceServiceStub: licenceService,
+          prisonerServiceStub: prisonerService,
+          caServiceStub: caService,
+        })
+
+        return request(app)
+          .get('/taskList/123')
+          .expect(200)
+          .expect('Content-Type', /html/)
+          .expect((res) => {
+            expect(res.text).toContain('This is because there is no Community Offender Manager showing in Delius')
+          })
+      })
     })
 
-    test('should return error message for NO_OFFENDER_NUMBER when CAS2 requested', async () => {
-      licenceService.getLicence.mockResolvedValue({
-        stage: 'ELIGIBILITY',
-        licence: licenceWithEligibilityCompleteAndCAS2Address,
-      })
-      caService.getReasonForNotContinuing.mockResolvedValue('NO_OFFENDER_NUMBER')
-
-      const app = createApp({
-        licenceServiceStub: licenceService,
-        prisonerServiceStub: prisonerService,
-        caServiceStub: caService,
-      })
-
-      return request(app)
-        .get('/taskList/123')
-        .expect(200)
-        .expect('Content-Type', /html/)
-        .expect((res) => {
-          expect(res.text).toContain('This is because there is no offender number recorded in Delius')
+    describe('COM not allocated block disabled', () => {
+      test('should return error message for NO_OFFENDER_NUMBER', async () => {
+        config.comNotAllocatedBlockEnabled = false
+        licenceService.getLicence.mockResolvedValue({
+          stage: 'ELIGIBILITY',
+          licence: licenceWithEligibilityComplete,
         })
-    })
+        caService.getReasonForNotContinuing.mockResolvedValue('NO_OFFENDER_NUMBER')
 
-    test('should return error messages for LDU_INACTIVE when curfew address proposed', async () => {
-      licenceService.getLicence.mockResolvedValue({
-        stage: 'ELIGIBILITY',
-        licence: licenceWithEligibilityCompleteAndProposedAddress,
-      })
-      caService.getReasonForNotContinuing.mockResolvedValue('LDU_INACTIVE')
-
-      const app = createApp({
-        licenceServiceStub: licenceService,
-        prisonerServiceStub: prisonerService,
-        caServiceStub: caService,
-      })
-
-      return request(app)
-        .get('/taskList/123')
-        .expect(200)
-        .expect('Content-Type', /html/)
-        .expect((res) => {
-          expect(res.text).toContain(
-            "You need to contact the probation team to ask them to review this person's Community Offender Manager allocation in Delius."
-          )
+        const app = createApp({
+          licenceServiceStub: licenceService,
+          prisonerServiceStub: prisonerService,
+          caServiceStub: caService,
         })
-    })
-
-    test('should return error messages for LDU_INACTIVE when CAS2 requested', async () => {
-      licenceService.getLicence.mockResolvedValue({
-        stage: 'ELIGIBILITY',
-        licence: licenceWithEligibilityCompleteAndCAS2Address,
-      })
-      caService.getReasonForNotContinuing.mockResolvedValue('LDU_INACTIVE')
-
-      const app = createApp({
-        licenceServiceStub: licenceService,
-        prisonerServiceStub: prisonerService,
-        caServiceStub: caService,
+        return request(app)
+          .get('/taskList/123')
+          .expect(200)
+          .expect('Content-Type', /html/)
+          .expect((res) => {
+            expect(res.text).toContain('This is because there is no offender number recorded in Delius')
+          })
       })
 
-      return request(app)
-        .get('/taskList/123')
-        .expect(200)
-        .expect('Content-Type', /html/)
-        .expect((res) => {
-          expect(res.text).toContain(
-            "You need to contact the probation team to ask them to review this person's Community Offender Manager allocation in Delius."
-          )
+      test('should return error messages for LDU_INACTIVE', async () => {
+        config.comNotAllocatedBlockEnabled = false
+        licenceService.getLicence.mockResolvedValue({ stage: 'ELIGIBILITY', licence: licenceWithEligibilityComplete })
+        caService.getReasonForNotContinuing.mockResolvedValue('LDU_INACTIVE')
+
+        const app = createApp({
+          licenceServiceStub: licenceService,
+          prisonerServiceStub: prisonerService,
+          caServiceStub: caService,
         })
-    })
-
-    test('should return error messages for COM_NOT_ALLOCATED when curfew address proposed', async () => {
-      licenceService.getLicence.mockResolvedValue({
-        stage: 'ELIGIBILITY',
-        licence: licenceWithEligibilityCompleteAndProposedAddress,
-      })
-      caService.getReasonForNotContinuing.mockResolvedValue('COM_NOT_ALLOCATED')
-
-      const app = createApp({
-        licenceServiceStub: licenceService,
-        prisonerServiceStub: prisonerService,
-        caServiceStub: caService,
+        return request(app)
+          .get('/taskList/123')
+          .expect(200)
+          .expect('Content-Type', /html/)
+          .expect((res) => {
+            expect(res.text).toContain(
+              "You need to contact the probation team to ask them to review this person's Community Offender Manager allocation in Delius."
+            )
+          })
       })
 
-      return request(app)
-        .get('/taskList/123')
-        .expect(200)
-        .expect('Content-Type', /html/)
-        .expect((res) => {
-          expect(res.text).toContain('This is because there is no Community Offender Manager showing in Delius')
+      test('should return error messages for COM_NOT_ALLOCATED', async () => {
+        config.comNotAllocatedBlockEnabled = false
+        licenceService.getLicence.mockResolvedValue({ stage: 'ELIGIBILITY', licence: licenceWithEligibilityComplete })
+        caService.getReasonForNotContinuing.mockResolvedValue('COM_NOT_ALLOCATED')
+
+        const app = createApp({
+          licenceServiceStub: licenceService,
+          prisonerServiceStub: prisonerService,
+          caServiceStub: caService,
         })
-    })
-
-    test('should return error messages for COM_NOT_ALLOCATED when CAS2 requested', async () => {
-      licenceService.getLicence.mockResolvedValue({
-        stage: 'ELIGIBILITY',
-        licence: licenceWithEligibilityCompleteAndCAS2Address,
+        return request(app)
+          .get('/taskList/123')
+          .expect(200)
+          .expect('Content-Type', /html/)
+          .expect((res) => {
+            expect(res.text).toContain('This is because there is no Community Offender Manager showing in Delius')
+          })
       })
-      caService.getReasonForNotContinuing.mockResolvedValue('COM_NOT_ALLOCATED')
-
-      const app = createApp({
-        licenceServiceStub: licenceService,
-        prisonerServiceStub: prisonerService,
-        caServiceStub: caService,
-      })
-
-      return request(app)
-        .get('/taskList/123')
-        .expect(200)
-        .expect('Content-Type', /html/)
-        .expect((res) => {
-          expect(res.text).toContain('This is because there is no Community Offender Manager showing in Delius')
-        })
     })
 
     test('should NOT disable the Start now button if there are no errors when curfew address proposed', async () => {
