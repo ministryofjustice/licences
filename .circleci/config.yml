@@ -119,6 +119,7 @@ jobs:
       TOKENVERIFICATION_API_ENABLED: false
       GOTENBERG_API_URL: http://localhost:3001
       HDC_URL: http://localhost:3000
+      COM_NOT_ALLOCATED_BLOCK_ENABLED: false
     steps:
       - checkout
       - attach_workspace:
