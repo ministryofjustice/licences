@@ -5,10 +5,12 @@ import getLicenceStatus from '../services/licence/licenceStatus'
 import { getStatusLabel } from '../services/licence/licenceStatusLabels'
 
 import { isEmpty } from '../utils/functionalHelpers'
-import { getCaTaskLists, getTaskLists } from './viewModels/taskListModels'
+import { getCaTaskLists, getTaskLists, getAllTaskLists } from './viewModels/taskListModels'
 import logger from '../../log'
+import { getTasksForBlocked } from './viewModels/taskLists/caTasks'
 import { LicenceStage } from '../data/licenceTypes'
 import { LicenceService } from '../services/licenceService'
+import config from '../config'
 
 const { APPROVAL, DECIDED, ELIGIBILITY, MODIFIED, MODIFIED_APPROVAL, PROCESSING_CA, PROCESSING_RO } = LicenceStage
 
@@ -126,23 +128,46 @@ export = (
           bookingId,
           postApproval: licenceStatus.postApproval,
         }
-
-        if (req.user.role === 'CA') {
-          const errorCode = await caService.getReasonForNotContinuing(bookingId, res.locals.token)
+        const { comNotAllocatedBlockEnabled } = config
+        if (comNotAllocatedBlockEnabled) {
+          if (req.user.role === 'CA') {
+            const errorCode = await caService.getReasonForNotContinuing(bookingId, res.locals.token)
+            return res.render('taskList/taskListBuilder', {
+              ...model,
+              taskListModel: getCaTaskLists(licenceStatus, errorCode),
+              errors: [],
+            })
+          }
+          const taskListModel = getTaskLists(req.user.role, postRelease, licenceStatus, licence || {})
           return res.render('taskList/taskListBuilder', {
             ...model,
-            taskListModel: getCaTaskLists(licenceStatus, errorCode),
+            taskListModel,
+            errors: [],
+          })
+        } else {
+          if (
+            req.user.role === 'CA' &&
+            licenceStatus.stage === 'ELIGIBILITY' &&
+            licenceStatus.tasks.eligibility === 'DONE'
+          ) {
+            const errorCode = await caService.getReasonForNotContinuing(bookingId, res.locals.token)
+            if (errorCode) {
+              return res.render('taskList/taskListBuilder', {
+                ...model,
+                taskListModel: getTasksForBlocked(errorCode),
+                errors: [],
+              })
+            }
+          }
+
+          const taskListModel = getAllTaskLists(req.user.role, postRelease, licenceStatus, licence || {})
+
+          return res.render('taskList/taskListBuilder', {
+            ...model,
+            taskListModel,
             errors: [],
           })
         }
-
-        const taskListModel = getTaskLists(req.user.role, postRelease, licenceStatus, licence || {})
-
-        return res.render('taskList/taskListBuilder', {
-          ...model,
-          taskListModel,
-          errors: [],
-        })
       })
     )
 

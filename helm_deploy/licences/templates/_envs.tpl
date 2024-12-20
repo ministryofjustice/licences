@@ -159,4 +159,7 @@ env:
 
   - name: CURFEW_ADDRESS_REVIEW_VERSION
     value: {{ .Values.env.CURFEW_ADDRESS_REVIEW_VERSION | quote }}
+  
+  - name: COM_NOT_ALLOCATED_BLOCK_ENABLED
+    value: {{ .Values.env.COM_NOT_ALLOCATED_BLOCK_ENABLED | quote }}
 {{- end -}}
