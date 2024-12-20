@@ -3,11 +3,6 @@
 
 replicaCount: 4
 
-image:
-  repository: quay.io/hmpps/licences
-  tag: latest
-  port: 3000
-
 # Supplies values to the nested gotenberg chart. https://helm.sh/docs/chart_template_guide/subcharts_and_globals/
 gotenberg:
   replicaCount: 4
