@@ -1,4 +1,8 @@
 ---
+image:
+  repository: quay.io/hmpps/licences
+  tag: latest
+  port: 3000
 
 generic-prometheus-alerts:
   targetApplication: licences
