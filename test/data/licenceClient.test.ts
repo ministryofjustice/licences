@@ -337,6 +337,17 @@ describe('licenceClient', () => {
     })
   })
 
+  describe('getLicencesInStageWithAddressOrCasLocation', () => {
+    test('should pass in the correct parameters', async () => {
+      const expectedParameters = ['stage']
+
+      await licenceClient.getLicencesInStageWithAddressOrCasLocation('stage')
+
+      const { values } = db.query.mock.calls[0][0]
+      expect(values).toEqual(expectedParameters)
+    })
+  })
+
   describe('getLicencesInStage', () => {
     test('should pass in the correct parameters', async () => {
       const expectedParameters = ['stage']
