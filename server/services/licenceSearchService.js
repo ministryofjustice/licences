@@ -13,7 +13,8 @@ module.exports = function createLicenceSearchService(
   licenceClient,
   signInService,
   nomisClientBuilder,
-  prisonerSearchApi
+  prisonerSearchApi,
+  probationSearchApi
 ) {
   const bookingIdForLicenceIncludingSoftDeleted = async (bookingId) => {
     const licence = await licenceClient.getLicenceIncludingSoftDeleted(bookingId)
@@ -87,6 +88,28 @@ module.exports = function createLicenceSearchService(
       const licencesAcc = []
       const prisonerDecoratedLicences = licencesWithCOM.reduce(getPrisonerDecoratedLicences(prisoners), licencesAcc)
       return getlicencesCSV(prisonerDecoratedLicences)
+    },
+
+    // @ts-ignore
+    async getLicencesRequiringComAssignment(username, prisonId) {
+      const systemToken = await signInService.getClientCredentialsTokens(username)
+      const bookingIds = await licenceClient.getLicencesInStageWithAddressOrCasLocation('ELIGIBILITY', systemToken)
+      const prisoners = await prisonerSearchApi(systemToken)
+        .getPrisoners(bookingIds)
+        .filter(
+          (p) =>
+            p.prisonId === prisonId &&
+            moment(p.homeDetentionCurfewEligibilityDate).isBetween(moment(), moment().add(14, 'weeks'))
+        )
+      const offenderNumbers = await prisoners.map((p) => p.prisonerNumber)
+      const pdus = await probationSearchApi(systemToken).getPersonProbationDetails(offenderNumbers)
+
+      // call probation search with nomsNumbers and find PDU'S for those who have an unallocated COM (offenderManagers -> active = false)
+      //
+
+      // for each of the prisoners, get their HDCED, check that the HDCED is between today and 14 weeks from today
+      // if it is use their prisoner record to create the CSV
+      // before CSV, filter down so that it only contains information for the prison the user is in
     },
   }
 }

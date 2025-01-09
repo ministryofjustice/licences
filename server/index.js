@@ -55,6 +55,7 @@ const { default: TokenStore } = require('./data/tokenStore')
 const { createRedisClient } = require('./data/redisClient')
 const prisonerSearchApi = require('./data/prisonerSearchApi')
 const manageUsersApi = require('./data/manageUsersApi')
+const probationSearchApi = require('./data/probationSearchApi')
 
 const signInService = new SignInService(new TokenStore(createRedisClient()))
 const licenceService = createLicenceService(licenceClient)
@@ -146,7 +147,8 @@ const licenceSearchService = createLicenceSearchService(
   licenceClient,
   signInService,
   nomisClientBuilder,
-  prisonerSearchApi
+  prisonerSearchApi,
+  probationSearchApi
 )
 const tokenVerifier = tokenVerifierFactory(config.tokenVerification)
 
