@@ -5,14 +5,14 @@ declare module 'probationSearchApi' {
   interface Schemas {
     OffenderDetail: {
       /** Other Ids */
-      otherIds?: Schemas['OtherId']
+      otherIds?: Schemas['OtherIds']
 
       /** Offender Managers */
       offenderManagers?: Schemas['OffenderManager'][]
     }
 
     /** Other Id Details */
-    OtherId: {
+    OtherIds: {
       /** CRN */
       crn: string
 
@@ -28,23 +28,23 @@ declare module 'probationSearchApi' {
       /** Probation Area */
       probationArea: Schemas['ProbationArea']
 
-      /** Nomis Number */
+      /** Offender Manager Active */
       active?: string
     }
 
     /** Staff */
     Staff: {
+      /** Staff Code */
+      code: string
+
       /** Unallocated */
       unallocated: boolean
     }
 
     /** Probation Area */
     ProbationArea: {
-      /** Probation Area Details */
-      probationArea: Schemas['ProbationArea']
-
-      /** Nomis Number */
-      nomsNumber?: string
+      /** Probation Area Description */
+      description: string
     }
   }
 }

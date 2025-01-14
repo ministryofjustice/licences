@@ -36,13 +36,13 @@ export = (token) => {
   })
 
   return {
-    async getPersonProbationDetail(bookingIds: number[], batchSize = 1000): Promise<OffenderDetail[]> {
-      if (isEmpty(bookingIds)) {
+    async getPersonProbationDetails(offenderNumbers: string[], batchSize = 1000): Promise<OffenderDetail[]> {
+      if (isEmpty(offenderNumbers)) {
         return []
       }
 
-      const offenderProbationDetails = await batchRequests(bookingIds, batchSize, (batch) => {
-        const request = { bookingIds: batch }
+      const offenderProbationDetails = await batchRequests(offenderNumbers, batchSize, (batch) => {
+        const request = batch
         return oauthRestClient.postResource(`/nomsNumbers`, request)
       })
 

@@ -1,3 +1,4 @@
+const moment = require('moment')
 const createLicenceSearchService = require('../../server/services/licenceSearchService')
 
 let licenceSearchService
@@ -6,7 +7,9 @@ let signInService
 let nomisClient
 let nomisClientBuilder
 let prisonerSearchAPI
-let restClientBuilder
+let probationSearchApi
+let restPrisonerClientBuilder
+let restProbationClientBuilder
 
 describe('licenceSearchService', () => {
   beforeEach(async () => {
@@ -18,6 +21,9 @@ describe('licenceSearchService', () => {
         { booking_id: 2, transition_date: '01-01-2020' },
         { booking_id: 3, transition_date: '01-01-2020' },
       ]),
+      getLicencesInStageWithAddressOrCasLocation: jest
+        .fn()
+        .mockReturnValue([{ booking_id: 1 }, { booking_id: 2 }, { booking_id: 3 }]),
     }
 
     signInService = {
@@ -33,34 +39,106 @@ describe('licenceSearchService', () => {
         {
           bookingId: '1',
           prisonerNumber: 'AAAA11',
+          firstName: 'John',
+          lastName: 'Smith',
           prisonId: 'MDI',
           prisonName: 'Moorland (HMP & YOI)',
-          homeDetentionCurfewEligibilityDate: '01-01-2021',
+          homeDetentionCurfewEligibilityDate: moment().add(13, 'weeks').format('YYYY-MM-DD'),
         },
         {
           bookingId: '2',
           prisonerNumber: 'AAAA12',
+          firstName: 'Max',
+          lastName: 'Martin',
           prisonId: 'MDI',
           prisonName: 'Moorland (HMP & YOI)',
-          homeDetentionCurfewEligibilityDate: '01-01-2021',
+          homeDetentionCurfewEligibilityDate: moment().add(13, 'weeks').format('YYYY-MM-DD'),
         },
         {
           bookingId: '3',
           prisonerNumber: 'AAAA13',
+          firstName: 'Tim',
+          lastName: 'North',
           prisonId: 'MDI',
           prisonName: 'Moorland (HMP & YOI)',
-          homeDetentionCurfewEligibilityDate: '01-01-2021',
+          homeDetentionCurfewEligibilityDate: moment().add(13, 'weeks').format('YYYY-MM-DD'),
+        },
+        {
+          bookingId: '4',
+          prisonerNumber: 'AAAA14',
+          firstName: 'Sam',
+          lastName: 'Samuels',
+          prisonId: 'MDI',
+          prisonName: 'Moorland (HMP & YOI)',
+          homeDetentionCurfewEligibilityDate: moment().add(15, 'weeks').format('YYYY-MM-DD'),
+        },
+      ]),
+    }
+
+    probationSearchApi = {
+      getPersonProbationDetails: jest.fn().mockReturnValue([
+        {
+          otherIds: {
+            nomsNumber: 'AAAA11',
+          },
+          offenderManagers: [
+            {
+              active: true,
+              probationArea: {
+                description: 'East of England',
+              },
+              staff: {
+                code: 'XXXXU',
+                unallocated: true,
+              },
+            },
+          ],
+        },
+        {
+          otherIds: {
+            nomsNumber: 'AAAA12',
+          },
+          offenderManagers: [
+            {
+              active: true,
+              probationArea: {
+                description: 'West of England',
+              },
+              staff: {
+                code: 'XXXXX',
+                unallocated: false,
+              },
+            },
+          ],
+        },
+        {
+          otherIds: {
+            nomsNumber: 'AAAA13',
+          },
+          offenderManagers: [
+            {
+              active: true,
+              probationArea: {
+                description: 'South of England',
+              },
+              staff: {
+                code: 'XXXXX',
+              },
+            },
+          ],
         },
       ]),
     }
 
     nomisClientBuilder = jest.fn().mockReturnValue(nomisClient)
-    restClientBuilder = jest.fn().mockReturnValue(prisonerSearchAPI)
+    restPrisonerClientBuilder = jest.fn().mockReturnValue(prisonerSearchAPI)
+    restProbationClientBuilder = jest.fn().mockReturnValue(probationSearchApi)
     licenceSearchService = await createLicenceSearchService(
       licenceClient,
       signInService,
       nomisClientBuilder,
-      restClientBuilder
+      restPrisonerClientBuilder,
+      restProbationClientBuilder
     )
   })
 
@@ -162,6 +240,64 @@ describe('licenceSearchService', () => {
         'PRISON_NUMBER,PRISON_ID,PRISON_NAME,HANDOVER_DATE,HDCED\nAAAA11,MDI,Moorland (HMP & YOI),01-01-2020,01-01-2021\nAAAA12,MDI,Moorland (HMP & YOI),01-01-2020,01-01-2021'
       )
       expect(result).not.toContain('AAAA13,MDI,Moorland (HMP & YOI),01-01-2020,01-01-2021')
+    })
+  })
+
+  describe('getLicencesRequiringComAssignment', () => {
+    test('should request licence, prisoner and probation details from client', async () => {
+      await licenceSearchService.getLicencesRequiringComAssignment('user-1', 'MDI')
+
+      expect(licenceClient.getLicencesInStageWithAddressOrCasLocation).toHaveBeenCalledWith('ELIGIBILITY', 'a token')
+      expect(prisonerSearchAPI.getPrisoners).toHaveBeenCalledWith([1, 2, 3])
+      expect(probationSearchApi.getPersonProbationDetails).toHaveBeenCalledWith(['AAAA11', 'AAAA12', 'AAAA13'])
+    })
+
+    test('should decorate licences with prisoner and probation details and return csv string', async () => {
+      const result = await licenceSearchService.getLicencesRequiringComAssignment('user-1', 'MDI')
+
+      expect(result).toContain(
+        'PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,PDU\nAAAA11,John,Smith,15-04-2025,East of England'
+      )
+      expect(result).not.toContain(
+        'AAAA12,Max,Martin,15-04-2025,West of England\nAAAA13,Tim,North,15-04-2025,South of England'
+      )
+    })
+
+    test('should not add released prisoners to csv string', async () => {
+      prisonerSearchAPI.getPrisoners.mockReturnValue([
+        {
+          bookingId: '1',
+          prisonerNumber: 'AAAA11',
+          firstName: 'John',
+          lastName: 'Smith',
+          prisonId: 'MDI',
+          prisonName: 'Moorland (HMP & YOI)',
+          homeDetentionCurfewEligibilityDate: moment().add(13, 'weeks').format('YYYY-MM-DD'),
+          status: 'INACTIVE OUT',
+        },
+        {
+          bookingId: '2',
+          prisonerNumber: 'AAAA12',
+          firstName: 'Max',
+          lastName: 'Martin',
+          prisonId: 'MDI',
+          prisonName: 'Moorland (HMP & YOI)',
+          homeDetentionCurfewEligibilityDate: moment().add(13, 'weeks').format('YYYY-MM-DD'),
+        },
+        {
+          bookingId: '3',
+          prisonerNumber: 'AAAA13',
+          firstName: 'Tim',
+          lastName: 'North',
+          prisonId: 'MDI',
+          prisonName: 'Moorland (HMP & YOI)',
+          homeDetentionCurfewEligibilityDate: moment().add(13, 'weeks').format('YYYY-MM-DD'),
+        },
+      ])
+      const result = await licenceSearchService.getLicencesRequiringComAssignment('user-1', 'MDI')
+
+      expect(result).toContain('PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,PDU')
+      expect(result).not.toContain('AAAA11,John,Smith,15-04-2025,East of England')
     })
   })
 })

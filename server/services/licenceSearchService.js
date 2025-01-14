@@ -71,6 +71,39 @@ module.exports = function createLicenceSearchService(
     return writer.getHeaderString() + writer.stringifyRecords(records)
   }
 
+  const getPrisonerProbationDecoratedLicences =
+    ({ prisoners, probationDetails }) =>
+    (licencesAcc, licence) => {
+      const prisoner = prisoners.find((p) => p.bookingId === licence.booking_id.toString())
+      if (!prisoner || prisoner.status === 'INACTIVE OUT') return licencesAcc
+
+      const probationDetail = probationDetails.find((pd) => pd.otherIds.nomsNumber === prisoner.prisonerNumber)
+      if (!probationDetail) return licencesAcc
+      return [
+        ...licencesAcc,
+        {
+          prisonerNumber: prisoner.prisonerNumber,
+          prisonerFirstname: prisoner.firstName,
+          prisonLastname: prisoner.lastName,
+          HDCED: moment(prisoner.homeDetentionCurfewEligibilityDate).format('DD-MM-YYYY'),
+          PDU: probationDetail.offenderManagers[0].probationArea.description,
+        },
+      ]
+    }
+
+  const getlicencesUnallocatedComCSV = (records) => {
+    const writer = createObjectCsvStringifier({
+      header: [
+        { id: 'prisonerNumber', title: 'PRISON_NUMBER' },
+        { id: 'prisonerFirstname', title: 'PRISONER_FIRSTNAME' },
+        { id: 'prisonLastname', title: 'PRISONER_LASTNAME' },
+        { id: 'HDCED', title: 'HDCED' },
+        { id: 'PDU', title: 'PDU' },
+      ],
+    })
+    return writer.getHeaderString() + writer.stringifyRecords(records)
+  }
+
   return {
     async findForId(username, offenderIdentifier) {
       const bookingId = await findByBookingId(offenderIdentifier)
@@ -90,26 +123,36 @@ module.exports = function createLicenceSearchService(
       return getlicencesCSV(prisonerDecoratedLicences)
     },
 
-    // @ts-ignore
     async getLicencesRequiringComAssignment(username, prisonId) {
       const systemToken = await signInService.getClientCredentialsTokens(username)
-      const bookingIds = await licenceClient.getLicencesInStageWithAddressOrCasLocation('ELIGIBILITY', systemToken)
-      const prisoners = await prisonerSearchApi(systemToken)
-        .getPrisoners(bookingIds)
-        .filter(
-          (p) =>
-            p.prisonId === prisonId &&
-            moment(p.homeDetentionCurfewEligibilityDate).isBetween(moment(), moment().add(14, 'weeks'))
+      const licencesInStageWithAddressOrCasLocation = await licenceClient.getLicencesInStageWithAddressOrCasLocation(
+        'ELIGIBILITY',
+        systemToken
+      )
+      const bookingIds = await licencesInStageWithAddressOrCasLocation.map((l) => l.booking_id)
+      const prisoners = await prisonerSearchApi(systemToken).getPrisoners(bookingIds)
+      const prisonersFilteredByPrisonCloseToHdced = await prisoners.filter(
+        (p) =>
+          p.prisonId === prisonId &&
+          moment(p.homeDetentionCurfewEligibilityDate, 'YYYY-MM-DD').isBetween(moment(), moment().add(14, 'weeks'))
+      )
+      const offenderNumbers = await prisonersFilteredByPrisonCloseToHdced.map((p) => p.prisonerNumber)
+      const probationDetails = await probationSearchApi(systemToken).getPersonProbationDetails(offenderNumbers)
+      const probationDetailsWithUnallocatedCom = await probationDetails.filter((pd) => {
+        const results = pd.offenderManagers.some(
+          (om) => om.active === true && (om.staff.unallocated === true || om.staff.code.endsWith('U'))
         )
-      const offenderNumbers = await prisoners.map((p) => p.prisonerNumber)
-      const pdus = await probationSearchApi(systemToken).getPersonProbationDetails(offenderNumbers)
-
-      // call probation search with nomsNumbers and find PDU'S for those who have an unallocated COM (offenderManagers -> active = false)
-      //
-
-      // for each of the prisoners, get their HDCED, check that the HDCED is between today and 14 weeks from today
-      // if it is use their prisoner record to create the CSV
-      // before CSV, filter down so that it only contains information for the prison the user is in
+        return results
+      })
+      const licencesAcc = []
+      const prisonerDecoratedLicences = licencesInStageWithAddressOrCasLocation.reduce(
+        getPrisonerProbationDecoratedLicences({
+          prisoners: prisonersFilteredByPrisonCloseToHdced,
+          probationDetails: probationDetailsWithUnallocatedCom,
+        }),
+        licencesAcc
+      )
+      return getlicencesUnallocatedComCSV(prisonerDecoratedLicences)
     },
   }
 }
