@@ -10,6 +10,7 @@ let prisonerSearchAPI
 let probationSearchApi
 let restPrisonerClientBuilder
 let restProbationClientBuilder
+const hdced = moment().add(13, 'weeks').format('DD-MM-YYYY')
 
 describe('licenceSearchService', () => {
   beforeEach(async () => {
@@ -43,7 +44,7 @@ describe('licenceSearchService', () => {
           lastName: 'Smith',
           prisonId: 'MDI',
           prisonName: 'Moorland (HMP & YOI)',
-          homeDetentionCurfewEligibilityDate: moment().add(13, 'weeks').format('YYYY-MM-DD'),
+          homeDetentionCurfewEligibilityDate: moment().add(13, 'weeks'),
         },
         {
           bookingId: '2',
@@ -52,7 +53,7 @@ describe('licenceSearchService', () => {
           lastName: 'Martin',
           prisonId: 'MDI',
           prisonName: 'Moorland (HMP & YOI)',
-          homeDetentionCurfewEligibilityDate: moment().add(13, 'weeks').format('YYYY-MM-DD'),
+          homeDetentionCurfewEligibilityDate: moment().add(13, 'weeks'),
         },
         {
           bookingId: '3',
@@ -61,7 +62,7 @@ describe('licenceSearchService', () => {
           lastName: 'North',
           prisonId: 'MDI',
           prisonName: 'Moorland (HMP & YOI)',
-          homeDetentionCurfewEligibilityDate: moment().add(13, 'weeks').format('YYYY-MM-DD'),
+          homeDetentionCurfewEligibilityDate: moment().add(13, 'weeks'),
         },
         {
           bookingId: '4',
@@ -70,7 +71,7 @@ describe('licenceSearchService', () => {
           lastName: 'Samuels',
           prisonId: 'MDI',
           prisonName: 'Moorland (HMP & YOI)',
-          homeDetentionCurfewEligibilityDate: moment().add(15, 'weeks').format('YYYY-MM-DD'),
+          homeDetentionCurfewEligibilityDate: moment().add(15, 'weeks'),
         },
       ]),
     }
@@ -205,7 +206,7 @@ describe('licenceSearchService', () => {
       const result = await licenceSearchService.getLicencesInStageCOM('user-1')
 
       expect(result).toContain(
-        'PRISON_NUMBER,PRISON_ID,PRISON_NAME,HANDOVER_DATE,HDCED\nAAAA11,MDI,Moorland (HMP & YOI),01-01-2020,01-01-2021\nAAAA12,MDI,Moorland (HMP & YOI),01-01-2020,01-01-2021\nAAAA13,MDI,Moorland (HMP & YOI),01-01-2020,01-01-2021'
+        `PRISON_NUMBER,PRISON_ID,PRISON_NAME,HANDOVER_DATE,HDCED\nAAAA11,MDI,Moorland (HMP & YOI),01-01-2020,${hdced}\nAAAA12,MDI,Moorland (HMP & YOI),01-01-2020,${hdced}\nAAAA13,MDI,Moorland (HMP & YOI),01-01-2020,${hdced}`
       )
     })
 
@@ -216,30 +217,30 @@ describe('licenceSearchService', () => {
           prisonerNumber: 'AAAA11',
           prisonId: 'MDI',
           prisonName: 'Moorland (HMP & YOI)',
-          homeDetentionCurfewEligibilityDate: '01-01-2021',
+          homeDetentionCurfewEligibilityDate: moment().add(13, 'weeks'),
         },
         {
           bookingId: '2',
           prisonerNumber: 'AAAA12',
           prisonId: 'MDI',
           prisonName: 'Moorland (HMP & YOI)',
-          homeDetentionCurfewEligibilityDate: '01-01-2021',
+          homeDetentionCurfewEligibilityDate: moment().add(13, 'weeks'),
         },
         {
           bookingId: '3',
           prisonerNumber: 'AAAA13',
           prisonId: 'MDI',
           prisonName: 'Moorland (HMP & YOI)',
-          homeDetentionCurfewEligibilityDate: '01-01-2021',
+          homeDetentionCurfewEligibilityDate: moment().add(13, 'weeks'),
           status: 'INACTIVE OUT',
         },
       ])
       const result = await licenceSearchService.getLicencesInStageCOM('user-1')
 
       expect(result).toContain(
-        'PRISON_NUMBER,PRISON_ID,PRISON_NAME,HANDOVER_DATE,HDCED\nAAAA11,MDI,Moorland (HMP & YOI),01-01-2020,01-01-2021\nAAAA12,MDI,Moorland (HMP & YOI),01-01-2020,01-01-2021'
+        `PRISON_NUMBER,PRISON_ID,PRISON_NAME,HANDOVER_DATE,HDCED\nAAAA11,MDI,Moorland (HMP & YOI),01-01-2020,${hdced}\nAAAA12,MDI,Moorland (HMP & YOI),01-01-2020,${hdced}`
       )
-      expect(result).not.toContain('AAAA13,MDI,Moorland (HMP & YOI),01-01-2020,01-01-2021')
+      expect(result).not.toContain(`AAAA13,MDI,Moorland (HMP & YOI),01-01-2020,${hdced}`)
     })
   })
 
