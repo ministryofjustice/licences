@@ -257,10 +257,10 @@ describe('licenceSearchService', () => {
       const result = await licenceSearchService.getLicencesRequiringComAssignment('user-1', 'MDI')
 
       expect(result).toContain(
-        'PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,PDU\nAAAA11,John,Smith,15-04-2025,East of England'
+        `PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,PDU\nAAAA11,John,Smith,${hdced},East of England`
       )
       expect(result).not.toContain(
-        'AAAA12,Max,Martin,15-04-2025,West of England\nAAAA13,Tim,North,15-04-2025,South of England'
+        `AAAA12,Max,Martin,15-04-2025,West of England\nAAAA13,Tim,North,${hdced},South of England`
       )
     })
 
@@ -298,7 +298,7 @@ describe('licenceSearchService', () => {
       const result = await licenceSearchService.getLicencesRequiringComAssignment('user-1', 'MDI')
 
       expect(result).toContain('PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,PDU')
-      expect(result).not.toContain('AAAA11,John,Smith,15-04-2025,East of England')
+      expect(result).not.toContain(`AAAA11,John,Smith,${hdced},East of England`)
     })
   })
 })

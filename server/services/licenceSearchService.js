@@ -116,7 +116,7 @@ module.exports = function createLicenceSearchService(
     async getLicencesInStageCOM(username) {
       const systemToken = await signInService.getClientCredentialsTokens(username)
       const licencesWithCOM = await licenceClient.getLicencesInStage('PROCESSING_RO', systemToken)
-      const bookingIds = await licencesWithCOM.map((l) => l.booking_id)
+      const bookingIds = licencesWithCOM.map((l) => l.booking_id)
       const prisoners = await prisonerSearchApi(systemToken).getPrisoners(bookingIds)
       const licencesAcc = []
       const prisonerDecoratedLicences = licencesWithCOM.reduce(getPrisonerDecoratedLicences(prisoners), licencesAcc)
@@ -129,16 +129,16 @@ module.exports = function createLicenceSearchService(
         'ELIGIBILITY',
         systemToken
       )
-      const bookingIds = await licencesInStageWithAddressOrCasLocation.map((l) => l.booking_id)
+      const bookingIds = licencesInStageWithAddressOrCasLocation.map((l) => l.booking_id)
       const prisoners = await prisonerSearchApi(systemToken).getPrisoners(bookingIds)
-      const prisonersFilteredByPrisonCloseToHdced = await prisoners.filter(
+      const prisonersFilteredByPrisonCloseToHdced = prisoners.filter(
         (p) =>
           p.prisonId === prisonId &&
           moment(p.homeDetentionCurfewEligibilityDate, 'YYYY-MM-DD').isBetween(moment(), moment().add(14, 'weeks'))
       )
-      const offenderNumbers = await prisonersFilteredByPrisonCloseToHdced.map((p) => p.prisonerNumber)
+      const offenderNumbers = prisonersFilteredByPrisonCloseToHdced.map((p) => p.prisonerNumber)
       const probationDetails = await probationSearchApi(systemToken).getPersonProbationDetails(offenderNumbers)
-      const probationDetailsWithUnallocatedCom = await probationDetails.filter((pd) => {
+      const probationDetailsWithUnallocatedCom = probationDetails.filter((pd) => {
         const results = pd.offenderManagers.some(
           (om) => om.active === true && (om.staff.unallocated === true || om.staff.code.endsWith('U'))
         )
