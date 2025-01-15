@@ -71,6 +71,13 @@ module.exports = function createLicenceSearchService(
     return writer.getHeaderString() + writer.stringifyRecords(records)
   }
 
+  const isUnallocated = (pd) => {
+    const results = pd.offenderManagers.some(
+      (om) => om.active === true && (om.staff.unallocated === true || om.staff.code.endsWith('U'))
+    )
+    return results
+  }
+
   const getPrisonerProbationDecoratedLicences =
     ({ prisoners, probationDetails }) =>
     (licencesAcc, licence) => {
@@ -138,17 +145,12 @@ module.exports = function createLicenceSearchService(
       )
       const offenderNumbers = prisonersFilteredByPrisonCloseToHdced.map((p) => p.prisonerNumber)
       const probationDetails = await probationSearchApi(systemToken).getPersonProbationDetails(offenderNumbers)
-      const probationDetailsWithUnallocatedCom = probationDetails.filter((pd) => {
-        const results = pd.offenderManagers.some(
-          (om) => om.active === true && (om.staff.unallocated === true || om.staff.code.endsWith('U'))
-        )
-        return results
-      })
+      const unallocatedProbationDetails = probationDetails.filter((pd) => isUnallocated(pd))
       const licencesAcc = []
       const prisonerDecoratedLicences = licencesInStageWithAddressOrCasLocation.reduce(
         getPrisonerProbationDecoratedLicences({
           prisoners: prisonersFilteredByPrisonCloseToHdced,
-          probationDetails: probationDetailsWithUnallocatedCom,
+          probationDetails: unallocatedProbationDetails,
         }),
         licencesAcc
       )
