@@ -4,10 +4,14 @@ import createAdminRoute from '../../server/routes/licencesRequiringComAssignment
 
 describe('/licencesRequiringComAssignmentReport', () => {
   let licenceSearchService
+  let audit
 
   beforeEach(() => {
     licenceSearchService = {
       getLicencesRequiringComAssignment: jest.fn(),
+    }
+    audit = {
+      addItem: jest.fn(),
     }
   })
 
@@ -38,8 +42,20 @@ describe('/licencesRequiringComAssignmentReport', () => {
           )
         })
     })
+
+    test('should call audit.addItem', () => {
+      const app = createApp('caUser')
+      return request(app)
+        .post('/licencesRequiringComAssignmentReport')
+        .expect(200)
+        .expect(() => {
+          expect(audit.addItem).toHaveBeenCalledWith('LICENCES_REQUIRING_COM_DOWNLOAD', 'CA_USER_TEST', {
+            prisonId: 'caseLoadId',
+          })
+        })
+    })
   })
 
   const createApp = (user) =>
-    startRoute(createAdminRoute(licenceSearchService), '/licencesRequiringComAssignmentReport', user)
+    startRoute(createAdminRoute(licenceSearchService, audit), '/licencesRequiringComAssignmentReport', user)
 })

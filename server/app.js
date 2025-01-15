@@ -439,7 +439,7 @@ module.exports = function createApp({
   app.use('/user/', secureRoute(userRouter({ userService })))
   app.use(
     '/hdc/licencesRequiringComAssignment',
-    secureRoute(licencesRequiringComAssignmentRouter(licenceSearchService))
+    secureRoute(licencesRequiringComAssignmentRouter(licenceSearchService, audit))
   )
 
   app.use('/hdc/proposedAddress/', secureRoute(addressRouter({ licenceService, nomisPushService })))
