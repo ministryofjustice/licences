@@ -1,6 +1,8 @@
 import R from 'ramda'
 
 import type { Result, Error } from '../../types/licences'
+import type { Prisoner } from 'prisonerOffenderSearchApi'
+import type { OffenderDetail } from 'probationSearchApi'
 
 export {
   flatten,
@@ -133,4 +135,19 @@ export function groupBy<T, K>(items: T[], groupingFunction: (item: T) => K): Map
     result.set(key, currentValues)
     return result
   }, new Map<K, T[]>())
+}
+
+export async function batchRequests(
+  args: string[] | number[],
+  batchSize: number,
+  call: (batch: string[] | number[]) => Promise<OffenderDetail[]> | Promise<Prisoner[]>
+): Promise<Prisoner[] | OffenderDetail[]> {
+  const batches = R.splitEvery(batchSize, args)
+  const requests = batches.map((batch, i) => call(batch).then((result) => [i, result]))
+  const results = await Promise.all(requests)
+
+  return results
+    .sort(([i, _1], [j, _2]) => i - j)
+    .map(([_, result]) => result)
+    .reduce((acc, val) => acc.concat(val), [])
 }
