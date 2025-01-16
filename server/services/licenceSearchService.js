@@ -78,16 +78,13 @@ module.exports = function createLicenceSearchService(
     return results
   }
 
-  const getPrisonerProbationDecoratedLicences =
-    ({ prisoners, probationDetails }) =>
-    (licencesAcc, licence) => {
-      const prisoner = prisoners.find((p) => p.bookingId === licence.booking_id.toString())
-      if (!prisoner || prisoner.status === 'INACTIVE OUT') return licencesAcc
-
+  const getPrisonerProbationDecoratedLicences = ({ licences, prisoners, probationDetails }) => {
+    return licences.flatMap((l) => {
+      const prisoner = prisoners.find((p) => p.bookingId === l.booking_id.toString())
+      if (!prisoner || prisoner.status === 'INACTIVE OUT') return []
       const probationDetail = probationDetails.find((pd) => pd.otherIds.nomsNumber === prisoner.prisonerNumber)
-      if (!probationDetail) return licencesAcc
+      if (!probationDetail) return []
       return [
-        ...licencesAcc,
         {
           prisonerNumber: prisoner.prisonerNumber,
           prisonerFirstname: prisoner.firstName,
@@ -96,7 +93,8 @@ module.exports = function createLicenceSearchService(
           PDU: probationDetail.offenderManagers[0].probationArea.description,
         },
       ]
-    }
+    })
+  }
 
   const getlicencesUnallocatedComCSV = (records) => {
     const writer = createObjectCsvStringifier({
@@ -146,15 +144,12 @@ module.exports = function createLicenceSearchService(
       const offenderNumbers = prisonersFilteredByPrisonCloseToHdced.map((p) => p.prisonerNumber)
       const probationDetails = await probationSearchApi(systemToken).getPersonProbationDetails(offenderNumbers)
       const unallocatedProbationDetails = probationDetails.filter((pd) => isUnallocated(pd))
-      const licencesAcc = []
-      const prisonerDecoratedLicences = licencesInStageWithAddressOrCasLocation.reduce(
-        getPrisonerProbationDecoratedLicences({
-          prisoners: prisonersFilteredByPrisonCloseToHdced,
-          probationDetails: unallocatedProbationDetails,
-        }),
-        licencesAcc
-      )
-      return getlicencesUnallocatedComCSV(prisonerDecoratedLicences)
+      const decoratedLicences = getPrisonerProbationDecoratedLicences({
+        licences: licencesInStageWithAddressOrCasLocation,
+        prisoners: prisonersFilteredByPrisonCloseToHdced,
+        probationDetails: unallocatedProbationDetails,
+      })
+      return getlicencesUnallocatedComCSV(decoratedLicences)
     },
   }
 }
