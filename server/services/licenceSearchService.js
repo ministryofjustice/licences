@@ -78,6 +78,10 @@ module.exports = function createLicenceSearchService(
     return results
   }
 
+  const isCloseToHdced = (p) => {
+    return moment(p.homeDetentionCurfewEligibilityDate, 'YYYY-MM-DD').isBetween(moment(), moment().add(14, 'weeks'))
+  }
+
   const getPrisonerProbationDecoratedLicences = ({ licences, prisoners, probationDetails }) => {
     return licences.flatMap((l) => {
       const prisoner = prisoners.find((p) => p.bookingId === l.booking_id.toString())
@@ -137,9 +141,7 @@ module.exports = function createLicenceSearchService(
       const bookingIds = licencesInStageWithAddressOrCasLocation.map((l) => l.booking_id)
       const prisoners = await prisonerSearchApi(systemToken).getPrisoners(bookingIds)
       const prisonersFilteredByPrisonCloseToHdced = prisoners.filter(
-        (p) =>
-          p.prisonId === prisonId &&
-          moment(p.homeDetentionCurfewEligibilityDate, 'YYYY-MM-DD').isBetween(moment(), moment().add(14, 'weeks'))
+        (p) => p.prisonId === prisonId && isCloseToHdced(p)
       )
       const offenderNumbers = prisonersFilteredByPrisonCloseToHdced.map((p) => p.prisonerNumber)
       const probationDetails = await probationSearchApi(systemToken).getPersonProbationDetails(offenderNumbers)
