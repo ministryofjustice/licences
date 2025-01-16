@@ -10,7 +10,7 @@ let prisonerSearchAPI
 let probationSearchApi
 let restPrisonerClientBuilder
 let restProbationClientBuilder
-const hdced = moment().add(13, 'weeks').format('DD-MM-YYYY')
+const hdced = moment().add(14, 'weeks').subtract(1, 'days').format('DD-MM-YYYY')
 
 describe('licenceSearchService', () => {
   beforeEach(async () => {
@@ -24,7 +24,14 @@ describe('licenceSearchService', () => {
       ]),
       getLicencesInStageWithAddressOrCasLocation: jest
         .fn()
-        .mockReturnValue([{ booking_id: 1 }, { booking_id: 2 }, { booking_id: 3 }]),
+        .mockReturnValue([
+          { booking_id: 1 },
+          { booking_id: 2 },
+          { booking_id: 3 },
+          { booking_id: 4 },
+          { booking_id: 5 },
+          { booking_id: 6 },
+        ]),
     }
 
     signInService = {
@@ -44,7 +51,7 @@ describe('licenceSearchService', () => {
           lastName: 'Smith',
           prisonId: 'MDI',
           prisonName: 'Moorland (HMP & YOI)',
-          homeDetentionCurfewEligibilityDate: moment().add(13, 'weeks'),
+          homeDetentionCurfewEligibilityDate: moment().add(14, 'weeks').subtract(1, 'days'),
         },
         {
           bookingId: '2',
@@ -53,7 +60,7 @@ describe('licenceSearchService', () => {
           lastName: 'Martin',
           prisonId: 'MDI',
           prisonName: 'Moorland (HMP & YOI)',
-          homeDetentionCurfewEligibilityDate: moment().add(13, 'weeks'),
+          homeDetentionCurfewEligibilityDate: moment().add(14, 'weeks').subtract(1, 'days'),
         },
         {
           bookingId: '3',
@@ -62,7 +69,7 @@ describe('licenceSearchService', () => {
           lastName: 'North',
           prisonId: 'MDI',
           prisonName: 'Moorland (HMP & YOI)',
-          homeDetentionCurfewEligibilityDate: moment().add(13, 'weeks'),
+          homeDetentionCurfewEligibilityDate: moment().add(14, 'weeks').subtract(1, 'days'),
         },
         {
           bookingId: '4',
@@ -71,7 +78,25 @@ describe('licenceSearchService', () => {
           lastName: 'Samuels',
           prisonId: 'MDI',
           prisonName: 'Moorland (HMP & YOI)',
-          homeDetentionCurfewEligibilityDate: moment().add(15, 'weeks'),
+          homeDetentionCurfewEligibilityDate: moment().add(14, 'weeks').add(1, 'days'),
+        },
+        {
+          bookingId: '5',
+          prisonerNumber: 'AAAA15',
+          firstName: 'Bob',
+          lastName: 'Bobbington',
+          prisonId: 'MDI',
+          prisonName: 'Moorland (HMP & YOI)',
+          homeDetentionCurfewEligibilityDate: moment().add(14, 'weeks'),
+        },
+        {
+          bookingId: '6',
+          prisonerNumber: 'AAAA16',
+          firstName: 'Tom',
+          lastName: 'Tommington',
+          prisonId: 'SWI',
+          prisonName: 'Swansea HMP',
+          homeDetentionCurfewEligibilityDate: moment().add(14, 'weeks').subtract(1, 'days'),
         },
       ]),
     }
@@ -217,21 +242,21 @@ describe('licenceSearchService', () => {
           prisonerNumber: 'AAAA11',
           prisonId: 'MDI',
           prisonName: 'Moorland (HMP & YOI)',
-          homeDetentionCurfewEligibilityDate: moment().add(13, 'weeks'),
+          homeDetentionCurfewEligibilityDate: moment().add(14, 'weeks').subtract(1, 'days'),
         },
         {
           bookingId: '2',
           prisonerNumber: 'AAAA12',
           prisonId: 'MDI',
           prisonName: 'Moorland (HMP & YOI)',
-          homeDetentionCurfewEligibilityDate: moment().add(13, 'weeks'),
+          homeDetentionCurfewEligibilityDate: moment().add(14, 'weeks').subtract(1, 'days'),
         },
         {
           bookingId: '3',
           prisonerNumber: 'AAAA13',
           prisonId: 'MDI',
           prisonName: 'Moorland (HMP & YOI)',
-          homeDetentionCurfewEligibilityDate: moment().add(13, 'weeks'),
+          homeDetentionCurfewEligibilityDate: moment().add(14, 'weeks').subtract(1, 'days'),
           status: 'INACTIVE OUT',
         },
       ])
@@ -249,8 +274,13 @@ describe('licenceSearchService', () => {
       await licenceSearchService.getLicencesRequiringComAssignment('user-1', 'MDI')
 
       expect(licenceClient.getLicencesInStageWithAddressOrCasLocation).toHaveBeenCalledWith('ELIGIBILITY', 'a token')
-      expect(prisonerSearchAPI.getPrisoners).toHaveBeenCalledWith([1, 2, 3])
-      expect(probationSearchApi.getPersonProbationDetails).toHaveBeenCalledWith(['AAAA11', 'AAAA12', 'AAAA13'])
+      expect(prisonerSearchAPI.getPrisoners).toHaveBeenCalledWith([1, 2, 3, 4, 5, 6])
+      expect(probationSearchApi.getPersonProbationDetails).toHaveBeenCalledWith([
+        'AAAA11',
+        'AAAA12',
+        'AAAA13',
+        'AAAA15',
+      ])
     })
 
     test('should decorate licences with prisoner and probation details and return csv string', async () => {
@@ -259,9 +289,9 @@ describe('licenceSearchService', () => {
       expect(result).toContain(
         `PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,PDU\nAAAA11,John,Smith,${hdced},East of England`
       )
-      expect(result).not.toContain(
-        `AAAA12,Max,Martin,15-04-2025,West of England\nAAAA13,Tim,North,${hdced},South of England`
-      )
+      expect(result).not.toContain(`AAAA12,Max,Martin,${hdced},West of England`)
+      expect(result).not.toContain(`AAAA13,Tim,North,${hdced},South of England`)
+      expect(result).not.toContain(`AAAA15,Bob,Bobbington,${hdced},West of England`)
     })
 
     test('should not add released prisoners to csv string', async () => {
