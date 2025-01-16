@@ -1,6 +1,5 @@
 import config from '../config'
-import { isEmpty, splitEvery } from '../utils/functionalHelpers'
-import type { Prisoner } from 'prisonerOffenderSearchApi'
+import { isEmpty, batchRequests } from '../utils/functionalHelpers'
 import { buildRestClient, constantTokenSource } from './restClientBuilder'
 
 const timeoutSpec = {
@@ -16,17 +15,6 @@ const agentOptions = {
   freeSocketTimeout: config.prisonerSearchApi.agent.freeSocketTimeout,
 }
 
-const batchRequests = async (args, batchSize, call) => {
-  const batches = splitEvery(batchSize, args)
-  const requests = batches.map((batch, i) => call(batch).then((result) => [i, result]))
-  const results = await Promise.all(requests)
-
-  return results
-    .sort(([i, _1], [j, _2]) => i - j)
-    .map(([_, result]) => result)
-    .reduce((acc, val) => acc.concat(val), [])
-}
-
 export = (token) => {
   const tokenSource = constantTokenSource(token)
 
@@ -36,7 +24,7 @@ export = (token) => {
   })
 
   return {
-    async getPrisoners(bookingIds: number[], batchSize = 1000): Promise<Prisoner[]> {
+    async getPrisoners(bookingIds: number[], batchSize = 1000) {
       if (isEmpty(bookingIds)) {
         return []
       }

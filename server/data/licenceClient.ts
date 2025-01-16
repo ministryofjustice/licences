@@ -194,6 +194,20 @@ export class LicenceClient {
     return rows
   }
 
+  async getLicencesInStageWithAddressOrCasLocation(stage) {
+    const query = {
+      text: `select l.booking_id from v_licences_excluding_deleted l
+                    where stage = $1
+                    and licence -> 'proposedAddress' -> 'optOut' ->> 'decision' = 'No'
+                    and ((licence -> 'bassReferral' -> 'bassRequest' ->> 'bassRequested' = 'Yes' and licence -> 'proposedAddress' -> 'addressProposed' ->> 'decision' = 'No')
+                    or (licence -> 'bassReferral' -> 'bassRequest' ->> 'bassRequested' = 'No' and licence -> 'proposedAddress' -> 'addressProposed' ->> 'decision' = 'Yes'))`,
+      values: [stage],
+    }
+
+    const { rows } = await db.query(query)
+    return rows
+  }
+
   async getLicencesInStage(stage) {
     const query = {
       text: `select l.booking_id , l.transition_date from v_licences_excluding_deleted l where stage = $1`,

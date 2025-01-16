@@ -92,6 +92,19 @@ module.exports = {
     },
   },
 
+  probationSearchApi: {
+    apiUrl: get('PROBATION_SEARCH_API_URL', 'http://localhost:8084'),
+    timeout: {
+      response: Number(get('PROBATION_SEARCH_API_TIMEOUT_RESPONSE', 30000)),
+      deadline: Number(get('PROBATION_SEARCH_API_TIMEOUT_DEADLINE', 30000)),
+    },
+    agent: {
+      maxSockets: 100,
+      maxFreeSockets: 10,
+      freeSocketTimeout: 30000,
+    },
+  },
+
   manageUsersApi: {
     apiUrl: get('MANAGE_USERS_API_URL', 'http://localhost:8080/manageUsersApi'),
     timeout: {
