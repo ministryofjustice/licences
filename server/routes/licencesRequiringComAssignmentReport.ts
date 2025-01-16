@@ -13,7 +13,7 @@ export = (licenceSearchService, audit) => (router) => {
     '/',
     asyncMiddleware(async (req, res) => {
       const prisonId = res.locals.user.activeCaseLoadId
-      const timestamp = moment().format('yyyy-MM-dd_HHm')
+      const timestamp = moment().format('YYYY-MM-DD_HHmm')
       const { username } = req.user
       const licencesRequiringComAssignment = await licenceSearchService.getLicencesRequiringComAssignment(
         username,
