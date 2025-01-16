@@ -85,7 +85,7 @@ module.exports = function createLicenceSearchService(
   const getPrisonerProbationDecoratedLicences = ({ licences, prisoners, probationDetails }) => {
     return licences.flatMap((l) => {
       const prisoner = prisoners.find((p) => p.bookingId === l.booking_id.toString())
-      if (!prisoner || prisoner.status === 'INACTIVE OUT') return []
+      if (!prisoner) return []
       const probationDetail = probationDetails.find((pd) => pd.otherIds.nomsNumber === prisoner.prisonerNumber)
       if (!probationDetail) return []
       return [
@@ -100,7 +100,7 @@ module.exports = function createLicenceSearchService(
     })
   }
 
-  const getlicencesUnallocatedComCSV = (records) => {
+  const getlicencesWithNameAndPduCSV = (records) => {
     const writer = createObjectCsvStringifier({
       header: [
         { id: 'prisonerNumber', title: 'PRISON_NUMBER' },
@@ -141,7 +141,7 @@ module.exports = function createLicenceSearchService(
       const bookingIds = licencesInStageWithAddressOrCasLocation.map((l) => l.booking_id)
       const prisoners = await prisonerSearchApi(systemToken).getPrisoners(bookingIds)
       const prisonersFilteredByPrisonCloseToHdced = prisoners.filter(
-        (p) => p.prisonId === prisonId && isCloseToHdced(p)
+        (p) => p.prisonId === prisonId && p.status !== 'INACTIVE OUT' && isCloseToHdced(p)
       )
       const offenderNumbers = prisonersFilteredByPrisonCloseToHdced.map((p) => p.prisonerNumber)
       const probationDetails = await probationSearchApi(systemToken).getPersonProbationDetails(offenderNumbers)
@@ -151,7 +151,7 @@ module.exports = function createLicenceSearchService(
         prisoners: prisonersFilteredByPrisonCloseToHdced,
         probationDetails: unallocatedProbationDetails,
       })
-      return getlicencesUnallocatedComCSV(decoratedLicences)
+      return getlicencesWithNameAndPduCSV(decoratedLicences)
     },
   }
 }
