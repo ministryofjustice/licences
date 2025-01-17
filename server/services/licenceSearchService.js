@@ -43,6 +43,43 @@ module.exports = function createLicenceSearchService(
     }
   }
 
+  const isCloseToHdced = (p) => {
+    return moment(p.homeDetentionCurfewEligibilityDate, 'YYYY-MM-DD').isBetween(
+      moment(),
+      moment().add(14, 'weeks'),
+      undefined,
+      '[]'
+    )
+  }
+
+  const isUnallocated = (pd) => {
+    const results = pd.offenderManagers.some(
+      (om) => om.active === true && (om.staff.unallocated === true || om.staff.code.endsWith('U'))
+    )
+    return results
+  }
+
+  const getEligibleLicencesWithAddressOrCasLocation = async (username) => {
+    const systemToken = await signInService.getClientCredentialsTokens(username)
+    const eligibleLicencesWithAddressOrCasLocation = await licenceClient.getLicencesInStageWithAddressOrCasLocation(
+      'ELIGIBILITY',
+      systemToken
+    )
+    return eligibleLicencesWithAddressOrCasLocation
+  }
+
+  const getPrisonersCloseToHdced = async (username, prisonId, bookingIds) => {
+    const systemToken = await signInService.getClientCredentialsTokens(username)
+    const prisoners = await prisonerSearchApi(systemToken).getPrisoners(bookingIds)
+    return prisoners.filter((p) => p.prisonId === prisonId && p.status !== 'INACTIVE OUT' && isCloseToHdced(p))
+  }
+
+  const getProbationDetails = async (username, offenderNumbers) => {
+    const systemToken = await signInService.getClientCredentialsTokens(username)
+    const probationDetails = await probationSearchApi(systemToken).getPersonProbationDetails(offenderNumbers)
+    return probationDetails
+  }
+
   const getPrisonerDecoratedLicences = (prisoners) => (licencesAcc, licence) => {
     const prisoner = prisoners.find((p) => p.bookingId === licence.booking_id.toString())
     if (!prisoner || prisoner.status === 'INACTIVE OUT') return licencesAcc
@@ -56,30 +93,6 @@ module.exports = function createLicenceSearchService(
         HDCED: moment(prisoner.homeDetentionCurfewEligibilityDate).format('DD-MM-YYYY'),
       },
     ]
-  }
-
-  const getlicencesCSV = (records) => {
-    const writer = createObjectCsvStringifier({
-      header: [
-        { id: 'prisonerNumber', title: 'PRISON_NUMBER' },
-        { id: 'prisonId', title: 'PRISON_ID' },
-        { id: 'prisonName', title: 'PRISON_NAME' },
-        { id: 'handoverDate', title: 'HANDOVER_DATE' },
-        { id: 'HDCED', title: 'HDCED' },
-      ],
-    })
-    return writer.getHeaderString() + writer.stringifyRecords(records)
-  }
-
-  const isUnallocated = (pd) => {
-    const results = pd.offenderManagers.some(
-      (om) => om.active === true && (om.staff.unallocated === true || om.staff.code.endsWith('U'))
-    )
-    return results
-  }
-
-  const isCloseToHdced = (p) => {
-    return moment(p.homeDetentionCurfewEligibilityDate, 'YYYY-MM-DD').isBetween(moment(), moment().add(14, 'weeks'))
   }
 
   const getPrisonerProbationDecoratedLicences = ({ licences, prisoners, probationDetails }) => {
@@ -100,7 +113,20 @@ module.exports = function createLicenceSearchService(
     })
   }
 
-  const getlicencesWithNameAndPduCSV = (records) => {
+  const getPrisonerDecoratedLicencesCSV = (records) => {
+    const writer = createObjectCsvStringifier({
+      header: [
+        { id: 'prisonerNumber', title: 'PRISON_NUMBER' },
+        { id: 'prisonId', title: 'PRISON_ID' },
+        { id: 'prisonName', title: 'PRISON_NAME' },
+        { id: 'handoverDate', title: 'HANDOVER_DATE' },
+        { id: 'HDCED', title: 'HDCED' },
+      ],
+    })
+    return writer.getHeaderString() + writer.stringifyRecords(records)
+  }
+
+  const getPrisonerProbationDecoratedLicencesCSV = (records) => {
     const writer = createObjectCsvStringifier({
       header: [
         { id: 'prisonerNumber', title: 'PRISON_NUMBER' },
@@ -128,30 +154,38 @@ module.exports = function createLicenceSearchService(
       const bookingIds = licencesWithCOM.map((l) => l.booking_id)
       const prisoners = await prisonerSearchApi(systemToken).getPrisoners(bookingIds)
       const licencesAcc = []
-      const prisonerDecoratedLicences = licencesWithCOM.reduce(getPrisonerDecoratedLicences(prisoners), licencesAcc)
-      return getlicencesCSV(prisonerDecoratedLicences)
+      const decoratedLicences = licencesWithCOM.reduce(getPrisonerDecoratedLicences(prisoners), licencesAcc)
+      return getPrisonerDecoratedLicencesCSV(decoratedLicences)
     },
 
     async getLicencesRequiringComAssignment(username, prisonId) {
-      const systemToken = await signInService.getClientCredentialsTokens(username)
-      const licencesInStageWithAddressOrCasLocation = await licenceClient.getLicencesInStageWithAddressOrCasLocation(
-        'ELIGIBILITY',
-        systemToken
-      )
-      const bookingIds = licencesInStageWithAddressOrCasLocation.map((l) => l.booking_id)
-      const prisoners = await prisonerSearchApi(systemToken).getPrisoners(bookingIds)
-      const prisonersFilteredByPrisonCloseToHdced = prisoners.filter(
-        (p) => p.prisonId === prisonId && p.status !== 'INACTIVE OUT' && isCloseToHdced(p)
-      )
-      const offenderNumbers = prisonersFilteredByPrisonCloseToHdced.map((p) => p.prisonerNumber)
-      const probationDetails = await probationSearchApi(systemToken).getPersonProbationDetails(offenderNumbers)
+      const licences = await getEligibleLicencesWithAddressOrCasLocation(username)
+      const bookingIds = licences.map((l) => l.booking_id)
+      const prisoners = await getPrisonersCloseToHdced(username, prisonId, bookingIds)
+      const offenderNumbers = prisoners.map((p) => p.prisonerNumber)
+      const probationDetails = await getProbationDetails(username, offenderNumbers)
       const unallocatedProbationDetails = probationDetails.filter((pd) => isUnallocated(pd))
       const decoratedLicences = getPrisonerProbationDecoratedLicences({
-        licences: licencesInStageWithAddressOrCasLocation,
-        prisoners: prisonersFilteredByPrisonCloseToHdced,
+        licences,
+        prisoners,
         probationDetails: unallocatedProbationDetails,
       })
-      return getlicencesWithNameAndPduCSV(decoratedLicences)
+      return getPrisonerProbationDecoratedLicencesCSV(decoratedLicences)
+    },
+
+    async getEligibleLicencesForHandover(username, prisonId) {
+      const licences = await getEligibleLicencesWithAddressOrCasLocation(username)
+      const bookingIds = licences.map((l) => l.booking_id)
+      const prisoners = await getPrisonersCloseToHdced(username, prisonId, bookingIds)
+      const offenderNumbers = prisoners.map((p) => p.prisonerNumber)
+      const probationDetails = await getProbationDetails(username, offenderNumbers)
+      const allocatedProbationDetails = probationDetails.filter((pd) => !isUnallocated(pd))
+      const decoratedLicences = getPrisonerProbationDecoratedLicences({
+        licences,
+        prisoners,
+        probationDetails: allocatedProbationDetails,
+      })
+      return getPrisonerProbationDecoratedLicencesCSV(decoratedLicences)
     },
   }
 }

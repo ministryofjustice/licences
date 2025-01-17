@@ -142,6 +142,7 @@ export interface LicenceSearchService {
   findForId: (username: string, id: string) => Promise<number | undefined>
   getLicencesInStageCOM: (username: string) => Promise<string>
   getLicencesRequiringComAssignment: (username: string, prisonId: string) => Promise<string>
+  getEligibleLicencesForHandover: (username: string, prisonId: string) => Promise<string>
 }
 
 export interface ActiveLduClient {
