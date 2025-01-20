@@ -109,6 +109,9 @@ env:
   - name: PROBATION_TEAMS_API_URL
     value: {{ .Values.env.PROBATION_TEAMS_API_URL | quote }}
 
+  - name: PROBATION_SEARCH_API_URL
+    value: {{ .Values.env.PROBATION_SEARCH_API_URL | quote }}
+
   - name: PRISONER_SEARCH_API_URL
     value: {{ .Values.env.PRISONER_SEARCH_API_URL | quote }}
 
