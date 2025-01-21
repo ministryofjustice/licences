@@ -380,12 +380,13 @@ describe('licenceSearchService', () => {
       await licenceSearchService.getComAssignedLicencesForHandover('user-1', 'MDI')
 
       expect(licenceClient.getLicencesInStageWithAddressOrCasLocation).toHaveBeenCalledWith('ELIGIBILITY', 'a token')
-      expect(prisonerSearchAPI.getPrisoners).toHaveBeenCalledWith([1, 2, 3, 4, 5, 6])
+      expect(prisonerSearchAPI.getPrisoners).toHaveBeenCalledWith([1, 2, 3, 4, 5, 6, 7])
       expect(probationSearchApi.getPersonProbationDetails).toHaveBeenCalledWith([
         'AAAA11',
         'AAAA12',
         'AAAA13',
         'AAAA15',
+        'AAAA17',
       ])
     })
 
@@ -396,6 +397,7 @@ describe('licenceSearchService', () => {
         `PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,PDU\nAAAA12,Max,Martin,${hdcedWithin14Weeks},West of England\nAAAA13,Tim,North,${hdcedWithin14Weeks},South of England\nAAAA15,Bob,Bobbington,${hdced14Weeks},North of England`
       )
       expect(result).not.toContain(`AAAA11,John,Smith,${hdcedWithin14Weeks},East of England`)
+      expect(result).not.toContain(`AAAA17,Frank,Smith,${hdcedWithin14Weeks}`)
     })
 
     test('should not add released prisoners to csv string', async () => {
