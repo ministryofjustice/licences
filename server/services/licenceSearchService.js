@@ -79,7 +79,12 @@ module.exports = function createLicenceSearchService(
   }
 
   const isCloseToHdced = (p) => {
-    return moment(p.homeDetentionCurfewEligibilityDate, 'YYYY-MM-DD').isBetween(moment(), moment().add(14, 'weeks'))
+    return moment(p.homeDetentionCurfewEligibilityDate, 'YYYY-MM-DD').isBetween(
+      moment(),
+      moment().add(14, 'weeks'),
+      undefined,
+      '[]'
+    )
   }
 
   const getPrisonerProbationDecoratedLicences = ({ licences, prisoners, probationDetails }) => {
@@ -88,13 +93,15 @@ module.exports = function createLicenceSearchService(
       if (!prisoner) return []
       const probationDetail = probationDetails.find((pd) => pd.otherIds.nomsNumber === prisoner.prisonerNumber)
       if (!probationDetail) return []
+      const activeOffenderManager = probationDetail.offenderManagers.find((om) => om.active)
+      const { description } = activeOffenderManager.probationArea
       return [
         {
           prisonerNumber: prisoner.prisonerNumber,
           prisonerFirstname: prisoner.firstName,
           prisonLastname: prisoner.lastName,
           HDCED: moment(prisoner.homeDetentionCurfewEligibilityDate).format('DD-MM-YYYY'),
-          PDU: probationDetail.offenderManagers[0].probationArea.description,
+          PDU: description || '',
         },
       ]
     })
