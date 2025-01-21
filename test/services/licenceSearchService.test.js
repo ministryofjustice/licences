@@ -32,6 +32,7 @@ describe('licenceSearchService', () => {
           { booking_id: 4 },
           { booking_id: 5 },
           { booking_id: 6 },
+          { booking_id: 7 },
         ]),
     }
 
@@ -97,6 +98,15 @@ describe('licenceSearchService', () => {
           lastName: 'Tommington',
           prisonId: 'SWI',
           prisonName: 'Swansea HMP',
+          homeDetentionCurfewEligibilityDate: moment().add(14, 'weeks').subtract(1, 'days'),
+        },
+        {
+          bookingId: '7',
+          prisonerNumber: 'AAAA17',
+          firstName: 'Frank',
+          lastName: 'Smith',
+          prisonId: 'MDI',
+          prisonName: 'Moorland (HMP & YOI)',
           homeDetentionCurfewEligibilityDate: moment().add(14, 'weeks').subtract(1, 'days'),
         },
       ]),
@@ -166,6 +176,21 @@ describe('licenceSearchService', () => {
               },
               staff: {
                 code: 'XXXXX',
+              },
+            },
+          ],
+        },
+        {
+          otherIds: {
+            nomsNumber: 'AAAA17',
+          },
+          offenderManagers: [
+            {
+              active: true,
+              probationArea: {},
+              staff: {
+                code: 'XXXXU',
+                unallocated: true,
               },
             },
           ],
@@ -291,12 +316,13 @@ describe('licenceSearchService', () => {
       await licenceSearchService.getLicencesRequiringComAssignment('user-1', 'MDI')
 
       expect(licenceClient.getLicencesInStageWithAddressOrCasLocation).toHaveBeenCalledWith('ELIGIBILITY', 'a token')
-      expect(prisonerSearchAPI.getPrisoners).toHaveBeenCalledWith([1, 2, 3, 4, 5, 6])
+      expect(prisonerSearchAPI.getPrisoners).toHaveBeenCalledWith([1, 2, 3, 4, 5, 6, 7])
       expect(probationSearchApi.getPersonProbationDetails).toHaveBeenCalledWith([
         'AAAA11',
         'AAAA12',
         'AAAA13',
         'AAAA15',
+        'AAAA17',
       ])
     })
 
@@ -304,7 +330,7 @@ describe('licenceSearchService', () => {
       const result = await licenceSearchService.getLicencesRequiringComAssignment('user-1', 'MDI')
 
       expect(result).toContain(
-        `PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,PDU\nAAAA11,John,Smith,${hdcedWithin14Weeks},East of England`
+        `PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,PDU\nAAAA11,John,Smith,${hdcedWithin14Weeks},East of England\nAAAA17,Frank,Smith,${hdcedWithin14Weeks},\n`
       )
       expect(result).not.toContain(`AAAA12,Max,Martin,${hdcedWithin14Weeks},West of England`)
       expect(result).not.toContain(`AAAA13,Tim,North,${hdcedWithin14Weeks},South of England`)
