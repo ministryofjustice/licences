@@ -94,7 +94,7 @@ module.exports = function createLicenceSearchService(
       },
     ]
   }
-  
+
   const getPrisonerProbationDecoratedLicences = ({ licences, prisoners, probationDetails }) => {
     return licences.flatMap((l) => {
       const prisoner = prisoners.find((p) => p.bookingId === l.booking_id.toString())
@@ -175,7 +175,7 @@ module.exports = function createLicenceSearchService(
       return getPrisonerProbationDecoratedLicencesCSV(decoratedLicences)
     },
 
-    async getEligibleLicencesForHandover(username, prisonId) {
+    async getComAssignedLicencesForHandover(username, prisonId) {
       const licences = await getEligibleLicencesWithAddressOrCasLocation(username)
       const bookingIds = licences.map((l) => l.booking_id)
       const prisoners = await getPrisonersCloseToHdced(username, prisonId, bookingIds)

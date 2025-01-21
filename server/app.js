@@ -51,6 +51,7 @@ const taskListRouter = require('./routes/taskList')
 const utilsRouter = require('./routes/utils')
 const userRouter = require('./routes/user')
 const licencesRequiringComAssignmentRouter = require('./routes/licencesRequiringComAssignmentReport')
+const comAssignedLicencesForHandoverRouter = require('./routes/comAssignedLicencesForHandoverReport')
 
 const standardRouter = require('./routes/routeWorkers/standardRouter')
 const addressRouter = require('./routes/address')
@@ -440,6 +441,10 @@ module.exports = function createApp({
   app.use(
     '/hdc/licencesRequiringComAssignment',
     secureRoute(licencesRequiringComAssignmentRouter(licenceSearchService, audit))
+  )
+  app.use(
+    '/hdc/comAssignedLicencesForHandover',
+    secureRoute(comAssignedLicencesForHandoverRouter(licenceSearchService, audit))
   )
 
   app.use('/hdc/proposedAddress/', secureRoute(addressRouter({ licenceService, nomisPushService })))

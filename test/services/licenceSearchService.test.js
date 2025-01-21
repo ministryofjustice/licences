@@ -375,9 +375,9 @@ describe('licenceSearchService', () => {
     })
   })
 
-  describe('getEligibleLicencesForHandover', () => {
+  describe('getComAssignedLicencesForHandover', () => {
     test('should request licence, prisoner and probation details from client', async () => {
-      await licenceSearchService.getEligibleLicencesForHandover('user-1', 'MDI')
+      await licenceSearchService.getComAssignedLicencesForHandover('user-1', 'MDI')
 
       expect(licenceClient.getLicencesInStageWithAddressOrCasLocation).toHaveBeenCalledWith('ELIGIBILITY', 'a token')
       expect(prisonerSearchAPI.getPrisoners).toHaveBeenCalledWith([1, 2, 3, 4, 5, 6])
@@ -390,7 +390,7 @@ describe('licenceSearchService', () => {
     })
 
     test('should decorate licences with prisoner and probation details and return csv string', async () => {
-      const result = await licenceSearchService.getEligibleLicencesForHandover('user-1', 'MDI')
+      const result = await licenceSearchService.getComAssignedLicencesForHandover('user-1', 'MDI')
 
       expect(result).toContain(
         `PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,PDU\nAAAA12,Max,Martin,${hdcedWithin14Weeks},West of England\nAAAA13,Tim,North,${hdcedWithin14Weeks},South of England\nAAAA15,Bob,Bobbington,${hdced14Weeks},North of England`
@@ -429,7 +429,7 @@ describe('licenceSearchService', () => {
           homeDetentionCurfewEligibilityDate: moment().add(14, 'weeks').subtract(1, 'days'),
         },
       ])
-      const result = await licenceSearchService.getEligibleLicencesForHandover('user-1', 'MDI')
+      const result = await licenceSearchService.getComAssignedLicencesForHandover('user-1', 'MDI')
 
       expect(result).toContain(
         `PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,PDU\nAAAA13,Tim,North,${hdcedWithin14Weeks},South of England`
