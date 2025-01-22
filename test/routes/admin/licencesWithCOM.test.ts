@@ -4,10 +4,14 @@ import createAdminRoute from '../../../server/routes/admin/licencesWithCOM'
 
 describe('/licencesWithCOM/', () => {
   let licenceSearchService
+  let audit
 
   beforeEach(() => {
     licenceSearchService = {
       getLicencesInStageCOM: jest.fn(),
+    }
+    audit = {
+      record: jest.fn(),
     }
   })
 
@@ -41,11 +45,22 @@ describe('/licencesWithCOM/', () => {
         })
     })
 
+    test('should call audit.record', () => {
+      const app = createApp('batchUser')
+      return request(app)
+        .post('/admin/downloadCasesWithCOM')
+        .expect(200)
+        .expect(() => {
+          expect(audit.record).toHaveBeenCalledWith('LICENCE_STAGE_COM_DOWNLOAD', 'NOMIS_BATCHLOAD')
+        })
+    })
+
     test('should throw if submitted by non-authorised user', () => {
       const app = createApp('roUser')
       return request(app).post('/admin/downloadCasesWithCOM').expect(403)
     })
   })
 
-  const createApp = (user) => startRoute(createAdminRoute(licenceSearchService), '/admin/downloadCasesWithCOM', user)
+  const createApp = (user) =>
+    startRoute(createAdminRoute(licenceSearchService, audit), '/admin/downloadCasesWithCOM', user)
 })

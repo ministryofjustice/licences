@@ -411,10 +411,7 @@ module.exports = function createApp({
     '/admin/licenceSearch/',
     secureRoute(licenceSearchRouter(licenceSearchService), { auditKey: 'LICENCE_SEARCH' })
   )
-  app.use(
-    '/admin/downloadCasesWithCOM/',
-    secureRoute(licencesWithCOMRouter(licenceSearchService), { auditKey: 'LICENCE_STAGE_COM_DOWNLOAD' })
-  )
+  app.use('/admin/downloadCasesWithCOM/', secureRoute(licencesWithCOMRouter(licenceSearchService, audit)))
   app.use(
     '/admin/completionDestinationSearch/',
     secureRoute(licenceCompletionDestinationSearchRouter(licenceSearchService))
