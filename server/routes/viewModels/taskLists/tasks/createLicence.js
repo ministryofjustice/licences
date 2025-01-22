@@ -21,9 +21,11 @@ const getCaAction = ({ decisions, tasks, stage }) => {
 
 module.exports = {
   ca: ({ decisions, tasks, stage }) => {
+    const { useCvlForLicenceCreation } = decisions
     return {
       title: 'Create licence',
-      action: getCaAction({ decisions, tasks, stage }),
+      label: useCvlForLicenceCreation ? 'Check the Create and vary a licence service' : null,
+      action: useCvlForLicenceCreation ? null : getCaAction({ decisions, tasks, stage }),
     }
   },
   vary: (version) => () => ({
