@@ -11,7 +11,7 @@ describe('/comAssignedLicencesForHandoverReport', () => {
       getComAssignedLicencesForHandover: jest.fn(),
     }
     audit = {
-      addItem: jest.fn(),
+      record: jest.fn(),
     }
   })
 
@@ -49,7 +49,7 @@ describe('/comAssignedLicencesForHandoverReport', () => {
         .post('/comAssignedLicencesForHandoverReport')
         .expect(200)
         .expect(() => {
-          expect(audit.addItem).toHaveBeenCalledWith('COM_ASSIGNED_LICENCES_FOR_HANDOVER_DOWNLOAD', 'CA_USER_TEST', {
+          expect(audit.record).toHaveBeenCalledWith('COM_ASSIGNED_LICENCES_FOR_HANDOVER_DOWNLOAD', 'CA_USER_TEST', {
             prisonId: 'caseLoadId',
           })
         })

@@ -25,7 +25,7 @@ export = (licenceSearchService, audit) => (router) => {
         `attachment;filename=HDC12 COM assigned but with CA - ${prisonId} - ${timestamp}.csv`
       )
       res.send(comAssignedEligibleLicencesForHandover)
-      await audit.addItem('COM_ASSIGNED_LICENCES_FOR_HANDOVER_DOWNLOAD', username, { prisonId })
+      await audit.record('COM_ASSIGNED_LICENCES_FOR_HANDOVER_DOWNLOAD', username, { prisonId })
     })
   )
 
