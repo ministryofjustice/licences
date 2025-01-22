@@ -246,6 +246,7 @@ describe('TaskList models', () => {
 
   const createLicence = {
     action: null,
+    label: null,
     title: 'Create licence',
   }
 
@@ -661,6 +662,7 @@ describe('TaskList models', () => {
               optedOut: false,
               dmRefused: false,
               excluded: false,
+              useCvlForLicenceCreation: false,
             },
             tasks: {
               bassAreaCheck: 'UNSTARTED',
@@ -895,6 +897,7 @@ describe('TaskList models', () => {
               optedOut: false,
               dmRefused: false,
               excluded: false,
+              useCvlForLicenceCreation: false,
             },
             tasks: {
               approvedPremisesAddress: 'DONE',
@@ -990,44 +993,90 @@ describe('TaskList models', () => {
         resubmit,
       ])
     })
-  })
 
-  test('should return list of tasks for standard route INCLUDING resubmit AND Postpone or Refuse', () => {
-    expect(
-      getCaTaskLists(
-        {
-          decisions: {
-            eligible: true,
-            curfewAddressApproved: true,
-            bassReferralNeeded: false,
-            bassWithdrawn: false,
-            bassExcluded: false,
-            bassAccepted: null,
-            optedOut: false,
-            dmRefused: false,
-            excluded: false,
+    test('should return list of tasks for standard route INCLUDING resubmit AND Postpone or Refuse', () => {
+      expect(
+        getCaTaskLists(
+          {
+            decisions: {
+              eligible: true,
+              curfewAddressApproved: true,
+              bassReferralNeeded: false,
+              bassWithdrawn: false,
+              bassExcluded: false,
+              bassAccepted: null,
+              optedOut: false,
+              dmRefused: false,
+              excluded: false,
+              useCvlForLicenceCreation: false,
+            },
+            tasks: {
+              bassAreaCheck: 'UNSTARTED',
+              bassOffer: 'UNSTARTED',
+            },
+            stage: 'DECIDED',
           },
-          tasks: {
-            bassAreaCheck: 'UNSTARTED',
-            bassOffer: 'UNSTARTED',
+          null
+        )
+      ).toEqual([
+        eligibilitySummary,
+        proposedCurfewAddressEdit,
+        riskManagement,
+        victimLiasion,
+        curfewHours,
+        additionalConditionsEdit,
+        reportingInstructions,
+        reviewCase,
+        postponeOrRefuse,
+        refuse,
+        resubmit,
+        createLicence,
+      ])
+    })
+
+    test('should return list of tasks for standard route where the licence is to be created in CVL', () => {
+      const createLicenceInCvl = {
+        action: null,
+        label: 'Check the Create and vary a licence service',
+        title: 'Create licence',
+      }
+      expect(
+        getCaTaskLists(
+          {
+            decisions: {
+              eligible: true,
+              curfewAddressApproved: true,
+              bassReferralNeeded: false,
+              bassWithdrawn: false,
+              bassExcluded: false,
+              bassAccepted: null,
+              optedOut: false,
+              dmRefused: false,
+              excluded: false,
+              useCvlForLicenceCreation: true,
+            },
+            tasks: {
+              bassAreaCheck: 'UNSTARTED',
+              bassOffer: 'UNSTARTED',
+            },
+            stage: 'DECIDED',
           },
-          stage: 'DECIDED',
-        },
-        null
-      )
-    ).toEqual([
-      eligibilitySummary,
-      proposedCurfewAddressEdit,
-      riskManagement,
-      victimLiasion,
-      curfewHours,
-      additionalConditionsEdit,
-      reportingInstructions,
-      reviewCase,
-      postponeOrRefuse,
-      refuse,
-      resubmit,
-      createLicence,
-    ])
+          null
+        )
+      ).toEqual([
+        eligibilitySummary,
+        proposedCurfewAddressEdit,
+        riskManagement,
+        victimLiasion,
+        curfewHours,
+        additionalConditionsEdit,
+        reportingInstructions,
+        reviewCase,
+        postponeOrRefuse,
+        refuse,
+        resubmit,
+        createLicenceInCvl,
+      ])
+    })
   })
 })
