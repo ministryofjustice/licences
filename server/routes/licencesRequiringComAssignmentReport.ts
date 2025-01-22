@@ -22,7 +22,7 @@ export = (licenceSearchService, audit) => (router) => {
       res.contentType('text/csv')
       res.set('Content-Disposition', `attachment;filename=HDC12 no COM assigned - ${prisonId} - ${timestamp}.csv`)
       res.send(licencesRequiringComAssignment)
-      await audit.addItem('LICENCES_REQUIRING_COM_DOWNLOAD', username, { prisonId })
+      await audit.record('LICENCES_REQUIRING_COM_DOWNLOAD', username, { prisonId })
     })
   )
 

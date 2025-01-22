@@ -11,7 +11,7 @@ describe('/licencesRequiringComAssignmentReport', () => {
       getLicencesRequiringComAssignment: jest.fn(),
     }
     audit = {
-      addItem: jest.fn(),
+      record: jest.fn(),
     }
   })
 
@@ -49,7 +49,7 @@ describe('/licencesRequiringComAssignmentReport', () => {
         .post('/licencesRequiringComAssignmentReport')
         .expect(200)
         .expect(() => {
-          expect(audit.addItem).toHaveBeenCalledWith('LICENCES_REQUIRING_COM_DOWNLOAD', 'CA_USER_TEST', {
+          expect(audit.record).toHaveBeenCalledWith('LICENCES_REQUIRING_COM_DOWNLOAD', 'CA_USER_TEST', {
             prisonId: 'caseLoadId',
           })
         })
