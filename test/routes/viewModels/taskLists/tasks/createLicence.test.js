@@ -81,5 +81,20 @@ describe('create licence task', () => {
         }).action
       ).toBe(null)
     })
+
+    test('should not show continue button if licence is to be created in CVL', () => {
+      expect(
+        createLicence.ca({
+          decisions: {
+            approved: true,
+            bassReferralNeeded: false,
+            addressWithdrawn: false,
+            useCvlForLicenceCreation: true,
+          },
+          tasks: {},
+          stage: 'APPROVED',
+        }).action
+      ).toBe(null)
+    })
   })
 })

@@ -470,7 +470,7 @@ describe('GET /taskList/:prisonNumber', () => {
         })
     })
 
-    test('should not display the create licence task if the licence is to be created in CVL', async () => {
+    test('should not display the continue button if the licence is to be created in CVL', async () => {
       licenceService.getLicence.mockResolvedValue({
         stage: 'DECIDED',
         licence: {
@@ -626,7 +626,8 @@ describe('GET /taskList/:prisonNumber', () => {
         .expect(200)
         .expect('Content-Type', /html/)
         .expect((res) => {
-          expect(res.text).not.toContain('Create licence')
+          expect(res.text).toContain('Create licence')
+          expect(res.text).toContain('Check the Create and vary a licence service')
           expect(res.text).not.toContain('data-qa="continue"')
         })
     })
