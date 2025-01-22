@@ -43,7 +43,7 @@ describe('/licencesRequiringComAssignmentReport', () => {
         })
     })
 
-    test('should call audit.addItem', () => {
+    test('should call audit.record', () => {
       const app = createApp('caUser')
       return request(app)
         .post('/licencesRequiringComAssignmentReport')
