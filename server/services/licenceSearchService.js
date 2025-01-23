@@ -120,6 +120,42 @@ module.exports = function createLicenceSearchService(
     return writer.getHeaderString() + writer.stringifyRecords(records)
   }
 
+  const getPrisonerComProbationDecoratedLicences = ({ licences, prisoners, probationDetails }) => {
+    return licences.flatMap((l) => {
+      const prisoner = prisoners.find((p) => p.bookingId === l.booking_id.toString())
+      if (!prisoner) return []
+      const probationDetail = probationDetails.find((pd) => pd.otherIds.nomsNumber === prisoner.prisonerNumber)
+
+      const activeOffenderManager = probationDetail.offenderManagers.find((om) => om.active)
+      const { forenames, surname } = activeOffenderManager.staff
+      const { description } = activeOffenderManager.probationArea
+      return [
+        {
+          prisonerNumber: prisoner.prisonerNumber,
+          prisonerFirstname: prisoner.firstName,
+          prisonLastname: prisoner.lastName,
+          HDCED: moment(prisoner.homeDetentionCurfewEligibilityDate).format('DD-MM-YYYY'),
+          COM: isUnallocated(probationDetail) ? '' : `${forenames} ${surname}`,
+          PDU: description || '',
+        },
+      ]
+    })
+  }
+
+  const getlicencesWithNameComAndPduCSV = (records) => {
+    const writer = createObjectCsvStringifier({
+      header: [
+        { id: 'prisonerNumber', title: 'PRISON_NUMBER' },
+        { id: 'prisonerFirstname', title: 'PRISONER_FIRSTNAME' },
+        { id: 'prisonLastname', title: 'PRISONER_LASTNAME' },
+        { id: 'HDCED', title: 'HDCED' },
+        { id: 'COM', title: 'COM' },
+        { id: 'PDU', title: 'PDU' },
+      ],
+    })
+    return writer.getHeaderString() + writer.stringifyRecords(records)
+  }
+
   return {
     async findForId(username, offenderIdentifier) {
       const bookingId = await findByBookingId(offenderIdentifier)
@@ -159,6 +195,27 @@ module.exports = function createLicenceSearchService(
         probationDetails: unallocatedProbationDetails,
       })
       return getlicencesWithNameAndPduCSV(decoratedLicences)
+    },
+
+    async getLicencesWithAndWithoutComAssignment(username) {
+      const systemToken = await signInService.getClientCredentialsTokens(username)
+      const licencesInStageWithAddressOrCasLocation = await licenceClient.getLicencesInStageWithAddressOrCasLocation(
+        'ELIGIBILITY',
+        systemToken
+      )
+      const bookingIds = licencesInStageWithAddressOrCasLocation.map((l) => l.booking_id)
+      const prisoners = await prisonerSearchApi(systemToken).getPrisoners(bookingIds)
+      const prisonersFilteredByPrisonCloseToHdced = prisoners.filter(
+        (p) => p.status !== 'INACTIVE OUT' && isCloseToHdced(p)
+      )
+      const offenderNumbers = prisonersFilteredByPrisonCloseToHdced.map((p) => p.prisonerNumber)
+      const probationDetails = await probationSearchApi(systemToken).getPersonProbationDetails(offenderNumbers)
+      const decoratedLicences = getPrisonerComProbationDecoratedLicences({
+        licences: licencesInStageWithAddressOrCasLocation,
+        prisoners: prisonersFilteredByPrisonCloseToHdced,
+        probationDetails,
+      })
+      return getlicencesWithNameComAndPduCSV(decoratedLicences)
     },
   }
 }
