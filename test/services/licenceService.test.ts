@@ -1,3 +1,4 @@
+import moment from 'moment'
 import {
   createLicenceService,
   LicenceService,
@@ -31,6 +32,7 @@ describe('licenceService', () => {
         booking_id: 1,
         stage: undefined,
         version: 2,
+        transition_date: moment('2018-05-31 15:23:39').toDate(),
         vary_version: 5,
         additional_conditions_version: 3 as AdditionalConditionsVersion,
         standard_conditions_version: 1 as StandardConditionsVersion,
@@ -42,6 +44,7 @@ describe('licenceService', () => {
         booking_id: 1,
         stage: undefined,
         version: 2,
+        transition_date: moment('2018-05-31 15:23:39').toDate(),
         vary_version: 5,
         additional_conditions_version: 3 as AdditionalConditionsVersion,
         standard_conditions_version: 1 as StandardConditionsVersion,

@@ -1,11 +1,11 @@
 import moment from 'moment'
 import { asyncMiddleware } from '../utils/middleware'
 
-export = (licenceSearchService, audit) => (router) => {
+export = (reportsService, audit) => (router) => {
   router.get(
     '/',
     asyncMiddleware(async (req, res) => {
-      return res.render('comAssignedLicencesForHandoverReport', {})
+      return res.render('reports/comAssignedLicencesForHandoverReport', {})
     })
   )
 
@@ -15,7 +15,7 @@ export = (licenceSearchService, audit) => (router) => {
       const prisonId = res.locals.user.activeCaseLoadId
       const timestamp = moment().format('YYYY-MM-DD_HHmm')
       const { username } = req.user
-      const comAssignedEligibleLicencesForHandover = await licenceSearchService.getComAssignedLicencesForHandover(
+      const comAssignedEligibleLicencesForHandover = await reportsService.getComAssignedLicencesForHandover(
         username,
         prisonId
       )

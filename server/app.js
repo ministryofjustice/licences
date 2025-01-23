@@ -82,6 +82,7 @@ module.exports = function createApp({
   caseListService,
   pdfService,
   formService,
+  reportsService,
   licenceSearchService,
   userAdminService,
   reportingService,
@@ -414,7 +415,7 @@ module.exports = function createApp({
   )
   app.use(
     '/admin/downloadCasesWithCOM/',
-    secureRoute(licencesWithCOMRouter(licenceSearchService), { auditKey: 'LICENCE_STAGE_COM_DOWNLOAD' })
+    secureRoute(licencesWithCOMRouter(reportsService), { auditKey: 'LICENCE_STAGE_COM_DOWNLOAD' })
   )
   app.use(
     '/admin/completionDestinationSearch/',
@@ -440,11 +441,11 @@ module.exports = function createApp({
   app.use('/user/', secureRoute(userRouter({ userService })))
   app.use(
     '/hdc/licencesRequiringComAssignment',
-    secureRoute(licencesRequiringComAssignmentRouter(licenceSearchService, audit))
+    secureRoute(licencesRequiringComAssignmentRouter(reportsService, audit))
   )
   app.use(
     '/hdc/comAssignedLicencesForHandover',
-    secureRoute(comAssignedLicencesForHandoverRouter(licenceSearchService, audit))
+    secureRoute(comAssignedLicencesForHandoverRouter(reportsService, audit))
   )
 
   app.use('/hdc/proposedAddress/', secureRoute(addressRouter({ licenceService, nomisPushService })))

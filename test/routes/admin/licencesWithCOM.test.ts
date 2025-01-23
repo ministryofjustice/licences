@@ -3,10 +3,10 @@ import { startRoute } from '../../supertestSetup'
 import createAdminRoute from '../../../server/routes/admin/licencesWithCOM'
 
 describe('/licencesWithCOM/', () => {
-  let licenceSearchService
+  let reportsService
 
   beforeEach(() => {
-    licenceSearchService = {
+    reportsService = {
       getLicencesInStageCOM: jest.fn(),
     }
   })
@@ -31,13 +31,13 @@ describe('/licencesWithCOM/', () => {
 
   describe('POST', () => {
     test('calls search service', () => {
-      licenceSearchService.getLicencesInStageCOM.mockReturnValue('1')
+      reportsService.getLicencesInStageCOM.mockReturnValue('1')
       const app = createApp('batchUser')
       return request(app)
         .post('/admin/downloadCasesWithCOM')
         .expect(200)
         .expect(() => {
-          expect(licenceSearchService.getLicencesInStageCOM).toHaveBeenCalledWith('NOMIS_BATCHLOAD')
+          expect(reportsService.getLicencesInStageCOM).toHaveBeenCalledWith('NOMIS_BATCHLOAD')
         })
     })
 
@@ -47,5 +47,5 @@ describe('/licencesWithCOM/', () => {
     })
   })
 
-  const createApp = (user) => startRoute(createAdminRoute(licenceSearchService), '/admin/downloadCasesWithCOM', user)
+  const createApp = (user) => startRoute(createAdminRoute(reportsService), '/admin/downloadCasesWithCOM', user)
 })
