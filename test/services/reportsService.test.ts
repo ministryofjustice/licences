@@ -278,6 +278,15 @@ describe('reportsService', () => {
         'AAAA15',
         'AAAA17',
       ])
+      expect(probationSearchApi.getPersonProbationDetails).toHaveBeenCalledWith([
+        'AAAA11',
+        'AAAA12',
+        'AAAA13',
+        'AAAA15',
+        'AAAA17',
+      ])
+      // filter out prisoners in different prisons to CA and prisoners with an HDCED over 14 weeks away:
+      expect(probationSearchApi.getPersonProbationDetails).not.toHaveBeenCalledWith(['AAAA14', 'AAAA16'])
     })
 
     test('should decorate licences with prisoner and probation details and return csv string', async () => {
@@ -342,6 +351,8 @@ describe('reportsService', () => {
         'AAAA15',
         'AAAA17',
       ])
+      // filter out prisoners in different prisons to CA and prisoners with an HDCED over 14 weeks away:
+      expect(probationSearchApi.getPersonProbationDetails).not.toHaveBeenCalledWith(['AAAA14', 'AAAA16'])
     })
 
     test('should decorate licences with prisoner and probation details and return csv string', async () => {
