@@ -29,7 +29,7 @@ declare module 'probationSearchApi' {
       probationArea: Schemas['ProbationArea']
 
       /** Offender Manager Active */
-      active?: string
+      active?: boolean
     }
 
     /** Staff */
