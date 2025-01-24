@@ -142,13 +142,6 @@ export interface LicenceSearchService {
   findForId: (username: string, id: string) => Promise<number | undefined>
 }
 
-export interface ReportsService {
-  getLicencesInStageCOM: (username: string) => Promise<string>
-  getLicencesRequiringComAssignment: (username: string, prisonId: string) => Promise<string>
-  getComAssignedLicencesForHandover: (username: string, prisonId: string) => Promise<string>
-  getLicencesWithAndWithoutComAssignment: (username: string) => Promise<string>
-}
-
 export interface ActiveLduClient {
   isLduPresent: (lduCode: string, probationAreaCode: string) => Promise<boolean>
   allActiveLdusInArea: (probationAreaCode: string) => Promise<ActiveLdu[]>

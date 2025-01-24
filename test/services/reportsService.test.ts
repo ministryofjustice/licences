@@ -1,10 +1,10 @@
 import moment from 'moment'
-const createReportsService = require('../../server/services/reportsService')
+import { ReportsService } from '../../server/services/reportsService'
 
 jest.mock('../../server/data/licenceClient')
 
 describe('reportsService', () => {
-  let reportsService
+  let service: ReportsService
   let licenceClient
   let signInService
   let prisonerSearchAPI
@@ -203,12 +203,7 @@ describe('reportsService', () => {
 
     restPrisonerClientBuilder = jest.fn().mockReturnValue(prisonerSearchAPI)
     restProbationClientBuilder = jest.fn().mockReturnValue(probationSearchApi)
-    reportsService = await createReportsService(
-      licenceClient,
-      signInService,
-      restPrisonerClientBuilder,
-      restProbationClientBuilder
-    )
+    service = new ReportsService(licenceClient, signInService, restPrisonerClientBuilder, restProbationClientBuilder)
   })
 
   afterEach(() => {
@@ -217,14 +212,14 @@ describe('reportsService', () => {
 
   describe('getLicencesInStageCOM', () => {
     test('should request licence and prisoner details from client', async () => {
-      await reportsService.getLicencesInStageCOM('user-1')
+      await service.getLicencesInStageCOM('user-1')
 
       expect(licenceClient.getLicencesInStage).toHaveBeenCalledWith('PROCESSING_RO')
       expect(prisonerSearchAPI.getPrisoners).toHaveBeenCalledWith([1, 2, 3])
     })
 
     test('should decorate licences with prisoner details and return csv string', async () => {
-      const result = await reportsService.getLicencesInStageCOM('user-1')
+      const result = await service.getLicencesInStageCOM('user-1')
 
       expect(result).toContain(
         `PRISON_NUMBER,PRISON_ID,PRISON_NAME,HANDOVER_DATE,HDCED\nAAAA11,MDI,Moorland (HMP & YOI),01-01-2020,${hdcedWithin14Weeks}\nAAAA12,MDI,Moorland (HMP & YOI),01-01-2020,${hdcedWithin14Weeks}\nAAAA13,MDI,Moorland (HMP & YOI),01-01-2020,${hdcedWithin14Weeks}`
@@ -256,7 +251,7 @@ describe('reportsService', () => {
           status: 'INACTIVE OUT',
         },
       ])
-      const result = await reportsService.getLicencesInStageCOM('user-1')
+      const result = await service.getLicencesInStageCOM('user-1')
 
       expect(result).toContain(
         `PRISON_NUMBER,PRISON_ID,PRISON_NAME,HANDOVER_DATE,HDCED\nAAAA11,MDI,Moorland (HMP & YOI),01-01-2020,${hdcedWithin14Weeks}\nAAAA12,MDI,Moorland (HMP & YOI),01-01-2020,${hdcedWithin14Weeks}`
@@ -265,9 +260,76 @@ describe('reportsService', () => {
     })
   })
 
+  describe('getComAssignedLicencesForHandover', () => {
+    test('should request licence, prisoner and probation details from client', async () => {
+      await service.getComAssignedLicencesForHandover('user-1', 'MDI')
+
+      expect(licenceClient.getLicencesInStageWithAddressOrCasLocation).toHaveBeenCalledWith('ELIGIBILITY')
+      expect(prisonerSearchAPI.getPrisoners).toHaveBeenCalledWith([1, 2, 3, 4, 5, 6, 7])
+      expect(probationSearchApi.getPersonProbationDetails).toHaveBeenCalledWith([
+        'AAAA11',
+        'AAAA12',
+        'AAAA13',
+        'AAAA15',
+        'AAAA17',
+      ])
+      // filter out prisoners in different prisons to CA and prisoners with an HDCED over 14 weeks away:
+      expect(probationSearchApi.getPersonProbationDetails).not.toHaveBeenCalledWith(['AAAA14', 'AAAA16'])
+    })
+
+    test('should decorate licences with prisoner and probation details and return csv string', async () => {
+      const result = await service.getComAssignedLicencesForHandover('user-1', 'MDI')
+
+      expect(result).toContain(
+        `PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,PDU\nAAAA12,Max,Martin,${hdcedWithin14Weeks},West of England\nAAAA13,Tim,North,${hdcedWithin14Weeks},South of England\nAAAA15,Bob,Bobbington,${hdced14Weeks},North of England`
+      )
+      expect(result).not.toContain(`AAAA11,John,Smith,${hdcedWithin14Weeks},East of England`)
+      expect(result).not.toContain(`AAAA17,Frank,Smith,${hdcedWithin14Weeks}`)
+    })
+
+    test('should not add released prisoners to csv string', async () => {
+      prisonerSearchAPI.getPrisoners.mockReturnValue([
+        {
+          bookingId: '1',
+          prisonerNumber: 'AAAA11',
+          firstName: 'John',
+          lastName: 'Smith',
+          prisonId: 'MDI',
+          prisonName: 'Moorland (HMP & YOI)',
+          homeDetentionCurfewEligibilityDate: moment().add(14, 'weeks').subtract(1, 'days'),
+        },
+        {
+          bookingId: '2',
+          prisonerNumber: 'AAAA12',
+          firstName: 'Max',
+          lastName: 'Martin',
+          prisonId: 'MDI',
+          prisonName: 'Moorland (HMP & YOI)',
+          homeDetentionCurfewEligibilityDate: moment().add(14, 'weeks').subtract(1, 'days'),
+          status: 'INACTIVE OUT',
+        },
+        {
+          bookingId: '3',
+          prisonerNumber: 'AAAA13',
+          firstName: 'Tim',
+          lastName: 'North',
+          prisonId: 'MDI',
+          prisonName: 'Moorland (HMP & YOI)',
+          homeDetentionCurfewEligibilityDate: moment().add(14, 'weeks').subtract(1, 'days'),
+        },
+      ])
+      const result = await service.getComAssignedLicencesForHandover('user-1', 'MDI')
+
+      expect(result).toContain(
+        `PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,PDU\nAAAA13,Tim,North,${hdcedWithin14Weeks},South of England`
+      )
+      expect(result).not.toContain(`AAAA12,Max,Martin,${hdcedWithin14Weeks},West of England`)
+    })
+  })
+
   describe('getLicencesRequiringComAssignment', () => {
     test('should request licence, prisoner and probation details from client', async () => {
-      await reportsService.getLicencesRequiringComAssignment('user-1', 'MDI')
+      await service.getLicencesRequiringComAssignment('user-1', 'MDI')
 
       expect(licenceClient.getLicencesInStageWithAddressOrCasLocation).toHaveBeenCalledWith('ELIGIBILITY')
       expect(prisonerSearchAPI.getPrisoners).toHaveBeenCalledWith([1, 2, 3, 4, 5, 6, 7])
@@ -290,7 +352,7 @@ describe('reportsService', () => {
     })
 
     test('should decorate licences with prisoner and probation details and return csv string', async () => {
-      const result = await reportsService.getLicencesRequiringComAssignment('user-1', 'MDI')
+      const result = await service.getLicencesRequiringComAssignment('user-1', 'MDI')
 
       expect(result).toContain(
         `PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,PDU\nAAAA11,John,Smith,${hdcedWithin14Weeks},East of England\nAAAA17,Frank,Smith,${hdcedWithin14Weeks},\n`
@@ -331,7 +393,7 @@ describe('reportsService', () => {
           homeDetentionCurfewEligibilityDate: moment().add(13, 'weeks').format('YYYY-MM-DD'),
         },
       ])
-      const result = await reportsService.getLicencesRequiringComAssignment('user-1', 'MDI')
+      const result = await service.getLicencesRequiringComAssignment('user-1', 'MDI')
 
       expect(result).toContain('PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,PDU')
       expect(result).not.toContain(`AAAA11,John,Smith,${hdcedWithin14Weeks},East of England`)
@@ -340,7 +402,7 @@ describe('reportsService', () => {
 
   describe('getComAssignedLicencesForHandover', () => {
     test('should request licence, prisoner and probation details from client', async () => {
-      await reportsService.getComAssignedLicencesForHandover('user-1', 'MDI')
+      await service.getComAssignedLicencesForHandover('user-1', 'MDI')
 
       expect(licenceClient.getLicencesInStageWithAddressOrCasLocation).toHaveBeenCalledWith('ELIGIBILITY')
       expect(prisonerSearchAPI.getPrisoners).toHaveBeenCalledWith([1, 2, 3, 4, 5, 6, 7])
@@ -356,7 +418,7 @@ describe('reportsService', () => {
     })
 
     test('should decorate licences with prisoner and probation details and return csv string', async () => {
-      const result = await reportsService.getComAssignedLicencesForHandover('user-1', 'MDI')
+      const result = await service.getComAssignedLicencesForHandover('user-1', 'MDI')
 
       expect(result).toContain(
         `PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,PDU\nAAAA12,Max,Martin,${hdcedWithin14Weeks},West of England\nAAAA13,Tim,North,${hdcedWithin14Weeks},South of England\nAAAA15,Bob,Bobbington,${hdced14Weeks},North of England`
@@ -396,7 +458,7 @@ describe('reportsService', () => {
           homeDetentionCurfewEligibilityDate: moment().add(14, 'weeks').subtract(1, 'days'),
         },
       ])
-      const result = await reportsService.getComAssignedLicencesForHandover('user-1', 'MDI')
+      const result = await service.getComAssignedLicencesForHandover('user-1', 'MDI')
 
       expect(result).toContain(
         `PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,PDU\nAAAA13,Tim,North,${hdcedWithin14Weeks},South of England`
