@@ -1,15 +1,16 @@
 import request from 'supertest'
+import { ReportsService } from '../../server/services/reportsService'
 import { startRoute } from '../supertestSetup'
 import createAdminRoute from '../../server/routes/comAssignedLicencesForHandoverReport'
 
+jest.mock('../../server/services/reportsService')
+
 describe('/comAssignedLicencesForHandoverReport', () => {
-  let licenceSearchService
+  let reportsService: jest.Mocked<ReportsService>
   let audit
 
   beforeEach(() => {
-    licenceSearchService = {
-      getComAssignedLicencesForHandover: jest.fn(),
-    }
+    reportsService = new ReportsService(undefined, undefined, undefined, undefined) as jest.Mocked<ReportsService>
     audit = {
       record: jest.fn(),
     }
@@ -30,16 +31,13 @@ describe('/comAssignedLicencesForHandoverReport', () => {
 
   describe('POST', () => {
     test('calls search service', () => {
-      licenceSearchService.getComAssignedLicencesForHandover.mockReturnValue('1')
+      reportsService.getComAssignedLicencesForHandover.mockResolvedValue('1')
       const app = createApp('caUser')
       return request(app)
         .post('/comAssignedLicencesForHandoverReport')
         .expect(200)
         .expect(() => {
-          expect(licenceSearchService.getComAssignedLicencesForHandover).toHaveBeenCalledWith(
-            'CA_USER_TEST',
-            'caseLoadId'
-          )
+          expect(reportsService.getComAssignedLicencesForHandover).toHaveBeenCalledWith('CA_USER_TEST', 'caseLoadId')
         })
     })
 
@@ -57,5 +55,5 @@ describe('/comAssignedLicencesForHandoverReport', () => {
   })
 
   const createApp = (user) =>
-    startRoute(createAdminRoute(licenceSearchService, audit), '/comAssignedLicencesForHandoverReport', user)
+    startRoute(createAdminRoute(reportsService, audit), '/comAssignedLicencesForHandoverReport', user)
 })
