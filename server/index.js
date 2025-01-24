@@ -50,6 +50,7 @@ const createCaService = require('./services/caService')
 const createLduService = require('./services/lduService')
 const { FunctionalMailboxService } = require('./services/functionalMailboxService')
 const createLicenceSearchService = require('./services/licenceSearchService')
+const createReportsService = require('./services/reportsService')
 const tokenVerifierFactory = require('./authentication/tokenverifier/tokenVerifierFactory')
 const { default: TokenStore } = require('./data/tokenStore')
 const { createRedisClient } = require('./data/redisClient')
@@ -143,13 +144,8 @@ const notificationJobs = createNotificationJobs(reminderService, signInService)
 const jobSchedulerService = createJobSchedulerService(dbLockingClient, configClient, notificationJobs)
 const lduService = createLduService(deliusClient, activeLduClient)
 const functionalMailboxService = new FunctionalMailboxService(deliusClient, probationTeamsClient, audit)
-const licenceSearchService = createLicenceSearchService(
-  licenceClient,
-  signInService,
-  nomisClientBuilder,
-  prisonerSearchApi,
-  probationSearchApi
-)
+const licenceSearchService = createLicenceSearchService(licenceClient, signInService, nomisClientBuilder)
+const reportsService = createReportsService(licenceClient, signInService, prisonerSearchApi, probationSearchApi)
 const tokenVerifier = tokenVerifierFactory(config.tokenVerification)
 
 const app = createApp({
@@ -169,6 +165,7 @@ const app = createApp({
   configClient,
   jobSchedulerService,
   licenceSearchService,
+  reportsService,
   roService,
   audit,
   caService,

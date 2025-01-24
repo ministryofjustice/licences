@@ -1,14 +1,14 @@
 import request from 'supertest'
 import { startRoute } from '../supertestSetup'
-import createAdminRoute from '../../server/routes/licencesRequiringComAssignmentReport'
+import createAdminRoute from '../../server/routes/comAssignedLicencesForHandoverReport'
 
-describe('/licencesRequiringComAssignmentReport', () => {
+describe('/comAssignedLicencesForHandoverReport', () => {
   let licenceSearchService
   let audit
 
   beforeEach(() => {
     licenceSearchService = {
-      getLicencesRequiringComAssignment: jest.fn(),
+      getComAssignedLicencesForHandover: jest.fn(),
     }
     audit = {
       record: jest.fn(),
@@ -19,24 +19,24 @@ describe('/licencesRequiringComAssignmentReport', () => {
     test('Renders HTML output', () => {
       const app = createApp('caUser')
       return request(app)
-        .get('/licencesRequiringComAssignmentReport')
+        .get('/comAssignedLicencesForHandoverReport')
         .expect(200)
         .expect('Content-Type', /html/)
         .expect((res) => {
-          expect(res.text).toContain('Download licences Requiring COM Assignment')
+          expect(res.text).toContain('Download eligible licences ready for handover')
         })
     })
   })
 
   describe('POST', () => {
     test('calls search service', () => {
-      licenceSearchService.getLicencesRequiringComAssignment.mockReturnValue('1')
+      licenceSearchService.getComAssignedLicencesForHandover.mockReturnValue('1')
       const app = createApp('caUser')
       return request(app)
-        .post('/licencesRequiringComAssignmentReport')
+        .post('/comAssignedLicencesForHandoverReport')
         .expect(200)
         .expect(() => {
-          expect(licenceSearchService.getLicencesRequiringComAssignment).toHaveBeenCalledWith(
+          expect(licenceSearchService.getComAssignedLicencesForHandover).toHaveBeenCalledWith(
             'CA_USER_TEST',
             'caseLoadId'
           )
@@ -46,10 +46,10 @@ describe('/licencesRequiringComAssignmentReport', () => {
     test('should call audit.record', () => {
       const app = createApp('caUser')
       return request(app)
-        .post('/licencesRequiringComAssignmentReport')
+        .post('/comAssignedLicencesForHandoverReport')
         .expect(200)
         .expect(() => {
-          expect(audit.record).toHaveBeenCalledWith('LICENCES_REQUIRING_COM_DOWNLOAD', 'CA_USER_TEST', {
+          expect(audit.record).toHaveBeenCalledWith('COM_ASSIGNED_LICENCES_FOR_HANDOVER_DOWNLOAD', 'CA_USER_TEST', {
             prisonId: 'caseLoadId',
           })
         })
@@ -57,5 +57,5 @@ describe('/licencesRequiringComAssignmentReport', () => {
   })
 
   const createApp = (user) =>
-    startRoute(createAdminRoute(licenceSearchService, audit), '/licencesRequiringComAssignmentReport', user)
+    startRoute(createAdminRoute(licenceSearchService, audit), '/comAssignedLicencesForHandoverReport', user)
 })

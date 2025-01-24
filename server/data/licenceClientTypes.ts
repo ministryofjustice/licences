@@ -21,6 +21,7 @@ export interface Case {
   booking_id: number
   stage: LicenceStage
   version: number
+  transition_date: Date
   additional_conditions_version: AdditionalConditionsVersion
   standard_conditions_version: StandardConditionsVersion
   deleted_at: boolean | string
@@ -28,7 +29,6 @@ export interface Case {
 }
 
 export interface CaseWithApprovedVersion extends Case {
-  transition_date: Date
   approved_version: number
 }
 

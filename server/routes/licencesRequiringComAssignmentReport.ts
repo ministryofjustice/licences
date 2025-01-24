@@ -1,11 +1,11 @@
 import moment from 'moment'
 import { asyncMiddleware } from '../utils/middleware'
 
-export = (licenceSearchService, audit) => (router) => {
+export = (reportsService, audit) => (router) => {
   router.get(
     '/',
     asyncMiddleware(async (req, res) => {
-      return res.render('licencesRequiringComAssignmentReport', {})
+      return res.render('reports/licencesRequiringComAssignmentReport', {})
     })
   )
 
@@ -15,10 +15,7 @@ export = (licenceSearchService, audit) => (router) => {
       const prisonId = res.locals.user.activeCaseLoadId
       const timestamp = moment().format('YYYY-MM-DD_HHmm')
       const { username } = req.user
-      const licencesRequiringComAssignment = await licenceSearchService.getLicencesRequiringComAssignment(
-        username,
-        prisonId
-      )
+      const licencesRequiringComAssignment = await reportsService.getLicencesRequiringComAssignment(username, prisonId)
       res.contentType('text/csv')
       res.set('Content-Disposition', `attachment;filename=HDC12 no COM assigned - ${prisonId} - ${timestamp}.csv`)
       res.send(licencesRequiringComAssignment)

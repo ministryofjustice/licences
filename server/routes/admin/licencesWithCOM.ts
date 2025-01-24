@@ -1,6 +1,6 @@
 import { asyncMiddleware, authorisationMiddleware } from '../../utils/middleware'
 
-export = (licenceSearchService) => (router) => {
+export = (reportsService) => (router) => {
   router.use(authorisationMiddleware)
 
   router.get(
@@ -13,7 +13,7 @@ export = (licenceSearchService) => (router) => {
   router.post(
     '/',
     asyncMiddleware(async (req, res) => {
-      const licenceswithCOM = await licenceSearchService.getLicencesInStageCOM(req.user.username)
+      const licenceswithCOM = await reportsService.getLicencesInStageCOM(req.user.username)
       res.contentType('text/csv')
       res.set('Content-Disposition', `attachment;filename=HDC-cases-with-COM.csv`)
       res.send(licenceswithCOM)
