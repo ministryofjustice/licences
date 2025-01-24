@@ -6,7 +6,7 @@ export = (reportsService, audit) => (router) => {
   router.get(
     '/',
     asyncMiddleware(async (req, res) => {
-      return res.render('admin/licences/licencesWithCOMDownload', {})
+      return res.render('admin/reports/licencesWithCOMDownload', {})
     })
   )
 
