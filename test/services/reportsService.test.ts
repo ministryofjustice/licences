@@ -16,9 +16,9 @@ describe('reportsService', () => {
   const hdced14Weeks = moment().add(14, 'weeks').format('DD-MM-YYYY')
 
   const licencesInStage = [
-    { booking_id: 1, transition_date: '01-01-2020' },
-    { booking_id: 2, transition_date: '01-01-2020' },
-    { booking_id: 3, transition_date: '01-01-2020' },
+    { booking_id: 1, transition_date: '2020-01-01 11:10:00.000 +0000' },
+    { booking_id: 2, transition_date: '2020-01-01 11:10:00.000 +0000' },
+    { booking_id: 3, transition_date: '2020-01-01 11:10:00.000 +0000' },
   ]
 
   const licencesInStageWithAddressOrCasLocation = [
@@ -128,6 +128,8 @@ describe('reportsService', () => {
           staff: {
             code: 'XXXXX',
             unallocated: false,
+            forenames: 'Mel',
+            surname: 'Taylor',
           },
         },
       ],
@@ -144,6 +146,8 @@ describe('reportsService', () => {
           },
           staff: {
             code: 'XXXXX',
+            forenames: 'Mike',
+            surname: 'Jones',
           },
         },
       ],
@@ -160,6 +164,8 @@ describe('reportsService', () => {
           },
           staff: {
             code: 'XXXXX',
+            forenames: 'Mel',
+            surname: 'Taylor',
           },
         },
       ],
@@ -260,9 +266,9 @@ describe('reportsService', () => {
     })
   })
 
-  describe('getComAssignedLicencesForHandover', () => {
+  describe('getLicencesWithAndWithoutComAssignment', () => {
     test('should request licence, prisoner and probation details from client', async () => {
-      await service.getComAssignedLicencesForHandover('user-1', 'MDI')
+      await service.getLicencesWithAndWithoutComAssignment('user-1')
 
       expect(licenceClient.getLicencesInStageWithAddressOrCasLocation).toHaveBeenCalledWith('ELIGIBILITY')
       expect(prisonerSearchAPI.getPrisoners).toHaveBeenCalledWith([1, 2, 3, 4, 5, 6, 7])
@@ -271,20 +277,20 @@ describe('reportsService', () => {
         'AAAA12',
         'AAAA13',
         'AAAA15',
+        'AAAA16',
         'AAAA17',
       ])
-      // filter out prisoners in different prisons to CA and prisoners with an HDCED over 14 weeks away:
-      expect(probationSearchApi.getPersonProbationDetails).not.toHaveBeenCalledWith(['AAAA14', 'AAAA16'])
+      // only filter out prisoners with an HDCED over 14 weeks away:
+      expect(probationSearchApi.getPersonProbationDetails).not.toHaveBeenCalledWith(['AAAA14'])
     })
 
     test('should decorate licences with prisoner and probation details and return csv string', async () => {
-      const result = await service.getComAssignedLicencesForHandover('user-1', 'MDI')
+      const result = await service.getLicencesWithAndWithoutComAssignment('user-1')
 
       expect(result).toContain(
-        `PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,PDU\nAAAA12,Max,Martin,${hdcedWithin14Weeks},West of England\nAAAA13,Tim,North,${hdcedWithin14Weeks},South of England\nAAAA15,Bob,Bobbington,${hdced14Weeks},North of England`
+        `PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,COM,PDU\nAAAA11,John,Smith,07-05-2025,,East of England\nAAAA12,Max,Martin,${hdcedWithin14Weeks},Mel Taylor,West of England\nAAAA13,Tim,North,${hdcedWithin14Weeks},Mike Jones,South of England\nAAAA15,Bob,Bobbington,${hdced14Weeks},Mel Taylor,North of England\nAAAA16,Tom,Tommington,${hdcedWithin14Weeks},,\nAAAA17,Frank,Smith,${hdcedWithin14Weeks},,`
       )
-      expect(result).not.toContain(`AAAA11,John,Smith,${hdcedWithin14Weeks},East of England`)
-      expect(result).not.toContain(`AAAA17,Frank,Smith,${hdcedWithin14Weeks}`)
+      expect(result).not.toContain('AAAA14,Sam,Samuels,,')
     })
 
     test('should not add released prisoners to csv string', async () => {
@@ -318,12 +324,12 @@ describe('reportsService', () => {
           homeDetentionCurfewEligibilityDate: moment().add(14, 'weeks').subtract(1, 'days'),
         },
       ])
-      const result = await service.getComAssignedLicencesForHandover('user-1', 'MDI')
+      const result = await service.getLicencesWithAndWithoutComAssignment('user-1')
 
       expect(result).toContain(
-        `PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,PDU\nAAAA13,Tim,North,${hdcedWithin14Weeks},South of England`
+        `PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,COM,PDU\nAAAA11,John,Smith,${hdcedWithin14Weeks},,East of England\nAAAA13,Tim,North,${hdcedWithin14Weeks},Mike Jones,South of England`
       )
-      expect(result).not.toContain(`AAAA12,Max,Martin,${hdcedWithin14Weeks},West of England`)
+      expect(result).not.toContain(`AAAA12,Max,Martin,${hdcedWithin14Weeks},Mel Taylor,West of England`)
     })
   })
 

@@ -37,6 +37,21 @@ export class ReportsService {
     return results
   }
 
+  private static getPduDescription(probationDetail: OffenderDetail): string {
+    if (!probationDetail) return ''
+    const activeOffenderManager = probationDetail.offenderManagers.find((om) => om.active)
+    if (!activeOffenderManager) return ''
+    const { description } = activeOffenderManager.probationArea
+    return description || ''
+  }
+
+  private static getComName(probationDetail: OffenderDetail): string {
+    if (!probationDetail || ReportsService.isUnallocated(probationDetail)) return ''
+    const activeOffenderManager = probationDetail.offenderManagers.find((om) => om.active)
+    const { forenames, surname } = activeOffenderManager.staff
+    return `${forenames} ${surname}`
+  }
+
   private async getEligibleLicencesWithAddressOrCasLocation(): Promise<Case[]> {
     const eligibleLicencesWithAddressOrCasLocation =
       await this.licenceClient.getLicencesInStageWithAddressOrCasLocation('ELIGIBILITY')
@@ -70,7 +85,7 @@ export class ReportsService {
         prisonerNumber: prisoner.prisonerNumber,
         prisonId: prisoner.prisonId,
         prisonName: prisoner.prisonName,
-        handoverDate: moment(licence.transition_date).format('DD-MM-YYYY'),
+        handoverDate: moment(licence.transition_date, 'YYYY-MM-DD HH:mm:ss').format('DD-MM-YYYY'),
         HDCED: moment(prisoner.homeDetentionCurfewEligibilityDate).format('DD-MM-YYYY'),
       },
     ]
@@ -82,15 +97,14 @@ export class ReportsService {
       if (!prisoner) return []
       const probationDetail = probationDetails.find((pd) => pd.otherIds.nomsNumber === prisoner.prisonerNumber)
       if (!probationDetail) return []
-      const activeOffenderManager = probationDetail.offenderManagers.find((om) => om.active)
-      const { description } = activeOffenderManager.probationArea
+      const pdu = ReportsService.getPduDescription(probationDetail)
       return [
         {
           prisonerNumber: prisoner.prisonerNumber,
           prisonerFirstname: prisoner.firstName,
           prisonLastname: prisoner.lastName,
           HDCED: moment(prisoner.homeDetentionCurfewEligibilityDate).format('DD-MM-YYYY'),
-          PDU: description || '',
+          PDU: pdu,
         },
       ]
     })
@@ -101,18 +115,16 @@ export class ReportsService {
       const prisoner = prisoners.find((p) => p.bookingId === l.booking_id.toString())
       if (!prisoner) return []
       const probationDetail = probationDetails.find((pd) => pd.otherIds.nomsNumber === prisoner.prisonerNumber)
-
-      const activeOffenderManager = probationDetail.offenderManagers.find((om) => om.active)
-      const { forenames, surname } = activeOffenderManager.staff
-      const { description } = activeOffenderManager.probationArea
+      const com = ReportsService.getComName(probationDetail)
+      const pdu = ReportsService.getPduDescription(probationDetail)
       return [
         {
           prisonerNumber: prisoner.prisonerNumber,
           prisonerFirstname: prisoner.firstName,
           prisonLastname: prisoner.lastName,
           HDCED: moment(prisoner.homeDetentionCurfewEligibilityDate).format('DD-MM-YYYY'),
-          COM: ReportsService.isUnallocated(probationDetail) ? '' : `${forenames} ${surname}`,
-          PDU: description || '',
+          COM: com,
+          PDU: pdu,
         },
       ]
     })
@@ -169,19 +181,19 @@ export class ReportsService {
   }
 
   async getLicencesWithAndWithoutComAssignment(username: string): Promise<string> {
+    const licences = await this.getEligibleLicencesWithAddressOrCasLocation()
+    const bookingIds = licences.map((l) => l.booking_id)
+
     const systemToken = await this.signInService.getClientCredentialsTokens(username)
-    const licencesInStageWithAddressOrCasLocation =
-      await this.licenceClient.getLicencesInStageWithAddressOrCasLocation('ELIGIBILITY')
-    const bookingIds = licencesInStageWithAddressOrCasLocation.map((l) => l.booking_id)
     const prisoners = await this.prisonerSearchApi(systemToken).getPrisoners(bookingIds)
-    const prisonersFilteredByPrisonCloseToHdced = prisoners.filter(
+    const prisonersCloseToHdced = prisoners.filter(
       (p) => p.status !== 'INACTIVE OUT' && ReportsService.isCloseToHdced(p)
     )
-    const offenderNumbers = prisonersFilteredByPrisonCloseToHdced.map((p) => p.prisonerNumber)
-    const probationDetails = await this.probationSearchApi(systemToken).getPersonProbationDetails(offenderNumbers)
+    const offenderNumbers = prisonersCloseToHdced.map((p) => p.prisonerNumber)
+    const probationDetails = await this.getProbationDetails(username, offenderNumbers)
     const decoratedLicences = this.getPrisonerComProbationDecoratedLicences({
-      licences: licencesInStageWithAddressOrCasLocation,
-      prisoners: prisonersFilteredByPrisonCloseToHdced,
+      licences: licences,
+      prisoners: prisonersCloseToHdced,
       probationDetails,
     })
     return this.getlicencesWithNameComAndPduCSV(decoratedLicences)
