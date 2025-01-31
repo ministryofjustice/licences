@@ -288,7 +288,7 @@ describe('reportsService', () => {
       const result = await service.getLicencesWithAndWithoutComAssignment('user-1')
 
       expect(result).toContain(
-        `PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,COM,PDU\nAAAA11,John,Smith,07-05-2025,,East of England\nAAAA12,Max,Martin,${hdcedWithin14Weeks},Mel Taylor,West of England\nAAAA13,Tim,North,${hdcedWithin14Weeks},Mike Jones,South of England\nAAAA15,Bob,Bobbington,${hdced14Weeks},Mel Taylor,North of England\nAAAA16,Tom,Tommington,${hdcedWithin14Weeks},,\nAAAA17,Frank,Smith,${hdcedWithin14Weeks},,`
+        `PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,COM,PDU\nAAAA11,John,Smith,${hdcedWithin14Weeks},,East of England\nAAAA12,Max,Martin,${hdcedWithin14Weeks},Mel Taylor,West of England\nAAAA13,Tim,North,${hdcedWithin14Weeks},Mike Jones,South of England\nAAAA15,Bob,Bobbington,${hdced14Weeks},Mel Taylor,North of England\nAAAA16,Tom,Tommington,${hdcedWithin14Weeks},,\nAAAA17,Frank,Smith,${hdcedWithin14Weeks},,`
       )
       expect(result).not.toContain('AAAA14,Sam,Samuels,,')
     })
