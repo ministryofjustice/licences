@@ -58,7 +58,7 @@ export class ReportsService {
     return eligibleLicencesWithAddressOrCasLocation
   }
 
-  private async getPrisonersCloseToHdced(
+  private async getPrisonersForPrisonCloseToHdced(
     username: string,
     prisonId: string,
     bookingIds: number[]
@@ -202,7 +202,7 @@ export class ReportsService {
   async getLicencesRequiringComAssignment(username: string, prisonId: string): Promise<string> {
     const licences = await this.getEligibleLicencesWithAddressOrCasLocation()
     const bookingIds = licences.map((l) => l.booking_id)
-    const prisoners = await this.getPrisonersCloseToHdced(username, prisonId, bookingIds)
+    const prisoners = await this.getPrisonersForPrisonCloseToHdced(username, prisonId, bookingIds)
     const offenderNumbers = prisoners.map((p) => p.prisonerNumber)
     const probationDetails = await this.getProbationDetails(username, offenderNumbers)
     const unallocatedProbationDetails = probationDetails.filter((pd) => ReportsService.isUnallocated(pd))
@@ -217,7 +217,7 @@ export class ReportsService {
   async getComAssignedLicencesForHandover(username: string, prisonId: string): Promise<string> {
     const licences = await this.getEligibleLicencesWithAddressOrCasLocation()
     const bookingIds = licences.map((l) => l.booking_id)
-    const prisoners = await this.getPrisonersCloseToHdced(username, prisonId, bookingIds)
+    const prisoners = await this.getPrisonersForPrisonCloseToHdced(username, prisonId, bookingIds)
     const offenderNumbers = prisoners.map((p) => p.prisonerNumber)
     const probationDetails = await this.getProbationDetails(username, offenderNumbers)
     const allocatedProbationDetails = probationDetails.filter((pd) => !ReportsService.isUnallocated(pd))
