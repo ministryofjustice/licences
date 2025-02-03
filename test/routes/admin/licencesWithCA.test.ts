@@ -23,7 +23,7 @@ describe('/licencesWithCA/', () => {
         .expect(200)
         .expect('Content-Type', /html/)
         .expect((res) => {
-          expect(res.text).toContain('Download HDC cases sitting with CA')
+          expect(res.text).toContain('Download HDC cases sitting with Prison Case Admin')
         })
     })
 
