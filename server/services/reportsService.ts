@@ -38,16 +38,13 @@ export default class ReportsService {
   }
 
   private static getPduDescription(probationDetail: OffenderDetail): string {
-    if (!probationDetail) return ''
-    const activeOffenderManager = probationDetail.offenderManagers.find((om) => om.active)
-    if (!activeOffenderManager) return ''
-    const { description } = activeOffenderManager.probationArea
-    return description || ''
+    const activeOffenderManager = probationDetail?.offenderManagers.find((om) => om.active)
+    return activeOffenderManager?.probationArea?.description || ''
   }
 
   private static getComName(probationDetail: OffenderDetail): string {
     if (!probationDetail || ReportsService.isUnallocated(probationDetail)) return ''
-    const activeOffenderManager = probationDetail.offenderManagers.find((om) => om.active)
+    const activeOffenderManager = probationDetail?.offenderManagers.find((om) => om.active)
     const { forenames, surname } = activeOffenderManager.staff
     return `${forenames} ${surname}`
   }
