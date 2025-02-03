@@ -1,5 +1,5 @@
 import request from 'supertest'
-import { ReportsService } from '../../server/services/reportsService'
+import ReportsService from '../../server/services/reportsService'
 import { startRoute } from '../supertestSetup'
 import createAdminRoute from '../../server/routes/licencesRequiringComAssignmentReport'
 

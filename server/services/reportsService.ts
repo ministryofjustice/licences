@@ -13,7 +13,7 @@ export interface DecorationDetails {
   probationDetails: OffenderDetail[]
 }
 
-export class ReportsService {
+export default class ReportsService {
   constructor(
     readonly licenceClient: LicenceClient,
     readonly signInService: SignInService,

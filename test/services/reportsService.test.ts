@@ -1,5 +1,5 @@
 import moment from 'moment'
-import { ReportsService } from '../../server/services/reportsService'
+import ReportsService from '../../server/services/reportsService'
 
 jest.mock('../../server/data/licenceClient')
 
