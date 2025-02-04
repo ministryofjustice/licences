@@ -35,6 +35,7 @@ const locationsRouter = require('./routes/admin/locations')
 const warningsRouter = require('./routes/admin/warnings')
 const licenceSearchRouter = require('./routes/admin/licenceSearch')
 const licencesWithCOMRouter = require('./routes/admin/licencesWithCOM')
+const licencesWithCARouter = require('./routes/admin/comAssignmentForLicencesWithCA')
 const licenceCompletionDestinationSearchRouter = require('./routes/admin/completionDestinationSearch')
 const licenceCompletionDestinationRouter = require('./routes/admin/completionDestination')
 const licenceRouter = require('./routes/admin/licence')
@@ -413,10 +414,8 @@ module.exports = function createApp({
     '/admin/licenceSearch/',
     secureRoute(licenceSearchRouter(licenceSearchService), { auditKey: 'LICENCE_SEARCH' })
   )
-  app.use(
-    '/admin/downloadCasesWithCOM/',
-    secureRoute(licencesWithCOMRouter(reportsService), { auditKey: 'LICENCE_STAGE_COM_DOWNLOAD' })
-  )
+  app.use('/admin/downloadCasesWithCOM/', secureRoute(licencesWithCOMRouter(reportsService, audit)))
+  app.use('/admin/downloadCasesWithCA/', secureRoute(licencesWithCARouter(reportsService, audit)))
   app.use(
     '/admin/completionDestinationSearch/',
     secureRoute(licenceCompletionDestinationSearchRouter(licenceSearchService))

@@ -1,14 +1,14 @@
 import request from 'supertest'
 import { startRoute } from '../../supertestSetup'
-import createAdminRoute from '../../../server/routes/admin/licencesWithCOM'
+import createAdminRoute from '../../../server/routes/admin/comAssignmentForLicencesWithCA'
 
-describe('/licencesWithCOM/', () => {
+describe('/licencesWithCA/', () => {
   let reportsService
   let audit
 
   beforeEach(() => {
     reportsService = {
-      getLicencesInStageCOM: jest.fn(),
+      getLicencesWithAndWithoutComAssignment: jest.fn(),
     }
     audit = {
       record: jest.fn(),
@@ -19,47 +19,47 @@ describe('/licencesWithCOM/', () => {
     test('Renders HTML output', () => {
       const app = createApp('batchUser')
       return request(app)
-        .get('/admin/downloadCasesWithCOM')
+        .get('/admin/downloadCasesWithCA')
         .expect(200)
         .expect('Content-Type', /html/)
         .expect((res) => {
-          expect(res.text).toContain('Download HDC cases sitting with COM')
+          expect(res.text).toContain('Download HDC cases sitting with prison case admin')
         })
     })
 
     test('should throw if submitted by non-authorised user', () => {
       const app = createApp('roUser')
-      return request(app).get('/admin/downloadCasesWithCOM').expect(403)
+      return request(app).get('/admin/downloadCasesWithCA').expect(403)
     })
   })
 
   describe('POST', () => {
     test('calls search service', () => {
-      reportsService.getLicencesInStageCOM.mockReturnValue('1')
+      reportsService.getLicencesWithAndWithoutComAssignment.mockReturnValue('1')
       const app = createApp('batchUser')
       return request(app)
-        .post('/admin/downloadCasesWithCOM')
+        .post('/admin/downloadCasesWithCA')
         .expect(200)
         .expect(() => {
-          expect(reportsService.getLicencesInStageCOM).toHaveBeenCalledWith('NOMIS_BATCHLOAD')
+          expect(reportsService.getLicencesWithAndWithoutComAssignment).toHaveBeenCalledWith('NOMIS_BATCHLOAD')
         })
     })
 
     test('should call audit.record', () => {
       const app = createApp('batchUser')
       return request(app)
-        .post('/admin/downloadCasesWithCOM')
+        .post('/admin/downloadCasesWithCA')
         .expect(200)
         .expect(() => {
-          expect(audit.record).toHaveBeenCalledWith('LICENCE_STAGE_COM_DOWNLOAD', 'NOMIS_BATCHLOAD')
+          expect(audit.record).toHaveBeenCalledWith('LICENCE_STAGE_CA_DOWNLOAD', 'NOMIS_BATCHLOAD')
         })
     })
 
     test('should throw if submitted by non-authorised user', () => {
       const app = createApp('roUser')
-      return request(app).post('/admin/downloadCasesWithCOM').expect(403)
+      return request(app).post('/admin/downloadCasesWithCA').expect(403)
     })
   })
 
-  const createApp = (user) => startRoute(createAdminRoute(reportsService, audit), '/admin/downloadCasesWithCOM', user)
+  const createApp = (user) => startRoute(createAdminRoute(reportsService, audit), '/admin/downloadCasesWithCA', user)
 })

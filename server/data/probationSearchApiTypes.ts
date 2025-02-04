@@ -37,6 +37,12 @@ declare module 'probationSearchApi' {
       /** Staff Code */
       code: string
 
+      /** Staff Forenames */
+      forenames: string
+
+      /** Staff Surname */
+      surname: string
+
       /** Unallocated */
       unallocated: boolean
     }
