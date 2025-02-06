@@ -115,7 +115,7 @@ module.exports = {
   '/hdc/send/optedOut/': {
     authorised: [{ role: 'RO' }],
   },
-  '/hdc/licencesRequiringComAssignment': {
+  '/hdc/people-ready-for-probation-checks': {
     authorised: [{ role: 'CA' }],
   },
   '/hdc/comAssignedLicencesForHandover': {

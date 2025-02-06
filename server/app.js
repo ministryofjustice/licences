@@ -51,7 +51,7 @@ const sentRouter = require('./routes/sent')
 const taskListRouter = require('./routes/taskList')
 const utilsRouter = require('./routes/utils')
 const userRouter = require('./routes/user')
-const licencesRequiringComAssignmentRouter = require('./routes/licencesRequiringComAssignmentReport')
+const caReportsRouter = require('./routes/caReports')
 const comAssignedLicencesForHandoverRouter = require('./routes/comAssignedLicencesForHandoverReport')
 
 const standardRouter = require('./routes/routeWorkers/standardRouter')
@@ -438,10 +438,7 @@ module.exports = function createApp({
   app.use('/hdc/send/', secureRoute(sendRouter({ prisonerService, notificationService })))
   app.use('/hdc/sent/', secureRoute(sentRouter({ prisonerService })))
   app.use('/user/', secureRoute(userRouter({ userService })))
-  app.use(
-    '/hdc/licencesRequiringComAssignment',
-    secureRoute(licencesRequiringComAssignmentRouter(reportsService, audit))
-  )
+  app.use('/hdc/people-ready-for-probation-checks', secureRoute(caReportsRouter(reportsService, audit)))
   app.use(
     '/hdc/comAssignedLicencesForHandover',
     secureRoute(comAssignedLicencesForHandoverRouter(reportsService, audit))
