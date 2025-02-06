@@ -1,6 +1,6 @@
 const logger = require('../../log')
 const { asyncMiddleware, authorisationMiddleware } = require('../utils/middleware')
-const { links } = require('../config')
+const { links, caReportsLinkEnabled } = require('../config')
 
 module.exports =
   ({ caseListService }) =>
@@ -28,6 +28,7 @@ module.exports =
           globalSearchUrl: `${links.globalSearchUrl}?referrer=licences`,
           exitUrl: links.exitUrl,
           showExitUrl: req.user && req.user.isPrisonUser,
+          caReportsLinkEnabled,
         })
       })
     )
