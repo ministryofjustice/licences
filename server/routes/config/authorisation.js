@@ -118,7 +118,4 @@ module.exports = {
   '/hdc/people-ready-for-probation-checks': {
     authorised: [{ role: 'CA' }],
   },
-  '/hdc/comAssignedLicencesForHandover': {
-    authorised: [{ role: 'CA' }],
-  },
 }
