@@ -18,7 +18,7 @@ block content
           input.front-end-control.form-control(type="text" id="caseListFilter" placeholder="Search your case list" title="Filter the case list by text content")
         if (user.role === 'CA' && caReportsLinkEnabled)
           div.pure-u-1
-              a(href="/hdc/people-ready-for-probation-checks").reports-link Download list of people who are ready for probation checks
+              a(href="/hdc/people-ready-for-probation-checks" id="caReportsLink").reports-link Download list of people who are ready for probation checks
         div#tabBar.pure-u-1.form-group.center.smallMarginTop
           ul
             li(class=tab === 'active' ? 'selected' : undefined)

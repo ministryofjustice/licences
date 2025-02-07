@@ -1,6 +1,6 @@
 const logger = require('../../log')
 const { asyncMiddleware, authorisationMiddleware } = require('../utils/middleware')
-const { links, caReportsLinkEnabled } = require('../config')
+const config = require('../config')
 
 module.exports =
   ({ caseListService }) =>
@@ -19,6 +19,7 @@ module.exports =
           req.user.role,
           req.params.tab
         )
+        const { links, caReportsLinkEnabled } = config
 
         return res.render('caseList/index', {
           hdcEligible,
