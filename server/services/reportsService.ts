@@ -16,7 +16,7 @@ export interface DecorationDetails {
 export interface PrisonerProbationRecord {
   prisonerNumber: string
   prisonerFirstname: string
-  prisonLastname: string
+  prisonerLastname: string
   HDCED: string
   PDU: string
 }
@@ -101,7 +101,7 @@ export default class ReportsService {
       {
         prisonerNumber: prisoner.prisonerNumber,
         prisonerFirstname: prisoner.firstName,
-        prisonLastname: prisoner.lastName,
+        prisonerLastname: prisoner.lastName,
         HDCED: moment(prisoner.homeDetentionCurfewEligibilityDate).format('DD-MM-YYYY'),
         PDU: pdu,
       },
@@ -149,9 +149,10 @@ export default class ReportsService {
       const pdu = ReportsService.getPduDescription(probationDetail)
       return [
         {
+          prison: prisoner.prisonId,
           prisonerNumber: prisoner.prisonerNumber,
           prisonerFirstname: prisoner.firstName,
-          prisonLastname: prisoner.lastName,
+          prisonerLastname: prisoner.lastName,
           HDCED: moment(prisoner.homeDetentionCurfewEligibilityDate).format('DD-MM-YYYY'),
           COM: com,
           PDU: pdu,
@@ -178,7 +179,7 @@ export default class ReportsService {
       header: [
         { id: 'prisonerNumber', title: 'PRISON_NUMBER' },
         { id: 'prisonerFirstname', title: 'PRISONER_FIRSTNAME' },
-        { id: 'prisonLastname', title: 'PRISONER_LASTNAME' },
+        { id: 'prisonerLastname', title: 'PRISONER_LASTNAME' },
         { id: 'HDCED', title: 'HDCED' },
         { id: 'PDU', title: 'PDU' },
       ],
@@ -189,9 +190,10 @@ export default class ReportsService {
   private getlicencesWithNameComAndPduCSV = (records) => {
     const writer = createObjectCsvStringifier({
       header: [
+        { id: 'prison', title: 'PRISON' },
         { id: 'prisonerNumber', title: 'PRISON_NUMBER' },
         { id: 'prisonerFirstname', title: 'PRISONER_FIRSTNAME' },
-        { id: 'prisonLastname', title: 'PRISONER_LASTNAME' },
+        { id: 'prisonerLastname', title: 'PRISONER_LASTNAME' },
         { id: 'HDCED', title: 'HDCED' },
         { id: 'COM', title: 'COM' },
         { id: 'PDU', title: 'PDU' },
