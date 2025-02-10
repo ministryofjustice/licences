@@ -29,6 +29,7 @@ describe('reportsService', () => {
     { booking_id: 5 },
     { booking_id: 6 },
     { booking_id: 7 },
+    { booking_id: 8 },
   ]
 
   const prisoners = [
@@ -91,6 +92,15 @@ describe('reportsService', () => {
       prisonerNumber: 'AAAA17',
       firstName: 'Frank',
       lastName: 'Smith',
+      prisonId: 'MDI',
+      prisonName: 'Moorland (HMP & YOI)',
+      homeDetentionCurfewEligibilityDate: moment().add(14, 'weeks').subtract(1, 'days'),
+    },
+    {
+      bookingId: '8',
+      prisonerNumber: 'AAAA18',
+      firstName: 'Todd',
+      lastName: 'Toddington',
       prisonId: 'MDI',
       prisonName: 'Moorland (HMP & YOI)',
       homeDetentionCurfewEligibilityDate: moment().add(14, 'weeks').subtract(1, 'days'),
@@ -271,7 +281,7 @@ describe('reportsService', () => {
       await service.getLicencesWithAndWithoutComAssignment('user-1')
 
       expect(licenceClient.getLicencesInStageWithAddressOrCasLocation).toHaveBeenCalledWith('ELIGIBILITY')
-      expect(prisonerSearchAPI.getPrisoners).toHaveBeenCalledWith([1, 2, 3, 4, 5, 6, 7])
+      expect(prisonerSearchAPI.getPrisoners).toHaveBeenCalledWith([1, 2, 3, 4, 5, 6, 7, 8])
       expect(probationSearchApi.getPersonProbationDetails).toHaveBeenCalledWith([
         'AAAA11',
         'AAAA12',
@@ -279,6 +289,7 @@ describe('reportsService', () => {
         'AAAA15',
         'AAAA16',
         'AAAA17',
+        'AAAA18',
       ])
       // only filter out prisoners with an HDCED over 14 weeks away:
       expect(probationSearchApi.getPersonProbationDetails).not.toHaveBeenCalledWith(['AAAA14'])
@@ -288,7 +299,7 @@ describe('reportsService', () => {
       const result = await service.getLicencesWithAndWithoutComAssignment('user-1')
 
       expect(result).toContain(
-        `PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,COM,PDU\nAAAA11,John,Smith,${hdcedWithin14Weeks},,East of England\nAAAA12,Max,Martin,${hdcedWithin14Weeks},Mel Taylor,West of England\nAAAA13,Tim,North,${hdcedWithin14Weeks},Mike Jones,South of England\nAAAA15,Bob,Bobbington,${hdced14Weeks},Mel Taylor,North of England\nAAAA16,Tom,Tommington,${hdcedWithin14Weeks},,\nAAAA17,Frank,Smith,${hdcedWithin14Weeks},,`
+        `PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,COM,PDU\nAAAA11,John,Smith,${hdcedWithin14Weeks},,East of England\nAAAA12,Max,Martin,${hdcedWithin14Weeks},Mel Taylor,West of England\nAAAA13,Tim,North,${hdcedWithin14Weeks},Mike Jones,South of England\nAAAA15,Bob,Bobbington,${hdced14Weeks},Mel Taylor,North of England\nAAAA16,Tom,Tommington,${hdcedWithin14Weeks},,\nAAAA17,Frank,Smith,${hdcedWithin14Weeks},,\nAAAA18,Todd,Toddington,${hdcedWithin14Weeks},,`
       )
       expect(result).not.toContain('AAAA14,Sam,Samuels,,')
     })
@@ -338,20 +349,14 @@ describe('reportsService', () => {
       await service.getLicencesRequiringComAssignment('user-1', 'MDI')
 
       expect(licenceClient.getLicencesInStageWithAddressOrCasLocation).toHaveBeenCalledWith('ELIGIBILITY')
-      expect(prisonerSearchAPI.getPrisoners).toHaveBeenCalledWith([1, 2, 3, 4, 5, 6, 7])
+      expect(prisonerSearchAPI.getPrisoners).toHaveBeenCalledWith([1, 2, 3, 4, 5, 6, 7, 8])
       expect(probationSearchApi.getPersonProbationDetails).toHaveBeenCalledWith([
         'AAAA11',
         'AAAA12',
         'AAAA13',
         'AAAA15',
         'AAAA17',
-      ])
-      expect(probationSearchApi.getPersonProbationDetails).toHaveBeenCalledWith([
-        'AAAA11',
-        'AAAA12',
-        'AAAA13',
-        'AAAA15',
-        'AAAA17',
+        'AAAA18',
       ])
       // filter out prisoners in different prisons to CA and prisoners with an HDCED over 14 weeks away:
       expect(probationSearchApi.getPersonProbationDetails).not.toHaveBeenCalledWith(['AAAA14', 'AAAA16'])
@@ -361,7 +366,7 @@ describe('reportsService', () => {
       const result = await service.getLicencesRequiringComAssignment('user-1', 'MDI')
 
       expect(result).toContain(
-        `PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,PDU\nAAAA11,John,Smith,${hdcedWithin14Weeks},East of England\nAAAA17,Frank,Smith,${hdcedWithin14Weeks},\n`
+        `PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,PDU\nAAAA11,John,Smith,${hdcedWithin14Weeks},East of England\nAAAA17,Frank,Smith,${hdcedWithin14Weeks},\nAAAA18,Todd,Toddington,${hdcedWithin14Weeks},`
       )
       expect(result).not.toContain(`AAAA12,Max,Martin,${hdcedWithin14Weeks},West of England`)
       expect(result).not.toContain(`AAAA13,Tim,North,${hdcedWithin14Weeks},South of England`)
@@ -411,13 +416,14 @@ describe('reportsService', () => {
       await service.getComAssignedLicencesForHandover('user-1', 'MDI')
 
       expect(licenceClient.getLicencesInStageWithAddressOrCasLocation).toHaveBeenCalledWith('ELIGIBILITY')
-      expect(prisonerSearchAPI.getPrisoners).toHaveBeenCalledWith([1, 2, 3, 4, 5, 6, 7])
+      expect(prisonerSearchAPI.getPrisoners).toHaveBeenCalledWith([1, 2, 3, 4, 5, 6, 7, 8])
       expect(probationSearchApi.getPersonProbationDetails).toHaveBeenCalledWith([
         'AAAA11',
         'AAAA12',
         'AAAA13',
         'AAAA15',
         'AAAA17',
+        'AAAA18',
       ])
       // filter out prisoners in different prisons to CA and prisoners with an HDCED over 14 weeks away:
       expect(probationSearchApi.getPersonProbationDetails).not.toHaveBeenCalledWith(['AAAA14', 'AAAA16'])
@@ -431,6 +437,7 @@ describe('reportsService', () => {
       )
       expect(result).not.toContain(`AAAA11,John,Smith,${hdcedWithin14Weeks},East of England`)
       expect(result).not.toContain(`AAAA17,Frank,Smith,${hdcedWithin14Weeks}`)
+      expect(result).not.toContain(`\nAAAA18,Todd,Toddington,${hdcedWithin14Weeks}`)
     })
 
     test('should not add released prisoners to csv string', async () => {

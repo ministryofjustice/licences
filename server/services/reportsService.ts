@@ -13,6 +13,14 @@ export interface DecorationDetails {
   probationDetails: OffenderDetail[]
 }
 
+export interface PrisonerProbationRecord {
+  prisonerNumber: string
+  prisonerFirstname: string
+  prisonLastname: string
+  HDCED: string
+  PDU: string
+}
+
 export default class ReportsService {
   constructor(
     readonly licenceClient: LicenceClient,
@@ -30,9 +38,9 @@ export default class ReportsService {
     )
   }
 
-  private static isUnallocated(pd: OffenderDetail) {
-    const results = pd.offenderManagers.some(
-      (om) => om.active === true && (om.staff.unallocated === true || om.staff.code.endsWith('U'))
+  private static comAllocated(pd: OffenderDetail) {
+    const results = pd?.offenderManagers.some(
+      (om) => om.active === true && (om.staff.unallocated === false || !om.staff.code.endsWith('U'))
     )
     return results
   }
@@ -43,7 +51,7 @@ export default class ReportsService {
   }
 
   private static getComName(probationDetail: OffenderDetail): string {
-    if (!probationDetail || ReportsService.isUnallocated(probationDetail)) return ''
+    if (!probationDetail || !ReportsService.comAllocated(probationDetail)) return ''
     const activeOffenderManager = probationDetail?.offenderManagers.find((om) => om.active)
     const { forenames, surname } = activeOffenderManager.staff
     return `${forenames} ${surname}`
@@ -88,22 +96,47 @@ export default class ReportsService {
     ]
   }
 
-  private getPrisonerProbationDecoratedLicences = ({ licences, prisoners, probationDetails }: DecorationDetails) => {
+  private getPrisonerProbationRecord(prisoner: Prisoner, pdu: string): PrisonerProbationRecord[] {
+    return [
+      {
+        prisonerNumber: prisoner.prisonerNumber,
+        prisonerFirstname: prisoner.firstName,
+        prisonLastname: prisoner.lastName,
+        HDCED: moment(prisoner.homeDetentionCurfewEligibilityDate).format('DD-MM-YYYY'),
+        PDU: pdu,
+      },
+    ]
+  }
+
+  private getUnallocatedPrisonerProbationDecoratedLicences = ({
+    licences,
+    prisoners,
+    probationDetails,
+  }: DecorationDetails) => {
+    return licences.flatMap((l) => {
+      const prisoner = prisoners.find((p) => p.bookingId === l.booking_id.toString())
+      if (!prisoner) return []
+      const probationDetail = probationDetails.find((pd) => pd.otherIds.nomsNumber === prisoner.prisonerNumber)
+      const comAllocated = ReportsService.comAllocated(probationDetail)
+      if (comAllocated) return []
+
+      const pdu = !probationDetail ? '' : ReportsService.getPduDescription(probationDetail)
+      return this.getPrisonerProbationRecord(prisoner, pdu)
+    })
+  }
+
+  private getComAllocatedPrisonerProbationDecoratedLicences = ({
+    licences,
+    prisoners,
+    probationDetails,
+  }: DecorationDetails) => {
     return licences.flatMap((l) => {
       const prisoner = prisoners.find((p) => p.bookingId === l.booking_id.toString())
       if (!prisoner) return []
       const probationDetail = probationDetails.find((pd) => pd.otherIds.nomsNumber === prisoner.prisonerNumber)
       if (!probationDetail) return []
       const pdu = ReportsService.getPduDescription(probationDetail)
-      return [
-        {
-          prisonerNumber: prisoner.prisonerNumber,
-          prisonerFirstname: prisoner.firstName,
-          prisonLastname: prisoner.lastName,
-          HDCED: moment(prisoner.homeDetentionCurfewEligibilityDate).format('DD-MM-YYYY'),
-          PDU: pdu,
-        },
-      ]
+      return this.getPrisonerProbationRecord(prisoner, pdu)
     })
   }
 
@@ -202,11 +235,10 @@ export default class ReportsService {
     const prisoners = await this.getPrisonersForPrisonCloseToHdced(username, prisonId, bookingIds)
     const offenderNumbers = prisoners.map((p) => p.prisonerNumber)
     const probationDetails = await this.getProbationDetails(username, offenderNumbers)
-    const unallocatedProbationDetails = probationDetails.filter((pd) => ReportsService.isUnallocated(pd))
-    const decoratedLicences = this.getPrisonerProbationDecoratedLicences({
+    const decoratedLicences = this.getUnallocatedPrisonerProbationDecoratedLicences({
       licences,
       prisoners,
-      probationDetails: unallocatedProbationDetails,
+      probationDetails,
     })
     return this.getPrisonerProbationDecoratedLicencesCSV(decoratedLicences)
   }
@@ -217,8 +249,8 @@ export default class ReportsService {
     const prisoners = await this.getPrisonersForPrisonCloseToHdced(username, prisonId, bookingIds)
     const offenderNumbers = prisoners.map((p) => p.prisonerNumber)
     const probationDetails = await this.getProbationDetails(username, offenderNumbers)
-    const allocatedProbationDetails = probationDetails.filter((pd) => !ReportsService.isUnallocated(pd))
-    const decoratedLicences = this.getPrisonerProbationDecoratedLicences({
+    const allocatedProbationDetails = probationDetails.filter((pd) => ReportsService.comAllocated(pd))
+    const decoratedLicences = this.getComAllocatedPrisonerProbationDecoratedLicences({
       licences,
       prisoners,
       probationDetails: allocatedProbationDetails,
