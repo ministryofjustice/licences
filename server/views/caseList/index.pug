@@ -16,8 +16,10 @@ block content
           h2.heading-large.noMargin Case list
         div.pure-u-1.pure-u-md-1-2.form-group
           input.front-end-control.form-control(type="text" id="caseListFilter" placeholder="Search your case list" title="Filter the case list by text content")
-
-        div#tabBar.pure-u-1.form-group.center
+        if (user.role === 'CA' && caReportsLinkEnabled)
+          div.pure-u-1
+              a(href="/hdc/people-ready-for-probation-checks" id="caReportsLink").reports-link Download list of people who are ready for probation checks
+        div#tabBar.pure-u-1.form-group.center.smallMarginTop
           ul
             li(class=tab === 'active' ? 'selected' : undefined)
               a(href="/caseList/active") Active

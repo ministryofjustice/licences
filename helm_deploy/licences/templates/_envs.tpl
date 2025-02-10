@@ -165,4 +165,7 @@ env:
   
   - name: COM_NOT_ALLOCATED_BLOCK_ENABLED
     value: {{ .Values.env.COM_NOT_ALLOCATED_BLOCK_ENABLED | quote }}
+  
+  - name: CA_REPORTS_LINK_ENABLED
+    value: {{ .Values.env.CA_REPORTS_LINK_ENABLED | quote }}
 {{- end -}}

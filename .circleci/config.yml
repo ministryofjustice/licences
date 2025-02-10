@@ -142,7 +142,8 @@ jobs:
           key: gradle-wrapper-{{ checksum "gradle/wrapper/gradle-wrapper.properties" }}
       - restore_cache:
           key: gradle-cache-{{ checksum "licences-specs/build.gradle" }}
-      - browser-tools/install-browser-tools
+      - browser-tools/install-chrome
+      - browser-tools/install-chromedriver
       - run:
           name: Run Integration Tests
           command: ./gradlew mockTest --info

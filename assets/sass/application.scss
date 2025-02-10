@@ -436,6 +436,17 @@ input[type="time"] {
   border-bottom: 1px solid #0b0c0c;
 }
 
+.reports-link {
+  display: inline-block;
+  margin-top: 15px;
+  margin-right: 10px;
+  font-size: 19px;
+  line-height: 1.25;
+  margin-bottom: 25px;
+  text-decoration: none;
+  border-bottom: 1px solid #0b0c0c;
+}
+
 %container-shared {
   box-sizing: border-box;
   padding: 1em;

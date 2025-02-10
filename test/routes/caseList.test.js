@@ -1,6 +1,7 @@
 const request = require('supertest')
 const { mockAudit } = require('../mockClients')
 const { appSetup } = require('../supertestSetup')
+const config = require('../../server/config')
 
 const {
   caseListServiceStub,
@@ -19,8 +20,14 @@ const createCaseListRoute = require('../../server/routes/caseList')
 
 describe('GET /caseList', () => {
   let app
+  const existingConfig = config
   beforeEach(() => {
+    config.caReportsLinkEnabled = true
     app = createApp('caUser')
+  })
+
+  afterEach(() => {
+    config.caReportsLinkEnabled = existingConfig.caReportsLinkEnabled
   })
 
   test('returns forbidden status if logged in as admin user role', () => {
@@ -77,6 +84,46 @@ describe('GET /caseList', () => {
       .expect((res) => {
         expect(res.text).toContain('href="https://support-dev.hmpps.service.justice.gov.uk/feedback-and-support">')
       })
+  })
+
+  describe('CA reports page link', () => {
+    test('renders the CA caselist page with the CA reports page link for CA users if caReportsLinkEnabled is true', () => {
+      app = createApp('caUser')
+
+      return request(app)
+        .get('/caselist/active')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect((res) => {
+          expect(res.text).toContain('id="caReportsLink">')
+        })
+    })
+
+    test('does not render the CA reports page link for CA users if caReportsLinkEnabled is false', () => {
+      config.caReportsLinkEnabled = false
+
+      app = createApp('caUser')
+
+      return request(app)
+        .get('/caselist/active')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect((res) => {
+          expect(res.text).not.toContain('id="caReportsLink">')
+        })
+    })
+
+    test('does not render the CA reports page link for non CA users', () => {
+      app = createApp('roUser')
+
+      return request(app)
+        .get('/caselist/active')
+        .expect(200)
+        .expect('Content-Type', /html/)
+        .expect((res) => {
+          expect(res.text).not.toContain('id="caReportsLink">')
+        })
+    })
   })
 })
 
