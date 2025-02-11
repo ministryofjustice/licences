@@ -299,9 +299,9 @@ describe('reportsService', () => {
       const result = await service.getLicencesWithAndWithoutComAssignment('user-1')
 
       expect(result).toContain(
-        `PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,COM,PDU\nAAAA11,John,Smith,${hdcedWithin14Weeks},,East of England\nAAAA12,Max,Martin,${hdcedWithin14Weeks},Mel Taylor,West of England\nAAAA13,Tim,North,${hdcedWithin14Weeks},Mike Jones,South of England\nAAAA15,Bob,Bobbington,${hdced14Weeks},Mel Taylor,North of England\nAAAA16,Tom,Tommington,${hdcedWithin14Weeks},,\nAAAA17,Frank,Smith,${hdcedWithin14Weeks},,\nAAAA18,Todd,Toddington,${hdcedWithin14Weeks},,`
+        `PRISON,PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,COM,PDU\nMDI,AAAA11,John,Smith,${hdcedWithin14Weeks},,East of England\nMDI,AAAA12,Max,Martin,${hdcedWithin14Weeks},Mel Taylor,West of England\nMDI,AAAA13,Tim,North,${hdcedWithin14Weeks},Mike Jones,South of England\nMDI,AAAA15,Bob,Bobbington,${hdced14Weeks},Mel Taylor,North of England\nSWI,AAAA16,Tom,Tommington,${hdcedWithin14Weeks},,\nMDI,AAAA17,Frank,Smith,${hdcedWithin14Weeks},,\nMDI,AAAA18,Todd,Toddington,${hdcedWithin14Weeks},,`
       )
-      expect(result).not.toContain('AAAA14,Sam,Samuels,,')
+      expect(result).not.toContain('MDI,AAAA14,Sam,Samuels,,')
     })
 
     test('should not add released prisoners to csv string', async () => {
@@ -338,7 +338,7 @@ describe('reportsService', () => {
       const result = await service.getLicencesWithAndWithoutComAssignment('user-1')
 
       expect(result).toContain(
-        `PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,COM,PDU\nAAAA11,John,Smith,${hdcedWithin14Weeks},,East of England\nAAAA13,Tim,North,${hdcedWithin14Weeks},Mike Jones,South of England`
+        `PRISON,PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,COM,PDU\nMDI,AAAA11,John,Smith,${hdcedWithin14Weeks},,East of England\nMDI,AAAA13,Tim,North,${hdcedWithin14Weeks},Mike Jones,South of England`
       )
       expect(result).not.toContain(`AAAA12,Max,Martin,${hdcedWithin14Weeks},Mel Taylor,West of England`)
     })
