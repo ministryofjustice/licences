@@ -6,7 +6,7 @@ const express = require('express')
 const path = require('path')
 const flash = require('connect-flash')
 const session = require('express-session')
-const RedisStore = require('connect-redis').default
+const { RedisStore } = require('connect-redis')
 
 const helmet = require('helmet').default
 const noCache = require('nocache')
