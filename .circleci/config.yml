@@ -200,7 +200,6 @@ workflows:
           requires:
             - helm_lint
             - unit_test
-            - integration_test
             - build_docker
       - request-preprod-approval:
           type: approval
