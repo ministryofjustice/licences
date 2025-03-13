@@ -1402,13 +1402,13 @@ describe('validation', () => {
         const pageConfig = reportingDate
 
         const options = [
-          { formResponse: { reportingDate: '12/03/2025', reportingTime: '15:00' }, outcome: {} },
+          { formResponse: { reportingDate: moment().format('DD/MM/YYYY'), reportingTime: '15:00' }, outcome: {} },
           {
-            formResponse: { reportingDate: '12/03/2016', reportingTime: '15:00' },
+            formResponse: { reportingDate: moment().subtract(1, 'day').format('DD/MM/YYYY'), reportingTime: '15:00' },
             outcome: { reportingDate: 'The reporting date must be today or in the future' },
           },
           {
-            formResponse: { reportingDate: '24/24/2025', reportingTime: '15:00' },
+            formResponse: { reportingDate: moment('2025-24-24').format('DD/MM/YYYY'), reportingTime: '15:00' },
             outcome: { reportingDate: 'Enter a valid date' },
           },
           {
@@ -1420,7 +1420,7 @@ describe('validation', () => {
             outcome: { reportingDate: 'Enter a date', reportingTime: 'Enter a time' },
           },
           {
-            formResponse: { reportingDate: '12/03/2025', reportingTime: '24:40' },
+            formResponse: { reportingDate: moment().format('DD/MM/YYYY'), reportingTime: '24:40' },
             outcome: { reportingTime: 'Enter a valid time' },
           },
         ]
