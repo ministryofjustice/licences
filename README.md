@@ -16,6 +16,10 @@
 $ npm install
 ```
 
+```zsh
+echo "aaaaaa"
+```
+
 2. Supply environment variables. The required environment variables are defined in server/config.js.
 
 These can be overridden by putting entries in a `.env` file.

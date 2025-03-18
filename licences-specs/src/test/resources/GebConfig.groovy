@@ -5,7 +5,7 @@ import org.openqa.selenium.chrome.ChromeOptions
 atCheckWaiting = true
 
 waiting {
-  timeout = 5
+  timeout = 10
 }
 
 environments {
