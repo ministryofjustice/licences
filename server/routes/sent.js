@@ -19,6 +19,21 @@ module.exports =
           bookingId,
           res.locals.token
         )
+        if (
+          ![
+            'caToDm',
+            'caToDmRefusal',
+            'caToDmResubmit',
+            'caToRo',
+            'dmToCa',
+            'dmToCaReturn',
+            'roToCa',
+            'roToCaAddressRejected',
+            'roToCaOptedOut',
+          ].includes(type)
+        ) {
+          throw new Error(`Invalid template type`)
+        }
 
         res.render(`sent/${type}`, { submissionTarget })
       })
