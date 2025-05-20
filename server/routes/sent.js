@@ -14,6 +14,22 @@ module.exports =
       '/:receiver/:type/:bookingId',
       asyncMiddleware(async (req, res) => {
         const { receiver, type, bookingId } = req.params
+
+        const validTemplates = [
+          'caToDm',
+          'caToDmRefusal',
+          'caToDmResubmit',
+          'caToRo',
+          'dmToCa',
+          'dmToCaReturn',
+          'roToCa',
+          'roToCaAddressRejected',
+          'roToCaOptedOut',
+        ]
+        if (!validTemplates.includes(type)) {
+          res.status(400).send('Invalid template type')
+          return
+        }
         const submissionTarget = await prisonerService.getOrganisationContactDetails(
           receiver,
           bookingId,
