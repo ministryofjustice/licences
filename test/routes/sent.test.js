@@ -86,7 +86,7 @@ describe('GET sent', () => {
       })
   })
 
-  test('errors when an invalid transition type is provided', () => {
+  test('bad request error when an invalid transition template type is provided', () => {
     return request(app).get('/hdc/sent/CA/foobar/123').expect(400)
   })
 
