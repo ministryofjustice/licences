@@ -109,8 +109,8 @@ describe('pdfService', () => {
     })
 
     test('should throw if error in other service', () => {
-      prisonerService.getPrisonerDetails.mockRejectedValue(new Error('dead'))
-      return expect(service.getPdfLicenceData('123', rawLicence, 'token')).rejects.toEqual(Error('dead'))
+      prisonerService.getPrisonerDetails.mockRejectedValue(new Error('Error'))
+      return expect(service.getPdfLicenceData('123', rawLicence, 'token')).rejects.toEqual(Error('Error'))
     })
 
     test('should not try to get image data if missing facialImageId, use null instead', async () => {
@@ -135,7 +135,7 @@ describe('pdfService', () => {
     })
 
     test('should use null for photo if error getting image', async () => {
-      prisonerService.getPrisonerImage.mockRejectedValue(new Error('dead'))
+      prisonerService.getPrisonerImage.mockRejectedValue(new Error('Error'))
 
       await service.getPdfLicenceData('123', rawLicence, 'token')
 

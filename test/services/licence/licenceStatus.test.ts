@@ -575,11 +575,11 @@ describe('getLicenceStatus', () => {
           eligibility: {
             excluded: {
               decision: 'Yes',
-              reason: 'blah',
+              reason: 'Test',
             },
             suitability: {
               decision: 'Yes',
-              reason: 'blah',
+              reason: 'Test',
             },
             exceptionalCircumstances: {
               decision: 'Yes',
@@ -591,7 +591,7 @@ describe('getLicenceStatus', () => {
           proposedAddress: {
             optOut: {
               decision: 'Yes',
-              reason: 'blah',
+              reason: 'Test',
             },
             curfewAddress: {
               addressLine1: 'line',
@@ -601,8 +601,8 @@ describe('getLicenceStatus', () => {
           bassReferral: {
             bassRequest: {
               bassRequested: 'Yes',
-              town: 'blah',
-              county: 'blah',
+              town: 'Test',
+              county: 'Test',
             },
             bassAreaCheck: {
               bassAreaSuitable: 'Yes',
@@ -1377,10 +1377,10 @@ describe('getLicenceStatus', () => {
             },
             bassReferral: {
               bassRequest: {
-                proposedTown: 'TAMESIDE',
+                proposedTown: 'Test Town',
                 specificArea: 'Yes',
                 bassRequested: 'Yes',
-                proposedCounty: 'TAMESIDE',
+                proposedCounty: 'Test County',
                 additionalInformation: 'PLEASE COMPLETE AS AP AS PER EMAIL',
               },
               bassAreaCheck: {
@@ -1389,11 +1389,11 @@ describe('getLicenceStatus', () => {
                 approvedPremisesRequiredYesNo: 'Yes',
               },
               approvedPremisesAddress: {
-                postCode: 'BB2 2HL',
-                telephone: '01254 59060',
-                addressTown: 'Blackburn',
-                addressLine1: 'Haworth House Approved Premises',
-                addressLine2: "St Peter's Street",
+                postCode: 'TEST',
+                telephone: '00000000000',
+                addressTown: 'Test Town',
+                addressLine1: 'Test Street',
+                addressLine2: 'Off Test Road',
               },
             },
             proposedAddress: {

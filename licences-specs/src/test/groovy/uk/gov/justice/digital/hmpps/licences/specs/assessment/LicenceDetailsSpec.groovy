@@ -20,7 +20,7 @@ class LicenceDetailsSpec extends GebReportingSpec {
   def setupSpec() {
     testData.loadLicence('assessment/reporting')
     actions.logIn('RO')
-    to LicenceDetailsPage, testData.markAndrewsBookingId
+    to LicenceDetailsPage, testData.testBookingId
   }
 
   def cleanupSpec() {
@@ -33,7 +33,7 @@ class LicenceDetailsSpec extends GebReportingSpec {
     at LicenceDetailsPage
 
     then: 'I see the expected offender details data'
-    offender.details.name == 'Mark Andrews'
+    offender.details.name == 'Osiss Helkarci'
     offender.details.nomisId == 'A5001DY'
     offender.details.dob == '22/10/1989'
   }
@@ -141,7 +141,7 @@ class LicenceDetailsSpec extends GebReportingSpec {
   def 'Shows link to change #section details'() {
 
     given: 'Viewing licence details summary'
-    to LicenceDetailsPage, testData.markAndrewsBookingId
+    to LicenceDetailsPage, testData.testBookingId
 
     when: 'I click the change details link for a section'
     changeDetailsLink(section).click()
@@ -165,7 +165,7 @@ class LicenceDetailsSpec extends GebReportingSpec {
     testData.loadLicence('assessment/address-rejected')
 
     when: 'I view the page'
-    to LicenceDetailsPage, testData.markAndrewsBookingId
+    to LicenceDetailsPage, testData.testBookingId
 
     then: 'I see the address detail'
     $('#curfewAddressDetails').isDisplayed()
@@ -185,7 +185,7 @@ class LicenceDetailsSpec extends GebReportingSpec {
     testData.loadLicence(sample)
 
     when: 'I view the page'
-    to LicenceDetailsPage, testData.markAndrewsBookingId
+    to LicenceDetailsPage, testData.testBookingId
 
     then: 'I see the review questions up to the point of rejection'
     curfew.reviewAnswers == answers
@@ -202,7 +202,7 @@ class LicenceDetailsSpec extends GebReportingSpec {
     testData.loadLicence('assessment/bassArea-rejected')
 
     when: 'I view the licence details summary page for the licence record'
-    to LicenceDetailsPage, testData.markAndrewsBookingId
+    to LicenceDetailsPage, testData.testBookingId
 
     then: 'I see the bass details'
     bass.proposed.county == 'BASS County'
@@ -217,7 +217,7 @@ class LicenceDetailsSpec extends GebReportingSpec {
     testData.loadLicence('assessment/approved-premises-done')
 
     when: 'I view the licence details summary page for the licence record'
-    to LicenceDetailsPage, testData.markAndrewsBookingId
+    to LicenceDetailsPage, testData.testBookingId
 
     then: 'I see the approved premises address details'
     $('#approvedPremisesDetails').isDisplayed()
@@ -237,7 +237,7 @@ class LicenceDetailsSpec extends GebReportingSpec {
     testData.loadLicence('assessment/approved-premises')
 
     when: 'I view the licence details summary page for the licence record'
-    to LicenceDetailsPage, testData.markAndrewsBookingId
+    to LicenceDetailsPage, testData.testBookingId
 
     then: 'I see the a warning message'
     $('#approvedPremisesAddress-error').text() == 'Enter the approved premises address details'
@@ -248,7 +248,7 @@ class LicenceDetailsSpec extends GebReportingSpec {
     testData.loadLicence('assessment/unstarted')
 
     when: 'I view the licence details summary page for the licence record'
-    to LicenceDetailsPage, testData.markAndrewsBookingId
+    to LicenceDetailsPage, testData.testBookingId
 
     then: 'I see the error messages for each uncompleted section'
 
@@ -265,7 +265,7 @@ class LicenceDetailsSpec extends GebReportingSpec {
     testData.loadLicence('assessment/address-incomplete')
 
     when: 'I view the licence details summary page for the licence record'
-    to LicenceDetailsPage, testData.markAndrewsBookingId
+    to LicenceDetailsPage, testData.testBookingId
 
     then: 'I see an error message for incomplete details'
     addressDetails.electricitySupplyError == 'Say if there is an electricity supply'
@@ -276,7 +276,7 @@ class LicenceDetailsSpec extends GebReportingSpec {
     testData.loadLicence('assessment/curfewAddressReview-with-version-1')
 
     when: 'I view the licence details summary page for the licence record'
-    to LicenceDetailsPage, testData.markAndrewsBookingId
+    to LicenceDetailsPage, testData.testBookingId
 
     then: 'I see an error message for incomplete details'
     curfew.consentV1Error == 'Say if the homeowner consents to HDC'
@@ -287,7 +287,7 @@ class LicenceDetailsSpec extends GebReportingSpec {
     testData.loadLicence('assessment/curfewAddressReview-with-version-2')
 
     when: 'I view the licence details summary page for the licence record'
-    to LicenceDetailsPage, testData.markAndrewsBookingId
+    to LicenceDetailsPage, testData.testBookingId
 
     then: 'I see an error message for incomplete details'
     curfew.consentV2Error == 'Say if you were able to speak to the main occupier and if they consented to HDC'

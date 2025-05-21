@@ -28,7 +28,7 @@ class BassSpec extends GebReportingSpec {
   def 'Shows bass area and offer details'() {
 
     when: 'I view the bass offer review page'
-    to ReviewBassOfferPage, testData.markAndrewsBookingId
+    to ReviewBassOfferPage, testData.testBookingId
 
     then: 'I see the previous entered values'
     bass.proposed.town == 'BASS Town'

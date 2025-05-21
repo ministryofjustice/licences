@@ -29,7 +29,7 @@ class ReportingInstructionsSpec extends GebReportingSpec {
   def 'Reporting instructions initially blank'() {
 
     given: 'At task list page'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     when: 'I start the reporting instructions task'
     taskListAction('Reporting instructions').click()
@@ -64,7 +64,7 @@ class ReportingInstructionsSpec extends GebReportingSpec {
     at TaskListPage
 
     and: 'I view the reporting instructions page'
-    to ReportingInstructionsPage, testData.markAndrewsBookingId
+    to ReportingInstructionsPage, testData.testBookingId
 
     then: 'I see the original values'
     name.value() == ''
@@ -92,7 +92,7 @@ class ReportingInstructionsSpec extends GebReportingSpec {
     find('#continueBtn').click()
 
     and: 'I return to the reporting instructions page'
-    to ReportingInstructionsPage, testData.markAndrewsBookingId
+    to ReportingInstructionsPage, testData.testBookingId
 
     then: 'I see the previously entered values'
     name.value() == 'sample name'

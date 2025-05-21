@@ -26,7 +26,7 @@ class BassReferralBassRequestSpec extends GebReportingSpec {
       testData.loadLicence('assessment/unstarted')
       actions.logIn('CA')
 
-      to BassReferralBassRequestPage, testData.markAndrewsBookingId
+      to BassReferralBassRequestPage, testData.testBookingId
 
       given: 'I am on the Preferred Bass areas page'
       at BassReferralBassRequestPage
@@ -42,7 +42,7 @@ class BassReferralBassRequestSpec extends GebReportingSpec {
      testData.loadLicence('assessment/BassArea-CA')
      actions.logIn('CA')
 
-     to BassReferralBassRequestPage, testData.markAndrewsBookingId
+     to BassReferralBassRequestPage, testData.testBookingId
 
      given: 'I am on the Preferred Bass area'
      at BassReferralBassRequestPage
@@ -60,7 +60,7 @@ class BassReferralBassRequestSpec extends GebReportingSpec {
      at TaskListPage
 
      when: 'I select the back link'
-     to ProposedAddressCurfewAddressChoicePage, testData.markAndrewsBookingId
+     to ProposedAddressCurfewAddressChoicePage, testData.testBookingId
 
      then: 'Im at the Address Choice page'
      at ProposedAddressCurfewAddressChoicePage

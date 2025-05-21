@@ -34,7 +34,7 @@ class BassRequestSpec extends GebReportingSpec {
   def 'Choosing no preferred area returns to tasklist'() {
 
     when: 'Starting BASS request'
-    to BassRequestPage, testData.markAndrewsBookingId
+    to BassRequestPage, testData.testBookingId
 
     then: 'nothing is selected'
     specificAreaRadios.checked == null
@@ -50,7 +50,7 @@ class BassRequestSpec extends GebReportingSpec {
   def 'Choosing a preferred area shows area form'() {
 
     when: 'Starting BASS request'
-    to BassRequestPage, testData.markAndrewsBookingId
+    to BassRequestPage, testData.testBookingId
 
     and: 'I select Yes'
     specificAreaRadios.checked = 'Yes'
@@ -89,7 +89,7 @@ class BassRequestSpec extends GebReportingSpec {
     testData.loadLicence('eligibility/bassRequest-specificArea')
 
     when: 'I view the task list page'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     and: 'I click to continue to submission'
     taskListAction('Send for CAS2 area checks').click()
@@ -123,7 +123,7 @@ class BassRequestSpec extends GebReportingSpec {
     testData.loadLicence('eligibility/bassArea-rejected')
 
     when: 'on tasklist'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     and: 'I do the bass task'
     taskListAction('Curfew address').click()
@@ -140,7 +140,7 @@ class BassRequestSpec extends GebReportingSpec {
 
     given: 'Rejected bass area'
     testData.loadLicence('eligibility/bassArea-rejected')
-    to BassRejectedPage, testData.markAndrewsBookingId
+    to BassRejectedPage, testData.testBookingId
 
     when: 'I choose the option and proceed'
     alternativeAreaRadios.checked = choice

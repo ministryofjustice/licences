@@ -14,7 +14,7 @@ describe('send', () => {
   let prisonerService
 
   const prisoner = { firstName: 'first', lastName: 'last', dateOfBirth: 'off-dob', offenderNo: 'AB1234A' }
-  const submissionTarget = { premise: 'HMP Blah', agencyId: 'LT1', name: 'Something', deliusId: 'delius' }
+  const submissionTarget = { premise: 'HMP Test', agencyId: 'LT1', name: 'Something', deliusId: 'delius' }
 
   beforeEach(() => {
     prisonerService = createPrisonerServiceStub()
@@ -127,7 +127,7 @@ describe('send', () => {
         .expect(200)
         .expect('Content-Type', /html/)
         .expect((res) => {
-          expect(res.text).toContain('name="submissionTarget" value="HMP Blah"')
+          expect(res.text).toContain('name="submissionTarget" value="HMP Test"')
         })
     })
 

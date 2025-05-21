@@ -21,9 +21,9 @@ describe('caseListService', () => {
     {
       bookingId: 0,
       offenderNo: 'A12345',
-      firstName: 'MARK',
+      firstName: 'SHULISH',
       middleNames: '',
-      lastName: 'ANDREWS',
+      lastName: 'NGAKA',
       agencyLocationDesc: 'BERWIN (HMP)',
       internalLocationDesc: 'A-C-2-002',
       sentenceDetail: {
@@ -39,9 +39,9 @@ describe('caseListService', () => {
     {
       bookingId: 0,
       offenderNo: 'A12345',
-      firstName: 'Mark',
+      firstName: 'Shulish',
       middleNames: '',
-      lastName: 'Andrews',
+      lastName: 'Ngaka',
       agencyLocationDesc: 'HMP Berwin',
       internalLocationDesc: 'A-C-2-002',
       sentenceDetail: {
@@ -104,9 +104,9 @@ describe('caseListService', () => {
       {
         bookingId: 0,
         offenderNo: 'A12345',
-        firstName: 'MARK',
+        firstName: 'SHULISH',
         middleNames: '',
-        lastName: 'ANDREWS',
+        lastName: 'NGAKA',
         agencyLocationDesc: 'BERWIN (HMP)',
         internalLocationDesc: 'A-C-2-002',
         sentenceDetail: {
@@ -139,8 +139,8 @@ describe('caseListService', () => {
     test('should capitalise names', async () => {
       nomisClient.getHdcEligiblePrisoners.mockResolvedValue(hdcEligiblePrisoners)
       const { hdcEligible } = await caseListService.getHdcCaseList(user.token, user.username, user.role)
-      expect(hdcEligible[0].firstName).toBe('Mark')
-      expect(hdcEligible[0].lastName).toBe('Andrews')
+      expect(hdcEligible[0].firstName).toBe('Shulish')
+      expect(hdcEligible[0].lastName).toBe('Ngaka')
     })
 
     test('should add a status to the prisoners', async () => {

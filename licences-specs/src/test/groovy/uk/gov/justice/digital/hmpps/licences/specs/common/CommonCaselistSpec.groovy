@@ -53,7 +53,7 @@ class CommonCaselistSpec extends GebReportingSpec {
     via CaselistPage
 
     then: 'I see the expected data for the prisoner'
-    offenders.summary[0].name == 'Mark Andrews'
+    offenders.summary[0].name == 'Osiss Helkarci'
     offenders.summary[0].nomisId == 'A5001DY'
 
     where:
@@ -71,7 +71,7 @@ class CommonCaselistSpec extends GebReportingSpec {
     via CaselistPage
 
     then: 'I see the expected data for the prisoner'
-    offenders.summary[0].name == 'Mark Andrews'
+    offenders.summary[0].name == 'Osiss Helkarci'
     offenders.summary[0].nomisId == 'A5001DY'
 
     then: 'I do not see data for the prisoner`s previous booking'

@@ -33,13 +33,13 @@ class EligibilityTaskListSpec extends GebReportingSpec {
     testData.deleteLicences()
 
     when: 'I view the task list page'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'I see the expected offender details data'
-    offender.details.name == 'Mark Andrews'
+    offender.details.name == 'Osiss Helkarci'
     offender.details.nomisId == 'A5001DY'
     offender.details.dob == '22/10/1989'
-    //offender.details.roName == 'Ryan Orton'
+    //offender.details.roName == 'Oshust Hanten'
     offender.details.externalLocation == 'HMP Albany'
     offender.details.offences == "Cause exceed max permitted wt of artic' vehicle - No of axles/configuration (No MOT/Manufacturer's Plate)"
     offender.details.crd == '15/10/2019'
@@ -68,7 +68,7 @@ class EligibilityTaskListSpec extends GebReportingSpec {
     testData.loadLicence('eligibility/unstarted')
 
     when: 'I view the page'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'I see a start button for the eligibility check'
     eligibilityCheckStartButton.value() == 'Start now'
@@ -92,7 +92,7 @@ class EligibilityTaskListSpec extends GebReportingSpec {
     testData.loadLicence('eligibility/done')
 
     when: 'I view the tasklist page'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'I see the change answers link'
     eligibilityCheckUpdateLink.text() == 'Change'
@@ -116,7 +116,7 @@ class EligibilityTaskListSpec extends GebReportingSpec {
 
     when: 'Viewing the tasklist'
     testData.loadLicence("eligibility/started")
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'The inform offender task is shown'
     !taskListAction('Inform the offender').isDisplayed()
@@ -126,7 +126,7 @@ class EligibilityTaskListSpec extends GebReportingSpec {
 
     when: 'Viewing the tasklist'
     testData.loadLicence("eligibility/excluded")
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'The inform offender task is shown'
     taskListAction('Inform the offender').isDisplayed()
@@ -136,7 +136,7 @@ class EligibilityTaskListSpec extends GebReportingSpec {
 
     when: 'Viewing the tasklist'
     testData.loadLicence("eligibility/eligible")
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'The inform offender task is shown'
     taskListAction('Inform the offender').isDisplayed()
@@ -146,7 +146,7 @@ class EligibilityTaskListSpec extends GebReportingSpec {
 
     when: 'Viewing the tasklist'
     testData.loadLicence("eligibility/${condition}")
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'The address check task is not shown'
     !taskListAction('Curfew address').isDisplayed()
@@ -160,7 +160,7 @@ class EligibilityTaskListSpec extends GebReportingSpec {
     when: 'Viewing the tasklist'
     testData.enableLdu("ABC", "ABC124")
     testData.loadLicence("eligibility/eligible")
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'The address check task is shown'
     taskListAction('Curfew address').isDisplayed()
@@ -170,7 +170,7 @@ class EligibilityTaskListSpec extends GebReportingSpec {
 
     when: 'Viewing the tasklist'
     testData.loadLicence("eligibility/optedOutNo")
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'The submit task is shown'
     $('h2', text: contains('Submit curfew address')).isDisplayed()
@@ -180,7 +180,7 @@ class EligibilityTaskListSpec extends GebReportingSpec {
 
     when: 'Viewing the tasklist'
     testData.loadLicence("eligibility/optedOutNo")
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'The submit task is shown'
     !taskListAction('Inform the offender').isDisplayed()
@@ -190,7 +190,7 @@ class EligibilityTaskListSpec extends GebReportingSpec {
 
     when: 'Viewing the tasklist'
     testData.loadLicence("eligibility/bassRequest-unstarted")
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'The submit task is shown'
     $('h2', text: contains('Send for CAS2 area checks')).isDisplayed()
@@ -202,7 +202,7 @@ class EligibilityTaskListSpec extends GebReportingSpec {
     testData.loadLicence('eligibility/bassArea-rejected')
 
     when: 'I view the task list'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     and: 'I start the task'
     taskListAction('Curfew address').click()

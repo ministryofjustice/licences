@@ -177,7 +177,7 @@ describe('/licences/', () => {
 
   describe('GET reset', () => {
     it('should call prisoner service', () => {
-      prisonerService.getPrisonerDetails.mockReturnValue({ com: { name: 'Jim' } })
+      prisonerService.getPrisonerDetails.mockReturnValue({ com: { name: 'Test' } })
       const app = createApp('batchUser')
       return request(app)
         .get('/admin/licences/events/1/reset-licence')
@@ -188,7 +188,7 @@ describe('/licences/', () => {
     })
 
     it('should render errors', () => {
-      prisonerService.getPrisonerDetails.mockReturnValue({ com: { name: 'Jim' } })
+      prisonerService.getPrisonerDetails.mockReturnValue({ com: { name: 'Test' } })
       flash.mockReturnValue([{ reset: 'some value' }])
 
       const app = createApp('batchUser')

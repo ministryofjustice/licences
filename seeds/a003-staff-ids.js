@@ -1,4 +1,4 @@
-exports.seed = knex =>
+exports.seed = (knex) =>
   knex('staff_ids')
     .delete()
     .then(() =>
@@ -13,8 +13,8 @@ exports.seed = knex =>
         {
           nomis_id: 'RO_USER2',
           staff_id: 'DELIUS_USER2',
-          first_name: 'SHEILA',
-          last_name: 'HANCOCK',
+          first_name: 'FIRSTB',
+          last_name: 'LASTB',
           organisation: 'Organisation 2',
           job_role: 'Role 2',
           email: 'email@2',
@@ -24,8 +24,8 @@ exports.seed = knex =>
         {
           nomis_id: 'RO_USER3',
           staff_id: 'DELIUS_USER3',
-          first_name: 'TREVOR',
-          last_name: 'SMITH',
+          first_name: 'FIRSTC',
+          last_name: 'LASTC',
           organisation: 'Organisation 3',
           job_role: 'Role 3',
           email: 'email@3',
@@ -35,8 +35,8 @@ exports.seed = knex =>
         {
           nomis_id: 'RO_USER4',
           staff_id: 'DELIUS_USER4',
-          first_name: 'DAVID',
-          last_name: 'BALL',
+          first_name: 'FIRSTD',
+          last_name: 'LASTD',
           organisation: 'Organisation 4',
           job_role: 'Role 4',
           email: 'email@4',
@@ -46,8 +46,8 @@ exports.seed = knex =>
         {
           nomis_id: 'RO_USER5',
           staff_id: 'DELIUS_USER5',
-          first_name: 'JULIE',
-          last_name: 'WOOD',
+          first_name: 'FIRSTE',
+          last_name: 'LASTE',
           organisation: 'Organisation 5',
           job_role: 'Role 5',
           email: 'email@5',
@@ -57,8 +57,8 @@ exports.seed = knex =>
         {
           nomis_id: 'RO_USER6',
           staff_id: 'DELIUS_USER6',
-          first_name: 'LYDIA',
-          last_name: 'HUME',
+          first_name: 'FIRSTF',
+          last_name: 'LASTF',
           organisation: 'Organisation 6',
           job_role: 'Role 6',
           email: 'email@6',
@@ -68,9 +68,9 @@ exports.seed = knex =>
         {
           nomis_id: 'RO_DEMO',
           staff_id: 'DELIUS_ID_DEMO',
-          first_name: 'Ryan',
-          last_name: 'Orton',
-          organisation: 'NPS Darlington',
+          first_name: 'FIRSTG',
+          last_name: 'LASTG',
+          organisation: 'Organisation 7',
           job_role: 'Responsible Officer',
           email: 'email@7',
           telephone: '6666',

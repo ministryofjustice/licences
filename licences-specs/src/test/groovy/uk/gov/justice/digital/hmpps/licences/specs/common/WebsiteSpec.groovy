@@ -37,10 +37,10 @@ class WebsiteSpec extends GebReportingSpec {
 
     where:
     user       | displayName
-    'CA'       | 'C. Amos'
-    'DM'       | 'D. Matthews'
+    'CA'       | 'W. Gul'
+    'DM'       | 'H. Fann'
     'READONLY' | 'L. Only'
-    'RO'       | 'R. Orton'
+    'RO'       | 'O. Hanten'
   }
 
   def 'User can log out'() {

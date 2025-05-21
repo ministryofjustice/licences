@@ -29,7 +29,7 @@ describe('/completionDestination/', () => {
     })
 
     it('should call prisoner service', () => {
-      prisonerService.getPrisonerDetails.mockReturnValue({ com: { name: 'Jim' } })
+      prisonerService.getPrisonerDetails.mockReturnValue({ com: { name: 'Test' } })
       const app = createApp('batchUser')
       return request(app)
         .get('/admin/completionDestination/1/set-complete-destination')

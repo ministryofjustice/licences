@@ -29,7 +29,7 @@ describe('sendCaAndDmNotifications', () => {
     }
 
     prisonerService = createPrisonerServiceStub()
-    prisonerService.getEstablishmentForPrisoner.mockReturnValue({ premise: 'HMP Blah', agencyId: 'LT1' })
+    prisonerService.getEstablishmentForPrisoner.mockReturnValue({ premise: 'HMP Test', agencyId: 'LT1' })
     roContactDetailsService = {
       getFunctionalMailBox: jest.fn().mockReturnValue('admin@ro.email'),
     }
@@ -50,10 +50,10 @@ describe('sendCaAndDmNotifications', () => {
         agencyType: 'INST',
         addressType: 'BUS',
         premise: 'Moorland (HMP & YOI)',
-        locality: 'Yorkshire',
-        city: 'Doncaster',
+        locality: 'Test Locality',
+        city: 'Test City',
         country: 'England',
-        postCode: 'PE6 1BF',
+        postCode: 'TEST',
         phones: [
           {
             number: '484 555 6431',

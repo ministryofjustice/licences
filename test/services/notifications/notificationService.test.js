@@ -12,13 +12,13 @@ describe('NotificationService', () => {
   let roNotificationHandler
 
   const prisoner = { firstName: 'first', lastName: 'last', dateOfBirth: 'off-dob', offenderNo: 'AB1234A' }
-  const submissionTarget = { premise: 'HMP Blah', agencyId: 'LT1', name: 'Something', deliusId: 'delius' }
+  const submissionTarget = { premise: 'HMP Test', agencyId: 'LT1', name: 'Something', deliusId: 'delius' }
   const bookingId = -1
   const token = 'token-1'
   const licence = {}
   const username = 'bob'
   const user = { username }
-  const source = { type: 'probation', probationAreaCode: 'N01', lduCode: 'N02LDU01' }
+  const source = { type: 'probation', probationAreaCode: 'Test Area', lduCode: 'Test Unit' }
   const target = { type: 'prison', agencyId: 'LT1' }
 
   beforeEach(() => {

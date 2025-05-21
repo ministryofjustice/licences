@@ -25,9 +25,9 @@ router.get('/offenderNo/:offenderNo', (req, res) => {
 router.get('/:bookingId/aliases', (req, res) => {
   res.send([
     {
-      firstName: 'Marky',
+      firstName: 'Uvorrd',
       middleName: 'string',
-      lastName: 'Andrews',
+      lastName: 'Wackazh',
       age: 0,
       dob: '2018-01-11',
       gender: 'string',
@@ -79,8 +79,8 @@ router.get('/:bookingId/mainOffence', (req, res) => {
 router.get('/:bookingId/relationships', (req, res) => {
   res.send([
     {
-      lastName: 'Orton',
-      firstName: 'Ryan',
+      lastName: 'Mrahi',
+      firstName: 'Gripol',
       middleName: 'string',
       contactType: 'string',
       contactTypeDescription: 'string',

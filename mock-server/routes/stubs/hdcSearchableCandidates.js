@@ -2,9 +2,9 @@ module.exports = [
   {
     bookingId: 1200635,
     offenderNo: 'A5001DY',
-    firstName: 'MARK',
+    firstName: 'OSISS',
     middleName: 'MIDDLE',
-    lastName: 'ANDREWS',
+    lastName: 'HELKARCI',
     dateOfBirth: '1989-10-22',
     agencyLocationId: 'LT1',
     agencyLocationDesc: 'HMP Albany',
@@ -27,9 +27,9 @@ module.exports = [
   {
     bookingId: 1200634,
     offenderNo: 'A5001DY',
-    firstName: 'MARK',
+    firstName: 'OSISS',
     middleName: 'MIDDLE',
-    lastName: 'ANDREWS',
+    lastName: 'HELKARCHI',
     dateOfBirth: '1989-10-22',
     agencyLocationId: 'LT1',
     agencyLocationDesc: 'HMP Albany',

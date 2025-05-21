@@ -263,7 +263,7 @@ describe('roService', () => {
       deliusClient.getCommunityManager.mockResolvedValue({
         code: 'CODE-1',
         staffId: 1,
-        name: { forenames: 'Jo', surname: 'Smith' },
+        name: { forenames: 'Test', surname: 'Person' },
         team: { code: 'TEAM_1', description: 'The Team' },
         provider: { code: 'PROB-1', description: 'PROB-1 Description' },
         localAdminUnit: { code: 'LDU-1', description: 'LDU-1 Description' },
@@ -274,7 +274,7 @@ describe('roService', () => {
         deliusId: 'CODE-1',
         staffIdentifier: 1,
         isAllocated: true,
-        name: 'Jo Smith',
+        name: 'Test Person',
         nomsNumber: 1,
         teamCode: 'TEAM_1',
         teamDescription: 'The Team',

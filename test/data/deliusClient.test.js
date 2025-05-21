@@ -148,37 +148,37 @@ describe('deliusClient', () => {
 
   describe('addResponsbileOfficerRole', () => {
     test('should return data from api', () => {
-      fakeDelius.put(`/users/bobUser/roles/${config.delius.responsibleOfficerRoleId}`).reply(200)
+      fakeDelius.put(`/users/testUser/roles/${config.delius.responsibleOfficerRoleId}`).reply(200)
 
-      return expect(deliusClient.addResponsibleOfficerRole('bobUser')).resolves.toBeUndefined()
+      return expect(deliusClient.addResponsibleOfficerRole('testUser')).resolves.toBeUndefined()
     })
 
     test('should ignore errors', () => {
-      fakeDelius.put(`/users/bobUser/roles/${config.delius.responsibleOfficerRoleId}`).reply(500)
+      fakeDelius.put(`/users/testUser/roles/${config.delius.responsibleOfficerRoleId}`).reply(500)
 
-      return expect(deliusClient.addResponsibleOfficerRole('bobUser')).resolves.toBeUndefined()
+      return expect(deliusClient.addResponsibleOfficerRole('testUser')).resolves.toBeUndefined()
     })
   })
 
   describe('addRole', () => {
     test('should return data from api', () => {
-      fakeDelius.put(`/users/bobUser/roles/CODE-1`).reply(200)
+      fakeDelius.put(`/users/testUser/roles/CODE-1`).reply(200)
 
-      return expect(deliusClient.addRole('bobUser', 'CODE-1')).resolves.toBeUndefined()
+      return expect(deliusClient.addRole('testUser', 'CODE-1')).resolves.toBeUndefined()
     })
 
     test('should ignore errors', () => {
-      fakeDelius.put(`/users/bobUser/roles/CODE-1`).reply(500)
+      fakeDelius.put(`/users/testUser/roles/CODE-1`).reply(500)
 
-      return expect(deliusClient.addRole('bobUser', 'CODE-1')).resolves.toBeUndefined()
+      return expect(deliusClient.addRole('testUser', 'CODE-1')).resolves.toBeUndefined()
     })
   })
 
   describe('getUser', () => {
     test('should return data from api', () => {
-      fakeDelius.get(`/users/bobUser/details`).reply(200, { username: 'aaa' })
+      fakeDelius.get(`/users/testUser/details`).reply(200, { username: 'aaa' })
 
-      return expect(deliusClient.getUser('bobUser')).resolves.toStrictEqual({ username: 'aaa' })
+      return expect(deliusClient.getUser('testUser')).resolves.toStrictEqual({ username: 'aaa' })
     })
   })
 })

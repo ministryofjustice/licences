@@ -32,7 +32,7 @@ class LicenceConditionsSummarySpec extends GebReportingSpec {
     testData.loadLicence('assessment/conditions-multiple')
 
     when: 'I view the conditions summary page'
-    to LicenceConditionsSummaryPage, testData.markAndrewsBookingId
+    to LicenceConditionsSummaryPage, testData.testBookingId
 
     then: 'I see the previously selected values'
     conditions.additional.size() == 7
@@ -151,7 +151,7 @@ class LicenceConditionsSummarySpec extends GebReportingSpec {
   def 'Selecting the "violent behaviour" and "anger" checkboxes on the additionalConditions page and then "save and continue", the user is taken to conditionsSummary page which displays the previous selections in the body text' () {
 
     when: 'At additional conditions page'
-    to LicenceConditionsAdditionalPage, testData.markAndrewsBookingId
+    to LicenceConditionsAdditionalPage, testData.testBookingId
 
     and: 'I select some conditions'
     $("form")['additionalConditions[]'] = ['COMPLY_REQUIREMENTS']

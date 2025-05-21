@@ -33,7 +33,7 @@ class ApprovalSpec extends GebReportingSpec {
   def 'Starts with nothing selected because there is no default'() {
 
     when: 'I view the approval page'
-    to ApprovalReleasePage, testData.markAndrewsBookingId
+    to ApprovalReleasePage, testData.testBookingId
 
     then: 'Neither radio option is selected'
     releaseRadios.checked == null
@@ -70,7 +70,7 @@ class ApprovalSpec extends GebReportingSpec {
     testData.loadLicence('decision/approved')
 
     when: 'I view the approval page'
-    to ApprovalReleasePage, testData.markAndrewsBookingId
+    to ApprovalReleasePage, testData.testBookingId
 
     then: 'I see the previous values'
     releaseRadios.checked == 'Yes'
@@ -82,7 +82,7 @@ class ApprovalSpec extends GebReportingSpec {
     testData.loadLicence('decision/insufficientTime')
 
     when: 'I view the refusal page'
-    to ApprovalRefusePage, testData.markAndrewsBookingId
+    to ApprovalRefusePage, testData.testBookingId
 
     then: 'I see the reason chosen by the CA'
     reasonsForm.isDisplayed()
@@ -100,7 +100,7 @@ class ApprovalSpec extends GebReportingSpec {
     testData.loadLicence('decision/address-rejected')
 
     when: 'I view the refusal page'
-    to ApprovalRefusePage, testData.markAndrewsBookingId
+    to ApprovalRefusePage, testData.testBookingId
 
     then: 'I see the reason chosen by the CA'
     reasonsForm.isDisplayed()

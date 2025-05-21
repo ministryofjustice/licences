@@ -30,7 +30,7 @@ class RiskManagementSpec extends GebReportingSpec {
   def 'Non-disclosable information shown when Yes'() {
 
     given: 'At task list page'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     when: 'I start the risk management task'
     taskListAction('Risk management').click()

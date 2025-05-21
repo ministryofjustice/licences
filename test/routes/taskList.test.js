@@ -40,7 +40,7 @@ const dmAddressRefusal = {
       release: {
         reason: 'addressUnsuitable',
         decision: 'No',
-        decisionMaker: 'Diane Matthews',
+        decisionMaker: 'Wenn Mrimmroza',
         reasonForDecision: '',
       },
     },
@@ -54,7 +54,7 @@ const dmHasProvidedHdcDecisionComments = {
       release: {
         reason: 'addressUnsuitable',
         decision: 'No',
-        decisionMaker: 'Diane Matthews',
+        decisionMaker: 'Wenn Mrimmroza',
         reasonForDecision: 'The reason for the prisoner not being granted HDC is ...',
       },
     },
@@ -539,7 +539,7 @@ describe('GET /taskList/:prisonNumber', () => {
           reporting: {
             reportingInstructions: {
               name: 'Test Person',
-              postcode: 'B1 2TJ',
+              postcode: 'Test',
               telephone: '00000000001',
               townOrCity: 'Test',
               organisation: 'Test',
@@ -591,7 +591,7 @@ describe('GET /taskList/:prisonNumber', () => {
                 name: 'TEST',
                 relationship: 'test',
               },
-              postCode: 'B1 2TJ',
+              postCode: 'Test',
               residents: [],
               telephone: '00000000001',
               addressTown: 'Test Town',

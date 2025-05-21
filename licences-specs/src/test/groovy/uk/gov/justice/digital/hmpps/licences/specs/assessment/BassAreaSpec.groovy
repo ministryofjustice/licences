@@ -30,7 +30,7 @@ class BassAreaSpec extends GebReportingSpec {
     def 'The question "Does the offender need to be sent to approved premises?" is displayed on page load'(){
 
     given: 'At task list page'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     when: 'I start the BASS area task'
     taskListAction('CAS2 area check').click()
@@ -46,7 +46,7 @@ class BassAreaSpec extends GebReportingSpec {
     def 'The radio buttons for the Approved Premises question  are not selected on page load'(){
 
       given: 'At task list page'
-      to TaskListPage, testData.markAndrewsBookingId
+      to TaskListPage, testData.testBookingId
 
       when: 'I start the BASS area task'
       taskListAction('CAS2 area check').click()
@@ -62,7 +62,7 @@ class BassAreaSpec extends GebReportingSpec {
     def 'The question "Is the area suitable for the offender to live in?" is hidden until Approved Premises radio is clicked for No'() {
 
       given: 'At task list page'
-      to TaskListPage, testData.markAndrewsBookingId
+      to TaskListPage, testData.testBookingId
 
       when: 'I start the BASS area task'
       taskListAction('CAS2 area check').click()
@@ -90,7 +90,7 @@ class BassAreaSpec extends GebReportingSpec {
   def 'The question "Is the area suitable for the offender to live in?" is hidden again if the Approved Premises radio is clicked for Yes'() {
 
     given: 'At task list page'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     when: 'I start the BASS area task'
     taskListAction('CAS2 area check').click()
@@ -117,7 +117,7 @@ class BassAreaSpec extends GebReportingSpec {
     testData.loadLicence('assessment/bassArea-rejected')
 
     when: 'I view the bass area page'
-    to BassAreaCheckPage, testData.markAndrewsBookingId
+    to BassAreaCheckPage, testData.testBookingId
 
     and: 'I select No to Approved Premises required'
     approvedRadios.checked = 'No'
@@ -130,7 +130,7 @@ class BassAreaSpec extends GebReportingSpec {
   def 'Choices are not saved if return to tasklist without selecting Save and Continue'() {
 
     given: 'At task list page'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     when: 'I start the BASS area task'
     taskListAction('CAS2 area check').click()
@@ -148,7 +148,7 @@ class BassAreaSpec extends GebReportingSpec {
     at TaskListPage
 
     when: 'I go back to the bass area page'
-    to BassAreaCheckPage, testData.markAndrewsBookingId
+    to BassAreaCheckPage, testData.testBookingId
 
     then: 'Then the Approved Premises radios are not checked'
     approvedRadios.checked == null
@@ -160,7 +160,7 @@ class BassAreaSpec extends GebReportingSpec {
     testData.loadLicence('assessment/bassArea-unstarted-no-area')
 
     when: 'I view the bass area page'
-    to BassAreaCheckPage, testData.markAndrewsBookingId
+    to BassAreaCheckPage, testData.testBookingId
 
     and: 'I select Approved Address No option'
     approvedRadios.checked ='No'
@@ -184,7 +184,7 @@ class BassAreaSpec extends GebReportingSpec {
     testData.loadLicence('assessment/bassArea-unstarted-no-area')
 
     when: 'I view the bass area page'
-    to BassAreaCheckPage, testData.markAndrewsBookingId
+    to BassAreaCheckPage, testData.testBookingId
 
     and : 'I select Approved Address YES option'
     approvedRadios.checked ='Yes'
@@ -202,7 +202,7 @@ class BassAreaSpec extends GebReportingSpec {
     testData.loadLicence('assessment/bassArea-unstarted-no-area')
 
     when: 'I view the bass area page'
-    to BassAreaCheckPage, testData.markAndrewsBookingId
+    to BassAreaCheckPage, testData.testBookingId
 
     and: 'I select Approved Address NO option'
     approvedRadios.checked = 'No'

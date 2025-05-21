@@ -6,7 +6,7 @@ import spock.lang.Shared
 class TestData {
 
   @Shared
-  def markAndrewsBookingId = System.getenv('BOOKING_ID') ?: "1200635"
+  def testBookingId = System.getenv('BOOKING_ID') ?: "1200635"
 
   LicencesApi licences
 
@@ -22,12 +22,12 @@ class TestData {
     licences.enableLdu(probationArea, ldu)
   }
 
-  def loadLicence(filename, bookingId = markAndrewsBookingId) {
+  def loadLicence(filename, bookingId = testBookingId) {
     deleteLicences()
     addLicence(filename, bookingId)
   }
 
-  def addLicence(filename, bookingId = markAndrewsBookingId) {
+  def addLicence(filename, bookingId = testBookingId) {
 
     def licenceFile = TestData.class.getResource("/licences/${filename}.json")
 
