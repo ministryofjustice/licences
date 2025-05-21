@@ -1,15 +1,4 @@
 /* eslint-disable */
-
-function getEscapedText(text) {
-  return text
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#39;')
-    .replace(/\\/g, '&#92;')
-}
-
 $(document).ready(init)
 
 // to use add .searchable class to the parent of the text
@@ -28,7 +17,13 @@ function init() {
           .find('.searchable')
           .each(function () {
             var text = $(this).text()
-            var escapedText = getEscapedText(text)
+            var escapedText = text
+              .replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;')
+              .replace(/"/g, '&quot;')
+              .replace(/'/g, '&#39;')
+              .replace(/\\/g, '&#92;')
 
             $(this).html(escapedText.replace(searchRegExp, '<span class="highlighted-string">$1</span>'))
           })
