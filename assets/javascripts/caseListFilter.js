@@ -1,5 +1,4 @@
 /* eslint-disable */
-
 $(document).ready(init)
 
 // to use add .searchable class to the parent of the text
