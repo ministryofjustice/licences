@@ -4,6 +4,7 @@ import geb.spock.GebReportingSpec
 import spock.lang.Shared
 import spock.lang.Stepwise
 import spock.lang.Unroll
+import spock.lang.Retry
 import uk.gov.justice.digital.hmpps.licences.pages.CaselistPage
 import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.*
@@ -17,6 +18,7 @@ import uk.gov.justice.digital.hmpps.licences.util.Actions
 import uk.gov.justice.digital.hmpps.licences.util.TestData
 
 @Stepwise
+@Retry
 class CaTaskListSpec extends GebReportingSpec {
 
   @Shared

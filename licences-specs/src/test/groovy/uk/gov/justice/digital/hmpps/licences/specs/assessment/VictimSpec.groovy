@@ -10,6 +10,7 @@ import uk.gov.justice.digital.hmpps.licences.util.Actions
 import uk.gov.justice.digital.hmpps.licences.util.TestData
 
 @Stepwise
+@Retry
 class VictimSpec extends GebReportingSpec {
 
   @Shared
@@ -57,7 +58,6 @@ class VictimSpec extends GebReportingSpec {
     victimLiaisonForm.isDisplayed()
   }
 
-  @Retry
   def 'Modified choices are saved after save and continue'() {
 
     given: 'At victim liaison page'
