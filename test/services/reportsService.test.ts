@@ -340,7 +340,7 @@ describe('reportsService', () => {
       expect(result).toContain(
         `PRISON,PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,COM,PDU\nMDI,AAAA11,Umuk,Anluth,${hdcedWithin14Weeks},,East of England\nMDI,AAAA13,Jinmuc,Zol,${hdcedWithin14Weeks},Test Person2,South of England`
       )
-      expect(result).not.toContain(`AAAA12,Max,Martin,${hdcedWithin14Weeks},Test Person1,West of England`)
+      expect(result).not.toContain(`AAAA12,Evoka,Drinzirgh,${hdcedWithin14Weeks},Test Person1,West of England`)
     })
   })
 
@@ -368,9 +368,9 @@ describe('reportsService', () => {
       expect(result).toContain(
         `PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,PDU\nAAAA11,Umuk,Anluth,${hdcedWithin14Weeks},East of England\nAAAA17,Odrushi,Gozicx,${hdcedWithin14Weeks},\nAAAA18,Ochong,Vocis,${hdcedWithin14Weeks},`
       )
-      expect(result).not.toContain(`AAAA12,Max,Martin,${hdcedWithin14Weeks},West of England`)
-      expect(result).not.toContain(`AAAA13,Tim,North,${hdcedWithin14Weeks},South of England`)
-      expect(result).not.toContain(`AAAA15,Bob,Bobbington,${hdced14Weeks},North of England`)
+      expect(result).not.toContain(`AAAA12,Evoka,Drinzirgh,${hdcedWithin14Weeks},West of England`)
+      expect(result).not.toContain(`AAAA13,Jinmuc,Zol,${hdcedWithin14Weeks},South of England`)
+      expect(result).not.toContain(`AAAA15,Vani,Tuhnorv,${hdced14Weeks},North of England`)
     })
 
     test('should not add released prisoners to csv string', async () => {
