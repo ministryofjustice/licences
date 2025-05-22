@@ -17,7 +17,6 @@ environments {
     driver = {
       ChromeOptions options = new ChromeOptions()
       options.addArguments('headless')
-      options.a
       new ChromeDriver(options)
     }
   }
