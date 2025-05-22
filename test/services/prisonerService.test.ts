@@ -118,9 +118,9 @@ describe('prisonerDetailsService', () => {
     })
 
     test('should throw if error in api', () => {
-      nomisClientMock.getOffenderSentencesByBookingId.mockRejectedValue(new Error('dead'))
+      nomisClientMock.getOffenderSentencesByBookingId.mockRejectedValue(new Error('Error'))
 
-      return expect(service.getPrisonerDetails('123', 'username')).rejects.toEqual(Error('dead'))
+      return expect(service.getPrisonerDetails('123', 'username')).rejects.toEqual(Error('Error'))
     })
 
     test('it should return false for imageId of no image', async () => {
@@ -163,14 +163,14 @@ describe('prisonerDetailsService', () => {
     })
 
     test('should throw if error in api when getting offender', () => {
-      nomisClientMock.getOffenderSentencesByBookingId.mockRejectedValue(new Error('dead'))
-      return expect(service.getEstablishmentForPrisoner('123', 'username')).rejects.toEqual(Error('dead'))
+      nomisClientMock.getOffenderSentencesByBookingId.mockRejectedValue(new Error('Error'))
+      return expect(service.getEstablishmentForPrisoner('123', 'username')).rejects.toEqual(Error('Error'))
     })
 
     test('should throw if error in api when getting establishment', () => {
       nomisClientMock.getOffenderSentencesByBookingId.mockResolvedValue(hdcPrisonersResponse)
-      nomisClientMock.getEstablishment.mockRejectedValue(new Error('dead'))
-      return expect(service.getEstablishmentForPrisoner('123', 'username')).rejects.toEqual(Error('dead'))
+      nomisClientMock.getEstablishment.mockRejectedValue(new Error('Error'))
+      return expect(service.getEstablishmentForPrisoner('123', 'username')).rejects.toEqual(Error('Error'))
     })
 
     test('should NOT throw but return null if 404 in api when getting establishment', () => {
@@ -219,8 +219,8 @@ describe('prisonerDetailsService', () => {
   describe('getDestinations', () => {
     const responsibleOfficer = {
       deliusId: 'delius1',
-      probationAreaCode: 'N01',
-      lduCode: 'N01LDU1',
+      probationAreaCode: 'Test Area',
+      lduCode: 'Test Unit',
       name: 'Comfirst Comlast',
       message: null,
     }
@@ -239,8 +239,8 @@ describe('prisonerDetailsService', () => {
         },
 
         target: {
-          lduCode: 'N01LDU1',
-          probationAreaCode: 'N01',
+          lduCode: 'Test Unit',
+          probationAreaCode: 'Test Area',
           type: 'probation',
         },
       })
@@ -251,8 +251,8 @@ describe('prisonerDetailsService', () => {
       expect(destinations).toStrictEqual({
         submissionTarget: establishmentResponse,
         source: {
-          lduCode: 'N01LDU1',
-          probationAreaCode: 'N01',
+          lduCode: 'Test Unit',
+          probationAreaCode: 'Test Area',
           type: 'probation',
         },
         target: {

@@ -226,7 +226,7 @@ describe('conditionsService', () => {
               attendSampleDetailsAddress: '1, Some Address',
             },
             NOCONTACTASSOCIATE: {
-              groupsOrOrganisation: 'James Smith',
+              groupsOrOrganisation: 'Amehk Ngampuct',
             },
           },
           standard: {
@@ -247,7 +247,7 @@ describe('conditionsService', () => {
       return expect(service.getNonStandardConditions(licence)).toEqual({
         additionalConditions: [
           {
-            text: 'Not to associate with any person currently or formerly associated with James Smith without the prior approval of your supervising officer',
+            text: 'Not to associate with any person currently or formerly associated with Amehk Ngampuct without the prior approval of your supervising officer',
           },
         ],
         bespokeConditions: [{ text: 'Bespoke condition 1' }],

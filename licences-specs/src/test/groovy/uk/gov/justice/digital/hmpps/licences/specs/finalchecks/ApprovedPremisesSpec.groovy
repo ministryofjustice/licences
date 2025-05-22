@@ -34,7 +34,7 @@ class ApprovedPremisesSpec extends GebReportingSpec {
     testData.loadLicence('finalchecks/approved-premises')
 
     when: 'I view the curfew address task'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
     taskListAction(addressTask).click()
 
     then: 'I see the AP choice page'
@@ -59,7 +59,7 @@ class ApprovedPremisesSpec extends GebReportingSpec {
   def 'Opt out returns to tasklist in opted out state'() {
 
     given: 'On the AP choice page'
-    to ApprovedPremisesChoicePage, testData.markAndrewsBookingId
+    to ApprovedPremisesChoicePage, testData.testBookingId
 
     when: 'I select opt out and continue'
     approvedPremisesChoiceRadios.checked = 'OptOut'

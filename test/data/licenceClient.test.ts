@@ -16,11 +16,11 @@ describe('licenceClient', () => {
   const standardResponse = {
     rows: [
       {
-        booking_id: 'A6627JH',
+        booking_id: 'A1234BC',
         stage: 'ELIGIBILITY',
         licence: {
-          name: 'Bryanston, David',
-          nomisId: 'A6627JH',
+          name: 'Mrimmroza, Wenn',
+          nomisId: 'A1234BC',
           establishment: 'HMP Birmingham',
           dischargeDate: '2017-07-10',
         },

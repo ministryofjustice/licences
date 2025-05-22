@@ -30,7 +30,7 @@ class MandatoryCheckSpec extends GebReportingSpec {
 
     given: 'At tasklist page but mandatory check not complete'
     testData.loadLicence('decision/mandatory-check-required')
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     when: 'I click the final decision continue button'
     taskListAction('Final decision').click()
@@ -56,7 +56,7 @@ class MandatoryCheckSpec extends GebReportingSpec {
 
     given: 'At tasklist page when mandatory check is complete'
     testData.loadLicence('decision/mandatory-check-completed')
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     when: 'I click the final decision continue button'
     taskListAction('Final decision').click()

@@ -10,7 +10,7 @@ const activeLduClient = {
   isLduPresent: jest.fn(),
 }
 
-const probationAreaCode = 'N02'
+const probationAreaCode = 'Test1'
 const activeLdus = ['ABC1234', 'DEF345']
 let lduService
 

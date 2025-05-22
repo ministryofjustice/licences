@@ -30,7 +30,7 @@ class ProposedAddressCurfewAddressSpec extends GebReportingSpec {
 
     def "The Additional Information text area should be empty"() {
         when: 'I am on the Proposed Curfew Address page'
-        to ProposedAddressCurfewAddressPage, testData.markAndrewsBookingId
+        to ProposedAddressCurfewAddressPage, testData.testBookingId
         at ProposedAddressCurfewAddressPage
 
         then: 'the additional information text area is empty'
@@ -39,15 +39,15 @@ class ProposedAddressCurfewAddressSpec extends GebReportingSpec {
 
     def "The Additional Information text area accepts input"() {
       given: 'I am on the Proposed Curfew Address page'
-      to ProposedAddressCurfewAddressPage, testData.markAndrewsBookingId
+      to ProposedAddressCurfewAddressPage, testData.testBookingId
       at ProposedAddressCurfewAddressPage
 
       and: 'I input the following details'
-      street = 'High Street'
-      town = 'Sheffield'
-      postcode = 'AB12 3CD'
+      street = 'Test Street'
+      town = 'Test Town'
+      postcode = 'FA1 1KE'
       telephone = '1234567'
-      occupier 'Mr Smith'
+      occupier 'Mr Test'
       relation 'dad'
       caution = 'No'
       additionalInformation  =  "Some extra info"

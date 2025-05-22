@@ -40,7 +40,7 @@ class ApprovalTaskListSpec extends GebReportingSpec {
     testData.loadLicence('decision/unstarted')
 
     when: 'I view the page'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'I see the right number of task buttons'
     taskListActions.size() == 9
@@ -54,7 +54,7 @@ class ApprovalTaskListSpec extends GebReportingSpec {
 
   def 'Additional conditions are read only'() {
     when: 'I am on the Additional conditions page'
-    to ReviewConditionsPage, testData.markAndrewsBookingId
+    to ReviewConditionsPage, testData.testBookingId
 
     then: 'The licence conditions details are view only'
     conditions.additional.size() == 2
@@ -68,7 +68,7 @@ class ApprovalTaskListSpec extends GebReportingSpec {
     testData.loadLicence('decision/address-rejected')
 
     when: 'I view the tasklist'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'I see only eligibility, address, Risk Management return to PCA, refuse'
     taskListActions.size() == 4
@@ -84,7 +84,7 @@ class ApprovalTaskListSpec extends GebReportingSpec {
     testData.loadLicence('decision/risks-rejected')
 
     when: 'I view the tasklist'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'I see only eligibility, address, Risk Management return to PCA, refuse'
     taskListActions.size() == 5
@@ -99,7 +99,7 @@ class ApprovalTaskListSpec extends GebReportingSpec {
     testData.loadLicence('decision/insufficientTime')
 
     when: 'I view the tasklist'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'I see only eligibility, refuse'
     taskListActions.size() == 2

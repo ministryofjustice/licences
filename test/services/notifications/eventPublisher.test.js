@@ -19,7 +19,7 @@ describe('EventPublisher', () => {
       const eventPublisher = new EventPublisher(audit, telemetryClient)
 
       await eventPublisher.raiseCaseHandover({
-        username: 'BOB',
+        username: 'TEST',
         bookingId: '2',
         transitionType: 'caToRo',
         submissionTarget,
@@ -27,7 +27,7 @@ describe('EventPublisher', () => {
         target: { type: 'probation', probationAreaCode: 'aa2', lduCode: '2' },
       })
 
-      expect(audit.record).toHaveBeenCalledWith('SEND', 'BOB', {
+      expect(audit.record).toHaveBeenCalledWith('SEND', 'TEST', {
         bookingId: '2',
         submissionTarget: { some: 'target' },
         transitionType: 'caToRo',
@@ -40,7 +40,7 @@ describe('EventPublisher', () => {
       const eventPublisher = new EventPublisher(audit, telemetryClient)
 
       await eventPublisher.raiseCaseHandover({
-        username: 'BOB',
+        username: 'TEST',
         bookingId: '2',
         transitionType: 'caToRo',
         submissionTarget,
@@ -71,7 +71,7 @@ describe('EventPublisher', () => {
       const eventPublisher = new EventPublisher(audit, applicationInsights)
 
       await eventPublisher.raiseCaseHandover({
-        username: 'BOB',
+        username: 'TEST',
         bookingId: '2',
         transitionType: 'caToRo',
         submissionTarget,
@@ -79,7 +79,7 @@ describe('EventPublisher', () => {
         target: { type: 'probation', probationAreaCode: 'aa2', lduCode: '2' },
       })
 
-      expect(audit.record).toHaveBeenCalledWith('SEND', 'BOB', {
+      expect(audit.record).toHaveBeenCalledWith('SEND', 'TEST', {
         bookingId: '2',
         submissionTarget: { some: 'target' },
         transitionType: 'caToRo',
@@ -92,7 +92,7 @@ describe('EventPublisher', () => {
       const eventPublisher = new EventPublisher(audit, applicationInsights)
 
       await eventPublisher.raiseCaseHandover({
-        username: 'BOB',
+        username: 'TEST',
         bookingId: '2',
         transitionType: 'caToRo',
         submissionTarget,

@@ -29,7 +29,7 @@ class ApprovalConsiderationSpec extends GebReportingSpec {
   def 'Starts with nothing selected'() {
 
     when: 'I view the consideration page'
-    to ApprovalConsiderationPage, testData.markAndrewsBookingId
+    to ApprovalConsiderationPage, testData.testBookingId
 
     then: 'Neither radio option is selected'
     considerationRadios.checked == null
@@ -41,7 +41,7 @@ class ApprovalConsiderationSpec extends GebReportingSpec {
     testData.loadLicence('decision/consideration')
 
     when: 'I view the DM consideration page'
-    to ApprovalConsiderationPage, testData.markAndrewsBookingId
+    to ApprovalConsiderationPage, testData.testBookingId
 
     then: 'I see the previous values'
     considerationRadios.checked == 'Yes'
@@ -51,7 +51,7 @@ class ApprovalConsiderationSpec extends GebReportingSpec {
     testData.loadLicence('decision/unstarted')
 
     when: 'I view the consideration page'
-    to ApprovalConsiderationPage, testData.markAndrewsBookingId
+    to ApprovalConsiderationPage, testData.testBookingId
 
     and: 'I select No and continue'
     considerationRadios.checked = 'No'
@@ -67,14 +67,14 @@ class ApprovalConsiderationSpec extends GebReportingSpec {
   def 'Selecting Yes retains the Not Started task list label'() {
 
     when: 'I view the consideration page'
-    to ApprovalConsiderationPage, testData.markAndrewsBookingId
+    to ApprovalConsiderationPage, testData.testBookingId
 
     and: 'I select Yes and continue'
     considerationRadios.checked = 'Yes'
     saveAndContinue.click()
 
     then: 'I navigate to the tasklist'
-    to TaskListPage , testData.markAndrewsBookingId
+    to TaskListPage , testData.testBookingId
 
     and: 'I see the correct label'
     taskListLabel('Final decision', "Not started") == true
@@ -83,7 +83,7 @@ class ApprovalConsiderationSpec extends GebReportingSpec {
   def 'Continues to approval if Yes selected'() {
 
     when: 'I view the consideration page'
-    to ApprovalConsiderationPage, testData.markAndrewsBookingId
+    to ApprovalConsiderationPage, testData.testBookingId
 
     considerationRadios.checked = 'Yes'
     saveAndContinue.click()

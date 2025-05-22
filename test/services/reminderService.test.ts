@@ -16,7 +16,7 @@ describe('reminderService', () => {
 
   beforeEach(() => {
     prisonerService = createPrisonerServiceStub()
-    prisonerService.getEstablishmentForPrisoner.mockReturnValue({ premise: 'HMP Blah', agencyId: 'LT1' })
+    prisonerService.getEstablishmentForPrisoner.mockReturnValue({ premise: 'HMP Test', agencyId: 'LT1' })
 
     roContactDetailsService = new RoContactDetailsService(
       undefined,
@@ -129,7 +129,7 @@ describe('reminderService', () => {
       expect(roNotificationSender.sendNotifications).toHaveBeenCalledWith({
         bookingId: 2,
         notificationType: 'RO_OVERDUE',
-        prison: 'HMP Blah',
+        prison: 'HMP Test',
         responsibleOfficer: { staffIdentifier: 1 },
         sendingUserName: 'NOTIFICATION_SERVICE',
         transitionDate: '2019-01-01 12:00:00',
@@ -138,7 +138,7 @@ describe('reminderService', () => {
       expect(roNotificationSender.sendNotifications).toHaveBeenCalledWith({
         bookingId: 3,
         notificationType: 'RO_OVERDUE',
-        prison: 'HMP Blah',
+        prison: 'HMP Test',
         responsibleOfficer: { staffIdentifier: 1 },
         sendingUserName: 'NOTIFICATION_SERVICE',
         transitionDate: '2019-01-01 12:00:00',
@@ -147,7 +147,7 @@ describe('reminderService', () => {
       expect(roNotificationSender.sendNotifications).toHaveBeenCalledWith({
         bookingId: 1,
         notificationType: 'RO_DUE',
-        prison: 'HMP Blah',
+        prison: 'HMP Test',
         responsibleOfficer: { staffIdentifier: 1 },
         sendingUserName: 'NOTIFICATION_SERVICE',
         transitionDate: '2019-01-01 12:00:00',
@@ -156,7 +156,7 @@ describe('reminderService', () => {
       expect(roNotificationSender.sendNotifications).toHaveBeenCalledWith({
         bookingId: 1,
         notificationType: 'RO_TWO_DAYS',
-        prison: 'HMP Blah',
+        prison: 'HMP Test',
         responsibleOfficer: { staffIdentifier: 1 },
         sendingUserName: 'NOTIFICATION_SERVICE',
         transitionDate: '2019-01-01 12:00:00',

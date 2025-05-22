@@ -56,10 +56,10 @@ class FinalChecksTaskListSpec extends GebReportingSpec {
     testData.loadLicence('finalchecks/final-checks')
 
     when: 'I view the task list page'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'I see the expected offender details data'
-    offender.details.name == 'Mark Andrews'
+    offender.details.name == 'Osiss Helkarci'
     offender.details.nomisId == 'A5001DY'
     offender.details.dob == '22/10/1989'
     offender.details.externalLocation == 'HMP Albany'
@@ -90,7 +90,7 @@ class FinalChecksTaskListSpec extends GebReportingSpec {
     testData.loadLicence('finalchecks/final-checks')
 
     when: 'I view the page'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'I see 9 task buttons'
     taskListActions.size() == 10
@@ -111,7 +111,7 @@ class FinalChecksTaskListSpec extends GebReportingSpec {
     testData.loadLicence('finalchecks/final-checks-done')
 
     when: 'I view the page'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'I see 10 task buttons'
     taskListActions.size() == 11
@@ -123,7 +123,7 @@ class FinalChecksTaskListSpec extends GebReportingSpec {
   def 'Eligibility button links to Eligibility page'() {
 
     given: 'Viewing task list'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     when: 'I start the task'
     eligibilityTaskListAction().click()
@@ -141,7 +141,7 @@ class FinalChecksTaskListSpec extends GebReportingSpec {
   def 'Making offender ineligible shows eligibility tasks only'() {
 
     given: 'Viewing task list'
-    to EligibilityExclusionPage, testData.markAndrewsBookingId
+    to EligibilityExclusionPage, testData.testBookingId
 
     when:
     excludedRadios.checked = 'Yes'
@@ -161,7 +161,7 @@ class FinalChecksTaskListSpec extends GebReportingSpec {
 
     given: 'Viewing task list'
     testData.loadLicence('finalchecks/final-checks-done')
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     when: 'I start the task'
     taskListAction(task).click()
@@ -190,7 +190,7 @@ class FinalChecksTaskListSpec extends GebReportingSpec {
   def 'I can submit the licence to the DM'() {
 
     given: 'At task list'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     when: 'I press submit to decision maker'
     taskListAction(tasks.submit).click()
@@ -217,7 +217,7 @@ class FinalChecksTaskListSpec extends GebReportingSpec {
     testData.loadLicence('finalchecks/address-rejected')
 
     when: 'I view the tasklist'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'I see only address, submit'
     taskListActions.size() == 4
@@ -229,7 +229,7 @@ class FinalChecksTaskListSpec extends GebReportingSpec {
     testData.loadLicence('finalchecks/bassOffer-unstarted')
 
     when: 'I view the task list'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'I see the start now button for bass address'
     taskListAction(tasks.bass).text() == 'Start now'
@@ -247,7 +247,7 @@ class FinalChecksTaskListSpec extends GebReportingSpec {
     testData.loadLicence('finalchecks/bassOffer-unavailable')
 
     when: 'I view the task list'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'I see only bass, refuse, submit'
     taskListActions.size() == 4
@@ -262,7 +262,7 @@ class FinalChecksTaskListSpec extends GebReportingSpec {
     testData.loadLicence('finalchecks/approved-premises')
 
     when: 'I view the tasklist'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'The risk task is not shown'
     taskListActions.size() == 9

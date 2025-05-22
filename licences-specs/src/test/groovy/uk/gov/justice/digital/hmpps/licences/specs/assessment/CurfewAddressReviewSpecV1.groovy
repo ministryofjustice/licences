@@ -30,7 +30,7 @@ class CurfewAddressReviewSpecV1 extends GebReportingSpec {
     testData.loadLicence('assessment/curfewAddressReview-with-version-1')
 
     when: 'I go to the address review page'
-    to CurfewAddressReviewPageV1, testData.markAndrewsBookingId
+    to CurfewAddressReviewPageV1, testData.testBookingId
 
     then: 'I see the address details'
     curfew.address.line1 == 'Street'
@@ -72,7 +72,7 @@ class CurfewAddressReviewSpecV1 extends GebReportingSpec {
   def 'Modified choices are saved after save and continue'() {
 
     given: 'At address review page'
-    to CurfewAddressReviewPageV1, testData.markAndrewsBookingId
+    to CurfewAddressReviewPageV1, testData.testBookingId
 
     when: 'I select new options'
     landlordConsentRadios.checked = 'Yes'
@@ -83,7 +83,7 @@ class CurfewAddressReviewSpecV1 extends GebReportingSpec {
     find('#continueBtn').click()
 
     and: 'I move to the address review page'
-    to CurfewAddressReviewPageV1, testData.markAndrewsBookingId
+    to CurfewAddressReviewPageV1, testData.testBookingId
 
     then: 'I see the previously entered values'
     landlordConsentRadios.checked == 'Yes'

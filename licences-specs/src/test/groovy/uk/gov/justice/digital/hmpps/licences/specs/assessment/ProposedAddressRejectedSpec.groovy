@@ -31,7 +31,7 @@ class ProposedAddressRejectedSpec extends GebReportingSpec {
     def "Click 'save and continue' without selecting a radio button"() {
 
         given: 'I am on the ProposedAddressRejectedPage'
-        to ProposedAddressRejectedPage, testData.markAndrewsBookingId
+        to ProposedAddressRejectedPage, testData.testBookingId
 
         when: 'I select the continue button'
         continueButton.click()
@@ -47,7 +47,7 @@ class ProposedAddressRejectedSpec extends GebReportingSpec {
     def "Select the 'Yes' radio then 'save and continue'"() {
 
         given: 'I am on the ProposedAddressRejectedPage'
-        to (ProposedAddressRejectedPage, testData.markAndrewsBookingId)
+        to (ProposedAddressRejectedPage, testData.testBookingId)
 
         when: "I select the Yes radio button"
         alternativeAddressRadios.value('Yes')
@@ -62,7 +62,7 @@ class ProposedAddressRejectedSpec extends GebReportingSpec {
     def "Select the 'No' radio then 'save and continue'"() {
 
         given: 'I am on the ProposedAddressRejectedPage'
-        to ProposedAddressRejectedPage, testData.markAndrewsBookingId
+        to ProposedAddressRejectedPage, testData.testBookingId
 
         when: "I select the Yes radio button"
         alternativeAddressRadios.value('No')

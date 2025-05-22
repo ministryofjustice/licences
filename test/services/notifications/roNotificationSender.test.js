@@ -54,7 +54,7 @@ describe('sendRoNotifications', () => {
 
       const personalisation = {
         ...expectedCommonData,
-        prison: 'HMP Blah',
+        prison: 'HMP Test',
         ro_name: 'RO Name',
         date: 'Monday 25th March',
         organisation: 'NPS Dewsbury (Kirklees and Wakefield)',

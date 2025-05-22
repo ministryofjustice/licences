@@ -5,10 +5,10 @@ describe('Forename to initial', () => {
     expect(forenameToInitial('')).toEqual(null)
   })
   it('should change forename to initial', () => {
-    expect(forenameToInitial('Robert Smith')).toEqual('R. Smith')
+    expect(forenameToInitial('Test Person')).toEqual('T. Person')
   })
   it('should change forename to initial hypenated last name', () => {
-    expect(forenameToInitial('Robert Smith-Jones')).toEqual('R. Smith-Jones')
+    expect(forenameToInitial('Test Person-One')).toEqual('T. Person-One')
   })
 })
 

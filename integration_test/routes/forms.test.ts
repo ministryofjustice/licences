@@ -21,7 +21,7 @@ describe('/forms/', () => {
 
   const licence = { licence: {}, stage: 'DECIDED' }
   const formTemplateData = {
-    OFF_NAME: 'Mark Andrews',
+    OFF_NAME: 'Osiss Helkarci',
     OFF_NOMS: 'A5001DY',
     EST_PREMISE: 'HMP Albany',
     CREATION_DATE: '25th June 2019',
@@ -117,10 +117,10 @@ describe('/forms/', () => {
       const pdfText = pdf.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
 
       expect(pdfText).toContain('Home Detention Curfew (tagging): Eligible')
-      expect(pdfText).toContain('Name: Mark Andrews')
+      expect(pdfText).toContain('Name: Osiss Helkarci')
       expect(pdfText).toContain('Location: HMP Albany')
       expect(pdfText).toContain('Prison no: A5001DY')
-      expect(pdfText).toContain('Mark Andrews You are eligible for early release')
+      expect(pdfText).toContain('Osiss Helkarci You are eligible for early release')
       expect(pdfText).toContain('you could be released from prison on 23rd August 2019')
     })
 
@@ -141,7 +141,7 @@ describe('/forms/', () => {
 
       expect(pdfText).toContain('Home Detention Curfew (tagging): Postponed')
       expect(pdfText).toContain(
-        'Mark Andrews We are still reviewing your case for release on home detention curfew (tagging)'
+        'Osiss Helkarci We are still reviewing your case for release on home detention curfew (tagging)'
       )
       expect(pdfText).toContain('We will let you know our decision when we have all the information we need')
     })
@@ -162,7 +162,7 @@ describe('/forms/', () => {
       const pdfText = pdf.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
 
       expect(pdfText).toContain('Home Detention Curfew (tagging): Postponed')
-      expect(pdfText).toContain('Mark Andrews The decision to release you on HDC has been postponed because')
+      expect(pdfText).toContain('Osiss Helkarci The decision to release you on HDC has been postponed because')
       expect(pdfText).toContain(
         'If this is resolved in time to allow release, we will then make the decision and notify you'
       )
@@ -177,7 +177,7 @@ describe('/forms/', () => {
       const pdfText = pdf.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
 
       expect(pdfText).toContain('Home Detention Curfew (tagging): Postponed')
-      expect(pdfText).toContain('Mark Andrews The decision to release you on HDC has been postponed because')
+      expect(pdfText).toContain('Osiss Helkarci The decision to release you on HDC has been postponed because')
       expect(pdfText).toContain(
         'If this is resolved in time to allow release, we will then make the decision and notify you'
       )

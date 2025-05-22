@@ -49,13 +49,13 @@ class TaskListSpec extends GebReportingSpec {
     testData.loadLicence('assessment/unstarted')
 
     when: 'I view the task list page'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'I see the expected offender details data'
-    offender.details.name == 'Mark Andrews'
+    offender.details.name == 'Osiss Helkarci'
     offender.details.nomisId == 'A5001DY'
     offender.details.dob == '22/10/1989'
-    //offender.details.roName == 'Ryan Orton'
+    //offender.details.roName == 'Oshust Hanten'
     offender.details.externalLocation == 'HMP Albany'
     offender.details.offences == "Cause exceed max permitted wt of artic' vehicle - No of axles/configuration (No MOT/Manufacturer's Plate)"
     offender.details.crd == '15/10/2019'
@@ -81,7 +81,7 @@ class TaskListSpec extends GebReportingSpec {
   def 'Shows start now button for all tasks except create PDF and submit'() {
 
     when: 'I view the page'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'I see the task buttons and the submit button'
     taskListActions.size() == allTasksCount
@@ -96,7 +96,7 @@ class TaskListSpec extends GebReportingSpec {
   def '#task button links to page'() {
 
     given: 'Viewing task list'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     when: 'I start the task'
     taskListAction(task).click()
@@ -119,7 +119,7 @@ class TaskListSpec extends GebReportingSpec {
     testData.loadLicence('assessment/risks-no')
 
     when: 'I view the page'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'I see the task buttons and the submit button'
     taskListActions.size() == allTasksCount
@@ -138,7 +138,7 @@ class TaskListSpec extends GebReportingSpec {
     testData.loadLicence('assessment/unstarted')
 
     when: 'I view the page'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'I see the task buttons'
     taskListActions.size() == allTasksCount
@@ -153,7 +153,7 @@ class TaskListSpec extends GebReportingSpec {
     testData.loadLicence('assessment/done')
 
     when: 'I press submit to PCA'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
     taskListAction(tasks.submit).click()
 
     then: 'I see the licence details page'
@@ -182,7 +182,7 @@ class TaskListSpec extends GebReportingSpec {
     testData.loadLicence('assessment/address-rejected')
 
     when: 'I view the tasklist'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'I see only the address and and PDF and submit tasks'
     taskListActions.size() == 3
@@ -196,7 +196,7 @@ class TaskListSpec extends GebReportingSpec {
     testData.loadLicence('assessment/bassArea-unstarted')
 
     when: 'I view the task list'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     and: 'I start the task'
     taskListAction(tasks.bass).click()
@@ -211,7 +211,7 @@ class TaskListSpec extends GebReportingSpec {
     testData.loadLicence('assessment/bassArea-rejected')
 
     when: 'I view the tasklist'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'I see only the BASS and PDF and submit tasks'
     taskListActions.size() == 3
@@ -225,7 +225,7 @@ class TaskListSpec extends GebReportingSpec {
     testData.loadLicence('assessment/bassArea-no')
 
     when: 'Viewing the tasklist when BASS area rejected'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'A Continue button is shown'
     taskListAction(tasks.bass).text() == 'Continue'
@@ -237,7 +237,7 @@ class TaskListSpec extends GebReportingSpec {
     testData.loadLicence('assessment/bassArea-yes')
 
     when: 'I view the page'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'A change link is shown'
     taskListAction(tasks.bass).text() == 'Change'
@@ -267,7 +267,7 @@ class TaskListSpec extends GebReportingSpec {
     testData.loadLicence('assessment/approved-premises')
 
     when: 'I view the tasklist'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'The risk task is not shown'
     taskListActions.size() == allTasksCount-1

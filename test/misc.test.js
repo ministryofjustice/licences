@@ -3,28 +3,28 @@ const { flattenMeta } = require('../server/misc')
 describe('misc', () => {
   describe('flattenMeta', () => {
     test('leaves 1 level', () => {
-      expect(flattenMeta({ name: 'bob', age: 40 })).toEqual({ name: 'bob', age: 40 })
+      expect(flattenMeta({ name: 'test', age: 40 })).toEqual({ name: 'test', age: 40 })
     })
 
     test('flattens 2 levels', () => {
-      expect(flattenMeta({ name: 'bob', age: 40, mate: { name: 'Jo', age: 42 } })).toEqual({
-        name: 'bob',
+      expect(flattenMeta({ name: 'test1', age: 40, mate: { name: 'test2', age: 42 } })).toEqual({
+        name: 'test1',
         age: 40,
         mate_age: 42,
-        mate_name: 'Jo',
+        mate_name: 'test2',
       })
     })
 
     test('flattens 3 levels with arrays', () => {
       expect(
-        flattenMeta({ name: 'bob', age: 40, mate: { name: 'Jo', age: 42, cats: ['tim', { name: 'jon' }] } })
+        flattenMeta({ name: 'test1', age: 40, mate: { name: 'test2', age: 42, cats: ['test3', { name: 'test4' }] } })
       ).toEqual({
-        name: 'bob',
+        name: 'test1',
         age: 40,
-        mate_cats_0: 'tim',
-        mate_cats_1_name: 'jon',
+        mate_cats_0: 'test3',
+        mate_cats_1_name: 'test4',
         mate_age: 42,
-        mate_name: 'Jo',
+        mate_name: 'test2',
       })
     })
 
@@ -37,11 +37,11 @@ describe('misc', () => {
     })
 
     test('copes with string', () => {
-      expect(flattenMeta('some vile thing')).toEqual({ 0: 'some vile thing' })
+      expect(flattenMeta('some string')).toEqual({ 0: 'some string' })
     })
 
     test('copes with strings', () => {
-      expect(flattenMeta('some vile thing', 'another one!')).toEqual({ 0: 'some vile thing', 1: 'another one!' })
+      expect(flattenMeta('some string', 'another one!')).toEqual({ 0: 'some string', 1: 'another one!' })
     })
 
     test('copes with arrays', () => {
@@ -49,7 +49,7 @@ describe('misc', () => {
     })
 
     test('copes with arrays of objects', () => {
-      expect(flattenMeta([{ name: 'bob' }, { name: 'jim' }])).toEqual({ '0_name': 'bob', '1_name': 'jim' })
+      expect(flattenMeta([{ name: 'test1' }, { name: 'test2' }])).toEqual({ '0_name': 'test1', '1_name': 'test2' })
     })
   })
 })

@@ -23,7 +23,7 @@ describe('roNotificationHandler', () => {
   let roContactDetailsService: jest.Mocked<RoContactDetailsService>
 
   const prisoner = { firstName: 'first', lastName: 'last', dateOfBirth: 'off-dob', offenderNo: 'AB1234A' }
-  const submissionTarget = { premise: 'HMP Blah', agencyId: 'LT1', name: 'Something', deliusId: 'delius' }
+  const submissionTarget = { premise: 'HMP Test', agencyId: 'LT1', name: 'Something', deliusId: 'delius' }
   const bookingId = -1
   const token = 'token-1'
   const licence = {}
@@ -51,7 +51,7 @@ describe('roNotificationHandler', () => {
     }
 
     prisonerService = createPrisonerServiceStub()
-    prisonerService.getEstablishmentForPrisoner.mockReturnValue({ premise: 'HMP Blah', agencyId: 'LT1' })
+    prisonerService.getEstablishmentForPrisoner.mockReturnValue({ premise: 'HMP Test', agencyId: 'LT1' })
     prisonerService.getOrganisationContactDetails.mockReturnValue(submissionTarget)
     prisonerService.getPrisonerPersonalDetails.mockReturnValue(prisoner)
 
@@ -77,7 +77,7 @@ describe('roNotificationHandler', () => {
   describe('send Ro', () => {
     test('handles caToRo', async () => {
       const responsibleOfficer = {
-        name: 'Jo Smith',
+        name: 'Test Person',
         deliusId: 'delius1',
         email: 'ro@user.com',
         lduCode: 'code-1',
@@ -102,7 +102,7 @@ describe('roNotificationHandler', () => {
         bookingId,
         prisoner,
         responsibleOfficer,
-        prison: 'HMP Blah',
+        prison: 'HMP Test',
         notificationType: 'RO_NEW',
         sendingUserName: username,
       })
@@ -148,7 +148,7 @@ describe('roNotificationHandler', () => {
 
     test('caToRo when cannot get prison', async () => {
       const responsibleOfficer = {
-        name: 'Jo Smith',
+        name: 'Test Person',
         deliusId: 'delius1',
         email: 'ro@user.com',
         lduCode: 'code-1',
@@ -178,7 +178,7 @@ describe('roNotificationHandler', () => {
 
     test('caToRo when delius staff records are not linked to user', async () => {
       const responsibleOfficer = {
-        name: 'Jo Smith',
+        name: 'Test Person',
         deliusId: 'STAFF-1',
         staffIdentifier: 1,
         lduCode: 'code-1',
@@ -203,14 +203,14 @@ describe('roNotificationHandler', () => {
       expect(warningClient.raiseWarning).toHaveBeenCalledWith(
         bookingId,
         STAFF_NOT_LINKED,
-        `RO with delius staff code: 'STAFF-1', staff identifier: '1' and name: 'Jo Smith', responsible for managing: 'AAAA12', has unlinked staff record in delius`
+        `RO with delius staff code: 'STAFF-1', staff identifier: '1' and name: 'Test Person', responsible for managing: 'AAAA12', has unlinked staff record in delius`
       )
 
       expect(roNotificationSender.sendNotifications).toHaveBeenCalledWith({
         bookingId,
         prisoner,
         responsibleOfficer,
-        prison: 'HMP Blah',
+        prison: 'HMP Test',
         notificationType: 'RO_NEW',
         sendingUserName: username,
       })
@@ -236,9 +236,9 @@ describe('roNotificationHandler', () => {
 
   test('caToRo adds RO role in delius if have access to delius username', async () => {
     const responsibleOfficer = {
-      name: 'Jo Smith',
+      name: 'Test Person',
       deliusId: 'STAFF-1',
-      username: 'userBob',
+      username: 'username',
       lduCode: 'code-1',
       lduDescription: 'lduDescription-1',
       nomsNumber: 'AAAA12',
@@ -258,12 +258,12 @@ describe('roNotificationHandler', () => {
       user,
     })
 
-    expect(deliusClient.addResponsibleOfficerRole).toHaveBeenCalledWith('userBob')
+    expect(deliusClient.addResponsibleOfficerRole).toHaveBeenCalledWith('username')
   })
 
   test('caToRo does not RO role in delius if delius username is not present', async () => {
     const responsibleOfficer = {
-      name: 'Jo Smith',
+      name: 'Test Person',
       deliusId: 'STAFF-1',
       lduCode: 'code-1',
       lduDescription: 'lduDescription-1',
@@ -289,7 +289,7 @@ describe('roNotificationHandler', () => {
 
   describe('sendRoEmail', () => {
     const responsibleOfficer = {
-      name: 'Jo Smith',
+      name: 'Test Person',
       deliusId: 'delius1',
       email: 'ro@user.com',
       lduCode: 'code-1',
@@ -317,7 +317,7 @@ describe('roNotificationHandler', () => {
         bookingId,
         prisoner,
         responsibleOfficer,
-        prison: 'HMP Blah',
+        prison: 'HMP Test',
         notificationType: 'RO_NEW',
         sendingUserName: username,
       })
@@ -397,7 +397,7 @@ describe('roNotificationHandler', () => {
     test('caToRo adds RO role in delius if have access to delius username', async () => {
       roContactDetailsService.getResponsibleOfficerWithContactDetails.mockResolvedValue({
         ...responsibleOfficer,
-        username: 'userBob',
+        username: 'username',
       })
 
       await roNotificationHandler.sendRoEmail({
@@ -409,7 +409,7 @@ describe('roNotificationHandler', () => {
         user,
       })
 
-      expect(deliusClient.addResponsibleOfficerRole).toHaveBeenCalledWith('userBob')
+      expect(deliusClient.addResponsibleOfficerRole).toHaveBeenCalledWith('username')
     })
 
     test('caToRo does not RO role in delius if delius username is not present', async () => {

@@ -56,7 +56,7 @@ class CaTaskListSpec extends GebReportingSpec {
     testData.loadLicence('decision/approved')
 
     when: 'I view the task list page'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     and: 'I click the back to dashboard button'
     $('a', text: 'Back to case list').click()
@@ -68,7 +68,7 @@ class CaTaskListSpec extends GebReportingSpec {
   def 'Shows correct button labels for tasks when HDC APPROVED'() {
 
     when: 'I view the task list'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'I see the task buttons and the submit button'
     taskListActions.size() == 12
@@ -90,7 +90,7 @@ class CaTaskListSpec extends GebReportingSpec {
   def '#task button links to page - HDC approved'() {
 
     given: 'Viewing task list'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     when: 'I start the task'
     taskListAction(task).click()
@@ -116,12 +116,12 @@ class CaTaskListSpec extends GebReportingSpec {
   def 'When address is withdrawn, can only send to DM for refusal'() {
 
     when: 'I withdraw the address'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
     taskListAction(tasks.address).click()
     $('#withdrawConsent').click()
 
     and: 'I view the taskist'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'I can only submit for refusal'
     $('h2', text: contains('Submit to decision maker')).closest('div').text().contains('Ready to submit for refusal')
@@ -130,13 +130,13 @@ class CaTaskListSpec extends GebReportingSpec {
   def 'When address is reinstated, can resume creating licence'() {
 
     when: 'I reinstate the address'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
     taskListAction(tasks.address).click()
     $('#reinstate').click()
     $('#withdrawConsent').click()
 
     and: 'I view the taskist'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'I see the full tasklist and the create licence task'
     taskListActions.size() == 12
@@ -149,7 +149,7 @@ class CaTaskListSpec extends GebReportingSpec {
     testData.loadLicence('postDecision/address-withdrawn-new')
 
     when: 'I view the tasklist'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'I can only submit to RO'
     $('h2', text: contains('Submit curfew address')).closest('div').text().contains('Ready to submit')
@@ -161,7 +161,7 @@ class CaTaskListSpec extends GebReportingSpec {
     testData.loadLicence('decision/approved-bass')
 
     when: 'I view the task list page'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'I see the BASS task'
     taskListAction(tasks.bass).text() == 'Change'
@@ -180,7 +180,7 @@ class CaTaskListSpec extends GebReportingSpec {
     testData.loadLicence('decision/refused')
 
     when: 'I view the task list'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'I see the task buttons and the submit button'
     taskListActions.size() == 9
@@ -207,7 +207,7 @@ class CaTaskListSpec extends GebReportingSpec {
   def '#task button links to page HDC rejected'() {
 
     given: 'Viewing task list'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     when: 'I start the task'
     taskListAction(task).click()

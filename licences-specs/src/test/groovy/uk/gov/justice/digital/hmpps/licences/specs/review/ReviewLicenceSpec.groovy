@@ -30,7 +30,7 @@ class ReviewLicenceSpec extends GebReportingSpec {
     testData.loadLicence('finalchecks/final-checks-done')
 
     when: 'I view the page'
-    to ReviewLicencePage, testData.markAndrewsBookingId
+    to ReviewLicencePage, testData.testBookingId
 
     then: 'I do not see change details links'
     $('a', id: contains('EditLink')).size() == 0
@@ -42,7 +42,7 @@ class ReviewLicenceSpec extends GebReportingSpec {
     testData.loadLicence('review/address-rejected')
 
     when: 'I view the page'
-    to ReviewLicencePage, testData.markAndrewsBookingId
+    to ReviewLicencePage, testData.testBookingId
 
     then: 'I see the address detail'
     $('#curfewAddressDetails').isDisplayed()

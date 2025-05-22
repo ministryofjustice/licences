@@ -29,7 +29,7 @@ class VictimSpec extends GebReportingSpec {
   def 'Options initially blank'() {
 
     given: 'At task list page'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     when: 'I start the victim task'
     taskListAction('Victim liaison').click()
@@ -68,7 +68,7 @@ class VictimSpec extends GebReportingSpec {
     find('#continueBtn').click()
 
     and: 'I return to the victim liaison page'
-    to VictimLiaisonPage, testData.markAndrewsBookingId
+    to VictimLiaisonPage, testData.testBookingId
 
     then: 'I see the previously entered values'
     victimLiaisonRadios.checked == 'Yes'

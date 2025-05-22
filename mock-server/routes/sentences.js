@@ -21,8 +21,8 @@ router.post('/bookings', (req, res) => {
       {
         bookingId: 1,
         offenderNo: 'A111111',
-        firstName: 'DEREK',
-        lastName: 'TROTTER',
+        firstName: 'ORUS',
+        lastName: 'MROLKIRG',
         dateOfBirth: '1950-10-22',
         agencyLocationId: 'out',
         agencyLocationDesc: 'Licence Auto Test Prison',
@@ -47,8 +47,8 @@ router.post('/bookings', (req, res) => {
       {
         bookingId: 2,
         offenderNo: 'A111111',
-        firstName: 'RODNEY',
-        lastName: 'TROTTER',
+        firstName: 'UGAN',
+        lastName: 'QEMPURK',
         dateOfBirth: '1950-10-22',
         agencyLocationId: 'out',
         agencyLocationDesc: 'Licence Auto Test Prison',
@@ -80,9 +80,9 @@ router.post('/bookings', (req, res) => {
 router.get('/bookings/:bookingId/aliases', (req, res) => {
   res.send([
     {
-      firstName: 'Marky',
+      firstName: 'Uvorrd',
       middleName: 'string',
-      lastName: 'Andrews',
+      lastName: 'Wackazh',
       age: 0,
       dob: '2018-01-11',
       gender: 'string',

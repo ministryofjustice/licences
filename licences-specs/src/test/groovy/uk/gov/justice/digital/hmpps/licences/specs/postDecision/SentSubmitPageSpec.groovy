@@ -33,7 +33,7 @@ class SentSubmitPageSpec extends GebReportingSpec {
     testData.loadLicence('decision/approved')
 
     when: 'I view the task list page'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'I click the to Resubmit button'
     resubmit.click()

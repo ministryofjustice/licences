@@ -40,7 +40,7 @@ class BassOfferSpec extends GebReportingSpec {
     testData.loadLicence('finalchecks/bassOffer-unstarted')
 
     when: 'I view the BASS offer page'
-    to BassOfferPage, testData.markAndrewsBookingId
+    to BassOfferPage, testData.testBookingId
 
     then: 'No radio option is selected'
     bassAcceptedRadios.checked == null
@@ -58,7 +58,7 @@ class BassOfferSpec extends GebReportingSpec {
     testData.loadLicence('finalchecks/bassOffer-unsuitable')
 
     when: 'I view the serious offence page'
-    to BassOfferPage, testData.markAndrewsBookingId
+    to BassOfferPage, testData.testBookingId
 
     then: 'I see the previous values'
     bassAcceptedRadios.checked == 'Unsuitable'
@@ -71,7 +71,7 @@ class BassOfferSpec extends GebReportingSpec {
 
     given: 'A licence ready for final checks'
     testData.loadLicence('finalchecks/bassOffer-unstarted')
-    to BassOfferPage, testData.markAndrewsBookingId
+    to BassOfferPage, testData.testBookingId
 
     when: 'I choose the option and proceed'
     bassAcceptedRadios.checked = choice
@@ -91,7 +91,7 @@ class BassOfferSpec extends GebReportingSpec {
 
     given: 'A licence ready for final checks'
     testData.loadLicence('finalchecks/bassOffer-unstarted')
-    to BassOfferPage, testData.markAndrewsBookingId
+    to BassOfferPage, testData.testBookingId
 
     when: 'I withdraw cosent'
     find('#withdrawBassOffer').click()
@@ -120,7 +120,7 @@ class BassOfferSpec extends GebReportingSpec {
 
     given: 'A withdrawn BASS request'
     testData.loadLicence('finalchecks/bassOffer-withdrawn')
-    to BassWithdrawnPage, testData.markAndrewsBookingId
+    to BassWithdrawnPage, testData.testBookingId
 
     when: 'I choose the option'
     decisionRadios.checked = choice

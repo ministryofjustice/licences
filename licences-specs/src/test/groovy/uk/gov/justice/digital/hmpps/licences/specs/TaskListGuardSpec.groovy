@@ -30,7 +30,7 @@ class TaskListGuardSpec extends GebReportingSpec {
     actions.logIn(role)
 
     when: 'I view the taskList page'
-    via TaskListPage, testData.markAndrewsBookingId
+    via TaskListPage, testData.testBookingId
 
     then: 'Should be on #expectedPage'
     at expectedPage
@@ -50,7 +50,7 @@ class TaskListGuardSpec extends GebReportingSpec {
     actions.logIn(role)
 
     when: 'I view the taskList page'
-    via TaskListPage, testData.markAndrewsBookingId
+    via TaskListPage, testData.testBookingId
 
     then: 'Should be on #expectedPage'
     at expectedPage

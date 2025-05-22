@@ -30,7 +30,7 @@ class ApprovedPremisesSpec extends GebReportingSpec {
   def 'Starts with nothing selected'() {
 
     when: 'I view the approved premises page'
-    to ApprovedPremisesPage, testData.markAndrewsBookingId
+    to ApprovedPremisesPage, testData.testBookingId
 
     then: 'No radio option is selected'
     approvedPremisesRadios.checked == null
@@ -42,7 +42,7 @@ class ApprovedPremisesSpec extends GebReportingSpec {
     testData.loadLicence('assessment/approved-premises')
 
     when: 'I view the AP page'
-    to ApprovedPremisesPage, testData.markAndrewsBookingId
+    to ApprovedPremisesPage, testData.testBookingId
 
     then: 'I see the previous values'
     approvedPremisesRadios.checked == 'Yes'
@@ -51,7 +51,7 @@ class ApprovedPremisesSpec extends GebReportingSpec {
   def 'The curfew address review is shown next if decision is No'() {
 
     given: 'On AP page'
-    to ApprovedPremisesPage, testData.markAndrewsBookingId
+    to ApprovedPremisesPage, testData.testBookingId
 
     when: 'I select No'
     approvedPremisesRadios.checked = 'No'
@@ -64,7 +64,7 @@ class ApprovedPremisesSpec extends GebReportingSpec {
   def 'The AP address page is shown next if decision is Yes'() {
 
     given: 'On AP page'
-    to ApprovedPremisesPage, testData.markAndrewsBookingId
+    to ApprovedPremisesPage, testData.testBookingId
 
     when: 'I select Yes'
     approvedPremisesRadios.checked = 'Yes'
@@ -77,7 +77,7 @@ class ApprovedPremisesSpec extends GebReportingSpec {
   def 'Entered values are saved after save and continue'() {
 
     when: 'First viewing AP Address page'
-    to ApprovedPremisesAddressPage, testData.markAndrewsBookingId
+    to ApprovedPremisesAddressPage, testData.testBookingId
 
     then: 'The form is empty'
     approvedPremises.addressForm.line1.value() == ''
@@ -99,7 +99,7 @@ class ApprovedPremisesSpec extends GebReportingSpec {
     at TaskListPage
 
     when: 'I return to the AP address page'
-    to ApprovedPremisesAddressPage, testData.markAndrewsBookingId
+    to ApprovedPremisesAddressPage, testData.testBookingId
 
     then: 'I see the entered values'
     approvedPremises.addressForm.line1.value() == '1'

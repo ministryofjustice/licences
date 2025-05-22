@@ -5,40 +5,40 @@ const { jwtDecode } = require('jwt-decode')
 const router = express.Router()
 const profiles = {
   CA_RO_DM: {
-    name: 'Catherine Ryan Diane',
+    name: 'Wuror Gul',
     username: 'CA_RO_DM_USER',
     email: 'CARODM@work',
     activeCaseLoadId: 'BEL',
     authSource: 'nomis',
   },
   CA: {
-    name: 'Catherine Amos',
+    name: 'Kamak Haz',
     username: 'CA_USER_TEST',
     email: 'CA-DEMO@work',
     activeCaseLoadId: 'BEL',
     authSource: 'nomis',
   },
   RO: {
-    name: 'Ryan Orton',
+    name: 'Oshust Hanten',
     username: 'AUTH_RO_USER_TEST',
     email: 'RO_USER@work',
     authSource: 'nomis',
   },
   DM: {
-    name: 'Diane Matthews',
+    name: 'Hekowo Fann',
     username: 'DM_USER_TEST',
     email: 'DM_USER@work',
     activeCaseLoadId: 'BEL',
     authSource: 'nomis',
   },
   NOMIS: {
-    name: 'Norman Bates',
+    name: 'Nawo Mrorann',
     username: 'NOMIS_BATCHLOAD',
     email: 'BATCHLOAD_USER@work',
     activeCaseLoadId: 'BEL',
   },
   NONE: {
-    name: 'Norman Bates',
+    name: 'Nawo Mrorann',
     username: 'NONE',
     email: 'BATCHLOAD_USER@work',
     activeCaseLoadId: 'BEL',

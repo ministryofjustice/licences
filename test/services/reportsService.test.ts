@@ -36,8 +36,8 @@ describe('reportsService', () => {
     {
       bookingId: '1',
       prisonerNumber: 'AAAA11',
-      firstName: 'John',
-      lastName: 'Smith',
+      firstName: 'Umuk',
+      lastName: 'Anluth',
       prisonId: 'MDI',
       prisonName: 'Moorland (HMP & YOI)',
       homeDetentionCurfewEligibilityDate: moment().add(14, 'weeks').subtract(1, 'days'),
@@ -45,8 +45,8 @@ describe('reportsService', () => {
     {
       bookingId: '2',
       prisonerNumber: 'AAAA12',
-      firstName: 'Max',
-      lastName: 'Martin',
+      firstName: 'Evoka',
+      lastName: 'Drinzirgh',
       prisonId: 'MDI',
       prisonName: 'Moorland (HMP & YOI)',
       homeDetentionCurfewEligibilityDate: moment().add(14, 'weeks').subtract(1, 'days'),
@@ -54,8 +54,8 @@ describe('reportsService', () => {
     {
       bookingId: '3',
       prisonerNumber: 'AAAA13',
-      firstName: 'Tim',
-      lastName: 'North',
+      firstName: 'Jinmuc',
+      lastName: 'Zol',
       prisonId: 'MDI',
       prisonName: 'Moorland (HMP & YOI)',
       homeDetentionCurfewEligibilityDate: moment().add(14, 'weeks').subtract(1, 'days'),
@@ -63,8 +63,8 @@ describe('reportsService', () => {
     {
       bookingId: '4',
       prisonerNumber: 'AAAA14',
-      firstName: 'Sam',
-      lastName: 'Samuels',
+      firstName: 'Thuz',
+      lastName: 'Lornach',
       prisonId: 'MDI',
       prisonName: 'Moorland (HMP & YOI)',
       homeDetentionCurfewEligibilityDate: moment().add(14, 'weeks').add(1, 'days'),
@@ -72,8 +72,8 @@ describe('reportsService', () => {
     {
       bookingId: '5',
       prisonerNumber: 'AAAA15',
-      firstName: 'Bob',
-      lastName: 'Bobbington',
+      firstName: 'Vani',
+      lastName: 'Tuhnorv',
       prisonId: 'MDI',
       prisonName: 'Moorland (HMP & YOI)',
       homeDetentionCurfewEligibilityDate: moment().add(14, 'weeks'),
@@ -81,8 +81,8 @@ describe('reportsService', () => {
     {
       bookingId: '6',
       prisonerNumber: 'AAAA16',
-      firstName: 'Tom',
-      lastName: 'Tommington',
+      firstName: 'Udah',
+      lastName: 'Drawrodho',
       prisonId: 'SWI',
       prisonName: 'Swansea HMP',
       homeDetentionCurfewEligibilityDate: moment().add(14, 'weeks').subtract(1, 'days'),
@@ -90,8 +90,8 @@ describe('reportsService', () => {
     {
       bookingId: '7',
       prisonerNumber: 'AAAA17',
-      firstName: 'Frank',
-      lastName: 'Smith',
+      firstName: 'Odrushi',
+      lastName: 'Gozicx',
       prisonId: 'MDI',
       prisonName: 'Moorland (HMP & YOI)',
       homeDetentionCurfewEligibilityDate: moment().add(14, 'weeks').subtract(1, 'days'),
@@ -99,8 +99,8 @@ describe('reportsService', () => {
     {
       bookingId: '8',
       prisonerNumber: 'AAAA18',
-      firstName: 'Todd',
-      lastName: 'Toddington',
+      firstName: 'Ochong',
+      lastName: 'Vocis',
       prisonId: 'MDI',
       prisonName: 'Moorland (HMP & YOI)',
       homeDetentionCurfewEligibilityDate: moment().add(14, 'weeks').subtract(1, 'days'),
@@ -138,8 +138,8 @@ describe('reportsService', () => {
           staff: {
             code: 'XXXXX',
             unallocated: false,
-            forenames: 'Mel',
-            surname: 'Taylor',
+            forenames: 'Test',
+            surname: 'Person1',
           },
         },
       ],
@@ -156,8 +156,8 @@ describe('reportsService', () => {
           },
           staff: {
             code: 'XXXXX',
-            forenames: 'Mike',
-            surname: 'Jones',
+            forenames: 'Test',
+            surname: 'Person2',
           },
         },
       ],
@@ -174,8 +174,8 @@ describe('reportsService', () => {
           },
           staff: {
             code: 'XXXXX',
-            forenames: 'Mel',
-            surname: 'Taylor',
+            forenames: 'Test',
+            surname: 'Person1',
           },
         },
       ],
@@ -299,7 +299,7 @@ describe('reportsService', () => {
       const result = await service.getLicencesWithAndWithoutComAssignment('user-1')
 
       expect(result).toContain(
-        `PRISON,PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,COM,PDU\nMDI,AAAA11,John,Smith,${hdcedWithin14Weeks},,East of England\nMDI,AAAA12,Max,Martin,${hdcedWithin14Weeks},Mel Taylor,West of England\nMDI,AAAA13,Tim,North,${hdcedWithin14Weeks},Mike Jones,South of England\nMDI,AAAA15,Bob,Bobbington,${hdced14Weeks},Mel Taylor,North of England\nSWI,AAAA16,Tom,Tommington,${hdcedWithin14Weeks},,\nMDI,AAAA17,Frank,Smith,${hdcedWithin14Weeks},,\nMDI,AAAA18,Todd,Toddington,${hdcedWithin14Weeks},,`
+        `PRISON,PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,COM,PDU\nMDI,AAAA11,Umuk,Anluth,${hdcedWithin14Weeks},,East of England\nMDI,AAAA12,Evoka,Drinzirgh,${hdcedWithin14Weeks},Test Person1,West of England\nMDI,AAAA13,Jinmuc,Zol,${hdcedWithin14Weeks},Test Person2,South of England\nMDI,AAAA15,Vani,Tuhnorv,${hdced14Weeks},Test Person1,North of England\nSWI,AAAA16,Udah,Drawrodho,${hdcedWithin14Weeks},,\nMDI,AAAA17,Odrushi,Gozicx,${hdcedWithin14Weeks},,\nMDI,AAAA18,Ochong,Vocis,${hdcedWithin14Weeks},,`
       )
       expect(result).not.toContain('MDI,AAAA14,Sam,Samuels,,')
     })
@@ -309,8 +309,8 @@ describe('reportsService', () => {
         {
           bookingId: '1',
           prisonerNumber: 'AAAA11',
-          firstName: 'John',
-          lastName: 'Smith',
+          firstName: 'Umuk',
+          lastName: 'Anluth',
           prisonId: 'MDI',
           prisonName: 'Moorland (HMP & YOI)',
           homeDetentionCurfewEligibilityDate: moment().add(14, 'weeks').subtract(1, 'days'),
@@ -318,8 +318,8 @@ describe('reportsService', () => {
         {
           bookingId: '2',
           prisonerNumber: 'AAAA12',
-          firstName: 'Max',
-          lastName: 'Martin',
+          firstName: 'Evoka',
+          lastName: 'Drinzirgh',
           prisonId: 'MDI',
           prisonName: 'Moorland (HMP & YOI)',
           homeDetentionCurfewEligibilityDate: moment().add(14, 'weeks').subtract(1, 'days'),
@@ -328,8 +328,8 @@ describe('reportsService', () => {
         {
           bookingId: '3',
           prisonerNumber: 'AAAA13',
-          firstName: 'Tim',
-          lastName: 'North',
+          firstName: 'Jinmuc',
+          lastName: 'Zol',
           prisonId: 'MDI',
           prisonName: 'Moorland (HMP & YOI)',
           homeDetentionCurfewEligibilityDate: moment().add(14, 'weeks').subtract(1, 'days'),
@@ -338,9 +338,9 @@ describe('reportsService', () => {
       const result = await service.getLicencesWithAndWithoutComAssignment('user-1')
 
       expect(result).toContain(
-        `PRISON,PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,COM,PDU\nMDI,AAAA11,John,Smith,${hdcedWithin14Weeks},,East of England\nMDI,AAAA13,Tim,North,${hdcedWithin14Weeks},Mike Jones,South of England`
+        `PRISON,PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,COM,PDU\nMDI,AAAA11,Umuk,Anluth,${hdcedWithin14Weeks},,East of England\nMDI,AAAA13,Jinmuc,Zol,${hdcedWithin14Weeks},Test Person2,South of England`
       )
-      expect(result).not.toContain(`AAAA12,Max,Martin,${hdcedWithin14Weeks},Mel Taylor,West of England`)
+      expect(result).not.toContain(`AAAA12,Evoka,Drinzirgh,${hdcedWithin14Weeks},Test Person1,West of England`)
     })
   })
 
@@ -366,11 +366,11 @@ describe('reportsService', () => {
       const result = await service.getLicencesRequiringComAssignment('user-1', 'MDI')
 
       expect(result).toContain(
-        `PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,PDU\nAAAA11,John,Smith,${hdcedWithin14Weeks},East of England\nAAAA17,Frank,Smith,${hdcedWithin14Weeks},\nAAAA18,Todd,Toddington,${hdcedWithin14Weeks},`
+        `PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,PDU\nAAAA11,Umuk,Anluth,${hdcedWithin14Weeks},East of England\nAAAA17,Odrushi,Gozicx,${hdcedWithin14Weeks},\nAAAA18,Ochong,Vocis,${hdcedWithin14Weeks},`
       )
-      expect(result).not.toContain(`AAAA12,Max,Martin,${hdcedWithin14Weeks},West of England`)
-      expect(result).not.toContain(`AAAA13,Tim,North,${hdcedWithin14Weeks},South of England`)
-      expect(result).not.toContain(`AAAA15,Bob,Bobbington,${hdced14Weeks},North of England`)
+      expect(result).not.toContain(`AAAA12,Evoka,Drinzirgh,${hdcedWithin14Weeks},West of England`)
+      expect(result).not.toContain(`AAAA13,Jinmuc,Zol,${hdcedWithin14Weeks},South of England`)
+      expect(result).not.toContain(`AAAA15,Vani,Tuhnorv,${hdced14Weeks},North of England`)
     })
 
     test('should not add released prisoners to csv string', async () => {
@@ -378,8 +378,8 @@ describe('reportsService', () => {
         {
           bookingId: '1',
           prisonerNumber: 'AAAA11',
-          firstName: 'John',
-          lastName: 'Smith',
+          firstName: 'Umuk',
+          lastName: 'Anluth',
           prisonId: 'MDI',
           prisonName: 'Moorland (HMP & YOI)',
           homeDetentionCurfewEligibilityDate: moment().add(13, 'weeks').format('YYYY-MM-DD'),
@@ -388,8 +388,8 @@ describe('reportsService', () => {
         {
           bookingId: '2',
           prisonerNumber: 'AAAA12',
-          firstName: 'Max',
-          lastName: 'Martin',
+          firstName: 'Evoka',
+          lastName: 'Drinzirgh',
           prisonId: 'MDI',
           prisonName: 'Moorland (HMP & YOI)',
           homeDetentionCurfewEligibilityDate: moment().add(13, 'weeks').format('YYYY-MM-DD'),
@@ -397,8 +397,8 @@ describe('reportsService', () => {
         {
           bookingId: '3',
           prisonerNumber: 'AAAA13',
-          firstName: 'Tim',
-          lastName: 'North',
+          firstName: 'Jinmuc',
+          lastName: 'Zol',
           prisonId: 'MDI',
           prisonName: 'Moorland (HMP & YOI)',
           homeDetentionCurfewEligibilityDate: moment().add(13, 'weeks').format('YYYY-MM-DD'),
@@ -407,7 +407,7 @@ describe('reportsService', () => {
       const result = await service.getLicencesRequiringComAssignment('user-1', 'MDI')
 
       expect(result).toContain('PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,PDU')
-      expect(result).not.toContain(`AAAA11,John,Smith,${hdcedWithin14Weeks},East of England`)
+      expect(result).not.toContain(`AAAA11,Umuk,Anluth,${hdcedWithin14Weeks},East of England`)
     })
   })
 
@@ -433,11 +433,11 @@ describe('reportsService', () => {
       const result = await service.getComAssignedLicencesForHandover('user-1', 'MDI')
 
       expect(result).toContain(
-        `PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,PDU\nAAAA12,Max,Martin,${hdcedWithin14Weeks},West of England\nAAAA13,Tim,North,${hdcedWithin14Weeks},South of England\nAAAA15,Bob,Bobbington,${hdced14Weeks},North of England`
+        `PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,PDU\nAAAA12,Evoka,Drinzirgh,${hdcedWithin14Weeks},West of England\nAAAA13,Jinmuc,Zol,${hdcedWithin14Weeks},South of England\nAAAA15,Vani,Tuhnorv,${hdced14Weeks},North of England`
       )
-      expect(result).not.toContain(`AAAA11,John,Smith,${hdcedWithin14Weeks},East of England`)
-      expect(result).not.toContain(`AAAA17,Frank,Smith,${hdcedWithin14Weeks}`)
-      expect(result).not.toContain(`\nAAAA18,Todd,Toddington,${hdcedWithin14Weeks}`)
+      expect(result).not.toContain(`AAAA11,Umuk,Anluth,${hdcedWithin14Weeks},East of England`)
+      expect(result).not.toContain(`AAAA17,Odrushi,Gozicx,${hdcedWithin14Weeks}`)
+      expect(result).not.toContain(`\nAAAA18,Ochong,Vocis,${hdcedWithin14Weeks}`)
     })
 
     test('should not add released prisoners to csv string', async () => {
@@ -445,8 +445,8 @@ describe('reportsService', () => {
         {
           bookingId: '1',
           prisonerNumber: 'AAAA11',
-          firstName: 'John',
-          lastName: 'Smith',
+          firstName: 'Umuk',
+          lastName: 'Anluth',
           prisonId: 'MDI',
           prisonName: 'Moorland (HMP & YOI)',
           homeDetentionCurfewEligibilityDate: moment().add(14, 'weeks').subtract(1, 'days'),
@@ -454,8 +454,8 @@ describe('reportsService', () => {
         {
           bookingId: '2',
           prisonerNumber: 'AAAA12',
-          firstName: 'Max',
-          lastName: 'Martin',
+          firstName: 'Evoka',
+          lastName: 'Drinzirgh',
           prisonId: 'MDI',
           prisonName: 'Moorland (HMP & YOI)',
           homeDetentionCurfewEligibilityDate: moment().add(14, 'weeks').subtract(1, 'days'),
@@ -464,8 +464,8 @@ describe('reportsService', () => {
         {
           bookingId: '3',
           prisonerNumber: 'AAAA13',
-          firstName: 'Tim',
-          lastName: 'North',
+          firstName: 'Jinmuc',
+          lastName: 'Zol',
           prisonId: 'MDI',
           prisonName: 'Moorland (HMP & YOI)',
           homeDetentionCurfewEligibilityDate: moment().add(14, 'weeks').subtract(1, 'days'),
@@ -474,9 +474,9 @@ describe('reportsService', () => {
       const result = await service.getComAssignedLicencesForHandover('user-1', 'MDI')
 
       expect(result).toContain(
-        `PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,PDU\nAAAA13,Tim,North,${hdcedWithin14Weeks},South of England`
+        `PRISON_NUMBER,PRISONER_FIRSTNAME,PRISONER_LASTNAME,HDCED,PDU\nAAAA13,Jinmuc,Zol,${hdcedWithin14Weeks},South of England`
       )
-      expect(result).not.toContain(`AAAA12,Max,Martin,${hdcedWithin14Weeks},West of England`)
+      expect(result).not.toContain(`AAAA12,Evoka,Drinzirgh,${hdcedWithin14Weeks},West of England`)
     })
   })
 })

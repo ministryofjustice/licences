@@ -32,7 +32,7 @@ class EligibilitySpec extends GebReportingSpec {
   def 'Starts with nothing selected because there is no default'() {
 
     when: 'I view the eligibility checks page'
-    to EligibilityExclusionPage, testData.markAndrewsBookingId
+    to EligibilityExclusionPage, testData.testBookingId
 
     then: 'Neither radio option is selected'
     excludedRadios.checked == null
@@ -66,7 +66,7 @@ class EligibilitySpec extends GebReportingSpec {
     testData.loadLicence('eligibility/unsuitable')
 
     when: 'I view the eligibility checks page'
-    to EligibilityExclusionPage, testData.markAndrewsBookingId
+    to EligibilityExclusionPage, testData.testBookingId
 
     then: 'I see the previous values'
     excludedRadios.checked == 'No'
@@ -93,7 +93,7 @@ class EligibilitySpec extends GebReportingSpec {
     at TaskListPage
 
     and: 'I view the eligibility checks page'
-    to EligibilityExclusionPage, testData.markAndrewsBookingId
+    to EligibilityExclusionPage, testData.testBookingId
 
     then: 'I see the original values'
     excludedRadios.checked == 'No'
@@ -105,7 +105,7 @@ class EligibilitySpec extends GebReportingSpec {
   def 'All selections are saved and shown on the task list'() {
 
     given: 'On the eligibility checks page'
-    to EligibilityExclusionPage, testData.markAndrewsBookingId
+    to EligibilityExclusionPage, testData.testBookingId
 
     when: 'I select new exclusion options and save'
     excludedRadios.checked = 'No'
@@ -133,7 +133,7 @@ class EligibilitySpec extends GebReportingSpec {
   def 'Returns to task list when excluded'() {
 
     given: 'On the eligibility checks page'
-    to EligibilityExclusionPage, testData.markAndrewsBookingId
+    to EligibilityExclusionPage, testData.testBookingId
 
     when: 'I choose excluded'
     excludedRadios.checked = 'Yes'
@@ -152,7 +152,7 @@ class EligibilitySpec extends GebReportingSpec {
   def 'Returns to task list when unsuitable'() {
 
     given: 'On the eligibility checks page'
-    to EligibilityExclusionPage, testData.markAndrewsBookingId
+    to EligibilityExclusionPage, testData.testBookingId
 
     when: 'I choose not excluded'
     excludedRadios.checked = 'No'

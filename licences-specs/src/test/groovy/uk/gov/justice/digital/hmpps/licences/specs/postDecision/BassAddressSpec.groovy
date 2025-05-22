@@ -29,7 +29,7 @@ class BassAddressSpec {
     testData.loadLicence('postDecision/bassAddress-unstarted')
 
     when: 'I view the bass offer page'
-    to BassOfferPage, testData.markAndrewsBookingId
+    to BassOfferPage, testData.testBookingId
 
     then: 'I see the previous inputs'
     bass.proposed.town == 'BASS Town'

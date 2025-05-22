@@ -53,20 +53,20 @@
       "release": {
         "reason": "addressUnsuitable",
         "decision": "No",
-        "decisionMaker": "Diane Matthews",
+        "decisionMaker": "Hekowo Fann",
         "reasonForDecision": ""
       }
     },
     "reporting": {
       "reportingInstructions": {
         "name": "The Duty Officer",
-        "postcode": "S2 9BC",
+        "postcode": "F11 1KE",
         "telephone": "01234567890",
-        "townOrCity": "Sheffield",
+        "townOrCity": "Test Town",
         "organisation": "National Probation Service",
         "reportingDate": "02/01/2021",
         "reportingTime": "11:11",
-        "buildingAndStreet1": "123 High Street",
+        "buildingAndStreet1": "123 Test Street",
         "buildingAndStreet2": "Town"
       }
     },
@@ -109,16 +109,16 @@
       },
       "curfewAddress": {
         "occupier": {
-          "name": "James Smith",
+          "name": "Amehk Ngampuct",
           "isOffender": "Yes",
           "relationship": ""
         },
-        "postCode": "S3 2JB",
+        "postCode": "F11 1KE",
         "residents": [],
         "telephone": "01234567890",
-        "addressTown": "Sheffield",
-        "addressLine1": "1 James Road",
-        "addressLine2": "Yoxley",
+        "addressTown": "Test Town",
+        "addressLine1": "1 Test Street",
+        "addressLine2": "Off Test Road",
         "additionalInformation": "",
         "residentOffenceDetails": "",
         "cautionedAgainstResident": "No"

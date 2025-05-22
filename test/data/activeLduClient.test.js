@@ -11,7 +11,7 @@ afterEach(() => {
 describe('Persist and check exitence of LDUs in active_local_delivery_units table', () => {
   const lduCode = 'ABCDE'
   const probationAreaCode = 'N02'
-  const activeLduCodes = ['ABCDE', 'terry', '1234']
+  const activeLduCodes = ['ABCDE', 'testLdu', '1234']
 
   describe('isLduPresent', () => {
     test('should pass in the correct sql', async () => {
@@ -62,7 +62,7 @@ describe('Persist and check exitence of LDUs in active_local_delivery_units tabl
 
         const { text: t } = db.query.mock.calls[1][0]
         expect(t).toContain(
-          "INSERT INTO active_local_delivery_units (probation_area_code, ldu_code) VALUES ('N02', 'ABCDE'), ('N02', 'terry'), ('N02', '1234')"
+          "INSERT INTO active_local_delivery_units (probation_area_code, ldu_code) VALUES ('N02', 'ABCDE'), ('N02', 'testLdu'), ('N02', '1234')"
         )
       })
     })

@@ -30,7 +30,7 @@ class LicenceConditionsSpec extends GebReportingSpec {
   def 'Standard conditions page shown first'() {
 
     given: 'At task list page'
-    to (TaskListPage, testData.markAndrewsBookingId)
+    to (TaskListPage, testData.testBookingId)
 
     when: 'I start the additional conditions task'
     taskListAction('Additional conditions').click()
@@ -66,7 +66,7 @@ class LicenceConditionsSpec extends GebReportingSpec {
   def 'When additional conditions required, shows additional conditions page'() {
 
     when: 'I view the standard conditions page'
-    to LicenceConditionsStandardPage, testData.markAndrewsBookingId
+    to LicenceConditionsStandardPage, testData.testBookingId
 
     and: 'I select additional conditions required'
     additionalConditionsRadios = 'Yes'
@@ -119,7 +119,7 @@ class LicenceConditionsSpec extends GebReportingSpec {
     at TaskListPage
 
     and: 'I view the additional conditions page'
-    to LicenceConditionsAdditionalPage, testData.markAndrewsBookingId
+    to LicenceConditionsAdditionalPage, testData.testBookingId
 
     then: 'Options not set'
     conditions.every { !it.value() }
@@ -138,7 +138,7 @@ class LicenceConditionsSpec extends GebReportingSpec {
     find('#continueBtn').click()
 
     and: 'I view the additional conditions page'
-    to LicenceConditionsAdditionalPage, testData.markAndrewsBookingId
+    to LicenceConditionsAdditionalPage, testData.testBookingId
 
     then: 'I see the previously entered values'
     conditionsItem('NO_CONTACT_PRISONER').checked
@@ -161,7 +161,7 @@ class LicenceConditionsSpec extends GebReportingSpec {
     find('#continueBtn').click()
 
     and: 'I return to the additional conditions page'
-    to LicenceConditionsAdditionalPage, testData.markAndrewsBookingId
+    to LicenceConditionsAdditionalPage, testData.testBookingId
 
     then: 'I see the previously entered values'
     conditionsItem('COMPLY_REQUIREMENTS').checked
@@ -174,7 +174,7 @@ class LicenceConditionsSpec extends GebReportingSpec {
 
   def 'I can add bespoke conditions'() {
     given: 'I am on the additional conditions page'
-    to LicenceConditionsAdditionalPage, testData.markAndrewsBookingId
+    to LicenceConditionsAdditionalPage, testData.testBookingId
 
     and: 'I enter a bespoke condition'
     addBespokeRadios = 'Yes'
@@ -184,7 +184,7 @@ class LicenceConditionsSpec extends GebReportingSpec {
     find('#continueBtn').click()
 
     when: 'I view the additional conditions page'
-    to LicenceConditionsAdditionalPage, testData.markAndrewsBookingId
+    to LicenceConditionsAdditionalPage, testData.testBookingId
 
     then: 'I see the previously entered values'
     bespoke.conditions[0].value == 'Bespoke 1'
@@ -192,7 +192,7 @@ class LicenceConditionsSpec extends GebReportingSpec {
 
   def 'I can add multiple bespoke conditions'() {
     given: 'I am on the additional conditions page'
-    to LicenceConditionsAdditionalPage, testData.markAndrewsBookingId
+    to LicenceConditionsAdditionalPage, testData.testBookingId
 
     when: 'I click to add another 2 bespoke conditions'
     find('.addBespokeButton').click()
@@ -216,7 +216,7 @@ class LicenceConditionsSpec extends GebReportingSpec {
     find('#continueBtn').click()
 
     and: 'I return to the additional conditions page'
-    to LicenceConditionsAdditionalPage, testData.markAndrewsBookingId
+    to LicenceConditionsAdditionalPage, testData.testBookingId
 
     then: 'I see the previously entered values'
     bespoke.conditions[0].value == 'Bespoke 1'

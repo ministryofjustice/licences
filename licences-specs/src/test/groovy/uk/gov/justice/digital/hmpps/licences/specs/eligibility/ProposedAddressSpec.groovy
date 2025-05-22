@@ -33,7 +33,7 @@ class ProposedAddressSpec extends GebReportingSpec {
   def 'Starts with nothing selected'() {
 
     when: 'I view the choice page'
-    to CurfewAddressChoicePage, testData.markAndrewsBookingId
+    to CurfewAddressChoicePage, testData.testBookingId
 
     then: 'No radio option is selected'
     decisionRadios.checked == null
@@ -45,7 +45,7 @@ class ProposedAddressSpec extends GebReportingSpec {
     testData.loadLicence('eligibility/optedOut')
 
     when: 'I view the choice page'
-    to CurfewAddressChoicePage, testData.markAndrewsBookingId
+    to CurfewAddressChoicePage, testData.testBookingId
 
     then: 'I see the previous values'
     decisionRadios.checked == 'OptOut'
@@ -54,7 +54,7 @@ class ProposedAddressSpec extends GebReportingSpec {
   def 'The task list is shown next if decision is OptOut'() {
 
     given: 'On choice page'
-    to CurfewAddressChoicePage, testData.markAndrewsBookingId
+    to CurfewAddressChoicePage, testData.testBookingId
 
     when: 'I select to opt out'
     decisionRadios.checked = 'OptOut'
@@ -67,7 +67,7 @@ class ProposedAddressSpec extends GebReportingSpec {
   def 'The BASS referral page is shown next if decision is Bass'() {
 
     given: 'On choice page'
-    to CurfewAddressChoicePage, testData.markAndrewsBookingId
+    to CurfewAddressChoicePage, testData.testBookingId
 
     when: 'I select bass'
     decisionRadios.checked = 'Bass'
@@ -80,7 +80,7 @@ class ProposedAddressSpec extends GebReportingSpec {
   def 'The address proposed question page is shown next if decision is Address'() {
 
     given: 'On choice page'
-    to CurfewAddressChoicePage, testData.markAndrewsBookingId
+    to CurfewAddressChoicePage, testData.testBookingId
 
     when: 'I select address'
     decisionRadios.checked = 'Address'
@@ -93,14 +93,14 @@ class ProposedAddressSpec extends GebReportingSpec {
   def 'Entered values are saved after save and continue'() {
 
     given: 'On Curfew Address page'
-    to ProposedAddressCurfewAddressPage, testData.markAndrewsBookingId
+    to ProposedAddressCurfewAddressPage, testData.testBookingId
 
     when: 'I fill in the form and save'
 
     address.preferred.line1.value('Address 1')
     address.preferred.line2.value('Address 2')
     address.preferred.town.value('Town')
-    address.preferred.postCode.value('S1 4JQ')
+    address.preferred.postCode.value('FA1 1KE')
     address.preferred.telephone.value('001')
 
     occupier.details.name.value('Name')
@@ -115,7 +115,7 @@ class ProposedAddressSpec extends GebReportingSpec {
     at TaskListPage
 
     when: 'I return to the form'
-    to ProposedAddressCurfewAddressPage, testData.markAndrewsBookingId
+    to ProposedAddressCurfewAddressPage, testData.testBookingId
 
     then: 'I see the entered values'
     cautionedDetails.value() == 'some details'
@@ -126,7 +126,7 @@ class ProposedAddressSpec extends GebReportingSpec {
   def 'I can enter extra residents to addresses'() {
 
     given: 'I am on the proposed curfew address page'
-    to ProposedAddressCurfewAddressPage, testData.markAndrewsBookingId
+    to ProposedAddressCurfewAddressPage, testData.testBookingId
     testData.enableLdu("ABC", "ABC124")
 
     when: 'I click to add another resident'
@@ -151,7 +151,7 @@ class ProposedAddressSpec extends GebReportingSpec {
   def 'I can submit the address to the RO'() {
 
     given: 'On the task list page'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     when: 'I click to continue to submission'
     taskListAction('Submit curfew address').click()

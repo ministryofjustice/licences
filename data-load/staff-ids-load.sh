@@ -16,11 +16,11 @@
 #
 #        1) nomis_id - the Nomis username eg. JULIE_WOOD
 #        2) staff_id the staff id of this user in Delius e.g SH0005
-#        3) First name - e.g. Jim
-#        4) Last name - e.g. Smith
+#        3) First name - e.g. Test
+#        4) Last name - e.g. Person
 #        5) Organisation - e.g C02
 #        6) Job role - e.g. Probation Officer
-#        7) Email - e.g. jim.smith@nps.gov.uk
+#        7) Email - e.g. test.person@nps.gov.uk
 #        8) OrgEmail - e.g northeast-region@nps.gov.uk
 #        9) Tel number - e.g. 01877 323232
 #

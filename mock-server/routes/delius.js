@@ -40,8 +40,8 @@ const RO_USER = {
   staffId: 3,
   email: 'hdc_test+RO_USER@digital.justice.gov.uk',
   name: {
-    forenames: 'JESSY',
-    surname: 'SMITH',
+    forenames: 'FIRSTA',
+    surname: 'LASTA',
   },
   teams: deliusTeams,
 }
@@ -105,7 +105,7 @@ router.get('/staff/staffCode/:staffCode/managedOffenders', (req, res) => {
       offenderId: 1234567,
       nomsNumber: 'A5001DY',
       crnNumber: 1234567,
-      offenderSurname: 'Andrews',
+      offenderSurname: 'Helkarci',
       isCurrentRo: true,
       isCurrentOm: true,
       isCurrentPom: true,
@@ -126,7 +126,7 @@ router.get('/case/:nomsNumber/communityManager', (req, res) => {
   res.send({
     code: 'DELIUS_ID',
     staffId: 2,
-    name: { forenames: 'Ryan', surname: 'Orton' },
+    name: { forenames: 'Gripol', surname: 'Mrahi' },
     team: teamC01T04,
     provider: { code: 'ABC', description: 'ABC probation area' },
     localAdminUnit: { code: 'ABC124', description: 'ABC124 delivery unit' },

@@ -33,7 +33,7 @@ class PdfSpec extends GebReportingSpec {
 
     when: 'I log in and view the tasklist'
     actions.logIn(user)
-    via TaskListPage, testData.markAndrewsBookingId
+    via TaskListPage, testData.testBookingId
     at ReviewLicencePage
 
     then: 'There is no option to create PDF'
@@ -52,7 +52,7 @@ class PdfSpec extends GebReportingSpec {
     testData.loadLicence('decision/refused')
 
     when: 'I view the tasklist'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'There is no option to create PDF'
     !taskListAction('Create licence').isDisplayed()
@@ -64,7 +64,7 @@ class PdfSpec extends GebReportingSpec {
     testData.loadLicence('decision/approved')
 
     when: 'I view the tasklist'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
 
     then: 'There is an option to create PDF'
     taskListAction('Create licence').isDisplayed()
@@ -77,7 +77,7 @@ class PdfSpec extends GebReportingSpec {
     testData.loadLicence('decision/approved')
 
     when: 'I begin licence creation'
-    to TaskListPage, testData.markAndrewsBookingId
+    to TaskListPage, testData.testBookingId
     taskListAction('Create licence').click()
 
     and: 'I choose a offence before'
@@ -99,7 +99,7 @@ class PdfSpec extends GebReportingSpec {
     testData.loadLicence('decision/approved-missing')
 
     when: 'I begin creating the PDF licence'
-    to LicenceTaskListPage, testData.markAndrewsBookingId
+    to LicenceTaskListPage, testData.testBookingId
 
     then: 'Reporting and tagging company details are not complete'
     !driver.getPageSource().contains('Not complete')

@@ -17,9 +17,7 @@ environments {
     driver = {
       ChromeOptions options = new ChromeOptions()
       options.addArguments('headless')
-      def d = new ChromeDriver(options)
-      d.manage().window().setSize(new Dimension(1920, 1080))
-      d
+      new ChromeDriver(options)
     }
   }
 }
