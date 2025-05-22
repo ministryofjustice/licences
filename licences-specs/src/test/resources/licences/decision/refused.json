@@ -60,7 +60,7 @@
     "reporting": {
       "reportingInstructions": {
         "name": "The Duty Officer",
-        "postcode": "Test",
+        "postcode": "F11 1KE",
         "telephone": "01234567890",
         "townOrCity": "Test Town",
         "organisation": "National Probation Service",
@@ -113,7 +113,7 @@
           "isOffender": "Yes",
           "relationship": ""
         },
-        "postCode": "TEST",
+        "postCode": "F11 1KE",
         "residents": [],
         "telephone": "01234567890",
         "addressTown": "Test Town",
