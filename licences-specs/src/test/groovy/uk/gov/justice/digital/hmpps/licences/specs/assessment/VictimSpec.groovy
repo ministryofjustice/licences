@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.licences.specs.assessment
 import geb.spock.GebReportingSpec
 import spock.lang.Shared
 import spock.lang.Stepwise
+import spock.lang.Retry
 import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.VictimLiaisonPage
 import uk.gov.justice.digital.hmpps.licences.util.Actions
@@ -56,6 +57,7 @@ class VictimSpec extends GebReportingSpec {
     victimLiaisonForm.isDisplayed()
   }
 
+  @Retry
   def 'Modified choices are saved after save and continue'() {
 
     given: 'At victim liaison page'

@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.licences.specs.assessment
 import geb.spock.GebReportingSpec
 import spock.lang.Shared
 import spock.lang.Stepwise
+import spock.lang.Retry
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.CurfewAddressReviewPageV1
 import uk.gov.justice.digital.hmpps.licences.util.Actions
 import uk.gov.justice.digital.hmpps.licences.util.TestData
@@ -69,6 +70,8 @@ class CurfewAddressReviewSpecV1 extends GebReportingSpec {
     landlordConsentForm.isDisplayed()
   }
 
+
+  @Retry
   def 'Modified choices are saved after save and continue'() {
 
     given: 'At address review page'

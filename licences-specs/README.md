@@ -35,7 +35,7 @@ webdriver.chrome.driver property with your ChromeDriver path.
 
 Run with gradle or execute a specific test using your IDE.
 
-`./gradlew test` or `./gradlew mockTest` - executes all specs
+`./gradlew mockTest` or `./gradlew mockTestUi` - executes all specs
 
 ## Writing Specs
 
