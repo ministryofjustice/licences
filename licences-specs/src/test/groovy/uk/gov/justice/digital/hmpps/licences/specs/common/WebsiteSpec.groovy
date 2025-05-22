@@ -37,7 +37,7 @@ class WebsiteSpec extends GebReportingSpec {
 
     where:
     user       | displayName
-    'CA'       | 'K Haz'
+    'CA'       | 'K. Haz'
     'DM'       | 'H. Fann'
     'READONLY' | 'L. Only'
     'RO'       | 'O. Hanten'
