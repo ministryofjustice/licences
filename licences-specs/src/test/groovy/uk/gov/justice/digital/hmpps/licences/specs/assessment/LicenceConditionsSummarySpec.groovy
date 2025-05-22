@@ -102,8 +102,6 @@ class LicenceConditionsSummarySpec extends GebReportingSpec {
 
     then: 'I return to the conditions summary page'
     at LicenceConditionsSummaryPage
-
-    and: 'The deleted condition is no longer shown'
     conditions.additional.size() == 6
   }
 

@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.licences.specs.assessment
 import geb.spock.GebReportingSpec
 import spock.lang.Shared
 import spock.lang.Stepwise
+import spoke.lang.Retry
 import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.LicenceConditionsAdditionalPage
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.LicenceConditionsStandardPage
@@ -10,6 +11,7 @@ import uk.gov.justice.digital.hmpps.licences.util.Actions
 import uk.gov.justice.digital.hmpps.licences.util.TestData
 
 @Stepwise
+@Retry
 class LicenceConditionsSpec extends GebReportingSpec {
 
   @Shared
