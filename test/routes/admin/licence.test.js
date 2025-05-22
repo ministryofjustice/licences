@@ -200,14 +200,14 @@ describe('/licences/', () => {
         })
     })
     it('should render prisoner name', () => {
-      prisonerService.getPrisonerDetails.mockReturnValue({ com: { name: 'Jimmy Smith' } })
+      prisonerService.getPrisonerDetails.mockReturnValue({ com: { name: 'Test Person' } })
       const app = createApp('batchUser')
       return request(app)
         .get('/admin/licences/events/1/reset-licence')
         .expect(200)
         .expect('Content-Type', /html/)
         .expect((res) => {
-          expect(res.text).toContain('Jimmy Smith')
+          expect(res.text).toContain('Test Person')
         })
     })
   })

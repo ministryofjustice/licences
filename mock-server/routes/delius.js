@@ -40,8 +40,8 @@ const RO_USER = {
   staffId: 3,
   email: 'hdc_test+RO_USER@digital.justice.gov.uk',
   name: {
-    forenames: 'JESSY',
-    surname: 'SMITH',
+    forenames: 'FIRSTA',
+    surname: 'LASTA',
   },
   teams: deliusTeams,
 }
