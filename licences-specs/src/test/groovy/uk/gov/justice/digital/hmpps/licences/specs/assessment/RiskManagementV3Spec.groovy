@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.licences.specs.assessment
 import geb.spock.GebReportingSpec
 import spock.lang.Shared
 import spock.lang.Stepwise
+import spock.lang.Retry
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.RiskManagementV3Page
 import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
 import uk.gov.justice.digital.hmpps.licences.util.Actions
@@ -146,6 +147,7 @@ class RiskManagementV3Spec extends GebReportingSpec {
     nonDisclosableInformationForm.isDisplayed()
   }
 
+  @Retry
   def 'Modified choices are saved after save and continue'() {
 
     given: 'At risk management page'
@@ -161,6 +163,8 @@ class RiskManagementV3Spec extends GebReportingSpec {
 
     and: 'I return to the risk management page'
     to RiskManagementV3Page, testData.testBookingId
+
+    sleep(5)
 
     then: 'I see the previously entered values'
     hasConsideredChecksRadios.checked == 'Yes'

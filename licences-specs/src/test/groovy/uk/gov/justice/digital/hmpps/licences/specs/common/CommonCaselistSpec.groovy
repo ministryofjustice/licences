@@ -45,7 +45,7 @@ class CommonCaselistSpec extends GebReportingSpec {
   }
 
   @Unroll
-  def 'Shows licence case summary details (from nomis) for #user'() {
+  def 'Shows licence case summary details from nomis for #user'() {
 
     when: 'I view the case list'
     actions.logIn(user)
@@ -63,7 +63,7 @@ class CommonCaselistSpec extends GebReportingSpec {
   }
 
   @Unroll
-  def 'Shows only licence case summary details (from nomis) for latest booking for RO'() {
+  def 'Shows only licence case summary details from nomis for latest booking for RO'() {
 
     when: 'I view the case list'
     actions.logIn(user)
@@ -75,7 +75,7 @@ class CommonCaselistSpec extends GebReportingSpec {
     offenders.summary[0].nomisId == 'A5001DY'
 
     then: 'I do not see data for the prisoner`s previous booking'
-    offenders.summary.size == 1
+    offenders.summary.size() == 1
 
     where:
     user | sample

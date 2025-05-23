@@ -199,7 +199,7 @@ class LicenceConditionsSpec extends GebReportingSpec {
     find('.addBespokeButton').click()
 
     then: 'I see 2 more bespoke conditions text boxes'
-    bespoke.conditions.size == 3
+    bespoke.conditions.size() == 3
 
     when: 'I input new conditions'
     bespoke.conditions[1].input << 'Bespoke 2'
@@ -209,7 +209,7 @@ class LicenceConditionsSpec extends GebReportingSpec {
     bespoke.conditions[1].removeControl.click()
 
     then: 'The bespoke condition box is not displayed'
-    bespoke.conditions.size == 2
+    bespoke.conditions.size() == 2
     !bespoke.conditions*.value.contains('Bespoke 2')
 
     when: 'I click to continue'
