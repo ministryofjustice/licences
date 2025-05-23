@@ -69,10 +69,8 @@ class VictimSpec extends GebReportingSpec {
     and: 'I save and continue'
     find('#continueBtn').click()
 
-    and: 'I return to the victim liaison page'
+    then: 'I return to the victim liaison page and I see the previously entered values'
     to VictimLiaisonPage, testData.testBookingId
-
-    then: 'I see the previously entered values'
     victimLiaisonRadios.checked == 'Yes'
   }
 }

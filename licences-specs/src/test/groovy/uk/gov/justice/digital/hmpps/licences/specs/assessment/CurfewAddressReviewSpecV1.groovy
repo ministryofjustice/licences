@@ -85,10 +85,8 @@ class CurfewAddressReviewSpecV1 extends GebReportingSpec {
     and: 'I save and continue'
     find('#continueBtn').click()
 
-    and: 'I move to the address review page'
+    then: 'I move to the address review page and I see the previously entered values'
     to CurfewAddressReviewPageV1, testData.testBookingId
-
-    then: 'I see the previously entered values'
     landlordConsentRadios.checked == 'Yes'
     electricitySupplyRadios.checked == 'Yes'
     homeVisitRadios.checked == 'No'

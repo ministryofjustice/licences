@@ -93,10 +93,8 @@ class ReportingInstructionsSpec extends GebReportingSpec {
     and: 'I save and continue'
     find('#continueBtn').click()
 
-    and: 'I return to the reporting instructions page'
+    then: 'I return to the reporting instructions page and I see the previously entered values'
     to ReportingInstructionsPage, testData.testBookingId
-
-    then: 'I see the previously entered values'
     name.value() == 'sample name'
     organisation.value() == 'sample organisation'
     street.value() == 'sample street'

@@ -127,10 +127,8 @@ class RiskManagementV1Spec extends GebReportingSpec {
     and: 'I save and continue'
     find('#continueBtn').click()
 
-    and: 'I return to the risk management page'
+    then: 'I return to the risk management page and I see the previously entered values'
     to RiskManagementV1Page, testData.testBookingId
-
-    then: 'I see the previously entered values'
     riskManagementRadios.checked == 'Yes'
     addressSuitableRadios.checked == 'No'
   }
