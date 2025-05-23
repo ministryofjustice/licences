@@ -100,8 +100,6 @@ class LicenceConditionsSummarySpec extends GebReportingSpec {
 
     then: 'I return to the conditions summary page'
     at LicenceConditionsSummaryPage
-
-    and: 'The deleted condition is no longer shown'
     conditions.additional.size() == 6
   }
 
@@ -118,6 +116,7 @@ class LicenceConditionsSummarySpec extends GebReportingSpec {
     conditions.additional[3].deleteControl.click()
 
     then: 'The deleted condition is no longer shown'
+    at LicenceConditionsSummaryPage
     conditions.additional.size() == 5
   }
 
@@ -128,7 +127,7 @@ class LicenceConditionsSummarySpec extends GebReportingSpec {
     when: 'I try to save the additional conditions without providing justification text'
     submitButton.click()
 
-    then: 'computer says no'
+    then: 'error is thrown'
     at LicenceConditionsSummaryPage
     conditions.additional.size() == 5
      errorMessages == ['You must explain why you selected these additional conditions']
