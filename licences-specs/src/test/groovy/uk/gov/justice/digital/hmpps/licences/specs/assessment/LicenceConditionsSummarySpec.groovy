@@ -3,7 +3,6 @@ package uk.gov.justice.digital.hmpps.licences.specs.assessment
 import geb.spock.GebReportingSpec
 import spock.lang.Shared
 import spock.lang.Stepwise
-import spock.lang.Retry
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.LicenceConditionsAdditionalPage
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.LicenceConditionsSummaryPage
 import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
@@ -11,7 +10,6 @@ import uk.gov.justice.digital.hmpps.licences.util.Actions
 import uk.gov.justice.digital.hmpps.licences.util.TestData
 
 @Stepwise
-@Retry
 class LicenceConditionsSummarySpec extends GebReportingSpec {
 
   @Shared
@@ -118,6 +116,7 @@ class LicenceConditionsSummarySpec extends GebReportingSpec {
     conditions.additional[3].deleteControl.click()
 
     then: 'The deleted condition is no longer shown'
+    at LicenceConditionsSummaryPage
     conditions.additional.size() == 5
   }
 
@@ -128,7 +127,7 @@ class LicenceConditionsSummarySpec extends GebReportingSpec {
     when: 'I try to save the additional conditions without providing justification text'
     submitButton.click()
 
-    then: 'computer says no'
+    then: 'error is thrown'
     at LicenceConditionsSummaryPage
     conditions.additional.size() == 5
      errorMessages == ['You must explain why you selected these additional conditions']
