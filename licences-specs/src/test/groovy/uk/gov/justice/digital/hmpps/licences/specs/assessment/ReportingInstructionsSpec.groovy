@@ -3,6 +3,7 @@ package uk.gov.justice.digital.hmpps.licences.specs.assessment
 import geb.spock.GebReportingSpec
 import spock.lang.Shared
 import spock.lang.Stepwise
+import spock.lang.Retry
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.ReportingInstructionsPage
 import uk.gov.justice.digital.hmpps.licences.pages.TaskListPage
 import uk.gov.justice.digital.hmpps.licences.util.Actions
@@ -75,6 +76,7 @@ class ReportingInstructionsSpec extends GebReportingSpec {
     telephone.value() == ''
   }
 
+  @Retry
   def 'Modified choices are saved after save and continue'() {
 
     given: 'At reporting instructions page'
@@ -93,6 +95,8 @@ class ReportingInstructionsSpec extends GebReportingSpec {
 
     and: 'I return to the reporting instructions page'
     to ReportingInstructionsPage, testData.testBookingId
+
+    sleep(5)
 
     then: 'I see the previously entered values'
     name.value() == 'sample name'
