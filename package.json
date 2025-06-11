@@ -29,7 +29,10 @@
     "db:knex-migrate": "knex-migrate",
     "db:seed": "knex seed:run --env standard",
     "security_audit": "npx audit-ci --config audit-ci.json",
-    "prepare": "husky"
+    "prepare": "hmpps-precommit-hooks-prepare",
+    "precommit:secrets": "gitleaks git --pre-commit --redact --staged --verbose --config .gitleaks/config.toml",
+    "precommit:lint": "node_modules/.bin/lint-staged",
+    "precommit:verify": "npm run typecheck"
   },
   "lint-staged": {
     "*.{js,css}": [
@@ -152,6 +155,7 @@
     "winston": "^3.17.0"
   },
   "devDependencies": {
+    "@ministryofjustice/hmpps-precommit-hooks": "^0.0.1",
     "@types/connect-flash": "^0.0.40",
     "@types/jest": "^29.5.14",
     "@types/node": "^20.14.12",
@@ -166,7 +170,6 @@
     "eslint-import-resolver-typescript": "^3.8.3",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-prettier": "^5.4.1",
-    "husky": "^9.1.7",
     "jest": "^29.7.0",
     "jest-html-reporter": "^4.1.0",
     "jest-junit": "^16.0.0",
