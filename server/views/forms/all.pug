@@ -8,7 +8,7 @@ block content
   h1.heading-large.smallMarginBottom Download forms for this HDC application
   div.midMarginBottom Forms will open in a new tab 
 
-  h2#subHeading.heading-medium.smallMarginBottom.midMarginTop Eligibility and suitability
+  h2.heading-medium.smallMarginBottom.midMarginTop Eligibility and suitability
   div.pure-g.tinyMarginBottom
     div.pure-u-1
       ul#printableForms
@@ -17,7 +17,7 @@ block content
             li
               a(href='/hdc/forms/' + form[0] + '/' + bookingId target="_blank") #{form[1]}
   
-  h2#subHeading.heading-medium.smallMarginBottom.midMarginTop Address checks
+  h2.heading-medium.smallMarginBottom.midMarginTop Address checks
   div.pure-g
     div.pure-u-1
       ul#printableForms
@@ -26,7 +26,7 @@ block content
             li
               a(href='/hdc/forms/' + form[0] + '/' + bookingId target="_blank") #{form[1]}
 
-  h2#subHeading.heading-medium.smallMarginBottom.midMarginTop Application outcome
+  h2.heading-medium.smallMarginBottom.midMarginTop Application outcome
   div.pure-g
     div.pure-u-1
       ul#printableForms
@@ -35,12 +35,12 @@ block content
             li
               a(href='/hdc/forms/' + form[0] + '/' + bookingId target="_blank") #{form[1]}
 
-  h2#subHeading.heading-medium.smallMarginBottom.midMarginTop Manage an Electronic Monitoring Order
+  h2.heading-medium.smallMarginBottom.midMarginTop Manage an Electronic Monitoring Order
   | Use the 
-  a.link(href=`${electronicMonitoringOrderUrl}`) Apply, change or end an Electronic Monitoring Order (EMO)
+  a#electronicMonitoringOrder.link(href=`${electronicMonitoringOrderUrl}`) Apply, change or end an Electronic Monitoring Order (EMO)
   |  service for EMO applications.
 
-  h2#subHeading.heading-medium.smallMarginBottom.midMarginTop Varying a licence
+  h2.heading-medium.smallMarginBottom.midMarginTop Varying a licence
   div.pure-g.midMarginBottom.midPaddingBottom
     div.pure-u-1
       ul#printableForms

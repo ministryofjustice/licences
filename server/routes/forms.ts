@@ -23,6 +23,7 @@ const {
       pdfOptions,
     },
   },
+  links: { electronicMonitoringOrderUrl },
   pdfFormatForms,
 } = config
 
@@ -125,6 +126,7 @@ export default (formService: FormService, conditionsServiceFactory: ConditionsSe
         addressChecksForms: Object.entries(addressChecksFormTemplates),
         applicationOutcomeForms: Object.entries(applicationOutcomeFormTemplates),
         licenceVariationForms: Object.entries(licenceVariationFormTemplates),
+        electronicMonitoringOrderUrl,
       })
     })
   )
