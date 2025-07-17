@@ -13,7 +13,15 @@ const {
   port,
   gotenberg: { hdcUrl },
   pdf: {
-    forms: { formTemplates, formsDateFormat, pdfOptions },
+    forms: {
+      formTemplates,
+      formsDateFormat,
+      eligibilityAndSuitabilityFormTemplates,
+      addressChecksFormTemplates,
+      applicationOutcomeFormTemplates,
+      licenceVariationFormTemplates,
+      pdfOptions,
+    },
   },
   pdfFormatForms,
 } = config
@@ -111,7 +119,13 @@ export default (formService: FormService, conditionsServiceFactory: ConditionsSe
     '/:bookingId',
     asyncMiddleware(async (req, res: Response<any, LicenceLocals>) => {
       const { bookingId } = req.params
-      return res.render('forms/all', { bookingId, forms: Object.entries(formTemplates) })
+      return res.render('forms/all', {
+        bookingId,
+        eligibilityAndSuitabilityForms: Object.entries(eligibilityAndSuitabilityFormTemplates),
+        addressChecksForms: Object.entries(addressChecksFormTemplates),
+        applicationOutcomeForms: Object.entries(applicationOutcomeFormTemplates),
+        licenceVariationForms: Object.entries(licenceVariationFormTemplates),
+      })
     })
   )
 
