@@ -5,17 +5,46 @@ block content
   include ../includes/back
   include ../includes/personalDetailsSummary
 
-  h1.heading-large Forms
+  h1.heading-large.smallMarginBottom Download forms for this HDC application
+  div.midMarginBottom Forms will open in a new tab 
 
-  h2#subHeading.heading-medium
-    span HDC forms for #{prisoner.firstName} #{prisoner.lastName}
-
-  div.midMarginBottom These forms will open in a new tab for printing
-
-  div.pure-g.largeMarginBottom.midPaddingBottom
+  h2.heading-medium.smallMarginBottom.midMarginTop Eligibility and suitability
+  div.pure-g.tinyMarginBottom
     div.pure-u-1
       ul#printableForms
-        if forms && forms.length > 0
-          each form in forms
+        if eligibilityAndSuitabilityForms && eligibilityAndSuitabilityForms.length > 0
+          each form in eligibilityAndSuitabilityForms
+            li
+              a(href='/hdc/forms/' + form[0] + '/' + bookingId target="_blank") #{form[1]}
+  
+  h2.heading-medium.smallMarginBottom.midMarginTop Address checks
+  div.pure-g
+    div.pure-u-1
+      ul#printableForms
+        if addressChecksForms && addressChecksForms.length > 0
+          each form in addressChecksForms
+            li
+              a(href='/hdc/forms/' + form[0] + '/' + bookingId target="_blank") #{form[1]}
+
+  h2.heading-medium.smallMarginBottom.midMarginTop Application outcome
+  div.pure-g
+    div.pure-u-1
+      ul#printableForms
+        if applicationOutcomeForms && applicationOutcomeForms.length > 0
+          each form in applicationOutcomeForms
+            li
+              a(href='/hdc/forms/' + form[0] + '/' + bookingId target="_blank") #{form[1]}
+
+  h2.heading-medium.smallMarginBottom.midMarginTop Manage an Electronic Monitoring Order
+  | Use the 
+  a#electronicMonitoringOrder.link(href=`${electronicMonitoringOrderUrl}`) Apply, change or end an Electronic Monitoring Order (EMO)
+  |  service for EMO applications.
+
+  h2.heading-medium.smallMarginBottom.midMarginTop Varying a licence
+  div.pure-g.midMarginBottom.midPaddingBottom
+    div.pure-u-1
+      ul#printableForms
+        if licenceVariationForms && licenceVariationForms.length > 0
+          each form in licenceVariationForms
             li
               a(href='/hdc/forms/' + form[0] + '/' + bookingId target="_blank") #{form[1]}
