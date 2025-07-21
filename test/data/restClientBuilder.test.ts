@@ -12,7 +12,7 @@ import SignInService from '../../server/authentication/signInService'
 
 jest.mock('../../server/authentication/signInService')
 
-const BASE_PATH = 'http://www.example.gov.uk'
+const BASE_PATH = 'https://www.example.gov.uk'
 
 describe('restClientBuilder', () => {
   describe('buildRestClient', () => {
@@ -25,7 +25,7 @@ describe('restClientBuilder', () => {
 
     const restClient = buildRestClient(constantTokenSource('t'), BASE_PATH, 'Test API', restConfig)
 
-    let scope
+    let scope: nock.Scope
 
     beforeEach(() => {
       scope = nock(BASE_PATH, {
@@ -158,9 +158,7 @@ describe('restClientBuilder', () => {
 
       it('500 response', async () => {
         scope.put('/a-path', { message: 'hello' }).reply(500)
-        await expect(restClient.putResource('/a-path', { message: 'hello' })).rejects.toThrow(
-          'Internal Server Error'
-        )
+        await expect(restClient.putResource('/a-path', { message: 'hello' })).rejects.toThrow('Internal Server Error')
         expect(scope.isDone()).toBeTruthy()
 
         expect(warnSpy).toHaveBeenCalledWith(
@@ -181,9 +179,7 @@ describe('restClientBuilder', () => {
 
       it('500 response', async () => {
         scope.post('/a-path', { message: 'hello' }).reply(500)
-        await expect(restClient.postResource('/a-path', { message: 'hello' })).rejects.toThrow(
-          'Internal Server Error'
-        )
+        await expect(restClient.postResource('/a-path', { message: 'hello' })).rejects.toThrow('Internal Server Error')
         expect(scope.isDone()).toBeTruthy()
 
         expect(warnSpy).toHaveBeenCalledWith(

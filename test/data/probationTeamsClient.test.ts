@@ -9,9 +9,9 @@ const LDU_ID = Object.freeze({ probationAreaCode: 'AREA_CODE', lduCode: 'LDU_COD
 const PROBATION_TEAM_ID = Object.freeze({ probationAreaCode: 'AREA_CODE', lduCode: 'LDU_CODE', teamCode: 'TEAM_CODE' })
 
 describe('probationTeamsClient', () => {
-  let fakeProbationTeamsService
-  let probationTeamsClient
-  let signInService
+  let fakeProbationTeamsService: nock.Scope
+  let probationTeamsClient: ProbationTeamsClient
+  let signInService: any
 
   beforeEach(() => {
     fakeProbationTeamsService = nock(`${config.probationTeams.apiUrl}`)
@@ -194,9 +194,7 @@ describe('probationTeamsClient', () => {
         .delete('/probation-areas/AREA_CODE/local-delivery-units/LDU_CODE/functional-mailbox')
         .reply(500)
 
-      await expect(probationTeamsClient.deleteLduFunctionalMailbox(LDU_ID)).rejects.toThrow(
-        'Internal Server Error'
-      )
+      await expect(probationTeamsClient.deleteLduFunctionalMailbox(LDU_ID)).rejects.toThrow('Internal Server Error')
     })
   })
 
