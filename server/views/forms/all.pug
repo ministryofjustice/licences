@@ -6,8 +6,6 @@ block content
   include ../includes/personalDetailsSummary
 
   h1.heading-large.smallMarginBottom Download forms for this HDC application
-  br
-  div.midMarginBottom Forms will open in a new tab. 
 
   h2.heading-medium.largeMarginBottom.largeMarginTop Eligibility and suitability
   div.pure-g
@@ -16,7 +14,7 @@ block content
         if eligibilityAndSuitabilityForms && eligibilityAndSuitabilityForms.length > 0
           each form in eligibilityAndSuitabilityForms
             li
-              a(href='/hdc/forms/' + form[0] + '/' + bookingId target="_blank") #{form[1]}
+              a(href='/hdc/forms/' + form[0] + '/' + bookingId) #{form[1]}
   
   h2.heading-medium.largeMarginBottom.largeMarginTop Address checks
   div.pure-g
@@ -25,7 +23,7 @@ block content
         if addressChecksForms && addressChecksForms.length > 0
           each form in addressChecksForms
             li
-              a(href='/hdc/forms/' + form[0] + '/' + bookingId target="_blank") #{form[1]}
+              a(href='/hdc/forms/' + form[0] + '/' + bookingId) #{form[1]}
 
   h2.heading-medium.largeMarginBottom.largeMarginTop Application outcome
   div.pure-g
@@ -34,7 +32,7 @@ block content
         if applicationOutcomeForms && applicationOutcomeForms.length > 0
           each form in applicationOutcomeForms
             li
-              a(href='/hdc/forms/' + form[0] + '/' + bookingId target="_blank") #{form[1]}
+              a(href='/hdc/forms/' + form[0] + '/' + bookingId) #{form[1]}
 
   h2.heading-medium.largeMarginBottom.largeMarginTop Manage an Electronic Monitoring Order
   | Use the 
@@ -48,4 +46,4 @@ block content
         if licenceVariationForms && licenceVariationForms.length > 0
           each form in licenceVariationForms
             li
-              a(href='/hdc/forms/' + form[0] + '/' + bookingId target="_blank") #{form[1]}
+              a(href='/hdc/forms/' + form[0] + '/' + bookingId) #{form[1]}
