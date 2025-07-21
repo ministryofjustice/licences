@@ -77,13 +77,11 @@ export default class FormService {
       SENT_HDCAD: () => this.getDateValue(prisoner, ['sentenceDetail', 'homeDetentionCurfewActualDate']),
       SENT_CRD: () => this.getDateValue(prisoner, ['sentenceDetail', 'releaseDate']),
       CURFEW_ADDRESS: () => this.getCurfewAddress(this.pdfFormatter.pickCurfewAddress(licence)),
-      CURFEW_TELEPHONE: () => this.getCurfewTelephone(this.pdfFormatter.pickCurfewAddress(licence)),
       REFUSAL_REASON: () => this.getRefusalReason(licence),
       INELIGIBLE_REASON: () => this.getIneligibleReason(licence),
       UNSUITABLE_REASON: () => this.getUnsuitableReason(licence),
       POSTPONE_REASON: () => this.getPostponedReason(licence),
       CURFEW_HOURS: () => this.getValue(licence, ['curfew', 'curfewHours']),
-      CURFEW_FIRST: () => this.getValue(licence, ['curfew', 'firstNight']),
     }
 
     if (!fieldFunction[field]) {
@@ -102,10 +100,6 @@ export default class FormService {
     return address
       ? this.combine(address, [['addressLine1'], ['addressLine2'], ['addressTown'], ['postCode']], '\n')
       : ''
-  }
-
-  private getCurfewTelephone(address) {
-    return address ? address.telephone : ''
   }
 
   private getRefusalReason(licence) {
