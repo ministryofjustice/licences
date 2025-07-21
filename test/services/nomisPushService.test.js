@@ -328,7 +328,7 @@ describe('nomisPushService', () => {
   describe('resetHDC', () => {
     it('should call nomisClient', async () => {
       await service.resetHDC(bookingId)
-      expect(nomisClientMock.resetHDC).toBeCalledWith('1')
+      expect(nomisClientMock.resetHDC).toHaveBeenCalledWith('1')
     })
 
     test('should throw error if API gives 409', async () => {

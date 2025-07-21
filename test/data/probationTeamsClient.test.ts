@@ -134,7 +134,7 @@ describe('probationTeamsClient', () => {
 
     test('Should reject when api fails', async () => {
       fakeProbationTeamsService.get('/probation-areas/AREA_CODE').times(3).reply(500)
-      await expect(probationTeamsClient.getProbationArea('AREA_CODE')).rejects.toThrowError('Internal Server Error')
+      await expect(probationTeamsClient.getProbationArea('AREA_CODE')).rejects.toThrow('Internal Server Error')
     })
   })
 
@@ -152,7 +152,7 @@ describe('probationTeamsClient', () => {
         .put('/probation-areas/AREA_CODE/local-delivery-units/LDU_CODE/functional-mailbox', '"a@b.com"')
         .reply(500)
 
-      await expect(probationTeamsClient.setLduFunctionalMailbox(LDU_ID, 'a@b.com')).rejects.toThrowError(
+      await expect(probationTeamsClient.setLduFunctionalMailbox(LDU_ID, 'a@b.com')).rejects.toThrow(
         'Internal Server Error'
       )
     })
@@ -176,7 +176,7 @@ describe('probationTeamsClient', () => {
 
       await expect(
         probationTeamsClient.setProbationTeamFunctionalMailbox(PROBATION_TEAM_ID, 'a@b.com')
-      ).rejects.toThrowError('Internal Server Error')
+      ).rejects.toThrow('Internal Server Error')
     })
   })
 
@@ -194,7 +194,7 @@ describe('probationTeamsClient', () => {
         .delete('/probation-areas/AREA_CODE/local-delivery-units/LDU_CODE/functional-mailbox')
         .reply(500)
 
-      await expect(probationTeamsClient.deleteLduFunctionalMailbox(LDU_ID)).rejects.toThrowError(
+      await expect(probationTeamsClient.deleteLduFunctionalMailbox(LDU_ID)).rejects.toThrow(
         'Internal Server Error'
       )
     })
@@ -216,7 +216,7 @@ describe('probationTeamsClient', () => {
         .delete('/probation-areas/AREA_CODE/local-delivery-units/LDU_CODE/teams/TEAM_CODE/functional-mailbox')
         .reply(500)
 
-      await expect(probationTeamsClient.deleteProbationTeamFunctionalMailbox(PROBATION_TEAM_ID)).rejects.toThrowError(
+      await expect(probationTeamsClient.deleteProbationTeamFunctionalMailbox(PROBATION_TEAM_ID)).rejects.toThrow(
         'Internal Server Error'
       )
     })
