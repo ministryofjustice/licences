@@ -6,44 +6,45 @@ block content
   include ../includes/personalDetailsSummary
 
   h1.heading-large.smallMarginBottom Download forms for this HDC application
-  div.midMarginBottom Forms will open in a new tab 
+  br
+  div.midMarginBottom Forms will open in a new tab. 
 
-  h2.heading-medium.smallMarginBottom.midMarginTop Eligibility and suitability
-  div.pure-g.tinyMarginBottom
+  h2.heading-medium.largeMarginBottom.largeMarginTop Eligibility and suitability
+  div.pure-g
     div.pure-u-1
-      ul#printableForms
+      ul#printableForms.list-bullet
         if eligibilityAndSuitabilityForms && eligibilityAndSuitabilityForms.length > 0
           each form in eligibilityAndSuitabilityForms
             li
               a(href='/hdc/forms/' + form[0] + '/' + bookingId target="_blank") #{form[1]}
   
-  h2.heading-medium.smallMarginBottom.midMarginTop Address checks
+  h2.heading-medium.largeMarginBottom.largeMarginTop Address checks
   div.pure-g
     div.pure-u-1
-      ul#printableForms
+      ul#printableForms.list-bullet
         if addressChecksForms && addressChecksForms.length > 0
           each form in addressChecksForms
             li
               a(href='/hdc/forms/' + form[0] + '/' + bookingId target="_blank") #{form[1]}
 
-  h2.heading-medium.smallMarginBottom.midMarginTop Application outcome
+  h2.heading-medium.largeMarginBottom.largeMarginTop Application outcome
   div.pure-g
     div.pure-u-1
-      ul#printableForms
+      ul#printableForms.list-bullet
         if applicationOutcomeForms && applicationOutcomeForms.length > 0
           each form in applicationOutcomeForms
             li
               a(href='/hdc/forms/' + form[0] + '/' + bookingId target="_blank") #{form[1]}
 
-  h2.heading-medium.smallMarginBottom.midMarginTop Manage an Electronic Monitoring Order
+  h2.heading-medium.largeMarginBottom.largeMarginTop Manage an Electronic Monitoring Order
   | Use the 
   a#electronicMonitoringOrder.link(href=`${electronicMonitoringOrderUrl}`) Apply, change or end an Electronic Monitoring Order (EMO)
   |  service for EMO applications.
 
-  h2.heading-medium.smallMarginBottom.midMarginTop Varying a licence
+  h2.heading-medium.largeMarginBottom.largeMarginTop Varying a licence
   div.pure-g.midMarginBottom.midPaddingBottom
     div.pure-u-1
-      ul#printableForms
+      ul#printableForms.list-bullet
         if licenceVariationForms && licenceVariationForms.length > 0
           each form in licenceVariationForms
             li
