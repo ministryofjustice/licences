@@ -358,7 +358,7 @@ describe('licenceService', () => {
   describe('setLicenceCompletionDestination', () => {
     it('should call setLicenceCompletionDestination', () => {
       service.setLicenceCompletionDestination(false, 100)
-      expect(licenceClient.setLicenceInCvl).toBeCalledWith(false, 100)
+      expect(licenceClient.setLicenceInCvl).toHaveBeenCalledWith(false, 100)
     })
   })
 
@@ -445,7 +445,7 @@ describe('licenceService', () => {
     })
 
     test('should throw if no matching transition type', () => {
-      expect(() => service.markForHandover(123, 'caToBlah')).toThrowError(Error)
+      expect(() => service.markForHandover(123, 'caToBlah')).toThrow(Error)
     })
   })
 
@@ -1579,7 +1579,7 @@ describe('licenceService', () => {
         },
       }
 
-      expect(() => service.reinstateBass(noRejections.licence, 123)).toThrowError(Error)
+      expect(() => service.reinstateBass(noRejections.licence, 123)).toThrow(Error)
     })
   })
 
@@ -2049,14 +2049,14 @@ describe('licenceService', () => {
   describe('resetLicence', () => {
     it('should call softDeleteLicence', () => {
       service.resetLicence(100)
-      expect(licenceClient.softDeleteLicence).toBeCalledWith(100)
+      expect(licenceClient.softDeleteLicence).toHaveBeenCalledWith(100)
     })
   })
 
   describe('set conditions version', () => {
     it('should call setAdditionalConditionsVersion', () => {
       service.setAdditionalConditionsVersion(100, 1)
-      expect(licenceClient.setAdditionalConditionsVersion).toBeCalledWith(100, 1)
+      expect(licenceClient.setAdditionalConditionsVersion).toHaveBeenCalledWith(100, 1)
     })
   })
 })

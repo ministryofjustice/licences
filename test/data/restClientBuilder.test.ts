@@ -12,7 +12,7 @@ import SignInService from '../../server/authentication/signInService'
 
 jest.mock('../../server/authentication/signInService')
 
-const BASE_PATH = 'http://www.example.gov.uk'
+const BASE_PATH = 'https://www.example.gov.uk'
 
 describe('restClientBuilder', () => {
   describe('buildRestClient', () => {
@@ -25,7 +25,7 @@ describe('restClientBuilder', () => {
 
     const restClient = buildRestClient(constantTokenSource('t'), BASE_PATH, 'Test API', restConfig)
 
-    let scope
+    let scope: nock.Scope
 
     beforeEach(() => {
       scope = nock(BASE_PATH, {
@@ -48,7 +48,7 @@ describe('restClientBuilder', () => {
 
       it('500 response', async () => {
         scope.get('/a-path').times(3).reply(500)
-        await expect(restClient.getResource('/a-path')).rejects.toThrowError('Internal Server Error')
+        await expect(restClient.getResource('/a-path')).rejects.toThrow('Internal Server Error')
         expect(scope.isDone()).toBeTruthy()
         expect(warnSpy).toHaveBeenNthCalledWith(
           1,
@@ -63,7 +63,7 @@ describe('restClientBuilder', () => {
           "Error calling Test API, path: '/a-path', verb: 'GET', status: '500'",
           expect.anything()
         )
-        expect(warnSpy).toBeCalledTimes(3)
+        expect(warnSpy).toHaveBeenCalledTimes(3)
       })
 
       it('404 (Not Found) response', async () => {
@@ -76,7 +76,7 @@ describe('restClientBuilder', () => {
 
       it('401 (Unauthorized) response', async () => {
         scope.get('/a-path').times(1).reply(401)
-        await expect(restClient.getResource('/a-path')).rejects.toThrowError(unauthorisedError())
+        await expect(restClient.getResource('/a-path')).rejects.toThrow(unauthorisedError())
         expect(scope.isDone()).toBeTruthy()
 
         expect(warnSpy).toHaveBeenCalledWith(
@@ -84,12 +84,12 @@ describe('restClientBuilder', () => {
           expect.anything()
         )
 
-        expect(warnSpy).toBeCalledTimes(1)
+        expect(warnSpy).toHaveBeenCalledTimes(1)
       })
 
       it('Error, but no response.', async () => {
         scope.get('/a-path').times(3).replyWithError('Network error')
-        await expect(restClient.getResource('/a-path')).rejects.toThrowError('Network error')
+        await expect(restClient.getResource('/a-path')).rejects.toThrow('Network error')
         expect(scope.isDone()).toBeTruthy()
 
         expect(warnSpy).toHaveBeenNthCalledWith(
@@ -106,7 +106,7 @@ describe('restClientBuilder', () => {
           expect.anything()
         )
 
-        expect(warnSpy).toBeCalledTimes(3)
+        expect(warnSpy).toHaveBeenCalledTimes(3)
       })
     })
 
@@ -119,14 +119,14 @@ describe('restClientBuilder', () => {
 
       it('500 response', async () => {
         scope.delete('/a-path').reply(500)
-        await expect(restClient.deleteResource('/a-path')).rejects.toThrowError('Internal Server Error')
+        await expect(restClient.deleteResource('/a-path')).rejects.toThrow('Internal Server Error')
         expect(scope.isDone()).toBeTruthy()
 
         expect(warnSpy).toHaveBeenCalledWith(
           "Error calling Test API, path: '/a-path', verb: 'DELETE', status: '500'",
           expect.anything()
         )
-        expect(warnSpy).toBeCalledTimes(1)
+        expect(warnSpy).toHaveBeenCalledTimes(1)
       })
 
       it('404 (Not Found) response', async () => {
@@ -145,7 +145,7 @@ describe('restClientBuilder', () => {
           "Error calling Test API, path: '/a-path', verb: 'DELETE', status: '401'",
           expect.anything()
         )
-        expect(warnSpy).toBeCalledTimes(1)
+        expect(warnSpy).toHaveBeenCalledTimes(1)
       })
     })
 
@@ -158,16 +158,14 @@ describe('restClientBuilder', () => {
 
       it('500 response', async () => {
         scope.put('/a-path', { message: 'hello' }).reply(500)
-        await expect(restClient.putResource('/a-path', { message: 'hello' })).rejects.toThrowError(
-          'Internal Server Error'
-        )
+        await expect(restClient.putResource('/a-path', { message: 'hello' })).rejects.toThrow('Internal Server Error')
         expect(scope.isDone()).toBeTruthy()
 
         expect(warnSpy).toHaveBeenCalledWith(
           "Error calling Test API, path: '/a-path', verb: 'PUT', status: '500'",
           expect.anything()
         )
-        expect(warnSpy).toBeCalledTimes(1)
+        expect(warnSpy).toHaveBeenCalledTimes(1)
       })
     })
 
@@ -181,16 +179,14 @@ describe('restClientBuilder', () => {
 
       it('500 response', async () => {
         scope.post('/a-path', { message: 'hello' }).reply(500)
-        await expect(restClient.postResource('/a-path', { message: 'hello' })).rejects.toThrowError(
-          'Internal Server Error'
-        )
+        await expect(restClient.postResource('/a-path', { message: 'hello' })).rejects.toThrow('Internal Server Error')
         expect(scope.isDone()).toBeTruthy()
 
         expect(warnSpy).toHaveBeenCalledWith(
           "Error calling Test API, path: '/a-path', verb: 'POST', status: '500'",
           expect.anything()
         )
-        expect(warnSpy).toBeCalledTimes(1)
+        expect(warnSpy).toHaveBeenCalledTimes(1)
       })
     })
   })

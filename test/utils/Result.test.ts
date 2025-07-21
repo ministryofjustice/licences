@@ -14,11 +14,11 @@ describe('Result', () => {
   })
 
   test('Success has no error', () => {
-    expect(() => Success('a').fail()).toThrowError()
+    expect(() => Success('a').fail()).toThrow()
   })
 
   test('Fail has no value', () => {
-    expect(() => Fail('a').success()).toThrowError()
+    expect(() => Fail('a').success()).toThrow()
   })
 
   test('Fail has an error', () => {
