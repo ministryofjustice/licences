@@ -116,7 +116,7 @@ describe('/manage-roles', () => {
         .expect(302)
         .expect('Location', '/admin/manage-roles/BOB')
         .expect(() => {
-          expect(migrationService.addDeliusRole).toBeCalledWith('BOB', responsibleOfficerRoleId)
+          expect(migrationService.addDeliusRole).toHaveBeenCalledWith('BOB', responsibleOfficerRoleId)
         })
     })
 
@@ -128,7 +128,7 @@ describe('/manage-roles', () => {
         .expect(302)
         .expect('Location', '/admin/manage-roles/BOB')
         .expect(() => {
-          expect(migrationService.addDeliusRole).not.toBeCalled()
+          expect(migrationService.addDeliusRole).not.toHaveBeenCalled()
         })
     })
 

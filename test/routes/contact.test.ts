@@ -110,8 +110,8 @@ describe('/contact', () => {
           expect(res.text).toContain('The Org')
           expect(res.text).toContain('org@email.com')
 
-          expect(userAdminService.getRoUserByStaffIdentifier).toBeCalledWith(999)
-          expect(userAdminService.getRoUserByDeliusUsername).not.toBeCalled()
+          expect(userAdminService.getRoUserByStaffIdentifier).toHaveBeenCalledWith(999)
+          expect(userAdminService.getRoUserByDeliusUsername).not.toHaveBeenCalled()
         })
     })
 
@@ -138,8 +138,8 @@ describe('/contact', () => {
           expect(res.text).toContain('The Org')
           expect(res.text).toContain('org@email.com')
 
-          expect(userAdminService.getRoUserByStaffIdentifier).toBeCalledWith(999)
-          expect(userAdminService.getRoUserByDeliusUsername).toBeCalledWith('username')
+          expect(userAdminService.getRoUserByStaffIdentifier).toHaveBeenCalledWith(999)
+          expect(userAdminService.getRoUserByDeliusUsername).toHaveBeenCalledWith('username')
         })
     })
 
