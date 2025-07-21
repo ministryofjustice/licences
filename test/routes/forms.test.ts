@@ -23,12 +23,8 @@ describe('GET /forms', () => {
     app = createApp('caUser')
   })
 
-  test('gets agency_notification form', () => {
-    return request(app)
-      .get('/forms/agency_notification/1')
-      .expect(200)
-      .expect('Content-Type', 'application/pdf')
-      .expect('content-length', '206473')
+  test('gets address_checks form', () => {
+    return request(app).get('/forms/address_checks/1').expect(200).expect('Content-Type', 'application/pdf')
   })
 })
 

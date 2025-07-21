@@ -202,8 +202,6 @@ module.exports = {
         no_time: 'Not enough time',
         refused: 'Refused',
         approved: 'Approved',
-        agency_notification: 'Agency notification',
-        cancel_agency_notification: 'Cancel agency notification',
         licence_variation: 'Licence variation',
       },
       eligibilityAndSuitabilityFormTemplates: {
@@ -234,8 +232,6 @@ module.exports = {
       },
     },
   },
-
-  pdfFormatForms: ['agency_notification'],
 
   domain: get('DOMAIN', 'http://localhost:3000'),
   port: get('PORT', 3000),
