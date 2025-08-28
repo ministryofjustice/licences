@@ -1,4 +1,3 @@
-const fiveMinutesBefore = require('../utils/fiveMinutesBefore')
 const { isApplicationRole } = require('./roles')
 const logger = require('../../log')
 
@@ -16,7 +15,6 @@ module.exports = (userService, audit) => {
     return {
       token,
       expiresIn,
-      refreshTime: fiveMinutesBefore(expiresIn),
       ...userProfile,
     }
   }
