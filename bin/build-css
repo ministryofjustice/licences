@@ -1,14 +1,14 @@
 #!/bin/bash
 
-./node_modules/node-sass/bin/node-sass $@ \
-    --include-path node_modules/govuk_frontend_toolkit/stylesheets \
-    --include-path node_modules/govuk_template_jinja/assets/stylesheets \
-    --include-path node_modules/govuk-elements-sass/public/sass \
+./node_modules/.bin/sass $@ \
+    --load-path node_modules/govuk_frontend_toolkit/stylesheets \
+    --load-path node_modules/govuk_template_jinja/assets/stylesheets \
+    --load-path node_modules/govuk-elements-sass/public/sass \
     assets/sass/application.scss \
     assets/stylesheets/application.css
-./node_modules/node-sass/bin/node-sass $@ \
+./node_modules/.bin/sass  $@ \
     assets/sass/forms-pdf.scss \
     assets/stylesheets/forms-pdf.css
-./node_modules/node-sass/bin/node-sass $@ \
+./node_modules/.bin/sass  $@ \
     assets/sass/licences-pdf.scss \
     assets/stylesheets/licences-pdf.css
