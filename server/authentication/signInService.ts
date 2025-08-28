@@ -1,9 +1,8 @@
 import superagent from 'superagent'
 import querystring from 'querystring'
 import config from '../config'
-import { generateOauthClientToken, generateAdminOauthClientToken } from './oauth'
+import { generateAdminOauthClientToken } from './oauth'
 import logger from '../../log'
-import fiveMinutesBefore from '../utils/fiveMinutesBefore'
 import { buildErrorHandler } from '../data/clientErrorHandler'
 import type TokenStore from '../data/tokenStore'
 
@@ -16,23 +15,6 @@ const timeoutSpec = {
 
 export = class SignInService {
   constructor(private readonly tokenStore: TokenStore) {}
-
-  // private getRefreshTokens = async (refreshToken, service) => {
-  //   const oauthClientToken = generateOauthClientToken()
-  //   const oauthRequest = { grant_type: 'refresh_token', refresh_token: refreshToken }
-
-  //   return oauthTokenRequest(oauthClientToken, oauthRequest, service)
-  // }
-
-  // async getRefreshedToken(user, service = 'nomis') {
-  //   logger.info(`Refreshing token for : ${user.username}`)
-
-  //   const { token, expiresIn } = await this.getRefreshTokens(user.refreshToken, service)
-
-  //   const refreshTime = fiveMinutesBefore(expiresIn)
-
-  //   return { token, refreshTime }
-  // }
 
   async getClientCredentialsTokens(username, service = 'nomis') {
     const key = username || '%ANONYMOUS%'

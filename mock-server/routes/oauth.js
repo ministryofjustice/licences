@@ -11,7 +11,6 @@ router.post('/token', (req, res) => {
   res.send({
     access_token: token,
     token_type: 'bearer',
-    // refresh_token: 'refreshToken',
     expires_in: 1199,
     scope: 'read write',
     internalUser: true,
