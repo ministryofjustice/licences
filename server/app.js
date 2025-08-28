@@ -282,23 +282,23 @@ module.exports = function createApp({
   })
 
   // token refresh
-  app.use(async (req, res, next) => {
-    if (production && req.user) {
-      const timeToRefresh = new Date() > req.user.refreshTime
-      if (timeToRefresh) {
-        try {
-          const newToken = await signInService.getRefreshedToken(req.user)
-          req.user.token = newToken.token
-          req.user.refreshToken = newToken.refreshToken
-          req.user.refreshTime = newToken.refreshTime
-        } catch (error) {
-          logger.error(`Elite 2 token refresh error: ${req.user.username}`, error.stack)
-          return res.redirect('/logout')
-        }
-      }
-    }
-    return next()
-  })
+  // app.use(async (req, res, next) => {
+  //   if (production && req.user) {
+  //     const timeToRefresh = new Date() > req.user.refreshTime
+  //     if (timeToRefresh) {
+  //       try {
+  //         const newToken = await signInService.getRefreshedToken(req.user)
+  //         req.user.token = newToken.token
+  //         req.user.refreshToken = newToken.refreshToken
+  //         req.user.refreshTime = newToken.refreshTime
+  //       } catch (error) {
+  //         logger.error(`Elite 2 token refresh error: ${req.user.username}`, error.stack)
+  //         return res.redirect('/logout')
+  //       }
+  //     }
+  //   }
+  //   return next()
+  // })
 
   // Update a value in the cookie so that the set-cookie will be sent.
   // Only changes every minute so that it's not sent with every request.

@@ -17,22 +17,22 @@ const timeoutSpec = {
 export = class SignInService {
   constructor(private readonly tokenStore: TokenStore) {}
 
-  private getRefreshTokens = async (refreshToken, service) => {
-    const oauthClientToken = generateOauthClientToken()
-    const oauthRequest = { grant_type: 'refresh_token', refresh_token: refreshToken }
+  // private getRefreshTokens = async (refreshToken, service) => {
+  //   const oauthClientToken = generateOauthClientToken()
+  //   const oauthRequest = { grant_type: 'refresh_token', refresh_token: refreshToken }
 
-    return oauthTokenRequest(oauthClientToken, oauthRequest, service)
-  }
+  //   return oauthTokenRequest(oauthClientToken, oauthRequest, service)
+  // }
 
-  async getRefreshedToken(user, service = 'nomis') {
-    logger.info(`Refreshing token for : ${user.username}`)
+  // async getRefreshedToken(user, service = 'nomis') {
+  //   logger.info(`Refreshing token for : ${user.username}`)
 
-    const { token, refreshToken, expiresIn } = await this.getRefreshTokens(user.refreshToken, service)
+  //   const { token, expiresIn } = await this.getRefreshTokens(user.refreshToken, service)
 
-    const refreshTime = fiveMinutesBefore(expiresIn)
+  //   const refreshTime = fiveMinutesBefore(expiresIn)
 
-    return { token, refreshToken, refreshTime }
-  }
+  //   return { token, refreshTime }
+  // }
 
   async getClientCredentialsTokens(username, service = 'nomis') {
     const key = username || '%ANONYMOUS%'
@@ -68,10 +68,9 @@ export = class SignInService {
 
 const parseOauthTokens = (oauthResult) => {
   const token = oauthResult.body.access_token
-  const refreshToken = oauthResult.body.refresh_token
   const expiresIn = oauthResult.body.expires_in
 
-  return { token, refreshToken, expiresIn }
+  return { token, expiresIn }
 }
 
 const getOauthToken = (oauthClientToken, requestSpec, service) => {
