@@ -31,7 +31,7 @@ describe('userServiceTest', () => {
 
   describe('getUserProfile', () => {
     test('should return an object with the profile, first role, all roles and active case load', () => {
-      return expect(service.getUserProfile('t', 'rt', 'un')).resolves.toEqual({
+      return expect(service.getUserProfile('t', 'un')).resolves.toEqual({
         username: 'un',
         activeCaseLoadId: 'this',
         name: 'User Name',
