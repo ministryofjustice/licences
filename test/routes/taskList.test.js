@@ -1069,7 +1069,7 @@ describe('GET /taskList/:prisonNumber', () => {
           })
       })
 
-      test('should display the Forms link', () => {
+      test('should display the Download forms link', () => {
         licenceService.getLicence.mockResolvedValue({ stage: 'PROCESSING_RO', licence: {} })
         const app = createApp(
           { licenceServiceStub: licenceService, prisonerServiceStub: prisonerService, caServiceStub: caService },
@@ -1080,7 +1080,7 @@ describe('GET /taskList/:prisonNumber', () => {
           .expect(200)
           .expect('Content-Type', /html/)
           .expect((res) => {
-            expect(res.text).toContain('Forms')
+            expect(res.text).toContain('Download forms')
           })
       })
     })

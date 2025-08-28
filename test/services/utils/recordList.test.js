@@ -4,12 +4,12 @@ describe('recordList', () => {
   describe('Do not allow empty', () => {
     test('should error when no elements at path', () => {
       const licence = { a: { b: { c: [0, 1, 2] } } }
-      expect(() => recordList({ licence, path: ['a', 'b', 'c', 'd'] })).toThrowError(Error)
+      expect(() => recordList({ licence, path: ['a', 'b', 'c', 'd'] })).toThrow(Error)
     })
 
     test('should error when not a list at path', () => {
       const licence = { a: { b: { c: { not: 'list' } } } }
-      expect(() => recordList({ licence, path: ['a', 'b', 'c'] })).toThrowError(Error)
+      expect(() => recordList({ licence, path: ['a', 'b', 'c'] })).toThrow(Error)
     })
 
     test('should remove item at index', () => {
@@ -43,7 +43,7 @@ describe('recordList', () => {
 
     test('should error when not a list at path even when allow empty', () => {
       const licence = { a: { b: { c: { not: 'list' } } } }
-      expect(() => recordList({ licence, path: ['a', 'b', 'c'], allowEmpty: true })).toThrowError(Error)
+      expect(() => recordList({ licence, path: ['a', 'b', 'c'], allowEmpty: true })).toThrow(Error)
     })
 
     test('should return undefined for the last item when empty', () => {

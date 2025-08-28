@@ -98,7 +98,7 @@ const findFirstFromToken = (token, roleHash) => {
     // try for a real jwt to get the roles from
     /** @type {any} */
     const jwt = jwtDecode(accessToken)
-    const found = Object.entries(roleHash).find(([key, value]) => jwt.user_name.includes(key))
+    const found = Object.entries(roleHash).find(([key, _]) => jwt.user_name.includes(key))
     return found ? found[1] : undefined
   } catch (error) {
     // otherwise fallback to a ca_token, ro_token, dm_token

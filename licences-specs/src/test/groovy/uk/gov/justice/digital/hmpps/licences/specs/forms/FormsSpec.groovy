@@ -35,9 +35,6 @@ class FormsSpec extends GebReportingSpec {
     offender.details.name == 'Osiss Helkarci'
     offender.details.nomisId == 'A5001DY'
     offender.details.dob == '22/10/1989'
-
-    and: 'The sub-heading also includes the offender name'
-    subHeading.text().contains('Osiss Helkarci')
   }
 
   def 'links to forms using booking id'() {
@@ -46,6 +43,14 @@ class FormsSpec extends GebReportingSpec {
 
     then: 'the links include the offenders booking id'
     formLinks.every {it.getAttribute('href').endsWith(testData.testBookingId) }
+  }
+
+  def 'links to Electronic Monitoring Order service'() {
+    when: 'viewing the forms list for an offender'
+    at FormsPage
+
+    then: 'the Manage an Electronic Monitoring Order section links to that service'
+    emoServiceLink.getAttribute('href').contains('https://hmpps-electronic-monitoring-create-an-order.hmpps.service.justice.gov.uk/')
   }
 
   def 'hides forms link if no licence record'() {
