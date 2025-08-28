@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   licence-db:
     image: postgres
