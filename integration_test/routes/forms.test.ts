@@ -28,7 +28,6 @@ describe('/forms/', () => {
     SENT_HDCED: '23rd August 2019',
     SENT_CRD: '15th October 2019',
     CURFEW_HOURS: { daySpecificInputs: 'Yes' },
-    CURFEW_FIRST: { firstNightFrom: '' },
   }
   const prisoner = {
     lastName: 'LAST',
@@ -362,18 +361,6 @@ describe('/forms/', () => {
       const pdfText = pdf.text.replace(/([\t\n])/gm, ' ')
 
       expect(pdfText).toContain('The following changes have been made to the above’s licence conditions')
-    })
-    test('Presents a PDF of agency_notification form', async () => {
-      app = createApp('roUser')
-
-      const res = await request(app).get('/hdc/forms/agency_notification/1')
-
-      const pdf = await pdfParse(res.body)
-      const pdfText = pdf.text.replace(/([\t\n])/gm, ' ')
-
-      expect(pdfText).toContain(
-        'This form must be sent to the EMS provider, probation service and the home police force'
-      )
     })
   })
 

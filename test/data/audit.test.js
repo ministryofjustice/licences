@@ -25,7 +25,7 @@ describe('Audit', () => {
     })
 
     test('should reject if unspecified key', () => {
-      expect(() => audit.record('Key', 'a@y.com', { data: 'data' })).toThrowError(Error)
+      expect(() => audit.record('Key', 'a@y.com', { data: 'data' })).toThrow(Error)
     })
 
     test('should call auditData.execSql', async () => {

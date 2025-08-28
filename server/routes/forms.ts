@@ -1,5 +1,4 @@
 import moment from 'moment'
-const path = require('path')
 import logger from '../../log'
 import { asyncMiddleware, LicenceLocals } from '../utils/middleware'
 import config from '../config'
@@ -13,9 +12,17 @@ const {
   port,
   gotenberg: { hdcUrl },
   pdf: {
-    forms: { formTemplates, formsDateFormat, pdfOptions },
+    forms: {
+      formTemplates,
+      formsDateFormat,
+      eligibilityAndSuitabilityFormTemplates,
+      addressChecksFormTemplates,
+      applicationOutcomeFormTemplates,
+      licenceVariationFormTemplates,
+      pdfOptions,
+    },
   },
-  pdfFormatForms,
+  links: { electronicMonitoringOrderUrl },
 } = config
 
 export default (formService: FormService, conditionsServiceFactory: ConditionsServiceFactory) => (router) => {
@@ -68,11 +75,6 @@ export default (formService: FormService, conditionsServiceFactory: ConditionsSe
         throw new Error(`unknown form template: ${templateName}`)
       }
 
-      if (pdfFormatForms.includes(templateName)) {
-        logger.info(`Returning pdf document for the '${templateName}' form`)
-        return res.sendFile(path.join(__dirname, `../views/forms/downloads/${templateName}.pdf`))
-      }
-
       logger.info(`Render PDF for form '${templateName}'`)
 
       const isBass = getIn(licenceStatus, ['decisions', 'bassReferralNeeded']) === true
@@ -111,7 +113,14 @@ export default (formService: FormService, conditionsServiceFactory: ConditionsSe
     '/:bookingId',
     asyncMiddleware(async (req, res: Response<any, LicenceLocals>) => {
       const { bookingId } = req.params
-      return res.render('forms/all', { bookingId, forms: Object.entries(formTemplates) })
+      return res.render('forms/all', {
+        bookingId,
+        eligibilityAndSuitabilityForms: Object.entries(eligibilityAndSuitabilityFormTemplates),
+        addressChecksForms: Object.entries(addressChecksFormTemplates),
+        applicationOutcomeForms: Object.entries(applicationOutcomeFormTemplates),
+        licenceVariationForms: Object.entries(licenceVariationFormTemplates),
+        electronicMonitoringOrderUrl,
+      })
     })
   )
 

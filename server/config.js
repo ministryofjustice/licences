@@ -202,8 +202,26 @@ module.exports = {
         no_time: 'Not enough time',
         refused: 'Refused',
         approved: 'Approved',
-        agency_notification: 'Agency notification',
-        cancel_agency_notification: 'Cancel agency notification',
+        licence_variation: 'Licence variation',
+      },
+      eligibilityAndSuitabilityFormTemplates: {
+        eligible: 'Eligible',
+        ineligible: 'Not eligible',
+        unsuitable: 'Not suitable',
+      },
+      addressChecksFormTemplates: {
+        address_checks: 'Information about address checks',
+        address: 'Address form',
+        address_unsuitable: 'Address unsuitable',
+      },
+      applicationOutcomeFormTemplates: {
+        optout: 'Opt out',
+        postponed: 'Postponed',
+        no_time: 'Not enough time',
+        refused: 'Refused',
+        approved: 'Approved',
+      },
+      licenceVariationFormTemplates: {
         licence_variation: 'Licence variation',
       },
       pdfOptions: {
@@ -214,8 +232,6 @@ module.exports = {
       },
     },
   },
-
-  pdfFormatForms: ['agency_notification'],
 
   domain: get('DOMAIN', 'http://localhost:3000'),
   port: get('PORT', 3000),
@@ -246,6 +262,10 @@ module.exports = {
     feedbackAndSupportUrl: get(
       'FEEDBACK_SUPPORT_URL',
       'https://support-dev.hmpps.service.justice.gov.uk/feedback-and-support'
+    ),
+    electronicMonitoringOrderUrl: get(
+      'ELECTRONIC_MONITORING_ORDER_URL',
+      'https://hmpps-electronic-monitoring-create-an-order.hmpps.service.justice.gov.uk/'
     ),
   },
 
