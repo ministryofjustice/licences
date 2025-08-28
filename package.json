@@ -33,7 +33,8 @@
     "prepare": "hmpps-precommit-hooks-prepare",
     "precommit:secrets": "gitleaks git --pre-commit --redact --staged --verbose --config .gitleaks/config.toml",
     "precommit:lint": "node_modules/.bin/lint-staged",
-    "precommit:verify": "npm run typecheck"
+    "precommit:verify": "npm run typecheck",
+    "generate:kotlin-types": "tsc && node dist/server/services/config/conditions/gen/generateKotlinTypes.js"
   },
   "lint-staged": {
     "*.{js,css}": [

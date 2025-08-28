@@ -6,7 +6,7 @@ import { isEmpty } from '../../../../../utils/functionalHelpers'
 enum GroupName {
   RESIDENCE_AT_A_SPECIFIC_PLACE = 'Residence at a specific place',
   RESTRICTION_OF_RESIDENCY = 'Restriction of residency',
-  MAKING_OR_MAINTAINING_CONTACT = ' Making or maintaining contact with a person',
+  MAKING_OR_MAINTAINING_CONTACT = 'Making or maintaining contact with a person',
   PARTICIPATION = 'Participation in, or co-operation with, a programme or set of activities',
   POSSESSION = 'Possession, ownership, control or inspection of specified items or documents.',
   DISCLOSURE_OF_INFO = ' Disclosure of information',
