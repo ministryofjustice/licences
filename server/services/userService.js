@@ -5,7 +5,7 @@ const { getIn } = require('../utils/functionalHelpers')
 const { forenameToInitial } = require('../utils/userProfile')
 
 module.exports = (nomisClientBuilder, signInService, manageUsersApi) => {
-  async function getUserProfile(token, refreshToken, username) {
+  async function getUserProfile(token, username) {
     const nomisClient = nomisClientBuilder(token)
 
     const [profile, { roles, isPrisonUser }] = await Promise.all([

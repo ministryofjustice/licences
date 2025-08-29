@@ -31,27 +31,11 @@ describe('signInService', () => {
     tokenStore.setToken.mockReset()
   })
 
-  describe('getRefreshedToken', () => {
-    test('should get and return new token using refresh token when not RO', async () => {
-      fakeOauth.post(`/oauth/token`, 'grant_type=refresh_token&refresh_token=refresh').reply(200, {
-        token_type: 'type',
-        access_token: 'token',
-        refresh_token: 'refreshed',
-        expires_in: '1200',
-      })
-
-      const newToken = await service.getRefreshedToken({ username: 'un', role: 'CA', refreshToken: 'refresh' })
-
-      expect(newToken).toEqual({ refreshToken: 'refreshed', refreshTime: in15Mins, token: 'token' })
-    })
-  })
-
   describe('get client credentials tokens', () => {
     test('should get anonymous client credentials without a username', async () => {
       fakeOauth.post(`/oauth/token`, 'grant_type=client_credentials').reply(200, {
         token_type: 'type',
         access_token: 'token',
-        refresh_token: 'refreshed',
         expires_in: '1200',
       })
 
@@ -90,7 +74,6 @@ describe('signInService', () => {
       fakeOauth.post(`/oauth/token`, 'grant_type=client_credentials&username=testuser').reply(200, {
         token_type: 'type',
         access_token: 'token',
-        refresh_token: 'refreshed',
         expires_in: '1200',
       })
 
