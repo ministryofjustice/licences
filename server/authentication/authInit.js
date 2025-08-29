@@ -19,7 +19,7 @@ module.exports = (userService, audit) => {
     }
   }
 
-  const init = async (accessToken, params, profile, done) => {
+  const init = async (accessToken, refreshToken, params, profile, done) => {
     try {
       const user = await getUser(accessToken, params.expires_in, params.user_name)
       return done(null, user)
