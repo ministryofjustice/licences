@@ -6,7 +6,7 @@ import { groupBy } from '../utils/functionalHelpers'
 
 const setCase = require('case')
 const logger = require('../../log')
-const { NO_OFFENDER_NUMBER, NO_COM_ASSIGNED, STAFF_NOT_PRESENT } = require('./serviceErrors')
+const { NO_OFFENDER_NUMBER, STAFF_NOT_PRESENT } = require('./serviceErrors')
 
 // eslint-disable-next-line import/prefer-default-export
 export class RoService {

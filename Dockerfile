@@ -1,5 +1,5 @@
 # Stage: base image
-FROM node:20.8-bullseye-slim as base
+FROM node:20.8-bullseye-slim AS base
 
 ARG BUILD_NUMBER=1_0_0
 ARG GIT_REF=not-available
@@ -15,7 +15,7 @@ RUN addgroup --gid 2000 --system appgroup && \
 WORKDIR /app
 
 # Cache breaking
-ENV BUILD_NUMBER ${BUILD_NUMBER:-1_0_0}
+ENV BUILD_NUMBER=${BUILD_NUMBER:-1_0_0}
 
 RUN apt-get update && \
         apt-get upgrade -y
@@ -28,7 +28,7 @@ RUN apt-get autoremove -y && \
         rm -rf /var/lib/apt/lists/*
 
 # Stage: build assets
-FROM base as build
+FROM base AS build
 
 ARG BUILD_NUMBER=1_0_0
 ARG GIT_REF=not-available
@@ -42,7 +42,7 @@ RUN apt-get autoremove -y && \
         rm -rf /var/lib/apt/lists/*
 
 COPY package*.json ./
-RUN npm ci --no-audit
+RUN npm run setup -- --no-audit
 
 COPY . .
 RUN npm run build
@@ -78,7 +78,7 @@ COPY --from=build --chown=appuser:appgroup \
         /app/node_modules ./node_modules
 
 COPY --from=build --chown=appuser:appgroup \
-      /app/server/views ./server/views
+        /app/server/views ./server/views
 
 ENV PORT=3000
 EXPOSE 3000

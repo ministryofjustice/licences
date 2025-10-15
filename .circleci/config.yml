@@ -8,7 +8,7 @@ parameters:
     default: the_elephants_devs
   node-version:
     type: string
-    default: 20.8-browsers
+    default: 20.19-browsers
 executors:
   javascript-integration-tests:
     docker:
@@ -38,7 +38,7 @@ executors:
           SPRING_PROFILES_ACTIVE: dev
           SERVER_PORT: 9190
           API_BASE_URL_OAUTH: http://hmpps-auth:9090/auth
-      - image: bitnami/redis:5.0
+      - image: cimg/redis:5.0
         environment: ALLOW_EMPTY_PASSWORD=yes
     working_directory: ~/app
 jobs:
@@ -50,12 +50,12 @@ jobs:
       - checkout
       - run:
           name: Update npm
-          command: 'sudo npm install -g npm@9'
+          command: 'sudo npm install -g npm@10'
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:
           name: Install Dependencies
-          command: npm ci
+          command: npm run setup
       - save_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
           paths:

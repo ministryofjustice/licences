@@ -61,33 +61,6 @@ val ${name} = listOf(${v1Text},
 `
 }
 
-const camelCase = (str) =>
-  str.toLowerCase().replace(/([-_][a-z])/g, (group) => group.toUpperCase().replace('-', '').replace('_', ''))
-
-function getConditionsClassText(className, conditions) {
-  const conditionText = conditions
-    .map(
-      (c) => `
-    @field:JsonProperty("${c.id}")
-    val ${camelCase(c.id)}: Any?,`
-    )
-    .join('\n')
-
-  return `package uk.gov.justice.digital.hmpps.hmppshdcapi.licences
-
-${WARNING} 
-
-import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.annotation.JsonInclude
-import com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL
-
-@JsonInclude(NON_NULL)
-class ${className} (
-    ${conditionText}
-  ): AdditionalConditions
-`
-}
-
 function replaceFileContents(fileName: string, content: string) {
   const fullName = `${DESTINATION_DIR}/${fileName}`
   if (fs.existsSync(fullName)) {
@@ -102,7 +75,11 @@ console.log(`generating kotlin condition classes\n`)
 replaceFileContents('ConditionMetadata.kt', dataClass)
 replaceFileContents('V1Conditions.kt', getAdditionalConditionsText('V1_CONDITIONS', v1.conditions))
 replaceFileContents('V2Conditions.kt', getAdditionalConditionsText('V2_CONDITIONS', v2.conditions))
-replaceFileContents('../AdditionalConditionsV1.kt', getConditionsClassText('AdditionalConditionsV1', v1.conditions))
-replaceFileContents('../AdditionalConditionsV2.kt', getConditionsClassText('AdditionalConditionsV2', v2.conditions))
+
+v2.conditions.forEach((c) => {
+  console.log(
+    `${c.group_name}|${c.subgroup_name || ''}|${c.text}|${(c.field_position && Object.keys(c.field_position).join(', ')) || ''}`
+  )
+})
 
 console.log(`FIN!\n`)
