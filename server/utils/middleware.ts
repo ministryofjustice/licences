@@ -70,7 +70,7 @@ export function authorisationMiddleware(req, res, next) {
 
 export function auditMiddleware(audit, key) {
   function userInputFrom(data) {
-    const nonEmptyKeys = Object.keys(data).filter(
+    const nonEmptyKeys = Object.keys(data || {}).filter(
       (inputKey) => data[inputKey] && !['bookingId', '_csrf', 'anchor'].includes(inputKey)
     )
 
@@ -88,7 +88,7 @@ export function auditMiddleware(audit, key) {
   }
 
   return async (req, res, next) => {
-    const bookingId = req.body.bookingId || req.params.bookingId
+    const bookingId = req.body?.bookingId || req.params?.bookingId
     const inputs = userInputFrom(req.body)
 
     auditEvent(req.user.username, bookingId, req.originalUrl, inputs)
