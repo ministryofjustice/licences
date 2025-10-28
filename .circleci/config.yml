@@ -1,6 +1,6 @@
 version: 2.1
 orbs:
-  hmpps: ministryofjustice/hmpps@8
+  hmpps: ministryofjustice/hmpps@11
   browser-tools: circleci/browser-tools@1.4.8
 parameters:
   releases-slack-channel:
