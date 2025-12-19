@@ -1,4 +1,4 @@
-import pdfParse from 'pdf-parse'
+import { PDFParse } from 'pdf-parse'
 
 import { GotenbergClient } from '../../server/data/gotenbergClient'
 
@@ -9,8 +9,9 @@ describe('Gotenberg API', () => {
       const pdf = await client.renderPdfFromHtml(
         '<!doctype html><html lang="en"><head><meta charset="utf-8"><title>My PDF</title></head><body><h1>Hello world!</h1></body></html>'
       )
-      const pdfText = await pdfParse(pdf)
-      expect(pdfText.text).toContain('Hello world!')
+      const parser = new PDFParse(pdf)
+      const result = await parser.getText()
+      expect(result.text).toContain('Hello world!')
     })
   })
 })

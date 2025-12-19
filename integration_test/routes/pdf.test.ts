@@ -1,5 +1,5 @@
 import request from 'supertest'
-import pdfParse from 'pdf-parse'
+import { PDFParse } from 'pdf-parse'
 import { mockAudit } from '../../test/mockClients'
 import { appSetup } from '../../test/supertestSetup'
 
@@ -311,8 +311,9 @@ describe('PDF:', () => {
       expect(pdfServiceStub.getPdfLicenceData).toHaveBeenCalled()
       expect(pdfServiceStub.getPdfLicenceData).toHaveBeenCalledWith('123', rawLicence, 'token')
 
-      const pdf = await pdfParse(res.body)
-      const pdfText = pdf.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
+      const parser = new PDFParse(res.body)
+      const result = await parser.getText()
+      const pdfText = result.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
 
       // Just enough to verify that we made a PDF with some text and some licence data in it
       expect(pdfText).toContain('Name: NAMEPrison no: NOMSDate of Birth: DOB')

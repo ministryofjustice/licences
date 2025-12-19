@@ -1,4 +1,4 @@
-import pdfParse from 'pdf-parse'
+import { PDFParse } from 'pdf-parse'
 import request from 'supertest'
 import { appSetup } from '../../test/supertestSetup'
 import {
@@ -112,8 +112,9 @@ describe('/forms/', () => {
 
       const res = await request(app).get('/hdc/forms/eligible/1')
 
-      const pdf = await pdfParse(res.body)
-      const pdfText = pdf.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
+      const parser = new PDFParse(res.body)
+      const result = await parser.getText()
+      const pdfText = result.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
 
       expect(pdfText).toContain('Home Detention Curfew (tagging): Eligible')
       expect(pdfText).toContain('Name: Osiss Helkarci')
@@ -135,8 +136,9 @@ describe('/forms/', () => {
 
       const res = await request(app).get('/hdc/forms/postponed/1')
 
-      const pdf = await pdfParse(res.body)
-      const pdfText = pdf.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
+      const parser = new PDFParse(res.body)
+      const result = await parser.getText()
+      const pdfText = result.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
 
       expect(pdfText).toContain('Home Detention Curfew (tagging): Postponed')
       expect(pdfText).toContain(
@@ -157,8 +159,9 @@ describe('/forms/', () => {
 
       const res = await request(app).get('/hdc/forms/postponed/1')
 
-      const pdf = await pdfParse(res.body)
-      const pdfText = pdf.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
+      const parser = new PDFParse(res.body)
+      const result = await parser.getText()
+      const pdfText = result.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
 
       expect(pdfText).toContain('Home Detention Curfew (tagging): Postponed')
       expect(pdfText).toContain('Osiss Helkarci The decision to release you on HDC has been postponed because')
@@ -172,8 +175,9 @@ describe('/forms/', () => {
 
       const res = await request(app).get('/hdc/forms/postponed/1')
 
-      const pdf = await pdfParse(res.body)
-      const pdfText = pdf.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
+      const parser = new PDFParse(res.body)
+      const result = await parser.getText()
+      const pdfText = result.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
 
       expect(pdfText).toContain('Home Detention Curfew (tagging): Postponed')
       expect(pdfText).toContain('Osiss Helkarci The decision to release you on HDC has been postponed because')
@@ -295,8 +299,9 @@ describe('/forms/', () => {
 
       const res = await request(app).get('/hdc/forms/curfewAddress/1')
 
-      const pdf = await pdfParse(res.body)
-      const pdfText = pdf.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
+      const parser = new PDFParse(res.body)
+      const result = await parser.getText()
+      const pdfText = result.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
 
       expect(pdfText).toContain('Home detention curfew - Address checks')
       expect(pdfText).toContain('SurnameLAST')
@@ -315,8 +320,9 @@ describe('/forms/', () => {
 
       const res = await request(app).get('/hdc/forms/curfewAddress/1')
 
-      const pdf = await pdfParse(res.body)
-      const pdfText = pdf.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
+      const parser = new PDFParse(res.body)
+      const result = await parser.getText()
+      const pdfText = result.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
 
       expect(pdfText).toContain('Home detention curfew - Address checks')
       expect(pdfText).toContain(
@@ -338,8 +344,9 @@ describe('/forms/', () => {
 
       const res = await request(app).get('/hdc/forms/curfewAddress/1')
 
-      const pdf = await pdfParse(res.body)
-      const pdfText = pdf.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
+      const parser = new PDFParse(res.body)
+      const result = await parser.getText()
+      const pdfText = result.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
 
       expect(pdfText).toContain('Home detention curfew - Address checks')
       expect(pdfText).toContain(
@@ -357,8 +364,9 @@ describe('/forms/', () => {
 
       const res = await request(app).get('/hdc/forms/licence_variation/1')
 
-      const pdf = await pdfParse(res.body)
-      const pdfText = pdf.text.replace(/([\t\n])/gm, ' ')
+      const parser = new PDFParse(res.body)
+      const result = await parser.getText()
+      const pdfText = result.text.replace(/([\t\n])/gm, ' ')
 
       expect(pdfText).toContain('The following changes have been made to the above’s licence conditions')
     })
