@@ -311,12 +311,12 @@ describe('PDF:', () => {
       expect(pdfServiceStub.getPdfLicenceData).toHaveBeenCalled()
       expect(pdfServiceStub.getPdfLicenceData).toHaveBeenCalledWith('123', rawLicence, 'token')
 
-      const parser = new PDFParse(res.body)
+      const parser = new PDFParse({ data: res.body })
       const result = await parser.getText()
       const pdfText = result.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
 
       // Just enough to verify that we made a PDF with some text and some licence data in it
-      expect(pdfText).toContain('Name: NAMEPrison no: NOMSDate of Birth: DOB')
+      expect(pdfText).toContain('Name: NAME Prison no: NOMS Date of Birth: DOB')
       expect(pdfText).toContain('Page 1 of 3 - Basic licence v2.0')
     })
   })

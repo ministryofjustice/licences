@@ -9,7 +9,7 @@ describe('Gotenberg API', () => {
       const pdf = await client.renderPdfFromHtml(
         '<!doctype html><html lang="en"><head><meta charset="utf-8"><title>My PDF</title></head><body><h1>Hello world!</h1></body></html>'
       )
-      const parser = new PDFParse(pdf)
+      const parser = new PDFParse({ data: pdf })
       const result = await parser.getText()
       expect(result.text).toContain('Hello world!')
     })

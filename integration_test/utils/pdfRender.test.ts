@@ -83,10 +83,10 @@ describe('pdfRenderer', () => {
     })
 
     const res = await request(app).get('/pdf')
-    const parser = new PDFParse(res.body)
+    const parser = new PDFParse({ data: res.body })
     const pdf = await parser.getText()
 
-    expect(pdf.pages).toBe(1)
+    expect(pdf.pages[0].num).toBe(1)
     expect(pdf.text).toContain('\nfixed\nvariable')
     expect(pdf.text).toContain('Header')
     expect(pdf.text).toContain('Footer')

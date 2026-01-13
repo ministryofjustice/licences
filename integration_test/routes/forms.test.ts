@@ -112,7 +112,7 @@ describe('/forms/', () => {
 
       const res = await request(app).get('/hdc/forms/eligible/1')
 
-      const parser = new PDFParse(res.body)
+      const parser = new PDFParse({ data: res.body })
       const result = await parser.getText()
       const pdfText = result.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
 
@@ -136,7 +136,7 @@ describe('/forms/', () => {
 
       const res = await request(app).get('/hdc/forms/postponed/1')
 
-      const parser = new PDFParse(res.body)
+      const parser = new PDFParse({ data: res.body })
       const result = await parser.getText()
       const pdfText = result.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
 
@@ -159,7 +159,7 @@ describe('/forms/', () => {
 
       const res = await request(app).get('/hdc/forms/postponed/1')
 
-      const parser = new PDFParse(res.body)
+      const parser = new PDFParse({ data: res.body })
       const result = await parser.getText()
       const pdfText = result.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
 
@@ -175,7 +175,7 @@ describe('/forms/', () => {
 
       const res = await request(app).get('/hdc/forms/postponed/1')
 
-      const parser = new PDFParse(res.body)
+      const parser = new PDFParse({ data: res.body })
       const result = await parser.getText()
       const pdfText = result.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
 
@@ -299,14 +299,14 @@ describe('/forms/', () => {
 
       const res = await request(app).get('/hdc/forms/curfewAddress/1')
 
-      const parser = new PDFParse(res.body)
+      const parser = new PDFParse({ data: res.body })
       const result = await parser.getText()
-      const pdfText = result.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
+      const pdfText = result.text.replace(/([\t\n\s+])/gm, ' ') // The extracted PDF text has newline and tab characters
 
       expect(pdfText).toContain('Home detention curfew - Address checks')
-      expect(pdfText).toContain('SurnameLAST')
-      expect(pdfText).toContain('Forename(s)FIRST MIDDLE')
-      expect(pdfText).toContain('DOB01/01/2001')
+      expect(pdfText).toContain('Surname  LAST')
+      expect(pdfText).toContain('Forename(s) FIRST MIDDLE')
+      expect(pdfText).toContain('DOB  01/01/2001')
       expect(pdfText).toContain('STANDARD CONDITION')
       expect(pdfText).toContain('ADDITIONAL CONDITION')
     })
@@ -320,7 +320,7 @@ describe('/forms/', () => {
 
       const res = await request(app).get('/hdc/forms/curfewAddress/1')
 
-      const parser = new PDFParse(res.body)
+      const parser = new PDFParse({ data: res.body })
       const result = await parser.getText()
       const pdfText = result.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
 
@@ -344,7 +344,7 @@ describe('/forms/', () => {
 
       const res = await request(app).get('/hdc/forms/curfewAddress/1')
 
-      const parser = new PDFParse(res.body)
+      const parser = new PDFParse({ data: res.body })
       const result = await parser.getText()
       const pdfText = result.text.replace(/([\t\n])/gm, ' ') // The extracted PDF text has newline and tab characters
 
@@ -364,7 +364,7 @@ describe('/forms/', () => {
 
       const res = await request(app).get('/hdc/forms/licence_variation/1')
 
-      const parser = new PDFParse(res.body)
+      const parser = new PDFParse({ data: res.body })
       const result = await parser.getText()
       const pdfText = result.text.replace(/([\t\n])/gm, ' ')
 
