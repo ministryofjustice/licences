@@ -280,6 +280,29 @@ export function validateGroup({
         missingMessage: 'Enter the reporting instructions',
       },
     ],
+    PROCESSING_RO_CVL_LICENCE_CREATION: [
+      {
+        formResponse: getIn(licence, ['curfew', 'curfewAddressReview']),
+        formType: 'curfewAddressReview',
+        pageConfig: curfewConfig.curfewAddressReview,
+        section: 'curfew',
+        missingMessage: 'Enter the curfew address review details',
+      },
+      {
+        formResponse: getIn(licence, ['risk', 'riskManagement']),
+        formType: 'riskManagement',
+        pageConfig: riskConfig.riskManagement,
+        section: 'risk',
+        missingMessage: 'Enter the risk management details',
+      },
+      {
+        formResponse: getIn(licence, ['victim', 'victimLiaison']),
+        formType: 'victimLiaison',
+        pageConfig: victimConfig.victimLiaison,
+        section: 'victim',
+        missingMessage: 'Enter the victim liaison details',
+      },
+    ],
     PROCESSING_RO_APPROVED_PREMISES: [
       approvedAddressValidationConfig(licence),
       {
@@ -313,6 +336,7 @@ export function validateGroup({
         missingMessage: 'Enter the reporting instructions',
       },
     ],
+    PROCESSING_RO_APPROVED_PREMISES_CVL_LICENCE_CREATION: [approvedAddressValidationConfig(licence)],
     PROCESSING_RO_ADDRESS_REVIEW_REJECTED: [
       {
         formResponse: getIn(licence, ['curfew', 'curfewAddressReview']),
@@ -421,6 +445,36 @@ export function validateGroup({
         pageConfig: reportingConfig.reportingInstructions,
         section: 'reporting',
         missingMessage: 'Enter the reporting instructions',
+      },
+    ],
+    PROCESSING_RO_BASS_REQUESTED_CVL_LICENCE_CREATION: [
+      {
+        formResponse: getIn(licence, ['bassReferral', 'bassRequest']),
+        formType: 'bassRequest',
+        pageConfig: bassConfig.bassRequest,
+        section: 'bassReferral',
+        missingMessage: 'Enter the bass referral details',
+      },
+      {
+        formResponse: getIn(licence, ['bassReferral', 'bassAreaCheck']),
+        formType: 'bassReferral',
+        pageConfig: bassConfig.bassAreaCheck,
+        section: 'bassAreaCheck',
+        missingMessage: 'Enter the bass area check details',
+      },
+      {
+        formResponse: getIn(licence, ['risk', 'riskManagement']),
+        formType: 'riskManagement',
+        pageConfig: riskConfig.riskManagement,
+        section: 'risk',
+        missingMessage: 'Enter the risk management details',
+      },
+      {
+        formResponse: getIn(licence, ['victim', 'victimLiaison']),
+        formType: 'victimLiaison',
+        pageConfig: victimConfig.victimLiaison,
+        section: 'victim',
+        missingMessage: 'Enter the victim liaison details',
       },
     ],
   }
