@@ -477,6 +477,25 @@ describe('TaskList models', () => {
         submitCAComplete,
       ])
     })
+
+    test('should return list of tasks when the licence is to be created in CVL', () => {
+      expect(
+        getTaskLists(
+          'RO',
+          false,
+          {
+            decisions: {
+              addressReviewFailed: false,
+              addressUnsuitable: false,
+              useCvlForLicenceCreation: true,
+            },
+            tasks: {},
+            stage: 'PROCESSING_RO',
+          },
+          {}
+        )
+      ).toEqual([proposedCurfewAddress, riskManagement, victimLiasion, curfewAddressCheck, submitCA])
+    })
   })
 
   describe('no task list', () => {
