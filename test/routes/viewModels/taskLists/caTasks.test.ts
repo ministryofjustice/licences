@@ -76,7 +76,7 @@ describe('caTasks', () => {
       ])
       expect(results[9].label).toContain('Refuse')
       // Create licence label only contains wording if licence to be created in cvl
-      expect(results[11].label).toContain(null)
+      expect(results[11].label).toBeNull()
     })
 
     test('licence to be created in cvl removes curfew hours, conditions and reporting instructions tasks', () => {
