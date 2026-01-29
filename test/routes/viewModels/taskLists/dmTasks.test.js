@@ -104,5 +104,58 @@ describe('dmTasks', () => {
         'Final decision',
       ])
     })
+
+    test('default list', () => {
+      const results = dmTasks({
+        tasks,
+        decisions: { useCvlForLicenceCreation: true },
+      })
+
+      expect(results.map(({ task, title }) => task || title)).toStrictEqual([
+        'Proposed curfew address',
+        'Risk management',
+        'Victim liaison',
+        'Review case',
+        'Return to prison case admin',
+        'Final decision',
+      ])
+    })
+  })
+
+  describe('mandatory task list', () => {
+    test('default list', () => {
+      const results = dmTasks({
+        tasks,
+        decisions: { showMandatoryAddressChecksNotCompletedWarning: true },
+      })
+
+      expect(results.map(({ task, title }) => task || title)).toStrictEqual([
+        'Proposed curfew address',
+        'Risk management',
+        'Victim liaison',
+        'Curfew hours',
+        'Additional conditions',
+        'Reporting instructions',
+        'Review case',
+        'Return to prison case admin',
+        'Final decision',
+      ])
+    })
+
+    test('licence to be created in cvl removes curfew hours, conditions and reporting instructions tasks', () => {
+      const results = dmTasks({
+        tasks,
+        decisions: { showMandatoryAddressChecksNotCompletedWarning: true, useCvlForLicenceCreation: true },
+      })
+
+      expect(results.map(({ task, title }) => task || title)).toStrictEqual([
+        'Proposed curfew address',
+        'Risk management',
+        'Victim liaison',
+        'Review case',
+        'Return to prison case admin',
+        'Final decision',
+      ])
+    })
   })
 })
