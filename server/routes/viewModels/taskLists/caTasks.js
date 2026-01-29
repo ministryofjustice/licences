@@ -141,6 +141,7 @@ module.exports = {
         dmRefused,
         eligible,
         postponed,
+        useCvlForLicenceCreation,
       } = decisions
 
       const { bassOffer } = tasks
@@ -166,9 +167,9 @@ module.exports = {
           !approvedPremisesRequired && (curfewAddressApproved || bassOfferMade || addressUnsuitable),
         ],
         [victimLiaison.edit, validAddress],
-        [curfewHours.edit, validAddress],
-        [additionalConditions.edit, validAddress],
-        [reportingInstructions.edit, validAddress],
+        [curfewHours.edit, validAddress && !useCvlForLicenceCreation],
+        [additionalConditions.edit, validAddress && !useCvlForLicenceCreation],
+        [reportingInstructions.edit, validAddress && !useCvlForLicenceCreation],
         [finalChecks.review, validAddress],
         [postponeOrRefuse, validAddress && !dmRefused],
         [refuseHdc, !dmRefused],
