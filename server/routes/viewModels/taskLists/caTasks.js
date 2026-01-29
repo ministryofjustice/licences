@@ -70,6 +70,7 @@ module.exports = {
       curfewAddressApproved,
       optedOut,
       eligible,
+      useCvlForLicenceCreation,
     } = decisions
 
     const { bassAreaCheck, optOut } = tasks
@@ -111,9 +112,9 @@ module.exports = {
       [bassAddress.ca.postApproval, bassReferralNeeded],
       [riskManagement.edit, showRiskManagement],
       [victimLiaison.edit, validAddress],
-      [curfewHours.edit, validAddress],
-      [additionalConditions.edit, validAddress],
-      [reportingInstructions.edit, validAddress],
+      [curfewHours.edit, validAddress && !useCvlForLicenceCreation],
+      [additionalConditions.edit, validAddress && !useCvlForLicenceCreation],
+      [reportingInstructions.edit, validAddress && !useCvlForLicenceCreation],
       [finalChecks.review, validAddress],
       [postponeOrRefuse, validAddress],
       [refuseHdc],
