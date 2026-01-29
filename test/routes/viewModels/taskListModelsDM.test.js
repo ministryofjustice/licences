@@ -85,6 +85,11 @@ describe('TaskList models', () => {
     label: 'Not started',
     action: { href: '/hdc/approval/refuseReason/', text: 'Refuse HDC', type: 'btn' },
   }
+  const finalDecisionMandatoryCheck = {
+    title: 'Final decision',
+    label: 'Not started',
+    action: { href: '/hdc/approval/mandatoryCheck/', text: 'Continue', type: 'btn' },
+  }
 
   describe('dmTasks', () => {
     test('should return eligibility and refusal if there is insufficient time', () => {
@@ -174,6 +179,68 @@ describe('TaskList models', () => {
         { ...proposedCurfewAddress, label: 'Address rejected' },
         returnPCA,
         finalDecisionRefuse,
+      ])
+    })
+
+    test('should display mandatory tasks if mandatory address checks not completed', () => {
+      expect(
+        getTaskLists(
+          'DM',
+          false,
+          {
+            decisions: {
+              insufficientTimeStop: false,
+              bassReferralNeeded: false,
+              addressWithdrawn: false,
+              addressUnsuitable: false,
+              curfewAddressRejected: false,
+              showMandatoryAddressChecksNotCompletedWarning: true,
+            },
+            tasks: {},
+            stage: 'APPROVAL',
+          },
+          {}
+        )
+      ).toEqual([
+        proposedCurfewAddress,
+        riskManagement,
+        victimLiasion,
+        curfewHours,
+        additionalConditions,
+        reportingInstructions,
+        reviewCase,
+        returnPCA,
+        finalDecisionMandatoryCheck,
+      ])
+    })
+
+    test('should display mandatory tasks if mandatory address checks not completed and the licence is to be created in CVL', () => {
+      expect(
+        getTaskLists(
+          'DM',
+          false,
+          {
+            decisions: {
+              insufficientTimeStop: false,
+              bassReferralNeeded: false,
+              addressWithdrawn: false,
+              addressUnsuitable: false,
+              curfewAddressRejected: false,
+              showMandatoryAddressChecksNotCompletedWarning: true,
+              useCvlForLicenceCreation: true,
+            },
+            tasks: {},
+            stage: 'APPROVAL',
+          },
+          {}
+        )
+      ).toEqual([
+        proposedCurfewAddress,
+        riskManagement,
+        victimLiasion,
+        reviewCase,
+        returnPCA,
+        finalDecisionMandatoryCheck,
       ])
     })
 
@@ -267,6 +334,28 @@ describe('TaskList models', () => {
         returnPCA,
         finalDecision,
       ])
+    })
+
+    test('should display standard tasks when the licence is to be created in CVL', () => {
+      expect(
+        getTaskLists(
+          'DM',
+          false,
+          {
+            decisions: {
+              insufficientTimeStop: false,
+              bassReferralNeeded: false,
+              addressWithdrawn: false,
+              curfewAddressRejected: false,
+              curfewAddressApproved: true,
+              useCvlForLicenceCreation: true,
+            },
+            tasks: {},
+            stage: 'APPROVAL',
+          },
+          {}
+        )
+      ).toEqual([proposedCurfewAddress, riskManagement, victimLiasion, reviewCase, returnPCA, finalDecision])
     })
   })
 })
