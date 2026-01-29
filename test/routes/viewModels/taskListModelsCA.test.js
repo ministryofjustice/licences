@@ -645,6 +645,38 @@ describe('TaskList models', () => {
         )
       ).toEqual([eligibility, informOffender])
     })
+
+    test('should return list of tasks for standard route where the licence is to be created in CVL', () => {
+      expect(
+        getCaTaskLists(
+          {
+            decisions: {
+              bassReferralNeeded: false,
+              curfewAddressApproved: true,
+              bassWithdrawn: false,
+              bassAccepted: null,
+              optedOut: false,
+              eligible: true,
+              useCvlForLicenceCreation: true,
+            },
+            tasks: {
+              bassAreaCheck: 'UNSTARTED',
+            },
+            stage: 'PROCESSING_CA',
+          },
+          null
+        )
+      ).toEqual([
+        eligibility,
+        proposedCurfewAddress,
+        riskManagement,
+        victimLiasion,
+        reviewCase,
+        postponeOrRefuse,
+        refuse,
+        submitDecisionMaker,
+      ])
+    })
   })
 
   describe('caTasksPostApproval', () => {
@@ -1068,9 +1100,6 @@ describe('TaskList models', () => {
         proposedCurfewAddressEdit,
         riskManagement,
         victimLiasion,
-        curfewHours,
-        additionalConditionsEdit,
-        reportingInstructions,
         reviewCase,
         postponeOrRefuse,
         refuse,
