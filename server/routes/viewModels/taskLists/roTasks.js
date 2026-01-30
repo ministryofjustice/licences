@@ -8,6 +8,7 @@ const victimLiaison = require('./tasks/victimLiaison')
 const bassArea = require('./tasks/ro/bassArea')
 const submitToCa = require('./tasks/ro/submitToCa')
 const createCurfewAddressForm = require('./tasks/ro/createCurfewAddressForm')
+const logger = require('../../../../log')
 
 module.exports = {
   getRoTasks: ({ decisions, tasks, allowedTransition }) => {
@@ -40,6 +41,7 @@ module.exports = {
   },
 
   getRoTasksPostApproval: ({ decisions, tasks }) => {
+    logger.info('getRoTasksPostApproval task list accessed')
     const { approvedPremisesRequired } = decisions
     const context = { decisions, tasks }
     return tasklist(context, [
