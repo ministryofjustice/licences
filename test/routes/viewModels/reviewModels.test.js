@@ -157,5 +157,11 @@ describe('Review page models', () => {
       }
       expect(getReviewSections({ decisions })).toEqual(expected)
     })
+
+    test('should not show curfewHours, additionalConditions or reportingInstructions if licence to be created in CVL', () => {
+      expect(getReviewSections({ decisions: { useCvlForLicenceCreation: true } }).curfewHours).toBe(false)
+      expect(getReviewSections({ decisions: { useCvlForLicenceCreation: true } }).additionalConditions).toBe(false)
+      expect(getReviewSections({ decisions: { useCvlForLicenceCreation: true } }).reportingInstructions).toBe(false)
+    })
   })
 })

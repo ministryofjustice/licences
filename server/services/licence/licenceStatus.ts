@@ -151,7 +151,7 @@ function getApprovalStageState(licence, licenceInCvl) {
   }
 }
 
-function getRoStageState(licence) {
+function getRoStageState(licence, licenceInCvl) {
   const {
     riskManagementNeeded,
     awaitingRiskInformation,
@@ -191,6 +191,7 @@ function getRoStageState(licence) {
       approvedPremisesRequired,
       addressReviewFailed,
       addressWithdrawn,
+      useCvlForLicenceCreation: licenceInCvl,
     },
     tasks: {
       victim,

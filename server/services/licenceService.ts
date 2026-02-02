@@ -553,15 +553,16 @@ export class LicenceService {
       bassReferralNeeded,
       addressReviewFailed,
       approvedPremisesRequired,
+      useCvlForLicenceCreation,
     } = decisions
 
     const { curfewAddressReview, bassAreaCheck } = tasks
 
-    const newAddressAddedForReview = stage !== 'PROCESSING_RO' && curfewAddressReview === 'UNSTARTED'
-    const newBassAreaAddedForReview = stage !== 'PROCESSING_RO' && bassAreaCheck === 'UNSTARTED'
-
     const groupName = () => {
       if (stage === LicenceStage.PROCESSING_RO) {
+        if (approvedPremisesRequired && useCvlForLicenceCreation) {
+          return 'PROCESSING_RO_APPROVED_PREMISES_CVL_LICENCE_CREATION'
+        }
         if (approvedPremisesRequired) {
           return 'PROCESSING_RO_APPROVED_PREMISES'
         }
@@ -574,15 +575,24 @@ export class LicenceService {
         if (bassAreaNotSuitable) {
           return 'BASS_AREA'
         }
+        if (bassReferralNeeded && useCvlForLicenceCreation) {
+          return 'PROCESSING_RO_BASS_REQUESTED_CVL_LICENCE_CREATION'
+        }
         if (bassReferralNeeded) {
           return 'PROCESSING_RO_BASS_REQUESTED'
         }
+        if (useCvlForLicenceCreation) {
+          return 'PROCESSING_RO_CVL_LICENCE_CREATION'
+        }
+        return 'PROCESSING_RO'
       }
 
+      const newBassAreaAddedForReview = bassAreaCheck === 'UNSTARTED'
       if (bassReferralNeeded && (stage === LicenceStage.ELIGIBILITY || newBassAreaAddedForReview)) {
         return 'BASS_REQUEST'
       }
 
+      const newAddressAddedForReview = curfewAddressReview === 'UNSTARTED'
       if (newAddressAddedForReview) {
         return 'ELIGIBILITY'
       }

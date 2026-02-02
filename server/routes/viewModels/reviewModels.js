@@ -12,6 +12,7 @@ function getReviewSections({ decisions }) {
   const isAddressRisk = decisions.addressUnsuitable === true
   const isRejectedAddress = decisions.curfewAddressRejected === true || decisions.bassAreaNotSuitable === true
   const isValidAddress = !isRejectedAddress || isAp
+  const useCvlForLicenceCreation = decisions.useCvlForLicenceCreation === true
 
   const sections = {
     bassArea: isBass,
@@ -19,9 +20,9 @@ function getReviewSections({ decisions }) {
     curfewAddress: !isBass && !isAp,
     riskManagement: (isAddressRisk || !isRejectedAddress) && !isAp,
     victimLiaison: isValidAddress,
-    curfewHours: isValidAddress,
-    additionalConditions: isValidAddress,
-    reportingInstructions: isValidAddress,
+    curfewHours: isValidAddress && !useCvlForLicenceCreation,
+    additionalConditions: isValidAddress && !useCvlForLicenceCreation,
+    reportingInstructions: isValidAddress && !useCvlForLicenceCreation,
   }
 
   return sections

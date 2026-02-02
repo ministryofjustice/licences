@@ -19,6 +19,7 @@ module.exports = {
       addressReviewFailed,
       bassAreaNotSuitable,
       approvedPremisesRequired,
+      useCvlForLicenceCreation,
     } = decisions
 
     const addressRejectedInRiskPhase = curfewAddressRejected && addressUnsuitable
@@ -32,9 +33,9 @@ module.exports = {
       [proposedAddress.ro, (!bassReferralNeeded && !curfewAddressRejected) || addressRejectedInReviewPhase],
       [riskManagement.ro, !approvedPremisesRequired && (validAddress || addressRejectedInRiskPhase)],
       [victimLiaison.ro, validAddress],
-      [curfewHours.ro, validAddress],
-      [additionalConditions.ro, validAddress],
-      [reportingInstructions.ro, validAddress],
+      [curfewHours.ro, validAddress && !useCvlForLicenceCreation],
+      [additionalConditions.ro, validAddress && !useCvlForLicenceCreation],
+      [reportingInstructions.ro, validAddress && !useCvlForLicenceCreation],
       [createCurfewAddressForm],
       [submitToCa],
     ])

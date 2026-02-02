@@ -29,16 +29,16 @@ const insufficientTimeStopTaskList = (licenceStatus) =>
 
 const standardTaskList = (licenceStatus) => {
   const {
-    decisions: { approvedPremisesRequired, bassReferralNeeded },
+    decisions: { approvedPremisesRequired, bassReferralNeeded, useCvlForLicenceCreation },
   } = licenceStatus
   return tasklist(licenceStatus, [
     [bassAddress.view, bassReferralNeeded],
     [proposedAddress.dm.view, !bassReferralNeeded],
     [riskManagement.view, !approvedPremisesRequired],
     [victimLiaison.view],
-    [curfewHours.view],
-    [additionalConditions.view],
-    [reportingInstructions.view],
+    [curfewHours.view, !useCvlForLicenceCreation],
+    [additionalConditions.view, !useCvlForLicenceCreation],
+    [reportingInstructions.view, !useCvlForLicenceCreation],
     [finalChecks.view],
     [returnToCa],
     [makeFinalDecision.standard],
@@ -47,16 +47,16 @@ const standardTaskList = (licenceStatus) => {
 
 const mandatoryCheckTaskList = (licenceStatus) => {
   const {
-    decisions: { approvedPremisesRequired, bassReferralNeeded },
+    decisions: { approvedPremisesRequired, bassReferralNeeded, useCvlForLicenceCreation },
   } = licenceStatus
   return tasklist(licenceStatus, [
     [bassAddress.view, bassReferralNeeded],
     [proposedAddress.dm.view, !bassReferralNeeded],
     [riskManagement.view, !approvedPremisesRequired],
     [victimLiaison.view],
-    [curfewHours.view],
-    [additionalConditions.view],
-    [reportingInstructions.view],
+    [curfewHours.view, !useCvlForLicenceCreation],
+    [additionalConditions.view, !useCvlForLicenceCreation],
+    [reportingInstructions.view, !useCvlForLicenceCreation],
     [finalChecks.view],
     [returnToCa],
     [makeFinalDecision.mandatoryCheck],
