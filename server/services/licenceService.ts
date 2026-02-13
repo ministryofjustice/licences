@@ -5,11 +5,11 @@ import { transitions } from './config/licenceStage'
 import recordList from './utils/recordList'
 import * as formValidation from './utils/formValidation'
 import { LicenceClient } from '../data/licenceClient'
-import { Licence, LicenceConditions, LicenceStage, RiskManagement, AddressReview, Postpone } from '../data/licenceTypes'
+import { AddressReview, Licence, LicenceConditions, LicenceStage, Postpone, RiskManagement } from '../data/licenceTypes'
 import { pickCurfewAddressPath } from './utils/pdfFormatter'
 import { AdditionalConditionsVersion, StandardConditionsVersion } from '../data/licenceClientTypes'
 import { Decisions, Tasks } from './licence/licenceStatusTypes'
-import { riskManagementVersion, curfewAddressReviewVersion, postponeVersion } from '../config'
+import { curfewAddressReviewVersion, postponeVersion, riskManagementVersion } from '../config'
 
 const {
   getIn,
@@ -664,6 +664,11 @@ export class LicenceService {
 
   setStandardConditionsVersion(bookingId: number, standardConditionVersion: StandardConditionsVersion) {
     return this.licenceClient.setStandardConditionsVersion(bookingId, standardConditionVersion)
+  }
+
+  getLicenceRange = async (idFrom: number, idTo: number, version: number) => {
+    logger.info(`Licence conditions comparison: ${idFrom} to ${idTo} version: ${version}`)
+    return this.licenceClient.getLicenceRange(idFrom, idTo, version)
   }
 }
 

@@ -182,7 +182,8 @@
     "sass": "^1.97.3",
     "supertest": "^7.2.2",
     "ts-jest": "^29.4.6",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "openapi-typescript": "^7.10.1"
   },
   "bin": {
     "loadLicences": "./server/loadLicences.js",

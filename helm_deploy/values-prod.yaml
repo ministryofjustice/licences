@@ -30,6 +30,7 @@ env:
   SCHEDULED_JOBS_OVERLAP: "5000"
   NOTIFY_ACTIVE_TEMPLATES: "CA_RETURN,CA_DECISION,RO_NEW,DM_NEW,DM_TO_CA_RETURN"
   DELIUS_API_URL: "https://hdc-licences-and-delius.hmpps.service.justice.gov.uk"
+  HDC_API_URL: "https://hdc-api-prod.hmpps.service.justice.gov.uk"
   PROBATION_TEAMS_API_URL: "https://probation-teams.prison.service.justice.gov.uk"
   PRISONER_SEARCH_API_URL: "https://prisoner-search.prison.service.justice.gov.uk"
   PROBATION_SEARCH_API_URL: "https://hdc-licences-and-delius.hmpps.service.justice.gov.uk"

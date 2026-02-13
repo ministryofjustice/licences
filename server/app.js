@@ -37,6 +37,7 @@ const licenceSearchRouter = require('./routes/admin/licenceSearch')
 const licencesWithCOMRouter = require('./routes/admin/licencesWithCOM')
 const licencesWithCARouter = require('./routes/admin/comAssignmentForLicencesWithCA')
 const licenceCompletionDestinationSearchRouter = require('./routes/admin/completionDestinationSearch')
+const conditionCompareTextsSearch = require('./routes/admin/conditionCompareTextsSearch')
 const licenceCompletionDestinationRouter = require('./routes/admin/completionDestination')
 const licenceRouter = require('./routes/admin/licence')
 const { functionalMailboxRouter } = require('./routes/admin/functionalMailboxes')
@@ -77,6 +78,7 @@ module.exports = function createApp({
   tokenVerifier,
   signInService,
   licenceService,
+  hdcService,
   prisonerService,
   conditionsServiceFactory,
   caseListService,
@@ -400,6 +402,7 @@ module.exports = function createApp({
     '/admin/completionDestinationSearch/',
     secureRoute(licenceCompletionDestinationSearchRouter(licenceSearchService))
   )
+  app.use('/admin/conditionCompareTextsSearch/', secureRoute(conditionCompareTextsSearch(hdcService)))
   app.use(
     '/admin/completionDestination/',
     secureRoute(licenceCompletionDestinationRouter(licenceService, signInService, prisonerService, audit))

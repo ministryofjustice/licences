@@ -12,6 +12,7 @@ import {
   CaseWithVaryVersion,
   AdditionalConditionsVersion,
   StandardConditionsVersion,
+  LicenceWithCase,
 } from '../../server/data/licenceClientTypes'
 import { Licence, LicenceStage, Risk, RiskManagement, FinalChecks, Postpone } from '../../server/data/licenceTypes'
 import { TaskState } from '../../server/services/config/taskState'
@@ -69,6 +70,7 @@ describe('licenceService', () => {
       setStandardConditionsVersion: jest.fn(),
       softDeleteLicence: jest.fn() as jest.Mock<Promise<void>>,
       setLicenceInCvl: jest.fn(),
+      getLicenceRange: jest.fn() as jest.Mock<Promise<LicenceWithCase[]>>,
     }
     service = createLicenceService(licenceClient)
   })

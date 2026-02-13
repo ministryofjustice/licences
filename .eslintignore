@@ -10,3 +10,4 @@ tsconfig.json
 *.md
 licences-specs/src/test/resources/licences/
 dist
+server/@types/hdcApiImport/**

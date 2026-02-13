@@ -57,10 +57,21 @@ const { createRedisClient } = require('./data/redisClient')
 const prisonerSearchApi = require('./data/prisonerSearchApi')
 const manageUsersApi = require('./data/manageUsersApi')
 const probationSearchApi = require('./data/probationSearchApi')
+const { HdcClient } = require('./data/hdcApiClient')
+const { createHdcService } = require('./services/hdc/hdcService')
 
 const signInService = new SignInService(new TokenStore(createRedisClient()))
+
+const hdcClient = new HdcClient(
+  buildRestClient(clientCredentialsTokenSource(signInService, 'hdc'), config.hdc.apiUrl, 'HDC API', {
+    timeout: config.hdc.timeout,
+    agent: config.hdc.agent,
+  })
+)
+
 const licenceService = createLicenceService(licenceClient)
 const conditionsServiceFactory = new ConditionServiceFactory()
+const hdcService = createHdcService(hdcClient, licenceService, conditionsServiceFactory)
 
 const deliusClient = new DeliusClient(
   buildRestClient(
@@ -152,6 +163,7 @@ const app = createApp({
   tokenVerifier,
   signInService,
   licenceService,
+  hdcService,
   prisonerService,
   conditionsServiceFactory,
   caseListService,

@@ -28,6 +28,13 @@ export interface Case {
   licence_in_cvl: boolean
 }
 
+export interface LicenceWithCase {
+  id: number
+  booking_id: number
+  licence: Licence
+  additional_conditions_version: AdditionalConditionsVersion
+}
+
 export interface CaseWithApprovedVersion extends Case {
   approved_version: number
 }

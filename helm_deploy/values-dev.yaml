@@ -33,6 +33,7 @@ env:
   NOTIFY_ACTIVE_TEMPLATES: "CA_RETURN,CA_DECISION,RO_NEW,RO_TWO_DAYS,RO_DUE,RO_OVERDUE,DM_NEW,DM_TO_CA_RETURN"
   RO_SERVICE_TYPE: "DELIUS"
   DELIUS_API_URL: "https://hdc-licences-and-delius-dev.hmpps.service.justice.gov.uk"
+  HDC_API_URL: "https://hdc-api-dev.hmpps.service.justice.gov.uk"
   PROBATION_TEAMS_API_URL: "https://probation-teams-dev.prison.service.justice.gov.uk"
   PRISONER_SEARCH_API_URL: "https://prisoner-search-dev.prison.service.justice.gov.uk"
   PROBATION_SEARCH_API_URL: "https://hdc-licences-and-delius-dev.hmpps.service.justice.gov.uk"
