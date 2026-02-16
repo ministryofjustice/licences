@@ -77,6 +77,24 @@ module.exports = {
     responsibleOfficerVaryRoleId: get('DELIUS_RO_VARY_ROLE_ID', 'LHDCBT003'),
   },
 
+  hdc: {
+    apiUrl: get('HDC_API_URL', 'http://localhost:8089'),
+    authUrl: get('HDC_AUTH_URL', get('NOMIS_AUTH_URL', 'http://localhost:9090/auth')),
+    admin: {
+      apiClientId: get('HDC_API_CLIENT_ID', get('ADMIN_API_CLIENT_ID', 'licencesadmin')),
+      apiClientSecret: get('HDC_API_CLIENT_SECRET', get('ADMIN_API_CLIENT_SECRET', 'clientsecret')),
+    },
+    timeout: {
+      response: 30000,
+      deadline: 35000,
+    },
+    agent: {
+      maxSockets: 100,
+      maxFreeSockets: 10,
+      freeSocketTimeout: 30000,
+    },
+  },
+
   prisonerSearchApi: {
     apiUrl: get('PRISONER_SEARCH_API_URL', 'http://localhost:8083'),
     timeout: {

@@ -41,6 +41,7 @@ To run locally you need:
 - probation teams
 - gotenberg
 - nomis-user-roles-api
+- hdc-api
 
 You can run local database, redis and configure the application to point to the T3/dev environment for other services. Or these can be run locally using `docker-compose` and starting `mock-services`.
 
@@ -145,3 +146,11 @@ then writes every row in the JSON file into the table.
 
 Running the command `npm link` will add these scripts to your PATH as `saveLicences` and `loadLicences`
 You can then run either of these scripts from any location that has a suitably configured `.env` file.
+
+# Generating types from OpenAPI
+This service makes use of imported types generated from the openAPI definitions offered by each of the APIs. Whenever the APIs change or new types are added, the scripts can be re-run to import these and make them available. The types are committed into Git.
+
+Scripts are provided to generate these types from the development instances:
+
+`./generate-hdc-api-types.sh` - Re-run when create and vary a CVL licence 
+API types change from dev `./generate-hdc-api-types.sh --local` - Re-run when create and vary a CVL licence API types change from locally running API

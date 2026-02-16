@@ -1,14 +1,14 @@
-import { formatConditionsInput, getConditionText, formatConditionsText } from './utils/conditionsFormatter'
+import { formatConditionsInput, formatConditionsText, getConditionText } from './utils/conditionsFormatter'
 import { isEmpty } from '../utils/functionalHelpers'
 import {
-  getAdditionalConditionsConfig,
-  standardConditions,
-  getPssConditions,
   CURRENT_CONDITION_VERSION,
+  getAdditionalConditionsConfig,
+  getPssConditions,
+  standardConditions,
 } from './config/conditionsConfig'
 import { AdditionalConditions, Licence } from '../data/licenceTypes'
 import { LicenceRecord } from './licenceService'
-import { ConditionMetadata, AdditionalConditionsVersion } from '../data/licenceClientTypes'
+import { AdditionalConditionsVersion, ConditionMetadata } from '../data/licenceClientTypes'
 import { LicenceWithConditionsBuilder } from './licenceWithConditionsBuilder'
 
 export class ConditionsServiceFactory {
@@ -73,6 +73,25 @@ export class ConditionsService {
       standardConditions: standardConditionsText,
       additionalConditions: additionalConditionsText,
     }
+  }
+
+  getFullTextAdditionalConditions(licence: Licence) {
+    const conditions = this.builder.populateLicenceWithApprovedConditions(licence).licenceConditions
+
+    if (!Array.isArray(conditions)) {
+      return null
+    }
+
+    return isEmpty(conditions)
+      ? []
+      : conditions
+          .filter((it) => it.group !== 'Bespoke')
+          .map((it) => {
+            return {
+              conditionCode: it.id,
+              conditionText: getConditionText(it.content),
+            }
+          })
   }
 
   getStandardConditions() {

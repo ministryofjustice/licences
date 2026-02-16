@@ -1,0 +1,137 @@
+extends ../../layout
+include ../../includes/errorBannerWithDetail
+
+block content
+    style.
+        .diffRow {
+            display: flex;
+            align-items: flex-start;
+            margin-top: 0.25em;
+            margin-bottom: 0.25em;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .diffLabel {
+            width: 25ch;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        .diffType {
+            width: 25ch;
+            font-weight: bold;
+            flex-shrink: 0;
+            margin-left: 1em;
+        }
+        .diffText {
+            flex: 1;
+            margin-left: 2em;
+        }
+        pre {
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .push-bottom {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .push-bottom .spacer {
+            flex: 1;
+        }
+
+    // error banner
+    div.back-link-container.smallPaddingTop
+        a#back.link-back(href="/admin/") Back
+        +errorBannerWithDetail(errors, [{ field: 'id' }])
+
+    // Search form
+    div.pure-g
+        div.pure-u-1.mediumMarginTop
+            h2.heading-medium Search for licence additional condition text
+
+            form(method='POST' action='/admin/conditionCompareTextsSearch')
+                input(type="hidden" name="_csrf" value=csrfToken)
+
+                div.pure-u-2-3.midPaddingBottom
+                    div.pure-g.u-paddingBottom
+                        // ID From
+                        div.pure-u-sm-1-6.sm-PadLeftRight15
+                            label.form-label(for="idFrom") From
+                            input.form-control(
+                                id="idFrom"
+                                type="number"
+                                name="idFrom"
+                                value=idFrom
+                            )
+                        // ID To
+                        div.pure-u-sm-1-6.sm-PadLeftRight15
+                            label.form-label(for="idTo") To
+                            input.form-control(
+                                id="idTo"
+                                type="number"
+                                name="idTo"
+                                value=idTo
+                            )
+                        // Code Filter
+                        div.pure-u-sm-1-6.sm-PadLeftRight15
+                            label.form-label(for="codeFilter") Code Filter
+                            input.form-control(
+                                id="codeFilter"
+                                type="text"
+                                name="codeFilter"
+                                value=codeFilter
+                            )
+                        // Version
+                        div.pure-u-sm-1-6.sm-PadLeftRight15
+                            label.form-label(for="version") Version
+                            input.form-control(
+                                id="version"
+                                type="number"
+                                name="version"
+                                value=version
+                            )
+                        // Submit Button
+                        div.pure-u-sm-1-6.sm-PadLeftRight15.push-bottom
+                            div.spacer
+                            input.requiredButton.button(
+                                type="submit"
+                                name="action"
+                                value="Search"
+                            )
+                        // Next Button
+                        div.pure-u-sm-1-6.sm-PadLeftRight15.push-bottom
+                            div.spacer
+                            input.requiredButton.button(
+                                type="submit"
+                                name="action"
+                                value="Next"
+                            )
+                    div.pure-u-sm-5-12
+    // LicenceDiff results
+    if result && result.length
+        div.pure-g.paddingBottom
+            div.pure-u-1
+                div.midMarginBottom
+                    span.bold Record:
+                    pre.paddingTop
+                        each licence in result
+                            div
+                                span.diffLabel Licence #{licence.id}, Version #{licence.version}
+                                br
+                                br
+                                each diff in licence.differences
+                                    // UI Row
+                                    div.diffRow
+                                        span.diffLabel #{diff.code}
+                                    if diff.uiText
+                                        span.diffType UI:
+                                        div.diffRow
+                                            span.diffText #{diff.uiText}
+                                    // API Row
+                                    if diff.apiText
+                                        span.diffType API:
+                                        div.diffRow
+                                            span.diffText #{diff.apiText}
+                                    div.diffRow
+                                hr

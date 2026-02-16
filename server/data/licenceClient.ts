@@ -6,6 +6,7 @@ import {
   AdditionalConditionsVersion,
   DeliusIds,
   StandardConditionsVersion,
+  LicenceWithCase,
 } from './licenceClientTypes'
 import { Licence, LicenceStage } from './licenceTypes'
 
@@ -52,6 +53,25 @@ export class LicenceClient {
                    order by version desc limit 1
                    )
                    where l.booking_id in (${bookingIds.map((id) => `'${id}'`).join(',')})`,
+    }
+
+    const { rows } = await db.query(query)
+    return rows
+  }
+
+  async getLicenceRange(idStart: number, idEnd: number, version: number): Promise<Array<LicenceWithCase>> {
+    const query = {
+      text: `
+				select
+					l.id,
+					l.booking_id,
+					l.licence,
+					l.additional_conditions_version
+				from licences l
+				where l.id between $1 and $2
+				  and ($3::int is null or l.additional_conditions_version = $3)
+        `,
+      values: [idStart, idEnd, version],
     }
 
     const { rows } = await db.query(query)
