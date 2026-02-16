@@ -39,7 +39,14 @@ export class HdcService {
     try {
       return await this.hdcClient.getBespokeConditions(licenceIds)
     } catch (error: any) {
-      logger.error(`Failed to get bespoke conditions for IDs: ${licenceIds.join(', ')}`, error.stack)
+        logger.error(
+            `Failed to get bespoke conditions for IDs: [${licenceIds?.join(', ') ?? 'none'}]`,
+            {
+                message: error?.message,
+                status: error?.response?.status,
+                data: error?.response?.data,
+                stack: error?.stack,
+            })
       throw error
     }
   }
@@ -60,6 +67,10 @@ export class HdcService {
     const licenceRange = await this.licenceService.getLicenceRange(idFrom, idTo, versionRequested)
     const comparedConditions = this.getUiAdditionalCodnditions(licenceRange)
     const idsWithAdditionalConditions = comparedConditions.map((c) => c.id)
+    if (!idsWithAdditionalConditions.length) {
+        logger.info(`No additional conditions found for licence range: [${idFrom}-${idTo}]`)
+        return []
+    }
     const apiConditionsBatch = await this.getBespokeConditions(idsWithAdditionalConditions)
     return this.compareLicenceConditions(comparedConditions, apiConditionsBatch.conditions, excludedCodes)
   }
