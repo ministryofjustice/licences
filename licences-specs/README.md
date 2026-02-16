@@ -9,6 +9,11 @@ see http://www.gebish.org/manual/current/
 
 Install current versions of chromedriver
 
+```
+npm install chromedriver --save-dev
+npm install selenium-webdriver
+```
+
 ### Environment
 
 The following environment variables are used
@@ -36,6 +41,8 @@ webdriver.chrome.driver property with your ChromeDriver path.
 Run with gradle or execute a specific test using your IDE.
 
 `./gradlew test` or `./gradlew mockTest` - executes all specs
+or 
+`npm run integration-test`
 
 ## Writing Specs
 
