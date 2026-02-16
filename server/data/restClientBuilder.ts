@@ -128,7 +128,6 @@ export const buildRestClient = (
 
     async postResource(path: string, body: any, headers = {}): Promise<any> {
       const token = await tokenSource()
-      console.log('url ' + apiUrl + path)
       try {
         const response = await superagent
           .post(`${apiUrl}${path}`)
