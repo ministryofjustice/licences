@@ -35,11 +35,11 @@ export class HdcService {
     private conditionsServiceFactory: ConditionsServiceFactory
   ) {}
 
-  async getBespokeConditions(ids: number[]): Promise<ConvertedLicenseBatch> {
+  async getBespokeConditions(licenceIds: number[]): Promise<ConvertedLicenseBatch> {
     try {
-      return await this.hdcClient.getBespokeConditions(ids)
+      return await this.hdcClient.getBespokeConditions(licenceIds)
     } catch (error: any) {
-      logger.error(`Failed to get bespoke conditions for IDs: ${ids.join(', ')}`, error.stack)
+      logger.error(`Failed to get bespoke conditions for IDs: ${licenceIds.join(', ')}`, error.stack)
       throw error
     }
   }
