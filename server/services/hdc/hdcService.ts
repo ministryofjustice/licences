@@ -25,7 +25,7 @@ export type ConditionDiff = {
 
 export type LicenceDiff = {
   id: number
-  prisonCode : string
+  prisonCode: string
   differences: ConditionDiff[]
   version: number
 }
@@ -128,7 +128,7 @@ export class HdcService {
         })
 
         if (differences.length) {
-          return { id: apiLicence.id, prisonCode: ui.prisonCode,  differences, version: ui.version }
+          return { id: apiLicence.id, prisonCode: ui.prisonCode, differences, version: ui.version }
         }
 
         return null

@@ -30,7 +30,7 @@ export interface Case {
 
 export interface LicenceWithCase {
   id: number
-  prison_number : string
+  prison_number: string
   booking_id: number
   licence: Licence
   additional_conditions_version: AdditionalConditionsVersion
