@@ -6,15 +6,16 @@ block content
         .diffRow {
             display: flex;
             align-items: flex-start;
-            margin-top: 0.25em;
+            margin-top: 0.50em;
             margin-bottom: 0.25em;
             white-space: pre-wrap;
             word-break: break-word;
         }
         .diffLabel {
-            width: 25ch;
+            width: 50ch;
             font-weight: bold;
             flex-shrink: 0;
+            margin-right: 2em;
         }
         .diffType {
             width: 25ch;
@@ -24,7 +25,8 @@ block content
         }
         .diffText {
             flex: 1;
-            margin-left: 2em;
+            font-weight: normal;
+            margin-left: 0.5em;
         }
         pre {
             white-space: pre-wrap;
@@ -74,7 +76,7 @@ block content
                                 value=idTo
                             )
                         // Code Filter
-                        div.pure-u-sm-1-6.sm-PadLeftRight15
+                        div.pure-u-sm-1-6.l-PadLeftRight15
                             label.form-label(for="codeFilter") Code Filter
                             input.form-control(
                                 id="codeFilter"
@@ -90,6 +92,7 @@ block content
                                 type="number"
                                 name="version"
                                 value=version
+                                style="width: 3em;"
                             )
                         // Submit Button
                         div.pure-u-sm-1-6.sm-PadLeftRight15.push-bottom
@@ -113,11 +116,16 @@ block content
         div.pure-g.paddingBottom
             div.pure-u-1
                 div.midMarginBottom
-                    span.bold Record:
                     pre.paddingTop
                         each licence in result
                             div
-                                span.diffLabel Licence #{licence.id}, Version #{licence.version}
+                                span.diffLabel Licence:
+                                    span.diffText #{licence.id}
+                                span.diffLabel Version:
+                                    span.diffText #{licence.version}
+                                if licence.prisonCode
+                                    span.diffLabel Code:
+                                        span.diffText #{licence.prisonCode}
                                 br
                                 br
                                 each diff in licence.differences
