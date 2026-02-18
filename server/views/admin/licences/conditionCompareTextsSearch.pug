@@ -116,10 +116,13 @@ block content
         div.pure-g.paddingBottom
             div.pure-u-1
                 div.midMarginBottom
-                    pre.paddingTop
+                    span.diffLabel Licence#{result.length !== 1 ? 's' : ''}
+                        span.diffText #{result.length}
+                        br
+                        br
                         each licence in result
                             div
-                                span.diffLabel Licence:
+                                span.diffLabel ID:
                                     span.diffText #{licence.id}
                                 span.diffLabel Version:
                                     span.diffText #{licence.version}
