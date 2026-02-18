@@ -97,6 +97,55 @@ export class HdcService {
       .filter(Boolean)
   }
 
+  private removeDiscrepancies(code: string, text: string): string {
+    let out = text
+
+    // Normalize
+    out = out.normalize('NFKC')
+
+    // Remove commas like ", ,"
+    out = out.replace(/\s*,\s*,\s*/g, ', ')
+    //  " , , "
+    out = out.replace(/\s+,/g, ', ')
+    //  " , ,"
+    out = out.replace(/,\s+,/g, ', ')
+    //  ", ," cleanup
+    out = out.replace(/,\s*,/g, ',')
+
+    // Fix "on // at ," to "on //"
+    out = out.replace(/on\s*\/\/\s*at\s*,?/gi, 'on //')
+
+    if (code === 'REPORTTO') {
+      if (/on a\s+\w+\s+basis/i.test(out) && !/on a basis/i.test(out)) {
+        // This is okay dont both it's api
+      } else {
+        const trailingMatch = out.match(/\.?\s*([A-Za-z]+)\s*$/)
+
+        if (trailingMatch) {
+          const frequency = trailingMatch[1]
+
+          // Remove the trailing word
+          out = out.replace(new RegExp(`${frequency}\\s*$`, 'i'), '')
+
+          // Fix "on a basis" → "on a <frequency> basis"
+          out = out.replace(/on a\s+basis/i, `on a ${frequency} basis`)
+
+          // Cleanup any double spaces after edits
+          out = out.replace(/\s{2,}/g, ' ').trim()
+          out = out.replace(/\.$/, '')
+        }
+      }
+    }
+
+    // Collapse extra spaces
+    out = out.replace(/\s{2,}/g, ' ')
+
+    out = out.replace(' of ending on,', ' of,')
+    out = out.replace(' on at ', ' at ')
+
+    return out.trim()
+  }
+
   compareLicenceConditions(
     comparedConditions: ComparedConditions[],
     convertedConditions: ConvertedLicenseConditions[],
@@ -109,8 +158,8 @@ export class HdcService {
         const ui = uiMap.get(apiLicence.id)
         if (!ui) return null
 
-        const uiByCode = new Map(ui.additionalConditions.map((c) => [c.code, c.text]))
-        const apiByCode = new Map(apiLicence.conditions.map((c) => [c.code, c.text]))
+        const uiByCode = new Map(ui.additionalConditions.map((c) => [c.code, this.removeDiscrepancies(c.code, c.text)]))
+        const apiByCode = new Map(apiLicence.conditions.map((c) => [c.code, this.removeDiscrepancies(c.code, c.text)]))
 
         const differences: ConditionDiff[] = []
 
