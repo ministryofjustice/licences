@@ -11,7 +11,7 @@ function getSingleValue(value: unknown): string | undefined {
   const cleaned = value
     .toUpperCase()
     .replace(/\s+/g, '')
-    .replace(/[^A-Z0-9_]/gi, '')
+    .replace(/[^A-Z0-9_,]/gi, '')
 
   return cleaned || undefined
 }

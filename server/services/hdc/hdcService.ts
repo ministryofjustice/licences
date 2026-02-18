@@ -10,6 +10,7 @@ const logger = require('../../../log')
 export class ComparedConditions {
   constructor(
     public id: number,
+    public prisonCode: string,
     public bookingId: number,
     public version: number,
     public additionalConditions: { code: string; text: string }[]
@@ -24,6 +25,7 @@ export type ConditionDiff = {
 
 export type LicenceDiff = {
   id: number
+  prisonCode: string
   differences: ConditionDiff[]
   version: number
 }
@@ -75,7 +77,7 @@ export class HdcService {
 
   private getUiAdditionalCodnditions(licenceRange: Array<LicenceWithCase>) {
     return licenceRange
-      .map(({ id, booking_id, licence, additional_conditions_version }) => {
+      .map(({ id, prison_number, booking_id, licence, additional_conditions_version }) => {
         const version = additional_conditions_version || CURRENT_CONDITION_VERSION
         const uiConditions = this.conditionsServiceFactory.forVersion(version).getFullTextAdditionalConditions(licence)
 
@@ -83,6 +85,7 @@ export class HdcService {
 
         return new ComparedConditions(
           id,
+          prison_number,
           booking_id,
           version,
           uiConditions.map(({ conditionCode, conditionText }) => ({
@@ -125,7 +128,7 @@ export class HdcService {
         })
 
         if (differences.length) {
-          return { id: apiLicence.id, differences, version: ui.version }
+          return { id: apiLicence.id, prisonCode: ui.prisonCode, differences, version: ui.version }
         }
 
         return null

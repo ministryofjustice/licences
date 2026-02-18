@@ -64,6 +64,7 @@ export class LicenceClient {
       text: `
 				select
 					l.id,
+					l.prison_number,
 					l.booking_id,
 					l.licence,
 					l.additional_conditions_version
