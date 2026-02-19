@@ -58,7 +58,7 @@ block content
                 div.pure-u-2-3.midPaddingBottom
                     div.pure-g.u-paddingBottom
                         // ID From
-                        div.pure-u-sm-1-6.sm-PadLeftRight15
+                        div.pure-u-sm-1-8.sm-PadLeftRight15
                             label.form-label(for="idFrom") From
                             input.form-control(
                                 id="idFrom"
@@ -66,8 +66,9 @@ block content
                                 name="idFrom"
                                 value=idFrom
                             )
+
                         // ID To
-                        div.pure-u-sm-1-6.sm-PadLeftRight15
+                        div.pure-u-sm-1-8.sm-PadLeftRight15
                             label.form-label(for="idTo") To
                             input.form-control(
                                 id="idTo"
@@ -75,8 +76,9 @@ block content
                                 name="idTo"
                                 value=idTo
                             )
+
                         // Code Filter
-                        div.pure-u-sm-1-6.l-PadLeftRight15
+                        div.pure-u-sm-1-4.l-PadLeftRight15
                             label.form-label(for="codeFilter") Code Filter
                             input.form-control(
                                 id="codeFilter"
@@ -84,16 +86,37 @@ block content
                                 name="codeFilter"
                                 value=codeFilter
                             )
+
                         // Version
-                        div.pure-u-sm-1-6.sm-PadLeftRight15
-                            label.form-label(for="version") Version
+                        div.pure-u-sm-1-12.sm-PadLeftRight15
+                            label.form-label(for="version") Ver
                             input.form-control(
                                 id="version"
                                 type="number"
                                 name="version"
                                 value=version
-                                style="width: 3em;"
                             )
+
+                        // Clean UI Checkbox
+                        div.pure-u-sm-1-24.sm-PadLeftRight15
+                            label.form-label(for="cleanUi") UI
+                            input(
+                                id="cleanUi"
+                                type="checkbox"
+                                name="cleanUi"
+                                checked=cleanUi
+                            )
+
+                        // Clean API Checkbox
+                        div.pure-u-sm-1-24.sm-PadLeftRight15
+                            label.form-label(for="cleanApi") API
+                            input(
+                                id="cleanApi"
+                                type="checkbox"
+                                name="cleanApi"
+                                checked=cleanApi
+                            )
+
                         // Submit Button
                         div.pure-u-sm-1-6.sm-PadLeftRight15.push-bottom
                             div.spacer
@@ -102,6 +125,7 @@ block content
                                 name="action"
                                 value="Search"
                             )
+
                         // Next Button
                         div.pure-u-sm-1-6.sm-PadLeftRight15.push-bottom
                             div.spacer
@@ -110,6 +134,7 @@ block content
                                 name="action"
                                 value="Next"
                             )
+
                     div.pure-u-sm-5-12
     // LicenceDiff results
     if result && result.length

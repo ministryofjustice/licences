@@ -55,7 +55,9 @@ export class HdcService {
     idFrom: number,
     idTo: number,
     codeFilter?: string,
-    versionRequested?: number
+    versionRequested?: number,
+    cleanUi?: boolean,
+    cleanApi?: boolean
   ): Promise<LicenceDiff[]> {
     const excludedCodes = codeFilter
       ? codeFilter
@@ -72,7 +74,13 @@ export class HdcService {
       return []
     }
     const apiConditionsBatch = await this.getBespokeConditions(idsWithAdditionalConditions)
-    return this.compareLicenceConditions(comparedConditions, apiConditionsBatch.conditions, excludedCodes)
+    return this.compareLicenceConditions(
+      comparedConditions,
+      apiConditionsBatch.conditions,
+      excludedCodes,
+      cleanUi,
+      cleanApi
+    )
   }
 
   private getUiAdditionalCodnditions(licenceRange: Array<LicenceWithCase>) {
@@ -97,7 +105,7 @@ export class HdcService {
       .filter(Boolean)
   }
 
-  private removeDiscrepancies(code: string, text: string): string {
+  private removeDiscrepanciesUi(code: string, text: string, version: number): string {
     let out = text
 
     // Normalize
@@ -116,25 +124,28 @@ export class HdcService {
     out = out.replace(/on\s*\/\/\s*at\s*,?/gi, 'on //')
 
     if (code === 'REPORTTO') {
-      if (/on a\s+\w+\s+basis/i.test(out) && !/on a basis/i.test(out)) {
-        // This is okay dont both it's api
-      } else {
-        const trailingMatch = out.match(/\.?\s*([A-Za-z]+)\s*$/)
+      const trailingMatch = text.match(/(Monthly|Weekly|Daily|Yearly)\s*$/i)
 
-        if (trailingMatch) {
-          const frequency = trailingMatch[1]
+      if (trailingMatch) {
+        const frequency = trailingMatch[1]
 
-          // Remove the trailing word
-          out = out.replace(new RegExp(`${frequency}\\s*$`, 'i'), '')
+        // Remove the trailing frequency word and any trailing dots/spaces
+        out = out.replace(new RegExp(`\\.*${frequency}\\s*$`, 'i'), '')
 
-          // Fix "on a basis" → "on a <frequency> basis"
-          out = out.replace(/on a\s+basis/i, `on a ${frequency} basis`)
+        // Replace "on a basis" with "on a <frequency> basis" (case-insensitive, multiple spaces)
+        out = out.replace(/on a\s+basis/i, `on a ${frequency} basis`)
+        out = out.replace('on a yes basis', `on a ${frequency} basis`)
 
-          // Cleanup any double spaces after edits
-          out = out.replace(/\s{2,}/g, ' ').trim()
-          out = out.replace(/\.$/, '')
-        }
+        // Cleanup double spaces
+        out = out.replace(/\s{2,}/g, ' ').trim()
+
+        // Ensure a single period at the end
+        if (!out.endsWith('.')) out += '.'
       }
+    }
+
+    if (code === 'DRUG_TESTING') {
+      out = out.replace(/^Attend,/, 'Attend')
     }
 
     // Collapse extra spaces
@@ -143,13 +154,41 @@ export class HdcService {
     out = out.replace(' of ending on,', ' of,')
     out = out.replace(' on at ', ' at ')
 
-    return out.trim()
+    if (code === 'ATTEND_DEPENDENCY_IN_DRUGS_SECTION') {
+      out = out.replace(' on at,', ',')
+    }
+
+    return this.ensureFullStop(out.trim())
+  }
+
+  private removeDiscrepanciesApi(code: string, text: string, version: number): string {
+    let out = text
+
+    // Normalize
+    out = out.normalize('NFKC')
+
+    if (code === 'DRUG_TESTING') {
+      out = out.replace(/^Attend,/, 'Attend')
+    }
+
+    // Collapse extra spaces
+    out = out.replace(/\s{2,}/g, ' ')
+    return this.ensureFullStop(out.trim())
+  }
+
+  private ensureFullStop(out: string) {
+    if (out && !out.endsWith('.')) {
+      out += '.'
+    }
+    return out
   }
 
   compareLicenceConditions(
     comparedConditions: ComparedConditions[],
     convertedConditions: ConvertedLicenseConditions[],
-    excludedCodes: string[]
+    excludedCodes: string[],
+    cleanUi: boolean,
+    cleanApi: boolean
   ): LicenceDiff[] {
     const uiMap = new Map(comparedConditions.map((c) => [c.id, c]))
 
@@ -158,8 +197,18 @@ export class HdcService {
         const ui = uiMap.get(apiLicence.id)
         if (!ui) return null
 
-        const uiByCode = new Map(ui.additionalConditions.map((c) => [c.code, this.removeDiscrepancies(c.code, c.text)]))
-        const apiByCode = new Map(apiLicence.conditions.map((c) => [c.code, this.removeDiscrepancies(c.code, c.text)]))
+        const uiByCode = new Map(
+          ui.additionalConditions.map((c) => [
+            c.code,
+            cleanUi ? this.removeDiscrepanciesUi(c.code, c.text, ui.version) : c.text,
+          ])
+        )
+        const apiByCode = new Map(
+          apiLicence.conditions.map((c) => [
+            c.code,
+            cleanApi ? this.removeDiscrepanciesApi(c.code, c.text, ui.version) : c.text,
+          ])
+        )
 
         const differences: ConditionDiff[] = []
 
