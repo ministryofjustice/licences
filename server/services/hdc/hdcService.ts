@@ -145,7 +145,7 @@ export class HdcService {
     }
 
     if (code === 'DRUG_TESTING') {
-      //out = out.replace(/^Attend,/, 'Attend')
+      out = out.replace(/^Attend,/, 'Attend')
     }
 
     // Collapse extra spaces
