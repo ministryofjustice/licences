@@ -167,6 +167,15 @@ export class HdcService {
     // Normalize
     out = out.normalize('NFKC')
 
+    // Remove commas like ", ,"
+    out = out.replace(/\s*,\s*,\s*/g, ', ')
+    //  " , , "
+    out = out.replace(/\s+,/g, ', ')
+    //  " , ,"
+    out = out.replace(/,\s+,/g, ', ')
+    //  ", ," cleanup
+    out = out.replace(/,\s*,/g, ',')
+
     if (code === 'DRUG_TESTING' || code == 'ATTEND_SAMPLE') {
       out = out.replace(/^Attend,/, 'Attend')
     }
