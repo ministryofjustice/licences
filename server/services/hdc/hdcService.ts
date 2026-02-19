@@ -144,7 +144,7 @@ export class HdcService {
       }
     }
 
-    if (code === 'DRUG_TESTING') {
+    if (code === 'DRUG_TESTING' || code == 'ATTEND_SAMPLE') {
       out = out.replace(/^Attend,/, 'Attend')
     }
 
@@ -167,7 +167,7 @@ export class HdcService {
     // Normalize
     out = out.normalize('NFKC')
 
-    if (code === 'DRUG_TESTING') {
+    if (code === 'DRUG_TESTING' || code == 'ATTEND_SAMPLE') {
       out = out.replace(/^Attend,/, 'Attend')
     }
 
