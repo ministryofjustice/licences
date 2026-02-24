@@ -21,7 +21,7 @@ The following environment variables are used
 - LICENCES_URI - root URI for the Licences application. Defaults to `http://localhost:3000`
 
 The Licences application must be running at Licences_URI, and must be connected to a database, prisonApi
-and an oauth server eg quay.io/hmpps/nomis-oauth2-server.
+and an oauth server eg ghcr.io/ministryofjustice/nomis-oauth2-server.
 
 An easy way to do this is to run start-mocks and the application hence the 3 commands you require are:
 
@@ -30,7 +30,6 @@ npm run start-mocks
 docker-compose up
 npm run start:feature
 ```
-
 
 ## Execution
 
@@ -41,7 +40,7 @@ webdriver.chrome.driver property with your ChromeDriver path.
 Run with gradle or execute a specific test using your IDE.
 
 `./gradlew test` or `./gradlew mockTest` - executes all specs
-or 
+or
 `npm run integration-test`
 
 ## Writing Specs
