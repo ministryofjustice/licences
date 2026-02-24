@@ -4,6 +4,7 @@ import { LicenceService } from '../licenceService'
 import { ConditionsServiceFactory } from '../conditionsService'
 import { CURRENT_CONDITION_VERSION } from '../config/conditionsConfig'
 import { LicenceWithCase } from '../../data/licenceClientTypes'
+import * as os from 'node:os'
 
 const logger = require('../../../log')
 
@@ -110,6 +111,8 @@ export class HdcService {
 
     // Normalize
     out = out.normalize('NFKC')
+
+    out = out.replace(/\\r\\n|\\n/g, os.EOL)
 
     // Remove commas like ", ,"
     out = out.replace(/\s*,\s*,\s*/g, ', ')
