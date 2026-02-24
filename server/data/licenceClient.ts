@@ -69,7 +69,7 @@ export class LicenceClient {
 					l.licence,
 					l.additional_conditions_version
 				from licences l
-				where l.id between $1 and $2 and additional_conditions_version is not null  
+				where l.id between $1 and $2 and additional_conditions_version is not null AND deleted_at IS NULL
 				  and ($3::int is null or l.additional_conditions_version = $3)
         `,
       values: [idStart, idEnd, version],
