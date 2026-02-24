@@ -39,7 +39,7 @@ services:
       test: [ 'CMD', 'curl', '-f', 'http://localhost:3001/ping' ]
 
   hmpps-auth:
-    image: quay.io/hmpps/hmpps-auth:latest
+    image: ghcr.io/ministryofjustice/hmpps-auth:latest
     networks:
       - hmpps
     container_name: hmpps-auth
@@ -54,7 +54,7 @@ services:
       NOMIS_ENDPOINT_URL: http://nomis-user-roles-api:8080
 
   nomis-user-roles-api:
-    image: quay.io/hmpps/nomis-user-roles-api:latest
+    image: ghcr.io/ministryofjustice/nomis-user-roles-api:latest
     networks:
       - hmpps
     container_name: nomis-user-roles-api
@@ -69,7 +69,7 @@ services:
       - API_BASE_URL_OAUTH=http://hmpps-auth:8080/auth
 
   token-verification-api:
-    image: quay.io/hmpps/token-verification-api:latest
+    image: ghcr.io/ministryofjustice/token-verification-api:latest
     networks:
       - hmpps
       - token-backend
