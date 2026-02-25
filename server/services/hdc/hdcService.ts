@@ -185,7 +185,7 @@ export class HdcService {
 
     // Collapse extra spaces
     out = out.replace(/\s{2,}/g, ' ')
-    return this.ensureFullStop(out.trim())
+    return out.trim()
   }
 
   private ensureFullStop(out: string) {
