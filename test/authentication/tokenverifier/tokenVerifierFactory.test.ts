@@ -7,13 +7,13 @@ describe('Token Verifier', () => {
   const config = {
     url: 'http://localhost:8100',
     timeout: {
-      response: 50,
-      deadline: 100,
+      response: 100,
+      deadline: 200,
     },
     agent: {
       maxSockets: 2,
       maxFreeSockets: 1,
-      freeSocketTimeout: 500,
+      freeSocketTimeout: 1000,
     },
     enabled: true,
   }
