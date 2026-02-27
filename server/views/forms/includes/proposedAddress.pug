@@ -28,7 +28,7 @@ div.no-break.smallPaddingBottom#curfewAddress
           td.entry #{occupier.name}
 
   p Residents at the address and the relationship to the offender
-    if curfewAddress.residents && curfewAddress.residents.length < 0
+    if curfewAddress.residents && curfewAddress.residents.length > 0
       table.wide.noborder
         tr
           td Name
