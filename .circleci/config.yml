@@ -26,13 +26,13 @@ executors:
           POSTGRES_USER: licences
           POSTGRES_DB: licences
           POSTGRES_PASSWORD: licences
-      - image: quay.io/hmpps/hmpps-auth:latest
+      - image: ghcr.io/ministryofjustice/hmpps-auth:latest
         name: hmpps-auth
         environment:
           SPRING_PROFILES_ACTIVE: dev,nomis
           SERVER_PORT: 9090
           NOMIS_ENDPOINT_URL: http://nomis-user-roles-api:9190
-      - image: quay.io/hmpps/nomis-user-roles-api:latest
+      - image: ghcr.io/ministryofjustice/nomis-user-roles-api:latest
         name: nomis-user-roles-api
         environment:
           SPRING_PROFILES_ACTIVE: dev
