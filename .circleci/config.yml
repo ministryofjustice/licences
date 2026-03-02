@@ -21,7 +21,7 @@ executors:
   integration-tests:
     docker:
       - image: cimg/node:<< pipeline.parameters.node-version >>
-      - image: circleci/postgres:10.13-ram
+      - image: cimg/postgres:15.12
         environment:
           POSTGRES_USER: licences
           POSTGRES_DB: licences
