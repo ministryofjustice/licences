@@ -32,7 +32,7 @@ executors:
           SPRING_PROFILES_ACTIVE: dev,nomis
           SERVER_PORT: 9090
           NOMIS_ENDPOINT_URL: http://nomis-user-roles-api:9190
-      - image: ghcr.io/ministryofjustice/nomis-user-roles-api:latest
+      - image: ghcr.io/ministryofjustice/nomis-user-roles-api:2025-11-25.29.b39ec25
         name: nomis-user-roles-api
         environment:
           SPRING_PROFILES_ACTIVE: dev
@@ -190,7 +190,7 @@ workflows:
                 - main
       - hmpps/deploy_env:
           name: deploy_dev
-          env: "dev"
+          env: 'dev'
           context:
             - hmpps-common-vars
           filters:
@@ -207,7 +207,7 @@ workflows:
             - deploy_dev
       - hmpps/deploy_env:
           name: deploy_preprod
-          env: "preprod"
+          env: 'preprod'
           context:
             - licences-preprod
             - hmpps-common-vars
@@ -219,7 +219,7 @@ workflows:
             - deploy_preprod
       - hmpps/deploy_env:
           name: deploy_prod
-          env: "prod"
+          env: 'prod'
           slack_notification: true
           slack_channel_name: << pipeline.parameters.releases-slack-channel >>
           context:
