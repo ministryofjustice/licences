@@ -19,15 +19,16 @@ describe('restClientBuilder', () => {
     const warnSpy = jest.spyOn(logger, 'warn')
 
     const restConfig: RestClientConfig = {
-      timeout: { response: 100, deadline: 200 },
-      agent: { maxSockets: 2, maxFreeSockets: 2, freeSocketTimeout: 500 },
+      timeout: { response: 100, deadline: 250 },
+      agent: { maxSockets: 4, maxFreeSockets: 4, freeSocketTimeout: 500 },
     }
 
-    const restClient = buildRestClient(constantTokenSource('t'), BASE_PATH, 'Test API', restConfig)
+    let restClient: ReturnType<typeof buildRestClient>
 
     let scope: nock.Scope
 
     beforeEach(() => {
+      restClient = buildRestClient(constantTokenSource('t'), BASE_PATH, 'Test API', restConfig)
       scope = nock(BASE_PATH, {
         reqheaders: { authorization: 'Bearer t', 'accept-encoding': 'gzip, deflate' },
       })
