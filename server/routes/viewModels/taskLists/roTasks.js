@@ -8,7 +8,6 @@ const victimLiaison = require('./tasks/victimLiaison')
 const bassArea = require('./tasks/ro/bassArea')
 const submitToCa = require('./tasks/ro/submitToCa')
 const createCurfewAddressForm = require('./tasks/ro/createCurfewAddressForm')
-const logger = require('../../../../log')
 
 module.exports = {
   getRoTasks: ({ decisions, tasks, allowedTransition }) => {
