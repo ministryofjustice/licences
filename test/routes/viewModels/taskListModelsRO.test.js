@@ -150,38 +150,6 @@ describe('TaskList models', () => {
     label: 'Ready to submit',
   }
 
-  describe('roTasksPostApproval', () => {
-    test('should return standard tasks', () => {
-      expect(
-        getTaskLists(
-          'RO',
-          false,
-          {
-            decisions: {},
-            tasks: {},
-            stage: 'DECIDED',
-          },
-          { version: 1 }
-        )
-      ).toEqual([riskManagement, curfewHours, additionalConditions, reportingInstructions, curfewAddressCheck])
-    })
-
-    test('should hide risk and show address taks when approved premises', () => {
-      expect(
-        getTaskLists(
-          'RO',
-          false,
-          {
-            decisions: { approvedPremisesRequired: true },
-            tasks: {},
-            stage: 'DECIDED',
-          },
-          { version: 1 }
-        )
-      ).toEqual([proposedCurfewAddress, curfewHours, additionalConditions, reportingInstructions, curfewAddressCheck])
-    })
-  })
-
   describe('vary', () => {
     test('should return vary licence task if licence is unstarted', () => {
       expect(
