@@ -40,18 +40,4 @@ module.exports = {
       [submitToCa],
     ])
   },
-
-  getRoTasksPostApproval: ({ decisions, tasks }) => {
-    logger.info('getRoTasksPostApproval task list accessed')
-    const { approvedPremisesRequired } = decisions
-    const context = { decisions, tasks }
-    return tasklist(context, [
-      [proposedAddress.ro, approvedPremisesRequired],
-      [riskManagement.ro, !approvedPremisesRequired],
-      [curfewHours.ro],
-      [additionalConditions.ro],
-      [reportingInstructions.ro],
-      [createCurfewAddressForm],
-    ])
-  },
 }
