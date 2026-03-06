@@ -2,10 +2,10 @@ import { createObjectCsvStringifier } from 'csv-writer'
 import moment from 'moment'
 
 import type { Case } from '../data/licenceClientTypes'
-import type { Prisoner } from 'prisonerOffenderSearchApi'
-import type { OffenderDetail } from 'probationSearchApi'
 import { LicenceClient } from '../data/licenceClient'
 import SignInService from '../authentication/signInService'
+import type { Prisoner } from '../data/prisonerSearchApiTypes'
+import type { OffenderDetail } from '../data/probationSearchApiTypes'
 
 export interface DecorationDetails {
   licences: Case[]
@@ -218,13 +218,11 @@ export default class ReportsService {
 
     const systemToken = await this.signInService.getClientCredentialsTokens(username)
     const prisoners = await this.prisonerSearchApi(systemToken).getPrisoners(bookingIds)
-    const prisonersCloseToHdced = prisoners.filter(
-      (p) => p.status !== 'INACTIVE OUT' && ReportsService.isCloseToHdced(p)
-    )
+    const prisonersCloseToHdced = prisoners.filter((p) => p.status !== 'INACTIVE OUT' && ReportsService.isCloseToHdced(p))
     const offenderNumbers = prisonersCloseToHdced.map((p) => p.prisonerNumber)
     const probationDetails = await this.getProbationDetails(username, offenderNumbers)
     const decoratedLicences = this.getPrisonerComProbationDecoratedLicences({
-      licences: licences,
+      licences,
       prisoners: prisonersCloseToHdced,
       probationDetails,
     })

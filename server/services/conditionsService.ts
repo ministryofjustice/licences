@@ -65,9 +65,7 @@ export class ConditionsService {
 
     const additionalConditionsText = isEmpty(conditions)
       ? []
-      : conditions
-          .filter((it) => it.group !== 'Bespoke' || it.approved === 'Yes')
-          .map((it) => getConditionText(it.content))
+      : conditions.filter((it) => it.group !== 'Bespoke' || it.approved === 'Yes').map((it) => getConditionText(it.content))
 
     return {
       standardConditions: standardConditionsText,
@@ -116,7 +114,7 @@ export class ConditionsService {
 
   formatConditionInputs(requestBody) {
     const selectedConditionsConfig = getAdditionalConditionsConfig(this.version).filter((condition) =>
-      requestBody.additionalConditions.includes(condition.id)
+      requestBody.additionalConditions.includes(condition.id),
     )
 
     return formatConditionsInput(requestBody, selectedConditionsConfig)
@@ -129,7 +127,7 @@ export class ConditionsService {
 
     const conditionIds = additional.additionalConditions
     const selectedConditionsConfig = getAdditionalConditionsConfig(this.version).filter((condition) =>
-      conditionIds.includes(condition.id)
+      conditionIds.includes(condition.id),
     )
     const additionalConditionsObject = this.createAdditionalConditionsObject(selectedConditionsConfig, additional)
 
@@ -157,15 +155,15 @@ export class ConditionsService {
     }
 
     const allAdditionalConditions = licenceConditions.filter(
-      (condition) => condition.group !== 'Bespoke' && condition.group !== 'Post-sentence supervision only'
+      (condition) => condition.group !== 'Bespoke' && condition.group !== 'Post-sentence supervision only',
     )
     const pssConditions = licenceConditions.filter((condition) => condition.group === 'Post-sentence supervision only')
     const bespokeConditions = licenceConditions.filter(
-      (condition) => condition.group === 'Bespoke' && condition.approved === 'Yes'
+      (condition) => condition.group === 'Bespoke' && condition.approved === 'Yes',
     )
 
     const unapprovedBespokeConditions = licenceConditions.filter(
-      (condition) => condition.group === 'Bespoke' && (condition.approved === 'No' || !condition.approved)
+      (condition) => condition.group === 'Bespoke' && (condition.approved === 'No' || !condition.approved),
     )
 
     return {

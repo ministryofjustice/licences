@@ -19,7 +19,7 @@ const responsibleOfficer: ResponsibleOfficer = {
 }
 
 describe('caService', () => {
-  let roService = new RoService(null, null) as jest.Mocked<RoService>
+  const roService = new RoService(null, null) as jest.Mocked<RoService>
   let caService
   /** @type {any} */
   let lduActiveClient

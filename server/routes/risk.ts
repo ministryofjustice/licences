@@ -1,5 +1,5 @@
-import { LicenceService } from '../services/licenceService'
 import type { Response } from 'express'
+import { LicenceService } from '../services/licenceService'
 import type { LicenceLocals } from '../utils/middleware'
 import { asyncMiddleware } from '../utils/middleware'
 import formConfig from './config/risk'

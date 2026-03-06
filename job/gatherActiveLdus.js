@@ -1,4 +1,3 @@
-/* eslint-disable no-restricted-syntax */
 /* eslint-disable no-await-in-loop */
 const logger = require('../log')
 const db = require('../server/data/dataAccess/db')

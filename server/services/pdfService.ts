@@ -37,7 +37,7 @@ export default class PdfService {
         pssConditions,
       },
       image,
-      { ...rawLicence.approvedVersionDetails, approvedVersion: rawLicence.approvedVersion }
+      { ...rawLicence.approvedVersionDetails, approvedVersion: rawLicence.approvedVersion },
     )
   }
 
@@ -69,6 +69,7 @@ export default class PdfService {
     try {
       return await this.prisonerService.getPrisonerImage(facialImageId, token)
     } catch (error) {
+      // @ts-ignore
       this.logger.error('Error during getPrisonerImage: ', error.stack)
       return null
     }
@@ -84,7 +85,7 @@ export default class PdfService {
     // Second argument is unnecessary. Sort that out later...
     await this.licenceService.saveApprovedLicenceVersion(
       bookingId,
-      getIn(rawLicence, ['licence', 'document', 'template', 'decision'])
+      getIn(rawLicence, ['licence', 'document', 'template', 'decision']),
     )
     return this.licenceService.getLicence(bookingId)
   }

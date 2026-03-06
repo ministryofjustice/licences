@@ -1,10 +1,10 @@
+import * as os from 'node:os'
 import { HdcClient } from '../../data/hdcApiClient'
 import { ConvertedLicenseBatch, ConvertedLicenseConditions } from '../../@types/hdcApiImport'
 import { LicenceService } from '../licenceService'
 import { ConditionsServiceFactory } from '../conditionsService'
 import { CURRENT_CONDITION_VERSION } from '../config/conditionsConfig'
 import { LicenceWithCase } from '../../data/licenceClientTypes'
-import * as os from 'node:os'
 
 const logger = require('../../../log')
 
@@ -85,25 +85,31 @@ export class HdcService {
   }
 
   private getUiAdditionalCodnditions(licenceRange: Array<LicenceWithCase>) {
-    return licenceRange
-      .map(({ id, prison_number, booking_id, licence, additional_conditions_version }) => {
-        const version = additional_conditions_version || CURRENT_CONDITION_VERSION
-        const uiConditions = this.conditionsServiceFactory.forVersion(version).getFullTextAdditionalConditions(licence)
+    return (
+      licenceRange
+        // eslint-disable-next-line camelcase
+        .map(({ id, prison_number, booking_id, licence, additional_conditions_version }) => {
+          // eslint-disable-next-line camelcase
+          const version = additional_conditions_version || CURRENT_CONDITION_VERSION
+          const uiConditions = this.conditionsServiceFactory
+            .forVersion(version)
+            .getFullTextAdditionalConditions(licence)
 
-        if (!uiConditions?.length) return null
+          if (!uiConditions?.length) return null
 
-        return new ComparedConditions(
-          id,
-          prison_number,
-          booking_id,
-          version,
-          uiConditions.map(({ conditionCode, conditionText }) => ({
-            code: conditionCode,
-            text: conditionText,
-          }))
-        )
-      })
-      .filter(Boolean)
+          return new ComparedConditions(
+            id,
+            prison_number,
+            booking_id,
+            version,
+            uiConditions.map(({ conditionCode, conditionText }) => ({
+              code: conditionCode,
+              text: conditionText,
+            })),
+          )
+        })
+        .filter(Boolean)
+    )
   }
 
   private removeDiscrepanciesUi(code: string, text: string, version: number): string {
@@ -147,7 +153,7 @@ export class HdcService {
       }
     }
 
-    if (code === 'DRUG_TESTING' || code == 'ATTEND_SAMPLE') {
+    if (code === 'DRUG_TESTING' || code === 'ATTEND_SAMPLE') {
       out = out.replace(/^Attend,/, 'Attend')
     }
 
@@ -179,7 +185,7 @@ export class HdcService {
     //  ", ," cleanup
     out = out.replace(/,\s*,/g, ',')
 
-    if (code === 'DRUG_TESTING' || code == 'ATTEND_SAMPLE') {
+    if (code === 'DRUG_TESTING' || code === 'ATTEND_SAMPLE') {
       out = out.replace(/^Attend,/, 'Attend')
     }
 
@@ -190,7 +196,7 @@ export class HdcService {
 
   private ensureFullStop(out: string) {
     if (out && !out.endsWith('.')) {
-      out += '.'
+      return `${out}.`
     }
     return out
   }

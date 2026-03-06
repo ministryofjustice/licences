@@ -43,11 +43,11 @@ export const modifyAdditionalConditions = (someConditions: AdditionalConditions)
   }
 
   if (!isEmpty(conditions?.REPORT_TO)) {
-    const { reportingTime, reportingDaily, ...rest } = conditions?.REPORT_TO
+    const { reportingTime, reportingDaily, ...rest } = conditions.REPORT_TO
 
     conditions.REPORT_TO = {
       reportingTime: reportingTime ? `at ${reportingTime}` : reportingDaily,
-      reportingDaily: reportingDaily,
+      reportingDaily,
       ...rest,
     }
   }

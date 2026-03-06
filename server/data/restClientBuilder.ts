@@ -89,7 +89,7 @@ export const buildRestClient = (
           .timeout(config.timeout)
 
         return result.body
-      } catch (error) {
+      } catch (error: superagent.ResponseError) {
         if (error.status === NOT_FOUND) {
           logger.info(`Not Found (404) for: '${path}', verb: 'GET'`)
           return undefined
@@ -103,7 +103,7 @@ export const buildRestClient = (
       const token = await tokenSource()
       try {
         await superagent.delete(`${apiUrl}${path}`).set('Authorization', `Bearer ${token}`).timeout(config.timeout)
-      } catch (error) {
+      } catch (error: superagent.ResponseError) {
         if (error.status === 404) {
           logger.info(`Not found calling ${restApiName} at path: '${path}', verb: 'DELETE'`)
           return
@@ -121,7 +121,7 @@ export const buildRestClient = (
           .set('Authorization', `Bearer ${token}`)
           .timeout(config.timeout)
           .send(body)
-      } catch (error) {
+      } catch (error: superagent.ResponseError) {
         handleError(error, path, 'PUT')
       }
     },
@@ -137,7 +137,7 @@ export const buildRestClient = (
           .set(headers)
           .timeout(config.timeout)
         return response.body
-      } catch (error) {
+      } catch (error: superagent.ResponseError) {
         handleError(error, path, 'POST')
         return undefined // unreachable
       }

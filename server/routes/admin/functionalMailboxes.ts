@@ -1,5 +1,5 @@
 import * as R from 'ramda'
-import * as Joi from 'joi'
+import Joi from 'joi'
 import { asyncMiddleware, authorisationMiddleware } from '../../utils/middleware'
 import { FunctionalMailboxService, LdusWithTeamsMap } from '../../services/functionalMailboxService'
 

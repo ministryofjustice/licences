@@ -1,3 +1,4 @@
+import type { Response } from 'express'
 import { getReviewSections } from './viewModels/reviewModels'
 import { asyncMiddleware, LicenceLocals } from '../utils/middleware'
 import logger from '../../log'
@@ -5,7 +6,6 @@ import { isPostApproval } from '../services/config/licenceStage'
 
 import type { PrisonerService } from '../../types/licences'
 import type { LicenceService } from '../services/licenceService'
-import type { Response } from 'express'
 import type { ConditionsServiceFactory } from '../services/conditionsService'
 import { Licence, LicenceStage } from '../data/licenceTypes'
 import { AdditionalConditionsVersion } from '../data/licenceClientTypes'

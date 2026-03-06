@@ -1,5 +1,5 @@
 # Stage: base image
-FROM node:20.19-bullseye-slim AS base
+FROM ghcr.io/ministryofjustice/hmpps-node:24-alpine AS base
 
 ARG BUILD_NUMBER=1_0_0
 ARG GIT_REF=not-available
@@ -42,7 +42,7 @@ RUN apt-get autoremove -y && \
         rm -rf /var/lib/apt/lists/*
 
 COPY package*.json ./
-RUN npm run setup -- --no-audit
+RUN NPM_CONFIG_AUDIT=false NPM_CONFIG_FUND=false npm run setup
 
 COPY . .
 RUN npm run build

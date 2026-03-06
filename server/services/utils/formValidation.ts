@@ -1,11 +1,7 @@
 import baseJoi from 'joi'
 import joiDate from '@hapi/joi-date'
 
-const joi = baseJoi.extend(joiDate)
-
 import moment from 'moment'
-
-const today = moment().startOf('day').format('MM-DD-YYYY')
 
 import { curfewAddressSchema, addressReviewSchema, addressReviewSchemaOffenderIsOccupier } from './bespokeAddressSchema'
 
@@ -23,6 +19,10 @@ import bassConfig from '../../routes/config/bassReferral'
 import * as conditionsConfig from '../../routes/config/licenceConditions'
 import { Licence } from '../../data/licenceTypes'
 import { AdditionalConditionsVersion } from '../../data/licenceClientTypes'
+
+const joi = baseJoi.extend(joiDate)
+
+const today = moment().startOf('day').format('MM-DD-YYYY')
 
 const postcode = joi
   .string()

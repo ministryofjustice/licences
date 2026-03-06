@@ -1,8 +1,8 @@
 import baseJoi from 'joi'
 import dateJoi from '@hapi/joi-date'
+import moment from 'moment'
 
 const joi = baseJoi.extend(dateJoi)
-import moment from 'moment'
 
 const today = moment().startOf('day').format('MM-DD-YYYY')
 

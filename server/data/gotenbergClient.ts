@@ -19,7 +19,7 @@ export class GotenbergClient {
     this.gotenbergHost = gotenbergHost
   }
 
-  async renderPdfFromHtml(html: String, options: PdfOptions = {}): Promise<Buffer> {
+  async renderPdfFromHtml(html: string, options: PdfOptions = {}): Promise<Buffer> {
     const { headerHtml, footerHtml, marginBottom, marginLeft, marginRight, marginTop } = options
     try {
       const request = superagent
@@ -38,7 +38,7 @@ export class GotenbergClient {
 
       const response = await request
       return response.body
-    } catch (err) {
+    } catch (err: superagent.ResponseError) {
       handleError(err, this.gotenbergHost)
       return undefined
     }
