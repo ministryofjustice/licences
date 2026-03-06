@@ -39,7 +39,7 @@ export interface RoContactDetailsService {
   getFunctionalMailBox: (deliusId: string) => Promise<string>
   getResponsibleOfficerWithContactDetails: (
     bookingId: number,
-    token: string
+    token: string,
   ) => Promise<ResponsibleOfficerAndContactDetailsResult>
 }
 
@@ -65,7 +65,7 @@ export interface RoNotificationSender {
   getNotifications: (
     responsibleOfficer: ResponsibleOfficerAndContactDetails,
     personalisation: any,
-    config: any
+    config: any,
   ) => Array<any>
 }
 
@@ -79,13 +79,13 @@ export interface PrisonerService {
   getDestinationForRole: (
     role: string,
     bookingId: number,
-    token: string
+    token: string,
   ) => Promise<{ destination: Destination; submissionTarget: any }>
   getDestinations: (
     senderRole,
     receiverRole,
     bookingId,
-    token
+    token,
   ) => Promise<{ submissionTarget: any; source: Destination; target: Destination }>
 }
 

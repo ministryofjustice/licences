@@ -3,7 +3,6 @@ import { EnvelopeTelemetry } from 'applicationinsights/out/Declarations/Contract
 import applicationVersion from '../applicationVersion'
 
 export type ContextObject = {
-  /* eslint-disable  @typescript-eslint/no-explicit-any */
   [name: string]: any
 }
 
@@ -42,6 +41,7 @@ export function addUserDataToRequests(envelope: EnvelopeTelemetry, contextObject
   if (isRequest) {
     const { username, activeCaseLoadId } = contextObjects?.['http.ServerRequest']?.res?.locals?.user || {}
     const { properties } = envelope.data.baseData
+    // eslint-disable-next-line no-param-reassign
     envelope.data.baseData.properties = Object.assign(properties || {}, {
       ...(username && { username }),
       ...(activeCaseLoadId && { activeCaseLoadId }),

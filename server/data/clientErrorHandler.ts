@@ -39,7 +39,7 @@ const isResponseError = (error: Error): error is ResponseError =>
  * logs the error excluding sensitive information and throws a new Error containing the original Error's message (only)
  * @param apiName A friendly name for the API that will be included in log statements.
  */
-// eslint-disable-next-line import/prefer-default-export
+
 export const buildErrorHandler = (apiName: string) => {
   return (error: ClientError, path: string, verb: string = 'GET'): undefined => {
     if (isResponseError(error)) {

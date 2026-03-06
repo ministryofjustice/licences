@@ -1,6 +1,6 @@
 import Booking from '../../server/statistics/booking'
 
-// eslint-disable-next-line import/prefer-default-export
+
 export enum Path {
   eligExcluded = '/hdc/eligibility/excluded/',
   eligSuitability = '/hdc/eligibility/suitability/',

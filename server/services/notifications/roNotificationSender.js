@@ -82,6 +82,7 @@ module.exports = function createRoNotificationSender(
       } catch (error) {
         logger.error(
           `Error sending notification for bookingId: ${bookingId}, transition: ${notificationType}`,
+          // @ts-ignore
           error.stack
         )
         return []

@@ -19,6 +19,7 @@ module.exports = (nomisClientBuilder, signInService) => {
     try {
       return await nomisClient.putApprovalStatus(bookingId, approvalStatus)
     } catch (error) {
+      // @ts-ignore
       if (error.status === 409) {
         logger.error(`409 CONFLICT when posting approval status for booking id: ${bookingId}`)
         throw nomisPushError('Approval Status')
@@ -35,6 +36,7 @@ module.exports = (nomisClientBuilder, signInService) => {
     try {
       return await nomisClient.putChecksPassed({ bookingId, passed })
     } catch (error) {
+      // @ts-ignore
       if (error.status === 409) {
         logger.error(`409 CONFLICT when posting checks passed for booking id: ${bookingId}`)
         throw nomisPushError('Checks Done')
@@ -51,6 +53,7 @@ module.exports = (nomisClientBuilder, signInService) => {
     try {
       return await nomisClient.resetHDC(bookingId)
     } catch (error) {
+      // @ts-ignore
       if (error.status === 409) {
         logger.error(`409 CONFLICT when deleting checks passed for booking id: ${bookingId}`)
         throw nomisPushError('Checks passed could not be deleted')

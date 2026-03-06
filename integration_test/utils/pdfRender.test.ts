@@ -60,7 +60,6 @@ describe('pdfRenderer', () => {
       })
     })
 
-    // eslint-disable-next-line no-unused-vars
     app.use((error, req, res, next) => {
       res.status(500).send('Something went wrong')
     })
@@ -78,7 +77,7 @@ describe('pdfRenderer', () => {
       res.renderPDF(
         'simple',
         { message: 'variable' },
-        { pdfOptions: { headerHtml: '<p>Header</p>', footerHtml: '<p>Footer</p>' } }
+        { pdfOptions: { headerHtml: '<p>Header</p>', footerHtml: '<p>Footer</p>' } },
       )
     })
 

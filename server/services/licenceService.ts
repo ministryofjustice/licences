@@ -75,6 +75,7 @@ export class LicenceService {
     try {
       await this.licenceClient.deleteAll()
     } catch (error) {
+      // @ts-ignore
       logger.error('Error during reset licences', error.stack)
       throw error
     }
@@ -83,31 +84,31 @@ export class LicenceService {
   getRiskVersion(licence: Licence): RiskManagement['version'] {
     if (licence.risk?.riskManagement?.version) {
       return licence.risk?.riskManagement?.version
-    } else if (licence.risk?.riskManagement && !licence.risk?.riskManagement?.version) {
-      return '1'
-    } else {
-      return riskManagementVersion
     }
+    if (licence.risk?.riskManagement && !licence.risk?.riskManagement?.version) {
+      return '1'
+    }
+    return riskManagementVersion
   }
 
   getCurfewAddressReviewVersion(licence: Licence): AddressReview['version'] {
     if (licence.curfew?.curfewAddressReview?.version) {
       return licence.curfew.curfewAddressReview.version
-    } else if (licence.curfew?.curfewAddressReview && !licence.curfew?.curfewAddressReview?.version) {
-      return '1'
-    } else {
-      return curfewAddressReviewVersion
     }
+    if (licence.curfew?.curfewAddressReview && !licence.curfew?.curfewAddressReview?.version) {
+      return '1'
+    }
+    return curfewAddressReviewVersion
   }
 
   getPostponeVersion(licence: Licence): Postpone['version'] {
     if (licence.finalChecks?.postpone?.version) {
       return licence.finalChecks?.postpone?.version
-    } else if (licence.finalChecks?.postpone && !licence.finalChecks?.postpone?.version) {
-      return '1'
-    } else {
-      return postponeVersion
     }
+    if (licence.finalChecks?.postpone && !licence.finalChecks?.postpone?.version) {
+      return '1'
+    }
+    return postponeVersion
   }
 
   async getLicence(bookingId: number): Promise<LicenceRecord> {
@@ -149,6 +150,7 @@ export class LicenceService {
         licenceInCvl,
       }
     } catch (error) {
+      // @ts-ignore
       logger.error('Error during getLicence', error.stack)
       throw error
     }
@@ -173,7 +175,7 @@ export class LicenceService {
     bookingId,
     existingLicence: LicenceRecord,
     newConditionsObject: LicenceConditions,
-    postRelease = false
+    postRelease = false,
   ): Promise<any> {
     try {
       const existingLicenceConditions = existingLicence?.licence?.licenceConditions
@@ -187,6 +189,7 @@ export class LicenceService {
       await this.licenceClient.updateSection('licenceConditions', bookingId, licenceConditions, postRelease)
       return true
     } catch (error) {
+      // @ts-ignore
       logger.error('Error during updateAdditionalConditions', error.stack)
       throw error
     }
@@ -196,6 +199,7 @@ export class LicenceService {
     try {
       await this.licenceClient.setLicenceInCvl(licenceInCvl, bookingId)
     } catch (error) {
+      // @ts-ignore
       logger.error('Error during setCompleteDestination', error.stack)
       throw error
     }
@@ -209,6 +213,7 @@ export class LicenceService {
 
       return await this.licenceClient.updateSection('licenceConditions', bookingId, newConditions)
     } catch (error) {
+      // @ts-ignore
       logger.error('Error during updateAdditionalConditions', error.stack)
       throw error
     }
@@ -316,6 +321,7 @@ export class LicenceService {
     try {
       await this.licenceClient.softDeleteLicence(bookingId)
     } catch (error) {
+      // @ts-ignore
       logger.error('Error during licence reset', error.stack)
       throw error
     }
@@ -325,7 +331,7 @@ export class LicenceService {
     return (answersAccumulator, field) => {
       const { fieldName, answerIsRequired, innerFields, inputIsList, inputIsSplitDate } = this.getFieldInfo(
         field,
-        userInput
+        userInput,
       )
 
       if (!answerIsRequired) {
@@ -479,7 +485,7 @@ export class LicenceService {
             'manageInTheCommunityNotPossibleReason',
             'hasConsideredChecks',
           ],
-          riskManagementInputs
+          riskManagementInputs,
         )
       : null
 
@@ -498,7 +504,7 @@ export class LicenceService {
         ['risk', 'riskManagement', 'hasConsideredChecks'],
         ['curfew', 'curfewAddressReview'],
       ],
-      licenceWithAddressRejection
+      licenceWithAddressRejection,
     )
 
     await this.licenceClient.updateLicence(bookingId, updatedLicence)
@@ -527,7 +533,7 @@ export class LicenceService {
         [['risk', 'riskManagement', 'hasConsideredChecks'], getIn(riskManagement, ['hasConsideredChecks'])],
         [['curfew', 'curfewAddressReview'], curfewAddressReview],
       ].filter((argument) => argument[1]),
-      licenceAfterRemoval
+      licenceAfterRemoval,
     )
 
     await this.licenceClient.updateLicence(bookingId, updatedLicence)

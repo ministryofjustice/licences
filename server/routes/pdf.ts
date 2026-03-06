@@ -1,5 +1,5 @@
-import logger from '../../log'
 import { Response } from 'express'
+import logger from '../../log'
 import { asyncMiddleware, LicenceLocals } from '../utils/middleware'
 import { templates, templatesForNewOffence } from './config/pdf'
 import versionInfo from '../utils/versionInfo'

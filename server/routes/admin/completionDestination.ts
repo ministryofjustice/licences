@@ -22,7 +22,7 @@ export = (licenceService, signInService, prisonerService, audit) => (router) => 
       const { licenceInCvl } = req.body
       const { username } = req.user
 
-      const licenceInCvlBoolean = licenceInCvl == 'true' ? true : false
+      const licenceInCvlBoolean = licenceInCvl === 'true'
       const setLicenceCompletionDestination = licenceInCvlBoolean ? 'CREATE_IN_CVL' : 'CREATE_IN_HDC'
       await licenceService.setLicenceCompletionDestination(licenceInCvlBoolean, bookingId)
       await audit.record(setLicenceCompletionDestination, username, { bookingId })

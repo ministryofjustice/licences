@@ -1,11 +1,11 @@
 import moment from 'moment'
+import { Response } from 'express'
 import logger from '../../log'
 import { asyncMiddleware, LicenceLocals } from '../utils/middleware'
 import config from '../config'
 import { curfewAddressCheckFormFileName } from './utils/pdfUtils'
 import { isEmpty, getIn } from '../utils/functionalHelpers'
 import FormService from '../services/formService'
-import { Response } from 'express'
 import { ConditionsServiceFactory } from '../services/conditionsService'
 
 const {

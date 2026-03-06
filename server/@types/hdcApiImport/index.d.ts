@@ -822,22 +822,21 @@ export interface operations {
   }
 }
 
-
 // --- Auto-generated schema type aliases ---
-export type RetryDlqResult = components['schemas']['RetryDlqResult'];
-export type PurgeQueueResult = components['schemas']['PurgeQueueResult'];
-export type MigrationBatchResponse = components['schemas']['MigrationBatchResponse'];
-export type ErrorResponse = components['schemas']['ErrorResponse'];
-export type ResetResponse = components['schemas']['ResetResponse'];
-export type LicenceIdBatchRequest = components['schemas']['LicenceIdBatchRequest'];
-export type ConvertedBespokeCondition = components['schemas']['ConvertedBespokeCondition'];
-export type ConvertedLicenseBatch = components['schemas']['ConvertedLicenseBatch'];
-export type ConvertedLicenseConditions = components['schemas']['ConvertedLicenseConditions'];
-export type Attachment = components['schemas']['Attachment'];
-export type HmppsSubjectAccessRequestContent = components['schemas']['HmppsSubjectAccessRequestContent'];
-export type DlqMessage = components['schemas']['DlqMessage'];
-export type GetDlqResult = components['schemas']['GetDlqResult'];
-export type CurfewAddress = components['schemas']['CurfewAddress'];
-export type CurfewTimes = components['schemas']['CurfewTimes'];
-export type FirstNight = components['schemas']['FirstNight'];
-export type HdcLicence = components['schemas']['HdcLicence'];
+export type RetryDlqResult = components['schemas']['RetryDlqResult']
+export type PurgeQueueResult = components['schemas']['PurgeQueueResult']
+export type MigrationBatchResponse = components['schemas']['MigrationBatchResponse']
+export type ErrorResponse = components['schemas']['ErrorResponse']
+export type ResetResponse = components['schemas']['ResetResponse']
+export type LicenceIdBatchRequest = components['schemas']['LicenceIdBatchRequest']
+export type ConvertedBespokeCondition = components['schemas']['ConvertedBespokeCondition']
+export type ConvertedLicenseBatch = components['schemas']['ConvertedLicenseBatch']
+export type ConvertedLicenseConditions = components['schemas']['ConvertedLicenseConditions']
+export type Attachment = components['schemas']['Attachment']
+export type HmppsSubjectAccessRequestContent = components['schemas']['HmppsSubjectAccessRequestContent']
+export type DlqMessage = components['schemas']['DlqMessage']
+export type GetDlqResult = components['schemas']['GetDlqResult']
+export type CurfewAddress = components['schemas']['CurfewAddress']
+export type CurfewTimes = components['schemas']['CurfewTimes']
+export type FirstNight = components['schemas']['FirstNight']
+export type HdcLicence = components['schemas']['HdcLicence']

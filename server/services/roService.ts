@@ -1,6 +1,6 @@
 import moment from 'moment'
 import { CommunityManager, DeliusClient, StaffDetails } from '../data/deliusClient'
-import { ResponsibleOfficer, ResponsibleOfficerResult, Result } from '../../types/licences'
+import { ResponsibleOfficer, Result } from '../../types/licences'
 import { OffenderSentence } from '../data/nomisClientTypes'
 import { groupBy } from '../utils/functionalHelpers'
 
@@ -8,7 +8,6 @@ const setCase = require('case')
 const logger = require('../../log')
 const { NO_OFFENDER_NUMBER, STAFF_NOT_PRESENT } = require('./serviceErrors')
 
-// eslint-disable-next-line import/prefer-default-export
 export class RoService {
   constructor(
     readonly deliusClient: DeliusClient,
@@ -19,6 +18,7 @@ export class RoService {
     try {
       return await this.deliusClient.getManagedPrisonerIdsByStaffId(staffIdentifier)
     } catch (error) {
+      // @ts-ignore
       logger.error(`Problem retrieving RO prisoners for: ${staffIdentifier}`, error.stack)
       throw error
     }
@@ -30,14 +30,13 @@ export class RoService {
       const hasNoDatesToCompare = sentences.find((b) => noDatesToCompare(b))
       if (hasNoDatesToCompare) {
         return sentences
-      } else {
-        const sortedSentences = sentences.sort((a, b) => {
-          return moment(
-            a.sentenceDetail.topupSupervisionExpiryCalculatedDate || a.sentenceDetail.licenceExpiryCalculatedDate
-          ).diff(b.sentenceDetail.topupSupervisionExpiryCalculatedDate || b.sentenceDetail.licenceExpiryCalculatedDate)
-        })
-        return sortedSentences.pop()
       }
+      const sortedSentences = sentences.sort((a, b) => {
+        return moment(
+          a.sentenceDetail.topupSupervisionExpiryCalculatedDate || a.sentenceDetail.licenceExpiryCalculatedDate,
+        ).diff(b.sentenceDetail.topupSupervisionExpiryCalculatedDate || b.sentenceDetail.licenceExpiryCalculatedDate)
+      })
+      return sortedSentences.pop()
     })
     return latestOffenderSentences
   }
@@ -47,6 +46,7 @@ export class RoService {
       const result = await this.deliusClient.getStaffDetailsByStaffIdentifier(staffIdentifier)
       return result || { code: STAFF_NOT_PRESENT, message: `Staff does not exist in delius: ${staffIdentifier}` }
     } catch (error) {
+      // @ts-ignore
       logger.error(`Problem retrieving staff member for staff identifier: ${staffIdentifier}`, error.stack)
       throw error
     }
@@ -87,6 +87,7 @@ export class RoService {
       }
       return toResponsibleOfficer(offenderNo, communityManager)
     } catch (error) {
+      // @ts-ignore
       logger.error(`findResponsibleOfficer for: ${offenderNo}`, error.stack)
       throw error
     }
@@ -119,7 +120,7 @@ function toResponsibleOfficer(offenderNumber: string, offenderManager: Community
   }
 }
 
-function noDatesToCompare(booking): Boolean {
+function noDatesToCompare(booking): boolean {
   return (
     !booking.sentenceDetail.topupSupervisionExpiryCalculatedDate && !booking.sentenceDetail.licenceExpiryCalculatedDate
   )

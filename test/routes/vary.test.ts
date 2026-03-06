@@ -16,7 +16,7 @@ jest.mock('../../server/services/licenceService')
 describe('/hdc/vary', () => {
   describe('vary routes', () => {
     const licenceRecord = { licence: { reporting: { reportingInstructions: { buildingAndStreet1: 'this' } } } }
-    let licenceService = new LicenceService(undefined) as jest.Mocked<LicenceService>
+    const licenceService = new LicenceService(undefined) as jest.Mocked<LicenceService>
     licenceService.getLicence.mockResolvedValue(licenceRecord as LicenceRecord)
     licenceService.addSplitDateFields.mockImplementation((arg) => arg)
     const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
@@ -272,7 +272,7 @@ describe('/hdc/vary', () => {
 })
 
 describe('POST /hdc/vary/', () => {
-  let licenceService = new LicenceService(undefined) as jest.Mocked<LicenceService>
+  const licenceService = new LicenceService(undefined) as jest.Mocked<LicenceService>
 
   beforeEach(() => {
     ;(LicenceService as jest.MockedClass<typeof LicenceService>).mockClear()

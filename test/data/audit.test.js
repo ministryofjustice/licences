@@ -55,7 +55,7 @@ describe('Audit', () => {
       const { values, text } = db.query.mock.calls[0][0]
       expect(values).toEqual([1])
       expect(text).toEqual(
-        `select id, "timestamp", "user", action, details from audit where details::jsonb ->> 'bookingId' = $1 order by timestamp desc;`
+        `select id, "timestamp", "user", action, details from audit where details::jsonb ->> 'bookingId' = $1 order by timestamp desc;`,
       )
     })
   })
@@ -100,12 +100,12 @@ describe('Audit', () => {
           'ACTION',
           { filter1: 'a' },
           moment('13-03-1985', 'DD-MM-YYYY'),
-          moment('15-03-1985', 'DD-MM-YYYY')
+          moment('15-03-1985', 'DD-MM-YYYY'),
         )
 
         const { text, values } = db.query.mock.calls[0][0]
         expect(text).toEqual(
-          'select * from audit where action = $1 and details @> $2 and timestamp >= $3 and timestamp <= $4'
+          'select * from audit where action = $1 and details @> $2 and timestamp >= $3 and timestamp <= $4',
         )
         expect(values).toEqual([
           'ACTION',
