@@ -54,7 +54,7 @@ services:
       NOMIS_ENDPOINT_URL: http://nomis-user-roles-api:8080
 
   nomis-user-roles-api:
-    image: ghcr.io/ministryofjustice/nomis-user-roles-api:2025-11-25.29.b39ec25
+    image: ghcr.io/ministryofjustice/nomis-user-roles-api:latest
     networks:
       - hmpps
     container_name: nomis-user-roles-api
