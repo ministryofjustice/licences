@@ -26,7 +26,7 @@ executors:
           POSTGRES_USER: licences
           POSTGRES_DB: licences
           POSTGRES_PASSWORD: licences
-      - image: ghcr.io/ministryofjustice/hmpps-auth:latest
+      - image: ghcr.io/ministryofjustice/hmpps-auth:2026-03-02.422.c36796f
         name: hmpps-auth
         environment:
           SPRING_PROFILES_ACTIVE: dev,nomis
