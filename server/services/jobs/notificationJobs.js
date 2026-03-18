@@ -7,6 +7,7 @@ module.exports = function createNotificationJobs(reminderService, signInService)
       const systemToken = await signInService.getAnonymousClientCredentialsTokens()
       return await reminderService.notifyRoReminders(systemToken)
     } catch (error) {
+      // @ts-ignore
       logger.error('Error running RO reminders', error.stack)
       return null
     }

@@ -1,8 +1,8 @@
-const nock = require('nock')
-
 import { ConditionsService } from '../../server/services/conditionsService'
 import PdfService from '../../server/services/pdfService'
 import { createPrisonerServiceStub, createConditionsServiceFactoryStub } from '../mockServices'
+
+const nock = require('nock')
 
 describe('pdfService', () => {
   let licenceService

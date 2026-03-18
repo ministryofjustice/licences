@@ -144,31 +144,30 @@ export = (
             taskListModel,
             errors: [],
           })
-        } else {
-          if (
-            req.user.role === 'CA' &&
-            licenceStatus.stage === 'ELIGIBILITY' &&
-            licenceStatus.tasks.eligibility === 'DONE'
-          ) {
-            const errorCode = await caService.getReasonForNotContinuing(bookingId, res.locals.token)
-            if (errorCode) {
-              return res.render('taskList/taskListBuilder', {
-                ...model,
-                taskListModel: getTasksForBlocked(errorCode),
-                errors: [],
-              })
-            }
-          }
-
-          const taskListModel = getAllTaskLists(req.user.role, postRelease, licenceStatus, licence || {})
-
-          return res.render('taskList/taskListBuilder', {
-            ...model,
-            taskListModel,
-            errors: [],
-          })
         }
-      })
+        if (
+          req.user.role === 'CA' &&
+          licenceStatus.stage === 'ELIGIBILITY' &&
+          licenceStatus.tasks.eligibility === 'DONE'
+        ) {
+          const errorCode = await caService.getReasonForNotContinuing(bookingId, res.locals.token)
+          if (errorCode) {
+            return res.render('taskList/taskListBuilder', {
+              ...model,
+              taskListModel: getTasksForBlocked(errorCode),
+              errors: [],
+            })
+          }
+        }
+
+        const taskListModel = getAllTaskLists(req.user.role, postRelease, licenceStatus, licence || {})
+
+        return res.render('taskList/taskListBuilder', {
+          ...model,
+          taskListModel,
+          errors: [],
+        })
+      }),
     )
 
     router.post(

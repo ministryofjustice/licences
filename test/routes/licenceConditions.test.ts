@@ -17,8 +17,8 @@ import NullTokenVerifier from '../../server/authentication/tokenverifier/NullTok
 import { CURRENT_CONDITION_VERSION } from '../../server/services/config/conditionsConfig'
 
 describe('/hdc/licenceConditions', () => {
-  let conditionsService = createConditionsServiceStub()
-  let conditionsServiceFactory = createConditionsServiceFactoryStub()
+  const conditionsService = createConditionsServiceStub()
+  const conditionsServiceFactory = createConditionsServiceFactoryStub()
 
   beforeEach(() => {
     conditionsService.getStandardConditions.mockReturnValue([{ text: 'Not commit any offence' }])
@@ -190,6 +190,7 @@ describe('/hdc/licenceConditions', () => {
             expect(licenceService.update).toHaveBeenCalledWith({
               bookingId: '1',
               originalLicence: { licence: { key: 'value' }, versionDetails: { additional_conditions_version: 1 } },
+             // eslint-disable-next-line import/namespace
               config: formConfig[route.formName],
               userInput: route.body,
               licenceSection: 'licenceConditions',
@@ -225,6 +226,7 @@ describe('/hdc/licenceConditions', () => {
                   additional_conditions_version: 1,
                 },
               },
+              // eslint-disable-next-line import/namespace
               config: formConfig[route.formName],
               userInput: route.body,
               licenceSection: 'licenceConditions',

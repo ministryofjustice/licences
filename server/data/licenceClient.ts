@@ -265,9 +265,11 @@ export class LicenceClient {
     await db.query(query)
   }
 
+  // eslint-disable-next-line camelcase
   setLicenceInCvl(licence_in_cvl: boolean, bookingId: number): Promise<void> {
     const query = {
       text: 'UPDATE v_licences_excluding_deleted SET licence_in_cvl = $1 where booking_id = $2',
+      // eslint-disable-next-line camelcase
       values: [licence_in_cvl, bookingId],
     }
 

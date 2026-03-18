@@ -27,6 +27,7 @@ module.exports = function createLicenceSearchService(licenceClient, signInServic
       const { bookingId } = booking
       return bookingId && bookingIdForLicenceIncludingSoftDeleted(bookingId)
     } catch (error) {
+      // @ts-ignore
       if (error.status === 404) {
         return null
       }

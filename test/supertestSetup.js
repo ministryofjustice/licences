@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const request = require('supertest')
 const express = require('express')
 const path = require('path')

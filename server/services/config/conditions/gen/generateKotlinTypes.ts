@@ -9,7 +9,7 @@ const WARNING =
 
 const dataClass = `package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.conditions
 
-${WARNING} 
+${WARNING}
 
 data class ConditionMetadata(
   val id: String,
@@ -55,7 +55,7 @@ function getAdditionalConditionsText(name: string, conditions: ConditionMetadata
   return `package uk.gov.justice.digital.hmpps.hmppshdcapi.licences.conditions
 
 ${WARNING}
- 
+
 val ${name} = listOf(${v1Text},
 )
 `

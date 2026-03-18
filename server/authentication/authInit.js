@@ -24,6 +24,7 @@ module.exports = (userService, audit) => {
       const user = await getUser(accessToken, params.expires_in, params.user_name)
       return done(null, user)
     } catch (error) {
+      // @ts-ignore
       logger.error(`Sign in error for user: '${params.user_name}'`, error.stack)
       return done(null, false, { message: 'A system error occurred; please try again later' })
     }

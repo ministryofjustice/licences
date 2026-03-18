@@ -1,5 +1,5 @@
-import { firstItem } from '../../utils/functionalHelpers'
 import { Request, Router } from 'express'
+import { firstItem } from '../../utils/functionalHelpers'
 import { HdcService, LicenceDiff } from '../../services/hdc/hdcService'
 
 const { asyncMiddleware, authorisationMiddleware } = require('../../utils/middleware')
@@ -7,7 +7,7 @@ const logger = require('../../../log')
 
 function getSingleValue(value: unknown): string | undefined {
   if (typeof value !== 'string') return undefined
-  //NO SQL injection, please
+  // NO SQL injection, please
   const cleaned = value
     .toUpperCase()
     .replace(/\s+/g, '')
@@ -84,7 +84,7 @@ export = (hdcService: HdcService) => (router: Router, audited: any) => {
     audited,
     asyncMiddleware(async (req, res) => {
       const licenceDiffs = await fetchLicenceResults(hdcService, req)
-      let { idFrom, idTo, codeFilter, version, cleanUi, cleanApi } = getIdsFromReq(req)
+      const { idFrom, idTo, codeFilter, version, cleanUi, cleanApi } = getIdsFromReq(req)
 
       if (!licenceDiffs.length) {
         req.flash('errors', { id: `Could not find mismatched conditions` })

@@ -35,6 +35,7 @@ module.exports = () => {
         await licenceClient.deleteAllTest()
         return res.status(200).send({})
       } catch (error) {
+        // @ts-ignore
         logger.error('Error during delete test licences', error.stack)
         return res.status(500).send({})
       }
@@ -59,6 +60,7 @@ module.exports = () => {
         logger.info('Created licence')
         return res.status(201).send({})
       } catch (error) {
+        // @ts-ignore
         logger.error('Error during create licence', error.stack)
         return res.status(500).send({})
       }
@@ -77,6 +79,7 @@ module.exports = () => {
         logger.info(`Enabled LDU: ${probationAreaCode}/${lduCode}`)
         return res.status(201).send({})
       } catch (error) {
+        // @ts-ignore
         logger.error('Error during enabling LDU', error.stack)
         return res.status(500).send({})
       }

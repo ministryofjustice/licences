@@ -138,6 +138,7 @@ export = function createCaseListService(
 
       return { hdcEligible: formatted }
     } catch (error) {
+      // @ts-ignore
       logger.error('Error during getHdcCaseList: ', error.stack)
       throw error
     }

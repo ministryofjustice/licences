@@ -41,9 +41,11 @@ module.exports =
       try {
         await configClient.updateMailbox(id, userInput)
       } catch (dbError) {
+        // @ts-ignore
         if (dbError.code === '23505') {
           req.flash('errors', { email: 'Duplicate entry' })
         } else {
+          // @ts-ignore
           req.flash('errors', { email: dbError.message })
         }
 
@@ -94,9 +96,11 @@ module.exports =
         await configClient.addMailbox(userInput)
         return res.redirect('/admin/mailboxes')
       } catch (dbError) {
+        // @ts-ignore
         if (dbError.code === '23505') {
           req.flash('errors', { email: 'Duplicate entry' })
         } else {
+          // @ts-ignore
           req.flash('errors', { email: dbError.message })
         }
         req.flash('userInput', userInput)

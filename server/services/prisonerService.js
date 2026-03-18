@@ -60,6 +60,7 @@ function createPrisonerService(nomisClientBuilder, roService, signInService) {
           aliases,
         })
       } catch (error) {
+        // @ts-ignore
         logger.error('Error getting prisoner info', error.stack)
         throw error
       }
@@ -90,6 +91,7 @@ function createPrisonerService(nomisClientBuilder, roService, signInService) {
 
         return this.getEstablishment(locationId, token)
       } catch (error) {
+        // @ts-ignore
         logger.error('Error getting prisoner establishment', error.stack)
         throw error
       }
@@ -104,11 +106,12 @@ function createPrisonerService(nomisClientBuilder, roService, signInService) {
 
         return formatObjectForView(establishment)
       } catch (error) {
+        // @ts-ignore
         if (error.status === 404) {
           logger.warn(`Establishment not found for agencyLocationId: ${agencyLocationId}`)
           return null
         }
-
+        // @ts-ignore
         logger.error('Error getting establishment', error.stack)
         throw error
       }
@@ -136,6 +139,7 @@ function createPrisonerService(nomisClientBuilder, roService, signInService) {
 
         return formatObjectForView(prisoner)
       } catch (error) {
+        // @ts-ignore
         logger.error('Error getting prisoner personal details', error.stack)
         return null
       }
@@ -150,7 +154,7 @@ function createPrisonerService(nomisClientBuilder, roService, signInService) {
       if (role.toUpperCase() === 'RO') {
         const responsibleOfficer = unwrapResultOrThrow(
           await roService.findResponsibleOfficer(bookingId, token),
-          (error) => `${error.code}: ${error.message}`
+          (error) => `${error.code}: ${error.message}`,
         )
 
         return {

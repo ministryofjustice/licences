@@ -26,13 +26,18 @@ import config from './config'
 import TokenStore from './data/tokenStore'
 import { createRedisClient } from './data/redisClient'
 
-const writeStdOut = (data) => new Promise<void>((resolve) => process.stdout.write(data, () => resolve()))
+const writeStdOut = (data) =>
+  new Promise<void>((resolve) => {
+    process.stdout.write(data, () => {
+      resolve()
+    })
+  })
 
 const oauthRestClient = buildRestClient(
   clientCredentialsTokenSource(new SignInService(new TokenStore(createRedisClient())), 'nomis'),
   `${config.nomis.authUrl}`,
   'OAuth API',
-  { timeout: config.nomis.timeout, agent: config.nomis.agent }
+  { timeout: config.nomis.timeout, agent: config.nomis.agent },
 )
 
 const disableAuthUser = (username) => oauthRestClient.putResource(`/api/authuser/${username}/disable`, {})
@@ -48,7 +53,6 @@ const updateUser = async (username, disableUser: boolean) => {
 }
 
 const updateUsers = async (usernames: string[], disableUsers = true) => {
-  // eslint-disable-next-line no-restricted-syntax
   for (const username of usernames) {
     try {
       // eslint-disable-next-line no-await-in-loop
