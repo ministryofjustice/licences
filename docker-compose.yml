@@ -39,7 +39,7 @@ services:
       test: [ 'CMD', 'curl', '-f', 'http://localhost:3001/ping' ]
 
   hmpps-auth:
-    image: ghcr.io/ministryofjustice/hmpps-auth:latest
+    image: ghcr.io/ministryofjustice/hmpps-auth:2026-03-02.422.c36796f
     networks:
       - hmpps
     container_name: hmpps-auth

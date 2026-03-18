@@ -4,42 +4,14 @@ FROM ghcr.io/ministryofjustice/hmpps-node:24-alpine AS base
 ARG BUILD_NUMBER=1_0_0
 ARG GIT_REF=not-available
 
-LABEL maintainer="HMPPS Digital Studio <info@digital.justice.gov.uk>"
-
-ENV TZ=Europe/London
-RUN ln -snf "/usr/share/zoneinfo/$TZ" /etc/localtime && echo "$TZ" > /etc/timezone
-
-RUN addgroup --gid 2000 --system appgroup && \
-        adduser --uid 2000 --system appuser --gid 2000
-
-WORKDIR /app
-
 # Cache breaking
 ENV BUILD_NUMBER=${BUILD_NUMBER:-1_0_0}
-
-RUN apt-get update && \
-        apt-get upgrade -y
-
-RUN apt-get install -y curl
-
-RUN curl https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem > /app/root.cert
-
-RUN apt-get autoremove -y && \
-        rm -rf /var/lib/apt/lists/*
 
 # Stage: build assets
 FROM base AS build
 
 ARG BUILD_NUMBER=1_0_0
 ARG GIT_REF=not-available
-
-RUN apt-get update && \
-        apt-get upgrade -y
-
-RUN apt-get install -y make python3 g++
-
-RUN apt-get autoremove -y && \
-        rm -rf /var/lib/apt/lists/*
 
 COPY package*.json ./
 RUN NPM_CONFIG_AUDIT=false NPM_CONFIG_FUND=false npm run setup
@@ -52,6 +24,12 @@ RUN export BUILD_NUMBER=${BUILD_NUMBER} && \
         npm run record-build-info
 
 RUN  npm prune --no-audit --production
+
+# Install AWS RDS Root cert for Postgres clients
+RUN install -d -o appuser -g appgroup /app/root.cert
+ADD https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem /app/root.cert
+RUN chown appuser:appgroup /app/root.cert && \
+    chmod 0644 /app/root.cert
 
 # Stage: copy production assets and dependencies
 FROM base
