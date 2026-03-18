@@ -9,8 +9,8 @@ LABEL maintainer="HMPPS Digital Studio <info@digital.justice.gov.uk>"
 ENV TZ=Europe/London
 RUN ln -snf "/usr/share/zoneinfo/$TZ" /etc/localtime && echo "$TZ" > /etc/timezone
 
-RUN addgroup -g 2000 -S appgroup && \
-        adduser -u 2000 -S appuser -g 2000
+RUN addgroup -S -g 2000 appgroup && \
+    adduser -S -u 2000 -G appgroup appuser
 
 WORKDIR /app
 
