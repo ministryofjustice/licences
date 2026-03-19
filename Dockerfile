@@ -13,8 +13,8 @@ FROM base AS build
 ARG BUILD_NUMBER=1_0_0
 ARG GIT_REF=not-available
 
-COPY package*.json ./
-RUN NPM_CONFIG_AUDIT=false NPM_CONFIG_FUND=false npm run setup
+COPY package*.json .allowed-scripts.mjs ./
+RUN NPM_CONFIG_AUDIT=false NPM_CONFIG_FUND=false SKIP_PRECOMMIT_INIT=true npm run setup
 
 COPY . .
 RUN npm run build
@@ -26,7 +26,6 @@ RUN export BUILD_NUMBER=${BUILD_NUMBER} && \
 RUN  npm prune --no-audit --production
 
 # Install AWS RDS Root cert for Postgres clients
-RUN install -d -o appuser -g appgroup /app/root.cert
 ADD https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem /app/root.cert
 RUN chown appuser:appgroup /app/root.cert && \
     chmod 0644 /app/root.cert
