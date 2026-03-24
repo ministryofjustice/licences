@@ -1,5 +1,5 @@
 import getDmTasks from './taskLists/dmTasks'
-import { getRoTasksPostApproval, getRoTasks } from './taskLists/roTasks'
+import { getRoTasks } from './taskLists/roTasks'
 import roTransitions from '../../services/licence/roTransitions'
 import getVaryTasks from './taskLists/varyTasks'
 import caTransitions from '../../services/licence/caTransitions'
@@ -61,11 +61,6 @@ export const getTaskLists = (
       case 'PROCESSING_CA':
       case 'APPROVAL':
         return getRoTasks({ decisions, tasks, allowedTransition })
-
-      case 'DECIDED':
-      case 'MODIFIED':
-      case 'MODIFIED_APPROVAL':
-        return getRoTasksPostApproval({ decisions, tasks })
 
       default: // fall through
     }
@@ -129,11 +124,6 @@ export const getAllTaskLists = (
       case 'PROCESSING_CA':
       case 'APPROVAL':
         return getRoTasks({ decisions, tasks, allowedTransition })
-
-      case 'DECIDED':
-      case 'MODIFIED':
-      case 'MODIFIED_APPROVAL':
-        return getRoTasksPostApproval({ decisions, tasks })
 
       default: // fall through
     }

@@ -1,6 +1,7 @@
 export enum LicenceStage {
   UNSTARTED = 'UNSTARTED',
   DEFAULT = 'ELIGIBILITY',
+  // eslint-disable-next-line @typescript-eslint/no-duplicate-enum-values
   ELIGIBILITY = 'ELIGIBILITY',
   PROCESSING_RO = 'PROCESSING_RO',
   PROCESSING_CA = 'PROCESSING_CA',

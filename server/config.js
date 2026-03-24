@@ -1,5 +1,3 @@
-require('dotenv').config()
-
 const production = process.env.NODE_ENV === 'production'
 const oneDay = 24 * 60 * 60
 
@@ -77,6 +75,24 @@ module.exports = {
     responsibleOfficerRoleId: get('DELIUS_RO_ROLE_ID', 'LHDCBT002'),
     // this refers to the 'HDC Digital Update' RBAC which is mapped to LICENCE_RO, GLOBAL_SEARCH and LICENCE_VARY in the auth server
     responsibleOfficerVaryRoleId: get('DELIUS_RO_VARY_ROLE_ID', 'LHDCBT003'),
+  },
+
+  hdc: {
+    apiUrl: get('HDC_API_URL', 'http://localhost:8089'),
+    authUrl: get('HDC_AUTH_URL', get('NOMIS_AUTH_URL', 'http://localhost:9090/auth')),
+    admin: {
+      apiClientId: get('HDC_API_CLIENT_ID', get('ADMIN_API_CLIENT_ID', 'licencesadmin')),
+      apiClientSecret: get('HDC_API_CLIENT_SECRET', get('ADMIN_API_CLIENT_SECRET', 'clientsecret')),
+    },
+    timeout: {
+      response: 30000,
+      deadline: 35000,
+    },
+    agent: {
+      maxSockets: 100,
+      maxFreeSockets: 10,
+      freeSocketTimeout: 30000,
+    },
   },
 
   prisonerSearchApi: {

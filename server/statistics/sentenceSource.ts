@@ -14,7 +14,7 @@ export default class SentenceSource {
     console.log(`Retrieved ${sentences.length} sentence rows`)
     return sentences.reduce(
       (map, sentence) => map.set(sentence.bookingId, sentence),
-      new Map<number, OffenderSentence>()
+      new Map<number, OffenderSentence>(),
     )
   }
 }

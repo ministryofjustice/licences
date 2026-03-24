@@ -1,7 +1,7 @@
 import express from 'express'
 import path from 'path'
 import request from 'supertest'
-import pdfParse from 'pdf-parse'
+import { PDFParse } from 'pdf-parse'
 
 import pdfRenderer from '../../server/utils/renderPdf'
 import { GotenbergClient } from '../../server/data/gotenbergClient'
@@ -60,7 +60,6 @@ describe('pdfRenderer', () => {
       })
     })
 
-    // eslint-disable-next-line no-unused-vars
     app.use((error, req, res, next) => {
       res.status(500).send('Something went wrong')
     })
@@ -78,14 +77,15 @@ describe('pdfRenderer', () => {
       res.renderPDF(
         'simple',
         { message: 'variable' },
-        { pdfOptions: { headerHtml: '<p>Header</p>', footerHtml: '<p>Footer</p>' } }
+        { pdfOptions: { headerHtml: '<p>Header</p>', footerHtml: '<p>Footer</p>' } },
       )
     })
 
     const res = await request(app).get('/pdf')
-    const pdf = await pdfParse(res.body)
+    const parser = new PDFParse({ data: res.body })
+    const pdf = await parser.getText()
 
-    expect(pdf.numpages).toBe(1)
+    expect(pdf.pages[0].num).toBe(1)
     expect(pdf.text).toContain('\nfixed\nvariable')
     expect(pdf.text).toContain('Header')
     expect(pdf.text).toContain('Footer')

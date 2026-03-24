@@ -111,6 +111,7 @@ module.exports =
       try {
         await userAdminService.updateRoUser(res.locals.token, originalNomisId, userInput)
       } catch (apiError) {
+        // @ts-ignore
         req.flash('errors', { nomisId: apiError.message })
         req.flash('userInput', userInput)
         return res.redirect(`/admin/roUsers/edit/${originalNomisId}`)
@@ -160,6 +161,7 @@ module.exports =
         await userAdminService.addRoUser(res.locals.token, userInput)
         return res.redirect('/admin/roUsers')
       } catch (apiError) {
+        // @ts-ignore
         req.flash('errors', { nomisId: apiError.message })
         req.flash('userInput', userInput)
         return res.redirect('/admin/roUsers/add')

@@ -33,6 +33,14 @@ function canSendRoToCa(licenceStatus: LicenceStatus) {
     return true
   }
 
+  if (decisions.useCvlForLicenceCreation) {
+    return allComplete([
+      tasks.curfewAddressReview,
+      decisions.approvedPremisesRequired ? TaskState.DONE : tasks.riskManagement,
+      tasks.victim,
+    ])
+  }
+
   return allComplete([
     tasks.curfewAddressReview,
     tasks.curfewHours,

@@ -84,7 +84,7 @@ services:
       test: [ 'CMD', 'curl', '-f', 'http://localhost:3001/ping' ]
 
   hmpps-auth:
-    image: quay.io/hmpps/hmpps-auth:latest
+    image: ghcr.io/ministryofjustice/hmpps-auth:latest
     networks:
       - hmpps
     container_name: hmpps-auth
@@ -98,7 +98,7 @@ services:
       DELIUS_ENABLED: "false"
 
   token-verification-api:
-    image: quay.io/hmpps/token-verification-api:latest
+    image: ghcr.io/ministryofjustice/token-verification-api:latest
     networks:
       - hmpps
       - token-backend

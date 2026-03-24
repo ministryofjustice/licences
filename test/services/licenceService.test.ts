@@ -12,6 +12,7 @@ import {
   CaseWithVaryVersion,
   AdditionalConditionsVersion,
   StandardConditionsVersion,
+  LicenceWithCase,
 } from '../../server/data/licenceClientTypes'
 import { Licence, LicenceStage, Risk, RiskManagement, FinalChecks, Postpone } from '../../server/data/licenceTypes'
 import { TaskState } from '../../server/services/config/taskState'
@@ -69,6 +70,7 @@ describe('licenceService', () => {
       setStandardConditionsVersion: jest.fn(),
       softDeleteLicence: jest.fn() as jest.Mock<Promise<void>>,
       setLicenceInCvl: jest.fn(),
+      getLicenceRange: jest.fn() as jest.Mock<Promise<LicenceWithCase[]>>,
     }
     service = createLicenceService(licenceClient)
   })
@@ -1777,9 +1779,56 @@ describe('licenceService', () => {
       })
     })
 
+    test('should use correct group when bassReferralNeeded in processing ro stage', () => {
+      const decisions = {
+        bassReferralNeeded: true,
+        useCvlForLicenceCreation: false,
+      }
+
+      service.validateFormGroup({
+        licence: {},
+        stage: LicenceStage.PROCESSING_RO,
+        decisions,
+        tasks: {},
+        conditionVersion: 1,
+      })
+
+      expect(formValidation.validateGroup).toHaveBeenCalled()
+      expect(formValidation.validateGroup).toHaveBeenCalledWith({
+        licence: {},
+        group: 'PROCESSING_RO_BASS_REQUESTED',
+        bespokeConditions: { offenderIsMainOccupier: undefined },
+        conditionVersion: 1,
+      })
+    })
+
+    test('should use correct group when bassReferralNeeded and useCvlForLicenceCreationin processing ro stage', () => {
+      const decisions = {
+        bassReferralNeeded: true,
+        useCvlForLicenceCreation: true,
+      }
+
+      service.validateFormGroup({
+        licence: {},
+        stage: LicenceStage.PROCESSING_RO,
+        decisions,
+        tasks: {},
+        conditionVersion: 1,
+      })
+
+      expect(formValidation.validateGroup).toHaveBeenCalled()
+      expect(formValidation.validateGroup).toHaveBeenCalledWith({
+        licence: {},
+        group: 'PROCESSING_RO_BASS_REQUESTED_CVL_LICENCE_CREATION',
+        bespokeConditions: { offenderIsMainOccupier: undefined },
+        conditionVersion: 1,
+      })
+    })
+
     test('should use correct group when approvedPremisesRequired', () => {
       const decisions = {
         approvedPremisesRequired: true,
+        useCvlForLicenceCreation: false,
       }
 
       service.validateFormGroup({
@@ -1798,6 +1847,74 @@ describe('licenceService', () => {
         conditionVersion: 1,
       })
     })
+
+    test('should use correct group when approvedPremisesRequired and useCvlForLicenceCreation', () => {
+      const decisions = {
+        approvedPremisesRequired: true,
+        useCvlForLicenceCreation: true,
+      }
+
+      service.validateFormGroup({
+        licence: {},
+        stage: LicenceStage.PROCESSING_RO,
+        decisions,
+        tasks: {},
+        conditionVersion: 1,
+      })
+
+      expect(formValidation.validateGroup).toHaveBeenCalled()
+      expect(formValidation.validateGroup).toHaveBeenCalledWith({
+        licence: {},
+        group: 'PROCESSING_RO_APPROVED_PREMISES_CVL_LICENCE_CREATION',
+        bespokeConditions: { offenderIsMainOccupier: undefined },
+        conditionVersion: 1,
+      })
+    })
+
+    test('should use correct group when not useCvlForLicenceCreation and in processing ro stage', () => {
+      const decisions = {
+        useCvlForLicenceCreation: false,
+      }
+
+      service.validateFormGroup({
+        licence: {},
+        stage: LicenceStage.PROCESSING_RO,
+        decisions,
+        tasks: {},
+        conditionVersion: 1,
+      })
+
+      expect(formValidation.validateGroup).toHaveBeenCalled()
+      expect(formValidation.validateGroup).toHaveBeenCalledWith({
+        licence: {},
+        group: 'PROCESSING_RO',
+        bespokeConditions: { offenderIsMainOccupier: undefined },
+        conditionVersion: 1,
+      })
+    })
+
+    test('should use correct group when bassReferralNeeded and useCvlForLicenceCreationin processing ro stage', () => {
+      const decisions = {
+        useCvlForLicenceCreation: true,
+      }
+
+      service.validateFormGroup({
+        licence: {},
+        stage: LicenceStage.PROCESSING_RO,
+        decisions,
+        tasks: {},
+        conditionVersion: 1,
+      })
+
+      expect(formValidation.validateGroup).toHaveBeenCalled()
+      expect(formValidation.validateGroup).toHaveBeenCalledWith({
+        licence: {},
+        group: 'PROCESSING_RO_CVL_LICENCE_CREATION',
+        bespokeConditions: { offenderIsMainOccupier: undefined },
+        conditionVersion: 1,
+      })
+    })
+
     test('should use correct group when new address for review', () => {
       service.validateFormGroup({
         licence: {},

@@ -46,6 +46,26 @@ describe('TaskList models', () => {
     label: 'Not completed',
     title: 'Submit curfew address',
   }
+  const submitCurfewAddressReview = {
+    action: {
+      dataQa: 'continue',
+      href: '/hdc/review/curfewAddress/',
+      text: 'Continue',
+      type: 'btn',
+    },
+    label: 'Ready to submit',
+    title: 'Submit curfew address',
+  }
+  const submitBassAddressReview = {
+    action: {
+      dataQa: 'continue',
+      href: '/hdc/review/bassRequest/',
+      text: 'Continue',
+      type: 'btn',
+    },
+    label: 'Ready to submit',
+    title: 'Send for CAS2 area checks',
+  }
   const submitDecisionMakerRefusal = {
     action: {
       href: '/hdc/send/refusal/',
@@ -75,6 +95,15 @@ describe('TaskList models', () => {
     },
     label: 'Not completed',
     title: 'Proposed curfew address',
+  }
+  const proposedCurfewAddressCompleted = {
+    action: {
+      href: '/hdc/proposedAddress/curfewAddressChoice/',
+      text: 'Change',
+      type: 'link',
+    },
+    label: 'Completed',
+    title: 'Curfew address',
   }
   const proposedCurfewAddressOptedOut = {
     title: 'Proposed curfew address',
@@ -645,6 +674,38 @@ describe('TaskList models', () => {
         )
       ).toEqual([eligibility, informOffender])
     })
+
+    test('should return list of tasks for standard route where the licence is to be created in CVL', () => {
+      expect(
+        getCaTaskLists(
+          {
+            decisions: {
+              bassReferralNeeded: false,
+              curfewAddressApproved: true,
+              bassWithdrawn: false,
+              bassAccepted: null,
+              optedOut: false,
+              eligible: true,
+              useCvlForLicenceCreation: true,
+            },
+            tasks: {
+              bassAreaCheck: 'UNSTARTED',
+            },
+            stage: 'PROCESSING_CA',
+          },
+          null
+        )
+      ).toEqual([
+        eligibility,
+        proposedCurfewAddress,
+        riskManagement,
+        victimLiasion,
+        reviewCase,
+        postponeOrRefuse,
+        refuse,
+        submitDecisionMaker,
+      ])
+    })
   })
 
   describe('caTasksPostApproval', () => {
@@ -805,6 +866,50 @@ describe('TaskList models', () => {
         refuse,
         submitDecisionMakerRefusal,
       ])
+    })
+
+    test('should show proposed address and submit for review tasks if caToRo transition - new proposed address added', () => {
+      expect(
+        getCaTaskLists(
+          {
+            decisions: {
+              bassReferralNeeded: false,
+              eligible: true,
+              optedOut: false,
+            },
+            tasks: {
+              optOut: 'DONE',
+              curfewAddress: 'DONE',
+              bassRequest: 'DONE',
+              curfewAddressReview: 'UNSTARTED',
+            },
+            stage: 'MODIFIED',
+          },
+          null
+        )
+      ).toEqual([proposedCurfewAddressCompleted, refuse, submitCurfewAddressReview])
+    })
+
+    test('should show proposed address and submit for review tasks if caToRo transition - new bass request added', () => {
+      expect(
+        getCaTaskLists(
+          {
+            decisions: {
+              bassReferralNeeded: true,
+              eligible: true,
+              optedOut: false,
+            },
+            tasks: {
+              optOut: 'DONE',
+              curfewAddress: 'DONE',
+              bassRequest: 'DONE',
+              bassAreaCheck: 'UNSTARTED',
+            },
+            stage: 'MODIFIED',
+          },
+          null
+        )
+      ).toEqual([proposedCurfewAddressCompleted, refuse, submitBassAddressReview])
     })
 
     test('should return just eligibility and notice if ineligible ', () => {
@@ -1068,9 +1173,6 @@ describe('TaskList models', () => {
         proposedCurfewAddressEdit,
         riskManagement,
         victimLiasion,
-        curfewHours,
-        additionalConditionsEdit,
-        reportingInstructions,
         reviewCase,
         postponeOrRefuse,
         refuse,

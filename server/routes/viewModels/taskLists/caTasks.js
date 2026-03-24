@@ -70,6 +70,7 @@ module.exports = {
       curfewAddressApproved,
       optedOut,
       eligible,
+      useCvlForLicenceCreation,
     } = decisions
 
     const { bassAreaCheck, optOut } = tasks
@@ -111,9 +112,9 @@ module.exports = {
       [bassAddress.ca.postApproval, bassReferralNeeded],
       [riskManagement.edit, showRiskManagement],
       [victimLiaison.edit, validAddress],
-      [curfewHours.edit, validAddress],
-      [additionalConditions.edit, validAddress],
-      [reportingInstructions.edit, validAddress],
+      [curfewHours.edit, validAddress && !useCvlForLicenceCreation],
+      [additionalConditions.edit, validAddress && !useCvlForLicenceCreation],
+      [reportingInstructions.edit, validAddress && !useCvlForLicenceCreation],
       [finalChecks.review, validAddress],
       [postponeOrRefuse, validAddress],
       [refuseHdc],
@@ -138,14 +139,17 @@ module.exports = {
         bassWithdrawn,
         curfewAddressApproved,
         dmRefused,
+        optedOut,
         eligible,
         postponed,
+        useCvlForLicenceCreation,
       } = decisions
 
-      const { bassOffer } = tasks
+      const { bassOffer, optOut } = tasks
 
       const bassExcluded = ['Unavailable', 'Unsuitable'].includes(bassAccepted)
       const bassOfferMade = bassReferralNeeded && bassOffer === 'DONE' && !bassWithdrawn && !bassExcluded
+      const optOutRefused = optOut === 'DONE' && !optedOut
 
       const validAddress = approvedPremisesRequired || curfewAddressApproved || bassOfferMade
 
@@ -154,6 +158,9 @@ module.exports = {
       if (!eligible) {
         return tasklist(context, [[eligibilitySummaryTask, validAddress], [informOffenderTask]])
       }
+
+      const eligibleForBassReview = optOutRefused && bassReferralNeeded && allowedTransition === 'caToRo'
+      const eligibleForAddressReview = optOutRefused && !bassReferralNeeded && allowedTransition === 'caToRo'
 
       return tasklist(context, [
         [eligibilitySummaryTask, validAddress],
@@ -165,16 +172,16 @@ module.exports = {
           !approvedPremisesRequired && (curfewAddressApproved || bassOfferMade || addressUnsuitable),
         ],
         [victimLiaison.edit, validAddress],
-        [curfewHours.edit, validAddress],
-        [additionalConditions.edit, validAddress],
-        [reportingInstructions.edit, validAddress],
+        [curfewHours.edit, validAddress && !useCvlForLicenceCreation],
+        [additionalConditions.edit, validAddress && !useCvlForLicenceCreation],
+        [reportingInstructions.edit, validAddress && !useCvlForLicenceCreation],
         [finalChecks.review, validAddress],
         [postponeOrRefuse, validAddress && !dmRefused],
         [refuseHdc, !dmRefused],
         [submitToDm.approval, allowedTransition === 'caToDm'],
         [submitToDm.refusal, allowedTransition === 'caToDmRefusal'],
-        [submitBassReview, allowedTransition === 'caToRo'],
-        [submitAddressReview, !bassReferralNeeded && allowedTransition === 'caToRo'],
+        [submitBassReview, eligibleForBassReview],
+        [submitAddressReview, eligibleForAddressReview],
         [resubmitToDm, !['caToDm', 'caToDmRefusal', 'caToRo'].includes(allowedTransition) && dmRefused !== undefined],
         [
           createLicence.ca,

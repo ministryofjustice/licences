@@ -161,5 +161,43 @@ describe('getAllowedTransition', () => {
       const allowed = getAllowedTransition(status)
       expect(allowed).toBe(null)
     })
+
+    test('should allow RO to CA for RO when all RO required tasks done and licence to be created in cvl', () => {
+      const status = {
+        stage: LicenceStage.PROCESSING_RO,
+        postApproval: false,
+        tasks: {
+          curfewAddressReview: TaskState.DONE,
+          curfewHours: TaskState.UNSTARTED,
+          licenceConditions: TaskState.UNSTARTED,
+          riskManagement: TaskState.DONE,
+          victim: TaskState.DONE,
+          reportingInstructions: TaskState.UNSTARTED,
+        },
+        decisions: { useCvlForLicenceCreation: true },
+      }
+
+      const allowed = getAllowedTransition(status)
+      expect(allowed).toBe('roToCa')
+    })
+
+    test('should not allow RO to CA for RO when unfinished RO required tasks done and licence to be created in cvl', () => {
+      const status = {
+        stage: LicenceStage.PROCESSING_RO,
+        postApproval: false,
+        tasks: {
+          curfewAddressReview: TaskState.DONE,
+          curfewHours: TaskState.UNSTARTED,
+          licenceConditions: TaskState.UNSTARTED,
+          riskManagement: TaskState.DONE,
+          victim: TaskState.STARTED,
+          reportingInstructions: TaskState.UNSTARTED,
+        },
+        decisions: { useCvlForLicenceCreation: true },
+      }
+
+      const allowed = getAllowedTransition(status)
+      expect(allowed).toBe(null)
+    })
   })
 })

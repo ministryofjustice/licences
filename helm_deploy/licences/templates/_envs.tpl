@@ -109,6 +109,9 @@ env:
   - name: PROBATION_TEAMS_API_URL
     value: {{ .Values.env.PROBATION_TEAMS_API_URL | quote }}
 
+  - name: HDC_API_URL
+    value: {{ .Values.env.HDC_API_URL | quote }}
+
   - name: PROBATION_SEARCH_API_URL
     value: {{ .Values.env.PROBATION_SEARCH_API_URL | quote }}
 

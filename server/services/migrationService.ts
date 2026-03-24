@@ -32,7 +32,6 @@ export default class MigrationService {
     const users = await this.userAdminService.getRoUsers(page)
     const result = []
 
-    // eslint-disable-next-line no-restricted-syntax
     for (const user of users) {
       // we don't want to batter the source systems so running in a single thread
       // eslint-disable-next-line no-await-in-loop
@@ -72,12 +71,14 @@ export default class MigrationService {
       try {
         return await this.deliusClient.getStaffDetailsByStaffIdentifier(staffIdentifier)
       } catch (error) {
+        // @ts-ignore
         logger.warn(`Problem retrieving staff member from delius for staff identifier: ${staffIdentifier}`, error.stack)
       }
     else if (deliusId) {
       try {
         return await this.deliusClient.getStaffDetailsByStaffCode(deliusId)
       } catch (error) {
+        // @ts-ignore
         logger.warn(`Problem retrieving staff member from delius for staff code: ${deliusId}`, error.stack)
       }
     } else {
@@ -143,6 +144,7 @@ export default class MigrationService {
     try {
       return await this.deliusClient.getStaffDetailsByStaffIdentifier(staffIdentifier)
     } catch (error) {
+      // @ts-ignore
       logger.warn(`Problem retrieving staff member from delius for identifier: ${staffIdentifier}`, error.stack)
       return null
     }
@@ -152,6 +154,7 @@ export default class MigrationService {
     try {
       return await this.deliusClient.getUser(username)
     } catch (error) {
+      // @ts-ignore
       logger.warn(`Problem retrieving user from delius for username: ${username}`, error.stack)
       return null
     }

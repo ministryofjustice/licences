@@ -35,7 +35,7 @@ module.exports = {
       action: {
         type: 'btn',
         href: '/hdc/approval/mandatoryCheck/',
-        text: 'Continue ',
+        text: 'Continue',
       },
     }
   },

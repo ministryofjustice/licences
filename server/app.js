@@ -37,6 +37,7 @@ const licenceSearchRouter = require('./routes/admin/licenceSearch')
 const licencesWithCOMRouter = require('./routes/admin/licencesWithCOM')
 const licencesWithCARouter = require('./routes/admin/comAssignmentForLicencesWithCA')
 const licenceCompletionDestinationSearchRouter = require('./routes/admin/completionDestinationSearch')
+const conditionCompareTextsSearch = require('./routes/admin/conditionCompareTextsSearch')
 const licenceCompletionDestinationRouter = require('./routes/admin/completionDestination')
 const licenceRouter = require('./routes/admin/licence')
 const { functionalMailboxRouter } = require('./routes/admin/functionalMailboxes')
@@ -77,6 +78,7 @@ module.exports = function createApp({
   tokenVerifier,
   signInService,
   licenceService,
+  hdcService,
   prisonerService,
   conditionsServiceFactory,
   caseListService,
@@ -178,7 +180,6 @@ module.exports = function createApp({
     } = csrfSync({
       // By default, csrf-sync uses x-csrf-token header, but we use the token in forms and send it in the request body, so change getTokenFromRequest so it grabs from there
       getTokenFromRequest: (req) => {
-        // eslint-disable-next-line no-underscore-dangle
         return req.body._csrf
       },
     })
@@ -405,6 +406,7 @@ module.exports = function createApp({
     '/admin/completionDestinationSearch/',
     secureRoute(licenceCompletionDestinationSearchRouter(licenceSearchService))
   )
+  app.use('/admin/conditionCompareTextsSearch/', secureRoute(conditionCompareTextsSearch(hdcService)))
   app.use(
     '/admin/completionDestination/',
     secureRoute(licenceCompletionDestinationRouter(licenceService, signInService, prisonerService, audit))
@@ -473,7 +475,6 @@ function handleKnownErrors(error, req, res, next) {
   }
 }
 
-// eslint-disable-next-line no-unused-vars
 function renderErrors(error, req, res, next) {
   logger.error(`Unhandled error: ${error.stack}`)
 

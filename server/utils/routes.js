@@ -30,7 +30,7 @@ function getPathFromAnswer({ nextPath, data, action }) {
 function determinePathFromDecisions({ decisions, data, action }) {
   let path = null
   // TODO change iterator
-  // eslint-disable-next-line no-restricted-syntax
+
   for (const pathConfig of decisions) {
     const newPath = getPathFromAnswer({ nextPath: pathConfig, data, action })
 

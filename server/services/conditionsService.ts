@@ -1,14 +1,14 @@
-import { formatConditionsInput, getConditionText, formatConditionsText } from './utils/conditionsFormatter'
+import { formatConditionsInput, formatConditionsText, getConditionText } from './utils/conditionsFormatter'
 import { isEmpty } from '../utils/functionalHelpers'
 import {
-  getAdditionalConditionsConfig,
-  standardConditions,
-  getPssConditions,
   CURRENT_CONDITION_VERSION,
+  getAdditionalConditionsConfig,
+  getPssConditions,
+  standardConditions,
 } from './config/conditionsConfig'
 import { AdditionalConditions, Licence } from '../data/licenceTypes'
 import { LicenceRecord } from './licenceService'
-import { ConditionMetadata, AdditionalConditionsVersion } from '../data/licenceClientTypes'
+import { AdditionalConditionsVersion, ConditionMetadata } from '../data/licenceClientTypes'
 import { LicenceWithConditionsBuilder } from './licenceWithConditionsBuilder'
 
 export class ConditionsServiceFactory {
@@ -65,14 +65,31 @@ export class ConditionsService {
 
     const additionalConditionsText = isEmpty(conditions)
       ? []
-      : conditions
-          .filter((it) => it.group !== 'Bespoke' || it.approved === 'Yes')
-          .map((it) => getConditionText(it.content))
+      : conditions.filter((it) => it.group !== 'Bespoke' || it.approved === 'Yes').map((it) => getConditionText(it.content))
 
     return {
       standardConditions: standardConditionsText,
       additionalConditions: additionalConditionsText,
     }
+  }
+
+  getFullTextAdditionalConditions(licence: Licence) {
+    const conditions = this.builder.populateLicenceWithApprovedConditions(licence).licenceConditions
+
+    if (!Array.isArray(conditions)) {
+      return null
+    }
+
+    return isEmpty(conditions)
+      ? []
+      : conditions
+          .filter((it) => it.group !== 'Bespoke')
+          .map((it) => {
+            return {
+              conditionCode: it.id,
+              conditionText: getConditionText(it.content),
+            }
+          })
   }
 
   getStandardConditions() {
@@ -97,7 +114,7 @@ export class ConditionsService {
 
   formatConditionInputs(requestBody) {
     const selectedConditionsConfig = getAdditionalConditionsConfig(this.version).filter((condition) =>
-      requestBody.additionalConditions.includes(condition.id)
+      requestBody.additionalConditions.includes(condition.id),
     )
 
     return formatConditionsInput(requestBody, selectedConditionsConfig)
@@ -110,7 +127,7 @@ export class ConditionsService {
 
     const conditionIds = additional.additionalConditions
     const selectedConditionsConfig = getAdditionalConditionsConfig(this.version).filter((condition) =>
-      conditionIds.includes(condition.id)
+      conditionIds.includes(condition.id),
     )
     const additionalConditionsObject = this.createAdditionalConditionsObject(selectedConditionsConfig, additional)
 
@@ -138,15 +155,15 @@ export class ConditionsService {
     }
 
     const allAdditionalConditions = licenceConditions.filter(
-      (condition) => condition.group !== 'Bespoke' && condition.group !== 'Post-sentence supervision only'
+      (condition) => condition.group !== 'Bespoke' && condition.group !== 'Post-sentence supervision only',
     )
     const pssConditions = licenceConditions.filter((condition) => condition.group === 'Post-sentence supervision only')
     const bespokeConditions = licenceConditions.filter(
-      (condition) => condition.group === 'Bespoke' && condition.approved === 'Yes'
+      (condition) => condition.group === 'Bespoke' && condition.approved === 'Yes',
     )
 
     const unapprovedBespokeConditions = licenceConditions.filter(
-      (condition) => condition.group === 'Bespoke' && (condition.approved === 'No' || !condition.approved)
+      (condition) => condition.group === 'Bespoke' && (condition.approved === 'No' || !condition.approved),
     )
 
     return {

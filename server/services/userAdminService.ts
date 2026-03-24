@@ -26,19 +26,6 @@ export = class UserAdminService {
     }
   }
 
-  private checkInvalidNomis = async (token, nomisId) => {
-    try {
-      const nomisClient = this.nomisClientBuilder(token)
-      await nomisClient.getUserInfo(nomisId)
-    } catch (error) {
-      if (error.status === 404) {
-        throw Error('Nomis ID not found in Nomis')
-      }
-
-      throw error
-    }
-  }
-
   async getFunctionalMailbox(probationAreaCode, lduCode, teamCode) {
     if (!lduCode || !probationAreaCode || !teamCode) return undefined
     return this.probationTeamsClient.getFunctionalMailbox({ probationAreaCode, lduCode, teamCode })

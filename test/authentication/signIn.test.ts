@@ -8,18 +8,15 @@ jest.mock('../../server/data/tokenStore')
 describe('signInService', () => {
   let fakeOauth
   let service
-  let in15Mins
   let realDateNow
 
-  let tokenStore = new TokenStore(null) as jest.Mocked<TokenStore>
+  const tokenStore = new TokenStore(null) as jest.Mocked<TokenStore>
 
   beforeEach(() => {
     fakeOauth = nock(`${config.nomis.authUrl}`)
     service = new SignInService(tokenStore)
-    in15Mins = new Date('May 31, 2018 12:15:00').getTime()
     realDateNow = Date.now.bind(global.Date)
     const time = new Date('May 31, 2018 12:00:00')
-    in15Mins = new Date('May 31, 2018 12:15:00').getTime()
     // @ts-ignore
     global.Date = jest.fn(() => time)
   })
@@ -53,7 +50,7 @@ describe('signInService', () => {
       try {
         await service.getAnonymousClientCredentialsTokens()
         expect('Unexpected').toEqual('Failure') // Fail if service doesn't throw...
-      } catch (e) {
+      } catch (e: any) {
         expect(e.message).toEqual('Unauthorised access')
         expect(e.status).toEqual(401)
       }
