@@ -314,6 +314,11 @@ module.exports = function createApp({
 
   app.get('/ping', (req, res) => res.send('pong'))
 
+  app.get('/robots.txt', (req, res) => {
+    res.type('text/plain')
+    res.send('User-agent: *\nDisallow: /')
+  })
+
   app.get('/feedback', (req, res) => {
     return res.render('feedback', { returnURL: req.get('referer') })
   })
