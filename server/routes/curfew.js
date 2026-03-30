@@ -187,14 +187,9 @@ module.exports =
     )
 
     router.get('/curfewHours/:bookingId', async (req, res) => {
-      const { bookingId } = req.params
-
       const errors = req.flash('errors')[0] || {}
       const userInput = req.flash('userInput')[0] || {}
-      
-      console.log('userInput', userInput)
-      console.log('errors', errors)
-      console.log('res.locals.licence', res.locals.licence.licence.curfew?.curfewHours)
+
       res.render('curfew/curfewHours', {
         errors,
         data: Object.keys(userInput).length ? userInput : res.locals.licence.licence.curfew?.curfewHours || {},
