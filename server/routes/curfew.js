@@ -1,7 +1,7 @@
 const { asyncMiddleware } = require('../utils/middleware')
 const createStandardRoutes = require('./routeWorkers/standard')
 const { getPathFor } = require('../utils/routes')
-const { getIn, mergeWithRight, isYes } = require('../utils/functionalHelpers')
+const { getIn, mergeWithRight, isYes, getFieldName, pickBy, isEmpty } = require('../utils/functionalHelpers')
 const formConfig = require('./config/curfew')
 const { isPostApproval } = require('../services/config/licenceStage')
 
@@ -186,12 +186,39 @@ module.exports =
       })
     )
 
+    router.get('/curfewHours/:bookingId', async (req, res) => {
+      const errors = req.flash('errors')[0] || {}
+      const userInput = req.flash('userInput')[0] || {}
+
+      res.render('curfew/curfewHours', {
+        errors,
+        data: Object.keys(userInput).length ? userInput : getIn(res.locals.licence, ['licence', 'curfew', 'curfewHours']) || {},
+      })
+    })
+
     router.post(
       '/curfewHours/:bookingId',
       audited,
       asyncMiddleware(async (req, res) => {
         const { bookingId } = req.params
-        const nextPath = getPathFor({ data: req.body, config: formConfig.curfewHours })
+        const expectedFields = formConfig.curfewHours.fields.map(getFieldName)
+
+        const inputForExpectedFields = pickBy(
+          (val, key) => expectedFields.includes(key),
+          req.body
+        )
+
+        const errors = licenceService.validateForm({
+          formResponse: inputForExpectedFields,
+          pageConfig: formConfig.curfewHours,
+          bespokeConditions: inputForExpectedFields,
+        })
+
+        if (!isEmpty(errors)) {
+          req.flash('errors', errors)
+          req.flash('userInput', req.body)
+          return res.redirect(`/hdc/curfew/curfewHours/${bookingId}`)
+        }
 
         const input = licenceService.addCurfewHoursInput(req.body)
         await licenceService.update({
@@ -204,7 +231,8 @@ module.exports =
           postRelease: res.locals.postRelease,
         })
 
-        res.redirect(`${nextPath}${bookingId}`)
+        const nextPath = getPathFor({ data: req.body, config: formConfig.curfewHours })
+        return res.redirect(`${nextPath}${bookingId}`)
       })
     )
 

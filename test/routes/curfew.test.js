@@ -8,6 +8,7 @@ const {
   createSignInServiceStub,
   createNomisPushServiceStub,
 } = require('../mockServices')
+const { validate } = require('../../server/services/utils/formValidation')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/curfew')
@@ -33,6 +34,65 @@ describe('/hdc/curfew', () => {
 
     testFormPageGets(app, routes, licenceService)
   })
+
+  describe('curfew hours validation', () => {
+    const licenceService = createLicenceServiceStub()
+    licenceService.getLicence.mockResolvedValue({
+      licence: {
+        proposedAddress: {
+          curfewAddress: {},
+        },
+      },
+    })
+    const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
+
+    test('should validate curfew hours and return errors for invalid times when daySpecificInputs is Yes', () => {
+      const input = {
+        daySpecificInputs: 'Yes',
+        mondayFrom: 'invalid',
+        mondayUntil: 'invalid',
+        tuesdayFrom: '19:00',
+        tuesdayUntil: '07:00',
+        wednesdayFrom: '19:00',
+        wednesdayUntil: '07:00',
+        thursdayFrom: '19:00',
+        thursdayUntil: '07:00',
+        fridayFrom: '19:00',
+        fridayUntil: '07:00',
+        saturdayFrom: '19:00',
+        saturdayUntil: '07:00',
+        sundayFrom: '19:00',
+        sundayUntil: '07:00',
+      }
+      const errors = validate({
+        formResponse: input,
+        pageConfig: formConfig.curfewHours,
+        bespokeConditions: input,
+      })
+      expect(errors).toEqual({
+        mondayFrom: 'Enter a valid time',
+        mondayUntil: 'Enter a valid time',
+      })
+    })
+
+    test('should validate curfew hours and return errors for invalid times when daySpecificInputs is No', () => {
+      const input = {
+        daySpecificInputs: 'No',
+        allFrom: 'invalid',
+        allUntil: 'invalid',
+      }
+      const errors = validate({
+        formResponse: input,
+        pageConfig: formConfig.curfewHours,
+        bespokeConditions: input,
+      })
+      expect(errors).toEqual({
+        allFrom: 'Enter a valid time',
+        allUntil: 'Enter a valid time',
+      })
+    })
+  })
+
 
   describe('first night route', () => {
     const licenceService = createLicenceServiceStub()

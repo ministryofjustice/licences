@@ -38,7 +38,7 @@ const fieldOptions = {
   requiredTime: joi.when(joi.ref('.'), {
     is: '',
     then: joi.string().required(),
-    otherwise: joi.date().format('HH:mm').required(),
+    otherwise: joi.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/).required(),
   }),
   optionalTime: joi.date().format('HH:mm').optional(),
   requiredDate: joi.when(joi.ref('.'), {
@@ -98,7 +98,7 @@ const fieldOptions = {
   requiredTimeIf: (requiredItem = 'decision', requiredAnswer = 'Yes') =>
     joi.when(requiredItem, {
       is: requiredAnswer,
-      then: joi.date().format('HH:mm').required(),
+      then: joi.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/).required(),
       otherwise: joi.any().optional(),
     }),
 }
@@ -116,8 +116,9 @@ const defaultErrorMessages = {
   },
 
   requiredTime: (errorType) => {
-    return errorType === 'date.format' ? 'Enter a valid time' : 'Enter a time'
+    return errorType === 'string.pattern.base' ? 'Enter a valid time' : 'Enter a time'
   },
+
 }
 
 const validationProcedures = {
