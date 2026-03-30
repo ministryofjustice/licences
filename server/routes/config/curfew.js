@@ -141,90 +141,116 @@ module.exports = {
     licenceSection: 'curfewHours',
     fields: [
       { daySpecificInputs: { responseType: 'optionalString' } },
-      { allFrom: { responseType: 'optionalString' } },
-      { allUntil: { responseType: 'optionalString' } },
+      {
+        allFrom: {
+          responseType: 'requiredTime',
+          validationMessage: 'Enter a valid time',
+          conditionallyActive: { daySpecificInputs: 'No' },
+        },
+      },
+      {
+        allUntil: {
+          responseType: 'requiredTime',
+          validationMessage: 'Enter a valid time',
+          conditionallyActive: { daySpecificInputs: 'No' },
+        },
+      },
       {
         mondayFrom: {
           responseType: 'requiredTime',
           validationMessage: 'Enter a valid time',
+          conditionallyActive: { daySpecificInputs: 'Yes' },
         },
       },
       {
         mondayUntil: {
           responseType: 'requiredTime',
           validationMessage: 'Enter a valid time',
+          conditionallyActive: { daySpecificInputs: 'Yes' },
         },
       },
       {
         tuesdayFrom: {
           responseType: 'requiredTime',
           validationMessage: 'Enter a valid time',
+          conditionallyActive: { daySpecificInputs: 'Yes' },
         },
       },
       {
         tuesdayUntil: {
           responseType: 'requiredTime',
           validationMessage: 'Enter a valid time',
+          conditionallyActive: { daySpecificInputs: 'Yes' },
         },
       },
       {
         wednesdayFrom: {
           responseType: 'requiredTime',
           validationMessage: 'Enter a valid time',
+          conditionallyActive: { daySpecificInputs: 'Yes' },
         },
       },
       {
         wednesdayUntil: {
           responseType: 'requiredTime',
           validationMessage: 'Enter a valid time',
+          conditionallyActive: { daySpecificInputs: 'Yes' },
         },
       },
       {
         thursdayFrom: {
           responseType: 'requiredTime',
           validationMessage: 'Enter a valid time',
+          conditionallyActive: { daySpecificInputs: 'Yes' },
         },
       },
       {
         thursdayUntil: {
           responseType: 'requiredTime',
           validationMessage: 'Enter a valid time',
+          conditionallyActive: { daySpecificInputs: 'Yes' },
         },
       },
       {
         fridayFrom: {
           responseType: 'requiredTime',
           validationMessage: 'Enter a valid time',
+          conditionallyActive: { daySpecificInputs: 'Yes' },
         },
       },
       {
         fridayUntil: {
           responseType: 'requiredTime',
           validationMessage: 'Enter a valid time',
+          conditionallyActive: { daySpecificInputs: 'Yes' },
         },
       },
       {
         saturdayFrom: {
           responseType: 'requiredTime',
           validationMessage: 'Enter a valid time',
+          conditionallyActive: { daySpecificInputs: 'Yes' },
         },
       },
       {
         saturdayUntil: {
           responseType: 'requiredTime',
           validationMessage: 'Enter a valid time',
+          conditionallyActive: { daySpecificInputs: 'Yes' },
         },
       },
       {
         sundayFrom: {
           responseType: 'requiredTime',
           validationMessage: 'Enter a valid time',
+          conditionallyActive: { daySpecificInputs: 'Yes' },
         },
       },
       {
         sundayUntil: {
           responseType: 'requiredTime',
           validationMessage: 'Enter a valid time',
+          conditionallyActive: { daySpecificInputs: 'Yes' },
         },
       },
     ],

@@ -654,7 +654,54 @@ describe('validation', () => {
         const options = [
           {
             formResponse: {
-              daySpecificInputs: '',
+              daySpecificInputs: 'No',
+              allFrom: '07:00',
+              allUntil: '20:00',
+              mondayFrom: '',
+              mondayUntil: '',
+              tuesdayFrom: '',
+              tuesdayUntil: '',
+              wednesdayFrom: '25:00',
+              wednesdayUntil: '',
+              thursdayFrom: '',
+              thursdayUntil: '',
+              fridayFrom: '',
+              fridayUntil: '',
+              saturdayFrom: '',
+              saturdayUntil: '',
+              sundayFrom: '',
+              sundayUntil: '',
+            },
+            outcome: {},
+          },
+          {
+            formResponse: {
+              daySpecificInputs: 'No',
+              allFrom: '',
+              allUntil: '',
+              mondayFrom: '',
+              mondayUntil: '',
+              tuesdayFrom: '',
+              tuesdayUntil: '',
+              wednesdayFrom: '',
+              wednesdayUntil: '',
+              thursdayFrom: '',
+              thursdayUntil: '',
+              fridayFrom: '',
+              fridayUntil: '',
+              saturdayFrom: '',
+              saturdayUntil: '',
+              sundayFrom: '',
+              sundayUntil: '',
+            },
+            outcome: {
+              allFrom: 'Enter a valid time',
+              allUntil: 'Enter a valid time',
+            },
+          },
+          {
+            formResponse: {
+              daySpecificInputs: 'Yes',
               allFrom: '',
               allUntil: '',
               mondayFrom: '07:00',
@@ -676,7 +723,7 @@ describe('validation', () => {
           },
           {
             formResponse: {
-              daySpecificInputs: '',
+              daySpecificInputs: 'Yes',
               allFrom: '',
               allUntil: '',
               mondayFrom: '25:00',
@@ -716,7 +763,7 @@ describe('validation', () => {
         options.forEach((option) => {
           test(`should return ${JSON.stringify(option.outcome)} for ${JSON.stringify(option.formResponse)}`, () => {
             const { outcome, formResponse } = option
-            expect(service.validateForm({ formResponse, pageConfig })).toEqual(outcome)
+            expect(service.validateForm({ formResponse, pageConfig, bespokeConditions: formResponse })).toEqual(outcome)
           })
         })
       })
