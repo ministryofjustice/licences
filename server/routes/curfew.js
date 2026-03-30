@@ -192,7 +192,7 @@ module.exports =
 
       res.render('curfew/curfewHours', {
         errors,
-        data: Object.keys(userInput).length ? userInput : res.locals.licence.licence.curfew?.curfewHours || {},
+        data: Object.keys(userInput).length ? userInput : getIn(res.locals.licence, ['licence', 'curfew', 'curfewHours']) || {},
       })
     })
 
@@ -232,7 +232,7 @@ module.exports =
         })
 
         const nextPath = getPathFor({ data: req.body, config: formConfig.curfewHours })
-        res.redirect(`${nextPath}${bookingId}`)
+        return res.redirect(`${nextPath}${bookingId}`)
       })
     )
 
