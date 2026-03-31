@@ -70,8 +70,8 @@ describe('/hdc/curfew', () => {
         bespokeConditions: input,
       })
       expect(errors).toEqual({
-        mondayFrom: 'Enter a valid time',
-        mondayUntil: 'Enter a valid time',
+        mondayFrom: 'Enter a valid time the curfew should start from on Monday',
+        mondayUntil: 'Enter a valid time the curfew should run until on Monday',
       })
     })
 
@@ -87,8 +87,8 @@ describe('/hdc/curfew', () => {
         bespokeConditions: input,
       })
       expect(errors).toEqual({
-        allFrom: 'Enter a valid time',
-        allUntil: 'Enter a valid time',
+        allFrom: 'Enter a valid time the curfew should start from',
+        allUntil: 'Enter a valid time the curfew should run until',
       })
     })
   })

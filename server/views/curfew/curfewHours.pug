@@ -17,7 +17,7 @@ block content
         ul.error-summary-list
           each message, fieldName in errors
             li
-              a(href="#" + fieldName)= `${fieldName}: ${message}`
+              a(href="#" + fieldName)= `${message}`
 
   form(method="post")
     input(type="hidden" name="_csrf" value=csrfToken)
