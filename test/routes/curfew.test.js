@@ -107,10 +107,12 @@ describe('/hdc/curfew', () => {
         'saturdayFrom', 'saturdayUntil',
         'sundayFrom', 'sundayUntil',
       ]
-      const startFields = timeFields.filter(field => field.includes('From'))
-      const endFields = timeFields.filter(field => field.includes('Until'))
-      const hasStartErrors = startFields.some(field => errors[field])
-      const hasEndErrors = endFields.some(field => errors[field])
+      const startFields = timeFields.filter((field) => field.includes('From'))
+      const endFields = timeFields.filter((field) => field.includes('Until'))
+
+      const hasStartErrors = startFields.some((field) => errors[field])
+      const hasEndErrors = endFields.some((field) => errors[field])
+
       if (hasStartErrors) {
         errors.startTime = 'Enter a valid time the curfew should start from'
       }
