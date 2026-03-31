@@ -214,6 +214,26 @@ module.exports =
           bespokeConditions: inputForExpectedFields,
         })
 
+        const timeFields = [
+          'mondayFrom', 'mondayUntil',
+          'tuesdayFrom', 'tuesdayUntil',
+          'wednesdayFrom', 'wednesdayUntil',
+          'thursdayFrom', 'thursdayUntil',
+          'fridayFrom', 'fridayUntil',
+          'saturdayFrom', 'saturdayUntil',
+          'sundayFrom', 'sundayUntil',
+        ]
+        const startFields = timeFields.filter(field => field.includes('From'))
+        const endFields = timeFields.filter(field => field.includes('Until'))
+        const hasStartErrors = startFields.some(field => errors[field])
+        const hasEndErrors = endFields.some(field => errors[field])
+        if (hasStartErrors) {
+          errors.startTime = 'Enter a valid time the curfew should start from'
+        }
+        if (hasEndErrors) {
+          errors.endTime = 'Enter a valid time the curfew should run until'
+        }
+
         if (!isEmpty(errors)) {
           req.flash('errors', errors)
           req.flash('userInput', req.body)

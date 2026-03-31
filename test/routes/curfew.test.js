@@ -70,9 +70,59 @@ describe('/hdc/curfew', () => {
         bespokeConditions: input,
       })
       expect(errors).toEqual({
-        mondayFrom: 'Enter a valid time the curfew should start from on Monday',
-        mondayUntil: 'Enter a valid time the curfew should run until on Monday',
+        mondayFrom: 'Enter a valid time the curfew should start from',
+        mondayUntil: 'Enter a valid time the curfew should run until',
       })
+    })
+
+    test('should aggregate time validation errors into summary messages', () => {
+      const input = {
+        daySpecificInputs: 'Yes',
+        mondayFrom: 'invalid',
+        mondayUntil: 'invalid',
+        tuesdayFrom: '',
+        tuesdayUntil: '',
+        wednesdayFrom: '',
+        wednesdayUntil: '',
+        thursdayFrom: '',
+        thursdayUntil: '',
+        fridayFrom: '',
+        fridayUntil: '',
+        saturdayFrom: '',
+        saturdayUntil: '',
+        sundayFrom: '',
+        sundayUntil: '',
+      }
+      const errors = validate({
+        formResponse: input,
+        pageConfig: formConfig.curfewHours,
+        bespokeConditions: input,
+      })
+
+      const timeFields = [
+        'mondayFrom', 'mondayUntil',
+        'tuesdayFrom', 'tuesdayUntil',
+        'wednesdayFrom', 'wednesdayUntil',
+        'thursdayFrom', 'thursdayUntil',
+        'fridayFrom', 'fridayUntil',
+        'saturdayFrom', 'saturdayUntil',
+        'sundayFrom', 'sundayUntil',
+      ]
+      const startFields = timeFields.filter(field => field.includes('From'))
+      const endFields = timeFields.filter(field => field.includes('Until'))
+      const hasStartErrors = startFields.some(field => errors[field])
+      const hasEndErrors = endFields.some(field => errors[field])
+      if (hasStartErrors) {
+        errors.startTime = 'Enter a valid time the curfew should start from'
+      }
+      if (hasEndErrors) {
+        errors.endTime = 'Enter a valid time the curfew should run until'
+      }
+
+      expect(hasStartErrors).toBe(true)
+      expect(hasEndErrors).toBe(true)
+      expect(errors.startTime).toBe('Enter a valid time the curfew should start from')
+      expect(errors.endTime).toBe('Enter a valid time the curfew should run until')
     })
 
     test('should validate curfew hours and return errors for invalid times when daySpecificInputs is No', () => {

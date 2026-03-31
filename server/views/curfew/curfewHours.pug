@@ -15,15 +15,23 @@ block content
         h2.heading-medium.error-summary-heading#error-summary-heading
           | There is a problem
         ul.error-summary-list
-          each message, fieldName in errors
+          if errors.startTime
             li
-              a(href="#" + fieldName)= `${message}`
+              a(href="#curfewTimes")= errors.startTime
+          if errors.endTime
+            li
+              a(href="#curfewTimes")= errors.endTime
+          if !errors.startTime && !errors.endTime
+            each message, fieldName in errors
+              if fieldName !== 'startTime' && fieldName !== 'endTime'
+                li
+                  a(href="#" + fieldName)= `${message}`
 
   form(method="post")
     input(type="hidden" name="_csrf" value=csrfToken)
     input(type="hidden" name="bookingId" value=bookingId || '')
 
-    div.pure-g.largePaddingBottom.largeMarginBottom.paddingTop
+    div.pure-g.largePaddingBottom.largeMarginBottom.paddingTop(id="curfewTimes")
       div.pure-u-1.pure-u-md-4-5
         div.pure-g.smallPaddingBottom
           div.pure-u-1-4

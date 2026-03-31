@@ -158,98 +158,98 @@ module.exports = {
       {
         mondayFrom: {
           responseType: 'requiredTime',
-          validationMessage: 'Enter a valid time the curfew should start from on Monday',
+          validationMessage: 'Enter a valid time the curfew should start from',
           conditionallyActive: { daySpecificInputs: 'Yes' },
         },
       },
       {
         mondayUntil: {
           responseType: 'requiredTime',
-          validationMessage: 'Enter a valid time the curfew should run until on Monday',
+          validationMessage: 'Enter a valid time the curfew should run until',
           conditionallyActive: { daySpecificInputs: 'Yes' },
         },
       },
       {
         tuesdayFrom: {
           responseType: 'requiredTime',
-          validationMessage: 'Enter a valid time the curfew should start from on Tuesday',
+          validationMessage: 'Enter a valid time the curfew should start from',
           conditionallyActive: { daySpecificInputs: 'Yes' },
         },
       },
       {
         tuesdayUntil: {
           responseType: 'requiredTime',
-          validationMessage: 'Enter a valid time the curfew should run until on Tuesday',
+          validationMessage: 'Enter a valid time the curfew should run until',
           conditionallyActive: { daySpecificInputs: 'Yes' },
         },
       },
       {
         wednesdayFrom: {
           responseType: 'requiredTime',
-          validationMessage: 'Enter a valid time the curfew should start from on Wednesday',
+          validationMessage: 'Enter a valid time the curfew should start from',
           conditionallyActive: { daySpecificInputs: 'Yes' },
         },
       },
       {
         wednesdayUntil: {
           responseType: 'requiredTime',
-          validationMessage: 'Enter a valid time the curfew should run until on Wednesday',
+          validationMessage: 'Enter a valid time the curfew should run until',
           conditionallyActive: { daySpecificInputs: 'Yes' },
         },
       },
       {
         thursdayFrom: {
           responseType: 'requiredTime',
-          validationMessage: 'Enter a valid time the curfew should start from on Thursday',
+          validationMessage: 'Enter a valid time the curfew should start from',
           conditionallyActive: { daySpecificInputs: 'Yes' },
         },
       },
       {
         thursdayUntil: {
           responseType: 'requiredTime',
-          validationMessage: 'Enter a valid time the curfew should run until on Thursday',
+          validationMessage: 'Enter a valid time the curfew should run until',
           conditionallyActive: { daySpecificInputs: 'Yes' },
         },
       },
       {
         fridayFrom: {
           responseType: 'requiredTime',
-          validationMessage: 'Enter a valid time the curfew should start from on Friday',
+          validationMessage: 'Enter a valid time the curfew should start from',
           conditionallyActive: { daySpecificInputs: 'Yes' },
         },
       },
       {
         fridayUntil: {
           responseType: 'requiredTime',
-          validationMessage: 'Enter a valid time the curfew should run until on Friday',
+          validationMessage: 'Enter a valid time the curfew should run until',
           conditionallyActive: { daySpecificInputs: 'Yes' },
         },
       },
       {
         saturdayFrom: {
           responseType: 'requiredTime',
-          validationMessage: 'Enter a valid time the curfew should start from on Saturday',
+          validationMessage: 'Enter a valid time the curfew should start from',
           conditionallyActive: { daySpecificInputs: 'Yes' },
         },
       },
       {
         saturdayUntil: {
           responseType: 'requiredTime',
-          validationMessage: 'Enter a valid time the curfew should run until on Saturday',
+          validationMessage: 'Enter a valid time the curfew should run until',
           conditionallyActive: { daySpecificInputs: 'Yes' },
         },
       },
       {
         sundayFrom: {
           responseType: 'requiredTime',
-          validationMessage: 'Enter a valid time the curfew should start from on Sunday',
+          validationMessage: 'Enter a valid time the curfew should start from',
           conditionallyActive: { daySpecificInputs: 'Yes' },
         },
       },
       {
         sundayUntil: {
           responseType: 'requiredTime',
-          validationMessage: 'Enter a valid time the curfew should run until on Sunday',
+          validationMessage: 'Enter a valid time the curfew should run until',
           conditionallyActive: { daySpecificInputs: 'Yes' },
         },
       },
