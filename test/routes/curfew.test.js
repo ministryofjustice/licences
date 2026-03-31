@@ -44,7 +44,6 @@ describe('/hdc/curfew', () => {
         },
       },
     })
-    const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
 
     test('should validate curfew hours and return errors for invalid times when daySpecificInputs is Yes', () => {
       const input = {

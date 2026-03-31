@@ -223,8 +223,8 @@ module.exports =
           'saturdayFrom', 'saturdayUntil',
           'sundayFrom', 'sundayUntil',
         ]
-        const startFields = timeFields.filter(field => field.includes('From'))
-        const endFields = timeFields.filter(field => field.includes('Until'))
+        const startFields = timeFields.filter((field) => field.includes('From'))
+        const endFields = timeFields.filter((field) => field.includes('Until'))
         const hasStartErrors = startFields.some(field => errors[field])
         const hasEndErrors = endFields.some(field => errors[field])
         if (hasStartErrors) {
