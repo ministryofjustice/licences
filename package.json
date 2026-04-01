@@ -176,5 +176,8 @@
   "bin": {
     "loadLicences": "./server/loadLicences.js",
     "saveLicences": "./server/saveLicences.js"
+  },
+  "overrides": {
+    "path-to-regexp": "^8.4.0"
   }
 }
