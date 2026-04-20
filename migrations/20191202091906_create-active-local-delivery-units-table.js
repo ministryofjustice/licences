@@ -9,3 +9,4 @@ exports.up = (knex) =>
   ])
 
 exports.down = (knex) => knex.schema.dropTable('active_local_delivery_units')
+
