@@ -1,8 +1,90 @@
 ---
-image:
-  repository: quay.io/hmpps/licences
-  tag: latest
-  port: 3000
+generic-service:
+  nameOverride: licences
+  replicaCount: 4
+  serviceAccountName: licences
+  productId: "DPS062"
+
+  image:
+    repository: quay.io/hmpps/licences
+    tag: latest
+    port: 3000
+
+  ingress:
+    enabled: true
+    hosts:
+      - app-hostname.local
+    tlsSecretName: licences-cert
+    annotations:
+      external-dns.alpha.kubernetes.io/aws-weight: "100"
+
+  cronJobs:
+    db-refresh:
+      enabled: true
+      schedule: "30 10 * * 0"
+      concurrencyPolicy: Forbid
+      successfulJobsHistoryLimit: 5
+      failedJobsHistoryLimit: 3
+      backoffLimit: 0
+      activeDeadlineSeconds: 1200
+      restartPolicy: Never
+
+      image:
+        repository: postgres
+        tag: "15.6"
+
+      command:
+        - /bin/entrypoint.sh
+
+      securityContext:
+        runAsUser: 999
+
+      env:
+        DB_NAME:
+          secretKeyRef:
+            name: dps-rds-instance-output
+            key: database_name
+        DB_USER:
+          secretKeyRef:
+            name: dps-rds-instance-output
+            key: database_username
+        DB_PASS:
+          secretKeyRef:
+            name: dps-rds-instance-output
+            key: database_password
+        DB_HOST:
+          secretKeyRef:
+            name: dps-rds-instance-output
+            key: rds_instance_address
+
+        DB_NAME_PREPROD:
+          secretKeyRef:
+            name: dps-rds-instance-output-preprod
+            key: database_name
+        DB_USER_PREPROD:
+          secretKeyRef:
+            name: dps-rds-instance-output-preprod
+            key: database_username
+        DB_PASS_PREPROD:
+          secretKeyRef:
+            name: dps-rds-instance-output-preprod
+            key: database_password
+        DB_HOST_PREPROD:
+          secretKeyRef:
+            name: dps-rds-instance-output-preprod
+            key: rds_instance_address
+
+      volumes:
+        - name: db-refresh-script
+          configMap:
+            name: db-refresh-script
+            defaultMode: 0755
+
+      volumeMounts:
+        - name: db-refresh-script
+          mountPath: /bin/entrypoint.sh
+          subPath: entrypoint.sh
+          readOnly: true
 
 generic-prometheus-alerts:
   targetApplication: licences
@@ -14,6 +96,4 @@ generic-data-analytics-extractor:
   enabled: true
   args: "extract_psql_all_tables_to_csv.sh && transfer_local_to_s3.sh"
 
-ingress:
-  annotations:
-    external-dns.alpha.kubernetes.io/aws-weight: "100"
+
