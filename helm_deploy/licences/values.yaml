@@ -13,79 +13,27 @@ generic-service:
   ingress:
     enabled: true
     hosts:
-      - app-hostname.local   # overridden per environment
+      - app-hostname.local
     tlsSecretName: licences-cert
     annotations:
       external-dns.alpha.kubernetes.io/aws-weight: "100"
 
-  cronJobs:
-    jobs:
-      - name: db-refresh
-        schedule: "30 10 * * 0"
-        concurrencyPolicy: Forbid
-        successfulJobsHistoryLimit: 5
-        failedJobsHistoryLimit: 3
-        backoffLimit: 0
-        activeDeadlineSeconds: 1200
-        restartPolicy: Never
-
-        image:
-          repository: postgres
-          tag: "15.6"
-
-        command:
-          - /bin/entrypoint.sh
-
-        securityContext:
-          runAsUser: 999
-
-        env:
-          DB_NAME:
-            secretKeyRef:
-              name: dps-rds-instance-output
-              key: database_name
-          DB_USER:
-            secretKeyRef:
-              name: dps-rds-instance-output
-              key: database_username
-          DB_PASS:
-            secretKeyRef:
-              name: dps-rds-instance-output
-              key: database_password
-          DB_HOST:
-            secretKeyRef:
-              name: dps-rds-instance-output
-              key: rds_instance_address
-
-          DB_NAME_PREPROD:
-            secretKeyRef:
-              name: dps-rds-instance-output-preprod
-              key: database_name
-          DB_USER_PREPROD:
-            secretKeyRef:
-              name: dps-rds-instance-output-preprod
-              key: database_username
-          DB_PASS_PREPROD:
-            secretKeyRef:
-              name: dps-rds-instance-output-preprod
-              key: database_password
-          DB_HOST_PREPROD:
-            secretKeyRef:
-              name: dps-rds-instance-output-preprod
-              key: rds_instance_address
-
-        volumes:
-          - name: db-refresh-script
-            configMap:
-              name: db-refresh-script
-              defaultMode: 0755
-
-        volumeMounts:
-          - name: db-refresh-script
-            mountPath: /bin/entrypoint.sh
-            subPath: entrypoint.sh
-            readOnly: true
-
+  postgresDatabaseRestore:
+    enabled: true
+    schedule: "30 10 * * 0"
+    env:
+      SCHEMA_TO_RESTORE: "probation_teams"
+    namespace_secrets:
+      dps-rds-instance-output:
+        DB_NAME: "database_name"
+        DB_USER: "database_username"
+        DB_PASS: "database_password"
+        DB_HOST: "rds_instance_address"
+      dps-rds-instance-output-preprod:
+        DB_NAME_PREPROD: "database_name"
+        DB_USER_PREPROD: "database_username"
+        DB_PASS_PREPROD: "database_password"
+        DB_HOST_PREPROD: "rds_instance_address"
 
 generic-prometheus-alerts:
   targetApplication: licences
