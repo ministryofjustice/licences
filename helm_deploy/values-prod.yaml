@@ -82,7 +82,7 @@ generic-service:
     enabled: true
     schedule: "30 10 * * 0"
     env:
-      SCHEMA_TO_RESTORE: "probation_teams"
+      SCHEMA_TO_RESTORE: "licences"
     namespace_secrets:
       dps-rds-instance-output:
         DB_NAME: "database_name"
