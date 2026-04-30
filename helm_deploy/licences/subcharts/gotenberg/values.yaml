@@ -1,0 +1,9 @@
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+# These 'default' values can be overriden by the parent chart: https://helm.sh/docs/chart_template_guide/subcharts_and_globals/
+replicaCount: 2
+
+image:
+  repository: thecodingmachine/gotenberg
+  tag: 6.3.0
+  port: 3000
