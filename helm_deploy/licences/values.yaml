@@ -13,7 +13,7 @@ generic-service:
   ingress:
     enabled: true
     hosts:
-      - app-hostname.local
+      - app-hostname.local # override per environment
     tlsSecretName: licences-cert
     annotations:
       external-dns.alpha.kubernetes.io/aws-weight: "100"
