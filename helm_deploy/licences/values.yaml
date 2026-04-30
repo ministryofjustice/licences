@@ -18,34 +18,30 @@ generic-service:
     annotations:
       external-dns.alpha.kubernetes.io/aws-weight: "100"
 
-  postgresDatabaseRestore:
-    enabled: true
-    schedule: "30 10 * * 0"
-    env:
-      SCHEMA_TO_RESTORE: "probation_teams"
-    namespace_secrets:
-      dps-rds-instance-output:
-        DB_NAME: "database_name"
-        DB_USER: "database_username"
-        DB_PASS: "database_password"
-        DB_HOST: "rds_instance_address"
-      dps-rds-instance-output-preprod:
-        DB_NAME_PREPROD: "database_name"
-        DB_USER_PREPROD: "database_username"
-        DB_PASS_PREPROD: "database_password"
-        DB_HOST_PREPROD: "rds_instance_address"
+  namespace_secrets:
+    dps-rds-instance-output:
+      DB_NAME: "database_name"
+      DB_HOST: "rds_instance_address"
+      DB_USER: "database_username"
+      DB_PASS: "database_password"
+
+    licences-elasticache-redis:
+      REDIS_AUTH_TOKEN: "auth_token"
+
+  env:
+    DB_SSL_ENABLED: "true"
+    REDIS_TLS_ENABLED: "true"
+    NODE_ENV: "production"
 
 generic-prometheus-alerts:
   targetApplication: licences
   alertSeverity: digital-prison-service-dev
-
 
 generic-data-analytics-extractor:
   enabled: true
   databaseSecretName: dps-rds-instance-output
   analyticalPlatformSecretName: licences-analytical-platform-reporting-s3-bucket
   args: "extract_psql_all_tables_to_csv.sh && transfer_local_to_s3.sh"
-
 
 gotenberg:
   nameOverride: gotenberg

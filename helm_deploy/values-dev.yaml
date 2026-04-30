@@ -10,7 +10,7 @@ generic-service:
       external-dns.alpha.kubernetes.io/set-identifier: licences-licences-dev-green
 
   env:
-    DOMAIN: https://licences-dev.prison.service.justice.gov.uk
+    DOMAIN: "https://licences-dev.prison.service.justice.gov.uk"
     NOMIS_API_URL: "https://prison-api-dev.prison.service.justice.gov.uk"
     NOMIS_AUTH_URL: "https://sign-in-dev.hmpps.service.justice.gov.uk/auth"
     GLOBAL_SEARCH_URL: "https://digital-dev.prison.service.justice.gov.uk/global-search"
@@ -35,3 +35,10 @@ generic-service:
     LICENCE_POSTPONE_VERSION: "2"
     COM_NOT_ALLOCATED_BLOCK_ENABLED: "true"
     CA_REPORTS_LINK_ENABLED: "true"
+
+gotenberg:
+  replicaCount: 4
+  image:
+    repository: thecodingmachine/gotenberg
+    tag: "6.4.3"
+    port: 3000
