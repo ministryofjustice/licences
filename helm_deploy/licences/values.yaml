@@ -2,7 +2,6 @@ generic-service:
   enabled: true
   nameOverride: licences
   replicaCount: 4
-  serviceAccountName: licences
   productId: "DPS062"
 
   image:
