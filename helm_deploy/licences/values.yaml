@@ -27,6 +27,9 @@ generic-service:
     licences-elasticache-redis:
       REDIS_AUTH_TOKEN: "auth_token"
 
+    licences-session-secret:
+          SESSION_SECRET: "SESSION_SECRET"
+
   env:
     DB_SSL_ENABLED: "true"
     REDIS_TLS_ENABLED: "true"
