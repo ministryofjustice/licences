@@ -1,19 +1,44 @@
----
-image:
-  repository: quay.io/hmpps/licences
-  tag: latest
-  port: 3000
+generic-service:
+  enabled: true
+  nameOverride: licences
+  replicaCount: 4
+  serviceAccountName: licences
+  productId: "DPS062"
+
+  image:
+    repository: quay.io/hmpps/licences
+    tag: app_version
+    port: 3000
+
+  ingress:
+    enabled: true
+    hosts:
+      - app-hostname.local # override per environment
+    tlsSecretName: licences-cert
+    annotations:
+      external-dns.alpha.kubernetes.io/aws-weight: "100"
+
+  namespace_secrets:
+    dps-rds-instance-output:
+      DB_NAME: "database_name"
+      DB_HOST: "rds_instance_address"
+      DB_USER: "database_username"
+      DB_PASS: "database_password"
+
+    licences-elasticache-redis:
+      REDIS_AUTH_TOKEN: "auth_token"
+
+  env:
+    DB_SSL_ENABLED: "true"
+    REDIS_TLS_ENABLED: "true"
+    NODE_ENV: "production"
 
 generic-prometheus-alerts:
   targetApplication: licences
   alertSeverity: digital-prison-service-dev
 
 generic-data-analytics-extractor:
+  enabled: true
   databaseSecretName: dps-rds-instance-output
   analyticalPlatformSecretName: licences-analytical-platform-reporting-s3-bucket
-  enabled: true
   args: "extract_psql_all_tables_to_csv.sh && transfer_local_to_s3.sh"
-
-ingress:
-  annotations:
-    external-dns.alpha.kubernetes.io/aws-weight: "100"

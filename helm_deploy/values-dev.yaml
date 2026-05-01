@@ -1,7 +1,40 @@
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+generic-service:
+  replicaCount: 2
 
-replicaCount: 2
+  ingress:
+    enabled: true
+    hosts:
+      - licences-dev.prison.service.justice.gov.uk
+    tlsSecretName: licences-cert
+    annotations:
+      external-dns.alpha.kubernetes.io/set-identifier: licences-licences-dev-green
+
+  env:
+    DOMAIN: "https://licences-dev.prison.service.justice.gov.uk"
+    NOMIS_API_URL: "https://prison-api-dev.prison.service.justice.gov.uk"
+    NOMIS_AUTH_URL: "https://sign-in-dev.hmpps.service.justice.gov.uk/auth"
+    GLOBAL_SEARCH_URL: "https://digital-dev.prison.service.justice.gov.uk/global-search"
+    PUSH_TO_NOMIS: "yes"
+    REMINDERS_SCHEDULE_RO: "0 1 * * 1-5"
+    SCHEDULED_JOBS_AUTOSTART: "no"
+    SCHEDULED_JOBS_OVERLAP: "5000"
+    NOTIFY_ACTIVE_TEMPLATES: "CA_RETURN,CA_DECISION,RO_NEW,RO_TWO_DAYS,RO_DUE,RO_OVERDUE,DM_NEW,DM_TO_CA_RETURN"
+    RO_SERVICE_TYPE: "DELIUS"
+    DELIUS_API_URL: "https://hdc-licences-and-delius-dev.hmpps.service.justice.gov.uk"
+    HDC_API_URL: "https://hdc-api-dev.hmpps.service.justice.gov.uk"
+    PROBATION_TEAMS_API_URL: "https://probation-teams-dev.prison.service.justice.gov.uk"
+    PRISONER_SEARCH_API_URL: "https://prisoner-search-dev.prison.service.justice.gov.uk"
+    PROBATION_SEARCH_API_URL: "https://hdc-licences-and-delius-dev.hmpps.service.justice.gov.uk"
+    MANAGE_USERS_API_URL: "https://manage-users-api-dev.hmpps.service.justice.gov.uk"
+    EXIT_LOCATION_URL: "https://digital-dev.prison.service.justice.gov.uk/"
+    TOKENVERIFICATION_API_URL: "https://token-verification-api-dev.prison.service.justice.gov.uk"
+    TOKENVERIFICATION_API_ENABLED: "true"
+    FEEDBACK_SUPPORT_URL: "https://support-dev.hmpps.service.justice.gov.uk/feedback-and-support"
+    LICENCE_RISK_MANAGEMENT_VERSION: "3"
+    CURFEW_ADDRESS_REVIEW_VERSION: "2"
+    LICENCE_POSTPONE_VERSION: "2"
+    COM_NOT_ALLOCATED_BLOCK_ENABLED: "true"
+    CA_REPORTS_LINK_ENABLED: "true"
 
 # Supplies values to the nested gotenberg chart. https://helm.sh/docs/chart_template_guide/subcharts_and_globals/
 gotenberg:
@@ -10,43 +43,6 @@ gotenberg:
     repository: thecodingmachine/gotenberg
     tag: 6.4.3
     port: 3000
-
-ingress:
-  enabled: true
-  enable_allowlist: false
-  host: licences-dev.prison.service.justice.gov.uk
-  cert_secret: licences-cert
-  path: /
-  annotations:
-    external-dns.alpha.kubernetes.io/set-identifier: licences-licences-dev-green
-
-
-env:
-  DOMAIN:
-  NOMIS_API_URL: "https://prison-api-dev.prison.service.justice.gov.uk"
-  NOMIS_AUTH_URL: "https://sign-in-dev.hmpps.service.justice.gov.uk/auth"
-  GLOBAL_SEARCH_URL: "https://digital-dev.prison.service.justice.gov.uk/global-search"
-  PUSH_TO_NOMIS: "yes"
-  REMINDERS_SCHEDULE_RO: "0 1 * * 1-5"
-  SCHEDULED_JOBS_AUTOSTART: "no"
-  SCHEDULED_JOBS_OVERLAP: "5000"
-  NOTIFY_ACTIVE_TEMPLATES: "CA_RETURN,CA_DECISION,RO_NEW,RO_TWO_DAYS,RO_DUE,RO_OVERDUE,DM_NEW,DM_TO_CA_RETURN"
-  RO_SERVICE_TYPE: "DELIUS"
-  DELIUS_API_URL: "https://hdc-licences-and-delius-dev.hmpps.service.justice.gov.uk"
-  HDC_API_URL: "https://hdc-api-dev.hmpps.service.justice.gov.uk"
-  PROBATION_TEAMS_API_URL: "https://probation-teams-dev.prison.service.justice.gov.uk"
-  PRISONER_SEARCH_API_URL: "https://prisoner-search-dev.prison.service.justice.gov.uk"
-  PROBATION_SEARCH_API_URL: "https://hdc-licences-and-delius-dev.hmpps.service.justice.gov.uk"
-  MANAGE_USERS_API_URL: "https://manage-users-api-dev.hmpps.service.justice.gov.uk"
-  EXIT_LOCATION_URL: "https://digital-dev.prison.service.justice.gov.uk/"
-  TOKENVERIFICATION_API_URL: https://token-verification-api-dev.prison.service.justice.gov.uk
-  TOKENVERIFICATION_API_ENABLED: true
-  FEEDBACK_SUPPORT_URL: "https://support-dev.hmpps.service.justice.gov.uk/feedback-and-support"
-  LICENCE_RISK_MANAGEMENT_VERSION: '3'
-  CURFEW_ADDRESS_REVIEW_VERSION: '2'
-  LICENCE_POSTPONE_VERSION: '2'
-  COM_NOT_ALLOCATED_BLOCK_ENABLED: true
-  CA_REPORTS_LINK_ENABLED: true
 
 generic-prometheus-alerts:
   alertSeverity: cvl-alerts-non-prod
