@@ -4,6 +4,10 @@ generic-service:
   replicaCount: 4
   productId: "DPS062"
 
+  service:
+    labels:
+      app: licences
+
   image:
     repository: quay.io/hmpps/licences
     tag: latest
@@ -20,15 +24,25 @@ generic-service:
   namespace_secrets:
     dps-rds-instance-output:
       DB_NAME: "database_name"
-      DB_HOST: "rds_instance_address"
+      DB_SERVER: "rds_instance_address"
       DB_USER: "database_username"
       DB_PASS: "database_password"
 
+    licences:
+      API_CLIENT_ID: "API_CLIENT_ID"
+      API_CLIENT_SECRET: "API_CLIENT_SECRET"
+      ADMIN_API_CLIENT_ID: "ADMIN_API_CLIENT_ID"
+      ADMIN_API_CLIENT_SECRET: "ADMIN_API_CLIENT_SECRET"
+      APPINSIGHTS_INSTRUMENTATIONKEY: "APPINSIGHTS_INSTRUMENTATIONKEY"
+      NOTIFY_API_KEY: "NOTIFY_API_KEY"
+      TAG_MANAGER_KEY: "TAG_MANAGER_KEY"
+
     licences-elasticache-redis:
+      REDIS_HOST: "primary_endpoint_address"
       REDIS_AUTH_TOKEN: "auth_token"
 
     licences-session-secret:
-          SESSION_SECRET: "SESSION_SECRET"
+      SESSION_SECRET: "SESSION_SECRET"
 
   env:
     DB_SSL_ENABLED: "true"
