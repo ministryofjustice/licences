@@ -32,3 +32,5 @@ licences\.iml
 licences-specs/src/*.iml
 licences-specs/bin/
 **/.project
+**/Chart.lock
+/helm_deploy/licences/charts/*.tgz
