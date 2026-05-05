@@ -4,10 +4,6 @@ generic-service:
   replicaCount: 4
   productId: "DPS062"
 
-  service:
-    labels:
-      app: licences
-
   image:
     repository: quay.io/hmpps/licences
     tag: app_version
