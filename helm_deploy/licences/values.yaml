@@ -52,6 +52,8 @@ generic-service:
     DB_SSL_ENABLED: "true"
     REDIS_TLS_ENABLED: "true"
     NODE_ENV: "production"
+    HDC_URL: "http://licences:80"
+    GOTENBERG_API_URL: "http://licences-gotenberg:3000"
 
 generic-prometheus-alerts:
   targetApplication: licences

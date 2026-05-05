@@ -77,8 +77,6 @@ generic-service:
     LICENCE_POSTPONE_VERSION: "2"
     COM_NOT_ALLOCATED_BLOCK_ENABLED: "true"
     CA_REPORTS_LINK_ENABLED: "true"
-    GOTENBERG_API_URL: "http://licences-gotenberg"
-    HDC_URL: "http://licences"
 
   postgresDatabaseRestore:
     enabled: true
