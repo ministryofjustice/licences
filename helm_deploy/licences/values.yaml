@@ -10,7 +10,7 @@ generic-service:
 
   image:
     repository: quay.io/hmpps/licences
-    tag: latest
+    tag: app_version
     port: 3000
 
   ingress:
