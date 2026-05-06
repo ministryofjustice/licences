@@ -22,15 +22,17 @@ export = (hdcService: HdcService) => (router) => {
         asyncMiddleware(async (req, res) => {
             const migrationPromise = hdcService.migrateBatchToCvl()
 
-            try {
+            let timeoutHandle: NodeJS.Timeout | undefined
 
+            try {
                 const timeoutPromise = new Promise<'still-running'>((resolve) => {
-                    setTimeout(() => resolve('still-running'), 60000)
+                    timeoutHandle = setTimeout(() => resolve('still-running'), 60000)
                 })
+                const completionPromise = migrationPromise.then(() => 'completed' as const)
 
                 const result = await Promise.race([
-                    migrationPromise.then(() => 'completed' as const),
-                    timeoutPromise
+                    completionPromise,
+                    timeoutPromise,
                 ])
 
                 if (result === 'completed') {
@@ -43,12 +45,16 @@ export = (hdcService: HdcService) => (router) => {
 
                 return res.render('admin/migrateToCvl/batchStarted')
             } catch (error) {
-                let message = 'Unknown error'
-                if (error instanceof Error) {
-                    message = error.message
-                }
+                const message =
+                    error instanceof Error ? error.message : 'Unknown error'
+
                 logger.error('Migration failed before timeout', error)
-                return res.render('admin/migrateToCvl/batchFailed', {message})
+
+                return res.render('admin/migrateToCvl/batchFailed', { message })
+            } finally {
+                if (timeoutHandle) {
+                    clearTimeout(timeoutHandle)
+                }
             }
         })
     )
