@@ -4,7 +4,9 @@ block content
 
     div.back-link-container.smallPaddingTop
         a#back.link-back(href="/admin/") Back
-
-        h2.heading-large Batch process failed
-            h3.heading-medium Please check logs
-                h4.heading-medium= message
+        div
+            h2.heading-large Batch process failed
+            div
+                h3.heading-medium Please check logs
+                div
+                    p.error-message #{message}
