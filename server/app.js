@@ -40,6 +40,7 @@ const licenceCompletionDestinationSearchRouter = require('./routes/admin/complet
 const conditionCompareTextsSearch = require('./routes/admin/conditionCompareTextsSearch')
 const licenceCompletionDestinationRouter = require('./routes/admin/completionDestination')
 const licenceRouter = require('./routes/admin/licence')
+const migrationRouter = require('./routes/admin/migrateToCvl')
 const { functionalMailboxRouter } = require('./routes/admin/functionalMailboxes')
 const apiRouter = require('./routes/api')
 
@@ -418,7 +419,7 @@ module.exports = function createApp({
     )
   )
   app.use('/admin/functionalMailboxes', secureRoute(functionalMailboxRouter(functionalMailboxService)))
-
+  app.use('/admin/migrateToCvl', secureRoute(migrationRouter(hdcService)))
   app.use('/hdc/contact/', secureRoute(contactRouter(userAdminService, roService, signInService)))
   app.use('/hdc/pdf/', secureRoute(pdfRouter(pdfService, prisonerService), { auditKey: 'CREATE_PDF' }))
   app.use('/hdc/forms/', secureRoute(formsRouter(formService, conditionsServiceFactory)))

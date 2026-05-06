@@ -6,4 +6,12 @@ export class HdcClient {
   getBespokeConditions(licenceIds: number[]): Promise<ConvertedLicenseBatch> {
     return this.restClient.postResource(`/licences/conditions/batch`, { licenceIds })
   }
+
+  async migrateSingleLicenceToCvl(licenceId: number) : Promise<void> {
+      return this.restClient.postResource(`/licences/migrate/active/${licenceId}/to-cvl`, {})
+  }
+
+  async migrateBatchToCvl() : Promise<void>  {
+      return this.restClient.postResource(`/licences/migrate/active/batch/to-cvl`, {})
+  }
 }

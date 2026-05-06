@@ -251,6 +251,34 @@ export class HdcService {
       })
       .filter(Boolean) as LicenceDiff[]
   }
+
+    async migrateSingleLicenceToCvl(licenceId: number) {
+      try {
+          return await this.hdcClient.migrateSingleLicenceToCvl(licenceId)
+      } catch (error: any) {
+          logger.error(`Failed to migrate ID: ${licenceId}`, {
+              message: error?.message,
+              status: error?.response?.status,
+              data: error?.response?.data,
+              stack: error?.stack,
+          })
+          throw error
+      }
+  }
+
+    async migrateBatchToCvl() {
+      try {
+          return await this.hdcClient.migrateBatchToCvl()
+      } catch (error: any) {
+          logger.error(`Failed to migrate bactch to CVL`, {
+              message: error?.message,
+              status: error?.response?.status,
+              data: error?.response?.data,
+              stack: error?.stack,
+          })
+          throw error
+      }
+  }
 }
 
 export function createHdcService(

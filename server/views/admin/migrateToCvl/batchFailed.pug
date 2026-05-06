@@ -1,0 +1,12 @@
+extends ../../layout
+
+block content
+
+    div.back-link-container.smallPaddingTop
+        a#back.link-back(href="/admin/") Back
+        div
+            h2.heading-large Batch process failed
+            div
+                h3.heading-medium Please check logs
+                div
+                    p.error-message #{message}
