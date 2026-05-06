@@ -413,7 +413,7 @@ module.exports = function createApp({
     secureRoute(licenceCompletionDestinationRouter(licenceService, signInService, prisonerService, audit))
   )
   app.use(
-    '/admin/licences',
+    '/admin/licences/',
     secureRoute(
       licenceRouter(licenceService, signInService, prisonerService, audit, roNotificationHandler, nomisPushService)
     )
