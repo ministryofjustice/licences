@@ -1,9 +1,8 @@
 
-import {asyncMiddleware} from '../../utils/middleware';
+import { asyncMiddleware, authorisationMiddleware } from '../../utils/middleware'
 import { HdcService } from '../../services/hdc/hdcService'
 
 const logger = require('../../../log')
-const { authorisationMiddleware } = require('../../utils/middleware')
 
 export = (hdcService: HdcService) => (router) => {
     router.use(authorisationMiddleware)
@@ -11,7 +10,7 @@ export = (hdcService: HdcService) => (router) => {
     router.get(
         '/licence/:licenceId',
         asyncMiddleware(async (req, res) => {
-            const { licenceId } = req.params
+            const licenceId = Number(req.params.licenceId)
             await hdcService.migrateToCvl(licenceId)
 
             return res.render('admin/migrateToCvl/licenceMigrated', {licenceId})
@@ -24,11 +23,14 @@ export = (hdcService: HdcService) => (router) => {
             const migrationPromise = hdcService.migrateBatchToCvl()
 
             try {
+
+                const timeoutPromise = new Promise<'still-running'>((resolve) => {
+                    setTimeout(() => resolve('still-running'), 60000)
+                })
+
                 const result = await Promise.race([
                     migrationPromise.then(() => 'completed' as const),
-                    new Promise<'still-running'>((resolve) => {
-                        setTimeout(() => resolve('still-running'), 60000)
-                    })
+                    timeoutPromise
                 ])
 
                 if (result === 'completed') {
