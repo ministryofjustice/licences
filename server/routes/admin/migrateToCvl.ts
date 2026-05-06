@@ -11,7 +11,7 @@ export = (hdcService: HdcService) => (router) => {
         '/licence/:licenceId',
         asyncMiddleware(async (req, res) => {
             const licenceId = Number(req.params.licenceId)
-            await hdcService.migrateToCvl(licenceId)
+            await hdcService.migrateSingleLicenceToCvl(licenceId)
 
             return res.render('admin/migrateToCvl/licenceMigrated', {licenceId})
         })

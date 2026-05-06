@@ -7,7 +7,7 @@ export class HdcClient {
     return this.restClient.postResource(`/licences/conditions/batch`, { licenceIds })
   }
 
-  async migrateToCvl(licenceId: number) : Promise<void> {
+  async migrateSingleLicenceToCvl(licenceId: number) : Promise<void> {
       return this.restClient.postResource(`/licences/migrate/active/${licenceId}/to-cvl`, {})
   }
 

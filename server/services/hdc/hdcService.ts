@@ -252,9 +252,9 @@ export class HdcService {
       .filter(Boolean) as LicenceDiff[]
   }
 
-    async migrateToCvl(licenceId: number) {
+    async migrateSingleLicenceToCvl(licenceId: number) {
       try {
-          return await this.hdcClient.migrateToCvl(licenceId)
+          return await this.hdcClient.migrateSingleLicenceToCvl(licenceId)
       } catch (error: any) {
           logger.error(`Failed to migrate ID: ${licenceId}`, {
               message: error?.message,
