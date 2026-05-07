@@ -76,6 +76,8 @@ generic-service:
       vodafone-dia-3: "194.33.217.0/24"
       vodafone-dia-4: "194.33.218.0/24"
       palo-alto-prisma-corporate: "128.77.75.64/26"
+      sodexo-northumberland3: "62.172.161.238/32"
+      sodexo-northumberland4: "62.172.169.94/32"
 
   env:
     DOMAIN: "https://licences.prison.service.justice.gov.uk"
