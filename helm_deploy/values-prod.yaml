@@ -113,6 +113,7 @@ generic-service:
     schedule: "30 10 * * 0"
     env:
       SCHEMA_TO_RESTORE: "public"
+      MIGRATIONS_VENDOR: "active_record"
     namespace_secrets:
       dps-rds-instance-output:
         DB_NAME: "database_name"
