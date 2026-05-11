@@ -10,7 +10,8 @@ generic-service:
     annotations:
       external-dns.alpha.kubernetes.io/set-identifier: licences-licences-prod-green
     enable_allowlist: true
-    allowlist:
+  
+  allowlist:
       office: "217.33.148.210/32"
       quantum: "62.25.109.197/32"
       quantum_alt: "212.137.36.230/32"
