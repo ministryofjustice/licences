@@ -100,6 +100,7 @@
   },
   "dependencies": {
     "@hapi/joi-date": "^2.0.1",
+    "@ministryofjustice/hmpps-npm-script-allowlist": "^0.0.3",
     "agentkeepalive": "^4.6.0",
     "applicationinsights": "^2.9.8",
     "body-parser": "^2.2.2",
@@ -149,7 +150,6 @@
   },
   "devDependencies": {
     "@ministryofjustice/eslint-config-hmpps": "1.0.3",
-    "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.5-beta.2",
     "@ministryofjustice/hmpps-precommit-hooks": "^2.0.2",
     "@tsconfig/node24": "24.0.4",
     "@types/connect-flash": "^0.0.40",
