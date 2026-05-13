@@ -1,64 +1,71 @@
-const { appInsights } = require('./utils/azureAppInsights')
-// eslint-disable-next-line import/order
-const { NotifyClient } = require('notifications-node-client')
-const createApp = require('./app')
-const logger = require('../log')
-const config = require('./config')
-const audit = require('./data/audit')
+/* eslint-disable import/first */
+// eslint-disable-next-line import/no-import-module-exports
+import applicationInfo from './applicationInfo'
 
-const { licenceClient } = require('./data/licenceClient')
-const { userClient } = require('./data/userClient')
-const configClient = require('./data/configClient')
-const dbLockingClient = require('./data/dbLockingClient')
-const nomisClientBuilder = require('./data/nomisClientBuilder')
-const pdfFormatter = require('./services/utils/pdfFormatter')
-const activeLduClient = require('./data/activeLduClient')
-const warningClient = require('./data/warningClient')
+import { initialiseAppInsights, buildAppInsightsClient } from './utils/azureAppInsights'
+
+initialiseAppInsights()
+const appInsightsClient = buildAppInsightsClient(applicationInfo())
+// eslint-disable-next-line import/order
+import { NotifyClient } from 'notifications-node-client'
+import createApp from './app'
+import logger from '../log'
+import config from './config'
+import audit from './data/audit'
+
+import { licenceClient } from './data/licenceClient'
+import { userClient } from './data/userClient'
+import configClient from './data/configClient'
+import dbLockingClient from './data/dbLockingClient'
+import nomisClientBuilder from './data/nomisClientBuilder'
+import pdfFormatter from './services/utils/pdfFormatter'
+import activeLduClient from './data/activeLduClient'
+import warningClient from './data/warningClient'
 
 const notifyClient = new NotifyClient(config.notifications.notifyKey)
-const SignInService = require('./authentication/signInService')
-const { createLicenceService } = require('./services/licenceService')
-const { createPrisonerService } = require('./services/prisonerService')
-const ConditionServiceFactory = require('./services/conditionsService').ConditionsServiceFactory
-const createCaseListService = require('./services/caseListService')
-const MigrationService = require('./services/migrationService').default
-const PdfService = require('./services/pdfService').default
-const FormService = require('./services/formService').default
-const createReportingService = require('./services/reportingService')
-const createCaseListFormatter = require('./services/utils/caseListFormatter')
-const UserAdminService = require('./services/userAdminService')
-const createUserService = require('./services/userService')
-const createNotificationSender = require('./services/notifications/notificationSender')
-const createRoNotificationSender = require('./services/notifications/roNotificationSender')
-const createCaAndDmNotificationSender = require('./services/notifications/caAndDmNotificationSender')
-const createNotificationService = require('./services/notifications/notificationService')
-const createRoNotificationHandler = require('./services/notifications/roNotificationHandler')
-const EventPublisher = require('./services/notifications/eventPublisher')
+import SignInService from './authentication/signInService'
+import { createLicenceService } from './services/licenceService'
+import { createPrisonerService } from './services/prisonerService'
+import { ConditionsServiceFactory } from './services/conditionsService'
+import createCaseListService from './services/caseListService'
+import MigrationService from './services/migrationService'
+import PdfService from './services/pdfService'
+import FormService from './services/formService'
+import createReportingService from './services/reportingService'
+import createCaseListFormatter from './services/utils/caseListFormatter'
+import UserAdminService from './services/userAdminService'
+import createUserService from './services/userService'
+import createNotificationSender from './services/notifications/notificationSender'
+import createRoNotificationSender from './services/notifications/roNotificationSender'
+import createCaAndDmNotificationSender from './services/notifications/caAndDmNotificationSender'
+import createNotificationService from './services/notifications/notificationService'
+import createRoNotificationHandler from './services/notifications/roNotificationHandler'
+import EventPublisher from './services/notifications/eventPublisher'
 
-const { RoContactDetailsService } = require('./services/roContactDetailsService')
-const createReminderService = require('./services/reminderService')
+import { RoContactDetailsService } from './services/roContactDetailsService'
+import createReminderService from './services/reminderService'
 
-const createNomisPushService = require('./services/nomisPushService')
-const createDeadlineService = require('./services/deadlineService')
-const createJobSchedulerService = require('./services/jobSchedulerService')
-const createNotificationJobs = require('./services/jobs/notificationJobs')
-const { buildRestClient, clientCredentialsTokenSource } = require('./data/restClientBuilder')
-const { DeliusClient } = require('./data/deliusClient')
-const { ProbationTeamsClient } = require('./data/probationTeamsClient')
-const { RoService } = require('./services/roService')
-const createCaService = require('./services/caService')
-const createLduService = require('./services/lduService')
-const { FunctionalMailboxService } = require('./services/functionalMailboxService')
-const createLicenceSearchService = require('./services/licenceSearchService')
-const ReportsService = require('./services/reportsService').default
-const tokenVerifierFactory = require('./authentication/tokenverifier/tokenVerifierFactory')
-const { default: TokenStore } = require('./data/tokenStore')
-const { createRedisClient } = require('./data/redisClient')
-const prisonerSearchApi = require('./data/prisonerSearchApi')
-const manageUsersApi = require('./data/manageUsersApi')
-const probationSearchApi = require('./data/probationSearchApi')
-const { HdcClient } = require('./data/hdcApiClient')
-const { createHdcService } = require('./services/hdc/hdcService')
+import createNomisPushService from './services/nomisPushService'
+import createDeadlineService from './services/deadlineService'
+import createJobSchedulerService from './services/jobSchedulerService'
+import createNotificationJobs from './services/jobs/notificationJobs'
+import { buildRestClient, clientCredentialsTokenSource } from './data/restClientBuilder'
+import { DeliusClient } from './data/deliusClient'
+import { ProbationTeamsClient } from './data/probationTeamsClient'
+import { RoService } from './services/roService'
+import createCaService from './services/caService'
+import createLduService from './services/lduService'
+import { FunctionalMailboxService } from './services/functionalMailboxService'
+import createLicenceSearchService from './services/licenceSearchService'
+import ReportsService from './services/reportsService'
+import tokenVerifierFactory from './authentication/tokenverifier/tokenVerifierFactory'
+import TokenStore from './data/tokenStore'
+import { createRedisClient } from './data/redisClient'
+import prisonerSearchApi from './data/prisonerSearchApi'
+import manageUsersApi from './data/manageUsersApi'
+import probationSearchApi from './data/probationSearchApi'
+import { HdcClient } from './data/hdcApiClient'
+import { createHdcService } from './services/hdc/hdcService'
 
 const signInService = new SignInService(new TokenStore(createRedisClient()))
 
@@ -70,7 +77,7 @@ const hdcClient = new HdcClient(
 )
 
 const licenceService = createLicenceService(licenceClient)
-const conditionsServiceFactory = new ConditionServiceFactory()
+const conditionsServiceFactory = new ConditionsServiceFactory()
 const hdcService = createHdcService(hdcClient, licenceService, conditionsServiceFactory)
 
 const deliusClient = new DeliusClient(
@@ -123,7 +130,7 @@ const caAndDmNotificationSender = createCaAndDmNotificationSender(
   config
 )
 
-const eventPublisher = new EventPublisher(audit, appInsights)
+const eventPublisher = new EventPublisher(audit, appInsightsClient)
 
 const roNotificationHandler = createRoNotificationHandler(
   roNotificationSender,
@@ -188,4 +195,4 @@ const app = createApp({
   migrationService,
 })
 
-module.exports = app
+export default app

@@ -24,7 +24,6 @@
     "integration-test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest --runInBand --testPathPatterns=/integration_test/.*",
     "lint": "eslint .",
     "typecheck": "tsc",
-    "record-build-info": "node ./bin/record-build-info",
     "clean": "rm -rf dist/* public/* .port.tmp *.log build/* uploads/* test-results.xml",
     "db:knex": "knex",
     "db:knex-migrate": "knex-migrate",
@@ -100,7 +99,6 @@
   },
   "dependencies": {
     "@hapi/joi-date": "^2.0.1",
-    "@ministryofjustice/hmpps-npm-script-allowlist": "^0.0.3",
     "agentkeepalive": "^4.6.0",
     "applicationinsights": "^2.9.8",
     "body-parser": "^2.2.2",
@@ -145,11 +143,11 @@
     "superagent": "^10.3.0",
     "swagger-ui-express": "^5.0.1",
     "util": "^0.12.5",
-    "uuid": "^13.0.0",
     "winston": "^3.19.0"
   },
   "devDependencies": {
     "@ministryofjustice/eslint-config-hmpps": "1.0.3",
+    "@ministryofjustice/hmpps-npm-script-allowlist": "0.0.5-beta.2",
     "@ministryofjustice/hmpps-precommit-hooks": "^2.0.2",
     "@tsconfig/node24": "24.0.4",
     "@types/connect-flash": "^0.0.40",

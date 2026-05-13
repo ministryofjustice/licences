@@ -1,8 +1,7 @@
-/** @type {any} */
-const knex = require('knex')
-const logger = require('./log')
-const app = require('./server/index')
-const knexfile = require('./knexfile')
+import knex from 'knex'
+import logger from './log'
+import app from './server/index'
+import knexfile from './knexfile'
 
 logger.info('Migration start')
 

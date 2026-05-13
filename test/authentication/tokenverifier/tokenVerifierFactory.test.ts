@@ -8,21 +8,25 @@ describe('Token Verifier', () => {
     url: 'http://localhost:8100',
     timeout: {
       response: 100,
-      deadline: 200,
+      deadline: 200
     },
     agent: {
       maxSockets: 2,
       maxFreeSockets: 1,
-      freeSocketTimeout: 1000,
+      freeSocketTimeout: 1000
     },
-    enabled: true,
+    enabled: true
   }
+
+  afterEach(() => {
+    nock.cleanAll()
+  })
 
   it('Should verify a token', async () => {
     const scope = nock(config.url, {
       reqheaders: {
-        authorization: `Bearer ${TOKEN}`,
-      },
+        authorization: `Bearer ${TOKEN}`
+      }
     })
       .post('/token/verify', '')
       .reply(200, { active: true })
@@ -35,8 +39,8 @@ describe('Token Verifier', () => {
   it('Should reject a token', async () => {
     const scope = nock(config.url, {
       reqheaders: {
-        authorization: `Bearer ${TOKEN}`,
-      },
+        authorization: `Bearer ${TOKEN}`
+      }
     })
       .post('/token/verify', '')
       .reply(200, { active: false })
@@ -49,8 +53,8 @@ describe('Token Verifier', () => {
   it('Should reject a token on third server error response', async () => {
     const scope = nock(config.url, {
       reqheaders: {
-        authorization: `Bearer ${TOKEN}`,
-      },
+        authorization: `Bearer ${TOKEN}`
+      }
     })
       .post('/token/verify', '')
       .reply(500)

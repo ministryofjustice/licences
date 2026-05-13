@@ -15,3 +15,6 @@ eslint-report.html
 test-report.html
 helm_deploy
 test-results
+
+!.npmrc
+!.allowed-scripts.mjs
