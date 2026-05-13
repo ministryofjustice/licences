@@ -1,5 +1,3 @@
-const { appInsights } = require('./server/utils/azureAppInsights')
-// eslint-disable-next-line import/order
 const winston = require('winston')
 
 const { combine, simple, timestamp, json, prettyPrint } = winston.format
@@ -23,10 +21,10 @@ const format =
 const logger = winston.createLogger({
   format,
   // No transports when Application Insights is enabled because App Insights automatically logs calls to the winston API.
-  transports: appInsights ? [] : [new winston.transports.Console({ level: 'info', handleExceptions: true })],
+  transports: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING ? [] : [new winston.transports.Console({ level: 'info', handleExceptions: true })],
 })
 
-if (appInsights) {
+if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
   logger.info('Application insights logger is active')
 }
 

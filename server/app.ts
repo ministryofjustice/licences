@@ -1,81 +1,81 @@
 /* eslint-disable no-underscore-dangle */
-const moment = require('moment')
-const uuid = require('uuid')
-const bodyParser = require('body-parser')
-const express = require('express')
-const path = require('path')
-const flash = require('connect-flash')
-const session = require('express-session')
-const { RedisStore } = require('connect-redis')
+import moment from 'moment'
+import { randomUUID } from 'crypto'
+import bodyParser from 'body-parser'
+import express from 'express'
+import path from 'path'
+import flash from 'connect-flash'
+import session from 'express-session'
+import { RedisStore } from 'connect-redis'
+import helmet from 'helmet'
+import noCache from 'nocache'
+import { Express} from 'express'
+import { csrfSync } from 'csrf-sync'
+import compression from 'compression'
+import passport from 'passport'
+import { appInsightsMiddleware } from  './utils/azureAppInsights'
+import ensureHttps from './utils/ensureHttps'
+import pdfRenderer from './utils/renderPdf'
 
-const helmet = require('helmet').default
-const noCache = require('nocache')
+import config from './config'
+import healthFactory from './services/healthcheck'
 
-const { csrfSync } = require('csrf-sync')
-const compression = require('compression')
-const passport = require('passport')
-const ensureHttps = require('./utils/ensureHttps')
-const pdfRenderer = require('./utils/renderPdf')
+import logger from '../log'
+import auth from './authentication/auth'
 
-const config = require('./config')
-const healthFactory = require('./services/healthcheck')
+import defaultRouter from './routes/default'
 
-const logger = require('../log')
-const auth = require('./authentication/auth')
+import adminRouter from './routes/admin/admin'
+import userAdminRouter from './routes/admin/users'
+import manageRolesRouter from './routes/admin/manageRoles'
+import mailboxesAdminRouter from './routes/admin/mailboxes'
+import jobsAdminRouter from './routes/admin/jobs'
+import deliusAdminRouter from './routes/admin/delius'
+import locationsRouter from './routes/admin/locations'
+import warningsRouter from './routes/admin/warnings'
+import licenceSearchRouter from './routes/admin/licenceSearch'
+import licencesWithCOMRouter from './routes/admin/licencesWithCOM'
+import licencesWithCARouter from './routes/admin/comAssignmentForLicencesWithCA'
+import licenceCompletionDestinationSearchRouter from './routes/admin/completionDestinationSearch'
+import conditionCompareTextsSearch from './routes/admin/conditionCompareTextsSearch'
+import licenceCompletionDestinationRouter from './routes/admin/completionDestination'
+import licenceRouter from './routes/admin/licence'
+import migrationRouter from './routes/admin/migrateToCvl'
+import { functionalMailboxRouter } from './routes/admin/functionalMailboxes'
+import apiRouter from './routes/api'
 
-const defaultRouter = require('./routes/default')
+import caseListRouter from './routes/caseList'
+import contactRouter from './routes/contact'
+import pdfRouter from './routes/pdf'
+import formsRouter from './routes/forms'
+import sendRouter from './routes/send'
+import sentRouter from './routes/sent'
+import taskListRouter from './routes/taskList'
+import utilsRouter from './routes/utils'
+import userRouter from './routes/user'
+import caReportsRouter from './routes/caReports'
 
-const adminRouter = require('./routes/admin/admin')
-const userAdminRouter = require('./routes/admin/users')
-const manageRolesRouter = require('./routes/admin/manageRoles')
-const mailboxesAdminRouter = require('./routes/admin/mailboxes')
-const jobsAdminRouter = require('./routes/admin/jobs')
-const deliusAdminRouter = require('./routes/admin/delius')
-const locationsRouter = require('./routes/admin/locations')
-const warningsRouter = require('./routes/admin/warnings')
-const licenceSearchRouter = require('./routes/admin/licenceSearch')
-const licencesWithCOMRouter = require('./routes/admin/licencesWithCOM')
-const licencesWithCARouter = require('./routes/admin/comAssignmentForLicencesWithCA')
-const licenceCompletionDestinationSearchRouter = require('./routes/admin/completionDestinationSearch')
-const conditionCompareTextsSearch = require('./routes/admin/conditionCompareTextsSearch')
-const licenceCompletionDestinationRouter = require('./routes/admin/completionDestination')
-const licenceRouter = require('./routes/admin/licence')
-const migrationRouter = require('./routes/admin/migrateToCvl')
-const { functionalMailboxRouter } = require('./routes/admin/functionalMailboxes')
-const apiRouter = require('./routes/api')
-
-const caseListRouter = require('./routes/caseList')
-const contactRouter = require('./routes/contact')
-const pdfRouter = require('./routes/pdf').default
-const formsRouter = require('./routes/forms').default
-const sendRouter = require('./routes/send')
-const sentRouter = require('./routes/sent')
-const taskListRouter = require('./routes/taskList')
-const utilsRouter = require('./routes/utils')
-const userRouter = require('./routes/user')
-const caReportsRouter = require('./routes/caReports')
-
-const standardRouter = require('./routes/routeWorkers/standardRouter')
-const addressRouter = require('./routes/address')
-const approvalRouter = require('./routes/approval')
-const bassReferralRouter = require('./routes/bassReferral')
-const conditionsRouter = require('./routes/conditions').default
-const curfewRouter = require('./routes/curfew')
-const eligibilityRouter = require('./routes/eligibility')
-const finalChecksRouter = require('./routes/finalChecks').default
-const reviewRouter = require('./routes/review')
-const reportingRouter = require('./routes/reporting')
-const riskRouter = require('./routes/risk').default
-const victimRouter = require('./routes/victim')
-const { GotenbergClient } = require('./data/gotenbergClient')
-const { varyRouter } = require('./routes/vary')
-const { createRedisClient } = require('./data/redisClient')
-const { asyncMiddleware } = require('./utils/middleware')
+import standardRouter from './routes/routeWorkers/standardRouter'
+import addressRouter from './routes/address'
+import approvalRouter from './routes/approval'
+import bassReferralRouter from './routes/bassReferral'
+import conditionsRouter from './routes/conditions'
+import curfewRouter from './routes/curfew'
+import eligibilityRouter from './routes/eligibility'
+import finalChecksRouter from './routes/finalChecks'
+import reviewRouter from './routes/review'
+import reportingRouter from './routes/reporting'
+import riskRouter from './routes/risk'
+import victimRouter from './routes/victim'
+import { GotenbergClient } from './data/gotenbergClient'
+import { varyRouter } from './routes/vary'
+import { createRedisClient } from './data/redisClient'
+import { asyncMiddleware } from './utils/middleware'
 
 const version = moment.now().toString()
 const { production } = config
 
-module.exports = function createApp({
+export default function createApp({
   tokenVerifier,
   signInService,
   licenceService,
@@ -102,7 +102,7 @@ module.exports = function createApp({
   functionalMailboxService,
   roNotificationHandler,
   migrationService,
-}) {
+}): Express {
   const app = express()
 
   auth.init(userService, audit)
@@ -139,7 +139,7 @@ module.exports = function createApp({
   app.use((req, res, next) => {
     const headerName = 'X-Request-Id'
     const oldValue = req.get(headerName)
-    const id = oldValue === undefined ? uuid.v4() : oldValue
+    const id = oldValue === undefined ? randomUUID() : oldValue
 
     res.set(headerName, id)
     req.id = id
@@ -300,6 +300,7 @@ module.exports = function createApp({
     manageUsersApi: `${config.manageUsersApi.apiUrl}/health/ping`,
   })
 
+  app.use(appInsightsMiddleware())
   app.get('/health', (req, res, next) => {
     health((err, result) => {
       if (err) {

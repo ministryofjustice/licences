@@ -17,7 +17,6 @@ build
 uploads/*
 test-results.xml
 tests.log
-build-info.json
 .env
 coverage
 .nyc_output

@@ -24,7 +24,6 @@
     "integration-test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest --runInBand --testPathPatterns=/integration_test/.*",
     "lint": "eslint .",
     "typecheck": "tsc",
-    "record-build-info": "node ./bin/record-build-info",
     "clean": "rm -rf dist/* public/* .port.tmp *.log build/* uploads/* test-results.xml",
     "db:knex": "knex",
     "db:knex-migrate": "knex-migrate",
@@ -144,7 +143,6 @@
     "superagent": "^10.3.0",
     "swagger-ui-express": "^5.0.1",
     "util": "^0.12.5",
-    "uuid": "^13.0.0",
     "winston": "^3.19.0"
   },
   "devDependencies": {

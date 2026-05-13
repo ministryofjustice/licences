@@ -1,10 +1,6 @@
 import { DataTelemetry, EnvelopeTelemetry } from 'applicationinsights/out/Declarations/Contracts'
-import { addUserDataToRequests, ContextObject } from '../../server/utils/azureAppInsights'
-
-const user = {
-  activeCaseLoadId: 'LII',
-  username: 'test-user',
-}
+import { Contracts } from 'applicationinsights'
+import { ignoredDependenciesProcessor, ignoredRequestsProcessor } from '../../server/utils/azureAppInsights'
 
 const createEnvelope = (properties: Record<string, string | boolean>, baseType = 'RequestData') =>
   ({
@@ -14,61 +10,67 @@ const createEnvelope = (properties: Record<string, string | boolean>, baseType =
     } as DataTelemetry,
   }) as EnvelopeTelemetry
 
-const createContext = (username: string, activeCaseLoadId: string) =>
-  ({
-    'http.ServerRequest': {
-      res: {
-        locals: {
-          user: {
-            username,
-            activeCaseLoadId,
-          },
-        },
-      },
-    },
-  }) as ContextObject
-
-const context = createContext(user.username, user.activeCaseLoadId)
-
 describe('azureAppInsights', () => {
-  describe('addUserDataToRequests', () => {
-    it('adds user data to properties when present', () => {
-      const envelope = createEnvelope({ other: 'things' })
-
-      addUserDataToRequests(envelope, context)
-
-      expect(envelope.data.baseData.properties).toStrictEqual({
-        ...user,
-        other: 'things',
-      })
+  describe('ignoredRequestsProcessor', () => {
+    it.each([
+      ['GET /assets/some.css', false],
+      ['GET /health', false],
+      ['GET /ping', false],
+      ['GET /info', false],
+      ['GET /something-else', true],
+      ['GET /something-else/random', true],
+      ['GET /sandwich/health/with-something-else', true],
+    ])(`Request '%s' logged by app insights when request is successful: '%s'`, (name: string, logged: boolean) => {
+      const envelope = createEnvelope({}, 'RequestData')
+      const requestData = new Contracts.RequestData()
+      requestData.name = name
+      requestData.success = true
+      envelope.data.baseData = requestData
+      expect(ignoredRequestsProcessor(envelope)).toBe(logged)
     })
 
-    it('returns true when not RequestData type', () => {
-      const envelope = createEnvelope({}, 'NOT_REQUEST_DATA')
+    it.each([
+      'GET /assets/some.css',
+      'GET /health',
+      'GET /ping',
+      'GET /info',
+      'GET /something-else',
+      'GET /something-else/random',
+      'GET /sandwich/health/with-something-else',
+    ])(`Request '%s' is logged by app insights when request is not successful`, (name: string) => {
+      const envelope = createEnvelope({}, 'RequestData')
+      const requestData = new Contracts.RequestData()
+      requestData.name = name
+      requestData.success = false
+      envelope.data.baseData = requestData
+      expect(ignoredRequestsProcessor(envelope)).toBe(true)
+    })
+  })
 
-      const response = addUserDataToRequests(envelope, context)
-
-      expect(response).toStrictEqual(true)
+  describe('ignoredDependenciesProcessor', () => {
+    it.each([
+      ['sqs.eu-west-2.amazonaws.com', false],
+      ['sqs.us-east-1.amazonaws.com', false],
+      ['anything.else', true],
+    ])(`Dependency '%s' logged by app insights when request is successful: '%s'`, (target: string, logged: boolean) => {
+      const envelope = createEnvelope({}, 'RemoteDependencyData')
+      const requestData = new Contracts.RemoteDependencyData()
+      requestData.target = target
+      requestData.success = true
+      envelope.data.baseData = requestData
+      expect(ignoredDependenciesProcessor(envelope)).toBe(logged)
     })
 
-    it('handles when no properties have been set', () => {
-      const envelope = createEnvelope(undefined)
-
-      addUserDataToRequests(envelope, context)
-
-      expect(envelope.data.baseData.properties).toStrictEqual(user)
-    })
-
-    it('does not add additional properties as undefined if they are missing', () => {
-      const envelope = createEnvelope({ other: 'things' })
-
-      addUserDataToRequests(envelope, {
-        'http.ServerRequest': {},
-      } as ContextObject)
-
-      expect(envelope.data.baseData.properties).toStrictEqual({
-        other: 'things',
-      })
-    })
+    it.each(['sqs.eu-west-2.amazonaws.com', 'sqs.us-east-1.amazonaws.com', 'anything.else'])(
+      `Dependency '%s' is logged by app insights when request is not successful`,
+      (target: string) => {
+        const envelope = createEnvelope({}, 'RemoteDependencyData')
+        const requestData = new Contracts.RemoteDependencyData()
+        requestData.target = target
+        requestData.success = false
+        envelope.data.baseData = requestData
+        expect(ignoredDependenciesProcessor(envelope)).toBe(true)
+      },
+    )
   })
 })

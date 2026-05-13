@@ -17,7 +17,10 @@ module.exports = {
   production,
 
   enableTestUtils: get('ENABLE_TEST_UTILS', false),
-
+  buildNumber: get('BUILD_NUMBER', '1_0_0', { requireInProduction: true }),
+  productId: get('PRODUCT_ID', 'UNASSIGNED', { requireInProduction: true }),
+  gitRef: get('GIT_REF', 'xxxxxxxxxxxxxxxxxxx', { requireInProduction: true }),
+  branchName: get('GIT_BRANCH', 'xxxxxxxxxxxxxxxxxxx', { requireInProduction: true }),
   db: {
     username: get('DB_USER', 'licences'),
     password: get('DB_PASS', 'licences'),
