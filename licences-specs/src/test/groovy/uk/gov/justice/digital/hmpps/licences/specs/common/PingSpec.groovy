@@ -17,6 +17,6 @@ class PingSpec extends Specification {
     when:
     def response = http.get([path: '/ping'])
     then:
-    response == 'pong'
+    response.status == 'UP'
   }
 }

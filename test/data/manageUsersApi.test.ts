@@ -8,7 +8,7 @@ describe('manageUsersApi', () => {
   let client
 
   beforeEach(() => {
-    fakemanageUsers = nock(`${config.manageUsersApi.apiUrl}`)
+    fakemanageUsers = nock(`${config.apis.manageUsersApi.url}`)
     client = manageUsersApi('token')
   })
 

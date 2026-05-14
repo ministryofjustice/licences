@@ -16,7 +16,9 @@ import {
 } from '../../server/data/licenceClientTypes'
 import { Licence, LicenceStage, Risk, RiskManagement, FinalChecks, Postpone } from '../../server/data/licenceTypes'
 import { TaskState } from '../../server/services/config/taskState'
-import { riskManagementVersion, curfewAddressReviewVersion, postponeVersion } from '../../server/config'
+import config from '../../server/config'
+
+const { riskManagementVersion, curfewAddressReviewVersion, postponeVersion } = config
 
 jest.mock('../../server/services/utils/formValidation')
 
@@ -1229,11 +1231,11 @@ describe('licenceService', () => {
 
       test('should not update stage to MODIFIED if noModify is set in config', async () => {
         const originalLicence = { booking_id: bookingId, stage: 'DECIDED', licence }
-        const config = {
+        const sectionConfig = {
           fields: fieldMap,
           noModify: true,
         }
-        await service.update({ bookingId, originalLicence, config, userInput, licenceSection, formName })
+        await service.update({ bookingId, originalLicence, config: sectionConfig, userInput, licenceSection, formName })
 
         expect(licenceClient.updateStage).not.toHaveBeenCalled()
       })
@@ -1254,11 +1256,11 @@ describe('licenceService', () => {
 
       test('should not update stage if in config', async () => {
         const originalLicence = { booking_id: bookingId, stage: 'DECIDED', licence }
-        const config = {
+        const sectionConfig = {
           fields: fieldMap,
           modificationRequiresApproval: true,
         }
-        await service.update({ bookingId, originalLicence, config, userInput, licenceSection, formName })
+        await service.update({ bookingId, originalLicence, config: sectionConfig, userInput, licenceSection, formName })
 
         expect(licenceClient.updateStage).toHaveBeenCalled()
         expect(licenceClient.updateStage).toHaveBeenCalledWith(bookingId, 'MODIFIED_APPROVAL')
@@ -1266,7 +1268,7 @@ describe('licenceService', () => {
 
       test('should not update stage if no change', async () => {
         const originalLicence = { booking_id: bookingId, stage: 'DECIDED', licence }
-        const config = {
+        const sectionConfig = {
           fields: fieldMap,
           modificationRequiresApproval: true,
         }
@@ -1276,7 +1278,7 @@ describe('licenceService', () => {
         await service.update({
           bookingId,
           originalLicence,
-          config,
+          config: sectionConfig,
           userInput: bespokeUserInput,
           licenceSection,
           formName,
@@ -1287,7 +1289,7 @@ describe('licenceService', () => {
 
       test('should not update stage if not in DECIDED state', async () => {
         const originalLicence = { booking_id: bookingId, stage: 'PROCESSING_RO', licence }
-        const config = {
+        const sectionConfig = {
           fields: fieldMap,
           modificationRequiresApproval: true,
         }
@@ -1297,7 +1299,7 @@ describe('licenceService', () => {
         await service.update({
           bookingId,
           originalLicence,
-          config,
+          config: sectionConfig,
           userInput: bespokeUserInput,
           licenceSection,
           formName,

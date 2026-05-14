@@ -89,7 +89,7 @@ export default class MigrationService {
 
   private getFlags(deliusUser: DeliusUser, authUser, licenceUser, deliusStaffDetails, failedToLoadAuth: boolean) {
     const deliusRoles = deliusUser ? deliusUser.roles : []
-    const hasRoRole = deliusRoles.includes(config.delius.responsibleOfficerRoleId)
+    const hasRoRole = deliusRoles.includes(config.apis.delius.responsibleOfficerRoleId)
 
     const hasVaryRole = authUser?.roles.includes('LICENCE_VARY')
 

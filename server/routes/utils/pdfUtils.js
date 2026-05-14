@@ -3,7 +3,7 @@ const {
   pdf: {
     forms: { formsFileDateFormat },
   },
-} = require('../../config')
+} = require('../../config').default
 
 function curfewAddressCheckFormFileName(prisoner) {
   const fileDate = moment().format(formsFileDateFormat)

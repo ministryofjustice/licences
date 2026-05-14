@@ -1,12 +1,16 @@
 /** @type {any} */
 const moment = require('moment-business-days')
-const { dueDateFormat, roNewCaseWorkingDays, roNewCaseTodayCutOff } = require('../config').notifications
+const config = require('../config').default
+
+const {
+  notifications: { dueDateFormat, roNewCaseWorkingDays, roNewCaseTodayCutOff }
+} = config
 
 module.exports = {
   getRoCaseDueDate,
   getRoNewCaseDueDate,
   getRoOverdueCasesDate,
-  getRoDueCasesDates,
+  getRoDueCasesDates
 }
 
 const holidaysLocalName = 'holidaysLocale'
@@ -49,7 +53,7 @@ function getRoDueCasesDates(workingDaysUntilDue) {
     from: now
       .businessSubtract(workingDaysBefore + 1)
       .hour(roNewCaseTodayCutOff)
-      .format('YYYY-MM-DD HH:00:00'),
+      .format('YYYY-MM-DD HH:00:00')
   }
 }
 
@@ -72,7 +76,7 @@ moment.defineLocale(holidaysLocale, {
     '25-05-2020',
     '31-08-2020',
     '25-12-2020',
-    '28-12-2020',
+    '28-12-2020'
   ],
-  holidayFormat: 'DD-MM-YYYY',
+  holidayFormat: 'DD-MM-YYYY'
 })

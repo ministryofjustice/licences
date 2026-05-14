@@ -8,7 +8,7 @@ describe('probationSearchApi', () => {
   let client
 
   beforeEach(() => {
-    fakeProbationSearch = nock(`${config.probationSearchApi.apiUrl}`)
+    fakeProbationSearch = nock(`${config.apis.probationSearchApi.url}`)
     client = probationSearchApi('token')
   })
 

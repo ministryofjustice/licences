@@ -1,7 +1,7 @@
-const fs = require('fs')
-const config = require('./server/config')
+import fs from 'fs'
+import config from './server/config'
 
-module.exports = {
+export default {
   // knex-migrate doesn't work unless this is here
   client: 'pg',
   connection: {

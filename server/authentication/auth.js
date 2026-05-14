@@ -2,7 +2,7 @@ const passport = require('passport')
 const OauthStrategy = require('passport-oauth2').Strategy
 const querystring = require('querystring')
 const strategies = require('./authInit')
-const config = require('../config')
+const config = require('../config').default
 const { generateOauthClientToken } = require('./oauth')
 
 const authenticationMiddleware = (signInService, tokenVerifier) => {
@@ -39,10 +39,10 @@ const init = (userService, audit) => {
   passport.use(
     new OauthStrategy(
       {
-        authorizationURL: `${config.nomis.authExternalUrl}/oauth/authorize`,
-        tokenURL: `${config.nomis.authUrl}/oauth/token`,
-        clientID: config.nomis.apiClientId,
-        clientSecret: config.nomis.apiClientSecret,
+        authorizationURL: `${config.apis.nomis.authExternalUrl}/oauth/authorize`,
+        tokenURL: `${config.apis.nomis.authUrl}/oauth/token`,
+        clientID: config.apis.nomis.apiClientId,
+        clientSecret: config.apis.nomis.apiClientSecret,
         callbackURL: `${config.domain}/login/callback`,
         state: true,
         customHeaders: { Authorization: generateOauthClientToken() },

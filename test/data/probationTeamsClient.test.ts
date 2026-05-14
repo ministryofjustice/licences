@@ -14,20 +14,20 @@ describe('probationTeamsClient', () => {
   let signInService: any
 
   beforeEach(() => {
-    fakeProbationTeamsService = nock(`${config.probationTeams.apiUrl}`)
+    fakeProbationTeamsService = nock(`${config.apis.probationTeams.url}`)
     signInService = {
       getAnonymousClientCredentialsTokens: jest.fn().mockResolvedValue('token'),
     }
     const restClient = buildRestClient(
       clientCredentialsTokenSource(signInService, 'probationTeams'),
-      config.probationTeams.apiUrl,
+      config.apis.probationTeams.url,
       'probation-teams',
       {
         timeout: {
           response: 1000,
           deadline: 1500,
         },
-        agent: config.probationTeams.agent,
+        agent: config.apis.probationTeams.agent,
       }
     )
     probationTeamsClient = new ProbationTeamsClient(restClient)

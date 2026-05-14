@@ -11,22 +11,22 @@ type Role = {
 }
 
 const timeoutSpec = {
-  response: config.manageUsersApi.timeout.response,
-  deadline: config.manageUsersApi.timeout.deadline,
+  response: config.apis.manageUsersApi.timeout.response,
+  deadline: config.apis.manageUsersApi.timeout.deadline,
 }
 
-const { apiUrl } = config.manageUsersApi
+const { url } = config.apis.manageUsersApi
 
 const agentOptions = {
-  maxSockets: config.manageUsersApi.agent.maxSockets,
-  maxFreeSockets: config.manageUsersApi.agent.maxFreeSockets,
-  freeSocketTimeout: config.manageUsersApi.agent.freeSocketTimeout,
+  maxSockets: config.apis.manageUsersApi.agent.maxSockets,
+  maxFreeSockets: config.apis.manageUsersApi.agent.maxFreeSockets,
+  freeSocketTimeout: config.apis.manageUsersApi.agent.freeSocketTimeout,
 }
 
 export = (token) => {
   const tokenSource = constantTokenSource(token)
 
-  const manageUsersRestClient = buildRestClient(tokenSource, apiUrl, 'Manage users API', {
+  const manageUsersRestClient = buildRestClient(tokenSource, url, 'Manage users API', {
     agent: agentOptions,
     timeout: timeoutSpec,
   })

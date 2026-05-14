@@ -68,14 +68,10 @@ class WebsiteSpec extends GebReportingSpec {
     def response = new JsonSlurper().parseText(json)
 
     response.uptime > 0.0
-    response.name == "Licences"
     !response.version.isEmpty()
-    response.api == [
-      prisonApi     : 'UP',
-      auth          : 'UP',
-      delius        : 'UP',
-      probationTeams: 'UP',
-      manageUsersApi: 'UP'
-    ]
+    response.components.nomis.status == 'UP'
+    response.components.delius.status == 'UP'
+    response.components.manageUsersApi.status == 'UP'
+    response.components.probationTeams.status == 'UP'
   }
 }

@@ -1,14 +1,14 @@
-const config = require('../config')
+const config = require('../config').default
 
 const generate = (clientId, clientSecret) => {
   const token = Buffer.from(`${clientId}:${clientSecret}`).toString('base64')
   return `Basic ${token}`
 }
 
-const generateOauthClientToken = () => generate(config.nomis.apiClientId, config.nomis.apiClientSecret)
+const generateOauthClientToken = () => generate(config.apis.nomis.apiClientId, config.apis.nomis.apiClientSecret)
 
 const generateAdminOauthClientToken = (service) =>
-  generate(config[service].admin.apiClientId, config[service].admin.apiClientSecret)
+  generate(config.apis[service].admin.apiClientId, config.apis[service].admin.apiClientSecret)
 
 module.exports = {
   generateOauthClientToken,
