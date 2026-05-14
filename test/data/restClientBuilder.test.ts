@@ -196,15 +196,15 @@ describe('restClientBuilder', () => {
     it('returns a token', async () => {
       const signInService = new SignInService(null)
       signInService.getAnonymousClientCredentialsTokens = jest.fn().mockResolvedValue('t')
-      const tokenSource = clientCredentialsTokenSource(signInService, 'serviceName')
+      const tokenSource = clientCredentialsTokenSource(signInService)
       expect(await tokenSource()).toEqual('t')
-      expect(signInService.getAnonymousClientCredentialsTokens).toHaveBeenCalledWith('serviceName')
+      expect(signInService.getAnonymousClientCredentialsTokens).toHaveBeenCalledWith()
     })
 
     it('throws error on missing token', async () => {
       const signInService = new SignInService(null)
       signInService.getAnonymousClientCredentialsTokens = jest.fn().mockResolvedValue('')
-      const tokenSource = clientCredentialsTokenSource(signInService, 'serviceName')
+      const tokenSource = clientCredentialsTokenSource(signInService)
       expect(tokenSource()).rejects.toThrow('Error obtaining OAuth token')
     })
   })

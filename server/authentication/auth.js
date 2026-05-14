@@ -39,10 +39,10 @@ const init = (userService, audit) => {
   passport.use(
     new OauthStrategy(
       {
-        authorizationURL: `${config.apis.nomis.authExternalUrl}/oauth/authorize`,
-        tokenURL: `${config.apis.nomis.authUrl}/oauth/token`,
-        clientID: config.apis.nomis.apiClientId,
-        clientSecret: config.apis.nomis.apiClientSecret,
+        authorizationURL: `${config.apis.auth.authExternalUrl}/oauth/authorize`,
+        tokenURL: `${config.apis.auth.url}/oauth/token`,
+        clientID: config.apis.auth.apiClientId,
+        clientSecret: config.apis.auth.apiClientSecret,
         callbackURL: `${config.domain}/login/callback`,
         state: true,
         customHeaders: { Authorization: generateOauthClientToken() },

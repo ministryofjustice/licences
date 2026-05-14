@@ -11,7 +11,7 @@ describe('nomisClient', () => {
 
   beforeEach(() => {
     fakeNomis = nock(`${config.apis.nomis.url}`)
-    fakeAuth = nock(`${config.apis.nomis.authUrl}`)
+    fakeAuth = nock(`${config.apis.auth.url}`)
     nomisClient = nomisClientBuilder('token')
   })
 
