@@ -1,6 +1,6 @@
 const nock = require('nock')
 
-const config = require('../../server/config')
+const config = require('../../server/config').default
 const nomisClientBuilder = require('../../server/data/nomisClientBuilder')
 const { unauthorisedError } = require('../../server/utils/errors')
 
@@ -10,8 +10,8 @@ describe('nomisClient', () => {
   let nomisClient
 
   beforeEach(() => {
-    fakeNomis = nock(`${config.nomis.apiUrl}`)
-    fakeAuth = nock(`${config.nomis.authUrl}`)
+    fakeNomis = nock(`${config.apis.nomis.url}`)
+    fakeAuth = nock(`${config.apis.nomis.authUrl}`)
     nomisClient = nomisClientBuilder('token')
   })
 

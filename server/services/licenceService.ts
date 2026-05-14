@@ -9,7 +9,9 @@ import { AddressReview, Licence, LicenceConditions, LicenceStage, Postpone, Risk
 import { pickCurfewAddressPath } from './utils/pdfFormatter'
 import { AdditionalConditionsVersion, StandardConditionsVersion } from '../data/licenceClientTypes'
 import { Decisions, Tasks } from './licence/licenceStatusTypes'
-import { curfewAddressReviewVersion, postponeVersion, riskManagementVersion } from '../config'
+import config from '../config'
+
+const { curfewAddressReviewVersion, postponeVersion, riskManagementVersion } = config
 
 const {
   getIn,
@@ -275,7 +277,7 @@ export class LicenceService {
 
   private getFormResponse = (fieldMap, userInput) => fieldMap.reduce(this.answersFromMapReducer(userInput), {})
 
-  async update({ bookingId, originalLicence, config, userInput, licenceSection, formName, postRelease = false }) {
+  async update({ bookingId, originalLicence, config: sectionConfig, userInput, licenceSection, formName, postRelease = false }) {
     const stage = getIn(originalLicence, ['stage'])
     const licence = getIn(originalLicence, ['licence'])
 
@@ -285,7 +287,7 @@ export class LicenceService {
 
     const updatedLicence = this.getUpdatedLicence({
       licence,
-      fieldMap: config.fields,
+      fieldMap: sectionConfig.fields,
       userInput,
       licenceSection,
       formName,
@@ -298,8 +300,8 @@ export class LicenceService {
     await this.licenceClient.updateLicence(bookingId, updatedLicence, postRelease)
 
     await this.updateModificationStage(bookingId, stage, {
-      requiresApproval: config.modificationRequiresApproval,
-      noModify: config.noModify,
+      requiresApproval: sectionConfig.modificationRequiresApproval,
+      noModify: sectionConfig.noModify,
     })
 
     return updatedLicence

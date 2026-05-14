@@ -9,8 +9,8 @@ import type TokenStore from '../data/tokenStore'
 const handleError = buildErrorHandler('OAuth')
 
 const timeoutSpec = {
-  response: config.nomis.timeout.response,
-  deadline: config.nomis.timeout.deadline,
+  response: config.apis.nomis.timeout.response,
+  deadline: config.apis.nomis.timeout.deadline,
 }
 
 export = class SignInService {
@@ -59,7 +59,7 @@ const getOauthToken = (oauthClientToken, requestSpec, service) => {
   const oauthRequest = querystring.stringify(requestSpec)
 
   return superagent
-    .post(`${config[service].authUrl}/oauth/token`)
+    .post(`${config.apis[service].authUrl}/oauth/token`)
     .set('Authorization', oauthClientToken)
     .set('content-type', 'application/x-www-form-urlencoded')
     .send(oauthRequest)

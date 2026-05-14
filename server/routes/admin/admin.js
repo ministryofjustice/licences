@@ -1,5 +1,5 @@
 const { authorisationMiddleware } = require('../../utils/middleware')
-const { links } = require('../../config')
+const { links } = require('../../config').default
 
 module.exports = () => (router) => {
   router.use(authorisationMiddleware)

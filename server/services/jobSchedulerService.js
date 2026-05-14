@@ -1,6 +1,6 @@
 const schedule = require('node-schedule')
 const moment = require('moment')
-const config = require('../config')
+const config = require('../config').default
 const logger = require('../../log')
 const createJobUtils = require('./jobs/jobUtils')
 

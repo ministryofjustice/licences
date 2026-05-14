@@ -1,6 +1,6 @@
 const logger = require('../../log')
 const { asyncMiddleware, authorisationMiddleware } = require('../utils/middleware')
-const config = require('../config')
+const config = require('../config').default
 
 module.exports =
   ({ caseListService }) =>

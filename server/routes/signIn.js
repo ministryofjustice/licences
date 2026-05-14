@@ -1,7 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const passport = require('passport')
-const { domain } = require('../config')
+const { domain } = require('../config').default
 
 module.exports = () => {
   const router = express.Router()

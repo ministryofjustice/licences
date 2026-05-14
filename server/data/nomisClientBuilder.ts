@@ -4,17 +4,17 @@ import { isEmpty, merge, pipe, splitEvery } from '../utils/functionalHelpers'
 import { buildRestClient, constantTokenSource } from './restClientBuilder'
 
 const timeoutSpec = {
-  response: config.nomis.timeout.response,
-  deadline: config.nomis.timeout.deadline,
+  response: config.apis.nomis.timeout.response,
+  deadline: config.apis.nomis.timeout.deadline,
 }
 
-const { apiUrl, authUrl } = config.nomis
+const { url, authUrl } = config.apis.nomis
 const invalidDate = 'Invalid date'
 
 const agentOptions = {
-  maxSockets: config.nomis.agent.maxSockets,
-  maxFreeSockets: config.nomis.agent.maxFreeSockets,
-  freeSocketTimeout: config.nomis.agent.freeSocketTimeout,
+  maxSockets: config.apis.nomis.agent.maxSockets,
+  maxFreeSockets: config.apis.nomis.agent.maxFreeSockets,
+  freeSocketTimeout: config.apis.nomis.agent.freeSocketTimeout,
 }
 
 const batchRequests = async (args, batchSize, call) => {
@@ -74,7 +74,7 @@ function addReleaseDate(prisoner) {
 export = (token) => {
   const tokenSource = constantTokenSource(token)
 
-  const nomisRestClient = buildRestClient(tokenSource, apiUrl, 'Prison API', {
+  const nomisRestClient = buildRestClient(tokenSource, url, 'Prison API', {
     agent: agentOptions,
     timeout: timeoutSpec,
   })

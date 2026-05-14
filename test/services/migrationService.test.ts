@@ -1,6 +1,8 @@
 import MigrationService, { Flag } from '../../server/services/migrationService'
-import { delius } from '../../server/config'
+import config from '../../server/config'
 import { DeliusClient, DeliusUser, StaffDetails } from '../../server/data/deliusClient'
+
+const {apis: { delius }} = config
 
 jest.mock('../../server/data/deliusClient')
 

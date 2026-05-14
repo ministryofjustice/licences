@@ -1,11 +1,12 @@
 /* eslint-disable import/first */
 // eslint-disable-next-line import/no-import-module-exports
-import applicationInfo from './applicationInfo'
+import getApplicationInfo from './applicationInfo'
 
 import { initialiseAppInsights, buildAppInsightsClient } from './utils/azureAppInsights'
 
 initialiseAppInsights()
-const appInsightsClient = buildAppInsightsClient(applicationInfo())
+const applicationInfo = getApplicationInfo()
+const appInsightsClient = buildAppInsightsClient(applicationInfo)
 // eslint-disable-next-line import/order
 import { NotifyClient } from 'notifications-node-client'
 import createApp from './app'
@@ -70,9 +71,9 @@ import { createHdcService } from './services/hdc/hdcService'
 const signInService = new SignInService(new TokenStore(createRedisClient()))
 
 const hdcClient = new HdcClient(
-  buildRestClient(clientCredentialsTokenSource(signInService, 'hdc'), config.hdc.apiUrl, 'HDC API', {
-    timeout: config.hdc.timeout,
-    agent: config.hdc.agent,
+  buildRestClient(clientCredentialsTokenSource(signInService, 'hdc'), config.apis.hdc.url, 'HDC API', {
+    timeout: config.apis.hdc.timeout,
+    agent: config.apis.hdc.agent,
   })
 )
 
@@ -83,18 +84,18 @@ const hdcService = createHdcService(hdcClient, licenceService, conditionsService
 const deliusClient = new DeliusClient(
   buildRestClient(
     clientCredentialsTokenSource(signInService, 'delius'),
-    config.delius.apiUrl,
+    config.apis.delius.url,
     'Delius Integration API',
-    { timeout: config.delius.timeout, agent: config.delius.agent }
+    { timeout: config.apis.delius.timeout, agent: config.apis.delius.agent }
   )
 )
 
 const probationTeamsClient = new ProbationTeamsClient(
   buildRestClient(
     clientCredentialsTokenSource(signInService, 'probationTeams'),
-    config.probationTeams.apiUrl,
+    config.apis.probationTeams.url,
     'probation-teams',
-    { timeout: config.probationTeams.timeout, agent: config.probationTeams.agent }
+    { timeout: config.apis.probationTeams.timeout, agent: config.apis.probationTeams.agent }
   )
 )
 
@@ -164,7 +165,7 @@ const lduService = createLduService(deliusClient, activeLduClient)
 const functionalMailboxService = new FunctionalMailboxService(deliusClient, probationTeamsClient, audit)
 const licenceSearchService = createLicenceSearchService(licenceClient, signInService, nomisClientBuilder)
 const reportsService = new ReportsService(licenceClient, signInService, prisonerSearchApi, probationSearchApi)
-const tokenVerifier = tokenVerifierFactory(config.tokenVerification)
+const tokenVerifier = tokenVerifierFactory(config.apis.tokenVerification)
 
 const app = createApp({
   tokenVerifier,
@@ -193,6 +194,7 @@ const app = createApp({
   functionalMailboxService,
   roNotificationHandler,
   migrationService,
+  applicationInfo,
 })
 
 export default app

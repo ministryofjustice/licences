@@ -12,7 +12,7 @@ const NullTokenVerifier = require('../server/authentication/tokenverifier/NullTo
 const { createSignInServiceStub, createPrisonerServiceStub, createLicenceServiceStub } = require('./mockServices')
 const standardRouter = require('../server/routes/routeWorkers/standardRouter')
 const { GotenbergClient } = require('../server/data/gotenbergClient')
-const { links } = require('../server/config')
+const { links } = require('../server/config').default
 
 function testFormPageGets(app, routes, licenceServiceStub) {
   describe('licence exists for bookingId', () => {

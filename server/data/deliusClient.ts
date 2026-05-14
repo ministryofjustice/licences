@@ -100,7 +100,7 @@ export class DeliusClient {
   }
 
   addResponsibleOfficerRole(username: string): Promise<void> {
-    return this.addRole(username, config.delius.responsibleOfficerRoleId)
+    return this.addRole(username, config.apis.delius.responsibleOfficerRoleId)
   }
 
   async addRole(username: string, code: string): Promise<void> {

@@ -1,7 +1,7 @@
 const request = require('supertest')
 const { mockAudit } = require('../mockClients')
 const { appSetup } = require('../supertestSetup')
-const config = require('../../server/config')
+const config = require('../../server/config').default
 
 const {
   caseListServiceStub,

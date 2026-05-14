@@ -18,7 +18,7 @@ import ensureHttps from './utils/ensureHttps'
 import pdfRenderer from './utils/renderPdf'
 
 import config from './config'
-import healthFactory from './services/healthcheck'
+import setUpHealthChecks from './utils/setUpHealthChecks'
 
 import logger from '../log'
 import auth from './authentication/auth'
@@ -102,6 +102,7 @@ export default function createApp({
   functionalMailboxService,
   roNotificationHandler,
   migrationService,
+  applicationInfo,
 }): Express {
   const app = express()
 
@@ -117,7 +118,7 @@ export default function createApp({
   app.set('views', path.join(__dirname, './views'))
   app.set('view engine', 'pug')
 
-  app.use(pdfRenderer(new GotenbergClient(config.gotenberg.apiUrl)))
+  app.use(pdfRenderer(new GotenbergClient(config.apis.gotenberg.url)))
 
   // Server Configuration
   app.set('port', config.port)
@@ -235,8 +236,8 @@ export default function createApp({
       user: req.user,
       currentUrlPath: req.baseUrl + req.path,
       hostname: req.hostname,
-      authUrl: config.nomis.authUrl,
-      apiClientId: config.nomis.apiClientId,
+      authUrl: config.apis.nomis.authUrl,
+      apiClientId: config.apis.nomis.apiClientId,
       exitUrl: config.links.exitUrl,
     }
     next()
@@ -292,29 +293,8 @@ export default function createApp({
     })
   )
 
-  const health = healthFactory({
-    prisonApi: `${config.nomis.apiUrl}/health/ping`,
-    auth: `${config.nomis.authUrl}/health/ping`,
-    delius: `${config.delius.apiUrl}/health/ping`,
-    probationTeams: `${config.probationTeams.apiUrl}/health/ping`,
-    manageUsersApi: `${config.manageUsersApi.apiUrl}/health/ping`,
-  })
-
   app.use(appInsightsMiddleware())
-  app.get('/health', (req, res, next) => {
-    health((err, result) => {
-      if (err) {
-        return next(err)
-      }
-      if (!(result.status === 'UP')) {
-        res.status(503)
-      }
-      res.json(result)
-      return result
-    })
-  })
-
-  app.get('/ping', (req, res) => res.send('pong'))
+  app.use(setUpHealthChecks(applicationInfo))
 
   app.get('/robots.txt', (req, res) => {
     res.type('text/plain')
@@ -334,7 +314,7 @@ export default function createApp({
     return res.render('notfound')
   })
 
-  const authLogoutUrl = `${config.nomis.authExternalUrl}/logout?client_id=${config.nomis.apiClientId}&redirect_uri=${config.domain}`
+  const authLogoutUrl = `${config.apis.nomis.authExternalUrl}/logout?client_id=${config.apis.nomis.apiClientId}&redirect_uri=${config.domain}`
 
   app.get('/autherror', (req, res) => {
     res.status(401)

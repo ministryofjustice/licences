@@ -1,4 +1,4 @@
-const config = require('../../../config')
+const config = require('../../../config').default
 const { tasklist, namedTask } = require('./tasklistBuilder')
 const { postponeOrRefuse } = require('./tasks/postponement')
 const bassAddress = require('./tasks/bassAddress')

@@ -9,10 +9,12 @@ import PdfService from '../services/pdfService'
 import { PrisonerService } from '../services/prisonerService'
 
 const {
-  gotenberg: { hdcUrl },
-  pdf: {
-    licences: { pdfOptions },
+  apis: {
+    gotenberg: { hdcUrl }
   },
+  pdf: {
+    licences: { pdfOptions }
+  }
 } = config
 
 export default (pdfService: PdfService, prisonerService: PrisonerService) => (router, audited) => {
@@ -30,7 +32,7 @@ export default (pdfService: PdfService, prisonerService: PrisonerService) => (ro
         prisoner,
         errors,
         licenceTemplateId: template?.decision,
-        offenceCommittedBeforeFeb2015: template?.offenceCommittedBeforeFeb2015,
+        offenceCommittedBeforeFeb2015: template?.offenceCommittedBeforeFeb2015
       })
     })
   )
@@ -76,7 +78,7 @@ export default (pdfService: PdfService, prisonerService: PrisonerService) => (ro
 
       const [prisoner, { missing }] = await Promise.all([
         prisonerService.getPrisonerPersonalDetails(bookingId, token),
-        pdfService.getPdfLicenceData(bookingId, licence, token),
+        pdfService.getPdfLicenceData(bookingId, licence, token)
       ])
 
       const postRelease = prisoner.agencyLocationId ? prisoner.agencyLocationId.toUpperCase() === 'OUT' : false
@@ -100,7 +102,7 @@ export default (pdfService: PdfService, prisonerService: PrisonerService) => (ro
         incompletePreferredGroups,
         canPrint,
         postRelease,
-        versionInfo: versionInfo(licence),
+        versionInfo: versionInfo(licence)
       })
     })
   )
@@ -116,7 +118,7 @@ export default (pdfService: PdfService, prisonerService: PrisonerService) => (ro
 
       const [prisoner, { missing }] = await Promise.all([
         prisonerService.getPrisonerPersonalDetails(bookingId, res.locals.token),
-        pdfService.getPdfLicenceData(bookingId, licence, res.locals.token),
+        pdfService.getPdfLicenceData(bookingId, licence, res.locals.token)
       ])
 
       const data = {}
@@ -126,7 +128,7 @@ export default (pdfService: PdfService, prisonerService: PrisonerService) => (ro
         missing,
         templateName,
         prisoner,
-        data,
+        data
       })
     })
   )

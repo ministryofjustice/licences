@@ -35,9 +35,9 @@ const writeStdOut = (data) =>
 
 const oauthRestClient = buildRestClient(
   clientCredentialsTokenSource(new SignInService(new TokenStore(createRedisClient())), 'nomis'),
-  `${config.nomis.authUrl}`,
+  `${config.apis.nomis.authUrl}`,
   'OAuth API',
-  { timeout: config.nomis.timeout, agent: config.nomis.agent },
+  { timeout: config.apis.nomis.timeout, agent: config.apis.nomis.agent },
 )
 
 const disableAuthUser = (username) => oauthRestClient.putResource(`/api/authuser/${username}/disable`, {})

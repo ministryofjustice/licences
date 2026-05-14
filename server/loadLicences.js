@@ -2,7 +2,7 @@
 const fs = require('fs')
 const fsp = require('fs').promises
 const { Client } = require('pg')
-const config = require('./config')
+const config = require('./config').default
 
 const fname = process.argv[2]
 

@@ -1,13 +1,17 @@
 const logger = require('../../../log')
 const { asyncMiddleware, authorisationMiddleware } = require('../../utils/middleware')
 const { firstItem } = require('../../utils/functionalHelpers')
+const config = require('../../config').default
+
 const {
-  delius: { responsibleOfficerRoleId, responsibleOfficerVaryRoleId },
-} = require('../../config')
+  apis: {
+    delius: { responsibleOfficerRoleId, responsibleOfficerVaryRoleId }
+  }
+} = config
 
 const codes = {
   [responsibleOfficerRoleId]: 'RO',
-  [responsibleOfficerVaryRoleId]: 'VARY',
+  [responsibleOfficerVaryRoleId]: 'VARY'
 }
 
 module.exports = (migrationService) => (router) => {

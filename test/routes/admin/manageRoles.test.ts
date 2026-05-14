@@ -5,7 +5,9 @@ import createManageRoles from '../../../server/routes/admin/manageRoles'
 import config from '../../../server/config'
 
 const {
-  delius: { responsibleOfficerRoleId, responsibleOfficerVaryRoleId },
+  apis: {
+    delius: { responsibleOfficerRoleId, responsibleOfficerVaryRoleId }
+  }
 } = config
 
 describe('/manage-roles', () => {
@@ -14,7 +16,7 @@ describe('/manage-roles', () => {
   beforeEach(() => {
     migrationService = {
       getDeliusRoles: jest.fn(),
-      addDeliusRole: jest.fn(),
+      addDeliusRole: jest.fn()
     }
   })
 

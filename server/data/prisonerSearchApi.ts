@@ -3,22 +3,22 @@ import { isEmpty, batchRequests } from '../utils/functionalHelpers'
 import { buildRestClient, constantTokenSource } from './restClientBuilder'
 
 const timeoutSpec = {
-  response: config.prisonerSearchApi.timeout.response,
-  deadline: config.prisonerSearchApi.timeout.deadline,
+  response: config.apis.prisonerSearchApi.timeout.response,
+  deadline: config.apis.prisonerSearchApi.timeout.deadline,
 }
 
-const { apiUrl } = config.prisonerSearchApi
+const { url } = config.apis.prisonerSearchApi
 
 const agentOptions = {
-  maxSockets: config.prisonerSearchApi.agent.maxSockets,
-  maxFreeSockets: config.prisonerSearchApi.agent.maxFreeSockets,
-  freeSocketTimeout: config.prisonerSearchApi.agent.freeSocketTimeout,
+  maxSockets: config.apis.prisonerSearchApi.agent.maxSockets,
+  maxFreeSockets: config.apis.prisonerSearchApi.agent.maxFreeSockets,
+  freeSocketTimeout: config.apis.prisonerSearchApi.agent.freeSocketTimeout,
 }
 
 export = (token) => {
   const tokenSource = constantTokenSource(token)
 
-  const oauthRestClient = buildRestClient(tokenSource, apiUrl, 'Prisoner Search API', {
+  const oauthRestClient = buildRestClient(tokenSource, url, 'Prisoner Search API', {
     agent: agentOptions,
     timeout: timeoutSpec,
   })

@@ -1,6 +1,6 @@
 const nock = require('nock')
 
-const config = require('../../server/config')
+const config = require('../../server/config').default
 const { buildRestClient, clientCredentialsTokenSource } = require('../../server/data/restClientBuilder')
 const { DeliusClient } = require('../../server/data/deliusClient')
 const SignInService = require('../../server/authentication/signInService')
@@ -13,14 +13,14 @@ describe('deliusClient', () => {
   let signInService
 
   beforeEach(() => {
-    fakeDelius = nock(config.delius.apiUrl)
+    fakeDelius = nock(config.apis.delius.url)
     signInService = new SignInService(null)
     signInService.getAnonymousClientCredentialsTokens = jest.fn().mockResolvedValue('token')
     const restClient = buildRestClient(
       clientCredentialsTokenSource(signInService, 'delius'),
-      config.delius.apiUrl,
+      config.apis.delius.url,
       'Delius Integration API',
-      { timeout: config.delius.timeout, agent: config.delius.agent }
+      { timeout: config.apis.delius.timeout, agent: config.apis.delius.agent }
     )
     deliusClient = new DeliusClient(restClient)
   })
@@ -148,13 +148,13 @@ describe('deliusClient', () => {
 
   describe('addResponsbileOfficerRole', () => {
     test('should return data from api', () => {
-      fakeDelius.put(`/users/testUser/roles/${config.delius.responsibleOfficerRoleId}`).reply(200)
+      fakeDelius.put(`/users/testUser/roles/${config.apis.delius.responsibleOfficerRoleId}`).reply(200)
 
       return expect(deliusClient.addResponsibleOfficerRole('testUser')).resolves.toBeUndefined()
     })
 
     test('should ignore errors', () => {
-      fakeDelius.put(`/users/testUser/roles/${config.delius.responsibleOfficerRoleId}`).reply(500)
+      fakeDelius.put(`/users/testUser/roles/${config.apis.delius.responsibleOfficerRoleId}`).reply(500)
 
       return expect(deliusClient.addResponsibleOfficerRole('testUser')).resolves.toBeUndefined()
     })

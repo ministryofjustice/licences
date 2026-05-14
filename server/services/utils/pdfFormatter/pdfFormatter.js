@@ -3,7 +3,7 @@ const moment = require('moment')
 const romanise = require('romannumerals')
 const { isEmpty, mergeWithRight, selectPathsFrom, isYes } = require('../../../utils/functionalHelpers')
 const pdfData = require('../../config/pdfData')
-const config = require('../../../config')
+const config = require('../../../config').default
 const { bassApprovedPremisesRequired, curfewApprovedPremisesRequired } = require('../../licence/curfewAddressState')
 
 const DEFAULT_PLACEHOLDER = 'N/A'

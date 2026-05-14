@@ -10,7 +10,7 @@ import { ConditionsServiceFactory } from '../services/conditionsService'
 
 const {
   port,
-  gotenberg: { hdcUrl },
+  apis: { gotenberg: { hdcUrl } },
   pdf: {
     forms: {
       formTemplates,
