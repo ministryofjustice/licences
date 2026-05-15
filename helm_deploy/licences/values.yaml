@@ -2,7 +2,7 @@ generic-service:
   enabled: true
   nameOverride: licences
   replicaCount: 4
-  productId: "DPS062"
+  productId: 'DPS062'
 
   image:
     repository: quay.io/hmpps/licences
@@ -15,7 +15,7 @@ generic-service:
       - app-hostname.local # override per environment
     tlsSecretName: licences-cert
     annotations:
-      external-dns.alpha.kubernetes.io/aws-weight: "100"
+      external-dns.alpha.kubernetes.io/aws-weight: '100'
 
   livenessProbe:
     httpGet:
@@ -27,33 +27,68 @@ generic-service:
 
   namespace_secrets:
     dps-rds-instance-output:
-      DB_NAME: "database_name"
-      DB_SERVER: "rds_instance_address"
-      DB_USER: "database_username"
-      DB_PASS: "database_password"
+      DB_NAME: 'database_name'
+      DB_SERVER: 'rds_instance_address'
+      DB_USER: 'database_username'
+      DB_PASS: 'database_password'
 
     licences:
-      API_CLIENT_ID: "API_CLIENT_ID"
-      API_CLIENT_SECRET: "API_CLIENT_SECRET"
-      ADMIN_API_CLIENT_ID: "ADMIN_API_CLIENT_ID"
-      ADMIN_API_CLIENT_SECRET: "ADMIN_API_CLIENT_SECRET"
-      APPINSIGHTS_INSTRUMENTATIONKEY: "APPINSIGHTS_INSTRUMENTATIONKEY"
-      NOTIFY_API_KEY: "NOTIFY_API_KEY"
-      TAG_MANAGER_KEY: "TAG_MANAGER_KEY"
+      API_CLIENT_ID: 'API_CLIENT_ID'
+      API_CLIENT_SECRET: 'API_CLIENT_SECRET'
+      ADMIN_API_CLIENT_ID: 'ADMIN_API_CLIENT_ID'
+      ADMIN_API_CLIENT_SECRET: 'ADMIN_API_CLIENT_SECRET'
+      APPINSIGHTS_INSTRUMENTATIONKEY: 'APPINSIGHTS_INSTRUMENTATIONKEY'
+      NOTIFY_API_KEY: 'NOTIFY_API_KEY'
+      TAG_MANAGER_KEY: 'TAG_MANAGER_KEY'
 
     licences-elasticache-redis:
-      REDIS_HOST: "primary_endpoint_address"
-      REDIS_AUTH_TOKEN: "auth_token"
+      REDIS_HOST: 'primary_endpoint_address'
+      REDIS_AUTH_TOKEN: 'auth_token'
 
     licences-session-secret:
-      SESSION_SECRET: "SESSION_SECRET"
+      SESSION_SECRET: 'SESSION_SECRET'
 
   env:
-    DB_SSL_ENABLED: "true"
-    REDIS_TLS_ENABLED: "true"
-    NODE_ENV: "production"
-    HDC_URL: "http://licences:80"
-    GOTENBERG_API_URL: "http://licences-gotenberg:3000"
+    DB_SSL_ENABLED: 'true'
+    REDIS_TLS_ENABLED: 'true'
+    NODE_ENV: 'production'
+    HDC_URL: 'http://licences:80'
+    GOTENBERG_API_URL: 'http://licences-gotenberg:3000'
+
+gotenberg:
+  nameOverride: gotenberg
+  replicaCount: 2
+
+  image:
+    repository: thecodingmachine/gotenberg
+    tag: 7.5.0
+    port: 3000
+
+  ingress:
+    enabled: false
+
+  livenessProbe:
+    httpGet:
+      path: /health
+    periodSeconds: 30
+    initialDelaySeconds: 60
+    timeoutSeconds: 20
+    failureThreshold: 10
+
+  readinessProbe:
+    httpGet:
+      path: /health
+    periodSeconds: 20
+    initialDelaySeconds: 60
+    timeoutSeconds: 30
+    failureThreshold: 15
+
+  podSecurityContext:
+    fsGroup: 1001
+
+  securityContext:
+    runAsUser: 1001
+    runAsNonRoot: true
 
 generic-prometheus-alerts:
   targetApplication: licences
@@ -63,4 +98,4 @@ generic-data-analytics-extractor:
   enabled: true
   databaseSecretName: dps-rds-instance-output
   analyticalPlatformSecretName: licences-analytical-platform-reporting-s3-bucket
-  args: "extract_psql_all_tables_to_csv.sh && transfer_local_to_s3.sh"
+  args: 'extract_psql_all_tables_to_csv.sh && transfer_local_to_s3.sh'
