@@ -71,7 +71,7 @@ import { createHdcService } from './services/hdc/hdcService'
 const signInService = new SignInService(new TokenStore(createRedisClient()))
 
 const hdcClient = new HdcClient(
-  buildRestClient(clientCredentialsTokenSource(signInService, 'hdc'), config.apis.hdc.url, 'HDC API', {
+  buildRestClient(clientCredentialsTokenSource(signInService), config.apis.hdc.url, 'HDC API', {
     timeout: config.apis.hdc.timeout,
     agent: config.apis.hdc.agent,
   })
@@ -83,7 +83,7 @@ const hdcService = createHdcService(hdcClient, licenceService, conditionsService
 
 const deliusClient = new DeliusClient(
   buildRestClient(
-    clientCredentialsTokenSource(signInService, 'delius'),
+    clientCredentialsTokenSource(signInService),
     config.apis.delius.url,
     'Delius Integration API',
     { timeout: config.apis.delius.timeout, agent: config.apis.delius.agent }
@@ -92,7 +92,7 @@ const deliusClient = new DeliusClient(
 
 const probationTeamsClient = new ProbationTeamsClient(
   buildRestClient(
-    clientCredentialsTokenSource(signInService, 'probationTeams'),
+    clientCredentialsTokenSource(signInService),
     config.apis.probationTeams.url,
     'probation-teams',
     { timeout: config.apis.probationTeams.timeout, agent: config.apis.probationTeams.agent }

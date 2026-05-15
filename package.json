@@ -31,7 +31,8 @@
     "security_audit": "npx audit-ci --config audit-ci.json",
     "prepare": "hmpps-precommit-hooks-prepare",
     "generate:kotlin-types": "tsc && node dist/server/services/config/conditions/gen/generateKotlinTypes.js",
-    "setup": "npm ci && hmpps-npm-script-run-allowlist"
+    "setup": "npm ci && hmpps-npm-script-run-allowlist",
+    "verify": "npm run lint && npm run typecheck && npm run build && npm run test:ci"
   },
   "lint-staged": {
     "*.{js,css}": [

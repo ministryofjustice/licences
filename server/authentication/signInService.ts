@@ -16,31 +16,31 @@ const timeoutSpec = {
 export = class SignInService {
   constructor(private readonly tokenStore: TokenStore) {}
 
-  async getClientCredentialsTokens(username, service = 'nomis') {
+  async getClientCredentialsTokens(username) {
     const key = username || '%ANONYMOUS%'
 
     const token = await this.tokenStore.getToken(key)
     if (token) {
       return token
     }
-    const oauthAdminClientToken = generateAdminOauthClientToken(service)
+    const oauthAdminClientToken = generateAdminOauthClientToken()
     const oauthRequest = { grant_type: 'client_credentials', username }
 
-    const newToken = await oauthTokenRequest(oauthAdminClientToken, oauthRequest, service)
+    const newToken = await oauthTokenRequest(oauthAdminClientToken, oauthRequest)
 
     await this.tokenStore.setToken(key, newToken.token, newToken.expiresIn - 60)
 
     return newToken.token
   }
 
-  async getAnonymousClientCredentialsTokens(service = 'nomis'): Promise<string> {
+  async getAnonymousClientCredentialsTokens(): Promise<string> {
     const token = await this.tokenStore.getToken('%ANONYMOUS%')
     if (token) {
       return token
     }
-    const oauthAdminClientToken = generateAdminOauthClientToken(service)
+    const oauthAdminClientToken = generateAdminOauthClientToken()
     const oauthRequest = { grant_type: 'client_credentials' }
-    const newToken = await oauthTokenRequest(oauthAdminClientToken, oauthRequest, service)
+    const newToken = await oauthTokenRequest(oauthAdminClientToken, oauthRequest)
 
     await this.tokenStore.setToken('%ANONYMOUS%', newToken.token, newToken.expiresIn - 60)
 
@@ -55,11 +55,11 @@ const parseOauthTokens = (oauthResult) => {
   return { token, expiresIn }
 }
 
-const getOauthToken = (oauthClientToken, requestSpec, service) => {
+const getOauthToken = (oauthClientToken, requestSpec) => {
   const oauthRequest = querystring.stringify(requestSpec)
 
   return superagent
-    .post(`${config.apis[service].authUrl}/oauth/token`)
+    .post(`${config.apis.auth.url}/oauth/token`)
     .set('Authorization', oauthClientToken)
     .set('content-type', 'application/x-www-form-urlencoded')
     .send(oauthRequest)
@@ -67,8 +67,8 @@ const getOauthToken = (oauthClientToken, requestSpec, service) => {
     .catch((error) => handleError(error, 'oauth/token', 'POST'))
 }
 
-const oauthTokenRequest = async (clientToken, oauthRequest, service) => {
-  const oauthResult = await getOauthToken(clientToken, oauthRequest, service)
+const oauthTokenRequest = async (clientToken, oauthRequest) => {
+  const oauthResult = await getOauthToken(clientToken, oauthRequest)
   logger.info(`Oauth request for grant type '${oauthRequest.grant_type}', result status: ${oauthResult.status}`)
 
   return parseOauthTokens(oauthResult)

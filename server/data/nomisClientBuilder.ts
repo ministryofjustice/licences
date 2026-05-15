@@ -5,17 +5,13 @@ import { buildRestClient, constantTokenSource } from './restClientBuilder'
 
 const timeoutSpec = {
   response: config.apis.nomis.timeout.response,
-  deadline: config.apis.nomis.timeout.deadline,
+  deadline: config.apis.nomis.timeout.deadline
 }
 
-const { url, authUrl } = config.apis.nomis
+const { url } = config.apis.nomis
+const { url: authUrl } = config.apis.auth
+
 const invalidDate = 'Invalid date'
-
-const agentOptions = {
-  maxSockets: config.apis.nomis.agent.maxSockets,
-  maxFreeSockets: config.apis.nomis.agent.maxFreeSockets,
-  freeSocketTimeout: config.apis.nomis.agent.freeSocketTimeout,
-}
 
 const batchRequests = async (args, batchSize, call) => {
   const batches = splitEvery(batchSize, args)
@@ -39,7 +35,7 @@ function addEffectiveConditionalReleaseDate(prisoner) {
 
   return {
     ...prisoner,
-    sentenceDetail: merge(prisoner.sentenceDetail, { effectiveConditionalReleaseDate: crd }),
+    sentenceDetail: merge(prisoner.sentenceDetail, { effectiveConditionalReleaseDate: crd })
   }
 }
 
@@ -50,7 +46,7 @@ function addEffectiveAutomaticReleaseDate(prisoner) {
 
   return {
     ...prisoner,
-    sentenceDetail: merge(prisoner.sentenceDetail, { effectiveAutomaticReleaseDate: ard }),
+    sentenceDetail: merge(prisoner.sentenceDetail, { effectiveAutomaticReleaseDate: ard })
   }
 }
 
@@ -62,12 +58,12 @@ function addReleaseDate(prisoner) {
     conditionalReleaseOverrideDate,
     conditionalReleaseDate,
     automaticReleaseOverrideDate,
-    automaticReleaseDate,
+    automaticReleaseDate
   ])
 
   return {
     ...prisoner,
-    sentenceDetail: merge(prisoner.sentenceDetail, { releaseDate }),
+    sentenceDetail: merge(prisoner.sentenceDetail, { releaseDate })
   }
 }
 
@@ -75,12 +71,20 @@ export = (token) => {
   const tokenSource = constantTokenSource(token)
 
   const nomisRestClient = buildRestClient(tokenSource, url, 'Prison API', {
-    agent: agentOptions,
-    timeout: timeoutSpec,
+    agent: {
+      maxSockets: config.apis.nomis.agent.maxSockets,
+      maxFreeSockets: config.apis.nomis.agent.maxFreeSockets,
+      freeSocketTimeout: config.apis.nomis.agent.freeSocketTimeout
+    },
+    timeout: timeoutSpec
   })
   const oauthRestClient = buildRestClient(tokenSource, authUrl, 'OAuth API', {
-    agent: agentOptions,
-    timeout: timeoutSpec,
+    agent: {
+      maxSockets: config.apis.auth.agent.maxSockets,
+      maxFreeSockets: config.apis.auth.agent.maxFreeSockets,
+      freeSocketTimeout: config.apis.auth.agent.freeSocketTimeout
+    },
+    timeout: timeoutSpec
   })
 
   const addReleaseDatesToPrisoner = pipe(
@@ -217,6 +221,6 @@ export = (token) => {
       const path = `/api/movements/offenders`
       const headers = { 'Page-Limit': 10000 }
       return nomisRestClient.postResource(path, [offenderNo], headers)
-    },
+    }
   }
 }

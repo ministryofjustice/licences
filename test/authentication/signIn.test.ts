@@ -13,7 +13,7 @@ describe('signInService', () => {
   const tokenStore = new TokenStore(null) as jest.Mocked<TokenStore>
 
   beforeEach(() => {
-    fakeOauth = nock(`${config.apis.nomis.authUrl}`)
+    fakeOauth = nock(`${config.apis.auth.url}`)
     service = new SignInService(tokenStore)
     realDateNow = Date.now.bind(global.Date)
     const time = new Date('May 31, 2018 12:00:00')

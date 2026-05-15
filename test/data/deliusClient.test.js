@@ -17,7 +17,7 @@ describe('deliusClient', () => {
     signInService = new SignInService(null)
     signInService.getAnonymousClientCredentialsTokens = jest.fn().mockResolvedValue('token')
     const restClient = buildRestClient(
-      clientCredentialsTokenSource(signInService, 'delius'),
+      clientCredentialsTokenSource(signInService),
       config.apis.delius.url,
       'Delius Integration API',
       { timeout: config.apis.delius.timeout, agent: config.apis.delius.agent }

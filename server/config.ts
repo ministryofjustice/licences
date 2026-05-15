@@ -37,11 +37,9 @@ export default {
     tls_enabled: get('REDIS_TLS_ENABLED', 'false')
   },
   apis: {
-    nomis: {
-      apiUrl: get('NOMIS_API_URL', 'http://localhost:8080/prisonApi'),
+    auth: {
+      url: get('NOMIS_AUTH_URL', 'http://localhost:9090/auth'),
       healthPath: '/health/ping',
-      url: get('NOMIS_API_URL', 'http://localhost:8080/prisonApi'),
-      authUrl: get('NOMIS_AUTH_URL', 'http://localhost:9090/auth'),
       authExternalUrl: get('NOMIS_AUTH_EXTERNAL_URL', get('NOMIS_AUTH_URL', 'http://localhost:9090/auth')),
       timeout: {
         response: 30000,
@@ -59,14 +57,22 @@ export default {
         apiClientSecret: get('ADMIN_API_CLIENT_SECRET', 'clientsecret')
       }
     },
+    nomis: {
+      url: get('NOMIS_API_URL', 'http://localhost:8080/prisonApi'),
+      healthPath: '/health/ping',
+      timeout: {
+        response: 30000,
+        deadline: 35000
+      },
+      agent: {
+        maxSockets: 100,
+        maxFreeSockets: 10,
+        freeSocketTimeout: 30000
+      },
+    },
     delius: {
       url: get('DELIUS_API_URL', 'http://localhost:8080/delius'),
       healthPath: '/health/ping',
-      authUrl: get('DELIUS_AUTH_URL', get('NOMIS_AUTH_URL', 'http://localhost:9090/auth')),
-      admin: {
-        apiClientId: get('DELIUS_API_CLIENT_ID', get('ADMIN_API_CLIENT_ID', 'licencesadmin')),
-        apiClientSecret: get('DELIUS_API_CLIENT_SECRET', get('ADMIN_API_CLIENT_SECRET', 'clientsecret'))
-      },
       timeout: {
         response: 30000,
         deadline: 35000
@@ -85,11 +91,6 @@ export default {
     hdc: {
       url: get('HDC_API_URL', 'http://localhost:8089'),
       healthPath: '/health/ping',
-      authUrl: get('HDC_AUTH_URL', get('NOMIS_AUTH_URL', 'http://localhost:9090/auth')),
-      admin: {
-        apiClientId: get('HDC_API_CLIENT_ID', get('ADMIN_API_CLIENT_ID', 'licencesadmin')),
-        apiClientSecret: get('HDC_API_CLIENT_SECRET', get('ADMIN_API_CLIENT_SECRET', 'clientsecret'))
-      },
       timeout: {
         response: 30000,
         deadline: 35000
@@ -146,7 +147,6 @@ export default {
     probationTeams: {
       url: get('PROBATION_TEAMS_API_URL', 'http://localhost:8080/probationteams'),
       healthPath: '/health/ping',
-      authUrl: get('PROBATION_TEAMS_AUTH_URL', get('NOMIS_AUTH_URL', 'http://localhost:9090/auth')),
       timeout: {
         response: 30000,
         deadline: 35000
@@ -156,10 +156,6 @@ export default {
         maxFreeSockets: 10,
         freeSocketTimeout: 30000
       },
-      admin: {
-        apiClientId: get('PROBATION_TEAMS_API_CLIENT_ID', get('ADMIN_API_CLIENT_ID', 'licencesadmin')),
-        apiClientSecret: get('PROBATION_TEAMS_API_CLIENT_SECRET', get('ADMIN_API_CLIENT_SECRET', 'clientsecret'))
-      }
     },
 
     gotenberg: {

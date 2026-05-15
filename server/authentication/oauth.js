@@ -5,10 +5,10 @@ const generate = (clientId, clientSecret) => {
   return `Basic ${token}`
 }
 
-const generateOauthClientToken = () => generate(config.apis.nomis.apiClientId, config.apis.nomis.apiClientSecret)
+const generateOauthClientToken = () => generate(config.apis.auth.apiClientId, config.apis.auth.apiClientSecret)
 
-const generateAdminOauthClientToken = (service) =>
-  generate(config.apis[service].admin.apiClientId, config.apis[service].admin.apiClientSecret)
+const generateAdminOauthClientToken = () =>
+  generate(config.apis.auth.admin.apiClientId, config.apis.auth.admin.apiClientSecret)
 
 module.exports = {
   generateOauthClientToken,

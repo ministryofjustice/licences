@@ -236,8 +236,8 @@ export default function createApp({
       user: req.user,
       currentUrlPath: req.baseUrl + req.path,
       hostname: req.hostname,
-      authUrl: config.apis.nomis.authUrl,
-      apiClientId: config.apis.nomis.apiClientId,
+      authUrl: config.apis.auth.url,
+      apiClientId: config.apis.auth.apiClientId,
       exitUrl: config.links.exitUrl,
     }
     next()
@@ -314,7 +314,7 @@ export default function createApp({
     return res.render('notfound')
   })
 
-  const authLogoutUrl = `${config.apis.nomis.authExternalUrl}/logout?client_id=${config.apis.nomis.apiClientId}&redirect_uri=${config.domain}`
+  const authLogoutUrl = `${config.apis.auth.authExternalUrl}/logout?client_id=${config.apis.auth.apiClientId}&redirect_uri=${config.domain}`
 
   app.get('/autherror', (req, res) => {
     res.status(401)

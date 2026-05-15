@@ -36,9 +36,9 @@ export const constantTokenSource =
   }
 
 export const clientCredentialsTokenSource =
-  (signInService: SignInService, oauthServiceName: string): TokenSource =>
+  (signInService: SignInService): TokenSource =>
   async () => {
-    const token = await signInService.getAnonymousClientCredentialsTokens(oauthServiceName)
+    const token = await signInService.getAnonymousClientCredentialsTokens()
     if (!token) {
       throw Error(`Error obtaining OAuth token`)
     }

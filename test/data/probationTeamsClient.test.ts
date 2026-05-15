@@ -19,7 +19,7 @@ describe('probationTeamsClient', () => {
       getAnonymousClientCredentialsTokens: jest.fn().mockResolvedValue('token'),
     }
     const restClient = buildRestClient(
-      clientCredentialsTokenSource(signInService, 'probationTeams'),
+      clientCredentialsTokenSource(signInService),
       config.apis.probationTeams.url,
       'probation-teams',
       {
