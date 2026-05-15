@@ -53,7 +53,7 @@ generic-service:
     REDIS_TLS_ENABLED: 'true'
     NODE_ENV: 'production'
     HDC_URL: 'http://licences:80'
-    GOTENBERG_API_URL: 'http://licences-gotenberg:3000'
+    GOTENBERG_API_URL: 'http://licences-gotenberg'
 
 gotenberg:
   nameOverride: gotenberg

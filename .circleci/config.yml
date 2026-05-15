@@ -13,7 +13,7 @@ executors:
   javascript-integration-tests:
     docker:
       - image: cimg/node:<< pipeline.parameters.node-version >>
-      - image: thecodingmachine/gotenberg:6
+      - image: thecodingmachine/gotenberg:7.5.0
         user: gotenberg
         environment:
           DEFAULT_LISTEN_PORT: 3001
