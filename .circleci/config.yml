@@ -13,10 +13,9 @@ executors:
   javascript-integration-tests:
     docker:
       - image: cimg/node:<< pipeline.parameters.node-version >>
-      - image: thecodingmachine/gotenberg:7.5.0
+      - image: thecodingmachine/gotenberg:7.8.2
         user: gotenberg
-        environment:
-          DEFAULT_LISTEN_PORT: 3001
+        command: ['gotenberg', '--api-port=3001']
     working_directory: ~/app
   integration-tests:
     docker:
