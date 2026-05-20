@@ -109,7 +109,7 @@ generic-service:
 
   postgresDatabaseRestore:
     enabled: true
-    schedule: '30 10 * * 0'
+    schedule: '30 6-21/4 * * 1-5'
     env:
       SCHEMA_TO_RESTORE: 'public'
       MIGRATIONS_VENDOR: 'knex'
