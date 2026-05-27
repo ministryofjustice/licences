@@ -35,6 +35,26 @@ describe('/hdc/curfew', () => {
     testFormPageGets(app, routes, licenceService)
   })
 
+  test('test backlink', () => {
+    const licenceService = createLicenceServiceStub()
+    licenceService.getLicence.mockResolvedValue({
+      licence: {
+        proposedAddress: {
+          curfewAddress: {},
+        },
+      },
+    })
+    const app = createApp({ licenceServiceStub: licenceService }, 'roUser')
+
+    return request(app)
+              .get('/hdc/curfew/curfewHours/1')
+              .expect(200)
+              .expect('Content-Type', /html/)
+              .expect((res) => {
+                expect(res.text).toContain('<a class="link-back" id="backBtn" href="/hdc/taskList/1">')
+              })
+  })
+
   describe('curfew hours validation', () => {
     const licenceService = createLicenceServiceStub()
     licenceService.getLicence.mockResolvedValue({

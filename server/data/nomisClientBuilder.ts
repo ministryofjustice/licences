@@ -141,16 +141,15 @@ export = (token) => {
       return prisoners.map(addReleaseDatesToPrisoner)
     },
 
-    async getOffenderSentencesByBookingId(bookingIds, addReleaseDates = true) {
+    async getOffenderSentencesByBookingId(bookingIds) {
       const headers = { 'Page-Limit': 10000 }
-      const body = [].concat(bookingIds)
+      const body = (Array.isArray(bookingIds) ? bookingIds : [bookingIds]).filter((bookingId) => !Number.isNaN(parseInt(bookingId, 10)))
 
-      const prisoners = await nomisRestClient.postResource(`/api/offender-sentences/bookings`, body, headers)
-
-      if (!addReleaseDates) {
-        return prisoners
+      if (body.length === 0) {
+         return []
       }
 
+      const prisoners = await nomisRestClient.postResource(`/api/offender-sentences/bookings`, body, headers)
       return prisoners.map(addReleaseDatesToPrisoner)
     },
 

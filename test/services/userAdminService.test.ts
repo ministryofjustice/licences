@@ -33,7 +33,6 @@ describe('userAdminService', () => {
   beforeEach(() => {
     nomisClient = {
       getUserInfo: jest.fn().mockReturnValue({}),
-      getOffenderSentencesByBookingId: jest.fn().mockReturnValue({}),
       getBooking: jest.fn().mockReturnValue({}),
     }
 
