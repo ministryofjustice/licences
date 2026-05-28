@@ -305,7 +305,7 @@ describe('/forms/', () => {
 
       expect(pdfText).toContain('Home detention curfew - Address checks')
       expect(pdfText).toContain('Surname  LAST')
-      expect(pdfText).toContain('Forename(s) FIRST MIDDLE')
+      expect(pdfText).toMatch(/Forename\(s\)\s+?FIRST MIDDLE/)
       expect(pdfText).toContain('DOB  01/01/2001')
       expect(pdfText).toContain('STANDARD CONDITION')
       expect(pdfText).toContain('ADDITIONAL CONDITION')

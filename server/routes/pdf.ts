@@ -1,7 +1,7 @@
 import { Response } from 'express'
 import logger from '../../log'
 import { asyncMiddleware, LicenceLocals } from '../utils/middleware'
-import { templates, templatesForNewOffence } from './config/pdf'
+import { templates, templatesToChoose, templatesForNewOffence } from './config/pdf'
 import versionInfo from '../utils/versionInfo'
 import { firstItem, isEmpty } from '../utils/functionalHelpers'
 import config from '../config'
@@ -28,7 +28,7 @@ export default (pdfService: PdfService, prisonerService: PrisonerService) => (ro
 
       return res.render('pdf/selectLicenceType', {
         bookingId,
-        templates,
+        templates: templatesToChoose,
         prisoner,
         errors,
         licenceTemplateId: template?.decision,
@@ -39,6 +39,7 @@ export default (pdfService: PdfService, prisonerService: PrisonerService) => (ro
 
   router.post(
     '/selectLicenceType/:bookingId',
+    audited,
     asyncMiddleware(async (req, res: Response<any, LicenceLocals>) => {
       const { bookingId } = req.params
       const { offenceBeforeCutoff, licenceTypeRadio } = req.body
@@ -51,7 +52,7 @@ export default (pdfService: PdfService, prisonerService: PrisonerService) => (ro
 
       if (
         (offenceBeforeCutoff === 'No' && !templatesForNewOffence.includes(licenceTypeRadio)) ||
-        (offenceBeforeCutoff === 'Yes' && !templates.map((t) => t.id).includes(licenceTypeRadio))
+        (offenceBeforeCutoff === 'Yes' && !templatesToChoose.map((t) => t.id).includes(licenceTypeRadio))
       ) {
         req.flash('errors', { licenceTypeRadioList: 'Select a licence type' })
         return res.redirect(`/hdc/pdf/selectLicenceType/${bookingId}`)
