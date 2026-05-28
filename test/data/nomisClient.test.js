@@ -150,9 +150,9 @@ describe('nomisClient', () => {
       fakeNomis.get(url).reply(200, [
         {
           sentenceDetail: {
-            conditionalReleaseDate: 'a',
-          },
-        },
+            conditionalReleaseDate: 'a'
+          }
+        }
       ])
 
       return expect(nomisClient.getHdcEligiblePrisoners()).resolves.toEqual([
@@ -161,9 +161,9 @@ describe('nomisClient', () => {
             conditionalReleaseDate: 'a',
             releaseDate: 'a',
             effectiveAutomaticReleaseDate: null,
-            effectiveConditionalReleaseDate: 'a',
-          },
-        },
+            effectiveConditionalReleaseDate: 'a'
+          }
+        }
       ])
     })
 
@@ -178,16 +178,16 @@ describe('nomisClient', () => {
         {
           sentenceDetail: {
             conditionalReleaseOverrideDate: 'a',
-            conditionalReleaseDate: 'b',
-          },
+            conditionalReleaseDate: 'b'
+          }
         },
         {
           sentenceDetail: {
             conditionalReleaseOverrideDate: 'c',
             conditionalReleaseDate: 'd',
-            automaticReleaseDate: 'y',
-          },
-        },
+            automaticReleaseDate: 'y'
+          }
+        }
       ])
 
       return expect(nomisClient.getHdcEligiblePrisoners()).resolves.toEqual([
@@ -197,8 +197,8 @@ describe('nomisClient', () => {
             conditionalReleaseDate: 'b',
             releaseDate: 'a',
             effectiveAutomaticReleaseDate: null,
-            effectiveConditionalReleaseDate: 'a',
-          },
+            effectiveConditionalReleaseDate: 'a'
+          }
         },
         {
           sentenceDetail: {
@@ -207,9 +207,9 @@ describe('nomisClient', () => {
             automaticReleaseDate: 'y',
             releaseDate: 'c',
             effectiveAutomaticReleaseDate: 'y',
-            effectiveConditionalReleaseDate: 'c',
-          },
-        },
+            effectiveConditionalReleaseDate: 'c'
+          }
+        }
       ])
     })
 
@@ -218,15 +218,15 @@ describe('nomisClient', () => {
         {
           sentenceDetail: {
             conditionalReleaseDate: 'a',
-            automaticReleaseDate: 'b',
-          },
+            automaticReleaseDate: 'b'
+          }
         },
         {
           sentenceDetail: {
             conditionalReleaseDate: 'c',
-            automaticReleaseDate: 'd',
-          },
-        },
+            automaticReleaseDate: 'd'
+          }
+        }
       ])
 
       return expect(nomisClient.getHdcEligiblePrisoners()).resolves.toEqual([
@@ -236,8 +236,8 @@ describe('nomisClient', () => {
             automaticReleaseDate: 'b',
             releaseDate: 'a',
             effectiveAutomaticReleaseDate: 'b',
-            effectiveConditionalReleaseDate: 'a',
-          },
+            effectiveConditionalReleaseDate: 'a'
+          }
         },
         {
           sentenceDetail: {
@@ -245,9 +245,9 @@ describe('nomisClient', () => {
             automaticReleaseDate: 'd',
             releaseDate: 'c',
             effectiveAutomaticReleaseDate: 'd',
-            effectiveConditionalReleaseDate: 'c',
-          },
-        },
+            effectiveConditionalReleaseDate: 'c'
+          }
+        }
       ])
     })
 
@@ -255,14 +255,14 @@ describe('nomisClient', () => {
       fakeNomis.get(url).reply(200, [
         {
           sentenceDetail: {
-            automaticReleaseOverrideDate: 'b',
-          },
+            automaticReleaseOverrideDate: 'b'
+          }
         },
         {
           sentenceDetail: {
-            automaticReleaseOverrideDate: 'd',
-          },
-        },
+            automaticReleaseOverrideDate: 'd'
+          }
+        }
       ])
 
       return expect(nomisClient.getHdcEligiblePrisoners()).resolves.toEqual([
@@ -271,17 +271,17 @@ describe('nomisClient', () => {
             automaticReleaseOverrideDate: 'b',
             releaseDate: 'b',
             effectiveAutomaticReleaseDate: 'b',
-            effectiveConditionalReleaseDate: null,
-          },
+            effectiveConditionalReleaseDate: null
+          }
         },
         {
           sentenceDetail: {
             automaticReleaseOverrideDate: 'd',
             releaseDate: 'd',
             effectiveAutomaticReleaseDate: 'd',
-            effectiveConditionalReleaseDate: null,
-          },
-        },
+            effectiveConditionalReleaseDate: null
+          }
+        }
       ])
     })
 
@@ -289,14 +289,14 @@ describe('nomisClient', () => {
       fakeNomis.get(url).reply(200, [
         {
           sentenceDetail: {
-            automaticReleaseDate: 'b',
-          },
+            automaticReleaseDate: 'b'
+          }
         },
         {
           sentenceDetail: {
-            automaticReleaseDate: 'd',
-          },
-        },
+            automaticReleaseDate: 'd'
+          }
+        }
       ])
 
       return expect(nomisClient.getHdcEligiblePrisoners()).resolves.toEqual([
@@ -305,17 +305,17 @@ describe('nomisClient', () => {
             automaticReleaseDate: 'b',
             releaseDate: 'b',
             effectiveAutomaticReleaseDate: 'b',
-            effectiveConditionalReleaseDate: null,
-          },
+            effectiveConditionalReleaseDate: null
+          }
         },
         {
           sentenceDetail: {
             automaticReleaseDate: 'd',
             releaseDate: 'd',
             effectiveAutomaticReleaseDate: 'd',
-            effectiveConditionalReleaseDate: null,
-          },
-        },
+            effectiveConditionalReleaseDate: null
+          }
+        }
       ])
     })
   })
@@ -408,23 +408,53 @@ describe('nomisClient', () => {
             conditionalReleaseDate: 'a',
             releaseDate: 'a',
             effectiveAutomaticReleaseDate: null,
-            effectiveConditionalReleaseDate: 'a',
-          },
-        },
+            effectiveConditionalReleaseDate: 'a'
+          }
+        }
       ])
     })
 
-    test('should return data from api without release dates if disabled', () => {
+    test('no call made if no bookings', () => {
+      return expect(nomisClient.getOffenderSentencesByBookingId([])).resolves.toEqual([])
+    })
+
+    test('no call made if only undefined booking ids passed', async () => {
+      await expect(nomisClient.getOffenderSentencesByBookingId([undefined])).resolves.toEqual([])
+    })
+
+    test('undefined booking ids not searched for', () => {
       fakeNomis
         .post(`/api/offender-sentences/bookings`, ['1'])
         .reply(200, [{ sentenceDetail: { conditionalReleaseDate: 'a' } }])
 
-      return expect(nomisClient.getOffenderSentencesByBookingId(['1'], false)).resolves.toEqual([
+      return expect(nomisClient.getOffenderSentencesByBookingId([undefined, '1', undefined])).resolves.toEqual([
         {
           sentenceDetail: {
             conditionalReleaseDate: 'a',
-          },
-        },
+            releaseDate: 'a',
+            effectiveAutomaticReleaseDate: null,
+            effectiveConditionalReleaseDate: 'a'
+          }
+        }
+      ])
+    })
+
+    test('no numeric booking ids are ignored', () => {
+      fakeNomis
+        .post(`/api/offender-sentences/bookings`, ['1'])
+        .reply(200, [{ sentenceDetail: { conditionalReleaseDate: 'a' } }])
+
+      return expect(
+        nomisClient.getOffenderSentencesByBookingId(['bob', 'zero', undefined, '1', 'undefined'])
+      ).resolves.toEqual([
+        {
+          sentenceDetail: {
+            conditionalReleaseDate: 'a',
+            releaseDate: 'a',
+            effectiveAutomaticReleaseDate: null,
+            effectiveConditionalReleaseDate: 'a'
+          }
+        }
       ])
     })
 
@@ -557,7 +587,7 @@ describe('nomisClient', () => {
         .put('/api/offender-sentences/booking/aaa/home-detention-curfews/latest/approval-status', {
           approvalStatus: 'status',
           refusedReason: 'reason',
-          date: '2018-05-31',
+          date: '2018-05-31'
         })
         .reply(200)
 
@@ -570,7 +600,7 @@ describe('nomisClient', () => {
       fakeNomis
         .put('/api/offender-sentences/booking/aaa/home-detention-curfews/latest/approval-status', {
           approvalStatus: 'status',
-          date: '2018-05-31',
+          date: '2018-05-31'
         })
         .reply(200)
 
@@ -584,7 +614,7 @@ describe('nomisClient', () => {
         .put('/api/offender-sentences/booking/aaa/home-detention-curfews/latest/approval-status', {
           approvalStatus: 'status',
           refusedReason: 'reason',
-          date: '2018-05-31',
+          date: '2018-05-31'
         })
         .reply(200)
 
@@ -619,7 +649,7 @@ describe('nomisClient', () => {
       fakeNomis
         .put('/api/offender-sentences/booking/aaa/home-detention-curfews/latest/checks-passed', {
           passed: true,
-          date: '2018-05-31',
+          date: '2018-05-31'
         })
         .reply(200)
 

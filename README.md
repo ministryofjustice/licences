@@ -49,13 +49,13 @@ The 3 commands you require are:
 
 ```
 npm run start-mocks
-docker-compose up
+docker compose up
 npm run start:dev
 ```
 
 Or you can point to mock-services for a subset of services and T3/dev for others..
 
-If you get a ‘You are not authorised to access this application’ when trying to run the app locally, 
+If you get a ‘You are not authorised to access this application’ when trying to run the app locally,
 Then login as NOMIS_BATCHLOAD user and go to ‘manage locations’ and then 'ABC probation area (ABC)' and ensure it is ticked.
 
 4. Visit [localhost:3000](http://localhost:3000/)
@@ -79,7 +79,7 @@ Then login as NOMIS_BATCHLOAD user and go to ‘manage locations’ and then 'AB
 To create a .env file, copy `feature.env` to `.env` and make any required changes.
 This file is `.gitignore`d
 
-`feature.env` contains defaults required for integration tests 
+`feature.env` contains defaults required for integration tests
 
 # AWS database access
 
@@ -152,5 +152,5 @@ This service makes use of imported types generated from the openAPI definitions 
 
 Scripts are provided to generate these types from the development instances:
 
-`./generate-hdc-api-types.sh` - Re-run when create and vary a CVL licence 
+`./generate-hdc-api-types.sh` - Re-run when create and vary a CVL licence
 API types change from dev `./generate-hdc-api-types.sh --local` - Re-run when create and vary a CVL licence API types change from locally running API
