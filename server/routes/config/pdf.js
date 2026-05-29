@@ -1,4 +1,24 @@
 module.exports = {
+  templatesToChoose: [
+    {
+      id: 'hdc_ap',
+      label: 'Basic licence',
+      version: '2.0',
+      validForNewOffence: true,
+    },
+    {
+      id: 'hdc_u12',
+      label: 'Under 12 month licence',
+      version: '1.0',
+      validForNewOffence: false,
+    },
+    {
+      id: 'hdc_yn',
+      label: 'Young person’s licence',
+      version: '1.0',
+      validForNewOffence: false,
+    },
+  ],
   templates: [
     {
       id: 'hdc_ap',

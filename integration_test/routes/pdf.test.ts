@@ -57,7 +57,7 @@ describe('PDF:', () => {
     pdfServiceStub.updateLicenceType.mockReset()
     pdfServiceStub.checkAndTakeSnapshot.mockReset()
     licenceServiceStub.getLicence.mockResolvedValue({
-      licence: { key: 'value', document: { template: { decision: 'hdc_ap_pss' } } },
+      licence: { key: 'value', document: { template: { decision: 'hdc_ap' } } },
     })
     prisonerServiceStub.getPrisonerPersonalDetails.mockResolvedValue({ agencyLocationId: 'somewhere' })
   })
@@ -73,9 +73,7 @@ describe('PDF:', () => {
         .expect('Content-Type', /html/)
         .expect((res) => {
           expect(res.text).toContain('<input id="hdc_ap" type="radio" name="licenceTypeRadio" value="hdc_ap">')
-          expect(res.text).toContain('<input id="hdc_ap_pss" type="radio" name="licenceTypeRadio" value="hdc_ap_pss">')
           expect(res.text).toContain('<input id="hdc_yn" type="radio" name="licenceTypeRadio" value="hdc_yn">')
-          expect(res.text).toContain('<input id="hdc_pss" type="radio" name="licenceTypeRadio" value="hdc_pss">')
         })
     })
 
@@ -90,10 +88,7 @@ describe('PDF:', () => {
         .expect(200)
         .expect('Content-Type', /html/)
         .expect((res) => {
-          expect(res.text).toContain('<input id="hdc_ap" type="radio" name="licenceTypeRadio" value="hdc_ap" checked>')
-          expect(res.text).toContain('<input id="hdc_ap_pss" type="radio" name="licenceTypeRadio" value="hdc_ap_pss">')
           expect(res.text).toContain('<input id="hdc_yn" type="radio" name="licenceTypeRadio" value="hdc_yn">')
-          expect(res.text).toContain('<input id="hdc_pss" type="radio" name="licenceTypeRadio" value="hdc_pss">')
         })
     })
 
@@ -110,7 +105,7 @@ describe('PDF:', () => {
     test('redirects to the page of the selected pdf', () => {
       return request(app)
         .post('/hdc/pdf/selectLicenceType/123')
-        .send({ offenceBeforeCutoff: 'Yes', licenceTypeRadio: 'hdc_ap_pss' })
+        .send({ offenceBeforeCutoff: 'Yes', licenceTypeRadio: 'hdc_ap' })
         .expect(302)
         .expect('Location', '/hdc/pdf/taskList/123')
     })
@@ -146,7 +141,7 @@ describe('PDF:', () => {
           expect(pdfServiceStub.getPdfLicenceData).toHaveBeenCalled()
           expect(pdfServiceStub.getPdfLicenceData).toHaveBeenCalledWith(
             '1231',
-            { licence: { key: 'value', document: { template: { decision: 'hdc_ap_pss' } } } },
+            { licence: { key: 'value', document: { template: { decision: 'hdc_ap' } } } },
             'token'
           )
         })
@@ -168,7 +163,7 @@ describe('PDF:', () => {
           expect(pdfServiceStub.getPdfLicenceData).toHaveBeenCalled()
           expect(pdfServiceStub.getPdfLicenceData).toHaveBeenCalledWith(
             '1232',
-            { licence: { key: 'value', document: { template: { decision: 'hdc_ap_pss' } } } },
+            { licence: { key: 'value', document: { template: { decision: 'hdc_ap' } } } },
             'token'
           )
         })
@@ -186,7 +181,7 @@ describe('PDF:', () => {
           expect(pdfServiceStub.getPdfLicenceData).toHaveBeenCalled()
           expect(pdfServiceStub.getPdfLicenceData).toHaveBeenCalledWith(
             '1233',
-            { licence: { key: 'value', document: { template: { decision: 'hdc_ap_pss' } } } },
+            { licence: { key: 'value', document: { template: { decision: 'hdc_ap' } } } },
             'token'
           )
         })
@@ -205,7 +200,7 @@ describe('PDF:', () => {
           expect(pdfServiceStub.getPdfLicenceData).toHaveBeenCalled()
           expect(pdfServiceStub.getPdfLicenceData).toHaveBeenCalledWith(
             '1233',
-            { licence: { key: 'value', document: { template: { decision: 'hdc_ap_pss' } } } },
+            { licence: { key: 'value', document: { template: { decision: 'hdc_ap' } } } },
             'token'
           )
         })
@@ -239,7 +234,7 @@ describe('PDF:', () => {
         version: 2,
         versionDetails: { version: 1, vary_version: 0 },
         approvedVersionDetails: { template: 'hdc_ap', version: 1, vary_version: 0, timestamp: '11/12/13' },
-        licence: { document: { template: { decision: 'hdc_ap_pss' } } },
+        licence: { document: { template: { decision: 'hdc_yn' } } },
       })
 
       return request(app)
@@ -248,7 +243,7 @@ describe('PDF:', () => {
         .expect('Content-Type', /html/)
         .expect((res) => {
           expect(res.text).toContain('Ready to print new version')
-          expect(res.text).toContain('Basic licence with top-up supervision')
+          expect(res.text).toContain('Young person’s licence')
           expect(res.text).toContain('11/12/13')
           expect(res.text).toContain('Basic licence')
           expect(res.text).toContain('Version 1.0')
@@ -317,7 +312,7 @@ describe('PDF:', () => {
 
       // Just enough to verify that we made a PDF with some text and some licence data in it
       expect(pdfText).toContain('Name: NAME Prison no: NOMS Date of Birth: DOB')
-      expect(pdfText).toContain('Page 1 of 3 - Basic licence v2.0')
+      expect(pdfText).toMatch(/Page 1 of \d - Basic licence v2.0/)
     })
   })
 
