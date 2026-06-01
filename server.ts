@@ -1,6 +1,7 @@
 import knex from 'knex'
-import logger from './log'
 import app from './server/index'
+// logger needs to be imported after app-insights to allow instrumentation
+import logger from './log'
 import knexfile from './knexfile'
 
 logger.info('Migration start')
