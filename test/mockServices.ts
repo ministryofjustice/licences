@@ -14,6 +14,7 @@ export const createLicenceServiceStub = () => ({
   getRiskVersion: jest.fn(),
   getCurfewAddressReviewVersion: jest.fn(),
   getPostponeVersion: jest.fn(),
+  getFormResponse: jest.fn(),
   update: jest.fn(),
   updateSection: jest.fn(),
   updateLicenceConditions: jest.fn(),

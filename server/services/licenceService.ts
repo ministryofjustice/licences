@@ -275,7 +275,7 @@ export class LicenceService {
     return null
   }
 
-  private getFormResponse = (fieldMap, userInput) => fieldMap.reduce(this.answersFromMapReducer(userInput), {})
+  public getFormResponse = (fieldMap, userInput) => fieldMap.reduce(this.answersFromMapReducer(userInput), {})
 
   async update({ bookingId, originalLicence, config: sectionConfig, userInput, licenceSection, formName, postRelease = false }) {
     const stage = getIn(originalLicence, ['stage'])
