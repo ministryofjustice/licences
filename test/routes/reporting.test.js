@@ -3,6 +3,7 @@ const { mockAudit } = require('../mockClients')
 const { appSetup } = require('../supertestSetup')
 const NullTokenVerifier = require('../../server/authentication/tokenverifier/NullTokenVerifier')
 const { createPrisonerServiceStub, createLicenceServiceStub, createSignInServiceStub } = require('../mockServices')
+const { validate } = require('../../server/services/utils/formValidation')
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/reporting')
 const formConfig = require('../../server/routes/config/reporting')
@@ -109,6 +110,46 @@ describe('/hdc/reporting', () => {
       })
     })
   })
+
+  describe('reporting instructions validation', () => {
+      const licenceService = createLicenceServiceStub()
+      licenceService.getLicence.mockResolvedValue({
+        licence: {
+          reporting: {
+            reportingInstructions: {},
+          },
+        },
+      })
+  
+      test('should validate reporting data and return errors when present', () => {
+        const input = {
+          name: '',
+          organisation: '',
+          buildingAndStreet1: '',
+          buildingAndStreet2: '',
+          townOrCity: '',
+          postcode: '',
+          telephone: '',
+          reportingDate: '',
+          reportingTime: '',
+        }
+        const errors = validate({
+          formResponse: input,
+          pageConfig: formConfig.reportingInstructions,
+          bespokeConditions: [],
+        })
+        expect(errors).toEqual({
+          name: 'Enter a name',
+          organisation: 'Enter a CRC/NPS organisation name',
+          buildingAndStreet1: 'Enter a building or street',
+          townOrCity: 'Enter a town or city',
+          postcode: 'Enter a postcode in the right format',
+          telephone: 'Enter a telephone number',
+          reportingDate: 'Enter a date',
+          reportingTime: 'Enter a time',
+        })
+      })
+    })
 })
 
 function createApp({ licenceServiceStub }, user) {

@@ -17,33 +17,45 @@ block content
       div.pure-u-1.pure-u-md-2-5
         div.pure-g.largeMarginBottom.midPaddingBottom
           div.pure-u-1.pure-u-md-4-5
-            div.form-group
+            div(class=errorObject.name ? "form-group form-group-error": "form-group")
               label.form-label(for="name") Name (or Duty Officer if unknown)
-              input#name.form-control(name="name" type="text" value=data.name aria-label="Name (or Duty Officer's name)")
+              if errorObject.name
+                span.error-message #{errorObject.name}
+              input#name.form-control(class=errorObject.name ? "form-control-error form-control midMarginBottom": "midMarginBottom form-control" name="name" type="text" value=data.name aria-label="Name (or Duty Officer's name)")
 
-            div.form-group
+            div(class=errorObject.organisation ? "form-group form-group-error": "form-group")
               label.form-label(for="organisation") CRC/NPS organisation
-              input#organisation.form-control(name="organisation" type="text" value=data.organisation aria-label="CRC or NPS organisation name")
+              if errorObject.organisation
+                span.error-message #{errorObject.organisation}
+              input#organisation.form-control(class=errorObject.organisation ? "form-control-error form-control": "form-control" name="organisation" type="text" value=data.organisation aria-label="CRC or NPS organisation name")
 
-            div.form-group
+            div(class=errorObject.buildingAndStreet1 ? "form-group form-group-error": "form-group")
               label.form-label(for="building") Building and street
-              input#building.midMarginBottom.form-control(name="buildingAndStreet1" type="text" value=data.buildingAndStreet1 aria-label="Building and street")
+              if errorObject.buildingAndStreet1
+                span.error-message #{errorObject.buildingAndStreet1} 
+              input#building.midMarginBottom.form-control(class=errorObject.buildingAndStreet1 ? "form-control-error form-control": "form-control" name="buildingAndStreet1" type="text" value=data.buildingAndStreet1 aria-label="Building and street")
               input#street.form-control.block(name="buildingAndStreet2" type="text" value=data.buildingAndStreet2)
 
-            div.form-group
-              label.form-label(for="town") Town or city
-              input#town.form-control(name="townOrCity" type="text" value=data.townOrCity aria-label="Town or city")
+            div(class=errorObject.townOrCity ? "form-group form-group-error": "form-group")
+              label.form-label(for="town") Town or city 
+              if errorObject.townOrCity
+                span.error-message #{errorObject.townOrCity}
+              input#town.form-control(class=errorObject.townOrCity ? "form-control-error form-control": "form-control" name="townOrCity" type="text" value=data.townOrCity aria-label="Town or city")
 
             div.pure-g
               div.pure-u-1.pure-u-md-3-5
-                div.form-group
+                div(class=errorObject.postcode ? "form-group form-group-error": "form-group")
                   label.form-label(for="postcode") Postcode
-                  input#postcode.form-control.small(name="postcode" type="text" value=data.postcode aria-label="Postcode")
+                  if errorObject.postcode
+                    span.error-message #{errorObject.postcode}
+                  input#postcode.form-control.small(class=errorObject.postcode ? "form-control-error form-control": "form-control" name="postcode" type="text" value=data.postcode aria-label="Postcode")
             div.pure-g
               div.pure-u-1.pure-u-md-3-5
-                div.form-group
+                div(class=errorObject.telephone ? "form-group form-group-error": "form-group")
                   label.form-label(for="telephone") Telephone
-                  input#telephone.form-control.small(name="telephone" type="text" value=data.telephone aria-label="Telephone")
+                  if errorObject.telephone
+                    span.error-message #{errorObject.telephone}
+                  input#telephone.form-control.small(class=errorObject.telephone ? "form-control-error form-control": "form-control" name="telephone" type="text" value=data.telephone aria-label="Telephone")
 
             p Enter the reporting date and time
 

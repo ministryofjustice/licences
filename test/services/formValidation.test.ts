@@ -1456,7 +1456,7 @@ describe('validation', () => {
           },
           {
             formResponse: { reportingDate: moment('2025-24-24').format('DD/MM/YYYY'), reportingTime: '15:00' },
-            outcome: { reportingDate: 'Enter a valid date' },
+            outcome: { reportingDate: 'Enter a valid date in the following format 01 01 2027' },
           },
           {
             formResponse: { reportingDate: '', reportingTime: '15:00' },

@@ -111,7 +111,7 @@ const defaultErrorMessages = {
 
   requiredDate: (errorType) => {
     if (errorType === 'date.min') return 'The reporting date must be today or in the future'
-    if (errorType === 'date.format') return 'Enter a valid date'
+    if (errorType === 'date.format') return 'Enter a valid date in the following format 01 01 2027'
     return 'Enter a date'
   },
 

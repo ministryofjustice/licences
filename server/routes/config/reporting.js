@@ -66,7 +66,7 @@ module.exports = {
   reportingInstructions: {
     licenceSection: 'reportingInstructions',
     fields: R.concat(reportingInstructionFields, reportingDateFields),
-    validate: false,
+    validate: true,
     noModify: true,
     nextPath: {
       path: '/hdc/taskList/',
