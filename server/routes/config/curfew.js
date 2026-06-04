@@ -258,6 +258,7 @@ module.exports = {
       path: '/hdc/taskList/',
       change: '/hdc/review/licenceDetails/',
     },
+    validate: true,
     modificationRequiresApproval: true,
   },
   withdrawAddress: {
