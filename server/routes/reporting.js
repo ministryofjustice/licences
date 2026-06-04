@@ -14,24 +14,16 @@ module.exports =
       const { bookingId, action } = req.params
       const errorObject = req.flash('errors')[0] || {}
       const userInput = req.flash('userInput')[0] || {}
-      return formGet(req, res, 'reportingInstructions', bookingId, errorObject, userInput, action)
-    }
-
-    function formGet(req, res, formName, bookingId, errorObject, userInput, action) {
-      const { nextPath } = formConfig[formName]
+      const { nextPath } = formConfig.reportingInstructions
       const rawData = getIn(res.locals.licence, ['licence', 'reporting', 'reportingInstructions']) || {}
-      const data = Object.keys(userInput).length ? userInput : licenceService.addSplitDateFields(rawData, formConfig[formName].fields)
-      const viewData = { bookingId, data, nextPath, errorObject, action, sectionName, formName }
+      const data = Object.keys(userInput).length ? userInput : licenceService.addSplitDateFields(rawData, formConfig.reportingInstructions.fields)
+      const viewData = { bookingId, data, nextPath, errorObject, action }
 
       res.render('reporting/reportingInstructions', viewData)
     }
 
     async function post(req, res) {
       const { bookingId, action } = req.params
-      return formPost(req, res, bookingId, action)
-    }
-
-    async function formPost(req, res, bookingId, action) {
       const formName = 'reportingInstructions'
       const nextPath = getPathFor({ data: req.body, config: formConfig[formName], action })
 
@@ -48,7 +40,7 @@ module.exports =
         }
       }
 
-      const updatedLicence = await licenceService.update({
+      await licenceService.update({
         bookingId,
         originalLicence: res.locals.licence,
         config: formConfig[formName],
@@ -57,16 +49,6 @@ module.exports =
         formName,
         postRelease: res.locals.postRelease,
       })
-
-      await standard.pushStatus(updatedLicence, formName, bookingId, req.user.username)
-
-      if (req.body.anchor) {
-        return res.redirect(`${nextPath}${bookingId}#${req.body.anchor}`)
-      }
-
-      if (req.body.path) {
-        return res.redirect(`${nextPath}${req.body.path}/${bookingId}`)
-      }
 
       return res.redirect(`${nextPath}${bookingId}`)
     }

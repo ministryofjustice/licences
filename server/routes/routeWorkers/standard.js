@@ -137,7 +137,5 @@ module.exports = ({ formConfig, licenceService, sectionName, nomisPushService = 
     callbackPost,
     formPost,
     validationErrors,
-    isPostApproval,
-    pushStatus,
   }
 }
