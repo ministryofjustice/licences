@@ -188,12 +188,12 @@ module.exports =
 
     router.get('/curfewHours/:bookingId', async (req, res) => {
       const { bookingId } = req.params
-      const errors = req.flash('errors')[0] || {}
+      const errorObject = req.flash('errors')[0] || {}
       const userInput = req.flash('userInput')[0] || {}
       const data = Object.keys(userInput).length ? userInput : getIn(res.locals.licence, ['licence', 'curfew', 'curfewHours']) || {}
 
       res.render('curfew/curfewHours', {
-        errors,
+        errorObject,
         data,
         bookingId
       })

@@ -56,6 +56,9 @@ module.exports =
     router.get('/reportingInstructions/:bookingId', asyncMiddleware(get))
     router.post('/reportingInstructions/:bookingId', audited, asyncMiddleware(post))
 
+    router.get('/reportingInstructions/:action/:bookingId', asyncMiddleware(get))
+    router.post('/reportingInstructions/:action/:bookingId', audited, asyncMiddleware(post))
+
     router.get('/:formName/:action/:bookingId', asyncMiddleware(standard.get))
     router.post('/:formName/:action/:bookingId', audited, asyncMiddleware(standard.post))
 
