@@ -10,13 +10,6 @@ parameters:
     type: string
     default: 24.14-browsers
 executors:
-  javascript-integration-tests:
-    docker:
-      - image: cimg/node:<< pipeline.parameters.node-version >>
-      - image: thecodingmachine/gotenberg:7.8.2
-        user: gotenberg
-        command: ['gotenberg', '--api-port=3001']
-    working_directory: ~/app
   integration-tests:
     docker:
       - image: cimg/node:<< pipeline.parameters.node-version >>
@@ -60,9 +53,6 @@ jobs:
           paths:
             - node_modules
             - ~/.cache
-      - run: # Run linter after build because the integration test code depend on compiled typescript...
-          name: Linter check
-          command: npm run lint
       - run:
           name: Typecheck
           command: npm run typecheck
@@ -76,34 +66,6 @@ jobs:
             - dist
             - assets/stylesheets
             - .cache/Cypress
-  unit_test:
-    executor:
-      name: hmpps/node
-      tag: << pipeline.parameters.node-version >>
-    steps:
-      - checkout
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
-      - run:
-          name: unit tests
-          command: npm run test:ci
-      - store_test_results:
-          path: test-results
-      - store_artifacts:
-          path: test-results/unit-test-reports.html
-  javascript_integration_test:
-    executor: javascript-integration-tests
-    steps:
-      - checkout
-      - attach_workspace:
-          at: ~/app
-      - run:
-          name: Javascript Integration Tests
-          command: npm run integration-test
-      - store_test_results:
-          path: test-results
-      - store_artifacts:
-          path: test-results/unit-test-reports.html
   integration_test:
     executor: integration-tests
     environment:
@@ -168,59 +130,6 @@ workflows:
         filters:
           tags:
             ignore: /.*/
-      - unit_test:
-          requires:
-            - build
-      - javascript_integration_test:
-          requires:
-            - build
       - integration_test:
           requires:
             - build
-      - hmpps/helm_lint:
-          name: helm_lint
-      - hmpps/build_docker:
-          name: build_docker
-          filters:
-            branches:
-              only:
-                - main
-      - hmpps/deploy_env:
-          name: deploy_dev
-          env: 'dev'
-          context:
-            - hmpps-common-vars
-          filters:
-            branches:
-              only:
-                - main
-          requires:
-            - helm_lint
-            - unit_test
-            - build_docker
-      - request-preprod-approval:
-          type: approval
-          requires:
-            - deploy_dev
-      - hmpps/deploy_env:
-          name: deploy_preprod
-          env: 'preprod'
-          context:
-            - licences-preprod
-            - hmpps-common-vars
-          requires:
-            - request-preprod-approval
-      - request-prod-approval:
-          type: approval
-          requires:
-            - deploy_preprod
-      - hmpps/deploy_env:
-          name: deploy_prod
-          env: 'prod'
-          slack_notification: true
-          slack_channel_name: << pipeline.parameters.releases-slack-channel >>
-          context:
-            - licences-prod
-            - hmpps-common-vars
-          requires:
-            - request-prod-approval

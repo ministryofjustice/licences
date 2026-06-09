@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       test_results_artifact_name:
-        description: 'Name of uploaded test results artifact; must be unqiue across pipeline (eg. in matrix strategies for parallelised tests)'
+        description: 'Name of uploaded test results artifact; must be unique across pipeline (eg. in matrix strategies for parallelised tests)'
         required: false
         type: string
         default: 'npm_gotenberg_artifacts'
