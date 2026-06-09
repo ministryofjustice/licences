@@ -27,6 +27,7 @@ licence-json/*
 out
 .gradle
 test-results/
+test_results/
 licences\.iml
 licences-specs/src/*.iml
 licences-specs/bin/
