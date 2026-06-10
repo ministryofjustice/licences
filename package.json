@@ -80,13 +80,13 @@
       [
         "jest-junit",
         {
-          "outputDirectory": "test-results/jest/"
+          "outputDirectory": "test_results/jest/"
         }
       ],
       [
         "./node_modules/jest-html-reporter",
         {
-          "outputPath": "test-results/unit-test-reports.html"
+          "outputPath": "test_results/unit-test-reports.html"
         }
       ]
     ],
