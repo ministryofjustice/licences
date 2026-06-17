@@ -1,6 +1,7 @@
 
 import { asyncMiddleware, authorisationMiddleware } from '../../utils/middleware'
 import { HdcService } from '../../services/hdc/hdcService'
+import { Pageable } from '../../@types/hdcApiImport'
 
 const logger = require('../../../log')
 
@@ -8,42 +9,34 @@ export = (hdcService: HdcService) => (router) => {
     router.use(authorisationMiddleware)
 
     router.get(
-        '/licence/:licenceId',
+        '/hdcToCvlMigration',
         asyncMiddleware(async (req, res) => {
-            const licenceId = Number(req.params.licenceId)
-            await hdcService.migrateSingleLicenceToCvl(licenceId)
+             return res.render('admin/migrateToCvl/main')
+        })
+    )
 
-            return res.render('admin/migrateToCvl/licenceMigrated', {licenceId})
+    router.get(
+        '/licence/:bookingID',
+        asyncMiddleware(async (req, res) => {
+            const bookingId = Number(req.params.bookingId)
+            try {
+                await hdcService.migrateSingleLicenceToCvl(bookingId)
+                return res.render('admin/migrateToCvl/licenceMigrated', {bookingId})
+            } catch (error) {
+                const message =
+                    error instanceof Error ? error.message : 'Unknown error'
+                logger.error('Migration failed', error)
+                return res.render('admin/migrateToCvl/licenceMigrationFailed', { bookingId, message })
+            }
         })
     )
 
     router.get(
         '/batch',
         asyncMiddleware(async (req, res) => {
-            const migrationPromise = hdcService.migrateBatchToCvl()
-
-            let timeoutHandle: NodeJS.Timeout | undefined
-
-            try {
-                const timeoutPromise = new Promise<'still-running'>((resolve) => {
-                    timeoutHandle = setTimeout(() => resolve('still-running'), 60000)
-                })
-                const completionPromise = migrationPromise.then(() => 'completed' as const)
-
-                const result = await Promise.race([
-                    completionPromise,
-                    timeoutPromise,
-                ])
-
-                if (result === 'completed') {
-                    return res.render('admin/migrateToCvl/batchFinished')
-                }
-
-                migrationPromise.catch((error) => {
-                    logger.error('Background migration failed', error)
-                })
-
-                return res.render('admin/migrateToCvl/batchStarted')
+               try {
+                   await hdcService.migrateBatchToCvl()
+                   return res.render('admin/migrateToCvl/batchStarted')
             } catch (error) {
                 const message =
                     error instanceof Error ? error.message : 'Unknown error'
@@ -51,11 +44,80 @@ export = (hdcService: HdcService) => (router) => {
                 logger.error('Migration failed before timeout', error)
 
                 return res.render('admin/migrateToCvl/batchFailed', { message })
-            } finally {
-                if (timeoutHandle) {
-                    clearTimeout(timeoutHandle)
-                }
             }
+        })
+    )
+
+    router.get(
+        '/licence/:licenceId/preview',
+        asyncMiddleware(async (req, res) => {
+            const licenceId = Number(req.params.licenceId)
+
+            try {
+                const preview = await hdcService.migrateSingleLicenceToCvlPreview(licenceId)
+
+                return res.json(preview)
+            } catch (error) {
+                const message =
+                    error instanceof Error ? error.message : 'Unknown error'
+
+                logger.error('Preview migration failed', error)
+
+                return res.status(500).json({ message })
+            }
+        }),
+    )
+
+    router.get(
+        '/migration-logs',
+        asyncMiddleware(async (req, res) => {
+            const { licenceVersionId, bookingId, errorSource, success, page, size, sort } = req.query as any
+            const pageable: Pageable = {
+                page: page ? Number(page) : 0,
+                size: size ? Number(size) : 50,
+            }
+            if (sort) {
+                pageable.sort = Array.isArray(sort) ? (sort as string[]) : [sort as string]
+            }
+            let successFilter : boolean | undefined
+            if (success === 'true') {
+                successFilter = true
+            } else if (success === 'false') {
+                successFilter = false
+            }
+
+            const logs = await hdcService.getMigrationLogs(
+                licenceVersionId ? Number(licenceVersionId) : undefined,
+                bookingId ? Number(bookingId) : undefined,
+                errorSource ? errorSource as string : undefined,
+                successFilter,
+                pageable
+            )
+            return res.render('admin/migrateToCvl/migrationLogs', {
+                logs,
+                licenceVersionId,
+                bookingId,
+                errorSource,
+                success,
+                page,
+                size,
+                sort,
+            })
+        })
+    )
+
+    router.get(
+        '/retry/:logId/:retryValue',
+        asyncMiddleware(async (req, res) => {
+
+            const logId = Number(req.params.logId)
+            const retryValue = req.params.retryValue === 'true'
+
+            await hdcService.setMigrationLogRetry(logId, retryValue)
+
+            return res.redirect(
+                `/admin/migrateToCvl/migration-logs#log-${logId}`
+            )
         })
     )
 
