@@ -1,6 +1,6 @@
 import * as os from 'node:os'
 import { HdcClient } from '../../data/hdcApiClient'
-import { ConvertedLicenseBatch, ConvertedLicenseConditions } from '../../@types/hdcApiImport'
+import { ConvertedLicenseBatch, ConvertedLicenseConditions, Pageable, PageLicenceMigrationLogEntryDto } from '../../@types/hdcApiImport'
 import { LicenceService } from '../licenceService'
 import { ConditionsServiceFactory } from '../conditionsService'
 import { CURRENT_CONDITION_VERSION } from '../config/conditionsConfig'
@@ -252,11 +252,11 @@ export class HdcService {
       .filter(Boolean) as LicenceDiff[]
   }
 
-    async migrateSingleLicenceToCvl(licenceId: number) {
+    async migrateSingleLicenceToCvl(bookingId: number) {
       try {
-          return await this.hdcClient.migrateSingleLicenceToCvl(licenceId)
+          return await this.hdcClient.migrateSingleLicenceToCvl(bookingId)
       } catch (error: any) {
-          logger.error(`Failed to migrate ID: ${licenceId}`, {
+          logger.error(`Failed to migrate Booking ID: ${bookingId}`, {
               message: error?.message,
               status: error?.response?.status,
               data: error?.response?.data,
@@ -279,6 +279,52 @@ export class HdcService {
           throw error
       }
   }
+
+    async setMigrationLogRetry(logId: number, retryValue: boolean) {
+        try {
+            logger.info(`Setting migration log retry to ${retryValue} for ID: ${logId}`)
+            return await this.hdcClient.setMigrationLogRetry(logId, retryValue)
+        } catch (error: any) {
+            logger.error('Failed to set migration log retry', {
+                message: error?.message,
+                status: error?.response?.status,
+                data: error?.response?.data,
+                stack: error?.stack,
+            })
+            throw error
+        }
+    }
+
+    async migrateSingleLicenceToCvlPreview(licenceId: number) {
+        try {
+            return await this.hdcClient.migrateSingleLicenceToCvlPreview(licenceId)
+        } catch (error: any) {
+            logger.error(`Failed to preview migration for ID: ${licenceId}`, {
+                message: error?.message,
+                status: error?.response?.status,
+                data: error?.response?.data,
+                stack: error?.stack,
+            })
+            throw error
+        }
+    }
+
+    async getMigrationLogs(licenceVersionId?: number, bookingId?: number, errorSource?: string, success?: boolean, pageable?: Pageable): Promise<PageLicenceMigrationLogEntryDto> {
+       logger.info(`Getting migration logs for licence version ID: ${licenceVersionId}, booking ID: ${bookingId}, error source: ${errorSource}, success: ${success}, pageable: ${pageable}`)
+       try {
+            return await this.hdcClient.getMigrationLogs(licenceVersionId, bookingId, errorSource, success, pageable)
+        } catch (error: any) {
+            logger.error(`Failed to get migration logs`, {
+                message: error?.message,
+                status: error?.response?.status,
+                data: error?.response?.data,
+                stack: error?.stack,
+            })
+            throw error
+        }
+    }
+
+
 }
 
 export function createHdcService(

@@ -52,6 +52,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/licences/migrate/{logId}/retry/{retryValue}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    /**
+     * Update the retry flag for a Log ID
+     * @description Updates the retry flag in the migration log for the given Log ID
+     */
+    put: operations['updateRetryState']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/migrations/delete-inactive-licences/{lastIdProcessed}/{batchSize}': {
     parameters: {
       query?: never
@@ -89,6 +109,46 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/licences/migrate/{bookingId}/to-cvl': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Migrate a single active licence to CVL
+     * @description Triggers migration of licence for the supplied booking ID into CVL
+     */
+    post: operations['migrateALicence']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/licences/migrate/batch/to-cvl': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Migrate a batch of licences to CVL
+     * @description Triggers migration of licences into CVL
+     */
+    post: operations['migrateABatchOfLicences']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/licences/conditions/batch': {
     parameters: {
       query?: never
@@ -103,6 +163,26 @@ export interface paths {
      * @description Returns converted bespoke conditions for the supplied licence IDs
      */
     post: operations['getBespokeConditions']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/licence/hdc/status': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Bulk HDC status lookup
+     * @description Returns the current HDC status for each booking ID where licence data exists.Requires ROLE_HDC_ADMIN.
+     */
+    post: operations['getHdcStatuses']
     delete?: never
     options?: never
     head?: never
@@ -149,6 +229,22 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/subject-access-request/template': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['getServiceTemplate']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/queue-admin/get-dlq-messages/{dlqName}': {
     parameters: {
       query?: never
@@ -157,6 +253,46 @@ export interface paths {
       cookie?: never
     }
     get: operations['getDlqMessages']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/licences/migrate/{activeLicenceId}/to-cvl/preview': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Preview migration of a single active licence to CVL
+     * @description Returns the request object that would be sent to CVL
+     */
+    get: operations['previewMigrateLicenceToCvl']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/licences/migrate/logs': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Returns recent licence migration logs
+     * @description Returns the entries from the licence_migration_log table
+     */
+    get: operations['getMigrationLogs']
     put?: never
     post?: never
     delete?: never
@@ -207,16 +343,16 @@ export interface components {
       /** Format: int32 */
       batchSize: number
       /** Format: int64 */
-      lastIdProcessed?: number
+      lastIdProcessed?: number | null
     }
     ErrorResponse: {
       /** Format: int32 */
       status: number
       /** Format: int32 */
-      errorCode?: number
-      userMessage?: string
-      developerMessage?: string
-      moreInfo?: string
+      errorCode?: number | null
+      userMessage?: string | null
+      developerMessage?: string | null
+      moreInfo?: string | null
     }
     ResetResponse: {
       /**
@@ -253,12 +389,12 @@ export interface components {
        * @description Condition code
        * @example ABC
        */
-      code?: string
+      code?: string | null
       /**
        * @description Condition text
        * @example You must not enter the exclusion zone.
        */
-      text?: string
+      text?: string | null
     }
     /** @description Batch response containing requested licence IDs and their converted bespoke conditions */
     ConvertedLicenseBatch: {
@@ -295,6 +431,20 @@ export interface components {
       /** @description List of converted bespoke conditions */
       conditions: components['schemas']['ConvertedBespokeCondition'][]
     }
+    BookingHdcStatus: {
+      /**
+       * Format: int64
+       * @description The prison internal booking ID for the person on this licence
+       * @example 989898
+       */
+      bookingId: number
+      /**
+       * @description The current HDC status code for this licence
+       * @example NOT_STARTED
+       * @enum {string}
+       */
+      status: 'APPROVED' | 'NOT_A_HDC_RELEASE' | 'NOT_STARTED' | 'ELIGIBILITY_CHECKS_COMPLETE' | 'RISK_CHECKS_COMPLETE'
+    }
     Attachment: {
       /**
        * Format: int32
@@ -311,15 +461,23 @@ export interface components {
        * Format: int32
        * @description The size of the attachment file in bytes
        */
-      filesize: number
+      filesize?: number | null
       /** @description The filename of attachment file */
       filename: string
+      /** @description The additional headers to use when calling the url for fetching this attachment */
+      headers?: components['schemas']['AttachmentHeader'][] | null
+    }
+    AttachmentHeader: {
+      /** @description The name of the header */
+      name: string
+      /** @description The value of the header */
+      value: string
     }
     HmppsSubjectAccessRequestContent: {
       /** @description The content of the subject access request response */
       content: unknown
       /** @description The details of any attachments for the subject access request response */
-      attachments?: components['schemas']['Attachment'][]
+      attachments?: components['schemas']['Attachment'][] | null
     }
     DlqMessage: {
       body: {
@@ -334,38 +492,468 @@ export interface components {
       messagesReturnedCount: number
       messages: components['schemas']['DlqMessage'][]
     }
+    /** @description Additional licence condition */
+    MigrateAdditionalCondition: {
+      /**
+       * @description Condition text
+       * @example Do not contact Person
+       */
+      text: string
+      /**
+       * @description Condition code
+       * @example NO_CONTACT_NAMED
+       */
+      conditionCode: string
+      /**
+       * Format: int32
+       * @description Condition version
+       * @example 1
+       */
+      conditionsVersion: number
+    }
+    /** @description Address details */
+    MigrateAddress: {
+      /**
+       * @description Address line 1
+       * @example 1 Bridge Street
+       */
+      addressLine1?: string | null
+      /**
+       * @description Address line 2
+       * @example Flat 1
+       */
+      addressLine2?: string | null
+      /**
+       * @description Town or city
+       * @example Newport
+       */
+      townOrCity?: string | null
+      /**
+       * @description Postcode
+       * @example SA42 1DQ
+       */
+      postcode?: string | null
+      /**
+       * @description Address type
+       * @example RESIDENTIAL
+       * @enum {string}
+       */
+      addressType: 'RESIDENTIAL' | 'CAS'
+    }
+    /** @description Appointment address */
+    MigrateAppointmentAddress: {
+      /**
+       * @description First line of address
+       * @example Probation Office
+       */
+      firstLine?: string | null
+      /**
+       * @description Second line of address
+       * @example Magistrates Court
+       */
+      secondLine?: string | null
+      /**
+       * @description Town or city
+       * @example Cardiff Place
+       */
+      townOrCity?: string | null
+      /**
+       * @description Postcode
+       * @example SA42 7ND
+       */
+      postcode?: string | null
+    }
+    /** @description Appointment details */
+    MigrateAppointmentDetails: {
+      /**
+       * @description Person name
+       * @example Test Person
+       */
+      person?: string | null
+      /**
+       * Format: date-time
+       * @description Appointment time
+       * @example 2025-05-04T14:00:00
+       */
+      time?: string | null
+      /**
+       * @description Telephone
+       * @example 02038219211
+       */
+      telephone?: string | null
+      address?: components['schemas']['MigrateAppointmentAddress'] | null
+    }
+    /** @description Licence conditions */
+    MigrateConditions: {
+      /**
+       * @description Bespoke conditions
+       * @example [
+       *       "Licence conditions have been taken from EPF"
+       *     ]
+       */
+      bespoke: string[]
+      /** @description Additional conditions */
+      additional: components['schemas']['MigrateAdditionalCondition'][]
+    }
+    /** @description Curfew details */
+    MigrateCurfewDetails: {
+      /** @description Curfew times */
+      curfewTimes?: components['schemas']['MigrateCurfewTime'][] | null
+      firstNight?: components['schemas']['MigrateFirstNight'] | null
+    }
+    /** @description Individual curfew time block */
+    MigrateCurfewTime: {
+      /**
+       * @description Start day
+       * @example MONDAY
+       * @enum {string}
+       */
+      fromDay: 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY'
+      /**
+       * Format: HH:mm
+       * @description Start time
+       * @example 19:00:00
+       */
+      fromTime: string
+      /**
+       * @description End day
+       * @example TUESDAY
+       * @enum {string}
+       */
+      untilDay: 'MONDAY' | 'TUESDAY' | 'WEDNESDAY' | 'THURSDAY' | 'FRIDAY' | 'SATURDAY' | 'SUNDAY'
+      /**
+       * Format: HH:mm
+       * @description End time
+       * @example 07:00:00
+       */
+      untilTime: string
+    }
+    /** @description First night curfew details */
+    MigrateFirstNight: {
+      /**
+       * Format: HH:mm
+       * @description First night from time
+       * @example 17:00:00
+       */
+      firstNightFrom: string
+      /**
+       * Format: HH:mm
+       * @description First night until time
+       * @example 07:00:00
+       */
+      firstNightUntil: string
+    }
+    /** @description Request to migrate CVL data */
+    MigrateFromHdcToCvlRequest: {
+      /**
+       * @description Booking number
+       * @example A1234BC
+       */
+      bookingNo?: string | null
+      /**
+       * Format: int64
+       * @description Booking ID
+       * @example 987654
+       */
+      bookingId: number
+      /**
+       * @description PNC number
+       * @example YYYY/NNNNNNND
+       */
+      pnc?: string | null
+      /**
+       * @description CRO number
+       * @example NNNNNN/YYD
+       */
+      cro?: string | null
+      /** @description Prisoner personal details */
+      prisoner: components['schemas']['MigratePrisonerDetails']
+      /** @description Prison details */
+      prison: components['schemas']['MigratePrisonDetails']
+      /** @description Sentence dates */
+      sentence: components['schemas']['MigrateSentenceDetails']
+      /** @description Licence details */
+      licence: components['schemas']['MigrateLicenceDetails']
+      /** @description Lifecycle details */
+      lifecycle: components['schemas']['MigrateLicenceLifecycleDetails']
+      /** @description Licence conditions */
+      conditions: components['schemas']['MigrateConditions']
+      curfewAddress?: components['schemas']['MigrateAddress'] | null
+      curfew?: components['schemas']['MigrateCurfewDetails'] | null
+      appointment?: components['schemas']['MigrateAppointmentDetails'] | null
+    }
+    /** @description Licence details */
+    MigrateLicenceDetails: {
+      /**
+       * Format: int64
+       * @description HDC licence version ID
+       * @example 1
+       */
+      licenceVersionId: number
+      /**
+       * @description Licence type
+       * @example AP
+       * @enum {string}
+       */
+      typeCode: 'AP' | 'PSS' | 'AP_PSS'
+      /**
+       * Format: date
+       * @description Licence activation date
+       * @example 2025-05-04
+       */
+      licenceActivationDate?: string | null
+      /**
+       * Format: date
+       * @description HDC actual date
+       * @example 2025-05-04
+       */
+      homeDetentionCurfewActualDate?: string | null
+      /**
+       * Format: date
+       * @description HDC end date
+       * @example 2025-06-04
+       */
+      homeDetentionCurfewEndDate?: string | null
+      /**
+       * Format: date
+       * @description Licence expiry date
+       * @example 2026-05-04
+       */
+      licenceExpiryDate?: string | null
+      /**
+       * Format: int32
+       * @description HDC licence version
+       * @example 1
+       */
+      licenceVersion: number
+      /**
+       * Format: int32
+       * @description HDC vary version
+       * @example 2
+       */
+      varyVersion: number
+    }
+    /** @description Lifecycle details */
+    MigrateLicenceLifecycleDetails: {
+      /**
+       * Format: date-time
+       * @description Approved date
+       * @example 2025-11-20T10:00:00
+       */
+      approvedDate?: string | null
+      /**
+       * @description Approved by username
+       * @example username
+       */
+      approvedByUsername?: string | null
+      /**
+       * Format: date-time
+       * @description Submitted date
+       * @example 2025-11-20T09:00:00
+       */
+      submittedDate?: string | null
+      /**
+       * @description Submitted by
+       * @example username
+       */
+      submittedByUserName?: string | null
+      /**
+       * @description Created by
+       * @example username
+       */
+      createdByUserName?: string | null
+      /**
+       * Format: date-time
+       * @description Date created
+       * @example 2025-11-20T08:30:00
+       */
+      dateCreated?: string | null
+    }
+    /** @description Prison details */
+    MigratePrisonDetails: {
+      /**
+       * @description Prison code
+       * @example MDI
+       */
+      prisonCode: string
+    }
+    /** @description Prisoner personal details */
+    MigratePrisonerDetails: {
+      /**
+       * @description Prisoner Number
+       * @example A1234BC
+       */
+      prisonerNumber?: string | null
+      /** @description Forename */
+      forename?: string | null
+      /** @description Middle Names */
+      middleNames?: string | null
+      /** @description Surname */
+      surname?: string | null
+      /**
+       * Format: date
+       * @description Date of birth
+       * @example 1974-05-29
+       */
+      dateOfBirth?: string | null
+    }
+    /** @description Sentence details */
+    MigrateSentenceDetails: {
+      /**
+       * Format: date
+       * @description Sentence start date
+       * @example 2024-01-01
+       */
+      sentenceStartDate?: string | null
+      /**
+       * Format: date
+       * @description Sentence end date
+       * @example 2025-06-01
+       */
+      sentenceEndDate?: string | null
+      /**
+       * Format: date
+       * @description Conditional release date
+       * @example 2025-05-01
+       */
+      conditionalReleaseDate?: string | null
+      /**
+       * Format: date
+       * @description Actual release date
+       * @example 2025-05-04
+       */
+      actualReleaseDate?: string | null
+      /**
+       * Format: date
+       * @description Top-up supervision start date
+       * @example 2026-05-05
+       */
+      topupSupervisionStartDate?: string | null
+      /**
+       * Format: date
+       * @description Top-up supervision expiry date
+       * @example 2026-11-05
+       */
+      topupSupervisionExpiryDate?: string | null
+      /**
+       * Format: date
+       * @description Post-recall release date
+       * @example 2024-08-01
+       */
+      postRecallReleaseDate?: string | null
+    }
+    Pageable: {
+      /** Format: int32 */
+      page?: number
+      /** Format: int32 */
+      size?: number
+      sort?: string[]
+    }
+    /** @description Licence migration log entry */
+    LicenceMigrationLogEntryDto: {
+      /**
+       * Format: int64
+       * @description Log entry id
+       * @example 123
+       */
+      id: number
+      /**
+       * Format: int64
+       * @description Licence version id
+       * @example 42
+       */
+      licenceVersionId: number
+      /**
+       * Format: date-time
+       * @description Timestamp of the log entry
+       * @example 2024-06-01T12:34:56
+       */
+      createdTimeStamp: string
+      /**
+       * Format: int64
+       * @description Booking id
+       * @example 987654
+       */
+      bookingId: number
+      /** @description Was the migration successful */
+      success: boolean
+      /** @description Should this failure be retried */
+      retry: boolean
+      /** @description Message for the log entry */
+      message?: string | null
+      /**
+       * @description Error source if failed
+       * @example CVL
+       * @enum {string|null}
+       */
+      errorSource?: 'CVL' | 'HDC' | null
+    }
+    PageLicenceMigrationLogEntryDto: {
+      /** Format: int64 */
+      totalElements?: number
+      /** Format: int32 */
+      totalPages?: number
+      /** Format: int32 */
+      size?: number
+      content?: components['schemas']['LicenceMigrationLogEntryDto'][]
+      /** Format: int32 */
+      number?: number
+      first?: boolean
+      last?: boolean
+      sort?: components['schemas']['SortObject']
+      /** Format: int32 */
+      numberOfElements?: number
+      pageable?: components['schemas']['PageableObject']
+      empty?: boolean
+    }
+    PageableObject: {
+      /** Format: int64 */
+      offset?: number
+      sort?: components['schemas']['SortObject']
+      /** Format: int32 */
+      pageSize?: number
+      paged?: boolean
+      /** Format: int32 */
+      pageNumber?: number
+      unpaged?: boolean
+    }
+    SortObject: {
+      empty?: boolean
+      sorted?: boolean
+      unsorted?: boolean
+    }
     /** @description Describes the curfew address on a HDC licence */
     CurfewAddress: {
       /**
        * @description The first line of the curfew address
-       * @example 1
+       * @example 1 Some Street
        */
-      addressLine1?: string
+      addressLine1?: string | null
       /**
        * @description The second line of the curfew address
        * @example Off Some Road
        */
-      addressLine2?: string
+      addressLine2?: string | null
       /**
        * @description The town or city associated with the curfew address
        * @example Some Town
        */
-      townOrCity?: string
+      townOrCity?: string | null
       /**
        * @description The county associated with the curfew address
        * @example Some County
        */
-      county?: string
+      county?: string | null
       /**
        * @description The postcode for the curfew address
        * @example SO30 2UH
        */
-      postcode?: string
+      postcode?: string | null
       /**
        * @description The curfew address type for the person
-       * @enum {string}
+       * @enum {string|null}
        */
-      curfewAddressType?: 'RESIDENTIAL' | 'CAS'
+      curfewAddressType?: 'RESIDENTIAL' | 'CAS' | null
     }
     /** @description Describes the curfew times on a HDC licence */
     CurfewTimes: {
@@ -380,7 +968,7 @@ export interface components {
        * @description The starting time for the curfew
        * @example 15:00
        */
-      fromTime?: string
+      fromTime?: string | null
       /**
        * @description The ending day for the curfew time
        * @example TUESDAY
@@ -392,7 +980,7 @@ export interface components {
        * @description The ending time for the curfew
        * @example 07:00
        */
-      untilTime?: string
+      untilTime?: string | null
     }
     /** @description Describes the first night curfew times on a HDC Licence */
     FirstNight: {
@@ -401,13 +989,13 @@ export interface components {
        * @description The starting time for the curfew on the first night
        * @example 19:00
        */
-      firstNightFrom?: string
+      firstNightFrom?: string | null
       /**
        * Format: HH:mm
        * @description The ending time for the curfew on the first night
        * @example 08:00
        */
-      firstNightUntil?: string
+      firstNightUntil?: string | null
     }
     /** @description Describes a HDC Licence */
     HdcLicence: {
@@ -415,13 +1003,11 @@ export interface components {
        * Format: int64
        * @description The id for the licence
        */
-      licenceId?: number
-      /** @description The curfew or CAS2 address for the person */
-      curfewAddress?: components['schemas']['CurfewAddress']
-      /** @description The first night curfew times for the person */
-      firstNightCurfewHours?: components['schemas']['FirstNight']
+      licenceId?: number | null
+      curfewAddress?: components['schemas']['CurfewAddress'] | null
+      firstNightCurfewHours?: components['schemas']['FirstNight'] | null
       /** @description The curfew times for the person following the first night */
-      curfewTimes?: components['schemas']['CurfewTimes'][]
+      curfewTimes?: components['schemas']['CurfewTimes'][] | null
       /**
        * @description The HDC status for the person
        * @enum {string}
@@ -498,6 +1084,41 @@ export interface operations {
         content: {
           '*/*': components['schemas']['PurgeQueueResult']
         }
+      }
+    }
+  }
+  updateRetryState: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        logId: number
+        retryValue: boolean
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Retry flag updated successfully */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Unauthorized */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
     }
   }
@@ -586,6 +1207,76 @@ export interface operations {
       }
     }
   }
+  migrateALicence: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        bookingId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Licence migrated to CVL successfully */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Migration validation failed */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Migration rejected due to business rules or CVL state */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description CVL temporarily unavailable, retryable migration failure */
+      503: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
+  migrateABatchOfLicences: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Migration started successfully */
+      202: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': string
+        }
+      }
+      /** @description Invalid request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': string
+        }
+      }
+    }
+  }
   getBespokeConditions: {
     parameters: {
       query?: never
@@ -615,6 +1306,48 @@ export interface operations {
         }
         content: {
           '*/*': components['schemas']['ConvertedLicenseBatch']
+        }
+      }
+    }
+  }
+  getHdcStatuses: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': number[]
+      }
+    }
+    responses: {
+      /** @description Returns a list of HDC statuses */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['BookingHdcStatus']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
@@ -720,6 +1453,53 @@ export interface operations {
       }
     }
   }
+  getServiceTemplate: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Request successfully processed - return template file content */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'plain/text': string
+        }
+      }
+      /** @description The client does not have authorisation to make this request */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unexpected error occurred */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+    }
+  }
   getDlqMessages: {
     parameters: {
       query?: {
@@ -740,6 +1520,90 @@ export interface operations {
         }
         content: {
           '*/*': components['schemas']['GetDlqResult']
+        }
+      }
+    }
+  }
+  previewMigrateLicenceToCvl: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        activeLicenceId: number
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Licence migration DTO created successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['MigrateFromHdcToCvlRequest']
+        }
+      }
+      /** @description Invalid request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['MigrateFromHdcToCvlRequest']
+        }
+      }
+      /** @description Licence not found */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['MigrateFromHdcToCvlRequest']
+        }
+      }
+    }
+  }
+  getMigrationLogs: {
+    parameters: {
+      query: {
+        licenceVersionId?: number
+        bookingId?: number
+        errorSource?: string
+        success?: boolean
+        pageable: components['schemas']['Pageable']
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Page of migration logs returned successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['PageLicenceMigrationLogEntryDto']
+        }
+      }
+      /** @description Unauthorized */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['PageLicenceMigrationLogEntryDto']
+        }
+      }
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['PageLicenceMigrationLogEntryDto']
         }
       }
     }
@@ -822,21 +1686,43 @@ export interface operations {
   }
 }
 
+
 // --- Auto-generated schema type aliases ---
-export type RetryDlqResult = components['schemas']['RetryDlqResult']
-export type PurgeQueueResult = components['schemas']['PurgeQueueResult']
-export type MigrationBatchResponse = components['schemas']['MigrationBatchResponse']
-export type ErrorResponse = components['schemas']['ErrorResponse']
-export type ResetResponse = components['schemas']['ResetResponse']
-export type LicenceIdBatchRequest = components['schemas']['LicenceIdBatchRequest']
-export type ConvertedBespokeCondition = components['schemas']['ConvertedBespokeCondition']
-export type ConvertedLicenseBatch = components['schemas']['ConvertedLicenseBatch']
-export type ConvertedLicenseConditions = components['schemas']['ConvertedLicenseConditions']
-export type Attachment = components['schemas']['Attachment']
-export type HmppsSubjectAccessRequestContent = components['schemas']['HmppsSubjectAccessRequestContent']
-export type DlqMessage = components['schemas']['DlqMessage']
-export type GetDlqResult = components['schemas']['GetDlqResult']
-export type CurfewAddress = components['schemas']['CurfewAddress']
-export type CurfewTimes = components['schemas']['CurfewTimes']
-export type FirstNight = components['schemas']['FirstNight']
-export type HdcLicence = components['schemas']['HdcLicence']
+export type RetryDlqResult = components['schemas']['RetryDlqResult'];
+export type PurgeQueueResult = components['schemas']['PurgeQueueResult'];
+export type MigrationBatchResponse = components['schemas']['MigrationBatchResponse'];
+export type ErrorResponse = components['schemas']['ErrorResponse'];
+export type ResetResponse = components['schemas']['ResetResponse'];
+export type LicenceIdBatchRequest = components['schemas']['LicenceIdBatchRequest'];
+export type ConvertedBespokeCondition = components['schemas']['ConvertedBespokeCondition'];
+export type ConvertedLicenseBatch = components['schemas']['ConvertedLicenseBatch'];
+export type ConvertedLicenseConditions = components['schemas']['ConvertedLicenseConditions'];
+export type BookingHdcStatus = components['schemas']['BookingHdcStatus'];
+export type Attachment = components['schemas']['Attachment'];
+export type AttachmentHeader = components['schemas']['AttachmentHeader'];
+export type HmppsSubjectAccessRequestContent = components['schemas']['HmppsSubjectAccessRequestContent'];
+export type DlqMessage = components['schemas']['DlqMessage'];
+export type GetDlqResult = components['schemas']['GetDlqResult'];
+export type MigrateAdditionalCondition = components['schemas']['MigrateAdditionalCondition'];
+export type MigrateAddress = components['schemas']['MigrateAddress'];
+export type MigrateAppointmentAddress = components['schemas']['MigrateAppointmentAddress'];
+export type MigrateAppointmentDetails = components['schemas']['MigrateAppointmentDetails'];
+export type MigrateConditions = components['schemas']['MigrateConditions'];
+export type MigrateCurfewDetails = components['schemas']['MigrateCurfewDetails'];
+export type MigrateCurfewTime = components['schemas']['MigrateCurfewTime'];
+export type MigrateFirstNight = components['schemas']['MigrateFirstNight'];
+export type MigrateFromHdcToCvlRequest = components['schemas']['MigrateFromHdcToCvlRequest'];
+export type MigrateLicenceDetails = components['schemas']['MigrateLicenceDetails'];
+export type MigrateLicenceLifecycleDetails = components['schemas']['MigrateLicenceLifecycleDetails'];
+export type MigratePrisonDetails = components['schemas']['MigratePrisonDetails'];
+export type MigratePrisonerDetails = components['schemas']['MigratePrisonerDetails'];
+export type MigrateSentenceDetails = components['schemas']['MigrateSentenceDetails'];
+export type Pageable = components['schemas']['Pageable'];
+export type LicenceMigrationLogEntryDto = components['schemas']['LicenceMigrationLogEntryDto'];
+export type PageLicenceMigrationLogEntryDto = components['schemas']['PageLicenceMigrationLogEntryDto'];
+export type PageableObject = components['schemas']['PageableObject'];
+export type SortObject = components['schemas']['SortObject'];
+export type CurfewAddress = components['schemas']['CurfewAddress'];
+export type CurfewTimes = components['schemas']['CurfewTimes'];
+export type FirstNight = components['schemas']['FirstNight'];
+export type HdcLicence = components['schemas']['HdcLicence'];

@@ -1,0 +1,17 @@
+extends ../../layout
+
+block content
+
+    div.back-link-container.smallPaddingTop
+        a#back.link-back(href="/admin/migrateToCvl/hdcToCvlMigration") Back
+
+        div
+            h2.heading-large Migration of licence failed
+            p
+                strong Booking ID:  #{bookingId}
+            h3.heading-medium Please check the logs
+            p.error-message #{message}
+            h3.heading-small.largeSpacingTop Migration logs
+                p
+                    a.link(href="/admin/migrateToCvl/migration-logs?bookingId=" + bookingId)
+                        | View migration logs

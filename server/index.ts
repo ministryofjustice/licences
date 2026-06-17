@@ -1,5 +1,5 @@
 /* eslint-disable import/first */
-// eslint-disable-next-line import/no-import-module-exports
+ 
 import getApplicationInfo from './applicationInfo'
 
 import { initialiseAppInsights, buildAppInsightsClient } from './utils/azureAppInsights'

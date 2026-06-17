@@ -1,0 +1,138 @@
+extends ../../layout
+include ../../includes/errorBannerWithDetail
+
+block content
+
+    style.
+        .inlineLabel {
+            display: inline-block;
+            margin-right: 0.4em;
+        }
+        .largeSpacingBottom {
+            margin-bottom: 0.4em;
+        }
+        .largeSpacingTop {
+            margin-top: 0.5em;
+        }
+        .next_previous {
+            margin-left: 0.5em;
+        }
+        .success {
+            margin-left: 5px;
+        }
+        .fail {
+            background-color: #fff1f0;
+            border-left: 5px solid #d4351c;
+        }
+        .fail td:first-child,
+        .success td:first-child {
+            padding-left: 5px;
+        }
+        .pagination {
+            font-weight: bolder;
+        }
+
+
+    div.back-link-container.smallPaddingTop
+        a#back.link-back(href="/admin/migrateToCvl/hdcToCvlMigration") Back
+    div.pure-g
+        div.pure-u-1
+            h2.heading-medium Licence migration logs
+            form.largeMarginBottom(method='GET' action='/admin/migrateToCvl/migration-logs')
+                input(type="hidden" name="_csrf" value=csrfToken)
+
+                .govuk-grid-row
+                    .govuk-grid-column-one-third
+                        .govuk-form-group.largeSpacingBottom
+                            label.inlineLabel(for="bookingId") Booking ID
+                            input#bookingId.govuk-input(
+                                name="bookingId"
+                                type="number"
+                                value=bookingId
+                            )
+
+                    .govuk-grid-column-one-third
+                        .govuk-form-group.largeSpacingBottom
+                            label.inlineLabel(for="licenceVersionId") Licence Version ID
+                            input#licenceVersionId.govuk-input(
+                                name="licenceVersionId"
+                                type="number"
+                                value=licenceVersionId
+                            )
+
+                    .govuk-grid-column-one-third
+                        .govuk-form-group.largeSpacingBottom
+                            label.inlineLabel(for="errorSource") Error Source
+                            select#errorSource.govuk-select(name="errorSource")
+                                option(value="") All
+                                option(value="CVL" selected=errorSource === 'CVL') CVL
+                                option(value="HDC" selected=errorSource === 'HDC') HDC
+                        .govuk-form-group.largeSpacingBottom
+                            label.inlineLabel(for="success") Success
+                            select#errorSource.govuk-select(name="success")
+                                option(value="") All
+                                option(value="true" selected=success === 'true') True
+                                option(value="false" selected=success === 'false') False
+
+                .govuk-form-group.largeSpacingBottom
+                    input.requiredButton.button(
+                        type="submit"
+                        name="action"
+                        value="Filter"
+                    )
+
+            if logs && logs.content && logs.content.length > 0
+
+                div.pagination.largeSpacingTop
+                    span Page #{logs.number + 1} of #{logs.totalPages}
+                    if !logs.first
+                        span.next_previous
+                                a.link(href=`/admin/migrateToCvl/migration-logs?page=${logs.number - 1}&bookingId=${bookingId || ''}&licenceVersionId=${licenceVersionId || ''}&errorSource=${errorSource || ''}&success=${success || ''}`) Previous
+                    if !logs.last
+                        span.next_previous
+                                a.link(href=`/admin/migrateToCvl/migration-logs?page=${logs.number + 1}&bookingId=${bookingId || ''}&licenceVersionId=${licenceVersionId || ''}&errorSource=${errorSource || ''}&success=${success || ''}`) Next
+
+                table.govuk-table
+                    thead.govuk-table__head
+                        tr.govuk-table__row
+                            th.govuk-table__header(scope="col") ID
+                            th.govuk-table__header(scope="col") Date
+                            th.govuk-table__header(scope="col") Time
+                            th.govuk-table__header(scope="col") Booking ID
+                            th.govuk-table__header(scope="col") Licence V
+                            th.govuk-table__header(scope="col") Success
+                            th.govuk-table__header(scope="col") Source
+                            th.govuk-table__header(scope="col") Message
+                            th.govuk-table__header(scope="col") Retry
+                    tbody.govuk-table__body
+                        each log in logs.content
+                            tr(id='log-' + log.id).govuk-table__row(
+                                class=log.success ? "success" : "fail"
+                            )
+                                td.govuk-table__cell #{log.id}
+                                td.govuk-table__cell= new Date(log.createdTimeStamp).toLocaleString('en-GB', {year: '2-digit',month: '2-digit',day: '2-digit'})
+                                td.govuk-table__cell= new Date(log.createdTimeStamp).toLocaleString('en-GB', {hour: '2-digit', minute: '2-digit'})
+                                td.govuk-table__cell #{log.bookingId}
+                                td.govuk-table__cell #{log.licenceVersionId}
+                                td.govuk-table__cell #{log.success}
+                                td.govuk-table__cell #{log.errorSource || '--'}
+                                td.govuk-table__cell #{log.message || '--'}
+                                td.govuk-table__cell
+                                    if (!log.retry && !log.success)
+                                        a.link(href=`/admin/migrateToCvl/retry/${log.id}/true`) #{log.retry}
+                                    if (log.retry && !log.success)
+                                        a.link(href=`/admin/migrateToCvl/retry/${log.id}/false`) #{log.retry}
+                div.pagination.largeSpacingTop
+                    span Page #{logs.number + 1} of #{logs.totalPages}
+                    if !logs.first
+                        span.next_previous
+                                a.link(href=`/admin/migrateToCvl/migration-logs?page=${logs.number - 1}&bookingId=${bookingId || ''}&licenceVersionId=${licenceVersionId || ''}&errorSource=${errorSource || ''}`) Previous
+                    if !logs.last
+                        span.next_previous
+                                a.link(href=`/admin/migrateToCvl/migration-logs?page=${logs.number + 1}&bookingId=${bookingId || ''}&licenceVersionId=${licenceVersionId || ''}&errorSource=${errorSource || ''}`) Next
+            else
+                p No migration logs found.
+
+    div.pure-g
+        div.pure-u-1.largeSpacingTop
+

@@ -1,0 +1,81 @@
+extends ../../layout
+
+block content
+
+    style.
+        .inlineLabel {
+            display: inline-block;
+            margin-right: 0.4em;
+        }
+        .largeSpacingBottom {
+            margin-bottom: 1em;
+        }
+
+        .largeSpacingTop {
+            margin-top: 1em;
+        }
+
+    div.back-link-container.smallPaddingTop
+        a#back.link-back(href="/admin/") Back
+
+
+    div.pure-g
+        div.pure-u-1
+            h2.heading-medium HDC to CVL Migration
+
+
+            h3.heading-small.largeSpacingTop Compare condition
+
+            p
+                a.link(href="/admin/conditionCompareTextsSearch")
+                    | View Compare condition texts
+
+            hr
+
+            h3.heading-small.largeSpacingTop Preview licence migration
+
+            .govuk-form-group.largeSpacingBottom
+                label.inlineLabel(for="previewLicenceId") Licence Version ID
+                input#previewLicenceId.govuk-input(
+                    type="number"
+                )
+
+            input.requiredButton.button(
+                type="button"
+                onclick="window.location='/admin/migrateToCvl/licence/' + document.getElementById('previewLicenceId').value + '/preview'",
+                value="Preview migration"
+            )
+
+            hr
+
+            h3.heading-small Migrate single licence
+
+            .govuk-form-group.largeSpacingBottom
+                label.inlineLabel(for="migrateBookingId") Booking ID
+                input#migrateLicenceId.govuk-input(
+                    type="number"
+                )
+
+            input.requiredButton.button(
+                type="button"
+                onclick="window.location='/admin/migrateToCvl/licence/' + document.getElementById('migrateBookingId').value",
+                value="Migrate licence"
+            )
+
+            hr
+
+            h3.heading-small.largeSpacingTop Batch migration
+
+            p Starts migration of the next batch of eligible licences.
+
+            a.govuk-button(
+                href="/admin/migrateToCvl/batch"
+            ) Start batch migration
+
+            hr
+
+            h3.heading-small.largeSpacingTop Migration logs
+
+            p
+                a.link(href="/admin/migrateToCvl/migration-logs")
+                    | View migration logs
