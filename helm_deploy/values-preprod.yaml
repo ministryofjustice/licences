@@ -42,6 +42,7 @@ generic-service:
     LICENCE_POSTPONE_VERSION: '2'
     COM_NOT_ALLOCATED_BLOCK_ENABLED: 'true'
     CA_REPORTS_LINK_ENABLED: 'true'
+    HDC_IN_CVL_EARLY_ADOPTER_ENABLED: 'true'
 
 generic-prometheus-alerts:
   alertSeverity: cvl-alerts-non-prod

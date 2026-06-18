@@ -257,7 +257,7 @@ export class HdcService {
           return await this.hdcClient.migrateSingleLicenceToCvl(bookingId)
       } catch (error: any) {
           logger.error(`Failed to migrate Booking ID: ${bookingId}`, {
-              message: error?.message,
+              message: error?.userMessage ?? error?.message,
               status: error?.response?.status,
               data: error?.response?.data,
               stack: error?.stack,
@@ -271,7 +271,7 @@ export class HdcService {
           return await this.hdcClient.migrateBatchToCvl()
       } catch (error: any) {
           logger.error(`Failed to migrate bactch to CVL`, {
-              message: error?.message,
+              message: error?.userMessage ?? error?.message,
               status: error?.response?.status,
               data: error?.response?.data,
               stack: error?.stack,
@@ -286,7 +286,7 @@ export class HdcService {
             return await this.hdcClient.setMigrationLogRetry(logId, retryValue)
         } catch (error: any) {
             logger.error('Failed to set migration log retry', {
-                message: error?.message,
+                message: error?.userMessage ?? error?.message,
                 status: error?.response?.status,
                 data: error?.response?.data,
                 stack: error?.stack,
@@ -299,8 +299,8 @@ export class HdcService {
         try {
             return await this.hdcClient.migrateSingleLicenceToCvlPreview(licenceId)
         } catch (error: any) {
-            logger.error(`Failed to preview migration for ID: ${licenceId}`, {
-                message: error?.message,
+            logger.error(`Failed to preview migration for ID: ${licenceId} `, {
+                message: error?.userMessage ?? error?.message,
                 status: error?.response?.status,
                 data: error?.response?.data,
                 stack: error?.stack,

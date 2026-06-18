@@ -298,5 +298,6 @@ export default {
   curfewAddressReviewVersion: get('CURFEW_ADDRESS_REVIEW_VERSION', '2'),
   postponeVersion: get('LICENCE_POSTPONE_VERSION', '2'),
   comNotAllocatedBlockEnabled: get('COM_NOT_ALLOCATED_BLOCK_ENABLED', false) === 'true',
-  caReportsLinkEnabled: get('CA_REPORTS_LINK_ENABLED', false) === 'true'
+  caReportsLinkEnabled: get('CA_REPORTS_LINK_ENABLED', false) === 'true',
+  hdcInCvlEarlyAdopterEnabled : get('HDC_IN_CVL_EARLY_ADOPTER_ENABLED', false) === 'true'
 }
