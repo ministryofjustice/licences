@@ -48,17 +48,17 @@ block content
 
             hr
 
-            h3.heading-small Migrate single licence
+            h3.heading-small.largeSpacingTop Migrate single licence
 
             .govuk-form-group.largeSpacingBottom
                 label.inlineLabel(for="migrateBookingId") Booking ID
-                input#migrateLicenceId.govuk-input(
+                input#migrateBookingId.govuk-input(
                     type="number"
                 )
 
             input.requiredButton.button(
                 type="button"
-                onclick="window.location='/admin/migrateToCvl/licence/' + document.getElementById('migrateBookingId').value",
+                onclick="window.location='/admin/migrateToCvl/licence/'+document.getElementById('migrateBookingId').value+'/migrate'",
                 value="Migrate licence"
             )
 
