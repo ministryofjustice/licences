@@ -299,5 +299,8 @@ export default {
   postponeVersion: get('LICENCE_POSTPONE_VERSION', '2'),
   comNotAllocatedBlockEnabled: get('COM_NOT_ALLOCATED_BLOCK_ENABLED', false) === 'true',
   caReportsLinkEnabled: get('CA_REPORTS_LINK_ENABLED', false) === 'true',
-  hdcInCvlEarlyAdopterEnabled : get('HDC_IN_CVL_EARLY_ADOPTER_ENABLED', false) === 'true'
+  hdcInCvlEarlyAdopter: {
+      enabled: get('HDC_IN_CVL_EARLY_ADOPTER_ENABLED', false) === 'true',
+      probationAreaCodes: get('HDC_IN_CVL_EARLY_ADOPTER_PROBATION_AREA_CODES', '').split(',')
+  }
 }

@@ -29,6 +29,13 @@ block content
             padding-left: 5px;
         }
         .pagination {
+            display: flex;
+            align-items: center;
+            font-weight: bolder;
+        }
+
+        .count {
+            margin-left: auto;
             font-weight: bolder;
         }
 
@@ -84,7 +91,9 @@ block content
             if logs && logs.content && logs.content.length > 0
 
                 div.pagination.largeSpacingTop
-                    span Page #{logs.number + 1} of #{logs.totalPages}
+                    span.page-info Page #{logs.number + 1} of #{logs.totalPages}
+                    span.count Count (#{logs.totalElements})
+
                     if !logs.first
                         span.next_previous
                                 a.link(href=`/admin/migrateToCvl/migration-logs?page=${logs.number - 1}&bookingId=${bookingId || ''}&licenceVersionId=${licenceVersionId || ''}&errorSource=${errorSource || ''}&success=${success || ''}`) Previous
