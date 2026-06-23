@@ -92,7 +92,6 @@ block content
 
                 div.pagination.largeSpacingTop
                     span.page-info Page #{logs.number + 1} of #{logs.totalPages}
-                    span.count Count (#{logs.totalElements})
 
                     if !logs.first
                         span.next_previous
@@ -100,6 +99,8 @@ block content
                     if !logs.last
                         span.next_previous
                                 a.link(href=`/admin/migrateToCvl/migration-logs?page=${logs.number + 1}&bookingId=${bookingId || ''}&licenceVersionId=${licenceVersionId || ''}&errorSource=${errorSource || ''}&success=${success || ''}`) Next
+
+                    span.count Count (#{logs.totalElements})
 
                 table.govuk-table
                     thead.govuk-table__head

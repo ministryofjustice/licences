@@ -3,6 +3,7 @@ import { CommunityManager, DeliusClient, StaffDetails } from '../data/deliusClie
 import { ResponsibleOfficer, Result } from '../../types/licences'
 import { OffenderSentence } from '../data/nomisClientTypes'
 import { groupBy } from '../utils/functionalHelpers'
+import config from '../config';
 
 const setCase = require('case')
 const logger = require('../../log')
@@ -91,6 +92,33 @@ export class RoService {
       logger.error(`findResponsibleOfficer for: ${offenderNo}`, error.stack)
       throw error
     }
+  }
+
+  async isEarlyAdopter(offenderNo: string): Promise<boolean> {
+      if (!config.hdcInCvlEarlyAdopter.enabled) {
+          logger.info(`isEarlyAdopter: ${offenderNo} early adopter check is disabled`)
+          return false
+      }
+      try {
+        const communityManager = await this.deliusClient.getCommunityManager(offenderNo)
+        const prisonerProviderCode = communityManager?.provider?.code
+
+        if (!prisonerProviderCode) {
+          logger.info(`isEarlyAdopter: ${offenderNo} has no probation code`)
+          return false
+        }
+          const isEarlyAdopter = config.hdcInCvlEarlyAdopter.providerCodes.includes(prisonerProviderCode)
+          logger.info(
+              `isEarlyAdopter: ${offenderNo} provider ${prisonerProviderCode}, early adopter: ${isEarlyAdopter}`,
+          )
+          return isEarlyAdopter
+      } catch (error) {
+        logger.error(`isEarlyAdopter for: ${offenderNo}`, {
+          message: error instanceof Error ? error.message : String(error),
+          stack: error instanceof Error ? error.stack : undefined,
+        })
+        throw error
+      }
   }
 }
 
