@@ -3,7 +3,7 @@ import { CommunityManager, DeliusClient, StaffDetails } from '../data/deliusClie
 import { ResponsibleOfficer, Result } from '../../types/licences'
 import { OffenderSentence } from '../data/nomisClientTypes'
 import { groupBy } from '../utils/functionalHelpers'
-import config from '../config';
+import config from '../config'
 
 const setCase = require('case')
 const logger = require('../../log')
