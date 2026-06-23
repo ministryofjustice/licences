@@ -40,7 +40,7 @@ generic-service:
     COM_NOT_ALLOCATED_BLOCK_ENABLED: 'true'
     CA_REPORTS_LINK_ENABLED: 'true'
     HDC_IN_CVL_EARLY_ADOPTER_ENABLED: 'true'
-    HDC_IN_CVL_EARLY_ADOPTER_PROBATION_AREA_CODES: ''
+    HDC_IN_CVL_EARLY_ADOPTER_PROVIDER_CODES: 'N59'
 
 generic-prometheus-alerts:
   alertSeverity: cvl-alerts-non-prod

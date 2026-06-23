@@ -301,6 +301,6 @@ export default {
   caReportsLinkEnabled: get('CA_REPORTS_LINK_ENABLED', false) === 'true',
   hdcInCvlEarlyAdopter: {
       enabled: get('HDC_IN_CVL_EARLY_ADOPTER_ENABLED', false) === 'true',
-      probationAreaCodes: get('HDC_IN_CVL_EARLY_ADOPTER_PROBATION_AREA_CODES', '').split(',')
+      providerCodes: get('HDC_IN_CVL_EARLY_ADOPTER_PROVIDER_CODES', '').split(',')
   }
 }

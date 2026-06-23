@@ -1,6 +1,7 @@
 import moment from 'moment'
 import { RoService } from '../../server/services/roService'
 import { DeliusClient, StaffDetails } from '../../server/data/deliusClient'
+import config from '../../server/config'
 
 jest.mock('../../server/data/deliusClient')
 
@@ -299,5 +300,55 @@ describe('roService', () => {
         message: 'Offender number not entered in delius',
       })
     })
+  })
+
+  describe('isEarlyAdopter', () => {
+    beforeEach(() => {
+      config.hdcInCvlEarlyAdopter = {
+        enabled: true,
+        providerCodes: ['PROB-1'],
+      }
+    })
+
+    test('should return false when early adopter check is disabled', () => {
+      config.hdcInCvlEarlyAdopter.enabled = false
+
+      return expect(service.isEarlyAdopter('A1234BC')).resolves.toBe(false)
+    })
+
+    test('should return true when provider code is an early adopter', () => {
+      deliusClient.getCommunityManager.mockResolvedValue({
+        provider: {
+          code: 'PROB-1',
+        },
+      } as any)
+
+      return expect(service.isEarlyAdopter('A1234BC')).resolves.toBe(true)
+    })
+
+    test('should return false when provider code is not an early adopter', () => {
+      deliusClient.getCommunityManager.mockResolvedValue({
+        provider: {
+          code: 'PROB-2',
+        },
+      } as any)
+
+      return expect(service.isEarlyAdopter('A1234BC')).resolves.toBe(false)
+    })
+
+    test('should return false when offender has no provider code', () => {
+      deliusClient.getCommunityManager.mockResolvedValue({
+        provider: {},
+      } as any)
+
+      return expect(service.isEarlyAdopter('A1234BC')).resolves.toBe(false)
+    })
+
+    test('should return false when community manager is not found', () => {
+      deliusClient.getCommunityManager.mockResolvedValue(undefined)
+
+      return expect(service.isEarlyAdopter('A1234BC')).resolves.toBe(false)
+    })
+
   })
 })
