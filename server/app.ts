@@ -361,7 +361,7 @@ export default function createApp({
 
   app.use(
     '/hdc/taskList/',
-    secureRoute(taskListRouter(prisonerService, licenceService, audit, caService, signInService), {
+    secureRoute(taskListRouter(prisonerService, licenceService, roService, hdcService, audit, caService, signInService), {
       licenceRequired: false,
     })
   )

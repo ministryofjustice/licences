@@ -8,6 +8,8 @@ const {
   createLicenceServiceStub,
   createSignInServiceStub,
   createCaServiceStub,
+  createHdcServiceStub,
+  createRoServiceStub,
 } = require('../mockServices')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
@@ -896,36 +898,84 @@ describe('GET /taskList/:prisonNumber', () => {
       licenceService.createLicence.mockResolvedValue()
     })
 
-    test('should redirect to vary/evidence page', () => {
-      const app = createApp({
-        licenceServiceStub: licenceService,
-        prisonerServiceStub: prisonerService,
-        caServiceStub: caService,
+    describe('when offender is not an early adopter', () => {
+      let roService
+      let hdcService
+
+      beforeEach(() => {
+        roService = createRoServiceStub()
+        hdcService = createHdcServiceStub()
+
+        roService.isEarlyAdopter.mockResolvedValue(false)
       })
 
-      return request(app)
-        .post('/taskList/varyStart')
-        .send({ bookingId: '123' })
-        .expect(302)
-        .expect('Location', '/hdc/vary/evidence/123')
-    })
+      describe('when a licence already exists', () => {
+        test('should not create a new licence', () => {
+          licenceService.getLicence.mockResolvedValue({
+            bookingId: '123',
+          })
 
-    describe('licence does not exist in db', () => {
-      test('should create a new licence', () => {
-        const app = createApp({
-          licenceServiceStub: licenceService,
-          prisonerServiceStub: prisonerService,
-          caServiceStub: caService,
+          const app = createApp(
+            {
+              licenceServiceStub: licenceService,
+              prisonerServiceStub: prisonerService,
+              caServiceStub: caService,
+            },
+            undefined,
+            roService,
+            hdcService
+          )
+
+          return request(app)
+            .post('/taskList/varyStart')
+            .send({ bookingId: '123', prisonNumber: 'A1234BC' })
+            .expect(302)
+            .expect('Location', '/hdc/vary/evidence/123')
+            .expect(() => {
+              expect(licenceService.createLicence).not.toHaveBeenCalled()
+            })
         })
+      })
+
+      test('should redirect to vary/evidence page', () => {
+        const app = createApp(
+          {
+            licenceServiceStub: licenceService,
+            prisonerServiceStub: prisonerService,
+            caServiceStub: caService,
+          },
+          undefined,
+          roService,
+          hdcService
+        )
 
         return request(app)
           .post('/taskList/varyStart')
-          .send({ bookingId: '123' })
+          .send({ bookingId: '123', prisonNumber: 'A1234BC' })
+          .expect(302)
+          .expect('Location', '/hdc/vary/evidence/123')
+      })
+
+      test('should create a new licence', () => {
+        const app = createApp(
+          {
+            licenceServiceStub: licenceService,
+            prisonerServiceStub: prisonerService,
+            caServiceStub: caService,
+          },
+          undefined,
+          roService,
+          hdcService
+        )
+
+        return request(app)
+          .post('/taskList/varyStart')
+          .send({ bookingId: '123', prisonNumber: 'A1234BC' })
           .expect(302)
           .expect(() => {
-            expect(licenceService.createLicence).toHaveBeenCalled()
             expect(licenceService.createLicence).toHaveBeenCalledWith({
               bookingId: '123',
+              prisonNumber: 'A1234BC',
               data: { variedFromLicenceNotInSystem: true },
               stage: 'VARY',
             })
@@ -934,24 +984,106 @@ describe('GET /taskList/:prisonNumber', () => {
 
       test('should audit the new licence creation event', () => {
         const audit = mockAudit()
-        licenceService.getLicence.mockResolvedValue(undefined)
-        licenceService.createLicence.mockResolvedValue()
 
-        const app = createApp({
-          licenceServiceStub: licenceService,
-          prisonerServiceStub: prisonerService,
-          caServiceStub: caService,
-          audit,
-        })
+        const app = createApp(
+          {
+            licenceServiceStub: licenceService,
+            prisonerServiceStub: prisonerService,
+            caServiceStub: caService,
+            audit,
+          },
+          undefined,
+          roService,
+          hdcService
+        )
 
         return request(app)
           .post('/taskList/varyStart')
-          .send({ bookingId: '123' })
+          .send({ bookingId: '123', prisonNumber: 'A1234BC' })
           .expect(302)
           .expect(() => {
-            expect(audit.record).toHaveBeenCalled()
-            expect(audit.record).toHaveBeenCalledWith('VARY_NOMIS_LICENCE_CREATED', 'CA_USER_TEST', {
+            expect(audit.record).toHaveBeenCalledWith(
+              'VARY_NOMIS_LICENCE_CREATED',
+              'CA_USER_TEST',
+              {
+                bookingId: '123',
+              }
+            )
+          })
+      })
+    })
+
+    describe('when offender is an early adopter', () => {
+      let roService
+      let hdcService
+
+      beforeEach(() => {
+        roService = createRoServiceStub()
+        hdcService = createHdcServiceStub()
+
+        roService.isEarlyAdopter.mockResolvedValue(true)
+      })
+
+      test('should migrate licence to CVL and redirect to varyInCvl page', () => {
+        const audit = mockAudit()
+        hdcService.migrateSingleLicenceToCvl.mockResolvedValue()
+
+        const app = createApp(
+          {
+            licenceServiceStub: licenceService,
+            prisonerServiceStub: prisonerService,
+            caServiceStub: caService,
+            audit,
+          },
+          undefined,
+          roService,
+          hdcService
+        )
+
+        return request(app)
+          .post('/taskList/varyStart')
+          .send({ bookingId: '123', prisonNumber: 'A1234BC' })
+          .expect(302)
+          .expect('Location', '/hdc/varyInCvl/123')
+          .expect(() => {
+            expect(hdcService.migrateSingleLicenceToCvl).toHaveBeenCalledWith('123')
+            expect(licenceService.createLicence).not.toHaveBeenCalled()
+
+            expect(audit.record).toHaveBeenCalledWith(
+              'VARY_LICENCE_IN_CVL_CREATED',
+              'CA_USER_TEST',
+              {
+                bookingId: '123',
+              }
+            )
+          })
+      })
+
+      test('should fall back to HDC licence creation when migration fails', () => {
+        hdcService.migrateSingleLicenceToCvl.mockRejectedValue(new Error('Boom'))
+
+        const app = createApp(
+          {
+            licenceServiceStub: licenceService,
+            prisonerServiceStub: prisonerService,
+            caServiceStub: caService,
+          },
+          undefined,
+          roService,
+          hdcService
+        )
+
+        return request(app)
+          .post('/taskList/varyStart')
+          .send({ bookingId: '123', prisonNumber: 'A1234BC' })
+          .expect(302)
+          .expect('Location', '/hdc/vary/evidence/123')
+          .expect(() => {
+            expect(licenceService.createLicence).toHaveBeenCalledWith({
               bookingId: '123',
+              prisonNumber: 'A1234BC',
+              data: { variedFromLicenceNotInSystem: true },
+              stage: 'VARY',
             })
           })
       })
@@ -1087,11 +1219,14 @@ describe('GET /taskList/:prisonNumber', () => {
   })
 })
 
-function createApp({ licenceServiceStub, prisonerServiceStub, caServiceStub, audit = mockAudit() }, user) {
+function createApp({ licenceServiceStub, prisonerServiceStub, caServiceStub, audit = mockAudit() }, user,
+                   roServiceStub, hdcServiceStub) {
   const prisonerService = prisonerServiceStub || createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()
   const caService = caServiceStub || createCaServiceStub
+  const roService = roServiceStub || createRoServiceStub()
+  const hdcService = hdcServiceStub || createHdcServiceStub()
 
   const baseRouter = standardRouter({
     licenceService,
@@ -1101,7 +1236,7 @@ function createApp({ licenceServiceStub, prisonerServiceStub, caServiceStub, aud
     tokenVerifier: new NullTokenVerifier(),
     config: null,
   })
-  const route = baseRouter(createRoute(prisonerService, licenceService, audit, caService, signInService), {
+  const route = baseRouter(createRoute(prisonerService, licenceService, roService,  hdcService, audit, caService, signInService), {
     licenceRequired: false,
   })
 
