@@ -126,3 +126,24 @@ export const createNomisPushServiceStub = () => ({
 export const createCaServiceStub = {
   getReasonForNotContinuing: jest.fn().mockReturnValue([]),
 }
+
+export const createHdcServiceStub = () => ({
+    getBespokeConditions: jest.fn(),
+    compareConditions: jest.fn(),
+    compareLicenceConditions: jest.fn(),
+    migrateSingleLicenceToCvl: jest.fn(),
+    migrateBatchToCvl: jest.fn(),
+    setMigrationLogRetry: jest.fn(),
+    migrateSingleLicenceToCvlPreview: jest.fn(),
+    getMigrationLogs: jest.fn(),
+})
+
+export const createRoServiceStub = () => ({
+    getLatestSentences: jest.fn(),
+    getStaffByStaffIdentifier: jest.fn(),
+    getStaffByUsername: jest.fn(),
+    getROPrisonersForStaffIdentifier: jest.fn(),
+    findResponsibleOfficer: jest.fn(),
+    findResponsibleOfficerByOffenderNo: jest.fn(),
+    isEarlyAdopter: jest.fn(),
+})
