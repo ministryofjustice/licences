@@ -11,6 +11,8 @@ import { getTasksForBlocked } from './viewModels/taskLists/caTasks'
 import { LicenceStage } from '../data/licenceTypes'
 import { LicenceService } from '../services/licenceService'
 import config from '../config'
+import {RoService} from '../services/roService';
+import {HdcService} from '../services/hdc/hdcService';
 
 const { APPROVAL, DECIDED, ELIGIBILITY, MODIFIED, MODIFIED_APPROVAL, PROCESSING_CA, PROCESSING_RO } = LicenceStage
 
@@ -86,6 +88,8 @@ const determineAccessLevel = (licence, postRelease, role) => {
 export = (
     prisonerService: PrisonerService,
     licenceService: LicenceService,
+    roService : RoService,
+    hdcService : HdcService,
     audit,
     caService: CaService,
     signInService
@@ -186,19 +190,46 @@ export = (
       })
     )
 
-    router.post(
-      '/varyStart',
+    async function createLicenceInHdc(bookingId, prisonNumber, req, res) {
+      const existingLicence = await licenceService.getLicence(bookingId)
+      if (!existingLicence) {
+          // Create new licence in HDC when no licence exists in system
+          await licenceService.createLicence({
+            bookingId,
+            prisonNumber,
+            data: {variedFromLicenceNotInSystem: true},
+            stage: 'VARY',
+          })
+        }
+
+        audit.record('VARY_NOMIS_LICENCE_CREATED', req.user.username, {bookingId})
+        res.redirect(`/hdc/vary/evidence/${bookingId}`)
+    }
+
+    async function creatLicenceInCvl(bookingId, prisonNumber, req, res) {
+          try {
+              await hdcService.migrateSingleLicenceToCvl(bookingId)
+              audit.record('VARY_LICENCE_IN_CVL_CREATED', req.user.username, {bookingId})
+              res.redirect(`/hdc/varyInCvl/${bookingId}`)
+          } catch (error) {
+              logger.error('Error occurred while migrating licence to CVL', {
+                  bookingId,
+                  prisonNumber,
+                  message: error instanceof Error ? error.message : String(error),
+                  stack: error instanceof Error ? error.stack : undefined,
+              })
+              await createLicenceInHdc(bookingId, prisonNumber, req, res);
+          }
+      }
+
+      router.post('/varyStart',
       asyncMiddleware(async (req, res) => {
         const { bookingId, prisonNumber } = req.body
-        await licenceService.createLicence({
-          bookingId,
-          prisonNumber,
-          data: { variedFromLicenceNotInSystem: true },
-          stage: 'VARY',
-        })
-        audit.record('VARY_NOMIS_LICENCE_CREATED', req.user.username, { bookingId })
-
-        res.redirect(`/hdc/vary/evidence/${bookingId}`)
+        if (await roService.isEarlyAdopter(prisonNumber)) {
+            await creatLicenceInCvl(bookingId, prisonNumber, req, res);
+        } else {
+            await createLicenceInHdc(bookingId, prisonNumber, req, res);
+        }
       })
     )
 
