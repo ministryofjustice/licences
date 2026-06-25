@@ -111,7 +111,7 @@ export class LicenceClient {
 
   async getApprovedLicenceVersion(bookingId): Promise<ApprovedLicenceVersion> {
     const query = {
-      text: `select version, vary_version, template, timestamp from v_licence_versions_excluding_deleted
+      text: `select version, vary_version, template, timestamp, migration_state from v_licence_versions_excluding_deleted
                     where booking_id = $1 order by version desc, vary_version desc limit 1`,
       values: [bookingId],
     }

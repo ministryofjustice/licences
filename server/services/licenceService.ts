@@ -48,6 +48,7 @@ export interface LicenceRecord {
   approvedVersion: string
   approvedVersionDetails: ApprovedVersionDetails
   licenceInCvl: boolean
+  migrationState?: string
 }
 
 export function adaptFieldConfigToSelectWorkingAddress(existingLicence, fieldConfigs) {
@@ -130,7 +131,9 @@ export class LicenceService {
       }
 
       const approvedVersionDetails: ApprovedVersionDetails = rawVersionDetails || {}
-      const licenceInCvl = rawLicence.licence_in_cvl
+      const migrationState = rawVersionDetails?.migration_state
+      const licenceInCvl = migrationState === 'COMPLETED'
+
       const version = `${rawLicence.version}.${rawLicence.vary_version}`
       const versionDetails = {
         version: rawLicence.version,
@@ -150,6 +153,7 @@ export class LicenceService {
         approvedVersion,
         approvedVersionDetails,
         licenceInCvl,
+        migrationState
       }
     } catch (error) {
       // @ts-ignore

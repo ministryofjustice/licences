@@ -40,12 +40,13 @@ export const getTaskLists = (
   role,
   postRelease,
   licenceStatus,
-  { version = null, versionDetails = null, approvedVersion = {}, approvedVersionDetails = {}, licence = {} } = {}
+  { version = null, versionDetails = null, approvedVersion = {}, approvedVersionDetails = {}, licence = {} } = {},
+  isEarlyAdopter : boolean  = false
 ) => {
   const { decisions, tasks, stage } = licenceStatus
 
   if (postRelease) {
-    return getVaryTasks({ version, versionDetails, approvedVersion, approvedVersionDetails, licence })({ stage })
+    return getVaryTasks({ version, versionDetails, approvedVersion, approvedVersionDetails, licence, isEarlyAdopter })({ stage })
   }
 
   if (role === 'DM') {
@@ -81,12 +82,13 @@ export const getAllTaskLists = (
   role,
   postRelease,
   licenceStatus,
-  { version = null, versionDetails = null, approvedVersion = {}, approvedVersionDetails = {}, licence = {} } = {}
+  { version = null, versionDetails = null, approvedVersion = {}, approvedVersionDetails = {}, licence = {} } = {},
+  isEarlyAdopter : boolean  = false
 ) => {
   const { decisions, tasks, stage } = licenceStatus
 
   if (postRelease) {
-    return getVaryTasks({ version, versionDetails, approvedVersion, approvedVersionDetails, licence })({ stage })
+    return getVaryTasks({ version, versionDetails, approvedVersion, approvedVersionDetails, licence, isEarlyAdopter })({ stage })
   }
 
   if (role === 'DM') {
