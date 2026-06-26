@@ -317,6 +317,10 @@ export default {
     electronicMonitoringOrderUrl: get(
       'ELECTRONIC_MONITORING_ORDER_URL',
       'https://hmpps-electronic-monitoring-create-an-order.hmpps.service.justice.gov.uk/'
+    ),
+    createAndVaryALicenceVaryCaseloadUrl: get(
+      'CREATE_AND_VARY_A_LICENCE_VARY_CASELOAD_URL',
+      'https://create-and-vary-a-licence-dev.hmpps.service.justice.gov.uk/licence/vary/caseload'
     )
   },
 

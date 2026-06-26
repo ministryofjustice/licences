@@ -1044,7 +1044,7 @@ describe('GET /taskList/:prisonNumber', () => {
           .post('/taskList/varyStart')
           .send({ bookingId: '123', prisonNumber: 'A1234BC' })
           .expect(302)
-          .expect('Location', '/hdc/varyInCvl/123')
+          .expect('Location', '/hdc/vary/varyInCvl/123')
           .expect(() => {
             expect(hdcService.migrateSingleLicenceToCvl).toHaveBeenCalledWith('123')
             expect(licenceService.createLicence).not.toHaveBeenCalled()

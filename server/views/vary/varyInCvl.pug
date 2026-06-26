@@ -1,0 +1,26 @@
+extends ../layout
+
+block content
+
+  div.pure-g.pure-u-1
+    div
+      include ../includes/back
+      include ../includes/personalDetailsSummary
+
+      h1.heading-large.midPaddingBottom Varying this licence
+
+      p
+        span You can now only vary this licence on the Create and vary a licence service. 
+      p  
+        span To do this, you must be either: 
+
+      ul.list-bullet.midPaddingBottom
+        li the allocated community probation practitioner
+        li assigned to the same team as the allocated community probation practitioner on NDelius
+
+      p.midPaddingBottom  
+        span When you continue, you will need to find this person in the variation case list or search for them.
+
+      
+      div.pure-u-1.pure-u-md-1-2.buttonContainer
+        a#continueBtn.center.button(href=`${createAndVaryALicenceVaryCaseloadUrl}`) Continue to Create and vary a licence

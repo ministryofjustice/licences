@@ -212,7 +212,7 @@ export = (
           try {
               await hdcService.migrateSingleLicenceToCvl(bookingId)
               audit.record('VARY_LICENCE_IN_CVL_CREATED', req.user.username, {bookingId})
-              res.redirect(`/hdc/varyInCvl/${bookingId}`)
+              res.redirect(`/hdc/vary/varyInCvl/${bookingId}`)
           } catch (error) {
               logger.error('Error occurred while migrating licence to CVL', {
                   bookingId,
@@ -224,7 +224,7 @@ export = (
           }
       }
 
-      router.post('/varyStart',
+    router.post('/varyStart',
       asyncMiddleware(async (req, res) => {
         const { bookingId, prisonNumber } = req.body
         if (await roService.isEarlyAdopter(prisonNumber)) {

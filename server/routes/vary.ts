@@ -106,6 +106,8 @@ export const varyRouter =
         bookingId,
       })
     }
+    
+    router.get('/varyInCvl/:bookingId', getVaryForm('varyInCvl', []))
 
     router.get('/address/:bookingId', getVaryForm('varyAddress', ['proposedAddress', 'curfewAddress']))
 
