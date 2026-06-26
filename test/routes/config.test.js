@@ -10,12 +10,27 @@ describe('hdcInCvlNationalRoleOut Config', () => {
     process.env = originalEnv
   })
 
+  const loadConfig = () => {
+    let config
+
+    jest.isolateModules(() => {
+      // eslint-disable-next-line global-require
+      config = require('../../server/config').default
+    })
+
+    if (!config) {
+      throw new Error('Config was not loaded')
+    }
+
+    return /** @type {any} */ (config)
+  }
+
   it('should be active when the rollout date is in the past', () => {
     // Given
     process.env.HDC_IN_CVL_NATIONAL_ROLE_OUT_DATE = '2000-01-01'
 
     // When
-    const config = require('../../server/config').default
+    const config = loadConfig()
 
     // Then
     expect(config.hdcInCvlNationalRoleOut.isActive()).toBe(true)
@@ -26,7 +41,7 @@ describe('hdcInCvlNationalRoleOut Config', () => {
     process.env.HDC_IN_CVL_NATIONAL_ROLE_OUT_DATE = '2999-01-01'
 
     // When
-    const config = require('../../server/config').default
+    const config = loadConfig()
 
     // Then
     expect(config.hdcInCvlNationalRoleOut.isActive()).toBe(false)
@@ -37,7 +52,7 @@ describe('hdcInCvlNationalRoleOut Config', () => {
     delete process.env.HDC_IN_CVL_NATIONAL_ROLE_OUT_DATE
 
     // When
-    const config = require('../../server/config').default
+    const config = loadConfig()
 
     // Then
     expect(config.hdcInCvlNationalRoleOut.roleOutDate).toBeNull()
@@ -49,7 +64,7 @@ describe('hdcInCvlNationalRoleOut Config', () => {
     process.env.HDC_IN_CVL_NATIONAL_ROLE_OUT_DATE = 'some-invalid-date'
 
     // When
-    const config = require('../../server/config').default
+    const config = loadConfig()
 
     // Then
     expect(config.hdcInCvlNationalRoleOut.roleOutDate).toBeNull()
@@ -58,10 +73,11 @@ describe('hdcInCvlNationalRoleOut Config', () => {
 
   it('should be active when the rollout date is today', () => {
     // Given
-    process.env.HDC_IN_CVL_NATIONAL_ROLE_OUT_DATE = new Date().toISOString().split('T')[0]
+    const [today] = new Date().toISOString().split('T')
+    process.env.HDC_IN_CVL_NATIONAL_ROLE_OUT_DATE = today
 
     // When
-    const config = require('../../server/config').default
+    const config = loadConfig()
 
     // Then
     expect(config.hdcInCvlNationalRoleOut.isActive()).toBe(true)
