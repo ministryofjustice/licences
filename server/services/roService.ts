@@ -99,19 +99,23 @@ export class RoService {
           logger.info(`isEarlyAdopter: ${offenderNo} early adopter check is disabled`)
           return false
       }
+      if (!offenderNo) {
+        logger.info('isEarlyAdopter: offenderNo not supplied')
+        return false
+      }
       try {
         const communityManager = await this.deliusClient.getCommunityManager(offenderNo)
         const prisonerProviderCode = communityManager?.provider?.code
 
         if (!prisonerProviderCode) {
-          logger.info(`isEarlyAdopter: ${offenderNo} has no probation code`)
+          logger.info(`isEarlyAdopter: ${offenderNo} has no provider code`)
           return false
         }
-          const isEarlyAdopter = config.hdcInCvlEarlyAdopter.providerCodes.includes(prisonerProviderCode)
-          logger.info(
-              `isEarlyAdopter: ${offenderNo} provider ${prisonerProviderCode}, early adopter: ${isEarlyAdopter}`,
-          )
-          return isEarlyAdopter
+        const isEarlyAdopter = config.hdcInCvlEarlyAdopter.providerCodes.includes(prisonerProviderCode)
+        logger.info(
+            `isEarlyAdopter: ${offenderNo} provider ${prisonerProviderCode}, early adopter: ${isEarlyAdopter}`,
+        )
+        return isEarlyAdopter
       } catch (error) {
         logger.error(`isEarlyAdopter for: ${offenderNo}`, {
           message: error instanceof Error ? error.message : String(error),

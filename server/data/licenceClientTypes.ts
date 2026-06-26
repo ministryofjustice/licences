@@ -49,6 +49,7 @@ export interface ApprovedLicenceVersion {
   vary_version: number
   template: string
   timestamp: Date
+  migration_state: string
 }
 
 export interface DeliusIds {

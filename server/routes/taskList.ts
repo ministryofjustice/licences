@@ -109,7 +109,7 @@ export = (
           ? prisonerInfo.agencyLocationId.toUpperCase() === 'OUT'
           : false
         const licence = await licenceService.getLicence(bookingId)
-
+        const isEarlyAdopter = await roService.isEarlyAdopter(prisonerInfo.offenderNo)
         const access = determineAccessLevel(licence, postRelease, req.user.role)
 
         if (access === NONE) {
@@ -131,6 +131,7 @@ export = (
           prisonerInfo,
           bookingId,
           postApproval: licenceStatus.postApproval,
+          isEarlyAdopter,
         }
         const { comNotAllocatedBlockEnabled } = config
         if (comNotAllocatedBlockEnabled) {
@@ -142,7 +143,7 @@ export = (
               errors: [],
             })
           }
-          const taskListModel = getTaskLists(req.user.role, postRelease, licenceStatus, licence || {})
+          const taskListModel = getTaskLists(req.user.role, postRelease, licenceStatus, licence || {}, isEarlyAdopter)
           return res.render('taskList/taskListBuilder', {
             ...model,
             taskListModel,
@@ -164,7 +165,8 @@ export = (
           }
         }
 
-        const taskListModel = getAllTaskLists(req.user.role, postRelease, licenceStatus, licence || {})
+        logger.error("*getAllTaskLists*")
+        const taskListModel = getAllTaskLists(req.user.role, postRelease, licenceStatus, licence || {}, isEarlyAdopter)
 
         return res.render('taskList/taskListBuilder', {
           ...model,
