@@ -11,3 +11,4 @@ exports.down = async function (knex) {
       SELECT  * FROM licence_versions WHERE deleted_at IS NULL
   `)
 }
+
