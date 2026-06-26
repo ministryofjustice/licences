@@ -119,6 +119,7 @@ describe('TaskList models', () => {
   }
 
   const vary = { task: 'varyLicenceTask' }
+  const varyLicenceInCVL = { task: 'varyLicenceInCVLStartTask' }
   const permissionForVariation = {
     title: 'Permission for variation and justification of conditions',
     action: { type: 'link', text: 'Change', href: '/hdc/vary/evidence/' },
@@ -241,6 +242,100 @@ describe('TaskList models', () => {
         createLicenceVersion22,
       ])
     })
+
+    test('should show view current licence and cvl vary start task when not migrated', () => {
+      expect(
+        getTaskLists(
+          'RO',
+          true,
+          {
+            decisions: {},
+            tasks: {},
+            stage: 'SOMETHINGELSE',
+          },
+          {
+            version: 2,
+            approvedVersion: 2,
+            versionDetails: { version: 1, vary_version: 0 },
+            approvedVersionDetails: {
+              migration_state: 'PENDING',
+            }
+          },
+          true,
+        )
+      ).toEqual([
+        viewCurrentLicence,
+        varyLicenceInCVL,
+      ])
+    })
+
+    test('should not show vary licence in cvl task when migration failed', () => {
+      expect(
+        getTaskLists(
+          'RO',
+          true,
+          {
+            decisions: {},
+            tasks: {},
+            stage: 'SOMETHINGELSE',
+          },
+          {
+            version: 2,
+            approvedVersion: 2,
+            versionDetails: { version: 1, vary_version: 0 },
+            approvedVersionDetails: {
+              migration_state: 'FAILED',
+            }
+          },
+          true,
+        )
+      ).not.toContainEqual(varyLicenceInCVL)
+    })
+
+    test('should not show vary licence in cvl task when provider code is not an early adopter', () => {
+      expect(
+        getTaskLists(
+          'RO',
+          true,
+          {
+            decisions: {},
+            tasks: {},
+            stage: 'SOMETHINGELSE',
+          },
+          {
+            version: 2,
+            approvedVersion: 2,
+            versionDetails: { version: 1, vary_version: 0 },
+            approvedVersionDetails: {
+              migration_state: 'PENDING',
+            }
+          },
+          false,
+        )
+      ).not.toContainEqual(varyLicenceInCVL)
+    })
+
+    test('should not show vary licence in cvl task when there is no licence to vary and migrate', () => {
+      expect(
+        getTaskLists(
+          'RO',
+          true,
+          {
+            decisions: {},
+            tasks: {},
+            stage: 'SOMETHINGELSE',
+          },
+          {
+            version: 2,
+            approvedVersion: 2,
+            versionDetails: { version: 1, vary_version: 0 },
+            approvedVersionDetails: {},
+          },
+          true,
+        )
+      ).not.toContainEqual(varyLicenceInCVL)
+    })
+
 
     test('should show create licence if version ahead of approved version', () => {
       expect(

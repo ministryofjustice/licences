@@ -58,7 +58,7 @@ describe('licenceService', () => {
       updateSection: jest.fn() as jest.Mock<Promise<void>>,
       updateStage: jest.fn() as jest.Mock<Promise<void>>,
       updateLicence: jest.fn() as jest.Mock<Promise<void>>,
-      getApprovedLicenceVersion: jest.fn().mockReturnValue({ version: 2, vary_version: 4 }),
+      getApprovedLicenceVersion: jest.fn().mockReturnValue({ version: 2, vary_version: 4, migration_state : 'PENDING'}),
       deleteAll: undefined,
       deleteAllTest: undefined,
       getLicences: undefined,
@@ -175,6 +175,7 @@ describe('licenceService', () => {
         approvedVersionDetails: {
           vary_version: 4,
           version: 2,
+          migration_state: 'PENDING',
         },
         versionDetails: {
           vary_version: 5,
@@ -183,6 +184,7 @@ describe('licenceService', () => {
           standard_conditions_version: 1,
         },
         licenceInCvl: false,
+        migrationState: 'PENDING',
       })
     })
 
