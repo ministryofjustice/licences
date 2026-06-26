@@ -356,6 +356,7 @@ export default function createApp({
 
   app.locals.tagManagerKey = config.tagManagerKey
   app.locals.feedbackAndSupportUrl = config.links.feedbackAndSupportUrl
+  app.locals.createAndVaryALicenceVaryCaseloadUrl = config.links.createAndVaryALicenceVaryCaseloadUrl
 
   app.use('/', secureRoute(defaultRouter()))
 

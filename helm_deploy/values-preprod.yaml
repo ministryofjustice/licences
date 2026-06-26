@@ -37,6 +37,7 @@ generic-service:
     TOKENVERIFICATION_API_URL: 'https://token-verification-api-preprod.prison.service.justice.gov.uk'
     TOKENVERIFICATION_API_ENABLED: 'true'
     FEEDBACK_SUPPORT_URL: 'https://support-preprod.hmpps.service.justice.gov.uk/feedback-and-support'
+    CREATE_AND_VARY_A_LICENCE_VARY_CASELOAD_URL: 'https://create-and-vary-a-licence-preprod.hmpps.service.justice.gov.uk/licence/vary/caseload'
     LICENCE_RISK_MANAGEMENT_VERSION: '3'
     CURFEW_ADDRESS_REVIEW_VERSION: '2'
     LICENCE_POSTPONE_VERSION: '2'
