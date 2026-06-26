@@ -11,6 +11,32 @@ function get(name: string, fallback: any, options: { requireInProduction?: boole
   throw new Error(`Missing env var ${name}`)
 }
 
+const today = () => {
+  const date = new Date()
+  date.setHours(0, 0, 0, 0)
+  return date
+}
+
+function nationalRoleOut(roleOutDateString: string) {
+  let roleOutDate: Date = null
+  if (roleOutDateString) {
+    const parsedDate = new Date(roleOutDateString)
+    if (!Number.isNaN(parsedDate.getTime())) {
+      parsedDate.setHours(0, 0, 0, 0)
+      roleOutDate = parsedDate
+    }
+  }
+  return {
+    roleOutDate,
+    isActive() {
+      return (
+        this.roleOutDate !== null &&
+        this.roleOutDate.getTime() <= today().getTime()
+      )
+    }
+  }
+}
+
 export default {
   version: 0.1,
 
@@ -302,5 +328,9 @@ export default {
   hdcInCvlEarlyAdopter: {
       enabled: get('HDC_IN_CVL_EARLY_ADOPTER_ENABLED', false) === 'true',
       providerCodes: get('HDC_IN_CVL_EARLY_ADOPTER_PROVIDER_CODES', '').split(',')
-  }
+  },
+  hdcInCvlNationalRoleOut: nationalRoleOut(
+    get('HDC_IN_CVL_NATIONAL_ROLE_OUT_DATE', '')
+  ),
 }
+
