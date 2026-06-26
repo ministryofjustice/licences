@@ -269,7 +269,7 @@ describe('TaskList models', () => {
       ])
     })
 
-    test('should not show very licence in cvl task when migration failed', () => {
+    test('should not show vary licence in cvl task when migration failed', () => {
       expect(
         getTaskLists(
           'RO',
@@ -292,7 +292,7 @@ describe('TaskList models', () => {
       ).not.toContainEqual(varyLicenceInCVL)
     })
 
-    test('should not show very licence in cvl task when provider code is not an early adopter', () => {
+    test('should not show vary licence in cvl task when provider code is not an early adopter', () => {
       expect(
         getTaskLists(
           'RO',
@@ -315,7 +315,7 @@ describe('TaskList models', () => {
       ).not.toContainEqual(varyLicenceInCVL)
     })
 
-    test('should not show very licence in cvl task when there is no licence to vary and migrate', () => {
+    test('should not show vary licence in cvl task when there is no licence to vary and migrate', () => {
       expect(
         getTaskLists(
           'RO',
