@@ -194,6 +194,7 @@ export = (
 
     async function createLicenceInHdc(bookingId, prisonNumber, req, res) {
       const existingLicence = await licenceService.getLicence(bookingId)
+      logger.info(`Attempting to create licence in HDC for bookingId: ${bookingId}, prisonNumber: ${prisonNumber}, existingLicence: ${existingLicence}`)
       if (!existingLicence) {
           // Create new licence in HDC when no licence exists in system
           await licenceService.createLicence({
@@ -209,6 +210,7 @@ export = (
     }
 
     async function creatLicenceInCvl(bookingId, prisonNumber, req, res) {
+          logger.info(`Attempting to migrate licence to CVL for bookingId: ${bookingId}, prisonNumber: ${prisonNumber}`)
           try {
               await hdcService.migrateSingleLicenceToCvl(bookingId)
               audit.record('VARY_LICENCE_IN_CVL_CREATED', req.user.username, {bookingId})
