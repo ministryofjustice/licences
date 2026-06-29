@@ -292,7 +292,7 @@ describe('TaskList models', () => {
         true,
       )
 
-      expect(taskList).toEqual(varyLicenceInCVLAlreadyMigratedTask)
+      expect(taskList).toEqual([varyLicenceInCVLAlreadyMigratedTask])
     })
 
     test('should not show vary licence in cvl task when migration failed', () => {
