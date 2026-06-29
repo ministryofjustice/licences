@@ -273,7 +273,7 @@ describe('TaskList models', () => {
 
     test('should show view current licence and cvl vary start task when migrated', () => {
 
-      let taskList = getTaskLists(
+      const taskList = getTaskLists(
         'RO',
         true,
         {
