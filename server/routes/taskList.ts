@@ -132,6 +132,7 @@ export = (
           bookingId,
           postApproval: licenceStatus.postApproval,
           isEarlyAdopter,
+          licenceInCvl: licence.licenceInCvl,
         }
         const { comNotAllocatedBlockEnabled } = config
         if (comNotAllocatedBlockEnabled) {

@@ -7,6 +7,9 @@ const createLicence = require('./tasks/createLicence')
 
 const varyLicenceTask = namedTask('varyLicenceTask')
 const varyLicenceInCVLStartTask = namedTask('varyLicenceInCVLStartTask')
+const varyLicenceInCVLAlreadyMigratedTask = namedTask('varyLicenceInCVLAlreadyMigratedTask')
+
+
 const changeTask = (title, href) => () => ({ title, action: { type: 'link', text: 'Change', href } })
 
 const buildVariationTaskList = ({
@@ -16,11 +19,13 @@ const buildVariationTaskList = ({
                                   licenceUnstarted,
                                   varyInCVLTasks,
                                   version,
+                                  hasBeenMigrated,
                                 }) => {
   if (varyInCVLTasks) {
     return tasklist({}, [
-      [viewCurrentLicence(approvedVersion), licenceVersionExists && !isNewVersion],
-      [varyLicenceInCVLStartTask, true],
+      [viewCurrentLicence(approvedVersion), licenceVersionExists && !isNewVersion && !hasBeenMigrated],
+      [varyLicenceInCVLStartTask, !hasBeenMigrated],
+      [varyLicenceInCVLAlreadyMigratedTask, hasBeenMigrated],
     ])
   }
 
@@ -40,11 +45,13 @@ module.exports =
   ({ version, versionDetails, approvedVersion, approvedVersionDetails, licence, isEarlyAdopter }) =>
     ({ stage }) => {
       const licenceUnstarted = stage === 'UNSTARTED'
+      const hasBeenMigrated = approvedVersionDetails && approvedVersionDetails.migration_state === 'COMPLETED'
+      const hasFailedMigration = approvedVersionDetails && approvedVersionDetails.migration_state === 'FAILED'
       const licenceVersionExists = !isEmpty(approvedVersionDetails)
       const { isNewVersion } = versionInfo({ version, versionDetails, approvedVersionDetails, licence })
 
       const varyInCVLTasks = isEarlyAdopter && licenceVersionExists &&
-        (!approvedVersionDetails || approvedVersionDetails.migration_state !== 'FAILED')
+        (!approvedVersionDetails || !hasFailedMigration)
 
       return buildVariationTaskList({
         approvedVersion,
@@ -53,5 +60,6 @@ module.exports =
         licenceUnstarted,
         varyInCVLTasks,
         version,
+        hasBeenMigrated,
       })
     }
