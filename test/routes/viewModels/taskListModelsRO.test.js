@@ -118,6 +118,8 @@ describe('TaskList models', () => {
     action: { type: 'btn', href: '/hdc/pdf/create/', text: 'View', newTab: true },
   }
 
+  const varyLicenceInCVLAlreadyMigratedTask = { task: 'varyLicenceInCVLAlreadyMigratedTask'}
+
   const vary = { task: 'varyLicenceTask' }
   const varyLicenceInCVL = { task: 'varyLicenceInCVLStartTask' }
   const permissionForVariation = {
@@ -267,6 +269,30 @@ describe('TaskList models', () => {
         viewCurrentLicence,
         varyLicenceInCVL,
       ])
+    })
+
+    test('should show view current licence and cvl vary start task when migrated', () => {
+
+      const taskList = getTaskLists(
+        'RO',
+        true,
+        {
+          decisions: {},
+          tasks: {},
+          stage: 'SOMETHINGELSE',
+        },
+        {
+          version: 2,
+          approvedVersion: 2,
+          versionDetails: { version: 1, vary_version: 0 },
+          approvedVersionDetails: {
+            migration_state: 'COMPLETED',
+          }
+        },
+        true,
+      )
+
+      expect(taskList).toEqual([varyLicenceInCVLAlreadyMigratedTask])
     })
 
     test('should not show vary licence in cvl task when migration failed', () => {
