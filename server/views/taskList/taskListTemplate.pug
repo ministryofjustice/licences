@@ -11,10 +11,26 @@ include ./includes/utils
 
 block content
 
+  include ../includes/backToCaseList
+
+  if (licenceInCvl)
+    div.govuk-inset-text.migrationBanner
+      h2.heading-medium
+        span.icon-info i
+        span.title HDC licence variations
+      div.pure-g.pure-u-1.padLeft30
+        p If you need to vary this licence, you must now use the Create and vary a licence service.
+        p To do this, you must be either:
+
+        ul.midPaddingBottom
+          li the allocated community probation practitioner
+          li assigned to the same team as the allocated community probation practitioner on NDelius
+        p You will need to find the right person in the variation case list or search for them in Create and vary a licence.
+        p
+          a(href=createAndVaryALicenceVaryCaseloadUrl) Go to Create and vary a licence
+
   if licenceVersion !== 0 && (user.role === 'RO' || user.role === 'CA')
     include ../includes/back-caselist-and-forms
-  else
-    include ../includes/backToCaseList
 
 
   if (licenceInCvl)
