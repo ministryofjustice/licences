@@ -11,14 +11,10 @@ include ./includes/utils
 
 block content
 
-  if licenceVersion !== 0 && (user.role === 'RO' || user.role === 'CA')
-    include ../includes/back-caselist-and-forms
-  else
-    include ../includes/backToCaseList
-
+  include ../includes/backToCaseList
 
   if (licenceInCvl)
-    div.govuk-inset-text.variationPanel
+    div.govuk-inset-text.migrationBanner
       h2.heading-medium
         span.icon-info i
         span.title HDC licence variations
@@ -32,6 +28,9 @@ block content
         p You will need to find the right person in the variation case list or search for them in Create and vary a licence.
         p
           a(href=createAndVaryALicenceVaryCaseloadUrl) Go to Create and vary a licence
+
+  if licenceVersion !== 0 && (user.role === 'RO' || user.role === 'CA')
+    include ../includes/back-caselist-and-forms
 
   - var decisions = licenceStatus.decisions
   if decisions.excluded

@@ -13,4 +13,4 @@
     assets/sass/licences-pdf.scss \
     assets/stylesheets/licences-pdf.css
 ./node_modules/.bin/sass  "$@" \
-    assets/stylesheets/task-hdc-to-cvl-notice.css
+    assets/stylesheets/cvl-migration-banner.css

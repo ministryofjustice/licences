@@ -1,30 +1,30 @@
-.variationPanel {
+.migrationBanner {
     border: 0.40rem solid #1d70b8;
     background-color: #fff;
     overflow-wrap: break-word;
     padding: 2rem;
 }
 
-.variationPanel p {
+.migrationBanner p {
     margin: 0 0 0.9375rem;
 }
 
-.variationPanel ul {
+.migrationBanner ul {
     list-style-type: disc;
     margin: 0 0 0.9375rem 1.25rem;
     padding: 0.50rem;
 }
 
-.variationPanel li {
+.migrationBanner li {
     margin-bottom: 0.3125rem;
 }
 
-.variationPanel a {
+.migrationBanner a {
     font-weight: 700;
     color: #1d70b8;
 }
 
-.variationPanel h2 {
+.migrationBanner h2 {
     margin-top: 0;
     color: #0b0c0c;
     font-size: clamp(1.5rem, 2vw, 1.75rem);
@@ -48,6 +48,6 @@
     font-size: 1.2rem;
 }
 
-.variationPanel-content {
+.migrationBanner-content {
     padding-left: 3rem;
 }
