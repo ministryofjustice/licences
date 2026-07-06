@@ -289,7 +289,7 @@ describe('TaskList models', () => {
             migration_state: 'COMPLETED',
           }
         },
-        true,
+        false,
       )
 
       expect(taskList).toEqual([varyLicenceInCVLAlreadyMigratedTask])
