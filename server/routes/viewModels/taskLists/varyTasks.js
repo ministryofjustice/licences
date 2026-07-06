@@ -50,8 +50,8 @@ module.exports =
       const licenceVersionExists = !isEmpty(approvedVersionDetails)
       const { isNewVersion } = versionInfo({ version, versionDetails, approvedVersionDetails, licence })
 
-      const varyInCVLTasks = isEarlyAdopter && licenceVersionExists &&
-        (!approvedVersionDetails || !hasFailedMigration)
+      const varyInCVLTasks = hasBeenMigrated || (isEarlyAdopter && licenceVersionExists &&
+        (!approvedVersionDetails || !hasFailedMigration))
 
       return buildVariationTaskList({
         approvedVersion,
