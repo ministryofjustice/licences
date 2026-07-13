@@ -111,7 +111,7 @@ export = (hdcService: HdcService) => (router) => {
                         bookingId ? Number(bookingId) : undefined,
                         errorSource ? errorSource as string : undefined,
                         successFilter,
-                        { page: currentPageNumber, size: 100, sort: pageable.sort }
+                        { page: currentPageNumber, size: 500, sort: pageable.sort }
                     )
                     allContent.push(...pageResult.content)
                     currentPageNumber+=1
