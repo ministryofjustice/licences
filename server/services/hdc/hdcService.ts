@@ -1,4 +1,6 @@
 import * as os from 'node:os'
+import { createObjectCsvStringifier } from 'csv-writer'
+import moment from 'moment'
 import { HdcClient } from '../../data/hdcApiClient'
 import { ConvertedLicenseBatch, ConvertedLicenseConditions, Pageable, PageLicenceMigrationLogEntryDto } from '../../@types/hdcApiImport'
 import { LicenceService } from '../licenceService'
@@ -323,6 +325,32 @@ export class HdcService {
             throw error
         }
     }
+
+    async getMigrationLogsCsv(records: any): Promise<string> {
+      logger.info(`Getting migration logs CSV for records count: ${records.length}`)
+
+      const sortedRecords = records
+        .map((record) => ({
+          ...record,
+          date: moment(record.createdTimeStamp).format('DD/MM/YY'),
+          time: moment(record.createdTimeStamp).format('HH:mm'),
+        }))
+
+      const writer = createObjectCsvStringifier({
+        header: [
+          { id: 'id', title: 'ID' },
+          { id: 'date', title: 'Date' },
+          { id: 'time', title: 'Time' },
+          { id: 'bookingId', title: 'Booking ID' },
+          { id: 'licenceVersionId', title: 'Licence Version ID' },
+          { id: 'success', title: 'Success' },
+          { id: 'errorSource', title: 'Source' },
+          { id: 'message', title: 'Message' },
+          { id: 'retry', title: 'Retry' },
+        ],
+      })
+      return writer.getHeaderString() + writer.stringifyRecords(sortedRecords)
+  }
 
 
 }

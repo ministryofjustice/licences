@@ -94,6 +94,14 @@ export = (hdcService: HdcService) => (router) => {
                 successFilter,
                 pageable
             )
+
+            if (req.query.format === 'csv') {
+                const records = await hdcService.getMigrationLogsCsv(logs.content)
+                res.contentType('text/csv')
+                res.set('Content-Disposition', `attachment;filename=migration-logs.csv`)
+                return res.send(records)
+            }
+
             return res.render('admin/migrateToCvl/migrationLogs', {
                 logs,
                 licenceVersionId,
