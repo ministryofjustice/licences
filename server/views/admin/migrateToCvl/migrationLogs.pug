@@ -87,6 +87,10 @@ block content
                         name="action"
                         value="Filter"
                     )
+                    a.button(
+                        href=`/admin/migrateToCvl/migration-logs?format=csv`
+                        style="margin-left: 10px;"
+                    ) Download CSV
 
             if logs && logs.content && logs.content.length > 0
 
@@ -145,4 +149,3 @@ block content
 
     div.pure-g
         div.pure-u-1.largeSpacingTop
-
