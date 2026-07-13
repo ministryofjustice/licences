@@ -87,6 +87,43 @@ export = (hdcService: HdcService) => (router) => {
                 successFilter = false
             }
 
+            if (req.query.format === 'csv') {
+                let currentPageNumber = 0
+
+                const logs = await hdcService.getMigrationLogs(
+                    licenceVersionId ? Number(licenceVersionId) : undefined,
+                    bookingId ? Number(bookingId) : undefined,
+                    errorSource ? errorSource as string : undefined,
+                    successFilter,
+                    { page: currentPageNumber, size: 100, sort: pageable.sort }
+                )
+
+                const {totalPages} = logs
+
+                const allContent = [...logs.content]
+
+                currentPageNumber +=1
+
+                while (currentPageNumber < totalPages) {
+                    // eslint-disable-next-line no-await-in-loop
+                    const pageResult = await hdcService.getMigrationLogs(
+                        licenceVersionId ? Number(licenceVersionId) : undefined,
+                        bookingId ? Number(bookingId) : undefined,
+                        errorSource ? errorSource as string : undefined,
+                        successFilter,
+                        { page: currentPageNumber, size: 500, sort: pageable.sort }
+                    )
+                    allContent.push(...pageResult.content)
+                    currentPageNumber+=1
+                }
+
+                const records = await hdcService.getMigrationLogsCsv(allContent)
+                res.contentType('text/csv')
+                res.set('Content-Disposition', `attachment;filename=migration-logs.csv`)
+                return res.send(records)
+            }
+
+
             const logs = await hdcService.getMigrationLogs(
                 licenceVersionId ? Number(licenceVersionId) : undefined,
                 bookingId ? Number(bookingId) : undefined,
@@ -94,13 +131,6 @@ export = (hdcService: HdcService) => (router) => {
                 successFilter,
                 pageable
             )
-
-            if (req.query.format === 'csv') {
-                const records = await hdcService.getMigrationLogsCsv(logs.content)
-                res.contentType('text/csv')
-                res.set('Content-Disposition', `attachment;filename=migration-logs.csv`)
-                return res.send(records)
-            }
 
             return res.render('admin/migrateToCvl/migrationLogs', {
                 logs,
