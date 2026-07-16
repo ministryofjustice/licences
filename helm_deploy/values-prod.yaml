@@ -45,6 +45,8 @@ generic-service:
     CA_REPORTS_LINK_ENABLED: 'true'
     HDC_IN_CVL_EARLY_ADOPTER_ENABLED: 'false'
     HDC_IN_CVL_EARLY_ADOPTER_PROVIDER_CODES: 'N59'
+    PROGRESSION_MODEL_POLICY_START_DATE: "2026-09-02"
+
 
   postgresDatabaseRestore:
     enabled: true

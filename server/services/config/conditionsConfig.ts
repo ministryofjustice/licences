@@ -1,10 +1,14 @@
+import config from '../../config'
 import { AdditionalConditionsVersion, ConditionMetadata } from '../../data/licenceClientTypes'
 import { AdditionalConditions } from '../../data/licenceTypes'
 import * as additionalConditionsV1 from './conditions/additionalConditions/v1/conditions'
 import * as additionalConditionsV2 from './conditions/additionalConditions/v2/conditions'
 import { standardConditions as stdConditionsV2 } from './conditions/standardConditions/v2/standardConditions'
+import { standardConditions as stdConditionsV4 } from './conditions/standardConditions/v4/standardConditions'
 
-export const standardConditions = stdConditionsV2
+export const standardConditions = config.progressionModelPolicyStartDate.isActive()
+  ? stdConditionsV4
+  : stdConditionsV2
 
 export const CURRENT_CONDITION_VERSION: AdditionalConditionsVersion = 2
 
