@@ -245,7 +245,36 @@ describe('TaskList models', () => {
       ])
     })
 
-    test('should show view current licence and cvl vary start task when not migrated', () => {
+    test('should show view current licence and cvl vary start task when not migrated and is national role out', () => {
+      expect(
+        getTaskLists(
+          'RO',
+          true,
+          {
+            decisions: {},
+            tasks: {},
+            stage: 'SOMETHINGELSE',
+          },
+          {
+            version: 2,
+            approvedVersion: 2,
+            versionDetails: { version: 1, vary_version: 0 },
+            approvedVersionDetails: {
+              migration_state: 'PENDING',
+            }
+          },
+          false,
+          true
+        )
+      ).toEqual([
+        viewCurrentLicence,
+        varyLicenceInCVL,
+      ])
+    })
+
+
+
+    test('should show view current licence and cvl vary start task when not migrated and is early adopter', () => {
       expect(
         getTaskLists(
           'RO',
@@ -264,6 +293,34 @@ describe('TaskList models', () => {
             }
           },
           true,
+          false
+        )
+      ).toEqual([
+        viewCurrentLicence,
+        varyLicenceInCVL,
+      ])
+    })
+
+    test('should show view current licence and cvl vary start task when not migrated and is early adopter and national role out', () => {
+      expect(
+        getTaskLists(
+          'RO',
+          true,
+          {
+            decisions: {},
+            tasks: {},
+            stage: 'SOMETHINGELSE',
+          },
+          {
+            version: 2,
+            approvedVersion: 2,
+            versionDetails: { version: 1, vary_version: 0 },
+            approvedVersionDetails: {
+              migration_state: 'PENDING',
+            }
+          },
+          true,
+          false
         )
       ).toEqual([
         viewCurrentLicence,
