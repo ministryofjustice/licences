@@ -144,7 +144,7 @@ export = (
               errors: [],
             })
           }
-          const taskListModel = getTaskLists(req.user.role, postRelease, licenceStatus, licence || {}, isEarlyAdopter, config.hdcInCvlNationalRoleOut.isActive())
+          const taskListModel = getTaskLists(req.user.role, postRelease, licenceStatus, licence || {}, isEarlyAdopter)
           return res.render('taskList/taskListBuilder', {
             ...model,
             taskListModel,
@@ -167,7 +167,7 @@ export = (
         }
 
         logger.error("*getAllTaskLists*")
-        const taskListModel = getAllTaskLists(req.user.role, postRelease, licenceStatus, licence || {}, isEarlyAdopter, config.hdcInCvlNationalRoleOut.isActive())
+        const taskListModel = getAllTaskLists(req.user.role, postRelease, licenceStatus, licence || {}, isEarlyAdopter)
 
         return res.render('taskList/taskListBuilder', {
           ...model,

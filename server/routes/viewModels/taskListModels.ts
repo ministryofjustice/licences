@@ -41,13 +41,12 @@ export const getTaskLists = (
   postRelease,
   licenceStatus,
   { version = null, versionDetails = null, approvedVersion = {}, approvedVersionDetails = {}, licence = {} } = {},
-  isEarlyAdopter : boolean  = false,
-  isHdcInCvlNationalRoleOutEnabled : boolean = false,
+  isEarlyAdopter : boolean  = false
 ) => {
   const { decisions, tasks, stage } = licenceStatus
 
   if (postRelease) {
-    return getVaryTasks({ version, versionDetails, approvedVersion, approvedVersionDetails, licence, isEarlyAdopter, isHdcInCvlNationalRoleOutEnabled })({ stage })
+    return getVaryTasks({ version, versionDetails, approvedVersion, approvedVersionDetails, licence, isEarlyAdopter })({ stage })
   }
 
   if (role === 'DM') {
@@ -84,13 +83,12 @@ export const getAllTaskLists = (
   postRelease,
   licenceStatus,
   { version = null, versionDetails = null, approvedVersion = {}, approvedVersionDetails = {}, licence = {} } = {},
-  isEarlyAdopter : boolean  = false,
-  isHdcInCvlNationalRoleOutEnabled : boolean = false,
+  isEarlyAdopter : boolean  = false
 ) => {
   const { decisions, tasks, stage } = licenceStatus
 
   if (postRelease) {
-    return getVaryTasks({ version, versionDetails, approvedVersion, approvedVersionDetails, licence, isEarlyAdopter, isHdcInCvlNationalRoleOutEnabled })({ stage })
+    return getVaryTasks({ version, versionDetails, approvedVersion, approvedVersionDetails, licence, isEarlyAdopter })({ stage })
   }
 
   if (role === 'DM') {
