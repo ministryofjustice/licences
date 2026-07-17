@@ -1,29 +1,31 @@
 extends ../layout
 
 block content
-  div.pure-g
-    div.pure-u-1.smallMarginTop.back-link-container
-      if showExitUrl
-        a.link-back(href=exitUrl data-qa='exit-to-dps-link') Digital Prison Services
+    div.pure-g
+      div.pure-u-1.smallMarginTop.back-link-container
+        if showExitUrl
+          a.link-back(href=exitUrl data-qa='exit-to-dps-link') Digital Prison Services
 
-  if (user.role === 'RO' && isHdcInCvlNationalRoleOut)
-    div.govuk-inset-text.migrationBanner
-      h2.heading-medium
-        span.icon-info i
-        span.title HDC licence variations
-      div.pure-g.pure-u-1.padLeft30
-        p New HDC licence variations must now be completed on the Create and vary a licence service. If you have a variation in progress, you can finish it here on the HDC service.
-        p To vary someone’s licence on Create and vary a licence, you must be either:
-        ul.midPaddingBottom
-          li the allocated community probation practitioner
-          li assigned to the same team as the allocated community probation practitioner on NDelius
-        p Once you are in Create and vary a licence, you will need to find the right person on the variation case list or search for them.
-        p
-          a(href=createAndVaryALicenceVaryCaseloadUrl) Go to Create and vary a licence
+    if (user.role === 'RO' && isHdcInCvlNationalRoleOut)
+      div.govuk-inset-text.migrationBanner
+        h2.heading-medium
+          span.icon-info i
+          span.title HDC licence variations
+        div.pure-g.pure-u-1.padLeft30
+          p New HDC licence variations must now be completed on the Create and vary a licence service. If you have a variation in progress, you can finish it here on the HDC service.
+          p To vary someone’s licence on Create and vary a licence, you must be either:
+          ul.midPaddingBottom
+            li the allocated community probation practitioner
+            li assigned to the same team as the allocated community probation practitioner on NDelius
+          p Once you are in Create and vary a licence, you will need to find the right person on the variation case list or search for them.
+          p
+            a(href=createAndVaryALicenceVaryCaseloadUrl) Go to Create and vary a licence
 
-  if user.role === 'RO'
-    div.pure-u-1.searchLink.alignRight.sm-padTop55.u-paddingTop
-      a#searchOffenderLink(href=globalSearchUrl) Search all offenders
+
+    if user.role === 'RO'
+      div.pure-u-1.searchLink.alignRight.sm-padTop55.u-paddingTop
+        a#searchOffenderLink(href=globalSearchUrl) Search all offenders
+
 
     div.pure-u-1
       div(class= user.role === 'RO' ? "pure-g paddingTop" : "pure-g xlargePaddingTop")
