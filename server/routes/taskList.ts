@@ -109,7 +109,7 @@ export = (
           ? prisonerInfo.agencyLocationId.toUpperCase() === 'OUT'
           : false
         const licence = await licenceService.getLicence(bookingId)
-        const isEarlyAdopter = await roService.isEarlyAdopter(prisonerInfo.offenderNo)
+        const isEarlyAdopter = postRelease && await roService.isEarlyAdopter(prisonerInfo.offenderNo)
         const access = determineAccessLevel(licence, postRelease, req.user.role)
 
         if (access === NONE) {
