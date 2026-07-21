@@ -101,8 +101,12 @@ mixin curfewConditions()
     | attached at the bottom of this licence.
 
 mixin standardConditions()
-  each condition in standardConditions
-    li #{condition.text}
+  if isProgressionModelActive
+    each condition in progressionModelConditions
+      li #{condition.text}
+  else
+    each condition in standardConditionsV2ForTemplate
+      li #{condition.text}
 
 mixin probationSupervision(CONDITIONS, SENT_LED, SENT_SED)
   div.smallPaddingBottom
