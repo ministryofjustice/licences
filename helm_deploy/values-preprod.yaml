@@ -46,6 +46,7 @@ generic-service:
     HDC_IN_CVL_EARLY_ADOPTER_ENABLED: 'true'
     HDC_IN_CVL_EARLY_ADOPTER_PROVIDER_CODES: 'N59'
     ALLOWED_BULK_CVL_MIGRATION_DATE: "2026-05-11"
+    PROGRESSION_MODEL_POLICY_START_DATE: "2026-09-02"
 
 generic-prometheus-alerts:
   alertSeverity: cvl-alerts-non-prod

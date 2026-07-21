@@ -7,6 +7,7 @@ import { firstItem, isEmpty } from '../utils/functionalHelpers'
 import config from '../config'
 import PdfService from '../services/pdfService'
 import { PrisonerService } from '../services/prisonerService'
+import { standardConditions as progressionModelStandardConditions } from '../services/config/conditions/standardConditions/v4/standardConditions'
 
 const {
   apis: {
@@ -154,7 +155,12 @@ export default (pdfService: PdfService, prisonerService: PrisonerService) => (ro
 
       return res.renderPDF(
         `licences/${qualifiedTemplateName}`,
-        { hdcUrl, ...pdfData.values },
+        {
+          hdcUrl,
+          progressionModelStandardConditions,
+          isProgressionModelActive: config.progressionModelPolicyStartDate.isActive(),
+          ...pdfData.values
+        },
         { filename, pdfOptions: { headerHtml, footerHtml, ...pdfOptions } }
       )
     })
