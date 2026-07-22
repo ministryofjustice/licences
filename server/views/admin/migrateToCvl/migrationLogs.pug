@@ -113,6 +113,7 @@ block content
                             th.govuk-table__header(scope="col") Date
                             th.govuk-table__header(scope="col") Time
                             th.govuk-table__header(scope="col") Booking ID
+                            th.govuk-table__header(scope="col") Prison Number
                             th.govuk-table__header(scope="col") Licence V
                             th.govuk-table__header(scope="col") Success
                             th.govuk-table__header(scope="col") Source
@@ -127,6 +128,7 @@ block content
                                 td.govuk-table__cell= new Date(log.createdTimeStamp).toLocaleString('en-GB', {year: '2-digit',month: '2-digit',day: '2-digit'})
                                 td.govuk-table__cell= new Date(log.createdTimeStamp).toLocaleString('en-GB', {hour: '2-digit', minute: '2-digit'})
                                 td.govuk-table__cell #{log.bookingId}
+                                td.govuk-table__cell #{log.prisonNumber}
                                 td.govuk-table__cell #{log.licenceVersionId}
                                 td.govuk-table__cell #{log.success}
                                 td.govuk-table__cell #{log.errorSource || '--'}

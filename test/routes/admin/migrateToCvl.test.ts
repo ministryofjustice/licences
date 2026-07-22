@@ -13,6 +13,7 @@ describe('/migration-logs/', () => {
           id: 1,
           licenceVersionId: 123,
           bookingId: 456,
+          prisonNumber: 'A1234BC',
           errorSource: 'Test',
           success: false,
           retry: false,
@@ -22,6 +23,7 @@ describe('/migration-logs/', () => {
           id: 2,
           licenceVersionId: 456,
           bookingId: 789,
+          prisonNumber: 'D1234EF',
           errorSource: null,
           success: false,
           retry: false,
@@ -36,7 +38,7 @@ describe('/migration-logs/', () => {
 
     hdcService = {
       getMigrationLogs: jest.fn().mockResolvedValue(mockLogs),
-      getMigrationLogsCsv: jest.fn().mockResolvedValue('id,licenceVersionId,bookingId\n1,123,456'),
+      getMigrationLogsCsv: jest.fn().mockResolvedValue('id,licenceVersionId,bookingId,prisonNumber\n1,123,456,A1234BC'),
     }
   })
 
@@ -109,7 +111,7 @@ describe('/migration-logs/', () => {
         .expect('Content-Disposition', /attachment;filename=migration-logs.csv/)
         .expect((res) => {
           expect(hdcService.getMigrationLogsCsv).toHaveBeenCalledWith(mockLogs.content)
-          expect(res.text).toContain('id,licenceVersionId,bookingId')
+          expect(res.text).toContain('id,licenceVersionId,bookingId,prisonNumber')
         })
     })
 
