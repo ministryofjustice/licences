@@ -747,6 +747,11 @@ export interface components {
        */
       approvedByUsername?: string | null
       /**
+       * @description Approved by name
+       * @example Test Tester
+       */
+      approvedByName?: string | null
+      /**
        * Format: date-time
        * @description Submitted date
        * @example 2025-11-20T09:00:00
@@ -862,7 +867,7 @@ export interface components {
        * @description Licence version id
        * @example 42
        */
-      licenceVersionId: number
+      licenceVersionId?: number | null
       /**
        * Format: date-time
        * @description Timestamp of the log entry
@@ -875,6 +880,11 @@ export interface components {
        * @example 987654
        */
       bookingId: number
+      /**
+       * @description Prison Number
+       * @example AA7654A
+       */
+      prisonNumber?: string | null
       /** @description Was the migration successful */
       success: boolean
       /** @description Should this failure be retried */
@@ -893,34 +903,34 @@ export interface components {
       totalElements?: number
       /** Format: int32 */
       totalPages?: number
+      pageable?: components['schemas']['PageableObject']
+      sort?: components['schemas']['SortObject']
+      first?: boolean
+      last?: boolean
+      /** Format: int32 */
+      numberOfElements?: number
       /** Format: int32 */
       size?: number
       content?: components['schemas']['LicenceMigrationLogEntryDto'][]
       /** Format: int32 */
       number?: number
-      first?: boolean
-      last?: boolean
-      sort?: components['schemas']['SortObject']
-      /** Format: int32 */
-      numberOfElements?: number
-      pageable?: components['schemas']['PageableObject']
       empty?: boolean
     }
     PageableObject: {
-      /** Format: int64 */
-      offset?: number
-      sort?: components['schemas']['SortObject']
-      /** Format: int32 */
-      pageSize?: number
       paged?: boolean
       /** Format: int32 */
       pageNumber?: number
+      /** Format: int32 */
+      pageSize?: number
       unpaged?: boolean
+      sort?: components['schemas']['SortObject']
+      /** Format: int64 */
+      offset?: number
     }
     SortObject: {
-      empty?: boolean
       sorted?: boolean
       unsorted?: boolean
+      empty?: boolean
     }
     /** @description Describes the curfew address on a HDC licence */
     CurfewAddress: {
