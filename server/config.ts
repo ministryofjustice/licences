@@ -17,21 +17,21 @@ const today = () => {
   return date
 }
 
-function nationalRoleOut(roleOutDateString: string) {
-  let roleOutDate: Date = null
-  if (roleOutDateString) {
-    const parsedDate = new Date(roleOutDateString)
+function checkDateAgainstToday(dateString: string) {
+  let dateObj: Date = null
+  if (dateString) {
+    const parsedDate = new Date(dateString)
     if (!Number.isNaN(parsedDate.getTime())) {
       parsedDate.setHours(0, 0, 0, 0)
-      roleOutDate = parsedDate
+      dateObj = parsedDate
     }
   }
   return {
-    roleOutDate,
+    dateObj,
     isActive() {
       return (
-        this.roleOutDate !== null &&
-        this.roleOutDate.getTime() <= today().getTime()
+        this.dateObj !== null &&
+        this.dateObj.getTime() <= today().getTime()
       )
     }
   }
@@ -333,7 +333,10 @@ export default {
       enabled: get('HDC_IN_CVL_EARLY_ADOPTER_ENABLED', false) === 'true',
       providerCodes: get('HDC_IN_CVL_EARLY_ADOPTER_PROVIDER_CODES', '').split(',')
   },
-  hdcInCvlNationalRoleOut: nationalRoleOut(
+  hdcInCvlNationalRoleOut: checkDateAgainstToday(
     get('HDC_IN_CVL_NATIONAL_ROLE_OUT_DATE', '')
+  ),
+  progressionModelPolicyStartDate: checkDateAgainstToday(
+    get('PROGRESSION_MODEL_POLICY_START_DATE', '')
   ),
 }

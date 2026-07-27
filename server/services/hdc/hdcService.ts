@@ -342,6 +342,7 @@ export class HdcService {
           { id: 'date', title: 'Date' },
           { id: 'time', title: 'Time' },
           { id: 'bookingId', title: 'Booking ID' },
+          { id: 'prisonNumber', title: 'Prison Number' },
           { id: 'licenceVersionId', title: 'Licence Version ID' },
           { id: 'success', title: 'Success' },
           { id: 'errorSource', title: 'Source' },
