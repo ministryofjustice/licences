@@ -102,7 +102,7 @@
     "@hapi/joi-date": "^2.0.1",
     "@ministryofjustice/hmpps-monitoring": "1.1.0",
     "agentkeepalive": "^4.6.0",
-    "applicationinsights": "^2.9.8",
+    "applicationinsights": "^3.15.1",
     "body-parser": "^2.3.0",
     "case": "^1.6.3",
     "compression": "^1.8.1",
