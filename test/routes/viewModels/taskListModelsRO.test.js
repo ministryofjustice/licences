@@ -320,7 +320,7 @@ describe('TaskList models', () => {
             }
           },
           true,
-          false
+          true
         )
       ).toEqual([
         viewCurrentLicence,

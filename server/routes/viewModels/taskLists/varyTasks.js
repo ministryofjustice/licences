@@ -1,15 +1,11 @@
 const versionInfo = require('../../../utils/versionInfo')
 const { isEmpty } = require('../../../utils/functionalHelpers')
 const { tasklist, namedTask } = require('./tasklistBuilder')
-
 const viewCurrentLicence = require('./tasks/viewCurrentLicence')
 const createLicence = require('./tasks/createLicence')
-
-
 const varyLicenceTask = namedTask('varyLicenceTask')
 const varyLicenceInCVLStartTask = namedTask('varyLicenceInCVLStartTask')
 const varyLicenceInCVLAlreadyMigratedTask = namedTask('varyLicenceInCVLAlreadyMigratedTask')
-
 
 const changeTask = (title, href) => () => ({ title, action: { type: 'link', text: 'Change', href } })
 
