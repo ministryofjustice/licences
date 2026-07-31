@@ -3,6 +3,7 @@ const { isEmpty } = require('../../../utils/functionalHelpers')
 const { tasklist, namedTask } = require('./tasklistBuilder')
 const viewCurrentLicence = require('./tasks/viewCurrentLicence')
 const createLicence = require('./tasks/createLicence')
+
 const varyLicenceTask = namedTask('varyLicenceTask')
 const varyLicenceInCVLStartTask = namedTask('varyLicenceInCVLStartTask')
 const varyLicenceInCVLAlreadyMigratedTask = namedTask('varyLicenceInCVLAlreadyMigratedTask')
