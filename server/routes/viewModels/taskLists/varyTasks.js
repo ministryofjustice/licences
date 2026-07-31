@@ -1,14 +1,12 @@
 const versionInfo = require('../../../utils/versionInfo')
 const { isEmpty } = require('../../../utils/functionalHelpers')
 const { tasklist, namedTask } = require('./tasklistBuilder')
-
 const viewCurrentLicence = require('./tasks/viewCurrentLicence')
 const createLicence = require('./tasks/createLicence')
 
 const varyLicenceTask = namedTask('varyLicenceTask')
 const varyLicenceInCVLStartTask = namedTask('varyLicenceInCVLStartTask')
 const varyLicenceInCVLAlreadyMigratedTask = namedTask('varyLicenceInCVLAlreadyMigratedTask')
-
 
 const changeTask = (title, href) => () => ({ title, action: { type: 'link', text: 'Change', href } })
 
@@ -42,7 +40,7 @@ const buildVariationTaskList = ({
 }
 
 module.exports =
-  ({ version, versionDetails, approvedVersion, approvedVersionDetails, licence, isEarlyAdopter }) =>
+  ({ version, versionDetails, approvedVersion, approvedVersionDetails, licence, isEarlyAdopter, isHdcInCvlNationalRoleOutEnabled  }) =>
     ({ stage }) => {
       const licenceUnstarted = stage === 'UNSTARTED'
       const hasBeenMigrated = approvedVersionDetails && approvedVersionDetails.migration_state === 'COMPLETED'
@@ -50,7 +48,7 @@ module.exports =
       const licenceVersionExists = !isEmpty(approvedVersionDetails)
       const { isNewVersion } = versionInfo({ version, versionDetails, approvedVersionDetails, licence })
 
-      const varyInCVLTasks = hasBeenMigrated || (isEarlyAdopter && licenceVersionExists &&
+      const varyInCVLTasks = hasBeenMigrated || ((isEarlyAdopter || isHdcInCvlNationalRoleOutEnabled) && licenceVersionExists &&
         (!approvedVersionDetails || !hasFailedMigration))
 
       return buildVariationTaskList({
