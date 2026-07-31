@@ -21,11 +21,9 @@ block content
           p
             a(href=createAndVaryALicenceVaryCaseloadUrl) Go to Create and vary a licence
 
-
     if user.role === 'RO'
       div.pure-u-1.searchLink.alignRight.sm-padTop55.u-paddingTop
         a#searchOffenderLink(href=globalSearchUrl) Search all offenders
-
 
     div.pure-u-1
       div(class= user.role === 'RO' ? "pure-g paddingTop" : "pure-g xlargePaddingTop")

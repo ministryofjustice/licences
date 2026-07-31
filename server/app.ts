@@ -358,8 +358,6 @@ export default function createApp({
   app.locals.feedbackAndSupportUrl = config.links.feedbackAndSupportUrl
   app.locals.createAndVaryALicenceVaryCaseloadUrl = config.links.createAndVaryALicenceVaryCaseloadUrl
   app.locals.isHdcInCvlNationalRoleOut = config.hdcInCvlNationalRoleOut.isActive()
-
-
   app.use('/', secureRoute(defaultRouter()))
 
   app.use(
