@@ -86,14 +86,14 @@ const determineAccessLevel = (licence, postRelease, role) => {
 }
 
 export = (
-    prisonerService: PrisonerService,
-    licenceService: LicenceService,
-    roService : RoService,
-    hdcService : HdcService,
-    audit,
-    caService: CaService,
-    signInService
-  ) =>
+  prisonerService: PrisonerService,
+  licenceService: LicenceService,
+  roService : RoService,
+  hdcService : HdcService,
+  audit,
+  caService: CaService,
+  signInService
+) =>
   (router) => {
     router.get(
       '/:bookingId',
@@ -144,7 +144,7 @@ export = (
               errors: [],
             })
           }
-          const taskListModel = getTaskLists(req.user.role, postRelease, licenceStatus, licence || {}, isEarlyAdopter)
+          const taskListModel = getTaskLists(req.user.role, postRelease, licenceStatus, licence || {}, isEarlyAdopter, config.hdcInCvlNationalRoleOut.isActive())
           return res.render('taskList/taskListBuilder', {
             ...model,
             taskListModel,
@@ -167,7 +167,7 @@ export = (
         }
 
         logger.error("*getAllTaskLists*")
-        const taskListModel = getAllTaskLists(req.user.role, postRelease, licenceStatus, licence || {}, isEarlyAdopter)
+        const taskListModel = getAllTaskLists(req.user.role, postRelease, licenceStatus, licence || {}, isEarlyAdopter, config.hdcInCvlNationalRoleOut.isActive())
 
         return res.render('taskList/taskListBuilder', {
           ...model,
@@ -197,43 +197,43 @@ export = (
       const existingLicence = await licenceService.getLicence(bookingId)
       logger.info(`Attempting to create licence in HDC for bookingId: ${bookingId}, prisonNumber: ${prisonNumber}, existingLicence: ${existingLicence}`)
       if (!existingLicence) {
-          // Create new licence in HDC when no licence exists in system
-          await licenceService.createLicence({
-            bookingId,
-            prisonNumber,
-            data: {variedFromLicenceNotInSystem: true},
-            stage: 'VARY',
-          })
-        }
+        // Create new licence in HDC when no licence exists in system
+        await licenceService.createLicence({
+          bookingId,
+          prisonNumber,
+          data: {variedFromLicenceNotInSystem: true},
+          stage: 'VARY',
+        })
+      }
 
-        audit.record('VARY_NOMIS_LICENCE_CREATED', req.user.username, {bookingId})
-        res.redirect(`/hdc/vary/evidence/${bookingId}`)
+      audit.record('VARY_NOMIS_LICENCE_CREATED', req.user.username, {bookingId})
+      res.redirect(`/hdc/vary/evidence/${bookingId}`)
     }
 
     async function creatLicenceInCvl(bookingId, prisonNumber, req, res) {
-          logger.info(`Attempting to migrate licence to CVL for bookingId: ${bookingId}, prisonNumber: ${prisonNumber}`)
-          try {
-              await hdcService.migrateSingleLicenceToCvl(bookingId)
-              audit.record('VARY_LICENCE_IN_CVL_CREATED', req.user.username, {bookingId})
-              res.redirect(`/hdc/vary/varyInCvl/${bookingId}`)
-          } catch (error) {
-              logger.error('Error occurred while migrating licence to CVL', {
-                  bookingId,
-                  prisonNumber,
-                  message: error instanceof Error ? error.message : String(error),
-                  stack: error instanceof Error ? error.stack : undefined,
-              })
-              await createLicenceInHdc(bookingId, prisonNumber, req, res);
-          }
+      logger.info(`Attempting to migrate licence to CVL for bookingId: ${bookingId}, prisonNumber: ${prisonNumber}`)
+      try {
+        await hdcService.migrateSingleLicenceToCvl(bookingId)
+        audit.record('VARY_LICENCE_IN_CVL_CREATED', req.user.username, {bookingId})
+        res.redirect(`/hdc/vary/varyInCvl/${bookingId}`)
+      } catch (error) {
+        logger.error('Error occurred while migrating licence to CVL', {
+          bookingId,
+          prisonNumber,
+          message: error instanceof Error ? error.message : String(error),
+          stack: error instanceof Error ? error.stack : undefined,
+        })
+        await createLicenceInHdc(bookingId, prisonNumber, req, res);
       }
+    }
 
     router.post('/varyStart',
       asyncMiddleware(async (req, res) => {
         const { bookingId, prisonNumber } = req.body
         if (await roService.isEarlyAdopter(prisonNumber)) {
-            await creatLicenceInCvl(bookingId, prisonNumber, req, res);
+          await creatLicenceInCvl(bookingId, prisonNumber, req, res);
         } else {
-            await createLicenceInHdc(bookingId, prisonNumber, req, res);
+          await createLicenceInHdc(bookingId, prisonNumber, req, res);
         }
       })
     )
