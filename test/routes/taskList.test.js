@@ -1020,7 +1020,6 @@ describe('GET /taskList/:prisonNumber', () => {
       beforeEach(() => {
         roService = createRoServiceStub()
         hdcService = createHdcServiceStub()
-
         roService.isEarlyAdopter.mockResolvedValue(true)
       })
 
@@ -1090,7 +1089,56 @@ describe('GET /taskList/:prisonNumber', () => {
     })
   })
 
-  describe('GET /image/:imageId', () => {
+  describe('when national rollout is enabled', () => {
+    let roService
+    let hdcService
+
+    beforeEach(() => {
+      roService = createRoServiceStub()
+      hdcService = createHdcServiceStub()
+      roService.isEarlyAdopter.mockResolvedValue(false)
+      config.hdcInCvlNationalRoleOut.isActive = jest.fn().mockReturnValue(true)
+    })
+
+    test('should migrate licence to CVL and redirect to varyInCvl page', () => {
+      const audit = mockAudit()
+      hdcService.migrateSingleLicenceToCvl.mockResolvedValue()
+
+      const app = createApp(
+        {
+          licenceServiceStub: licenceService,
+          prisonerServiceStub: prisonerService,
+          caServiceStub: caService,
+          audit,
+        },
+        undefined,
+        roService,
+        hdcService
+      )
+
+      return request(app)
+        .post('/taskList/varyStart')
+        .send({ bookingId: '123', prisonNumber: 'A1234BC' })
+        .expect(302)
+        .expect('Location', '/hdc/vary/varyInCvl/123')
+        .expect(() => {
+          expect(hdcService.migrateSingleLicenceToCvl).toHaveBeenCalledWith('123')
+          expect(licenceService.createLicence).not.toHaveBeenCalled()
+
+          expect(audit.record).toHaveBeenCalledWith(
+            'VARY_LICENCE_IN_CVL_CREATED',
+            'CA_USER_TEST',
+            {
+              bookingId: '123',
+            }
+          )
+        })
+    })
+  })
+
+
+
+describe('GET /image/:imageId', () => {
     test('should return an image', () => {
       const app = createApp({
         licenceServiceStub: licenceService,

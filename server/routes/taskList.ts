@@ -230,7 +230,7 @@ export = (
     router.post('/varyStart',
       asyncMiddleware(async (req, res) => {
         const { bookingId, prisonNumber } = req.body
-        if (await roService.isEarlyAdopter(prisonNumber)) {
+        if (config.hdcInCvlNationalRoleOut.isActive() || await roService.isEarlyAdopter(prisonNumber)) {
           await creatLicenceInCvl(bookingId, prisonNumber, req, res);
         } else {
           await createLicenceInHdc(bookingId, prisonNumber, req, res);
