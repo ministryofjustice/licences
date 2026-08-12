@@ -1,4 +1,7 @@
-import type {ConvertedLicenseBatch, MigrateFromHdcToCvlRequest, Pageable, PageLicenceMigrationLogEntryDto} from '../@types/hdcApiImport'
+import type {
+  ConvertedLicenseBatch,
+  FailedMigrationSummary, MigrateFromHdcToCvlRequest, Pageable, PageLicenceMigrationLogEntryDto
+} from '../@types/hdcApiImport'
 
 export class HdcClient {
   constructor(readonly restClient) {}
@@ -25,5 +28,9 @@ export class HdcClient {
 
   async setMigrationLogRetry(logId: number, retryValue: boolean): Promise<void> {
     return this.restClient.putResource(`/licences/migrate/${logId}/retry/${retryValue}`)
+  }
+
+  async getFailedReport() : Promise<FailedMigrationSummary>{
+    return this.restClient.getResource(`/licences/migrate/repeated-failures`, {})
   }
 }
