@@ -17,13 +17,6 @@ block content
         .next_previous {
             margin-left: 0.5em;
         }
-        .success {
-            margin-left: 5px;
-        }
-        .fail {
-            background-color: #fff1f0;
-            border-left: 5px solid #d4351c;
-        }
         .fail td:first-child,
         .success td:first-child {
             padding-left: 5px;
@@ -91,6 +84,10 @@ block content
                         href=`/admin/migrateToCvl/migration-logs?format=csv`
                         style="margin-left: 10px;"
                     ) Download CSV
+                    a.button(
+                      href=`/admin/migrateToCvl/migration-logs?format=csv&type=failed`
+                      style="margin-left: 10px;"
+                    ) Download Failed CSV
 
             if logs && logs.content && logs.content.length > 0
 

@@ -189,6 +189,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/jobs/licences-migrate-batch-to-cvl': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Migrate a batch of licences to CVL on a schedule
+     * @description Triggers migration of licences into CVL on a schedule
+     */
+    post: operations['migrateABatchOfLicencesJob']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/jobs/delete-inactive-licences': {
     parameters: {
       query?: never
@@ -273,6 +293,26 @@ export interface paths {
      * @description Returns the request object that would be sent to CVL
      */
     get: operations['previewMigrateLicenceToCvl']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/licences/migrate/repeated-failures': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get repeated failed migrations
+     * @description Returns migrations that have failed more than once for the same booking and prison number
+     */
+    get: operations['getRepeatedFailedMigrations']
     put?: never
     post?: never
     delete?: never
@@ -581,6 +621,7 @@ export interface components {
        * @example 02038219211
        */
       telephone?: string | null
+      /** @description Appointment address */
       address?: components['schemas']['MigrateAppointmentAddress'] | null
     }
     /** @description Licence conditions */
@@ -599,6 +640,7 @@ export interface components {
     MigrateCurfewDetails: {
       /** @description Curfew times */
       curfewTimes?: components['schemas']['MigrateCurfewTime'][] | null
+      /** @description First night curfew details */
       firstNight?: components['schemas']['MigrateFirstNight'] | null
     }
     /** @description Individual curfew time block */
@@ -678,8 +720,11 @@ export interface components {
       lifecycle: components['schemas']['MigrateLicenceLifecycleDetails']
       /** @description Licence conditions */
       conditions: components['schemas']['MigrateConditions']
+      /** @description Approved curfew address */
       curfewAddress?: components['schemas']['MigrateAddress'] | null
+      /** @description Curfew information */
       curfew?: components['schemas']['MigrateCurfewDetails'] | null
+      /** @description Appointment details */
       appointment?: components['schemas']['MigrateAppointmentDetails'] | null
     }
     /** @description Licence details */
@@ -847,6 +892,13 @@ export interface components {
        */
       postRecallReleaseDate?: string | null
     }
+    FailedMigrationSummary: {
+      /** Format: int64 */
+      bookingId?: number | null
+      prisonNumber?: string | null
+      /** Format: int64 */
+      errorCount?: number | null
+    }
     Pageable: {
       /** Format: int32 */
       page?: number
@@ -899,38 +951,38 @@ export interface components {
       errorSource?: 'CVL' | 'HDC' | null
     }
     PageLicenceMigrationLogEntryDto: {
-      /** Format: int64 */
-      totalElements?: number
       /** Format: int32 */
       totalPages?: number
-      pageable?: components['schemas']['PageableObject']
-      sort?: components['schemas']['SortObject']
-      first?: boolean
-      last?: boolean
-      /** Format: int32 */
-      numberOfElements?: number
+      /** Format: int64 */
+      totalElements?: number
       /** Format: int32 */
       size?: number
       content?: components['schemas']['LicenceMigrationLogEntryDto'][]
       /** Format: int32 */
       number?: number
+      sort?: components['schemas']['SortObject']
+      pageable?: components['schemas']['PageableObject']
+      /** Format: int32 */
+      numberOfElements?: number
+      first?: boolean
+      last?: boolean
       empty?: boolean
     }
     PageableObject: {
-      paged?: boolean
-      /** Format: int32 */
-      pageNumber?: number
-      /** Format: int32 */
-      pageSize?: number
-      unpaged?: boolean
-      sort?: components['schemas']['SortObject']
       /** Format: int64 */
       offset?: number
+      sort?: components['schemas']['SortObject']
+      /** Format: int32 */
+      pageSize?: number
+      /** Format: int32 */
+      pageNumber?: number
+      paged?: boolean
+      unpaged?: boolean
     }
     SortObject: {
+      empty?: boolean
       sorted?: boolean
       unsorted?: boolean
-      empty?: boolean
     }
     /** @description Describes the curfew address on a HDC licence */
     CurfewAddress: {
@@ -1014,7 +1066,9 @@ export interface components {
        * @description The id for the licence
        */
       licenceId?: number | null
+      /** @description The curfew or CAS2 address for the person */
       curfewAddress?: components['schemas']['CurfewAddress'] | null
+      /** @description The first night curfew times for the person */
       firstNightCurfewHours?: components['schemas']['FirstNight'] | null
       /** @description The curfew times for the person following the first night */
       curfewTimes?: components['schemas']['CurfewTimes'][] | null
@@ -1362,6 +1416,38 @@ export interface operations {
       }
     }
   }
+  migrateABatchOfLicencesJob: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Migration schedule started successfully */
+      202: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description No Content */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Invalid request */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+    }
+  }
   populateDeletedAtForLicences_1: {
     parameters: {
       query?: never
@@ -1574,6 +1660,44 @@ export interface operations {
       }
     }
   }
+  getRepeatedFailedMigrations: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Repeated failed migrations retrieved successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['FailedMigrationSummary'][]
+        }
+      }
+      /** @description Unauthorized */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['FailedMigrationSummary'][]
+        }
+      }
+      /** @description Forbidden */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['FailedMigrationSummary'][]
+        }
+      }
+    }
+  }
   getMigrationLogs: {
     parameters: {
       query: {
@@ -1727,6 +1851,7 @@ export type MigrateLicenceLifecycleDetails = components['schemas']['MigrateLicen
 export type MigratePrisonDetails = components['schemas']['MigratePrisonDetails'];
 export type MigratePrisonerDetails = components['schemas']['MigratePrisonerDetails'];
 export type MigrateSentenceDetails = components['schemas']['MigrateSentenceDetails'];
+export type FailedMigrationSummary = components['schemas']['FailedMigrationSummary'];
 export type Pageable = components['schemas']['Pageable'];
 export type LicenceMigrationLogEntryDto = components['schemas']['LicenceMigrationLogEntryDto'];
 export type PageLicenceMigrationLogEntryDto = components['schemas']['PageLicenceMigrationLogEntryDto'];

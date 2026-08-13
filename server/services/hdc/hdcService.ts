@@ -2,7 +2,10 @@ import * as os from 'node:os'
 import { createObjectCsvStringifier } from 'csv-writer'
 import moment from 'moment'
 import { HdcClient } from '../../data/hdcApiClient'
-import { ConvertedLicenseBatch, ConvertedLicenseConditions, Pageable, PageLicenceMigrationLogEntryDto } from '../../@types/hdcApiImport'
+import {
+  ConvertedLicenseBatch, ConvertedLicenseConditions,
+  type FailedMigrationSummary, Pageable, PageLicenceMigrationLogEntryDto
+} from '../../@types/hdcApiImport'
 import { LicenceService } from '../licenceService'
 import { ConditionsServiceFactory } from '../conditionsService'
 import { CURRENT_CONDITION_VERSION } from '../config/conditionsConfig'
@@ -114,7 +117,7 @@ export class HdcService {
     )
   }
 
-  private removeDiscrepanciesUi(code: string, text: string, version: number): string {
+  private removeDiscrepanciesUi(code: string, text: string): string {
     let out = text
 
     // Normalize
@@ -172,7 +175,7 @@ export class HdcService {
     return this.ensureFullStop(out.trim())
   }
 
-  private removeDiscrepanciesApi(code: string, text: string, version: number): string {
+  private removeDiscrepanciesApi(code: string, text: string): string {
     let out = text
 
     // Normalize
@@ -220,13 +223,13 @@ export class HdcService {
         const uiByCode = new Map(
           ui.additionalConditions.map((c) => [
             c.code,
-            cleanUi ? this.removeDiscrepanciesUi(c.code, c.text, ui.version) : c.text,
+            cleanUi ? this.removeDiscrepanciesUi(c.code, c.text) : c.text,
           ])
         )
         const apiByCode = new Map(
           apiLicence.conditions.map((c) => [
             c.code,
-            cleanApi ? this.removeDiscrepanciesApi(c.code, c.text, ui.version) : c.text,
+            cleanApi ? this.removeDiscrepanciesApi(c.code, c.text) : c.text,
           ])
         )
 
@@ -353,7 +356,33 @@ export class HdcService {
       return writer.getHeaderString() + writer.stringifyRecords(sortedRecords)
   }
 
+  async getFailedReport() : Promise<FailedMigrationSummary[]> {
+    logger.info(`Getting migration failed logs report`)
+    try {
+      return await this.hdcClient.getFailedReport()
+    } catch (error: any) {
+      logger.error(`Failed to get migration failed logs report`, {
+        message: error?.message,
+        status: error?.response?.status,
+        data: error?.response?.data,
+        stack: error?.stack,
+      })
+      throw error
+    }
+  }
 
+  async getFailedReportCsv(records: FailedMigrationSummary[]): Promise<string> {
+    logger.info(`Getting failed migration report CSV for records count: ${records.length}`)
+
+    const writer = createObjectCsvStringifier({
+      header: [
+        { id: 'bookingId', title: 'Booking Id' },
+        { id: 'prisonNumber', title: 'Prison Number' },
+        { id: 'errorCount', title: 'Error Count' },
+      ],
+    })
+    return writer.getHeaderString() + writer.stringifyRecords(records)
+  }
 }
 
 export function createHdcService(
