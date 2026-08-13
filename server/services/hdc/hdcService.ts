@@ -378,6 +378,7 @@ export class HdcService {
       header: [
         { id: 'bookingId', title: 'Booking Id' },
         { id: 'prisonNumber', title: 'Prison Number' },
+        { id: 'migrationTrigger', title: 'Migration Trigger' },
         { id: 'errorCount', title: 'Error Count' },
       ],
     })
