@@ -30,7 +30,7 @@ export class HdcClient {
     return this.restClient.putResource(`/licences/migrate/${logId}/retry/${retryValue}`)
   }
 
-  async getFailedReport() : Promise<FailedMigrationSummary>{
+  async getFailedReport() : Promise<FailedMigrationSummary[]>{
     return this.restClient.getResource(`/licences/migrate/repeated-failures`, {})
   }
 }

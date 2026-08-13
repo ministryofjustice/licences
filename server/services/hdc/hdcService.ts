@@ -356,7 +356,7 @@ export class HdcService {
       return writer.getHeaderString() + writer.stringifyRecords(sortedRecords)
   }
 
-  async getFailedReport() : Promise<FailedMigrationSummary> {
+  async getFailedReport() : Promise<FailedMigrationSummary[]> {
     logger.info(`Getting migration failed logs report`)
     try {
       return await this.hdcClient.getFailedReport()
@@ -371,7 +371,7 @@ export class HdcService {
     }
   }
 
-  async getFailedReportCsv(records: any): Promise<string> {
+  async getFailedReportCsv(records: FailedMigrationSummary[]): Promise<string> {
     logger.info(`Getting failed migration report CSV for records count: ${records.length}`)
 
     const writer = createObjectCsvStringifier({
