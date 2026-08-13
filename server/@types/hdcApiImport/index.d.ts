@@ -894,10 +894,11 @@ export interface components {
     }
     FailedMigrationSummary: {
       /** Format: int64 */
-      bookingId?: number | null
-      prisonNumber?: string | null
+      errorCount: number
       /** Format: int64 */
-      errorCount?: number | null
+      bookingId: number
+      prisonNumber: string
+      migrationTrigger: string
     }
     Pageable: {
       /** Format: int32 */
@@ -949,6 +950,12 @@ export interface components {
        * @enum {string|null}
        */
       errorSource?: 'CVL' | 'HDC' | null
+      /**
+       * @description Migration trigger
+       * @example BATCH
+       * @enum {string}
+       */
+      migrationTrigger: 'BATCH' | 'USER' | 'EVENT'
     }
     PageLicenceMigrationLogEntryDto: {
       /** Format: int32 */
@@ -972,12 +979,12 @@ export interface components {
       /** Format: int64 */
       offset?: number
       sort?: components['schemas']['SortObject']
+      unpaged?: boolean
       /** Format: int32 */
       pageSize?: number
+      paged?: boolean
       /** Format: int32 */
       pageNumber?: number
-      paged?: boolean
-      unpaged?: boolean
     }
     SortObject: {
       empty?: boolean
