@@ -89,11 +89,11 @@ block content
           a.button(
             href=`/admin/migrateToCvl/migration-logs?format=csv`
             style="margin-left: 10px;"
-          ) Download CSV
+          ) Download logs
           a.button(
             href=`/admin/migrateToCvl/migration-logs?format=csv&type=failed`
             style="margin-left: 10px;"
-          ) Download Failed CSV
+          ) Download repeated failures
 
       if logs && logs.content && logs.content.length > 0
 
