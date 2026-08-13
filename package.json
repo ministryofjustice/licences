@@ -114,6 +114,7 @@
     "csrf-sync": "^4.2.1",
     "csv-writer": "^1.6.0",
     "express": "^5.2.1",
+    "express-rate-limit": "8.6.2",
     "express-session": "1.19.0",
     "govuk_frontend_toolkit": "^9.0.1",
     "govuk_template_jinja": "^0.26.0",

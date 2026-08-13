@@ -3,6 +3,7 @@ import moment from 'moment'
 import { randomUUID } from 'crypto'
 import bodyParser from 'body-parser'
 import express, { Express} from 'express'
+import { rateLimit } from 'express-rate-limit'
 import path from 'path'
 import flash from 'connect-flash'
 import session from 'express-session'
@@ -116,6 +117,14 @@ export default function createApp({
   // View Engine Configuration
   app.set('views', path.join(__dirname, './views'))
   app.set('view engine', 'pug')
+
+  const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // max 100 requests per windowMs
+  })
+
+  // apply rate limiter to all requests
+  app.use(limiter)
 
   app.use(pdfRenderer(new GotenbergClient(config.apis.gotenberg.url)))
 
