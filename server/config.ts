@@ -321,6 +321,10 @@ export default {
     createAndVaryALicenceVaryCaseloadUrl: get(
       'CREATE_AND_VARY_A_LICENCE_VARY_CASELOAD_URL',
       'https://create-and-vary-a-licence-dev.hmpps.service.justice.gov.uk/licence/vary/caseload'
+    ),
+    createAndVaryALicenceInCvlInfoUrl: get(
+      'CREATE_AND_VARY_A_LICENCE_IN_CVL_INFO_URL',
+      'https://justiceuk.sharepoint.com/sites/HMPPSdigitalrollouthub/SitePages/New-features.aspx'
     )
   },
 
