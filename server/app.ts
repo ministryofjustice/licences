@@ -164,7 +164,7 @@ export default function createApp({
         styleSrc,
         fontSrc: ["'self'"],
         imgSrc: ["'self'", 'www.googletagmanager.com', 'www.google-analytics.com'],
-        connectSrc: ["'self'", 'www.googletagmanager.com', 'www.google-analytics.com']
+        connectSrc: ["'self'", '*.googletagmanager.com', '*.google-analytics.com', '*.analytics.google.com']
       }
     }
   }))
