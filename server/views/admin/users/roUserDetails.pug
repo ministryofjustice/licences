@@ -106,11 +106,11 @@ block content
     div.paddingBottom.smallPaddingTop
       div.pure-u-1.inlineButtons
         input#continueBtn.requiredButton.button.smallMarginTop(type="submit" value="Save")
-        a#backBtn.requiredButton.button.button-secondary.smallMarginTop(href="javascript: window.history.back();" role="button") Cancel
+        nav(id="js-cancel-button-wrapper")
 
   hr
   include verifyNomis
 
-
 block append scripts
   script(src="/public/javascripts/verifyNomisId.js?" + version)
+  script(src="/public/javascripts/cancelButton.js")

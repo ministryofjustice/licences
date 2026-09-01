@@ -108,4 +108,7 @@ block content
                     input#continueBtn.requiredButton.button.smallMarginTop(type="submit" value="Enable auth account" formaction='/admin/roUsers/enable-auth/' + licenceUser.nomisId)
 
         div
-            a#backBtn.requiredButton.button.button-secondary.smallMarginTop(href="javascript: window.history.back();" role="button") Cancel
+          nav(id="js-cancel-button-wrapper")
+
+block append scripts
+  script(src="/public/javascripts/cancelButton.js")
