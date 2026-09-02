@@ -6,7 +6,7 @@ block content
   -var inputs = userInput ? userInput : roUser ? roUser : {}
 
   div.back-link-container.smallPaddingTop
-    nav(id="js-back-wrapper")
+    a#back.link-back(href="javascript: window.history.back();") Back
   +errorBannerWithDetail(errors, [
     { field: 'nomisId' },
     { field: 'deliusId' }
@@ -108,7 +108,5 @@ block content
                     input#continueBtn.requiredButton.button.smallMarginTop(type="submit" value="Enable auth account" formaction='/admin/roUsers/enable-auth/' + licenceUser.nomisId)
 
         div
-          nav(id="js-cancel-button-wrapper")
+            a#backBtn.requiredButton.button.button-secondary.smallMarginTop(href="javascript: window.history.back();" role="button") Cancel
 
-block append scripts
-  script(src="/public/javascripts/cancelButton.js")

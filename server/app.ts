@@ -142,7 +142,6 @@ export default function createApp({
     (_req: IncomingMessage, res: ServerResponse) => `'nonce-${(res as Response).locals.cspNonce}'`,
     'code.jquery.com',
     '*.googletagmanager.com',
-    'www.google-analytics.com',
   ]
   const styleSrc = [
     "'self'",
@@ -164,7 +163,7 @@ export default function createApp({
         styleSrc,
         fontSrc: ["'self'"],
         imgSrc: ["'self'", 'www.googletagmanager.com', 'www.google-analytics.com'],
-        connectSrc: ["'self'", '*.googletagmanager.com', '*.google-analytics.com', '*.analytics.google.com']
+        connectSrc: ["'self'", 'www.googletagmanager.com', 'www.google-analytics.com']
       }
     }
   }))
