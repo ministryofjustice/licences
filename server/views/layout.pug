@@ -3,7 +3,7 @@ html(lang="en")
   head
     if tagManagerKey
       <!-- Google Tag Manager -->
-      script(nonce=cspNonce).
+      script.
         (function(w, d, s, l, i) {
           w[l] = w[l] || [];
           w[l].push({
@@ -56,7 +56,7 @@ html(lang="en")
       noscript
         iframe(src="https://www.googletagmanager.com/ns.html?id=" + tagManagerKey height="0" width="0" style="display:none;visibility:hidden")
       <!-- End Google Tag Manager (noscript) -->
-    script(nonce=cspNonce).
+    script.
       document.body.className = ((document.body.className) ? document.body.className + ' js-enabled' : 'js-enabled');
 
     div(id="skiplink-container")
@@ -86,13 +86,13 @@ html(lang="en")
 
         if hasActiveCaseload || hasMultipleCaseloads
           hr(class="smallMarginBottom smallMarginTop")
-
+      
       block content
-
+    
     div(class="feedback-banner-container")
       div(class="feedback-banner")
         a(href="https://eu.surveymonkey.com/r/GYB8Y9Q?source=" + hostname + currentUrlPath class="govuk-link govuk-link--inverse" target="_blank" rel="noopener noreferrer") Give feedback on this service
-
+    
     footer(class="group js-footer", id="footer", role="contentinfo")
       div(class="hdc-footer-wrapper")
         p#sm-feedback
@@ -120,7 +120,6 @@ html(lang="en")
 
     script(src="/public/javascripts/details.polyfill.js?" + version)
     script(src="/public/javascripts/application.js?" + version)
-    script(src="/public/javascripts/backLink.js")
 
 
 
