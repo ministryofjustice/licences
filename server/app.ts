@@ -1,9 +1,8 @@
 /* eslint-disable no-underscore-dangle */
 import moment from 'moment'
-import { randomBytes, randomUUID } from 'crypto'
-import { IncomingMessage, ServerResponse } from 'http'
+import { randomUUID } from 'crypto'
 import bodyParser from 'body-parser'
-import express, { Express, Response } from 'express'
+import express, { Express} from 'express'
 import path from 'path'
 import flash from 'connect-flash'
 import session from 'express-session'
@@ -132,41 +131,10 @@ export default function createApp({
     return next()
   })
 
-  app.use((_req, res, next) => {
-    res.locals.cspNonce = randomBytes(16).toString('base64')
-    next()
-  })
-
-  const scriptSrc = [
-    "'self'",
-    (_req: IncomingMessage, res: ServerResponse) => `'nonce-${(res as Response).locals.cspNonce}'`,
-    'code.jquery.com',
-    '*.googletagmanager.com',
-  ]
-  const styleSrc = [
-    "'self'",
-    (_req: IncomingMessage, res: ServerResponse) => `'nonce-${(res as Response).locals.cspNonce}'`,
-    'code.jquery.com',
-    'fonts.googleapis.com',
-  ]
-
   // Secure code best practice - see:
   // 1. https://expressjs.com/en/advanced/best-practice-security.html,
   // 2. https://www.npmjs.com/package/helmet
-  app.use(helmet({
-    crossOriginResourcePolicy: { policy: 'cross-origin' },
-    referrerPolicy: { policy: 'same-origin' },
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc,
-        styleSrc,
-        fontSrc: ["'self'"],
-        imgSrc: ["'self'", 'www.googletagmanager.com', 'www.google-analytics.com'],
-        connectSrc: ["'self'", 'www.googletagmanager.com', 'www.google-analytics.com']
-      }
-    }
-  }))
+  app.use(helmet({ contentSecurityPolicy: false, crossOriginResourcePolicy: { policy: 'cross-origin' } }))
 
   app.use((req, res, next) => {
     const headerName = 'X-Request-Id'
