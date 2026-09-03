@@ -27,17 +27,28 @@ block content
         width: 100%;
         font-weight: bolder;
       }
-
       .count {
           margin-left: auto;
           font-weight: bolder;
       }
-
       .message-cell {
           max-width: 600px;
           overflow-wrap: anywhere;
       }
-
+      .filter-row {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+      }
+      .filter-row .inlineLabel {
+          margin-bottom: 0;
+      }
+      .filter-row .govuk-select {
+          margin-right: 20px;
+      }
+      .govuk-table__cell {
+        vertical-align: top;
+      }
 
   div.back-link-container.smallPaddingTop
     a#back.link-back(href="/admin/migrateToCvl/hdcToCvlMigration") Back
@@ -66,19 +77,28 @@ block content
                 value=licenceVersionId
               )
 
-          .govuk-grid-column-one-third
-            .govuk-form-group.largeSpacingBottom
-              label.inlineLabel(for="errorSource") Error Source
-              select#errorSource.govuk-select(name="errorSource")
-                option(value="") All
-                option(value="CVL" selected=errorSource === 'CVL') CVL
-                option(value="HDC" selected=errorSource === 'HDC') HDC
-            .govuk-form-group.largeSpacingBottom
-              label.inlineLabel(for="success") Success
-              select#errorSource.govuk-select(name="success")
-                option(value="") All
-                option(value="true" selected=success === 'true') True
-                option(value="false" selected=success === 'false') False
+          .govuk-grid-row
+            .govuk-grid-column-one-third
+              .govuk-form-group.largeSpacingBottom
+                .filter-row
+                  label.inlineLabel(for="errorSource") Error Source
+                  select#errorSource.govuk-select(name="errorSource")
+                    option(value="") All
+                    option(value="CVL" selected=errorSource === 'CVL') CVL
+                    option(value="HDC" selected=errorSource === 'HDC') HDC
+
+                  label.inlineLabel(for="migrationTrigger") Trigger
+                  select#migrationTrigger.govuk-select(name="migrationTrigger")
+                    option(value="") All
+                    option(value="USER" selected=migrationTrigger === 'USER') USER
+                    option(value="BATCH" selected=migrationTrigger === 'BATCH') BATCH
+                    option(value="EVENT" selected=migrationTrigger === 'EVENT') EVENT
+
+                  label.inlineLabel(for="success") Success
+                  select#success.govuk-select(name="success")
+                    option(value="") All
+                    option(value="true" selected=success === 'true') True
+                    option(value="false" selected=success === 'false') False
 
         .govuk-form-group.largeSpacingBottom
           input.requiredButton.button(
@@ -87,7 +107,7 @@ block content
             value="Filter"
           )
           a.button(
-            href=`/admin/migrateToCvl/migration-logs?format=csv`
+            href=`/admin/migrateToCvl/migration-logs?format=csv&bookingId=${bookingId || ''}&licenceVersionId=${licenceVersionId || ''}&errorSource=${errorSource || ''}&success=${success || ''}&migrationTrigger=${migrationTrigger || ''}`
             style="margin-left: 10px;"
           ) Download logs
           a.button(
@@ -102,21 +122,19 @@ block content
 
           if !logs.first
             span.next_previous
-              a.link(href=`/admin/migrateToCvl/migration-logs?page=${logs.number - 1}&bookingId=${bookingId || ''}&licenceVersionId=${licenceVersionId || ''}&errorSource=${errorSource || ''}&success=${success || ''}`) Previous
+              a.link(href=`/admin/migrateToCvl/migration-logs?page=${logs.number - 1}&bookingId=${bookingId || ''}&licenceVersionId=${licenceVersionId || ''}&errorSource=${errorSource || ''}&success=${success || ''}&migrationTrigger=${migrationTrigger || ''}`) Previous
           if !logs.last
             span.next_previous
-              a.link(href=`/admin/migrateToCvl/migration-logs?page=${logs.number + 1}&bookingId=${bookingId || ''}&licenceVersionId=${licenceVersionId || ''}&errorSource=${errorSource || ''}&success=${success || ''}`) Next
+              a.link(href=`/admin/migrateToCvl/migration-logs?page=${logs.number + 1}&bookingId=${bookingId || ''}&licenceVersionId=${licenceVersionId || ''}&errorSource=${errorSource || ''}&success=${success || ''}&migrationTrigger=${migrationTrigger || ''}`) Next
 
           span.count Count (#{logs.totalElements})
 
         table.govuk-table
           thead.govuk-table__head
             tr.govuk-table__row
-              th.govuk-table__header(scope="col") ID
-              th.govuk-table__header(scope="col") Date
-              th.govuk-table__header(scope="col") Time
-              th.govuk-table__header(scope="col") Booking ID
-              th.govuk-table__header(scope="col") Prison Number
+              th.govuk-table__header(scope="col") ID/Date
+              th.govuk-table__header(scope="col") Booking Id
+              th.govuk-table__header(scope="col") Prison No
               th.govuk-table__header(scope="col") Licence V
               th.govuk-table__header(scope="col") Success
               th.govuk-table__header(scope="col") Source
@@ -127,9 +145,10 @@ block content
               tr(id='log-' + log.id).govuk-table__row(
                 class=log.success ? "success" : "fail"
               )
-                td.govuk-table__cell #{log.id}
-                td.govuk-table__cell= new Date(log.createdTimeStamp).toLocaleString('en-GB', {year: '2-digit',month: '2-digit',day: '2-digit'})
-                td.govuk-table__cell= new Date(log.createdTimeStamp).toLocaleString('en-GB', {hour: '2-digit', minute: '2-digit'})
+                td.govuk-table__cell
+                  | (#{log.id})
+                  br
+                  | #{new Date(log.createdTimeStamp).toLocaleDateString('en-GB', { year: '2-digit', month: '2-digit', day: '2-digit' })} #{new Date(log.createdTimeStamp).toLocaleString('en-GB', {hour: '2-digit', minute: '2-digit'})}
                 td.govuk-table__cell #{log.bookingId}
                 td.govuk-table__cell #{log.prisonNumber}
                 td.govuk-table__cell #{log.licenceVersionId}
