@@ -31,15 +31,15 @@ function checkDateAgainstToday(dateString: string) {
     }
   }
 
-  logger.info('[checkDateAgainstToday] Date comparison', {
-    dateString,
-    normalisedDate: dateObj?.toISOString(),
-    today: todayDate.toISOString(),
-    dateTime: dateObj?.getTime(),
-    todayTime: todayDate.getTime(),
-    isDateValid: dateObj !== null,
-    isActive: dateObj !== null && dateObj.getTime() <= todayDate.getTime(),
-  })
+  logger.info(
+    `[checkDateAgainstToday] Date comparison: ` +
+    `dateString=${dateString}, ` +
+    `normalisedDate=${dateObj?.toISOString()}, ` +
+    `today=${todayDate.toISOString()}, ` +
+    `dateTime=${dateObj?.getTime()}, ` +
+    `isDateValid=${dateObj !== null}, ` +
+    `isActive=${dateObj !== null && dateObj.getTime() <= todayDate.getTime()}`,
+  )
 
   return {
     dateObj,
