@@ -1,0 +1,11 @@
+.inlineLabel {
+    display: inline-block;
+    margin-right: 0.4em;
+}
+.largeSpacingBottom {
+    margin-bottom: 1em;
+}
+
+.largeSpacingTop {
+    margin-top: 1em;
+}

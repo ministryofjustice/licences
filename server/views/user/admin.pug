@@ -43,4 +43,8 @@ block content
 
       div.pure-u-1.inlineButtons.paddingBottom.largeMarginTop
         input#continueBtn.requiredButton.button.midMarginBottom(type="submit" value="Submit")
-        a#backBtn.requiredButton.button.button-secondary(href="javascript: window.history.back();" role="button") Back
+
+        nav(id="js-back-button-wrapper")
+
+block append scripts
+    script(id="backButtonScript" src="/public/javascripts/backButton.js" data-link_class_list="requiredButton,button,button-secondary")

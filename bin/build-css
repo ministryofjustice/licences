@@ -14,3 +14,5 @@
     assets/stylesheets/licences-pdf.css
 ./node_modules/.bin/sass  "$@" \
     assets/stylesheets/cvl-migration-banner.css
+./node_modules/.bin/sass  "$@" \
+    assets/stylesheets/hdc-to-cvl-migration.css
