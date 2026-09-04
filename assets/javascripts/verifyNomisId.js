@@ -17,7 +17,5 @@ document.addEventListener('DOMContentLoaded', () => {
       })
     }
 
-    if (verifyBtn) {
-        verifyBtn.addEventListener('click', getNomisUserDetails)
-    }
+    verifyBtn.addEventListener('click', getNomisUserDetails)
 })
