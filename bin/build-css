@@ -16,3 +16,5 @@
     assets/stylesheets/cvl-migration-banner.css
 ./node_modules/.bin/sass  "$@" \
     assets/stylesheets/hdc-to-cvl-migration.css
+./node_modules/.bin/sass  "$@" \
+    assets/stylesheets/condition-compare-texts.css

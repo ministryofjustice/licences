@@ -5,7 +5,54 @@
 .largeSpacingBottom {
     margin-bottom: 1em;
 }
-
 .largeSpacingTop {
     margin-top: 1em;
+}
+.inlineLabel {
+    display: inline-block;
+    margin-right: 0.4em;
+}
+.midSpacingBottom {
+    margin-bottom: 0.4em;
+}
+.midSpacingTop {
+    margin-top: 0.5em;
+}
+.next_previous {
+    margin-left: 0.5em;
+}
+.downloadButton {
+   margin-left: 10px;
+}
+.fail td:first-child,
+.success td:first-child {
+    padding-left: 5px;
+}
+.pagination {
+display: flex;
+align-items: center;
+width: 100%;
+font-weight: bolder;
+}
+.count {
+    margin-left: auto;
+    font-weight: bolder;
+}
+.message-cell {
+    max-width: 600px;
+    overflow-wrap: anywhere;
+}
+.filter-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.filter-row .inlineLabel {
+    margin-bottom: 0;
+}
+.filter-row .govuk-select {
+    margin-right: 20px;
+}
+.govuk-table__cell {
+vertical-align: top;
 }
