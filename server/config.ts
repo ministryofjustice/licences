@@ -1,3 +1,5 @@
+import logger from '../log'
+
 const production = process.env.NODE_ENV === 'production'
 const oneDay = 24 * 60 * 60
 
@@ -18,6 +20,8 @@ const today = () => {
 }
 
 function checkDateAgainstToday(dateString: string) {
+  const todayDate = today()
+
   let dateObj: Date = null
   if (dateString) {
     const parsedDate = new Date(dateString)
@@ -26,12 +30,23 @@ function checkDateAgainstToday(dateString: string) {
       dateObj = parsedDate
     }
   }
+
+  logger.info('[checkDateAgainstToday] Date comparison', {
+    dateString,
+    normalisedDate: dateObj?.toISOString(),
+    today: todayDate.toISOString(),
+    dateTime: dateObj?.getTime(),
+    todayTime: todayDate.getTime(),
+    isDateValid: dateObj !== null,
+    isActive: dateObj !== null && dateObj.getTime() <= todayDate.getTime(),
+  })
+
   return {
     dateObj,
     isActive() {
       return (
         this.dateObj !== null &&
-        this.dateObj.getTime() <= today().getTime()
+        this.dateObj.getTime() <= todayDate.getTime()
       )
     }
   }
