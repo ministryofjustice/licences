@@ -97,11 +97,12 @@ block content
                 class=log.success ? "success" : "fail"
               )
                 td.govuk-table__cell
-                  | (#{log.id})
+                  | #{log.id})
                   br
                   | #{new Date(log.createdTimeStamp).toLocaleDateString('en-GB', { year: '2-digit', month: '2-digit', day: '2-digit' })} #{new Date(log.createdTimeStamp).toLocaleString('en-GB', {hour: '2-digit', minute: '2-digit'})}
                 td.govuk-table__cell #{log.bookingId}
-                td.govuk-table__cell #{log.prisonNumber}
+                td.govuk-table__cell
+                  a.link(href=`${createAndVaryALicenceSupportUrl}/offender/${log.prisonNumber}/detail`) #{log.prisonNumber}
                 td.govuk-table__cell #{log.licenceVersionId}
                 td.govuk-table__cell #{log.success}
                 td.govuk-table__cell #{log.errorSource || '--'} / #{log.migrationTrigger}
