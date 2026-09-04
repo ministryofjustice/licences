@@ -1,14 +1,21 @@
-/* eslint-disable */
-function getNomisUserDetails() {
-  const nomisUserName = $('#nomisId').val()
+document.addEventListener('DOMContentLoaded', () => {
+    const verifyBtn = document.getElementById('verifyBtn')
+    if (!verifyBtn) return
 
-  $('#nomisUserName').text('')
-  $('#nomisName').text('')
+    /* eslint-disable */
+    function getNomisUserDetails() {
+      const nomisUserName = $('#nomisId').val()
 
-  $.get('/admin/roUsers/verify?nomisUserName=' + nomisUserName, function(userInfo) {
-    $('#nomisUserName').text(userInfo.username)
-    $('#nomisName').text(userInfo.name)
-  }).fail(function(err) {
-    $('#nomisUserName').text(err.statusText)
-  })
-}
+      $('#nomisUserName').text('')
+      $('#nomisName').text('')
+
+      $.get('/admin/roUsers/verify?nomisUserName=' + nomisUserName, function(userInfo) {
+        $('#nomisUserName').text(userInfo.username)
+        $('#nomisName').text(userInfo.name)
+      }).fail(function(err) {
+        $('#nomisUserName').text(err.statusText)
+      })
+    }
+
+    verifyBtn.addEventListener('click', getNomisUserDetails)
+})

@@ -3,53 +3,6 @@ include ../../includes/errorBannerWithDetail
 
 block content
 
-  style.
-      .inlineLabel {
-          display: inline-block;
-          margin-right: 0.4em;
-      }
-      .largeSpacingBottom {
-          margin-bottom: 0.4em;
-      }
-      .largeSpacingTop {
-          margin-top: 0.5em;
-      }
-      .next_previous {
-          margin-left: 0.5em;
-      }
-      .fail td:first-child,
-      .success td:first-child {
-          padding-left: 5px;
-      }
-      .pagination {
-        display: flex;
-        align-items: center;
-        width: 100%;
-        font-weight: bolder;
-      }
-      .count {
-          margin-left: auto;
-          font-weight: bolder;
-      }
-      .message-cell {
-          max-width: 600px;
-          overflow-wrap: anywhere;
-      }
-      .filter-row {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-      }
-      .filter-row .inlineLabel {
-          margin-bottom: 0;
-      }
-      .filter-row .govuk-select {
-          margin-right: 20px;
-      }
-      .govuk-table__cell {
-        vertical-align: top;
-      }
-
   div.back-link-container.smallPaddingTop
     a#back.link-back(href="/admin/migrateToCvl/hdcToCvlMigration") Back
   div.pure-g
@@ -60,7 +13,7 @@ block content
 
         .govuk-grid-row
           .govuk-grid-column-one-third
-            .govuk-form-group.largeSpacingBottom
+            .govuk-form-group.midSpacingBottom
               label.inlineLabel(for="bookingId") Booking ID
               input#bookingId.govuk-input(
                 name="bookingId"
@@ -69,7 +22,7 @@ block content
               )
 
           .govuk-grid-column-one-third
-            .govuk-form-group.largeSpacingBottom
+            .govuk-form-group.midSpacingBottom
               label.inlineLabel(for="licenceVersionId") Licence Version ID
               input#licenceVersionId.govuk-input(
                 name="licenceVersionId"
@@ -79,7 +32,7 @@ block content
 
           .govuk-grid-row
             .govuk-grid-column-one-third
-              .govuk-form-group.largeSpacingBottom
+              .govuk-form-group.midSpacingBottom
                 .filter-row
                   label.inlineLabel(for="errorSource") Error Source
                   select#errorSource.govuk-select(name="errorSource")
@@ -100,24 +53,22 @@ block content
                     option(value="true" selected=success === 'true') True
                     option(value="false" selected=success === 'false') False
 
-        .govuk-form-group.largeSpacingBottom
+        .govuk-form-group.midSpacingBottom
           input.requiredButton.button(
             type="submit"
             name="action"
             value="Filter"
           )
-          a.button(
+          a.button.downloadButton(
             href=`/admin/migrateToCvl/migration-logs?format=csv&bookingId=${bookingId || ''}&licenceVersionId=${licenceVersionId || ''}&errorSource=${errorSource || ''}&success=${success || ''}&migrationTrigger=${migrationTrigger || ''}`
-            style="margin-left: 10px;"
           ) Download logs
-          a.button(
+          a.button.downloadButton(
             href=`/admin/migrateToCvl/migration-logs?format=csv&type=failed`
-            style="margin-left: 10px;"
           ) Download repeated failures
 
       if logs && logs.content && logs.content.length > 0
 
-        div.pagination.largeSpacingTop
+        div.pagination.midSpacingTop
           span.page-info Page #{logs.number + 1} of #{logs.totalPages}
 
           if !logs.first
@@ -161,7 +112,7 @@ block content
                   if (log.retry && !log.success)
                     a.link(href=`/admin/migrateToCvl/retry/${log.id}/false`) #{log.retry}
 
-        div.pagination.largeSpacingTop
+        div.pagination.midSpacingTop
           span Page #{logs.number + 1} of #{logs.totalPages}
           if !logs.first
             span.next_previous
@@ -173,4 +124,4 @@ block content
         p No migration logs found.
 
   div.pure-g
-    div.pure-u-1.largeSpacingTop
+    div.pure-u-1.midSpacingTop
