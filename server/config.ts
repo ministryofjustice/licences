@@ -338,6 +338,10 @@ export default {
     createAndVaryALicenceInCvlInfoUrl: get(
       'CREATE_AND_VARY_A_LICENCE_IN_CVL_INFO_URL',
       'https://justiceuk.sharepoint.com/sites/HMPPSdigitalrollouthub/SitePages/New-features.aspx'
+    ),
+    createAndVaryALicenceSupportUrl: get(
+      'CREATE_AND_VARY_A_LICENCE_SUPPORT_URL',
+      'https://create-and-vary-a-licence-dev.hmpps.service.justice.gov.uk/support'
     )
   },
 
