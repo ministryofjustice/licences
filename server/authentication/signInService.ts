@@ -69,7 +69,6 @@ const getOauthToken = (oauthClientToken, requestSpec) => {
 
 const oauthTokenRequest = async (clientToken, oauthRequest) => {
   const oauthResult = await getOauthToken(clientToken, oauthRequest)
-  logger.info(`Oauth request for grant type '${oauthRequest.grant_type}', result status: ${oauthResult.status}`)
 
   return parseOauthTokens(oauthResult)
 }

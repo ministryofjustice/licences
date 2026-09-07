@@ -2,7 +2,10 @@ import * as os from 'node:os'
 import { createObjectCsvStringifier } from 'csv-writer'
 import moment from 'moment'
 import { HdcClient } from '../../data/hdcApiClient'
-import { ConvertedLicenseBatch, ConvertedLicenseConditions, Pageable, PageLicenceMigrationLogEntryDto } from '../../@types/hdcApiImport'
+import {
+  ConvertedLicenseBatch, ConvertedLicenseConditions,
+  type FailedMigrationSummary, Pageable, PageLicenceMigrationLogEntryDto
+} from '../../@types/hdcApiImport'
 import { LicenceService } from '../licenceService'
 import { ConditionsServiceFactory } from '../conditionsService'
 import { CURRENT_CONDITION_VERSION } from '../config/conditionsConfig'
@@ -114,7 +117,7 @@ export class HdcService {
     )
   }
 
-  private removeDiscrepanciesUi(code: string, text: string, version: number): string {
+  private removeDiscrepanciesUi(code: string, text: string): string {
     let out = text
 
     // Normalize
@@ -172,7 +175,7 @@ export class HdcService {
     return this.ensureFullStop(out.trim())
   }
 
-  private removeDiscrepanciesApi(code: string, text: string, version: number): string {
+  private removeDiscrepanciesApi(code: string, text: string): string {
     let out = text
 
     // Normalize
@@ -220,13 +223,13 @@ export class HdcService {
         const uiByCode = new Map(
           ui.additionalConditions.map((c) => [
             c.code,
-            cleanUi ? this.removeDiscrepanciesUi(c.code, c.text, ui.version) : c.text,
+            cleanUi ? this.removeDiscrepanciesUi(c.code, c.text) : c.text,
           ])
         )
         const apiByCode = new Map(
           apiLicence.conditions.map((c) => [
             c.code,
-            cleanApi ? this.removeDiscrepanciesApi(c.code, c.text, ui.version) : c.text,
+            cleanApi ? this.removeDiscrepanciesApi(c.code, c.text) : c.text,
           ])
         )
 
@@ -311,10 +314,10 @@ export class HdcService {
         }
     }
 
-    async getMigrationLogs(licenceVersionId?: number, bookingId?: number, errorSource?: string, success?: boolean, pageable?: Pageable): Promise<PageLicenceMigrationLogEntryDto> {
-       logger.info(`Getting migration logs for licence version ID: ${licenceVersionId}, booking ID: ${bookingId}, error source: ${errorSource}, success: ${success}, pageable: ${pageable}`)
+    async getMigrationLogs(licenceVersionId?: number, bookingId?: number, errorSource?: string, success?: boolean, migrationTrigger?: string, pageable?: Pageable): Promise<PageLicenceMigrationLogEntryDto> {
+       logger.info(`Getting migration logs for licence version ID: ${licenceVersionId}, booking ID: ${bookingId}, error source: ${errorSource}, success: ${success}, migrationTrigger:${migrationTrigger} pageable: ${pageable}`)
        try {
-            return await this.hdcClient.getMigrationLogs(licenceVersionId, bookingId, errorSource, success, pageable)
+            return await this.hdcClient.getMigrationLogs(licenceVersionId, bookingId, errorSource, success, migrationTrigger, pageable)
         } catch (error: any) {
             logger.error(`Failed to get migration logs`, {
                 message: error?.message,
@@ -346,6 +349,7 @@ export class HdcService {
           { id: 'licenceVersionId', title: 'Licence Version ID' },
           { id: 'success', title: 'Success' },
           { id: 'errorSource', title: 'Source' },
+          { id: 'migrationTrigger', title: 'Trigger' },
           { id: 'message', title: 'Message' },
           { id: 'retry', title: 'Retry' },
         ],
@@ -353,7 +357,34 @@ export class HdcService {
       return writer.getHeaderString() + writer.stringifyRecords(sortedRecords)
   }
 
+  async getFailedReport() : Promise<FailedMigrationSummary[]> {
+    logger.info(`Getting migration failed logs report`)
+    try {
+      return await this.hdcClient.getFailedReport()
+    } catch (error: any) {
+      logger.error(`Failed to get migration failed logs report`, {
+        message: error?.message,
+        status: error?.response?.status,
+        data: error?.response?.data,
+        stack: error?.stack,
+      })
+      throw error
+    }
+  }
 
+  async getFailedReportCsv(records: FailedMigrationSummary[]): Promise<string> {
+    logger.info(`Getting failed migration report CSV for records count: ${records.length}`)
+
+    const writer = createObjectCsvStringifier({
+      header: [
+        { id: 'bookingId', title: 'Booking Id' },
+        { id: 'prisonNumber', title: 'Prison Number' },
+        { id: 'migrationTrigger', title: 'Migration Trigger' },
+        { id: 'errorCount', title: 'Error Count' },
+      ],
+    })
+    return writer.getHeaderString() + writer.stringifyRecords(records)
+  }
 }
 
 export function createHdcService(

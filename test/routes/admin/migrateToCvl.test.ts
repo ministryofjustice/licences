@@ -55,6 +55,7 @@ describe('/migration-logs/', () => {
             undefined,
             undefined,
             undefined,
+            undefined,
             { page: 0, size: 50 }
           )
         })
@@ -79,6 +80,7 @@ describe('/migration-logs/', () => {
             456,
             'CVL',
             false,
+            undefined,
             { page: 2, size: 100 }
           )
         })
@@ -96,6 +98,7 @@ describe('/migration-logs/', () => {
             undefined,
             undefined,
             true,
+            undefined,
             { page: 0, size: 50 }
           )
         })

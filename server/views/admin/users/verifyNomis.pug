@@ -1,6 +1,6 @@
 div.pure-g.largeMarginBottom.midPaddingBottom.paddingTop
   div.pure-u-1.pure-u-md-1-5
-    input#verifyBtn.requiredButton.button(type="button" onClick="getNomisUserDetails();" value="Check Nomis User")
+    input#verifyBtn.requiredButton.button(type="button" value="Check Nomis User")
   div.pure-u-1.pure-u-md-2-5
     table#nomisData
       thead
@@ -11,3 +11,6 @@ div.pure-g.largeMarginBottom.midPaddingBottom.paddingTop
         tr.user
           td#nomisUserName &nbsp
           td#nomisName
+
+block append scripts
+  script(src="/public/javascripts/verifyNomisId.js")

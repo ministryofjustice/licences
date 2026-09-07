@@ -1,3 +1,5 @@
+import logger from '../log'
+
 const production = process.env.NODE_ENV === 'production'
 const oneDay = 24 * 60 * 60
 
@@ -18,6 +20,8 @@ const today = () => {
 }
 
 function checkDateAgainstToday(dateString: string) {
+  const todayDate = today()
+
   let dateObj: Date = null
   if (dateString) {
     const parsedDate = new Date(dateString)
@@ -26,12 +30,21 @@ function checkDateAgainstToday(dateString: string) {
       dateObj = parsedDate
     }
   }
+
+  logger.info(
+    `checkDateAgainstToday, Date comparison: ` +
+    `configString=${dateString}, ` +
+    `compare=${dateObj?.toISOString()} <= ${todayDate.toISOString()}, ` +
+    `compare=${dateObj?.toDateString()} <= ${todayDate.toDateString()}, ` +
+    `compareTime=${dateObj?.getTime()} <= ${todayDate.getTime()} `
+  )
+
   return {
     dateObj,
     isActive() {
       return (
         this.dateObj !== null &&
-        this.dateObj.getTime() <= today().getTime()
+        this.dateObj.getTime() <= todayDate.getTime()
       )
     }
   }
@@ -321,6 +334,14 @@ export default {
     createAndVaryALicenceVaryCaseloadUrl: get(
       'CREATE_AND_VARY_A_LICENCE_VARY_CASELOAD_URL',
       'https://create-and-vary-a-licence-dev.hmpps.service.justice.gov.uk/licence/vary/caseload'
+    ),
+    createAndVaryALicenceInCvlInfoUrl: get(
+      'CREATE_AND_VARY_A_LICENCE_IN_CVL_INFO_URL',
+      'https://justiceuk.sharepoint.com/sites/HMPPSdigitalrollouthub/SitePages/New-features.aspx'
+    ),
+    createAndVaryALicenceSupportUrl: get(
+      'CREATE_AND_VARY_A_LICENCE_SUPPORT_URL',
+      'https://create-and-vary-a-licence-dev.hmpps.service.justice.gov.uk/support'
     )
   },
 
