@@ -132,7 +132,7 @@ export default function createApp({
     return next()
   })
 
-  app.use((_req, res, next) => {
+   app.use((_req, res, next) => {
     res.locals.cspNonce = randomBytes(16).toString('base64')
     next()
   })
@@ -391,6 +391,8 @@ export default function createApp({
   app.locals.feedbackAndSupportUrl = config.links.feedbackAndSupportUrl
   app.locals.createAndVaryALicenceVaryCaseloadUrl = config.links.createAndVaryALicenceVaryCaseloadUrl
   app.locals.createAndVaryALicenceInCvlInfoUrl = config.links.createAndVaryALicenceInCvlInfoUrl
+  app.locals.createAndVaryALicenceSupportUrl = config.links.createAndVaryALicenceSupportUrl
+
   app.locals.isHdcInCvlNationalRoleOut = config.hdcInCvlNationalRoleOut.isActive()
   app.use('/', secureRoute(defaultRouter()))
 

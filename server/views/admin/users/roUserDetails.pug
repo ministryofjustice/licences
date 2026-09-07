@@ -6,7 +6,7 @@ block content
   -var inputs = userInput ? userInput : roUser ? roUser : {}
 
   div.back-link-container.smallPaddingTop
-    nav(id="js-back-wrapper")
+    nav(id="js-back-link-wrapper")
   +errorBannerWithDetail(errors, [
     { field: 'nomisId' },
     { field: 'deliusId' }
@@ -32,7 +32,7 @@ block content
         div.pure-u-1.pure-u-md-4-5
           div.form-group
             label.form-label(for="deliusUsername") Delius Username
-            input#deliusUsername.form-control(name="deliusUsername" type="text" value=inputs.deliusUsername)
+            input#nomisId.form-control(name="deliusUsername" type="text" value=inputs.deliusUsername)
 
       div.pure-u-1.pure-u-md-2-5
         div.pure-u-1.pure-u-md-4-5
@@ -106,11 +106,12 @@ block content
     div.paddingBottom.smallPaddingTop
       div.pure-u-1.inlineButtons
         input#continueBtn.requiredButton.button.smallMarginTop(type="submit" value="Save")
-        nav(id="js-cancel-button-wrapper")
+        nav(id="js-back-button-wrapper")
 
   hr
   include verifyNomis
 
+
 block append scripts
   script(src="/public/javascripts/verifyNomisId.js?" + version)
-  script(src="/public/javascripts/cancelButton.js")
+  script(id="backButtonScript" src="/public/javascripts/backButton.js" data-link_text="Cancel" data-link_class_list="requiredButton,button,button-secondary,smallMarginTop")

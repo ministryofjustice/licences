@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-const wrapper = document.getElementById('js-back-wrapper')
+const wrapper = document.getElementById('js-back-link-wrapper')
 if (!wrapper) return
 
 const link = document.createElement('a')
