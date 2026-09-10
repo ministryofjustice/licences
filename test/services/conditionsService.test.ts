@@ -98,7 +98,7 @@ describe('conditionsService', () => {
   describe('getStandardConditions', () => {
     test('should return the conditions', () => {
 
-      const  standardConditionsConfig = config.progressionModelPolicyStartDate.isActive()
+      const  standardConditionsConfig = config.progressionModelPolicyRoleOut.isActive()
         ? stdConditionsV4
         : stdConditionsV2
 
@@ -168,7 +168,7 @@ describe('conditionsService', () => {
 
   describe('getFullTextForApprovedConditions', () => {
 
-    const  standardConditionsConfig = config.progressionModelPolicyStartDate.isActive()
+    const  standardConditionsConfig = config.progressionModelPolicyRoleOut.isActive()
       ? stdConditionsV4
       : stdConditionsV2
 

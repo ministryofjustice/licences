@@ -158,7 +158,7 @@ export default (pdfService: PdfService, prisonerService: PrisonerService) => (ro
         {
           hdcUrl,
           progressionModelStandardConditions,
-          isProgressionModelActive: config.progressionModelPolicyStartDate.isActive(),
+          isProgressionModelActive: config.progressionModelPolicyRoleOut.isActive(),
           ...pdfData.values
         },
         { filename, pdfOptions: { headerHtml, footerHtml, ...pdfOptions } }

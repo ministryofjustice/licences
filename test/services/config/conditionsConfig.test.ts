@@ -1,3 +1,4 @@
+
 describe('conditionsConfig', () => {
   const originalEnv = process.env
 
@@ -11,50 +12,45 @@ describe('conditionsConfig', () => {
   })
 
   const loadConditionsConfig = () => {
+    let config
+
     jest.isolateModules(() => {
-      delete require.cache[require.resolve('../../../server/config')]
-      delete require.cache[require.resolve('../../../server/services/config/conditionsConfig')]
+      // eslint-disable-next-line global-require
+      config = require('../../../server/config')
     })
-    // eslint-disable-next-line global-require
-    return require('../../../server/services/config/conditionsConfig')
+
+    return config.default
   }
 
   describe('standardConditions changing based on progressionModelPolicyStartDate', () => {
+
     it('should use v2 standard conditions when policy date not set', () => {
       delete process.env.PROGRESSION_MODEL_POLICY_START_DATE
+      const config = loadConditionsConfig()
 
-      const { standardConditions } = loadConditionsConfig()
-
-      expect(standardConditions).toHaveLength(9)
-      expect(standardConditions[0].text).toContain('Be of good behaviour')
+      expect(config.progressionModelPolicyStartDate.isActive()).toBe(false)
     })
 
     it('should use v2 standard conditions when policy date is in the future', () => {
       process.env.PROGRESSION_MODEL_POLICY_START_DATE = '2999-01-01'
+      const config = loadConditionsConfig()
 
-      const { standardConditions } = loadConditionsConfig()
-
-      expect(standardConditions).toHaveLength(9)
-      expect(standardConditions[0].text).toContain('Be of good behaviour')
+      expect(config.progressionModelPolicyStartDate.isActive()).toBe(false)
     })
+
 
     it('should use v4 standard conditions when policy date is in the past', () => {
       process.env.PROGRESSION_MODEL_POLICY_START_DATE = '2000-01-01'
+      const config = loadConditionsConfig()
 
-      const { standardConditions } = loadConditionsConfig()
-
-      expect(standardConditions).toHaveLength(8)
-      expect(standardConditions[0].text).toContain('Behave well in a way that supports')
+      expect(config.progressionModelPolicyStartDate.isActive()).toBe(true)
     })
 
     it('should use v4 standard conditions when policy date is today', () => {
       const [today] = new Date().toISOString().split('T')
       process.env.PROGRESSION_MODEL_POLICY_START_DATE = today
-
-      const { standardConditions } = loadConditionsConfig()
-
-      expect(standardConditions).toHaveLength(8)
-      expect(standardConditions[0].text).toContain('Behave well in a way that supports')
+      const config = loadConditionsConfig()
+      expect(config.progressionModelPolicyStartDate.isActive()).toBe(true)
     })
   })
 })

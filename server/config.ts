@@ -354,7 +354,7 @@ export default {
   hdcInCvlNationalRoleOut: checkDateAgainstToday(
     get('HDC_IN_CVL_NATIONAL_ROLE_OUT_DATE', '')
   ),
-  progressionModelPolicyStartDate: checkDateAgainstToday(
+  progressionModelPolicyRoleOut: checkDateAgainstToday(
     get('PROGRESSION_MODEL_POLICY_START_DATE', '')
   ),
 }

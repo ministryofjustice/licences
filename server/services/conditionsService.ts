@@ -95,7 +95,7 @@ export class ConditionsService {
   }
 
   getStandardConditions() {
-    return config.progressionModelPolicyStartDate.isActive()
+    return config.progressionModelPolicyRoleOut.isActive()
       ? stdConditionsV4
       : stdConditionsV2
   }
