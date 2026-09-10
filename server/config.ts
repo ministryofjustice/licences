@@ -20,7 +20,7 @@ const today = () => {
 }
 
 function checkDateAgainstToday(dateString: string) {
-  let dateObj: Date | null = null
+  let dateObj: Date = null
   if (dateString) {
     const parsedDate = new Date(dateString)
 
@@ -31,6 +31,7 @@ function checkDateAgainstToday(dateString: string) {
   }
 
   return {
+    dateObj,
     isActive() {
       const todayDate = today()
       logger.info(
