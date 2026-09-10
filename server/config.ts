@@ -20,35 +20,32 @@ const today = () => {
 }
 
 function checkDateAgainstToday(dateString: string) {
-  const todayDate = today()
-
-  let dateObj: Date = null
+  let dateObj: Date | null = null
   if (dateString) {
     const parsedDate = new Date(dateString)
+
     if (!Number.isNaN(parsedDate.getTime())) {
       parsedDate.setHours(0, 0, 0, 0)
       dateObj = parsedDate
     }
   }
 
-  logger.info(
-    `checkDateAgainstToday, Date comparison: ` +
-    `configString=${dateString}, ` +
-    `compare=${dateObj?.toISOString()} <= ${todayDate.toISOString()}, ` +
-    `compare=${dateObj?.toDateString()} <= ${todayDate.toDateString()}, ` +
-    `compareTime=${dateObj?.getTime()} <= ${todayDate.getTime()} `
-  )
-
   return {
-    dateObj,
     isActive() {
+      const todayDate = today()
+      logger.info(
+        `Date config toggle , isActive: ` +
+        `config Date=${dateObj?.toDateString() ?? 'null'}, ` +
+        `today=${todayDate.toDateString()}`)
+
       return (
-        this.dateObj !== null &&
-        this.dateObj.getTime() <= todayDate.getTime()
+        dateObj !== null &&
+        dateObj.getTime() <= todayDate.getTime()
       )
-    }
+    },
   }
 }
+
 
 export default {
   version: 0.1,

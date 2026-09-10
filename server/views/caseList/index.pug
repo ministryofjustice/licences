@@ -6,7 +6,7 @@ block content
         if showExitUrl
           a.link-back(href=exitUrl data-qa='exit-to-dps-link') Digital Prison Services
 
-    if (user.role === 'RO' && isHdcInCvlNationalRoleOut)
+    if (user.role === 'RO' && isHdcInCvlNationalRoleOut())
       div.govuk-inset-text.migrationBanner
         h2.heading-medium
           span.icon-info i

@@ -2,13 +2,20 @@ import { AdditionalConditionsVersion } from '../../server/data/licenceClientType
 import { Licence } from '../../server/data/licenceTypes'
 import { ConditionsService, ConditionsServiceFactory } from '../../server/services/conditionsService'
 import { pssConditions } from '../../server/services/config/conditions/additionalConditions/v1/conditions'
-import { CURRENT_CONDITION_VERSION, standardConditions } from '../../server/services/config/conditionsConfig'
+import { CURRENT_CONDITION_VERSION} from '../../server/services/config/conditionsConfig'
 import { LicenceRecord } from '../../server/services/licenceService'
 import {
   additionalConditionsObject,
   additionalConditionsObjectNoResideSelected,
   additionalConditionsObjectDateSelected,
 } from '../stubs/conditions'
+import config from '../../server/config';
+import {
+  standardConditions as stdConditionsV4
+} from '../../server/services/config/conditions/standardConditions/v4/standardConditions';
+import {
+  standardConditions as stdConditionsV2
+} from '../../server/services/config/conditions/standardConditions/v2/standardConditions';
 
 describe('conditionsService', () => {
   let service: ConditionsService
@@ -90,7 +97,12 @@ describe('conditionsService', () => {
 
   describe('getStandardConditions', () => {
     test('should return the conditions', () => {
-      return expect(service.getStandardConditions()).toEqual(standardConditions)
+
+      const  standardConditionsConfig = config.progressionModelPolicyStartDate.isActive()
+        ? stdConditionsV4
+        : stdConditionsV2
+
+      return expect(service.getStandardConditions()).toEqual(standardConditionsConfig)
     })
   })
 
@@ -155,7 +167,12 @@ describe('conditionsService', () => {
   })
 
   describe('getFullTextForApprovedConditions', () => {
-    const standardConditionsText = standardConditions.map((it) => it.text.replace(/\.+$/, ''))
+
+    const  standardConditionsConfig = config.progressionModelPolicyStartDate.isActive()
+      ? stdConditionsV4
+      : stdConditionsV2
+
+    const standardConditionsText = standardConditionsConfig.map((it) => it.text.replace(/\.+$/, ''))
 
     test('should always return standard conditions even for empty licence', () => {
       const licence = {
