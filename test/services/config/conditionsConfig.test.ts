@@ -16,11 +16,14 @@ describe('conditionsConfig', () => {
 
     jest.isolateModules(() => {
       // eslint-disable-next-line global-require
-      config = require('../../../server/config')
+      config = require('../../../server/config').default
     })
 
-    // eslint-disable-next-line global-require
-    return config.default
+    if (!config) {
+      throw new Error('Config was not loaded')
+    }
+
+    return /** @type {any} */ (config)
   }
 
   describe('standardConditions changing based on progressionModelPolicyRoleOut', () => {
