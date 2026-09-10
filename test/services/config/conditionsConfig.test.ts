@@ -19,23 +19,24 @@ describe('conditionsConfig', () => {
       config = require('../../../server/config')
     })
 
+    // eslint-disable-next-line global-require
     return config.default
   }
 
-  describe('standardConditions changing based on progressionModelPolicyStartDate', () => {
+  describe('standardConditions changing based on progressionModelPolicyRoleOut', () => {
 
     it('should use v2 standard conditions when policy date not set', () => {
       delete process.env.PROGRESSION_MODEL_POLICY_START_DATE
       const config = loadConditionsConfig()
 
-      expect(config.progressionModelPolicyStartDate.isActive()).toBe(false)
+      expect(config.progressionModelPolicyRoleOut.isActive()).toBe(false)
     })
 
     it('should use v2 standard conditions when policy date is in the future', () => {
       process.env.PROGRESSION_MODEL_POLICY_START_DATE = '2999-01-01'
       const config = loadConditionsConfig()
 
-      expect(config.progressionModelPolicyStartDate.isActive()).toBe(false)
+      expect(config.progressionModelPolicyRoleOut.isActive()).toBe(false)
     })
 
 
@@ -43,14 +44,14 @@ describe('conditionsConfig', () => {
       process.env.PROGRESSION_MODEL_POLICY_START_DATE = '2000-01-01'
       const config = loadConditionsConfig()
 
-      expect(config.progressionModelPolicyStartDate.isActive()).toBe(true)
+      expect(config.progressionModelPolicyRoleOut.isActive()).toBe(true)
     })
 
     it('should use v4 standard conditions when policy date is today', () => {
       const [today] = new Date().toISOString().split('T')
       process.env.PROGRESSION_MODEL_POLICY_START_DATE = today
       const config = loadConditionsConfig()
-      expect(config.progressionModelPolicyStartDate.isActive()).toBe(true)
+      expect(config.progressionModelPolicyRoleOut.isActive()).toBe(true)
     })
   })
 })
