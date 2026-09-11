@@ -13,7 +13,7 @@ mixin detail(type, details)
     when 'CREATE_IN_CVL'
         | Licence to be created in CVL
     default
-        | &nbsp;   
+        | &nbsp;
 
 mixin defaultType(type, details)
     | #{type} #{details}
@@ -55,10 +55,17 @@ mixin assignedTo(val)
     when 'MODIFIED_APPROVAL'
        | Decision Maker
     default
-       | Prison Case Admin 
+       | Prison Case Admin
 
 div.borderBottom.paddingBottom
-  
+
+  h2.heading-medium CVL
+  div.pure-g
+    div.pure-u-1.pure-u-md-1-2
+      p
+        span
+          a.link(href=`${createAndVaryALicenceSupportUrl}/offender/${prisonerInfo.offenderNo}/detail`) View prisoner details in CVL
+
   h2.heading-medium Activity
   div.pure-g
     div.pure-u-1.pure-u-md-1-2
@@ -67,16 +74,16 @@ div.borderBottom.paddingBottom
         span #{licence.stage}
       p
         span.bold Currently Assigned to:&nbsp;
-        span 
+        span
           + assignedTo(licence.stage)
       p
         span
           a(href='/admin/licences/' + bookingId + '/raw') View raw
     div.pure-u-1.pure-u-md-1-2
-        if licence && licence.stage === 'PROCESSING_RO'      
+        if licence && licence.stage === 'PROCESSING_RO'
             div.alignRight
                 a.button.smallMarginBottom(href='/admin/licences/' + bookingId + '/notifyRo') Notify COM of case handover
-                 
+
         div.alignRight
             a.button(id='reset-licence'  href='/admin/licences/events/' + bookingId + '/reset-licence') Reset licence
 
@@ -98,6 +105,3 @@ div.borderBottom.paddingBottom
               | #{event.action}
           td.details
               + detail(event.type, event.details)
-
-
-
