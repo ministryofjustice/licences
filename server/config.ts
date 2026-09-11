@@ -35,7 +35,8 @@ function checkDateAgainstToday(dateString: string) {
     isActive() {
       const todayDate = today()
       logger.info(
-        `Date config toggle , isActive: ` +
+        `isActive date config toggle: ` +
+        `Config value=${dateString},  ` +
         `config Date=${dateObj?.toDateString() ?? 'null'}, ` +
         `today=${todayDate.toDateString()}`)
 
