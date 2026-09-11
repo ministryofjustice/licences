@@ -65,6 +65,9 @@ div.borderBottom.paddingBottom
       p
         span
           a.link(href=`${createAndVaryALicenceSupportUrl}/offender/${prisonerInfo.offenderNo}/detail`) View prisoner details in CVL
+      p
+        span
+          a.link(href=`/admin/migrateToCvl/migration-logs?prisonerNumber=${prisonerInfo.offenderNo}`) View migration log
 
   h2.heading-medium Activity
   div.pure-g
