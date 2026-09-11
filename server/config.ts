@@ -13,42 +13,40 @@ function get(name: string, fallback: any, options: { requireInProduction?: boole
   throw new Error(`Missing env var ${name}`)
 }
 
-const today = () => {
+const getStartOfToday = () => {
   const date = new Date()
   date.setHours(0, 0, 0, 0)
   return date
 }
 
 function checkDateAgainstToday(dateString: string) {
-  const todayDate = today()
-
   let dateObj: Date = null
   if (dateString) {
     const parsedDate = new Date(dateString)
+
     if (!Number.isNaN(parsedDate.getTime())) {
       parsedDate.setHours(0, 0, 0, 0)
       dateObj = parsedDate
     }
   }
 
-  logger.info(
-    `checkDateAgainstToday, Date comparison: ` +
-    `configString=${dateString}, ` +
-    `compare=${dateObj?.toISOString()} <= ${todayDate.toISOString()}, ` +
-    `compare=${dateObj?.toDateString()} <= ${todayDate.toDateString()}, ` +
-    `compareTime=${dateObj?.getTime()} <= ${todayDate.getTime()} `
-  )
-
   return {
     dateObj,
     isActive() {
-      return (
-        this.dateObj !== null &&
-        this.dateObj.getTime() <= todayDate.getTime()
-      )
-    }
+      const startOfToday = getStartOfToday()
+      const active = dateObj !== null && dateObj.getTime() <= startOfToday.getTime()
+      logger.info(
+        `isActive date config toggle: ` +
+        `Config value=${dateString},  ` +
+        `config Date=${dateObj?.toDateString() ?? 'null'}, ` +
+        `today=${startOfToday.toDateString()}` +
+         `isActive= ${  active}`)
+
+      return active
+    },
   }
 }
+
 
 export default {
   version: 0.1,
@@ -357,7 +355,7 @@ export default {
   hdcInCvlNationalRoleOut: checkDateAgainstToday(
     get('HDC_IN_CVL_NATIONAL_ROLE_OUT_DATE', '')
   ),
-  progressionModelPolicyStartDate: checkDateAgainstToday(
+  progressionModelPolicyRoleOut: checkDateAgainstToday(
     get('PROGRESSION_MODEL_POLICY_START_DATE', '')
   ),
 }

@@ -394,7 +394,7 @@ export default function createApp({
   app.locals.createAndVaryALicenceInCvlInfoUrl = config.links.createAndVaryALicenceInCvlInfoUrl
   app.locals.createAndVaryALicenceSupportUrl = config.links.createAndVaryALicenceSupportUrl
 
-  app.locals.isHdcInCvlNationalRoleOut = config.hdcInCvlNationalRoleOut.isActive()
+  app.locals.isHdcInCvlNationalRoleOut = config.hdcInCvlNationalRoleOut.isActive
   app.use('/', secureRoute(defaultRouter()))
 
   app.use(
