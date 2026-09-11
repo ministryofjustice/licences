@@ -13,7 +13,7 @@ function get(name: string, fallback: any, options: { requireInProduction?: boole
   throw new Error(`Missing env var ${name}`)
 }
 
-const today = () => {
+const getStartOfToday = () => {
   const date = new Date()
   date.setHours(0, 0, 0, 0)
   return date
@@ -33,17 +33,16 @@ function checkDateAgainstToday(dateString: string) {
   return {
     dateObj,
     isActive() {
-      const todayDate = today()
+      const startOfToday = getStartOfToday()
+      const active = dateObj !== null && dateObj.getTime() <= startOfToday.getTime()
       logger.info(
         `isActive date config toggle: ` +
         `Config value=${dateString},  ` +
         `config Date=${dateObj?.toDateString() ?? 'null'}, ` +
-        `today=${todayDate.toDateString()}`)
+        `today=${startOfToday.toDateString()}` +
+         `isActive= ${  active}`)
 
-      return (
-        dateObj !== null &&
-        dateObj.getTime() <= todayDate.getTime()
-      )
+      return active
     },
   }
 }
