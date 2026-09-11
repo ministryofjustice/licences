@@ -24,7 +24,6 @@ describe('GET /caseList', () => {
   beforeEach(() => {
     config.caReportsLinkEnabled = true
     app = createApp('caUser')
-    app.locals.isHdcInCvlNationalRoleOut = config.hdcInCvlNationalRoleOut.isActive
   })
 
   afterEach(() => {
@@ -53,7 +52,6 @@ describe('GET /caseList', () => {
 
   test('renders the RO caselist page without exit-to-dps-link for non-nomis RO users', () => {
     app = createApp('roUser')
-    app.locals.isHdcInCvlNationalRoleOut = config.hdcInCvlNationalRoleOut.isActive
     return request(app)
       .get('/caselist/active')
       .expect(200)
@@ -66,7 +64,6 @@ describe('GET /caseList', () => {
 
   test('renders the RO caselist page with exit-to-dps-link for NOMIS RO users', () => {
     app = createApp('nomisRoUser')
-    app.locals.isHdcInCvlNationalRoleOut = config.hdcInCvlNationalRoleOut.isActive
     return request(app)
       .get('/caselist/active')
       .expect(200)
@@ -116,7 +113,6 @@ describe('GET /caseList', () => {
 
     test('does not render the CA reports page link for non CA users', () => {
       app = createApp('roUser')
-      app.locals.isHdcInCvlNationalRoleOut = config.hdcInCvlNationalRoleOut.isActive
       return request(app)
         .get('/caselist/active')
         .expect(200)
@@ -144,5 +140,7 @@ function createApp(user) {
   })
   const route = baseRouter(createCaseListRoute({ caseListService: caseListServiceStub }))
 
-  return appSetup(route, user, '/caselist/')
+  const app = appSetup(route, user, '/caselist/')
+  app.locals.isHdcInCvlNationalRoleOut = config.hdcInCvlNationalRoleOut.isActive
+  return app
 }
