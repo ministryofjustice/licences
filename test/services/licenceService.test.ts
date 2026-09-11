@@ -1197,6 +1197,115 @@ describe('licenceService', () => {
       expect(output).toEqual(expectedLicence)
     })
 
+    test('should update each day curfew times when daySpecificInputs is No', async () => {
+      const licence = {
+        ...baseLicence,
+        section3: {
+          ...baseLicence.section3,
+          curfewHours: {
+            daySpecificInputs: 'Yes',
+            allFrom: '19:00',
+            allUntil: '07:00',
+            mondayFrom: '19:00',
+            mondayUntil: '07:00',
+            tuesdayFrom: '19:00',
+            tuesdayUntil: '07:00',
+            wednesdayFrom: '19:30',
+            wednesdayUntil: '07:00',
+            thursdayFrom: '19:30',
+            thursdayUntil: '07:00',
+            fridayFrom: '19:30',
+            fridayUntil: '07:00',
+            saturdayFrom: '19:30',
+            saturdayUntil: '07:00',
+            sundayFrom: '19:00',
+            sundayUntil: '07:00',
+          },
+        },
+      }
+
+      const fieldMap = [
+              { daySpecificInputs: {} },
+              { allFrom: {} },
+              { allUntil: {} },
+              { mondayFrom: {} },
+              { mondayUntil: {} },
+              { tuesdayFrom: {} },
+              { tuesdayUntil: {} },
+              { wednesdayFrom: {} },
+              { wednesdayUntil: {} },
+              { thursdayFrom: {} },
+              { thursdayUntil: {} },
+              { fridayFrom: {} },
+              { fridayUntil: {} },
+              { saturdayFrom: {} },
+              { saturdayUntil: {} },
+              { sundayFrom: {} },
+              { sundayUntil: {} }]
+
+      const userInput = {
+            daySpecificInputs: 'No',
+            allFrom: '20:00',
+            allUntil: '08:00',
+            mondayFrom: '19:00',
+            mondayUntil: '07:00',
+            tuesdayFrom: '19:00',
+            tuesdayUntil: '07:00',
+            wednesdayFrom: '19:00',
+            wednesdayUntil: '07:00',
+            thursdayFrom: '19:00',
+            thursdayUntil: '07:00',
+            fridayFrom: '19:00',
+            fridayUntil: '07:00',
+            saturdayFrom: '19:00',
+            saturdayUntil: '07:00',
+            sundayFrom: '19:00',
+            sundayUntil: '07:00',
+      }
+
+      const licenceSection = 'section3'
+      const formName = 'curfewHours'
+
+      const originalLicence = { booking_id: bookingId, licence }
+      await service.update({
+        bookingId,
+        originalLicence,
+        config: { fields: fieldMap },
+        userInput,
+        licenceSection,
+        formName,
+        postRelease: true,
+      })
+
+      const expectedLicence = {
+        ...licence,
+        section3: {
+          ...licence.section3,
+          curfewHours: {
+            daySpecificInputs: 'No',
+            allFrom: '20:00',
+            allUntil: '08:00',
+            mondayFrom: '20:00',
+            mondayUntil: '08:00',
+            tuesdayFrom: '20:00',
+            tuesdayUntil: '08:00',
+            wednesdayFrom: '20:00',
+            wednesdayUntil: '08:00',
+            thursdayFrom: '20:00',
+            thursdayUntil: '08:00',
+            fridayFrom: '20:00',
+            fridayUntil: '08:00',
+            saturdayFrom: '20:00',
+            saturdayUntil: '08:00',
+            sundayFrom: '20:00',
+            sundayUntil: '08:00',
+          },
+        },
+      }
+      expect(licenceClient.updateLicence).toHaveBeenCalled()
+      expect(licenceClient.updateLicence).toHaveBeenCalledWith('ab1', expectedLicence, true)
+    })
+
     describe('modificationRequiresApproval', () => {
       const licence = {
         ...baseLicence,
