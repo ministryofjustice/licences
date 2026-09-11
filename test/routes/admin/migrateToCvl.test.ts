@@ -88,21 +88,20 @@ describe('/migration-logs/', () => {
         })
     })
 
-    test('handles success being true filter', () => {
+    test('handles all search filters', () => {
       const app = createApp('batchUser')
       return request(app)
-        .get('/admin/migrateToCvl/migration-logs')
-        .query({ success: 'true' })
+        .get('/admin/migrateToCvl/migration-logs?licenceVersionId=123&bookingId=456&errorSource=CVL&success=true&prisonerNumber=A1234BC&migrationTrigger=BATCH')
         .expect(200)
         .expect(() => {
           expect(hdcService.getMigrationLogs).toHaveBeenCalledWith(
-            undefined,
-            undefined,
-            undefined,
+            123,
+            456,
+            'CVL',
             true,
-            undefined,
-            undefined,
-            { page: 0, size: 50 }
+            'BATCH',
+            'A1234BC',
+            {"page": 0, "size": 50},
           )
         })
     })
