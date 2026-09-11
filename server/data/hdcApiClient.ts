@@ -22,8 +22,8 @@ export class HdcClient {
       return this.restClient.getResource(`/licences/migrate/${licenceId}/to-cvl/preview`)
   }
 
-  async getMigrationLogs(licenceVersionId?: number, bookingId?: number, errorSource?: string, success?: boolean, migrationTrigger?: string, pageable?: Pageable): Promise<PageLicenceMigrationLogEntryDto> {
-    return this.restClient.getResource(`/licences/migrate/logs`, {}, { licenceVersionId, bookingId, errorSource, success, migrationTrigger, ...pageable })
+  async getMigrationLogs(licenceVersionId?: number, bookingId?: number, errorSource?: string, success?: boolean, migrationTrigger?: string, prisonerNumber?: string, pageable?: Pageable): Promise<PageLicenceMigrationLogEntryDto> {
+    return this.restClient.getResource(`/licences/migrate/logs`, {}, { licenceVersionId, bookingId, errorSource, success, migrationTrigger, prisonerNumber, ...pageable })
   }
 
   async setMigrationLogRetry(logId: number, retryValue: boolean): Promise<void> {

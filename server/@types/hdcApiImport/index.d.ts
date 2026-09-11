@@ -894,10 +894,10 @@ export interface components {
     }
     FailedMigrationSummary: {
       /** Format: int64 */
-      errorCount: number
-      /** Format: int64 */
       bookingId: number
       prisonNumber: string
+      /** Format: int64 */
+      errorCount: number
       migrationTrigger: string
     }
     Pageable: {
@@ -981,10 +981,10 @@ export interface components {
       sort?: components['schemas']['SortObject']
       /** Format: int32 */
       pageSize?: number
-      unpaged?: boolean
       paged?: boolean
       /** Format: int32 */
       pageNumber?: number
+      unpaged?: boolean
     }
     SortObject: {
       empty?: boolean
@@ -1713,6 +1713,7 @@ export interface operations {
         errorSource?: string
         success?: boolean
         migrationTrigger?: string
+        prisonerNumber?: string
         pageable: components['schemas']['Pageable']
       }
       header?: never

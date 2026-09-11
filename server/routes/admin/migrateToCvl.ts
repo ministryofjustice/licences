@@ -6,7 +6,12 @@ import { Pageable } from '../../@types/hdcApiImport'
 const logger = require('../../../log')
 
 async function getCSVReport(hdcService: HdcService,pageable: Pageable, res,
-                            licenceVersionId?: number, bookingId?: number, errorSource?: string, success?: boolean, migrationTrigger?: string) {
+                            licenceVersionId?: number,
+                            bookingId?: number,
+                            errorSource?: string,
+                            success?: boolean,
+                            migrationTrigger?: string,
+                            prisonerNumber?: string) {
 
   let currentPageNumber = 0
 
@@ -16,6 +21,7 @@ async function getCSVReport(hdcService: HdcService,pageable: Pageable, res,
     errorSource ? errorSource as string : undefined,
     success,
     migrationTrigger ? migrationTrigger as string : undefined,
+    prisonerNumber ? prisonerNumber as string : undefined,
     {page: currentPageNumber, size: 100, sort: pageable.sort}
   )
 
@@ -33,6 +39,7 @@ async function getCSVReport(hdcService: HdcService,pageable: Pageable, res,
       errorSource ? errorSource as string : undefined,
       success,
       migrationTrigger ? migrationTrigger as string : undefined,
+      prisonerNumber ? prisonerNumber as string : undefined,
       {page: currentPageNumber, size: 500, sort: pageable.sort}
     )
     allContent.push(...pageResult.content)
@@ -120,7 +127,13 @@ export = (hdcService: HdcService) => (router) => {
     router.get(
         '/migration-logs',
         asyncMiddleware(async (req, res) => {
-            const { licenceVersionId, bookingId, errorSource, migrationTrigger, success, page, size, sort } = req.query as any
+
+          const query = Object.fromEntries(
+            Object.entries(req.query).map(([key, value]) => [key, typeof value === 'string' ? value.trim() : value]),
+          )
+
+          const { licenceVersionId, bookingId, errorSource, migrationTrigger,prisonerNumber, success, page, size, sort } = query
+
             const pageable: Pageable = {
                 page: page ? Number(page) : 0,
                 size: size ? Number(size) : 50,
@@ -150,6 +163,7 @@ export = (hdcService: HdcService) => (router) => {
                 errorSource ? errorSource as string : undefined,
                 successFilter,
                 migrationTrigger ? migrationTrigger as string : undefined,
+                prisonerNumber ? prisonerNumber as string : undefined,
                 pageable
             )
 
@@ -159,6 +173,7 @@ export = (hdcService: HdcService) => (router) => {
                 bookingId,
                 errorSource,
                 migrationTrigger,
+                prisonerNumber,
                 success,
                 page,
                 size,

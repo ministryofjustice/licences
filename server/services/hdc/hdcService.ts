@@ -314,10 +314,16 @@ export class HdcService {
         }
     }
 
-    async getMigrationLogs(licenceVersionId?: number, bookingId?: number, errorSource?: string, success?: boolean, migrationTrigger?: string, pageable?: Pageable): Promise<PageLicenceMigrationLogEntryDto> {
-       logger.info(`Getting migration logs for licence version ID: ${licenceVersionId}, booking ID: ${bookingId}, error source: ${errorSource}, success: ${success}, migrationTrigger:${migrationTrigger} pageable: ${pageable}`)
+    async getMigrationLogs(licenceVersionId?: number,
+                           bookingId?: number,
+                           errorSource?: string,
+                           success?: boolean,
+                           migrationTrigger?: string,
+                           prisonerNumber?: string,
+                           pageable?: Pageable): Promise<PageLicenceMigrationLogEntryDto> {
+       logger.info(`Getting migration logs for licence version ID: ${licenceVersionId}, booking ID: ${bookingId}, error source: ${errorSource}, success: ${success}, migrationTrigger:${migrationTrigger}, prisonerNumber: ${prisonerNumber}, pageable: ${pageable}`)
        try {
-            return await this.hdcClient.getMigrationLogs(licenceVersionId, bookingId, errorSource, success, migrationTrigger, pageable)
+            return await this.hdcClient.getMigrationLogs(licenceVersionId, bookingId, errorSource, success, migrationTrigger, prisonerNumber, pageable)
         } catch (error: any) {
             logger.error(`Failed to get migration logs`, {
                 message: error?.message,
