@@ -102,7 +102,8 @@ block content
               th.govuk-table__header(scope="col") Retry
           tbody.govuk-table__body
             each log in logs.content
-              tr(id='log-' + log.id).govuk-table__row(
+              tr.govuk-table__row(
+                id='log-' + log.id
                 class=log.success ? "success" : "fail"
               )
                 td.govuk-table__cell
