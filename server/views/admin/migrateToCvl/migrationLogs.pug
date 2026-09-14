@@ -109,7 +109,8 @@ block content
                   | #{log.id})
                   br
                   | #{new Date(log.createdTimeStamp).toLocaleDateString('en-GB', { year: '2-digit', month: '2-digit', day: '2-digit' })} #{new Date(log.createdTimeStamp).toLocaleString('en-GB', {hour: '2-digit', minute: '2-digit'})}
-                td.govuk-table__cell #{log.bookingId}
+                td.govuk-table__cell
+                  a.link(href=`/admin/licences/${log.bookingId}`) #{log.bookingId}
                 td.govuk-table__cell
                   a.link(href=`${createAndVaryALicenceSupportUrl}/offender/${log.prisonNumber}/detail`) #{log.prisonNumber}
                 td.govuk-table__cell #{log.licenceVersionId}
