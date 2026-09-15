@@ -288,11 +288,12 @@ export class LicenceService {
     if (!licence) {
       return null
     }
+    const inputWithCurfewHours = this.addCurfewHoursInput(userInput)
 
     const updatedLicence = this.getUpdatedLicence({
       licence,
       fieldMap: sectionConfig.fields,
-      userInput,
+      userInput: inputWithCurfewHours,
       licenceSection,
       formName,
     })
