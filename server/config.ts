@@ -1,5 +1,3 @@
-import logger from '../log'
-
 const production = process.env.NODE_ENV === 'production'
 const oneDay = 24 * 60 * 60
 
@@ -35,7 +33,9 @@ function checkDateAgainstToday(dateString: string) {
     isActive() {
       const startOfToday = getStartOfToday()
       const active = dateObj !== null && dateObj.getTime() <= startOfToday.getTime()
-      logger.info(
+
+      // eslint-disable-next-line no-console
+      console.log(
         `isActive date config toggle: ` +
         `Config value=${dateString},  ` +
         `config Date=${dateObj?.toDateString() ?? 'null'}, ` +

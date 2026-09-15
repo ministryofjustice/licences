@@ -24,6 +24,10 @@
 .downloadButton {
    margin-left: 10px;
 }
+
+.success {
+    background-color: #d6f3d6;
+}
 .fail td:first-child,
 .success td:first-child {
     padding-left: 5px;
