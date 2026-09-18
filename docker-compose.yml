@@ -1,6 +1,6 @@
 services:
   licence-db:
-    image: postgres
+    image: postgres@15.19
     networks:
       - hmpps
     container_name: licence-db

@@ -13,7 +13,7 @@ executors:
   integration-tests:
     docker:
       - image: cimg/node:<< pipeline.parameters.node-version >>
-      - image: cimg/postgres:15.12
+      - image: cimg/postgres:15.19
         environment:
           POSTGRES_USER: licences
           POSTGRES_DB: licences
