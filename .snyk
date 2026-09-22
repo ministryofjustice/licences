@@ -2,8 +2,8 @@
 version: v1.13.5
 # ignores vulnerabilities until expiry date; change duration by modifying expiry date
 ignore:
-  'npm:jquery:1.12.4':
+    SNYK-JS-MOMENT-19821607:
     - '*':
-        reason: Required for legacy browser support
-        expires: 2020-04-01T00:00:00.000Z
-patch: {}
+        reason: Dev dependency
+        expires: 2026-09-28T00:00:00.000Z
+        created: 2026-09-22T15:55:00.000Z
