@@ -105,7 +105,7 @@
     "applicationinsights": "^2.9.8",
     "body-parser": "^2.3.0",
     "case": "^1.6.3",
-    "compression": "^1.8.1",
+    "compression": "1.8.2",
     "concat-stream": "^2.0.0",
     "connect-flash": "^0.1.1",
     "connect-redis": "^9.0.0",
