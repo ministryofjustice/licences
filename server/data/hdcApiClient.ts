@@ -1,6 +1,6 @@
 import type {
   ConvertedLicenseBatch,
-  FailedMigrationSummary, MigrateFromHdcToCvlRequest, Pageable, PageLicenceMigrationLogEntryDto
+  FailedMigrationSummary, HdcCvlEventRequest, MigrateFromHdcToCvlRequest, Pageable, PageLicenceMigrationLogEntryDto
 } from '../@types/hdcApiImport'
 
 export class HdcClient {
@@ -32,5 +32,9 @@ export class HdcClient {
 
   async getFailedReport() : Promise<FailedMigrationSummary[]>{
     return this.restClient.getResource(`/licences/migrate/repeated-failures`, {})
+  }
+
+  async postCvlEvent(event: HdcCvlEventRequest): Promise<void> {
+    return this.restClient.postResource(`/licences/cvl-events`, event)
   }
 }

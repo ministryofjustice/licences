@@ -7,6 +7,7 @@ const {
   createLicenceServiceStub,
   createSignInServiceStub,
   createNomisPushServiceStub,
+  createHdcServiceStub,
 } = require('../mockServices')
 const { validate } = require('../../server/services/utils/formValidation')
 
@@ -339,12 +340,15 @@ describe('/hdc/curfew', () => {
 
     test(`should push optout status to nomis`, () => {
       const nomisPushService = createNomisPushServiceStub()
+      const hdcService = createHdcServiceStub()
       const licenceService = createLicenceServiceStub()
-      licenceService.getLicence.mockResolvedValue({ licence: {}, stage: 'PROCESSING_CA' })
+      licenceService.getLicence.mockResolvedValue({ licenceId: 1, licence: {}, stage: 'PROCESSING_CA' })
+
       const app = createApp(
         {
           nomisPushServiceStub: nomisPushService,
           licenceServiceStub: licenceService,
+          hdcServiceStub: hdcService,
         },
         'caUser',
         { pushToNomis: true }
@@ -361,6 +365,53 @@ describe('/hdc/curfew', () => {
             data: { type: 'optOut', status: 'Yes' },
             username: 'CA_USER_TEST',
           })
+          expect(hdcService.postOptOutEvent).toHaveBeenCalledWith(1, 1, 'A1234AA', 'CA_USER_TEST', 'CA_USER_TEST opted out of HDC after COM added an approved premises')
+        })
+    })
+
+    test(`should post event but not push nomis if optout but pushToNomis is false`, () => {
+      const nomisPushService = createNomisPushServiceStub()
+      const hdcService = createHdcServiceStub()
+      const licenceService = createLicenceServiceStub()
+      licenceService.getLicence.mockResolvedValue({ licenceId: 1, licence: {}, stage: 'PROCESSING_CA' })
+      const app = createApp(
+        {
+          nomisPushServiceStub: nomisPushService,
+          licenceServiceStub: licenceService,
+          hdcServiceStub: hdcService,
+        },
+        'caUser',
+        { pushToNomis: false }
+      )
+
+      return request(app)
+        .post('/hdc/curfew/approvedPremisesChoice/1')
+        .send({ decision: 'OptOut' })
+        .expect(302)
+        .expect(() => {
+          expect(nomisPushService.pushStatus).not.toHaveBeenCalled()
+          expect(hdcService.postOptOutEvent).toHaveBeenCalledWith(1, 1, 'A1234AA', 'CA_USER_TEST', 'CA_USER_TEST opted out of HDC after COM added an approved premises')
+        })
+    })
+
+    test(`should not post event if not optout`, () => {
+      const hdcService = createHdcServiceStub()
+      const licenceService = createLicenceServiceStub()
+      licenceService.getLicence.mockResolvedValue({ licence: {}, stage: 'PROCESSING_CA' })
+      const app = createApp(
+        {
+          licenceServiceStub: licenceService,
+          hdcServiceStub: hdcService,
+        },
+        'caUser'
+      )
+
+      return request(app)
+        .post('/hdc/curfew/approvedPremisesChoice/1')
+        .send({ decision: 'ApprovedPremises' })
+        .expect(302)
+        .expect(() => {
+          expect(hdcService.postOptOutEvent).not.toHaveBeenCalled()
         })
     })
 
@@ -746,7 +797,7 @@ describe('/hdc/curfew', () => {
 })
 
 function createApp(
-  { licenceServiceStub = null, prisonerServiceStub = null, nomisPushServiceStub = null },
+  { licenceServiceStub = null, prisonerServiceStub = null, nomisPushServiceStub = null, hdcServiceStub = null },
   user,
   config = {}
 ) {
@@ -754,6 +805,7 @@ function createApp(
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()
   const nomisPushService = nomisPushServiceStub || createNomisPushServiceStub()
+  const hdcService = hdcServiceStub || createHdcServiceStub()
   const audit = mockAudit()
 
   const baseRouter = standardRouter({
@@ -764,7 +816,7 @@ function createApp(
     tokenVerifier: new NullTokenVerifier(),
     config,
   })
-  const route = baseRouter(createRoute({ licenceService, nomisPushService }))
 
+  const route = baseRouter(createRoute({ licenceService, nomisPushService, hdcService }))
   return appSetup(route, user, '/hdc/curfew')
 }

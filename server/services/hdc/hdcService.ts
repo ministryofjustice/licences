@@ -4,7 +4,7 @@ import moment from 'moment'
 import { HdcClient } from '../../data/hdcApiClient'
 import {
   ConvertedLicenseBatch, ConvertedLicenseConditions,
-  type FailedMigrationSummary, Pageable, PageLicenceMigrationLogEntryDto
+  type FailedMigrationSummary, HdcCvlEventRequest, Pageable, PageLicenceMigrationLogEntryDto
 } from '../../@types/hdcApiImport'
 import { LicenceService } from '../licenceService'
 import { ConditionsServiceFactory } from '../conditionsService'
@@ -390,6 +390,39 @@ export class HdcService {
       ],
     })
     return writer.getHeaderString() + writer.stringifyRecords(records)
+  }
+
+  async postCvlEvent(event: HdcCvlEventRequest): Promise<void> {
+    try {
+      logger.info(`Posting CVL event for booking ID: ${event.bookingId}, event type: ${event.eventType} event.reason: ${event.reason}`)
+      return await this.hdcClient.postCvlEvent(event)
+    } catch (error: any) {
+      logger.error(`Failed to post CVL event`, {
+        message: error?.message,
+        status: error?.response?.status,
+        data: error?.response?.data,
+        stack: error?.stack,
+      })
+      throw error
+    }
+  }
+
+  async postOptOutEvent(
+    bookingId: number,
+    licenceId: number,
+    nomsNumber: string,
+    username: string,
+    reason: string | null = null,
+  ): Promise<void> {
+
+    return this.postCvlEvent({
+      bookingId,
+      licenceId,
+      nomsNumber,
+      eventType: 'OPT_OUT',
+      triggeredBy: username,
+      reason,
+    })
   }
 }
 

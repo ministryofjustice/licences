@@ -6,7 +6,7 @@ const formConfig = require('./config/curfew')
 const { isPostApproval } = require('../services/config/licenceStage')
 
 module.exports =
-  ({ licenceService, nomisPushService }) =>
+  ({ licenceService, nomisPushService, hdcService }) =>
   (router, audited, { pushToNomis }) => {
     const standard = createStandardRoutes({ formConfig, licenceService, sectionName: 'curfew' })
 
@@ -61,6 +61,7 @@ module.exports =
         const { bookingId } = req.params
         const { decision } = req.body
         const { licence } = res.locals
+        const isAnOptOut  =  decision === 'OptOut'
 
         const curfew = getIn(licence, ['licence', 'curfew'])
         const newCurfew = mergeWithRight(curfew, approvedPremisesContents[decision])
@@ -73,12 +74,24 @@ module.exports =
           licenceService.updateSection('curfew', bookingId, newCurfew),
         ])
 
-        if (pushToNomis && decision === 'OptOut') {
-          await nomisPushService.pushStatus({
-            bookingId,
-            data: { type: 'optOut', status: 'Yes' },
-            username: req.user.username,
-          })
+        if (isAnOptOut) {
+          const userName = req.user.username
+          if (pushToNomis) {
+            await nomisPushService.pushStatus({
+              bookingId,
+              data: { type: 'optOut', status: 'Yes' },
+              username: userName,
+            })
+          }
+          const { offenderNo } = res.locals.prisoner
+          const { licenceId } = res.locals.licence
+          await hdcService.postOptOutEvent(
+            parseInt(bookingId, 10),
+            licenceId,
+            offenderNo,
+            userName,
+            `${userName} opted out of HDC after COM added an approved premises`
+          )
         }
 
         const nextPath = formConfig.approvedPremisesChoice.nextPath[decision] || `/hdc/taskList/`
