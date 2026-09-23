@@ -394,7 +394,8 @@ export class HdcService {
 
   async postCvlEvent(event: HdcCvlEventRequest): Promise<void> {
     try {
-      logger.info(`Posting CVL event for booking ID: ${event.bookingId}, event type: ${event.eventType} event.reason: ${event.reason}`)
+      logger.info(`Posting CVL event for event: ${JSON.stringify(event)}`)
+
       return await this.hdcClient.postCvlEvent(event)
     } catch (error: any) {
       logger.error(`Failed to post CVL event`, {
