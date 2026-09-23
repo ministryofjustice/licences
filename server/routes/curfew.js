@@ -84,7 +84,7 @@ module.exports =
             })
           }
           const { offenderNo } = res.locals.prisoner
-          const { licenceId } = res.locals.licence
+          const licenceId = res.locals.licence.id
           await hdcService.postOptOutEvent(
             parseInt(bookingId, 10),
             licenceId,

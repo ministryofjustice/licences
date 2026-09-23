@@ -98,7 +98,7 @@ describe('/hdc/proposedAddress/', () => {
         const nomisPushService = createNomisPushServiceStub()
 
         licenceService.getLicence.mockResolvedValue({
-          licenceId: 1,
+          id: 1,
           licence: {},
         })
 

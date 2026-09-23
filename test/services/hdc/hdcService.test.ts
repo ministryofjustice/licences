@@ -46,7 +46,7 @@ describe('HdcService', () => {
       await service.postCvlEvent(event)
 
       expect(hdcClient.postCvlEvent).toHaveBeenCalledWith(event)
-      expect(logger.info).toHaveBeenCalledWith('Posting CVL event for booking ID: 123, event type: OPT_OUT event.reason: reason')
+      expect(logger.info).toHaveBeenCalledWith('Posting CVL event for event: {"bookingId":123,"eventType":"OPT_OUT","licenceId":456,"nomsNumber":"A1234AA","triggeredBy":"USER","reason":"reason"}')
     })
 
     it('should log error and throw if hdcClient.postCvlEvent fails', async () => {

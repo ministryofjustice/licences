@@ -282,7 +282,7 @@ describe('/hdc/bassReferral', () => {
       test('POST /hdc/bassReferral/approvedPremisesChoice/:bookingId with OptOut', () => {
         const licenceService = createLicenceServiceStub()
         licenceService.getLicence.mockResolvedValue({
-          licenceId: 1,
+          id: 1,
           licence: {},
         })
         const hdcService = createHdcServiceStub()
@@ -307,7 +307,7 @@ describe('/hdc/bassReferral', () => {
       test('POST /hdc/bassReferral/approvedPremisesChoice/:bookingId with ApprovedPremises', () => {
         const licenceService = createLicenceServiceStub()
         licenceService.getLicence.mockResolvedValue({
-          licenceId: 1,
+          id: 1,
           licence: {},
         })
         const app = createApp({ licenceServiceStub: licenceService }, 'caUser')

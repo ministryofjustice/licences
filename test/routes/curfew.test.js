@@ -342,7 +342,7 @@ describe('/hdc/curfew', () => {
       const nomisPushService = createNomisPushServiceStub()
       const hdcService = createHdcServiceStub()
       const licenceService = createLicenceServiceStub()
-      licenceService.getLicence.mockResolvedValue({ licenceId: 1, licence: {}, stage: 'PROCESSING_CA' })
+      licenceService.getLicence.mockResolvedValue({ id: 2, licence: {}, stage: 'PROCESSING_CA' })
 
       const app = createApp(
         {
@@ -365,7 +365,7 @@ describe('/hdc/curfew', () => {
             data: { type: 'optOut', status: 'Yes' },
             username: 'CA_USER_TEST',
           })
-          expect(hdcService.postOptOutEvent).toHaveBeenCalledWith(1, 1, 'A1234AA', 'CA_USER_TEST', 'CA_USER_TEST opted out of HDC after COM added an approved premises')
+          expect(hdcService.postOptOutEvent).toHaveBeenCalledWith(1, 2, 'A1234AA', 'CA_USER_TEST', 'CA_USER_TEST opted out of HDC after COM added an approved premises')
         })
     })
 
@@ -373,7 +373,7 @@ describe('/hdc/curfew', () => {
       const nomisPushService = createNomisPushServiceStub()
       const hdcService = createHdcServiceStub()
       const licenceService = createLicenceServiceStub()
-      licenceService.getLicence.mockResolvedValue({ licenceId: 1, licence: {}, stage: 'PROCESSING_CA' })
+      licenceService.getLicence.mockResolvedValue({ id: 1, licence: {}, stage: 'PROCESSING_CA' })
       const app = createApp(
         {
           nomisPushServiceStub: nomisPushService,
