@@ -170,10 +170,7 @@ function createApp(
     config,
   })
 
-  const route = baseRouter(createRoute({ licenceService, nomisPushService, hdcService }), {
-    auditKey: 'UPDATE_SECTION',
-    licenceRequired: true,
-  })
+  const route = baseRouter(createRoute({ licenceService, nomisPushService, hdcService }))
 
   return appSetup(route, user, '/hdc/proposedAddress')
 }
