@@ -360,7 +360,7 @@ function createApp({ licenceServiceStub = null, nomisPushServiceStub = null }, u
   const signInService = createSignInServiceStub()
   const nomisPushService = nomisPushServiceStub || createNomisPushServiceStub()
   const audit = mockAudit()
-  const hdcService = createHdcServiceStub()
+  const hdcService = nomisPushServiceStub || createHdcServiceStub()
 
   const baseRouter = standardRouter({
     licenceService,
