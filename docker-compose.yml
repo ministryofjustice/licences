@@ -1,6 +1,6 @@
 services:
   licence-db:
-    image: postgres:17.11
+    image: postgres:18.4
     networks:
       - hmpps
     container_name: licence-db
