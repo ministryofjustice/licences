@@ -13,7 +13,8 @@
     "strictNullChecks": false,
     "noImplicitAny": false,
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "types": ["jest"]
   },
   "exclude": ["node_modules", "assets/**/*.js", "dist", "licences-specs", "build"],
   "include": ["**/*.js", "**/*.ts"]
