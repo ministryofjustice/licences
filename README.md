@@ -7,8 +7,8 @@
 
 0. Install node and npm (check package.json for required versions)
 
-- Node 14.16 or higher
-- NPM 7.2.4 or higher
+- Node 24 or higher
+- NPM 12 or higher
 
 1. Install the dependencies required to run the service:
 
