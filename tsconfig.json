@@ -14,7 +14,7 @@
     "noImplicitAny": false,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "types": ["jest"],
+    "types": ["jest", "node"],
     "isolatedModules": true
   },
   "exclude": ["node_modules", "assets/**/*.js", "dist", "licences-specs", "build"],
