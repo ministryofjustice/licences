@@ -1,10 +1,22 @@
 extends ../layout
 
 block content
-  div.pure-g
-    div.pure-u-1.smallMarginTop.back-link-container
-      if showExitUrl
-        a.link-back(href=exitUrl data-qa='exit-to-dps-link') Digital Prison Services
+    div.pure-g
+      div.pure-u-1.smallMarginTop.back-link-container
+        if showExitUrl
+          a.link-back(href=exitUrl data-qa='exit-to-dps-link') Digital Prison Services
+
+    if (user.role === 'RO' && isHdcInCvlNationalRoleOut())
+      div.govuk-inset-text.migrationBanner
+        h2.heading-medium
+          span.icon-info i
+          span.title HDC licence variations
+        div.pure-g.pure-u-1.padLeft30
+          p.padRight15 New HDC licence variations must now be completed on the Create and vary a licence service (CVL). If you have a variation in progress, you must first finish it here on the HDC service before you can vary the licence on CVL.
+          p
+            a(href=createAndVaryALicenceInCvlInfoUrl) Find more information on the HMPPS Digital Hub
+          p
+            a(href=createAndVaryALicenceVaryCaseloadUrl) Go to variations in Create and vary a licence
 
     if user.role === 'RO'
       div.pure-u-1.searchLink.alignRight.sm-padTop55.u-paddingTop

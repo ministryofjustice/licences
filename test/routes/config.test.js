@@ -67,7 +67,6 @@ describe('hdcInCvlNationalRoleOut Config', () => {
     const config = loadConfig()
 
     // Then
-    expect(config.hdcInCvlNationalRoleOut.dateObj).toBeNull()
     expect(config.hdcInCvlNationalRoleOut.isActive()).toBe(false)
   })
 
@@ -119,7 +118,7 @@ describe('progressionModelPolicyStartDate Config', () => {
     const config = loadConfig()
 
     // Then
-    expect(config.progressionModelPolicyStartDate.isActive()).toBe(true)
+    expect(config.progressionModelPolicyRoleOut.isActive()).toBe(true)
   })
 
   it('should not be active when the policy start date is in the future', () => {
@@ -130,7 +129,7 @@ describe('progressionModelPolicyStartDate Config', () => {
     const config = loadConfig()
 
     // Then
-    expect(config.progressionModelPolicyStartDate.isActive()).toBe(false)
+    expect(config.progressionModelPolicyRoleOut.isActive()).toBe(false)
   })
 
   it('should have a null and not enabled when the env var is not set', () => {
@@ -141,8 +140,8 @@ describe('progressionModelPolicyStartDate Config', () => {
     const config = loadConfig()
 
     // Then
-    expect(config.progressionModelPolicyStartDate.dateObj).toBeNull()
-    expect(config.progressionModelPolicyStartDate.isActive()).toBe(false)
+    expect(config.progressionModelPolicyRoleOut.dateObj).toBeNull()
+    expect(config.progressionModelPolicyRoleOut.isActive()).toBe(false)
   })
 
   it('should have a null and not enabled when the env var is not a valid date', () => {
@@ -153,8 +152,8 @@ describe('progressionModelPolicyStartDate Config', () => {
     const config = loadConfig()
 
     // Then
-    expect(config.progressionModelPolicyStartDate.dateObj).toBeNull()
-    expect(config.progressionModelPolicyStartDate.isActive()).toBe(false)
+    expect(config.progressionModelPolicyRoleOut.dateObj).toBeNull()
+    expect(config.progressionModelPolicyRoleOut.isActive()).toBe(false)
   })
 
   it('should be active when the policy start date is today', () => {
@@ -166,6 +165,6 @@ describe('progressionModelPolicyStartDate Config', () => {
     const config = loadConfig()
 
     // Then
-    expect(config.progressionModelPolicyStartDate.isActive()).toBe(true)
+    expect(config.progressionModelPolicyRoleOut.isActive()).toBe(true)
   })
 })

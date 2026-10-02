@@ -2,19 +2,6 @@ extends ../../layout
 
 block content
 
-    style.
-        .inlineLabel {
-            display: inline-block;
-            margin-right: 0.4em;
-        }
-        .largeSpacingBottom {
-            margin-bottom: 1em;
-        }
-
-        .largeSpacingTop {
-            margin-top: 1em;
-        }
-
     div.back-link-container.smallPaddingTop
         a#back.link-back(href="/admin/") Back
 
@@ -41,8 +28,8 @@ block content
                 )
 
             input.requiredButton.button(
+                id="js-preview-btn"
                 type="button"
-                onclick="window.location='/admin/migrateToCvl/licence/' + document.getElementById('previewLicenceId').value + '/preview'",
                 value="Preview migration"
             )
 
@@ -57,8 +44,8 @@ block content
                 )
 
             input.requiredButton.button(
+                id="js-migrate-btn"
                 type="button"
-                onclick="window.location='/admin/migrateToCvl/licence/'+document.getElementById('migrateBookingId').value+'/migrate'",
                 value="Migrate licence"
             )
 
@@ -79,3 +66,7 @@ block content
             p
                 a.link(href="/admin/migrateToCvl/migration-logs")
                     | View migration logs
+
+
+block append scripts
+  script(src="/public/javascripts/migrationButtons.js")

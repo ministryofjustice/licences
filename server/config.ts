@@ -11,7 +11,7 @@ function get(name: string, fallback: any, options: { requireInProduction?: boole
   throw new Error(`Missing env var ${name}`)
 }
 
-const today = () => {
+const getStartOfToday = () => {
   const date = new Date()
   date.setHours(0, 0, 0, 0)
   return date
@@ -21,21 +21,32 @@ function checkDateAgainstToday(dateString: string) {
   let dateObj: Date = null
   if (dateString) {
     const parsedDate = new Date(dateString)
+
     if (!Number.isNaN(parsedDate.getTime())) {
       parsedDate.setHours(0, 0, 0, 0)
       dateObj = parsedDate
     }
   }
+
   return {
     dateObj,
     isActive() {
-      return (
-        this.dateObj !== null &&
-        this.dateObj.getTime() <= today().getTime()
-      )
-    }
+      const startOfToday = getStartOfToday()
+      const active = dateObj !== null && dateObj.getTime() <= startOfToday.getTime()
+
+      // eslint-disable-next-line no-console
+      console.log(
+        `isActive date config toggle: ` +
+        `Config value=${dateString},  ` +
+        `config Date=${dateObj?.toDateString() ?? 'null'}, ` +
+        `today=${startOfToday.toDateString()}` +
+         `isActive= ${  active}`)
+
+      return active
+    },
   }
 }
+
 
 export default {
   version: 0.1,
@@ -321,6 +332,14 @@ export default {
     createAndVaryALicenceVaryCaseloadUrl: get(
       'CREATE_AND_VARY_A_LICENCE_VARY_CASELOAD_URL',
       'https://create-and-vary-a-licence-dev.hmpps.service.justice.gov.uk/licence/vary/caseload'
+    ),
+    createAndVaryALicenceInCvlInfoUrl: get(
+      'CREATE_AND_VARY_A_LICENCE_IN_CVL_INFO_URL',
+      'https://justiceuk.sharepoint.com/sites/HMPPSdigitalrollouthub/SitePages/New-features.aspx'
+    ),
+    createAndVaryALicenceSupportUrl: get(
+      'CREATE_AND_VARY_A_LICENCE_SUPPORT_URL',
+      'https://create-and-vary-a-licence-dev.hmpps.service.justice.gov.uk/support'
     )
   },
 
@@ -336,7 +355,7 @@ export default {
   hdcInCvlNationalRoleOut: checkDateAgainstToday(
     get('HDC_IN_CVL_NATIONAL_ROLE_OUT_DATE', '')
   ),
-  progressionModelPolicyStartDate: checkDateAgainstToday(
+  progressionModelPolicyRoleOut: checkDateAgainstToday(
     get('PROGRESSION_MODEL_POLICY_START_DATE', '')
   ),
 }

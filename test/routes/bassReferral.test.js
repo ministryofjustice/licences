@@ -2,7 +2,12 @@ const request = require('supertest')
 const { mockAudit } = require('../mockClients')
 const { appSetup, testFormPageGets } = require('../supertestSetup')
 
-const { createPrisonerServiceStub, createLicenceServiceStub, createSignInServiceStub } = require('../mockServices')
+const {
+  createPrisonerServiceStub,
+  createLicenceServiceStub,
+  createSignInServiceStub,
+  createHdcServiceStub,
+} = require('../mockServices')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/bassReferral')
@@ -254,6 +259,74 @@ describe('/hdc/bassReferral', () => {
           })
       })
     })
+
+    describe('approvedPremisesChoice', () => {
+      test('GET /hdc/bassReferral/approvedPremisesChoice/:bookingId', () => {
+        const licenceService = createLicenceServiceStub()
+        licenceService.getLicence.mockResolvedValue({
+          licenceId: 1,
+          licence: {
+            proposedAddress: { optOut: { decision: 'Yes' } },
+          },
+        })
+        const app = createApp({ licenceServiceStub: licenceService }, 'caUser')
+        return request(app)
+          .get('/hdc/bassReferral/approvedPremisesChoice/1')
+          .expect(200)
+          .expect('Content-Type', /html/)
+          .expect((res) => {
+            expect(res.text).toContain('Does the offender need to be sent to approved premises?')
+          })
+      })
+
+      test('POST /hdc/bassReferral/approvedPremisesChoice/:bookingId with OptOut', () => {
+        const licenceService = createLicenceServiceStub()
+        licenceService.getLicence.mockResolvedValue({
+          id: 1,
+          licence: {},
+        })
+        const hdcService = createHdcServiceStub()
+        const app = createApp({ licenceServiceStub: licenceService}, 'caUser', hdcService)
+
+        return request(app)
+          .post('/hdc/bassReferral/approvedPremisesChoice/1')
+          .send({ decision: 'OptOut' })
+          .expect(302)
+          .expect((res) => {
+            expect(licenceService.updateSection).toHaveBeenCalledWith('proposedAddress', '1', {
+              optOut: { decision: 'Yes' },
+            })
+            expect(licenceService.updateSection).toHaveBeenCalledWith('bassReferral', '1', {
+              approvedPremises: { required: 'No' },
+            })
+            expect(hdcService.postOptOutEvent).toHaveBeenCalledWith(1, 1, 'A1234AA', 'CA_USER_TEST', 'CA_USER_TEST opted out of HDC after COM added an approved CAS2 premises')
+            expect(res.header.location).toBe('/hdc/taskList/1')
+          })
+      })
+
+      test('POST /hdc/bassReferral/approvedPremisesChoice/:bookingId with ApprovedPremises', () => {
+        const licenceService = createLicenceServiceStub()
+        licenceService.getLicence.mockResolvedValue({
+          id: 1,
+          licence: {},
+        })
+        const app = createApp({ licenceServiceStub: licenceService }, 'caUser')
+
+        return request(app)
+          .post('/hdc/bassReferral/approvedPremisesChoice/1')
+          .send({ decision: 'ApprovedPremises' })
+          .expect(302)
+          .expect((res) => {
+            expect(licenceService.updateSection).toHaveBeenCalledWith('proposedAddress', '1', {
+              optOut: { decision: 'No' },
+            })
+            expect(licenceService.updateSection).toHaveBeenCalledWith('bassReferral', '1', {
+              approvedPremises: { required: 'Yes' },
+            })
+            expect(res.header.location).toBe('/hdc/bassReferral/approvedPremisesAddress/1')
+          })
+      })
+    })
   })
 
   describe('RO', () => {
@@ -327,9 +400,10 @@ describe('/hdc/bassReferral', () => {
   })
 })
 
-function createApp({ licenceServiceStub }, user) {
+function createApp({ licenceServiceStub}, user, hdcServiceStub = null) {
   const prisonerService = createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
+  const hdcService = hdcServiceStub || createHdcServiceStub()
   const signInService = createSignInServiceStub()
   const audit = mockAudit()
 
@@ -341,7 +415,7 @@ function createApp({ licenceServiceStub }, user) {
     tokenVerifier: new NullTokenVerifier(),
     config: null,
   })
-  const route = baseRouter(createRoute({ licenceService, nomisPushService: null }))
+  const route = baseRouter(createRoute({ licenceService, nomisPushService: null, hdcService }))
 
   return appSetup(route, user, '/hdc/bassReferral')
 }

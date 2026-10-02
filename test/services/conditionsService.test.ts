@@ -1,14 +1,27 @@
-import { AdditionalConditionsVersion } from '../../server/data/licenceClientTypes'
-import { Licence } from '../../server/data/licenceTypes'
-import { ConditionsService, ConditionsServiceFactory } from '../../server/services/conditionsService'
-import { pssConditions } from '../../server/services/config/conditions/additionalConditions/v1/conditions'
-import { CURRENT_CONDITION_VERSION, standardConditions } from '../../server/services/config/conditionsConfig'
-import { LicenceRecord } from '../../server/services/licenceService'
+import {AdditionalConditionsVersion} from '../../server/data/licenceClientTypes'
+import {Licence} from '../../server/data/licenceTypes'
+import {ConditionsService, ConditionsServiceFactory} from '../../server/services/conditionsService'
+import {pssConditions} from '../../server/services/config/conditions/additionalConditions/v1/conditions'
+import {CURRENT_CONDITION_VERSION} from '../../server/services/config/conditionsConfig'
+import {LicenceRecord} from '../../server/services/licenceService'
 import {
   additionalConditionsObject,
-  additionalConditionsObjectNoResideSelected,
   additionalConditionsObjectDateSelected,
+  additionalConditionsObjectNoResideSelected,
 } from '../stubs/conditions'
+import config from '../../server/config';
+import {
+  standardConditions as stdConditionsV4
+} from '../../server/services/config/conditions/standardConditions/v4/standardConditions';
+import {
+  standardConditions as stdConditionsV2
+} from '../../server/services/config/conditions/standardConditions/v2/standardConditions';
+
+function getConditionConfig() {
+  return config.progressionModelPolicyRoleOut.isActive()
+    ? stdConditionsV4
+    : stdConditionsV2;
+}
 
 describe('conditionsService', () => {
   let service: ConditionsService
@@ -90,7 +103,9 @@ describe('conditionsService', () => {
 
   describe('getStandardConditions', () => {
     test('should return the conditions', () => {
-      return expect(service.getStandardConditions()).toEqual(standardConditions)
+      const standardConditionsConfig = getConditionConfig();
+
+      return expect(service.getStandardConditions()).toEqual(standardConditionsConfig)
     })
   })
 
@@ -155,7 +170,10 @@ describe('conditionsService', () => {
   })
 
   describe('getFullTextForApprovedConditions', () => {
-    const standardConditionsText = standardConditions.map((it) => it.text.replace(/\.+$/, ''))
+
+    const standardConditionsConfig = getConditionConfig();
+
+    const standardConditionsText = standardConditionsConfig.map((it) => it.text.replace(/\.+$/, ''))
 
     test('should always return standard conditions even for empty licence', () => {
       const licence = {

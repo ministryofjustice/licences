@@ -5,6 +5,61 @@ import { Pageable } from '../../@types/hdcApiImport'
 
 const logger = require('../../../log')
 
+async function getCSVReport(hdcService: HdcService,pageable: Pageable, res,
+                            licenceVersionId?: number,
+                            bookingId?: number,
+                            errorSource?: string,
+                            success?: boolean,
+                            migrationTrigger?: string,
+                            prisonerNumber?: string) {
+
+  let currentPageNumber = 0
+
+  const logs = await hdcService.getMigrationLogs(
+    licenceVersionId ? Number(licenceVersionId) : undefined,
+    bookingId ? Number(bookingId) : undefined,
+    errorSource ? errorSource as string : undefined,
+    success,
+    migrationTrigger ? migrationTrigger as string : undefined,
+    prisonerNumber ? prisonerNumber as string : undefined,
+    {page: currentPageNumber, size: 100, sort: pageable.sort}
+  )
+
+  const {totalPages} = logs
+
+  const allContent = [...logs.content]
+
+  currentPageNumber += 1
+
+  while (currentPageNumber < totalPages) {
+    // eslint-disable-next-line no-await-in-loop
+    const pageResult = await hdcService.getMigrationLogs(
+      licenceVersionId ? Number(licenceVersionId) : undefined,
+      bookingId ? Number(bookingId) : undefined,
+      errorSource ? errorSource as string : undefined,
+      success,
+      migrationTrigger ? migrationTrigger as string : undefined,
+      prisonerNumber ? prisonerNumber as string : undefined,
+      {page: currentPageNumber, size: 500, sort: pageable.sort}
+    )
+    allContent.push(...pageResult.content)
+    currentPageNumber += 1
+  }
+
+  const records = await hdcService.getMigrationLogsCsv(allContent)
+  res.contentType('text/csv')
+  res.set('Content-Disposition', `attachment;filename=migration-logs.csv`)
+  return res.send(records)
+}
+
+async function getFailedReport(hdcService: HdcService, res) {
+  const logs = await hdcService.getFailedReport()
+  const records = await hdcService.getFailedReportCsv(logs)
+  res.contentType('text/csv')
+  res.set('Content-Disposition', `attachment;filename=migration-failed-report.csv`)
+  return res.send(records)
+}
+
 export = (hdcService: HdcService) => (router) => {
     router.use(authorisationMiddleware)
 
@@ -72,7 +127,13 @@ export = (hdcService: HdcService) => (router) => {
     router.get(
         '/migration-logs',
         asyncMiddleware(async (req, res) => {
-            const { licenceVersionId, bookingId, errorSource, success, page, size, sort } = req.query as any
+
+          const query = Object.fromEntries(
+            Object.entries(req.query).map(([key, value]) => [key, typeof value === 'string' ? value.trim() : value]),
+          )
+
+          const { licenceVersionId, bookingId, errorSource, migrationTrigger,prisonerNumber, success, page, size, sort } = query
+
             const pageable: Pageable = {
                 page: page ? Number(page) : 0,
                 size: size ? Number(size) : 50,
@@ -88,39 +149,11 @@ export = (hdcService: HdcService) => (router) => {
             }
 
             if (req.query.format === 'csv') {
-                let currentPageNumber = 0
+              if (req.query.type === 'failed') {
+                return getFailedReport(hdcService, res);
+              }
 
-                const logs = await hdcService.getMigrationLogs(
-                    licenceVersionId ? Number(licenceVersionId) : undefined,
-                    bookingId ? Number(bookingId) : undefined,
-                    errorSource ? errorSource as string : undefined,
-                    successFilter,
-                    { page: currentPageNumber, size: 100, sort: pageable.sort }
-                )
-
-                const {totalPages} = logs
-
-                const allContent = [...logs.content]
-
-                currentPageNumber +=1
-
-                while (currentPageNumber < totalPages) {
-                    // eslint-disable-next-line no-await-in-loop
-                    const pageResult = await hdcService.getMigrationLogs(
-                        licenceVersionId ? Number(licenceVersionId) : undefined,
-                        bookingId ? Number(bookingId) : undefined,
-                        errorSource ? errorSource as string : undefined,
-                        successFilter,
-                        { page: currentPageNumber, size: 500, sort: pageable.sort }
-                    )
-                    allContent.push(...pageResult.content)
-                    currentPageNumber+=1
-                }
-
-                const records = await hdcService.getMigrationLogsCsv(allContent)
-                res.contentType('text/csv')
-                res.set('Content-Disposition', `attachment;filename=migration-logs.csv`)
-                return res.send(records)
+              return getCSVReport(hdcService, pageable, res);
             }
 
 
@@ -129,6 +162,8 @@ export = (hdcService: HdcService) => (router) => {
                 bookingId ? Number(bookingId) : undefined,
                 errorSource ? errorSource as string : undefined,
                 successFilter,
+                migrationTrigger ? migrationTrigger as string : undefined,
+                prisonerNumber ? prisonerNumber as string : undefined,
                 pageable
             )
 
@@ -137,6 +172,8 @@ export = (hdcService: HdcService) => (router) => {
                 licenceVersionId,
                 bookingId,
                 errorSource,
+                migrationTrigger,
+                prisonerNumber,
                 success,
                 page,
                 size,

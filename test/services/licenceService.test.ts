@@ -31,6 +31,7 @@ describe('licenceService', () => {
   beforeEach(() => {
     licenceClient = {
       getLicence: (jest.fn() as jest.Mock<Promise<CaseWithVaryVersion>>).mockResolvedValue({
+        id:2,
         licence: LICENCE_SAMPLE,
         booking_id: 1,
         stage: undefined,
@@ -43,6 +44,7 @@ describe('licenceService', () => {
         licence_in_cvl: false,
       }),
       getLicenceIncludingSoftDeleted: (jest.fn() as jest.Mock<Promise<CaseWithVaryVersion>>).mockResolvedValue({
+        id:2,
         licence: LICENCE_SAMPLE,
         booking_id: 1,
         stage: undefined,
@@ -168,6 +170,7 @@ describe('licenceService', () => {
 
     test('should return licence', () => {
       return expect(service.getLicence(123)).resolves.toEqual({
+        id : 2,
         licence: LICENCE_SAMPLE,
         stage: undefined,
         version: '2.5',
@@ -197,6 +200,7 @@ describe('licenceService', () => {
         version: '2.5',
         approvedVersion: '',
         approvedVersionDetails: {},
+        id: 2,
         versionDetails: {
           vary_version: 5,
           version: 2,

@@ -1,8 +1,9 @@
 /* eslint-disable no-underscore-dangle */
 import moment from 'moment'
-import { randomUUID } from 'crypto'
+import { randomBytes, randomUUID } from 'crypto'
+import { IncomingMessage, ServerResponse } from 'http'
 import bodyParser from 'body-parser'
-import express, { Express} from 'express'
+import express, { Express, Response } from 'express'
 import path from 'path'
 import flash from 'connect-flash'
 import session from 'express-session'
@@ -131,10 +132,43 @@ export default function createApp({
     return next()
   })
 
+   app.use((_req, res, next) => {
+    res.locals.cspNonce = randomBytes(16).toString('base64')
+    next()
+  })
+
+  const scriptSrc = [
+    "'self'",
+    (_req: IncomingMessage, res: ServerResponse) => `'nonce-${(res as Response).locals.cspNonce}'`,
+    'code.jquery.com',
+    '*.googletagmanager.com',
+    'www.google-analytics.com',
+  ]
+  const styleSrc = [
+    "'self'",
+    (_req: IncomingMessage, res: ServerResponse) => `'nonce-${(res as Response).locals.cspNonce}'`,
+    'code.jquery.com',
+    'fonts.googleapis.com',
+  ]
+
   // Secure code best practice - see:
   // 1. https://expressjs.com/en/advanced/best-practice-security.html,
   // 2. https://www.npmjs.com/package/helmet
-  app.use(helmet({ contentSecurityPolicy: false, crossOriginResourcePolicy: { policy: 'cross-origin' } }))
+  app.use(helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
+    referrerPolicy: { policy: 'same-origin' },
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc,
+        styleSrc,
+        fontSrc: ["'self'"],
+        imgSrc: ["'self'", 'www.googletagmanager.com', 'www.google-analytics.com'],
+        connectSrc: ["'self'", '*.googletagmanager.com', '*.google-analytics.com', '*.analytics.google.com'],
+        formAction: ["'self'"]
+      }
+    }
+  }))
 
   app.use((req, res, next) => {
     const headerName = 'X-Request-Id'
@@ -357,7 +391,10 @@ export default function createApp({
   app.locals.tagManagerKey = config.tagManagerKey
   app.locals.feedbackAndSupportUrl = config.links.feedbackAndSupportUrl
   app.locals.createAndVaryALicenceVaryCaseloadUrl = config.links.createAndVaryALicenceVaryCaseloadUrl
+  app.locals.createAndVaryALicenceInCvlInfoUrl = config.links.createAndVaryALicenceInCvlInfoUrl
+  app.locals.createAndVaryALicenceSupportUrl = config.links.createAndVaryALicenceSupportUrl
 
+  app.locals.isHdcInCvlNationalRoleOut = config.hdcInCvlNationalRoleOut.isActive
   app.use('/', secureRoute(defaultRouter()))
 
   app.use(
@@ -409,11 +446,11 @@ export default function createApp({
   app.use('/user/', secureRoute(userRouter({ userService })))
   app.use('/hdc/people-ready-for-probation-checks', secureRoute(caReportsRouter(reportsService, audit)))
 
-  app.use('/hdc/proposedAddress/', secureRoute(addressRouter({ licenceService, nomisPushService })))
+  app.use('/hdc/proposedAddress/', secureRoute(addressRouter({ licenceService, nomisPushService, hdcService })))
   app.use('/hdc/approval/', secureRoute(approvalRouter({ licenceService, prisonerService, nomisPushService })))
-  app.use('/hdc/bassReferral/', secureRoute(bassReferralRouter({ licenceService, nomisPushService })))
+  app.use('/hdc/bassReferral/', secureRoute(bassReferralRouter({ licenceService, nomisPushService, hdcService })))
   app.use('/hdc/licenceConditions/', secureRoute(conditionsRouter({ licenceService, conditionsServiceFactory })))
-  app.use('/hdc/curfew/', secureRoute(curfewRouter({ licenceService, nomisPushService })))
+  app.use('/hdc/curfew/', secureRoute(curfewRouter({ licenceService, nomisPushService, hdcService })))
   app.use('/hdc/eligibility/', secureRoute(eligibilityRouter({ licenceService, nomisPushService })))
   app.use('/hdc/finalChecks/', secureRoute(finalChecksRouter({ licenceService, nomisPushService })))
   app.use('/hdc/review/', secureRoute(reviewRouter({ licenceService, conditionsServiceFactory, prisonerService })))

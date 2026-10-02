@@ -6,7 +6,7 @@ const {
   createPrisonerServiceStub,
   createLicenceServiceStub,
   createSignInServiceStub,
-  createNomisPushServiceStub,
+  createNomisPushServiceStub, createHdcServiceStub,
 } = require('../mockServices')
 
 const { mockAudit } = require('../mockClients')
@@ -360,6 +360,7 @@ function createApp({ licenceServiceStub = null, nomisPushServiceStub = null }, u
   const signInService = createSignInServiceStub()
   const nomisPushService = nomisPushServiceStub || createNomisPushServiceStub()
   const audit = mockAudit()
+  const hdcService = createHdcServiceStub()
 
   const baseRouter = standardRouter({
     licenceService,
@@ -369,7 +370,6 @@ function createApp({ licenceServiceStub = null, nomisPushServiceStub = null }, u
     tokenVerifier: new NullTokenVerifier(),
     config,
   })
-  const route = baseRouter(createRoute({ licenceService, nomisPushService }))
-
+  const route = baseRouter(createRoute({ licenceService, nomisPushService, hdcService }))
   return appSetup(route, user, '/hdc/proposedAddress')
 }
