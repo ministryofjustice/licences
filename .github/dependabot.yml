@@ -33,6 +33,16 @@ updates:
       default-days: 7
     schedule:
       interval: "weekly"
+    ignore:
+      - dependency-name: "postgres"
+        update-types:
+          - "version-update:semver-major"
+      - dependency-name: "redis"
+        update-types:
+          - "version-update:semver-major"
+      - dependency-name: "thecodingmachine/gotenberg"
+        update-types:
+          - "version-update:semver-major"
 
   - package-ecosystem: "helm"
     directory: "/helm_deploy/licences"
@@ -44,6 +54,9 @@ updates:
       - dependency-name: "*"
         update-types:
           - "version-update:semver-patch"
+      - dependency-name: "thecodingmachine/gotenberg"
+        update-types:
+          - "version-update:semver-major"
 
   - package-ecosystem: "pre-commit"
     directory: "/"
