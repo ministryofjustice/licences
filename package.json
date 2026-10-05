@@ -175,6 +175,7 @@
     "typescript": "^5.9.3"
   },
   "overrides": {
+    "brace-expansion": "5.0.12",
     "proxy-addr": "2.0.8"
   },
   "bin": {
