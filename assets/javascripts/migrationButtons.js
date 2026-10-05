@@ -3,9 +3,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const migrateInput = document.getElementById('js-migrate-btn')
     if (!previewInput && !migrateInput) return
 
+    function escapeRegExp(string) {
+       return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') // $& means the whole matched string
+    }
+
     if (previewInput) {
         previewInput.addEventListener('click', e => {
-            const licenceId = document.getElementById('previewLicenceId')?.value.trim()
+            const licenceId = escapeRegExp(document.getElementById('previewLicenceId')?.value.trim())
             e.preventDefault()
             window.location.href ='/admin/migrateToCvl/licence/' + licenceId + '/preview'
         })
@@ -13,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (migrateInput) {
         migrateInput.addEventListener('click', e => {
-            const bookingId = document.getElementById('migrateBookingId')?.value.trim()
+            const bookingId = escapeRegExp(document.getElementById('migrateBookingId')?.value.trim())
             e.preventDefault()
             window.location.href ='/admin/migrateToCvl/licence/' + bookingId + '/migrate'
         })
