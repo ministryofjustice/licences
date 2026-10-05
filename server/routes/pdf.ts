@@ -110,11 +110,11 @@ export default (pdfService: PdfService, prisonerService: PrisonerService) => (ro
   )
 
   router.get(
-    '/missing/:section/:bookingId',
+    '/missing/sentenceInfo/:bookingId',
     asyncMiddleware(async (req, res: Response<any, LicenceLocals>) => {
-      const { bookingId, section } = req.params
+      const { bookingId } = req.params
       const { licence } = res.locals
-      logger.debug(`GET pdf/missing/${section}/${bookingId}`)
+      logger.debug(`GET pdf/missing/sentenceInfo/${bookingId}`)
 
       const templateName = licence.licence?.document?.template?.decision
 
@@ -125,7 +125,7 @@ export default (pdfService: PdfService, prisonerService: PrisonerService) => (ro
 
       const data = {}
 
-      return res.render(`pdf/missing/${section}`, {
+      return res.render(`pdf/missing/sentenceInfo`, {
         bookingId,
         missing,
         templateName,
