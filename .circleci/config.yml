@@ -8,7 +8,7 @@ parameters:
     default: the_elephants_devs
   node-version:
     type: string
-    default: 24.14-browsers
+    default: 24.15-browsers
 executors:
   integration-tests:
     docker:
