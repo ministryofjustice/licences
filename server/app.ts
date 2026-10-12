@@ -13,7 +13,7 @@ import noCache from 'nocache'
 import { csrfSync } from 'csrf-sync'
 import compression from 'compression'
 import passport from 'passport'
-import { appInsightsMiddleware } from  './utils/azureAppInsights'
+import { appInsightsMiddleware } from './utils/azureAppInsights'
 import ensureHttps from './utils/ensureHttps'
 import pdfRenderer from './utils/renderPdf'
 
@@ -102,7 +102,7 @@ export default function createApp({
   functionalMailboxService,
   roNotificationHandler,
   migrationService,
-  applicationInfo,
+  applicationInfo
 }): Express {
   const app = express()
 
@@ -132,7 +132,7 @@ export default function createApp({
     return next()
   })
 
-   app.use((_req, res, next) => {
+  app.use((_req, res, next) => {
     res.locals.cspNonce = randomBytes(16).toString('base64')
     next()
   })
@@ -140,35 +140,35 @@ export default function createApp({
   const scriptSrc = [
     "'self'",
     (_req: IncomingMessage, res: ServerResponse) => `'nonce-${(res as Response).locals.cspNonce}'`,
-    'code.jquery.com',
-    '*.googletagmanager.com',
-    'www.google-analytics.com',
+    'code.jquery.com'
   ]
   const styleSrc = [
     "'self'",
     (_req: IncomingMessage, res: ServerResponse) => `'nonce-${(res as Response).locals.cspNonce}'`,
     'code.jquery.com',
-    'fonts.googleapis.com',
+    'fonts.googleapis.com'
   ]
 
   // Secure code best practice - see:
   // 1. https://expressjs.com/en/advanced/best-practice-security.html,
   // 2. https://www.npmjs.com/package/helmet
-  app.use(helmet({
-    crossOriginResourcePolicy: { policy: 'cross-origin' },
-    referrerPolicy: { policy: 'same-origin' },
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc,
-        styleSrc,
-        fontSrc: ["'self'"],
-        imgSrc: ["'self'", 'www.googletagmanager.com', 'www.google-analytics.com'],
-        connectSrc: ["'self'", '*.googletagmanager.com', '*.google-analytics.com', '*.analytics.google.com'],
-        formAction: ["'self'"]
+  app.use(
+    helmet({
+      crossOriginResourcePolicy: { policy: 'cross-origin' },
+      referrerPolicy: { policy: 'same-origin' },
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc,
+          styleSrc,
+          fontSrc: ["'self'"],
+          imgSrc: ["'self'"],
+          connectSrc: ["'self'"],
+          formAction: ["'self'"]
+        }
       }
-    }
-  }))
+    })
+  )
 
   app.use((req, res, next) => {
     const headerName = 'X-Request-Id'
@@ -191,7 +191,7 @@ export default function createApp({
       secret: config.session.secret,
       resave: false, // redis implements touch so shouldn't need this
       saveUninitialized: false,
-      rolling: true,
+      rolling: true
     })
   )
 
@@ -211,12 +211,12 @@ export default function createApp({
   // CSRF protection
   if (!testMode) {
     const {
-      csrfSynchronisedProtection, // This is the default CSRF protection middleware.
+      csrfSynchronisedProtection // This is the default CSRF protection middleware.
     } = csrfSync({
       // By default, csrf-sync uses x-csrf-token header, but we use the token in forms and send it in the request body, so change getTokenFromRequest so it grabs from there
       getTokenFromRequest: (req) => {
         return req.body._csrf
-      },
+      }
     })
 
     app.use(csrfSynchronisedProtection)
@@ -252,7 +252,7 @@ export default function createApp({
     '/assets',
     '/assets/stylesheets',
     '/node_modules/govuk_template_jinja/assets',
-    '/node_modules/govuk_frontend_toolkit',
+    '/node_modules/govuk_frontend_toolkit'
   ].forEach((dir) => {
     app.use('/public', express.static(path.join(process.cwd(), dir), cacheControl))
   })
@@ -271,7 +271,7 @@ export default function createApp({
       hostname: req.hostname,
       authUrl: config.apis.auth.url,
       apiClientId: config.apis.auth.apiClientId,
-      exitUrl: config.links.exitUrl,
+      exitUrl: config.links.exitUrl
     }
     next()
   }
@@ -300,7 +300,7 @@ export default function createApp({
       level: 'info',
       path: req.path,
       username: req.user && req.user.username,
-      role: req.user && req.user.role,
+      role: req.user && req.user.role
     })
     return next()
   })
@@ -352,7 +352,7 @@ export default function createApp({
   app.get('/autherror', (req, res) => {
     res.status(401)
     return res.render('autherror', {
-      authURL: authLogoutUrl,
+      authURL: authLogoutUrl
     })
   })
 
@@ -388,7 +388,6 @@ export default function createApp({
 
   const secureRoute = standardRouter({ licenceService, prisonerService, audit, signInService, tokenVerifier, config })
 
-  app.locals.tagManagerKey = config.tagManagerKey
   app.locals.feedbackAndSupportUrl = config.links.feedbackAndSupportUrl
   app.locals.createAndVaryALicenceVaryCaseloadUrl = config.links.createAndVaryALicenceVaryCaseloadUrl
   app.locals.createAndVaryALicenceInCvlInfoUrl = config.links.createAndVaryALicenceInCvlInfoUrl
@@ -399,9 +398,12 @@ export default function createApp({
 
   app.use(
     '/hdc/taskList/',
-    secureRoute(taskListRouter(prisonerService, licenceService, roService, hdcService, audit, caService, signInService), {
-      licenceRequired: false,
-    })
+    secureRoute(
+      taskListRouter(prisonerService, licenceService, roService, hdcService, audit, caService, signInService),
+      {
+        licenceRequired: false
+      }
+    )
   )
   app.use('/caseList/', secureRoute(caseListRouter({ caseListService })))
   app.use('/admin/', secureRoute(adminRouter()))
