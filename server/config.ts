@@ -37,16 +37,16 @@ function checkDateAgainstToday(dateString: string) {
       // eslint-disable-next-line no-console
       console.log(
         `isActive date config toggle: ` +
-        `Config value=${dateString},  ` +
-        `config Date=${dateObj?.toDateString() ?? 'null'}, ` +
-        `today=${startOfToday.toDateString()}` +
-         `isActive= ${  active}`)
+          `Config value=${dateString},  ` +
+          `config Date=${dateObj?.toDateString() ?? 'null'}, ` +
+          `today=${startOfToday.toDateString()}` +
+          `isActive= ${active}`
+      )
 
       return active
-    },
+    }
   }
 }
-
 
 export default {
   version: 0.1,
@@ -105,7 +105,7 @@ export default {
         maxSockets: 100,
         maxFreeSockets: 10,
         freeSocketTimeout: 30000
-      },
+      }
     },
     delius: {
       url: get('DELIUS_API_URL', 'http://localhost:8080/delius'),
@@ -192,7 +192,7 @@ export default {
         maxSockets: 100,
         maxFreeSockets: 10,
         freeSocketTimeout: 30000
-      },
+      }
     },
 
     gotenberg: {
@@ -297,7 +297,6 @@ export default {
 
   domain: get('DOMAIN', 'http://localhost:3000'),
   port: get('PORT', 3000),
-  tagManagerKey: get('TAG_MANAGER_KEY', null),
 
   notifications: {
     notifyKey: get('NOTIFY_API_KEY', 'dummy-key'),
@@ -349,13 +348,9 @@ export default {
   comNotAllocatedBlockEnabled: get('COM_NOT_ALLOCATED_BLOCK_ENABLED', false) === 'true',
   caReportsLinkEnabled: get('CA_REPORTS_LINK_ENABLED', false) === 'true',
   hdcInCvlEarlyAdopter: {
-      enabled: get('HDC_IN_CVL_EARLY_ADOPTER_ENABLED', false) === 'true',
-      providerCodes: get('HDC_IN_CVL_EARLY_ADOPTER_PROVIDER_CODES', '').split(',')
+    enabled: get('HDC_IN_CVL_EARLY_ADOPTER_ENABLED', false) === 'true',
+    providerCodes: get('HDC_IN_CVL_EARLY_ADOPTER_PROVIDER_CODES', '').split(',')
   },
-  hdcInCvlNationalRoleOut: checkDateAgainstToday(
-    get('HDC_IN_CVL_NATIONAL_ROLE_OUT_DATE', '')
-  ),
-  progressionModelPolicyRoleOut: checkDateAgainstToday(
-    get('PROGRESSION_MODEL_POLICY_START_DATE', '')
-  ),
+  hdcInCvlNationalRoleOut: checkDateAgainstToday(get('HDC_IN_CVL_NATIONAL_ROLE_OUT_DATE', '')),
+  progressionModelPolicyRoleOut: checkDateAgainstToday(get('PROGRESSION_MODEL_POLICY_START_DATE', ''))
 }
