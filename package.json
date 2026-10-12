@@ -157,7 +157,7 @@
     "@types/passport": "^1.0.17",
     "@typescript-eslint/parser": "8.64.0",
     "audit-ci": "^7.1.0",
-    "concurrently": "^10.0.5",
+    "concurrently": "^10.0.6",
     "jest": "^30.4.2",
     "jest-html-reporter": "^4.4.2",
     "jest-junit": "^17.0.0",
