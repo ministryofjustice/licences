@@ -17,4 +17,3 @@ helm_deploy
 test-results
 
 !.npmrc
-!.allowed-scripts.mjs

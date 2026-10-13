@@ -73,7 +73,7 @@ export const createPrisonerServiceStub = () => ({
   getEstablishmentForPrisoner: jest.fn().mockReturnValue(''),
   getPrisonerDetails: jest.fn().mockReturnValue({}),
   getPrisonerImage: jest.fn().mockReturnValue({ image: 'image' }),
-  getPrisonerPersonalDetails: jest.fn().mockReturnValue({ firstName: 'fn', lastName: 'ln', dateOfBirth: '1980-01-01' }),
+  getPrisonerPersonalDetails: jest.fn().mockReturnValue({ offenderNo: 'A1234AA', firstName: 'fn', lastName: 'ln', dateOfBirth: '1980-01-01' }),
   getDestinations: jest.fn(),
   getDestinationForRole: jest.fn(),
 })
@@ -136,6 +136,8 @@ export const createHdcServiceStub = () => ({
     setMigrationLogRetry: jest.fn(),
     migrateSingleLicenceToCvlPreview: jest.fn(),
     getMigrationLogs: jest.fn(),
+    postCvlEvent: jest.fn(),
+    postOptOutEvent: jest.fn(),
 })
 
 export const createRoServiceStub = () => ({

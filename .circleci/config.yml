@@ -8,12 +8,12 @@ parameters:
     default: the_elephants_devs
   node-version:
     type: string
-    default: 24.14-browsers
+    default: 24.15-browsers
 executors:
   integration-tests:
     docker:
       - image: cimg/node:<< pipeline.parameters.node-version >>
-      - image: cimg/postgres:15.12
+      - image: cimg/postgres:15.19
         environment:
           POSTGRES_USER: licences
           POSTGRES_DB: licences
@@ -42,7 +42,7 @@ jobs:
       - checkout
       - run:
           name: Update npm
-          command: 'sudo npm install -g npm@11'
+          command: 'sudo npm install --force --global npm@12.0.2'
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
       - run:

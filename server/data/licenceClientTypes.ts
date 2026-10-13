@@ -17,6 +17,7 @@ export type ConditionMetadata = {
 export type StandardCondition = { text: string }
 
 export interface Case {
+  id: number
   licence: Licence
   booking_id: number
   stage: LicenceStage

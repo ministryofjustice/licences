@@ -149,6 +149,26 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/licences/cvl-events': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Queue an HDC to CVL event
+     * @description Receives an HDC action request and publishes an event to the HDC to CVL queue. Requires ROLE_HDC_ADMIN.
+     */
+    post: operations['createEvent']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/licences/conditions/batch': {
     parameters: {
       query?: never
@@ -410,6 +430,17 @@ export interface components {
        * @description Number of resets requested
        */
       numberOfResetsRequested: number
+    }
+    HdcCvlEventRequest: {
+      /** @enum {string} */
+      eventType: 'OPT_OUT' | 'POSTPONE'
+      /** Format: int64 */
+      licenceId: number
+      /** Format: int64 */
+      bookingId: number
+      nomsNumber: string
+      triggeredBy: string
+      reason?: string | null
     }
     /** @description Request containing licence IDs to retrieve bespoke conditions for */
     LicenceIdBatchRequest: {
@@ -978,13 +1009,13 @@ export interface components {
     PageableObject: {
       /** Format: int64 */
       offset?: number
-      sort?: components['schemas']['SortObject']
-      unpaged?: boolean
-      /** Format: int32 */
-      pageSize?: number
       paged?: boolean
       /** Format: int32 */
       pageNumber?: number
+      /** Format: int32 */
+      pageSize?: number
+      sort?: components['schemas']['SortObject']
+      unpaged?: boolean
     }
     SortObject: {
       empty?: boolean
@@ -1344,6 +1375,55 @@ export interface operations {
         }
         content: {
           '*/*': string
+        }
+      }
+    }
+  }
+  createEvent: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['HdcCvlEventRequest']
+      }
+    }
+    responses: {
+      /** @description Event queued successfully */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation failure */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Unauthorised, requires a valid Oauth2 token */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
+        }
+      }
+      /** @description Forbidden, requires an appropriate role */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ErrorResponse']
         }
       }
     }
@@ -1712,6 +1792,8 @@ export interface operations {
         bookingId?: number
         errorSource?: string
         success?: boolean
+        migrationTrigger?: string
+        prisonerNumber?: string
         pageable: components['schemas']['Pageable']
       }
       header?: never
@@ -1834,6 +1916,7 @@ export type PurgeQueueResult = components['schemas']['PurgeQueueResult'];
 export type MigrationBatchResponse = components['schemas']['MigrationBatchResponse'];
 export type ErrorResponse = components['schemas']['ErrorResponse'];
 export type ResetResponse = components['schemas']['ResetResponse'];
+export type HdcCvlEventRequest = components['schemas']['HdcCvlEventRequest'];
 export type LicenceIdBatchRequest = components['schemas']['LicenceIdBatchRequest'];
 export type ConvertedBespokeCondition = components['schemas']['ConvertedBespokeCondition'];
 export type ConvertedLicenseBatch = components['schemas']['ConvertedLicenseBatch'];

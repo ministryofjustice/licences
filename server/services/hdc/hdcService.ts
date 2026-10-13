@@ -4,7 +4,7 @@ import moment from 'moment'
 import { HdcClient } from '../../data/hdcApiClient'
 import {
   ConvertedLicenseBatch, ConvertedLicenseConditions,
-  type FailedMigrationSummary, Pageable, PageLicenceMigrationLogEntryDto
+  type FailedMigrationSummary, HdcCvlEventRequest, Pageable, PageLicenceMigrationLogEntryDto
 } from '../../@types/hdcApiImport'
 import { LicenceService } from '../licenceService'
 import { ConditionsServiceFactory } from '../conditionsService'
@@ -314,10 +314,16 @@ export class HdcService {
         }
     }
 
-    async getMigrationLogs(licenceVersionId?: number, bookingId?: number, errorSource?: string, success?: boolean, pageable?: Pageable): Promise<PageLicenceMigrationLogEntryDto> {
-       logger.info(`Getting migration logs for licence version ID: ${licenceVersionId}, booking ID: ${bookingId}, error source: ${errorSource}, success: ${success}, pageable: ${pageable}`)
+    async getMigrationLogs(licenceVersionId?: number,
+                           bookingId?: number,
+                           errorSource?: string,
+                           success?: boolean,
+                           migrationTrigger?: string,
+                           prisonerNumber?: string,
+                           pageable?: Pageable): Promise<PageLicenceMigrationLogEntryDto> {
+       logger.info(`Getting migration logs for licence version ID: ${licenceVersionId}, booking ID: ${bookingId}, error source: ${errorSource}, success: ${success}, migrationTrigger:${migrationTrigger}, prisonerNumber: ${prisonerNumber}, pageable: ${pageable}`)
        try {
-            return await this.hdcClient.getMigrationLogs(licenceVersionId, bookingId, errorSource, success, pageable)
+            return await this.hdcClient.getMigrationLogs(licenceVersionId, bookingId, errorSource, success, migrationTrigger, prisonerNumber, pageable)
         } catch (error: any) {
             logger.error(`Failed to get migration logs`, {
                 message: error?.message,
@@ -349,6 +355,7 @@ export class HdcService {
           { id: 'licenceVersionId', title: 'Licence Version ID' },
           { id: 'success', title: 'Success' },
           { id: 'errorSource', title: 'Source' },
+          { id: 'migrationTrigger', title: 'Trigger' },
           { id: 'message', title: 'Message' },
           { id: 'retry', title: 'Retry' },
         ],
@@ -383,6 +390,40 @@ export class HdcService {
       ],
     })
     return writer.getHeaderString() + writer.stringifyRecords(records)
+  }
+
+  async postCvlEvent(event: HdcCvlEventRequest): Promise<void> {
+    try {
+      logger.info(`Posting CVL event for event: ${JSON.stringify(event)}`)
+
+      return await this.hdcClient.postCvlEvent(event)
+    } catch (error: any) {
+      logger.error(`Failed to post CVL event`, {
+        message: error?.message,
+        status: error?.response?.status,
+        data: error?.response?.data,
+        stack: error?.stack,
+      })
+      throw error
+    }
+  }
+
+  async postOptOutEvent(
+    bookingId: number,
+    licenceId: number,
+    nomsNumber: string,
+    username: string,
+    reason: string | null = null,
+  ): Promise<void> {
+
+    return this.postCvlEvent({
+      bookingId,
+      licenceId,
+      nomsNumber,
+      eventType: 'OPT_OUT',
+      triggeredBy: username,
+      reason,
+    })
   }
 }
 

@@ -1,6 +1,6 @@
 import type {
   ConvertedLicenseBatch,
-  FailedMigrationSummary, MigrateFromHdcToCvlRequest, Pageable, PageLicenceMigrationLogEntryDto
+  FailedMigrationSummary, HdcCvlEventRequest, MigrateFromHdcToCvlRequest, Pageable, PageLicenceMigrationLogEntryDto
 } from '../@types/hdcApiImport'
 
 export class HdcClient {
@@ -22,8 +22,8 @@ export class HdcClient {
       return this.restClient.getResource(`/licences/migrate/${licenceId}/to-cvl/preview`)
   }
 
-  async getMigrationLogs(licenceVersionId?: number, bookingId?: number, errorSource?: string, success?: boolean, pageable?: Pageable): Promise<PageLicenceMigrationLogEntryDto> {
-    return this.restClient.getResource(`/licences/migrate/logs`, {}, { licenceVersionId, bookingId, errorSource, success, ...pageable })
+  async getMigrationLogs(licenceVersionId?: number, bookingId?: number, errorSource?: string, success?: boolean, migrationTrigger?: string, prisonerNumber?: string, pageable?: Pageable): Promise<PageLicenceMigrationLogEntryDto> {
+    return this.restClient.getResource(`/licences/migrate/logs`, {}, { licenceVersionId, bookingId, errorSource, success, migrationTrigger, prisonerNumber, ...pageable })
   }
 
   async setMigrationLogRetry(logId: number, retryValue: boolean): Promise<void> {
@@ -32,5 +32,9 @@ export class HdcClient {
 
   async getFailedReport() : Promise<FailedMigrationSummary[]>{
     return this.restClient.getResource(`/licences/migrate/repeated-failures`, {})
+  }
+
+  async postCvlEvent(event: HdcCvlEventRequest): Promise<void> {
+    return this.restClient.postResource(`/licences/cvl-events`, event)
   }
 }

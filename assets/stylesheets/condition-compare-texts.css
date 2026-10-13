@@ -1,0 +1,38 @@
+.diffRow {
+    display: flex;
+    align-items: flex-start;
+    margin-top: 0.50em;
+    margin-bottom: 0.25em;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+.diffLabel {
+    width: 50ch;
+    font-weight: bold;
+    flex-shrink: 0;
+    margin-right: 2em;
+}
+.diffType {
+    width: 25ch;
+    font-weight: bold;
+    flex-shrink: 0;
+    margin-left: 1em;
+}
+.diffText {
+    flex: 1;
+    font-weight: normal;
+    margin-left: 0.5em;
+}
+pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.push-bottom {
+    display: flex;
+    flex-direction: column;
+}
+
+.push-bottom .spacer {
+    flex: 1;
+}

@@ -76,12 +76,13 @@ export class LicenceClient {
     }
 
     const { rows } = await db.query(query)
+
     return rows
   }
 
   async getLicence(bookingId: number): Promise<CaseWithVaryVersion> {
     const query = {
-      text: `select licence, booking_id, stage, version, vary_version, licence_in_cvl, additional_conditions_version, standard_conditions_version from v_licences_excluding_deleted where booking_id = $1`,
+      text: `select id, licence, booking_id, stage, version, vary_version, licence_in_cvl, additional_conditions_version, standard_conditions_version from v_licences_excluding_deleted where booking_id = $1`,
       values: [bookingId],
     }
 

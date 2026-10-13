@@ -36,6 +36,7 @@ interface ApprovedVersionDetails {
 }
 
 export interface LicenceRecord {
+  id: number
   licence: Licence
   stage: LicenceStage
   version: string
@@ -125,7 +126,7 @@ export class LicenceService {
         return null
       }
 
-      const { licence, stage } = rawLicence
+      const { id, licence, stage } = rawLicence
       if (!licence) {
         return null
       }
@@ -146,6 +147,7 @@ export class LicenceService {
         : `${approvedVersionDetails.version}.${approvedVersionDetails.vary_version}`
 
       return {
+        id,
         licence,
         stage,
         version,

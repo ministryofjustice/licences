@@ -4,12 +4,14 @@ import {
   CURRENT_CONDITION_VERSION,
   getAdditionalConditionsConfig,
   getPssConditions,
-  standardConditions,
 } from './config/conditionsConfig'
 import { AdditionalConditions, Licence } from '../data/licenceTypes'
 import { LicenceRecord } from './licenceService'
 import { AdditionalConditionsVersion, ConditionMetadata } from '../data/licenceClientTypes'
 import { LicenceWithConditionsBuilder } from './licenceWithConditionsBuilder'
+import config from '../config';
+import {standardConditions as stdConditionsV4} from './config/conditions/standardConditions/v4/standardConditions';
+import {standardConditions as stdConditionsV2} from './config/conditions/standardConditions/v2/standardConditions';
 
 export class ConditionsServiceFactory {
   getVersion(licence: LicenceRecord): AdditionalConditionsVersion {
@@ -45,7 +47,7 @@ export class ConditionsService {
 
   // form generation
   getFullTextForApprovedConditions(licence: Licence) {
-    const standardConditionsText = standardConditions.map((it) => it.text.replace(/\.+$/, ''))
+    const standardConditionsText =  this.getStandardConditions().map((it) => it.text.replace(/\.+$/, ''))
 
     // could be undefined, 'No' or 'Yes'
     const standardOnly = licence?.licenceConditions?.standard?.additionalConditionsRequired !== 'Yes'
@@ -93,7 +95,9 @@ export class ConditionsService {
   }
 
   getStandardConditions() {
-    return standardConditions
+    return config.progressionModelPolicyRoleOut.isActive()
+      ? stdConditionsV4
+      : stdConditionsV2
   }
 
   getPssConditions(): string[] {
