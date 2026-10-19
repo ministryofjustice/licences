@@ -77,4 +77,38 @@ describe('HdcService', () => {
       })
     })
   })
+
+  describe('postPostponeEvent', () => {
+    it('should call postCvlEvent with POSTPONE event type', async () => {
+      hdcClient.postCvlEvent.mockResolvedValue(undefined)
+
+      await service.postPostponeEvent(123, 456, 'A1234AA', 'USER', 'outstandingRisk')
+
+      expect(hdcClient.postCvlEvent).toHaveBeenCalledWith({
+        bookingId: 123,
+        licenceId: 456,
+        nomsNumber: 'A1234AA',
+        eventType: 'POSTPONE',
+        reason: 'outstandingRisk',
+        triggeredBy: 'USER',
+      })
+    })
+  })
+
+  describe('postResumeEvent', () => {
+    it('should call postCvlEvent with RESUME event type', async () => {
+      hdcClient.postCvlEvent.mockResolvedValue(undefined)
+
+      await service.postResumeEvent(123, 456, 'A1234AA', 'USER', 'USER resumed the HDC application')
+
+      expect(hdcClient.postCvlEvent).toHaveBeenCalledWith({
+        bookingId: 123,
+        licenceId: 456,
+        nomsNumber: 'A1234AA',
+        eventType: 'RESUME',
+        reason: 'USER resumed the HDC application',
+        triggeredBy: 'USER',
+      })
+    })
+  })
 })

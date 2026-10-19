@@ -425,6 +425,42 @@ export class HdcService {
       reason,
     })
   }
+
+  async postPostponeEvent(
+    bookingId: number,
+    licenceId: number,
+    nomsNumber: string,
+    username: string,
+    reason: string | null = null,
+  ): Promise<void> {
+
+    return this.postCvlEvent({
+      bookingId,
+      licenceId,
+      nomsNumber,
+      eventType: 'POSTPONE',
+      triggeredBy: username,
+      reason,
+    })
+  }
+
+  async postResumeEvent(
+    bookingId: number,
+    licenceId: number,
+    nomsNumber: string,
+    username: string,
+    reason: string | null = null,
+  ): Promise<void> {
+
+    return this.postCvlEvent({
+      bookingId,
+      licenceId,
+      nomsNumber,
+      eventType: 'RESUME',
+      triggeredBy: username,
+      reason,
+    })
+  }
 }
 
 export function createHdcService(

@@ -433,7 +433,7 @@ export interface components {
     }
     HdcCvlEventRequest: {
       /** @enum {string} */
-      eventType: 'OPT_OUT' | 'POSTPONE'
+      eventType: 'OPT_OUT' | 'POSTPONE' | 'RESUME' | 'REFUSE'
       /** Format: int64 */
       licenceId: number
       /** Format: int64 */
@@ -925,10 +925,10 @@ export interface components {
     }
     FailedMigrationSummary: {
       /** Format: int64 */
-      errorCount: number
-      /** Format: int64 */
       bookingId: number
       prisonNumber: string
+      /** Format: int64 */
+      errorCount: number
       migrationTrigger: string
     }
     Pageable: {

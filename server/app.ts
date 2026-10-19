@@ -454,7 +454,7 @@ export default function createApp({
   app.use('/hdc/licenceConditions/', secureRoute(conditionsRouter({ licenceService, conditionsServiceFactory })))
   app.use('/hdc/curfew/', secureRoute(curfewRouter({ licenceService, nomisPushService, hdcService })))
   app.use('/hdc/eligibility/', secureRoute(eligibilityRouter({ licenceService, nomisPushService })))
-  app.use('/hdc/finalChecks/', secureRoute(finalChecksRouter({ licenceService, nomisPushService })))
+  app.use('/hdc/finalChecks/', secureRoute(finalChecksRouter({ licenceService, nomisPushService, hdcService })))
   app.use('/hdc/review/', secureRoute(reviewRouter({ licenceService, conditionsServiceFactory, prisonerService })))
   app.use('/hdc/reporting/', secureRoute(reportingRouter({ licenceService })))
   app.use('/hdc/risk/', secureRoute(riskRouter({ licenceService })))

@@ -7,6 +7,7 @@ import {
   createLicenceServiceStub,
   createSignInServiceStub,
   createNomisPushServiceStub,
+  createHdcServiceStub,
 } from '../mockServices'
 
 import standardRouter from '../../server/routes/routeWorkers/standardRouter'
@@ -332,15 +333,89 @@ describe('/hdc/finalChecks', () => {
           expect(nomisPushService.pushStatus).not.toHaveBeenCalled()
         })
     })
+
+    describe('postpone/resume CVL events', () => {
+      test('posts a postpone event with the postponeReason as the event reason', () => {
+        const licenceService = createLicenceServiceStub()
+        licenceService.getLicence.mockResolvedValue({ id: 1, licence: {} })
+        licenceService.update.mockResolvedValue({
+          finalChecks: { postpone: { decision: 'Yes', postponeReason: 'outstandingRisk' } },
+        })
+        const hdcService = createHdcServiceStub()
+        const app = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
+
+        return request(app)
+          .post('/hdc/finalChecks/postpone/1')
+          .send({ decision: 'Yes', postponeReason: 'outstandingRisk' })
+          .expect(302)
+          .expect('Location', '/hdc/taskList/1')
+          .expect(() => {
+            expect(hdcService.postPostponeEvent).toHaveBeenCalledWith(
+              1,
+              1,
+              'A1234AA',
+              'CA_USER_TEST',
+              'outstandingRisk'
+            )
+            expect(hdcService.postResumeEvent).not.toHaveBeenCalled()
+          })
+      })
+
+      test('posts a resume event when a previously postponed decision changes to No', () => {
+        const licenceService = createLicenceServiceStub()
+        licenceService.getLicence.mockResolvedValue({ id: 1, licence: { finalChecks: { postpone: { decision: 'Yes' } } } })
+        licenceService.update.mockResolvedValue({ finalChecks: { postpone: { decision: 'No' } } })
+        const hdcService = createHdcServiceStub()
+        const app = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
+
+        return request(app)
+          .post('/hdc/finalChecks/postpone/1')
+          .send({ decision: 'No' })
+          .expect(302)
+          .expect('Location', '/hdc/taskList/1')
+          .expect(() => {
+            expect(hdcService.postResumeEvent).toHaveBeenCalledWith(
+              1,
+              1,
+              'A1234AA',
+              'CA_USER_TEST',
+              'CA_USER_TEST resumed the HDC application'
+            )
+            expect(hdcService.postPostponeEvent).not.toHaveBeenCalled()
+          })
+      })
+
+      test('does not post an event when the decision is unchanged', () => {
+        const licenceService = createLicenceServiceStub()
+        licenceService.getLicence.mockResolvedValue({ id: 1, licence: { finalChecks: { postpone: { decision: 'Yes' } } } })
+        licenceService.update.mockResolvedValue({ finalChecks: { postpone: { decision: 'Yes' } } })
+        const hdcService = createHdcServiceStub()
+        const app = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
+
+        return request(app)
+          .post('/hdc/finalChecks/postpone/1')
+          .send({ decision: 'Yes' })
+          .expect(302)
+          .expect(() => {
+            expect(hdcService.postPostponeEvent).not.toHaveBeenCalled()
+            expect(hdcService.postResumeEvent).not.toHaveBeenCalled()
+          })
+      })
+    })
   })
 })
 
-function createApp({ licenceServiceStub = null, nomisPushServiceStub = null }, user = 'caUser', config = {}) {
+function createApp(
+  { licenceServiceStub = null, nomisPushServiceStub = null, hdcServiceStub = null },
+  user = 'caUser',
+  config = {}
+) {
   const prisonerService = createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()
   signInService.getClientCredentialsTokens.mockResolvedValue('new token')
   const nomisPushService = nomisPushServiceStub || createNomisPushServiceStub()
+  const hdcService = hdcServiceStub || createHdcServiceStub()
   const audit = mockAudit()
 
   const baseRouter = standardRouter({
@@ -351,7 +426,7 @@ function createApp({ licenceServiceStub = null, nomisPushServiceStub = null }, u
     tokenVerifier: new NullTokenVerifier(),
     config,
   })
-  const route = baseRouter(createRoute({ licenceService, nomisPushService }))
+  const route = baseRouter(createRoute({ licenceService, nomisPushService, hdcService }))
 
   return appSetup(route, user, '/hdc/finalChecks')
 }

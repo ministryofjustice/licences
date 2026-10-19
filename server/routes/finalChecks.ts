@@ -10,7 +10,15 @@ export type ErrorObject = {
   outOfTimeReasons?: string
 }
 
-export default ({ licenceService, nomisPushService }: { licenceService: LicenceService; nomisPushService }) =>
+export default ({
+  licenceService,
+  nomisPushService,
+  hdcService,
+}: {
+  licenceService: LicenceService
+  nomisPushService
+  hdcService
+}) =>
   (router, audited, config) => {
     const standard = createStandardRoutes({
       formConfig,
@@ -24,7 +32,7 @@ export default ({ licenceService, nomisPushService }: { licenceService: LicenceS
     router.post(
       '/postpone/:bookingId',
       audited,
-      asyncMiddleware(postPostpone(licenceService, nomisPushService, config))
+      asyncMiddleware(postPostpone(licenceService, nomisPushService, hdcService, config))
     )
 
     router.post('/refuse/:bookingId', audited, asyncMiddleware(postRefusal(licenceService, nomisPushService)))
@@ -60,7 +68,7 @@ function getPostpone(licenceService) {
   return get
 }
 
-function postPostpone(licenceService, nomisPushService, config) {
+function postPostpone(licenceService, nomisPushService, hdcService, config) {
   async function post(req, res) {
     const { bookingId } = req.params
     const { username } = req.user
@@ -92,7 +100,32 @@ function postPostpone(licenceService, nomisPushService, config) {
       await pushStatus(updatedLicence, bookingId, username)
     }
 
+    await postPostponeOrResumeEvent(res, originalLicence, updatedLicence, decision, bookingId, username)
+
     return res.redirect(`/hdc/taskList/${bookingId}`)
+  }
+
+  async function postPostponeOrResumeEvent(res, originalLicence, updatedLicence, decision, bookingId, username) {
+    const previousDecision = getIn(originalLicence, ['licence', 'finalChecks', 'postpone', 'decision'])
+    if (previousDecision === decision) {
+      return
+    }
+
+    const { offenderNo } = res.locals.prisoner
+    const licenceId = res.locals.licence.id
+
+    if (decision === 'Yes') {
+      const postponeReason = getIn(updatedLicence, ['finalChecks', 'postpone', 'postponeReason'])
+      await hdcService.postPostponeEvent(parseInt(bookingId, 10), licenceId, offenderNo, username, postponeReason)
+    } else if (previousDecision === 'Yes') {
+      await hdcService.postResumeEvent(
+        parseInt(bookingId, 10),
+        licenceId,
+        offenderNo,
+        username,
+        `${username} resumed the HDC application`
+      )
+    }
   }
 
   function validationErrors(formToValidate, res) {

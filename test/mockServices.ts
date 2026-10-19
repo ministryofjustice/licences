@@ -138,6 +138,8 @@ export const createHdcServiceStub = () => ({
     getMigrationLogs: jest.fn(),
     postCvlEvent: jest.fn(),
     postOptOutEvent: jest.fn(),
+    postPostponeEvent: jest.fn(),
+    postResumeEvent: jest.fn(),
 })
 
 export const createRoServiceStub = () => ({
