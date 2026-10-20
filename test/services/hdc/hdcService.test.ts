@@ -112,6 +112,23 @@ describe('HdcService', () => {
     })
   })
 
+  describe('postRefuseEvent', () => {
+    it('should call postCvlEvent with REFUSE event type', async () => {
+      hdcClient.postCvlEvent.mockResolvedValue(undefined)
+
+      await service.postRefuseEvent(123, 456, 'A1234AA', 'USER', 'addressUnsuitable')
+
+      expect(hdcClient.postCvlEvent).toHaveBeenCalledWith({
+        bookingId: 123,
+        licenceId: 456,
+        nomsNumber: 'A1234AA',
+        eventType: 'REFUSE',
+        reason: 'addressUnsuitable',
+        triggeredBy: 'USER',
+      })
+    })
+  })
+
   describe('postOptInEvent', () => {
     it('should call postCvlEvent with OPT_IN event type', async () => {
       hdcClient.postCvlEvent.mockResolvedValue(undefined)

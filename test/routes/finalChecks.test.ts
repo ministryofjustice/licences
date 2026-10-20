@@ -334,6 +334,30 @@ describe('/hdc/finalChecks', () => {
         })
     })
 
+    test('should not push the refusal to nomis if config variable is false', () => {
+      const licenceService = createLicenceServiceStub()
+      licenceService.update.mockResolvedValue({
+        finalChecks: { refusal: { decision: 'Yes', reason: 'addressUnsuitable' } },
+      })
+      const nomisPushService = createNomisPushServiceStub()
+      const app = createApp(
+        {
+          licenceServiceStub: licenceService,
+          nomisPushServiceStub: nomisPushService,
+        },
+        'caUser',
+        { pushToNomis: false }
+      )
+
+      return request(app)
+        .post('/hdc/finalChecks/refuse/1')
+        .send({ decision: 'Yes', reason: 'addressUnsuitable' })
+        .expect(302)
+        .expect(() => {
+          expect(nomisPushService.pushStatus).not.toHaveBeenCalled()
+        })
+    })
+
     describe('postpone/resume CVL events', () => {
       test('posts a postpone event with the postponeReason as the event reason', () => {
         const licenceService = createLicenceServiceStub()
@@ -399,6 +423,80 @@ describe('/hdc/finalChecks', () => {
           .expect(() => {
             expect(hdcService.postPostponeEvent).not.toHaveBeenCalled()
             expect(hdcService.postResumeEvent).not.toHaveBeenCalled()
+          })
+      })
+    })
+
+    describe('refuse CVL events', () => {
+      test('posts a refuse event with the reason as the event reason', () => {
+        const licenceService = createLicenceServiceStub()
+        licenceService.getLicence.mockResolvedValue({ id: 1, licence: {} })
+        licenceService.update.mockResolvedValue({
+          finalChecks: { refusal: { decision: 'Yes', reason: 'addressUnsuitable' } },
+        })
+        const hdcService = createHdcServiceStub()
+        const app = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
+
+        return request(app)
+          .post('/hdc/finalChecks/refuse/1')
+          .send({ decision: 'Yes', reason: 'addressUnsuitable' })
+          .expect(302)
+          .expect('Location', '/hdc/taskList/1')
+          .expect(() => {
+            expect(hdcService.postRefuseEvent).toHaveBeenCalledWith(1, 1, 'A1234AA', 'CA_USER_TEST', 'addressUnsuitable')
+          })
+      })
+
+      test('does not post a refuse event when the decision is not Yes', () => {
+        const licenceService = createLicenceServiceStub()
+        licenceService.update.mockResolvedValue({ finalChecks: { refusal: { decision: 'No' } } })
+        const hdcService = createHdcServiceStub()
+        const app = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
+
+        return request(app)
+          .post('/hdc/finalChecks/refuse/1')
+          .send({ decision: 'No' })
+          .expect(302)
+          .expect(() => {
+            expect(hdcService.postRefuseEvent).not.toHaveBeenCalled()
+          })
+      })
+
+      test('posts a refuse event again when the refusal reason is updated', () => {
+        const licenceService = createLicenceServiceStub()
+        licenceService.getLicence.mockResolvedValue({
+          id: 1,
+          licence: { finalChecks: { refusal: { decision: 'Yes', reason: 'addressUnsuitable' } } },
+        })
+        licenceService.update.mockResolvedValue({
+          finalChecks: { refusal: { decision: 'Yes', reason: 'insufficientTime' } },
+        })
+        const hdcService = createHdcServiceStub()
+        const app = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
+
+        return request(app)
+          .post('/hdc/finalChecks/refuse/1')
+          .send({ decision: 'Yes', reason: 'insufficientTime', outOfTimeReasons: 'noAddress' })
+          .expect(302)
+          .expect(() => {
+            expect(hdcService.postRefuseEvent).toHaveBeenCalledWith(1, 1, 'A1234AA', 'CA_USER_TEST', 'insufficientTime')
+          })
+      })
+
+      test('does not post a refuse event when the licence was already refused and nothing changed', () => {
+        const licenceService = createLicenceServiceStub()
+        const existingLicence = { finalChecks: { refusal: { decision: 'Yes', reason: 'addressUnsuitable' } } }
+        licenceService.getLicence.mockResolvedValue({ id: 1, licence: existingLicence })
+        licenceService.update.mockResolvedValue(existingLicence)
+        const hdcService = createHdcServiceStub()
+        const app = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
+
+        return request(app)
+          .post('/hdc/finalChecks/refuse/1')
+          .send({ decision: 'Yes', reason: 'addressUnsuitable' })
+          .expect(302)
+          .expect(() => {
+            expect(hdcService.postRefuseEvent).not.toHaveBeenCalled()
           })
       })
     })

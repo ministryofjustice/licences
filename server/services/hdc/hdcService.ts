@@ -462,6 +462,24 @@ export class HdcService {
     })
   }
 
+  async postRefuseEvent(
+    bookingId: number,
+    licenceId: number,
+    nomsNumber: string,
+    username: string,
+    reason: string | null = null,
+  ): Promise<void> {
+
+    return this.postCvlEvent({
+      bookingId,
+      licenceId,
+      nomsNumber,
+      eventType: 'REFUSE',
+      triggeredBy: username,
+      reason,
+    })
+  }
+
   async postOptInEvent(
     bookingId: number,
     licenceId: number,

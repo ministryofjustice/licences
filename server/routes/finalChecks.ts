@@ -35,7 +35,11 @@ export default ({
       asyncMiddleware(postPostpone(licenceService, nomisPushService, hdcService, config))
     )
 
-    router.post('/refuse/:bookingId', audited, asyncMiddleware(postRefusal(licenceService, nomisPushService)))
+    router.post(
+      '/refuse/:bookingId',
+      audited,
+      asyncMiddleware(postRefusal(licenceService, nomisPushService, hdcService, config))
+    )
 
     router.get('/:formName/:bookingId', asyncMiddleware(standard.get))
     router.post('/:formName/:bookingId', audited, asyncMiddleware(standard.post))
@@ -168,12 +172,12 @@ function postPostpone(licenceService, nomisPushService, hdcService, config) {
   return post
 }
 
-function postRefusal(licenceService, nomisPushService) {
+function postRefusal(licenceService, nomisPushService, hdcService, appConfig) {
   async function post(req, res) {
     const { bookingId } = req.params
     const { username } = req.user
     const originalLicence = res.locals.licence
-    const config = formConfig.refuse
+    const refuseConfig = formConfig.refuse
     const licenceSection = 'finalChecks'
     const { postRelease } = res.locals
 
@@ -189,7 +193,7 @@ function postRefusal(licenceService, nomisPushService) {
     await licenceService.update({
       bookingId,
       originalLicence,
-      config,
+      config: refuseConfig,
       userInput,
       licenceSection,
       formName: 'refusal',
@@ -198,7 +202,17 @@ function postRefusal(licenceService, nomisPushService) {
 
     const { decision, reason } = userInput
     if (decision === 'Yes') {
-      await nomisPushService.pushStatus({ bookingId, data: { type: 'refusal', status: 'Yes', reason }, username })
+      if (appConfig.pushToNomis) {
+        await nomisPushService.pushStatus({ bookingId, data: { type: 'refusal', status: 'Yes', reason }, username })
+      }
+
+      const previousAnswers = getIn(originalLicence, ['licence', 'finalChecks', 'refusal']) || {}
+      const hasChanged = previousAnswers.decision !== decision || previousAnswers.reason !== reason
+      if (hasChanged) {
+        const { offenderNo } = res.locals.prisoner
+        const licenceId = res.locals.licence.id
+        await hdcService.postRefuseEvent(parseInt(bookingId, 10), licenceId, offenderNo, username, reason)
+      }
     }
 
     return res.redirect(`/hdc/taskList/${bookingId}`)
