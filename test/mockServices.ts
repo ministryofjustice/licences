@@ -140,6 +140,7 @@ export const createHdcServiceStub = () => ({
     postOptOutEvent: jest.fn(),
     postPostponeEvent: jest.fn(),
     postResumeEvent: jest.fn(),
+    postOptInEvent: jest.fn(),
 })
 
 export const createRoServiceStub = () => ({

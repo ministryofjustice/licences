@@ -111,4 +111,21 @@ describe('HdcService', () => {
       })
     })
   })
+
+  describe('postOptInEvent', () => {
+    it('should call postCvlEvent with OPT_IN event type', async () => {
+      hdcClient.postCvlEvent.mockResolvedValue(undefined)
+
+      await service.postOptInEvent(123, 456, 'A1234AA', 'USER', 'USER opted in to HDC at curfew address task')
+
+      expect(hdcClient.postCvlEvent).toHaveBeenCalledWith({
+        bookingId: 123,
+        licenceId: 456,
+        nomsNumber: 'A1234AA',
+        eventType: 'OPT_IN',
+        reason: 'USER opted in to HDC at curfew address task',
+        triggeredBy: 'USER',
+      })
+    })
+  })
 })

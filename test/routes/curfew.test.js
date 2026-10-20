@@ -415,6 +415,44 @@ describe('/hdc/curfew', () => {
         })
     })
 
+    test(`should post opt in event if not optout and previously opted out`, () => {
+      const hdcService = createHdcServiceStub()
+      const licenceService = createLicenceServiceStub()
+      licenceService.getLicence.mockResolvedValue({
+        id: 1,
+        licence: { proposedAddress: { optOut: { decision: 'Yes' } } },
+        stage: 'PROCESSING_CA',
+      })
+      const app = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
+
+      return request(app)
+        .post('/hdc/curfew/approvedPremisesChoice/1')
+        .send({ decision: 'ApprovedPremises' })
+        .expect(302)
+        .expect(() => {
+          expect(hdcService.postOptInEvent).toHaveBeenCalledWith(1, 1, 'A1234AA', 'CA_USER_TEST', 'CA_USER_TEST opted in to HDC after COM added an approved premises')
+        })
+    })
+
+    test(`should not post opt in event if already opted in`, () => {
+      const hdcService = createHdcServiceStub()
+      const licenceService = createLicenceServiceStub()
+      licenceService.getLicence.mockResolvedValue({
+        id: 1,
+        licence: { proposedAddress: { optOut: { decision: 'No' } } },
+        stage: 'PROCESSING_CA',
+      })
+      const app = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
+
+      return request(app)
+        .post('/hdc/curfew/approvedPremisesChoice/1')
+        .send({ decision: 'ApprovedPremises' })
+        .expect(302)
+        .expect(() => {
+          expect(hdcService.postOptInEvent).not.toHaveBeenCalled()
+        })
+    })
+
     test(`should not push nomis if not optout`, () => {
       const nomisPushService = createNomisPushServiceStub()
       const licenceService = createLicenceServiceStub()

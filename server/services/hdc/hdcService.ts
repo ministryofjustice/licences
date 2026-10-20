@@ -461,6 +461,24 @@ export class HdcService {
       reason,
     })
   }
+
+  async postOptInEvent(
+    bookingId: number,
+    licenceId: number,
+    nomsNumber: string,
+    username: string,
+    reason: string | null = null,
+  ): Promise<void> {
+
+    return this.postCvlEvent({
+      bookingId,
+      licenceId,
+      nomsNumber,
+      eventType: 'OPT_IN',
+      triggeredBy: username,
+      reason,
+    })
+  }
 }
 
 export function createHdcService(

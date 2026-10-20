@@ -26,12 +26,15 @@ module.exports =
       asyncMiddleware(async (req, res) => {
         const { bookingId } = req.params
         const { decision } = req.body
-        const { licence } = res.locals
-        const isAnOptOut  =  decision === 'OptOut'
+        const { licence, prisoner } = res.locals
+        const { offenderNo } = prisoner
+        const { id: licenceId } = licence
+        const { username: userName } = req.user
 
         const bassReferral = getBassReferralContent(decision, licence)
-
+        const isAnOptOut  =  decision === 'OptOut'
         const proposedAddress = getIn(licence, ['licence', 'proposedAddress'])
+        const hasAlreadyOptedIn = getIn(proposedAddress, ['optOut', 'decision']) === 'No'
         const newProposedAddress = mergeWithRight(proposedAddress, proposedAddressContents[decision])
 
         await Promise.all([
@@ -40,7 +43,6 @@ module.exports =
         ])
 
         if (isAnOptOut) {
-          const userName = req.user.username
           if (pushToNomis) {
             await nomisPushService.pushStatus({
               bookingId,
@@ -49,14 +51,11 @@ module.exports =
             })
           }
 
-          const { offenderNo } = res.locals.prisoner
-          const licenceId = res.locals.licence.id
-          await hdcService.postOptOutEvent(
-            parseInt(bookingId,10),
-            licenceId,
-            offenderNo,
-            userName,
+          await hdcService.postOptOutEvent(parseInt(bookingId,10), licenceId, offenderNo, userName,
             `${userName} opted out of HDC during initial curfew address task`)
+        } else if (!hasAlreadyOptedIn) {
+          await hdcService.postOptInEvent(parseInt(bookingId,10), licenceId, offenderNo, userName,
+            `${userName} opted in to HDC during initial curfew address task`)
         }
 
         const nextPath = formConfig.curfewAddressChoice.nextPath[decision] || `/hdc/taskList/`
