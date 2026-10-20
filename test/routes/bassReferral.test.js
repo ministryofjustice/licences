@@ -326,6 +326,43 @@ describe('/hdc/bassReferral', () => {
             expect(res.header.location).toBe('/hdc/bassReferral/approvedPremisesAddress/1')
           })
       })
+
+      test('POST approvedPremisesChoice with ApprovedPremises posts opt in event when previously opted out', () => {
+        const licenceService = createLicenceServiceStub()
+        licenceService.getLicence.mockResolvedValue({
+          id: 1,
+          licence: { proposedAddress: { optOut: { decision: 'Yes' } } },
+        })
+        const hdcService = createHdcServiceStub()
+        const app = createApp({ licenceServiceStub: licenceService }, 'caUser', hdcService)
+
+        return request(app)
+          .post('/hdc/bassReferral/approvedPremisesChoice/1')
+          .send({ decision: 'ApprovedPremises' })
+          .expect(302)
+          .expect(() => {
+            expect(hdcService.postOptInEvent).toHaveBeenCalledWith(1, 1, 'A1234AA', 'CA_USER_TEST', 'CA_USER_TEST opted in to HDC after COM added an approved CAS2 premises')
+            expect(hdcService.postOptOutEvent).not.toHaveBeenCalled()
+          })
+      })
+
+      test('POST approvedPremisesChoice with ApprovedPremises does not post opt in event when already opted in', () => {
+        const licenceService = createLicenceServiceStub()
+        licenceService.getLicence.mockResolvedValue({
+          id: 1,
+          licence: { proposedAddress: { optOut: { decision: 'No' } } },
+        })
+        const hdcService = createHdcServiceStub()
+        const app = createApp({ licenceServiceStub: licenceService }, 'caUser', hdcService)
+
+        return request(app)
+          .post('/hdc/bassReferral/approvedPremisesChoice/1')
+          .send({ decision: 'ApprovedPremises' })
+          .expect(302)
+          .expect(() => {
+            expect(hdcService.postOptInEvent).not.toHaveBeenCalled()
+          })
+      })
     })
   })
 

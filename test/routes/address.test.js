@@ -145,6 +145,46 @@ describe('/hdc/proposedAddress/', () => {
             expect(nomisPushService.pushStatus).toHaveBeenCalled()
           })
       })
+
+      test.each([
+        ['Address', null],
+        ['Address', 'Yes'],
+        ['Bass', null],
+        ['Bass', 'Yes'],
+      ])('posts opt in event when %s and previous opt out decision was %s', (decision, previousOptOut) => {
+        const hdcService = createHdcServiceStub()
+        licenceService.getLicence.mockResolvedValue({
+          id: 1,
+          licence: previousOptOut ? { proposedAddress: { optOut: { decision: previousOptOut } } } : {},
+        })
+        const testApp = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
+
+        return request(testApp)
+          .post('/hdc/proposedAddress/curfewAddressChoice/1')
+          .send({ decision })
+          .expect(302)
+          .expect(() => {
+            expect(hdcService.postOptInEvent).toHaveBeenCalledWith(1, 1, 'A1234AA', 'CA_USER_TEST', 'CA_USER_TEST opted in to HDC during initial curfew address task')
+            expect(hdcService.postOptOutEvent).not.toHaveBeenCalled()
+          })
+      })
+
+      test.each(['Address', 'Bass'])('does not post opt in event when %s and already opted in', (decision) => {
+        const hdcService = createHdcServiceStub()
+        licenceService.getLicence.mockResolvedValue({
+          id: 1,
+          licence: { proposedAddress: { optOut: { decision: 'No' } } },
+        })
+        const testApp = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
+
+        return request(testApp)
+          .post('/hdc/proposedAddress/curfewAddressChoice/1')
+          .send({ decision })
+          .expect(302)
+          .expect(() => {
+            expect(hdcService.postOptInEvent).not.toHaveBeenCalled()
+          })
+      })
     })
   })
 })

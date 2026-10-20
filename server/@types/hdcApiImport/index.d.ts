@@ -160,7 +160,7 @@ export interface paths {
     put?: never
     /**
      * Queue an HDC to CVL event
-     * @description Receives an HDC action request and publishes an event to the HDC to CVL queue. Requires ROLE_HDC_ADMIN.
+     * @description Receives an HDC action request (OPT_IN, OPT_OUT, POSTPONE, RESUME or REFUSE) and publishes an event to the HDC to CVL queue. Requires ROLE_HDC_ADMIN.
      */
     post: operations['createEvent']
     delete?: never
@@ -433,7 +433,7 @@ export interface components {
     }
     HdcCvlEventRequest: {
       /** @enum {string} */
-      eventType: 'OPT_OUT' | 'POSTPONE' | 'RESUME' | 'REFUSE'
+      eventType: 'OPT_IN' | 'OPT_OUT' | 'POSTPONE' | 'RESUME' | 'REFUSE'
       /** Format: int64 */
       licenceId: number
       /** Format: int64 */
@@ -925,10 +925,10 @@ export interface components {
     }
     FailedMigrationSummary: {
       /** Format: int64 */
+      errorCount: number
+      /** Format: int64 */
       bookingId: number
       prisonNumber: string
-      /** Format: int64 */
-      errorCount: number
       migrationTrigger: string
     }
     Pageable: {
