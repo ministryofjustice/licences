@@ -449,7 +449,7 @@ export default function createApp({
   app.use('/hdc/people-ready-for-probation-checks', secureRoute(caReportsRouter(reportsService, audit)))
 
   app.use('/hdc/proposedAddress/', secureRoute(addressRouter({ licenceService, nomisPushService, hdcService })))
-  app.use('/hdc/approval/', secureRoute(approvalRouter({ licenceService, prisonerService, nomisPushService })))
+  app.use('/hdc/approval/', secureRoute(approvalRouter({ licenceService, prisonerService, nomisPushService, hdcService })))
   app.use('/hdc/bassReferral/', secureRoute(bassReferralRouter({ licenceService, nomisPushService, hdcService })))
   app.use('/hdc/licenceConditions/', secureRoute(conditionsRouter({ licenceService, conditionsServiceFactory })))
   app.use('/hdc/curfew/', secureRoute(curfewRouter({ licenceService, nomisPushService, hdcService })))
