@@ -1,14 +1,10 @@
 /* eslint-disable import/first */
- 
+
+import { NotifyClient } from 'notifications-node-client'
+import { telemetry } from '@ministryofjustice/hmpps-azure-telemetry'
 import getApplicationInfo from './applicationInfo'
 
-import { initialiseAppInsights, buildAppInsightsClient } from './utils/azureAppInsights'
-
-initialiseAppInsights()
 const applicationInfo = getApplicationInfo()
-const appInsightsClient = buildAppInsightsClient(applicationInfo)
-// eslint-disable-next-line import/order
-import { NotifyClient } from 'notifications-node-client'
 import createApp from './app'
 import logger from '../log'
 import config from './config'
@@ -131,7 +127,7 @@ const caAndDmNotificationSender = createCaAndDmNotificationSender(
   config
 )
 
-const eventPublisher = new EventPublisher(audit, appInsightsClient)
+const eventPublisher = new EventPublisher(audit, telemetry)
 
 const roNotificationHandler = createRoNotificationHandler(
   roNotificationSender,

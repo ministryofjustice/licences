@@ -1,15 +1,12 @@
 /** @typedef {import("../../../types/licences").Destination} Destination */
 
-// eslint-disable-next-line no-unused-vars
-const { TelemetryClient } = require('applicationinsights')
-
 const flattenDestination = (type, destination) =>
   Object.keys(destination).reduce((result, key) => ({ ...result, [`${type}_${key}`]: destination[key] }), {})
 
 class EventPublisher {
   /**
    * @param {import("../../data/audit")} audit
-   * @param {TelemetryClient | undefined} telemetryClient
+   * @param {import("@ministryofjustice/hmpps-azure-telemetry").telemetry | undefined} telemetryClient
    */
   constructor(audit, telemetryClient) {
     this.audit = audit
@@ -36,14 +33,11 @@ class EventPublisher {
     })
 
     if (this.telemetryClient) {
-      await this.telemetryClient.trackEvent({
-        name: 'CaseHandover',
-        properties: {
-          bookingId,
-          transitionType,
-          ...flattenDestination('source', source),
-          ...flattenDestination('target', target),
-        },
+      await this.telemetryClient.trackEvent('CaseHandover', {
+        bookingId,
+        transitionType,
+        ...flattenDestination('source', source),
+        ...flattenDestination('target', target)
       })
     }
   }
