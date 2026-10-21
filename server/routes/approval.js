@@ -12,9 +12,10 @@ const logger = require('../../log')
  * @param {any} args.licenceService
  * @param {PrisonerService} args.prisonerService
  * @param {any} args.nomisPushService
+ * @param {any} args.hdcService
  */
 module.exports =
-  ({ licenceService, prisonerService, nomisPushService }) =>
+  ({ licenceService, prisonerService, nomisPushService, hdcService }) =>
   (router, audited, config) => {
     const standard = createStandardRoutes({
       formConfig,
@@ -23,6 +24,24 @@ module.exports =
       nomisPushService,
       config,
     })
+
+    const processRefusal = async ({ req, res, bookingId, updatedLicence }) => {
+      const decision = getIn(updatedLicence, ['approval', 'release', 'decision'])
+      if (decision !== 'No') {
+        return
+      }
+
+      const previousAnswers = getIn(res.locals.licence, ['licence', 'approval', 'release']) || {}
+      const reason = getIn(updatedLicence, ['approval', 'release', 'reason'])
+      const hasChanged = previousAnswers.decision !== decision || previousAnswers.reason !== reason
+      if (!hasChanged) {
+        return
+      }
+
+      const { offenderNo } = res.locals.prisoner
+      const licenceId = res.locals.licence.id
+      await hdcService.postRefuseEvent(parseInt(bookingId, 10), licenceId, offenderNo, req.user.username, reason)
+    }
 
     router.get('/release/:bookingId', asyncMiddleware(approvalGets('release')))
     router.get('/refuseReason/:bookingId', asyncMiddleware(approvalGets('refuseReason')))
@@ -58,6 +77,12 @@ module.exports =
       }
     }
 
+    router.post('/release/:bookingId', audited, asyncMiddleware(standard.callbackPost('release', processRefusal)))
+    router.post(
+      '/refuseReason/:bookingId',
+      audited,
+      asyncMiddleware(standard.callbackPost('refuseReason', processRefusal))
+    )
     router.post('/:formName/:bookingId', audited, asyncMiddleware(standard.post))
 
     return router

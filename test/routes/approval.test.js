@@ -7,6 +7,7 @@ const {
   createLicenceServiceStub,
   createSignInServiceStub,
   createNomisPushServiceStub,
+  createHdcServiceStub,
 } = require('../mockServices')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
@@ -222,11 +223,91 @@ describe('/hdc/approval', () => {
 
       return request(caApp).post('/hdc/Approval/refuseReason/1').send({ decision: 'Yes' }).expect(403)
     })
+
+    describe('refuse CVL events', () => {
+      const refusalRoutes = [
+        { url: '/hdc/approval/release/1', body: { decision: 'No', reason: 'addressUnsuitable' } },
+        { url: '/hdc/approval/refuseReason/1', body: { decision: 'No', reason: 'addressUnsuitable' } },
+      ]
+
+      refusalRoutes.forEach((route) => {
+        test(`posts a refuse event with the reason when ${route.url} is submitted with decision No`, () => {
+          licenceServiceStub.getLicence.mockResolvedValue({ id: 1, licence: {} })
+          licenceServiceStub.update.mockResolvedValue({
+            approval: { release: { decision: 'No', reason: 'addressUnsuitable' } },
+          })
+          const hdcService = createHdcServiceStub()
+          app = createApp({ licenceServiceStub, hdcServiceStub: hdcService }, 'dmUser')
+
+          return request(app)
+            .post(route.url)
+            .send(route.body)
+            .expect(302)
+            .expect(() => {
+              expect(hdcService.postRefuseEvent).toHaveBeenCalledWith(1, 1, 'A1234AA', 'DM_USER', 'addressUnsuitable')
+            })
+        })
+      })
+
+      test('does not post a refuse event when decision is Yes', () => {
+        licenceServiceStub.update.mockResolvedValue({ approval: { release: { decision: 'Yes' } } })
+        const hdcService = createHdcServiceStub()
+        app = createApp({ licenceServiceStub, hdcServiceStub: hdcService }, 'dmUser')
+
+        return request(app)
+          .post('/hdc/approval/release/1')
+          .send({ decision: 'Yes' })
+          .expect(302)
+          .expect(() => {
+            expect(hdcService.postRefuseEvent).not.toHaveBeenCalled()
+          })
+      })
+
+      test('does not post a refuse event when nothing changed', () => {
+        licenceServiceStub.getLicence.mockResolvedValue({
+          id: 1,
+          licence: { approval: { release: { decision: 'No', reason: 'addressUnsuitable' } } },
+        })
+        licenceServiceStub.update.mockResolvedValue({
+          approval: { release: { decision: 'No', reason: 'addressUnsuitable' } },
+        })
+        const hdcService = createHdcServiceStub()
+        app = createApp({ licenceServiceStub, hdcServiceStub: hdcService }, 'dmUser')
+
+        return request(app)
+          .post('/hdc/approval/refuseReason/1')
+          .send({ decision: 'No', reason: 'addressUnsuitable' })
+          .expect(302)
+          .expect(() => {
+            expect(hdcService.postRefuseEvent).not.toHaveBeenCalled()
+          })
+      })
+
+      test('posts a refuse event again when the refusal reason is updated', () => {
+        licenceServiceStub.getLicence.mockResolvedValue({
+          id: 1,
+          licence: { approval: { release: { decision: 'No', reason: 'addressUnsuitable' } } },
+        })
+        licenceServiceStub.update.mockResolvedValue({
+          approval: { release: { decision: 'No', reason: 'insufficientTime' } },
+        })
+        const hdcService = createHdcServiceStub()
+        app = createApp({ licenceServiceStub, hdcServiceStub: hdcService }, 'dmUser')
+
+        return request(app)
+          .post('/hdc/approval/refuseReason/1')
+          .send({ decision: 'No', reason: 'insufficientTime' })
+          .expect(302)
+          .expect(() => {
+            expect(hdcService.postRefuseEvent).toHaveBeenCalledWith(1, 1, 'A1234AA', 'DM_USER', 'insufficientTime')
+          })
+      })
+    })
   })
 })
 
 function createApp(
-  { licenceServiceStub = null, nomisPushServiceStub = null, signInServiceStub = null },
+  { licenceServiceStub = null, nomisPushServiceStub = null, signInServiceStub = null, hdcServiceStub = null },
   user,
   config = {}
 ) {
@@ -235,6 +316,7 @@ function createApp(
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const nomisPushService = nomisPushServiceStub || createNomisPushServiceStub()
   const signInService = signInServiceStub || createLicenceServiceStub()
+  const hdcService = hdcServiceStub || createHdcServiceStub()
   const audit = mockAudit()
 
   const baseRouter = standardRouter({
@@ -245,7 +327,7 @@ function createApp(
     tokenVerifier: new NullTokenVerifier(),
     config,
   })
-  const route = baseRouter(createRoute({ licenceService, prisonerService, nomisPushService }))
+  const route = baseRouter(createRoute({ licenceService, prisonerService, nomisPushService, hdcService }))
 
   return appSetup(route, user, '/hdc/approval')
 }

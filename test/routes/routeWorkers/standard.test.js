@@ -275,7 +275,7 @@ describe('formPost', () => {
 
         await callbackPost(req, res)
         expect(callback).toHaveBeenCalled()
-        expect(callback).toHaveBeenCalledWith({ req, bookingId: 123, updatedLicence: testLicence })
+        expect(callback).toHaveBeenCalledWith({ req, res, bookingId: 123, updatedLicence: testLicence })
       })
     })
   })
