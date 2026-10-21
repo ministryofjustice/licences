@@ -13,7 +13,6 @@ import noCache from 'nocache'
 import { csrfSync } from 'csrf-sync'
 import compression from 'compression'
 import passport from 'passport'
-import { appInsightsMiddleware } from './utils/azureAppInsights'
 import ensureHttps from './utils/ensureHttps'
 import pdfRenderer from './utils/renderPdf'
 
@@ -71,6 +70,7 @@ import { GotenbergClient } from './data/gotenbergClient'
 import { varyRouter } from './routes/vary'
 import { createRedisClient } from './data/redisClient'
 import { asyncMiddleware } from './utils/middleware'
+import addUserDataToTelemetry from './utils/addUserDataToTelemetry'
 
 const version = moment.now().toString()
 const { production } = config
@@ -278,6 +278,8 @@ export default function createApp({
 
   app.use(addTemplateVariables)
 
+  app.use(addUserDataToTelemetry())
+
   function addReturnURL(req, res, next) {
     const returnUrl = `${req.protocol}://${req.get('host')}${req.originalUrl}`
     res.locals.returnUrl = encodeURIComponent(returnUrl)
@@ -295,13 +297,14 @@ export default function createApp({
       return next()
     }
 
-    logger.log({
-      message: 'Request',
-      level: 'info',
-      path: req.path,
-      username: req.user && req.user.username,
-      role: req.user && req.user.role
-    })
+    logger.info(
+      {
+        path: req.path,
+        username: req.user && req.user.username,
+        role: req.user && req.user.role,
+      },
+      'Request'
+    )
     return next()
   })
 
@@ -326,7 +329,6 @@ export default function createApp({
     })
   )
 
-  app.use(appInsightsMiddleware())
   app.use(setUpHealthChecks(applicationInfo))
 
   app.get('/robots.txt', (req, res) => {

@@ -1,4 +1,3 @@
-const { TelemetryClient } = require('applicationinsights')
 const EventPublisher = require('../../../server/services/notifications/eventPublisher')
 
 describe('EventPublisher', () => {
@@ -9,8 +8,6 @@ describe('EventPublisher', () => {
   }
 
   describe('With application insights enabled', () => {
-    /** @type {TelemetryClient} */
-    // @ts-ignore
     const telemetryClient = {
       trackEvent: jest.fn(),
     }
@@ -48,9 +45,9 @@ describe('EventPublisher', () => {
         target: { type: 'probation', probationAreaCode: 'aa2', lduCode: '2' },
       })
 
-      expect(telemetryClient.trackEvent).toHaveBeenCalledWith({
-        name: 'CaseHandover',
-        properties: {
+      expect(telemetryClient.trackEvent).toHaveBeenCalledWith(
+        'CaseHandover',
+        {
           bookingId: '2',
           transitionType: 'caToRo',
           source_type: 'prison',
@@ -60,7 +57,7 @@ describe('EventPublisher', () => {
           target_probationAreaCode: 'aa2',
           target_lduCode: '2',
         },
-      })
+      )
     })
   })
 
