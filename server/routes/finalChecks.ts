@@ -211,7 +211,8 @@ function postRefusal(licenceService, nomisPushService, hdcService, appConfig) {
       if (hasChanged) {
         const { offenderNo } = res.locals.prisoner
         const licenceId = res.locals.licence.id
-        await hdcService.postRefuseEvent(parseInt(bookingId, 10), licenceId, offenderNo, username, reason)
+        const eventReason = Array.isArray(reason) ? reason.join(', ') : (reason || '')
+        await hdcService.postRefuseEvent(parseInt(bookingId, 10), licenceId, offenderNo, username, eventReason)
       }
     }
 

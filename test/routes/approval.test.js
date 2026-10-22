@@ -231,7 +231,7 @@ describe('/hdc/approval', () => {
       ]
 
       refusalRoutes.forEach((route) => {
-        test(`posts a refuse event with the reason when ${route.url} is submitted with decision No`, () => {
+        test(`posts a refuse event with a single reason when ${route.url} is submitted with decision No`, () => {
           licenceServiceStub.getLicence.mockResolvedValue({ id: 1, licence: {} })
           licenceServiceStub.update.mockResolvedValue({
             approval: { release: { decision: 'No', reason: 'addressUnsuitable' } },
@@ -247,6 +247,67 @@ describe('/hdc/approval', () => {
               expect(hdcService.postRefuseEvent).toHaveBeenCalledWith(1, 1, 'A1234AA', 'DM_USER', 'addressUnsuitable')
             })
         })
+      })
+
+      refusalRoutes.forEach((route) => {
+        test(`passes a one-item reason array when ${route.url} is submitted with decision No`, () => {
+          const reasons = ['addressUnsuitable']
+          licenceServiceStub.getLicence.mockResolvedValue({ id: 1, licence: {} })
+          licenceServiceStub.update.mockResolvedValue({
+            approval: { release: { decision: 'No', reason: reasons } },
+          })
+          const hdcService = createHdcServiceStub()
+          app = createApp({ licenceServiceStub, hdcServiceStub: hdcService }, 'dmUser')
+
+          return request(app)
+            .post(route.url)
+            .send({ decision: 'No', reason: reasons })
+            .expect(302)
+            .expect(() => {
+              expect(hdcService.postRefuseEvent).toHaveBeenCalledWith(1, 1, 'A1234AA', 'DM_USER', 'addressUnsuitable')
+            })
+        })
+
+        test(`joins multiple refusal reasons when ${route.url} is submitted with decision No`, () => {
+          const reasons = ['addressUnsuitable', 'insufficientTime']
+          licenceServiceStub.getLicence.mockResolvedValue({ id: 1, licence: {} })
+          licenceServiceStub.update.mockResolvedValue({
+            approval: { release: { decision: 'No', reason: reasons } },
+          })
+          const hdcService = createHdcServiceStub()
+          app = createApp({ licenceServiceStub, hdcServiceStub: hdcService }, 'dmUser')
+
+          return request(app)
+            .post(route.url)
+            .send({ decision: 'No', reason: reasons })
+            .expect(302)
+            .expect(() => {
+              expect(hdcService.postRefuseEvent).toHaveBeenCalledWith(
+                1,
+                1,
+                'A1234AA',
+                'DM_USER',
+                'addressUnsuitable, insufficientTime'
+              )
+            })
+        })
+      })
+
+      test('uses an empty event reason when the refusal reason is null', () => {
+        licenceServiceStub.getLicence.mockResolvedValue({ id: 1, licence: {} })
+        licenceServiceStub.update.mockResolvedValue({
+          approval: { release: { decision: 'No', reason: null } },
+        })
+        const hdcService = createHdcServiceStub()
+        app = createApp({ licenceServiceStub, hdcServiceStub: hdcService }, 'dmUser')
+
+        return request(app)
+          .post('/hdc/approval/release/1')
+          .send({ decision: 'No' })
+          .expect(302)
+          .expect(() => {
+            expect(hdcService.postRefuseEvent).toHaveBeenCalledWith(1, 1, 'A1234AA', 'DM_USER', '')
+          })
       })
 
       test('does not post a refuse event when decision is Yes', () => {
