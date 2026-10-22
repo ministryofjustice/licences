@@ -428,7 +428,7 @@ describe('/hdc/finalChecks', () => {
     })
 
     describe('refuse CVL events', () => {
-      test('posts a refuse event with the reason as the event reason', () => {
+      test('passes a single refusal reason as the event reason', () => {
         const licenceService = createLicenceServiceStub()
         licenceService.getLicence.mockResolvedValue({ id: 1, licence: {} })
         licenceService.update.mockResolvedValue({
@@ -442,6 +442,50 @@ describe('/hdc/finalChecks', () => {
           .send({ decision: 'Yes', reason: 'addressUnsuitable' })
           .expect(302)
           .expect('Location', '/hdc/taskList/1')
+          .expect(() => {
+            expect(hdcService.postRefuseEvent).toHaveBeenCalledWith(1, 1, 'A1234AA', 'CA_USER_TEST', 'addressUnsuitable')
+          })
+      })
+
+      test('joins multiple refusal reasons for the event reason', () => {
+        const reasons = ['addressUnsuitable', 'insufficientTime']
+        const licenceService = createLicenceServiceStub()
+        licenceService.getLicence.mockResolvedValue({ id: 1, licence: {} })
+        licenceService.update.mockResolvedValue({
+          finalChecks: { refusal: { decision: 'Yes', reason: reasons } },
+        })
+        const hdcService = createHdcServiceStub()
+        const app = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
+
+        return request(app)
+          .post('/hdc/finalChecks/refuse/1')
+          .send({ decision: 'Yes', reason: reasons })
+          .expect(302)
+          .expect(() => {
+            expect(hdcService.postRefuseEvent).toHaveBeenCalledWith(
+              1,
+              1,
+              'A1234AA',
+              'CA_USER_TEST',
+              'addressUnsuitable, insufficientTime'
+            )
+          })
+      })
+
+      test('passes a one-item reason array as the event reason', () => {
+        const reasons = ['addressUnsuitable']
+        const licenceService = createLicenceServiceStub()
+        licenceService.getLicence.mockResolvedValue({ id: 1, licence: {} })
+        licenceService.update.mockResolvedValue({
+          finalChecks: { refusal: { decision: 'Yes', reason: reasons } },
+        })
+        const hdcService = createHdcServiceStub()
+        const app = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
+
+        return request(app)
+          .post('/hdc/finalChecks/refuse/1')
+          .send({ decision: 'Yes', reason: reasons })
+          .expect(302)
           .expect(() => {
             expect(hdcService.postRefuseEvent).toHaveBeenCalledWith(1, 1, 'A1234AA', 'CA_USER_TEST', 'addressUnsuitable')
           })
