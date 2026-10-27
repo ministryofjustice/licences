@@ -36,7 +36,7 @@ module.exports = () => {
         return res.status(200).send({})
       } catch (error) {
         // @ts-ignore
-        logger.error('Error during delete test licences', error.stack)
+        logger.error({ stack: error.stack }, 'Error during delete test licences')
         return res.status(500).send({})
       }
     })
@@ -61,7 +61,7 @@ module.exports = () => {
         return res.status(201).send({})
       } catch (error) {
         // @ts-ignore
-        logger.error('Error during create licence', error.stack)
+        logger.error({ stack: error.stack }, 'Error during create licence')
         return res.status(500).send({})
       }
     })
@@ -80,7 +80,7 @@ module.exports = () => {
         return res.status(201).send({})
       } catch (error) {
         // @ts-ignore
-        logger.error('Error during enabling LDU', error.stack)
+        logger.error({ stack: error.stack }, 'Error during enabling LDU')
         return res.status(500).send({})
       }
     })

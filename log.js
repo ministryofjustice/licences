@@ -1,31 +1,8 @@
-const winston = require('winston')
+const bunyan = require('bunyan')
+const bunyanFormat = require('bunyan-format')
 
-const { combine, simple, timestamp, json, prettyPrint } = winston.format
-const { flattenMeta } = require('./server/misc')
+const formatOut = bunyanFormat({ outputMode: 'short', color: true })
 
-const flattened = winston.format((meta) => {
-  const { message, level, timestamp: ts, ...rest } = meta
-  const result = flattenMeta(rest)
-  Object.entries(result).forEach(([key, val]) => {
-    // eslint-disable-next-line no-param-reassign
-    meta[key] = val
-  })
-  return meta
-})
-
-const format =
-  process.env.NODE_ENV === 'test'
-    ? combine(timestamp(), simple(), prettyPrint())
-    : combine(timestamp(), flattened(), json())
-
-const logger = winston.createLogger({
-  format,
-  // No transports when Application Insights is enabled because App Insights automatically logs calls to the winston API.
-  transports: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING ? [] : [new winston.transports.Console({ level: 'info', handleExceptions: true })],
-})
-
-if (process.env.APPLICATIONINSIGHTS_CONNECTION_STRING) {
-  logger.info('Application insights logger is active')
-}
+const logger = bunyan.createLogger({ name: 'Licences', stream: formatOut, level: 'debug' })
 
 module.exports = logger
