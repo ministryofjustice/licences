@@ -26,7 +26,7 @@ module.exports = function createJobUtils(dbLockingClient) {
       logger.info(`${name}: Could not obtain lock`)
       return 'MISSED_LOCK'
     } catch (error) {
-      logger.error(`Error running job: ${name}:`, error)
+      logger.error({ err: error }, `Error running job: ${name}:`)
       throw error
     } finally {
       await dbLockingClient.unlock(name)

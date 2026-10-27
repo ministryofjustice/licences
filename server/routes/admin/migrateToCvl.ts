@@ -81,7 +81,7 @@ export = (hdcService: HdcService) => (router) => {
             } catch (error) {
                 const message =
                     error instanceof Error ? error.message : 'Unknown error'
-                logger.error('Migration failed', error)
+                logger.error({ err: error }, 'Migration failed')
                 return res.render('admin/migrateToCvl/licenceMigrationFailed', { bookingId, message })
             }
         })
@@ -97,7 +97,7 @@ export = (hdcService: HdcService) => (router) => {
                 const message =
                     error instanceof Error ? error.message : 'Unknown error'
 
-                logger.error('Migration failed before timeout', error)
+                logger.error({ err: error }, 'Migration failed before timeout')
 
                 return res.render('admin/migrateToCvl/batchFailed', { message })
             }
@@ -117,7 +117,7 @@ export = (hdcService: HdcService) => (router) => {
                 const message =
                     error instanceof Error ? error.message : 'Unknown error'
 
-                logger.error('Preview migration failed', error)
+                logger.error({ err: error }, 'Preview migration failed')
 
                 return res.status(500).json({ message })
             }

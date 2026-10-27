@@ -45,8 +45,7 @@ export class TokenVerificationClient implements TokenVerifier {
     } catch (error: superagent.ResponseError) {
       const response = error?.response?.text
       logger.warn(
-        `Error calling Token Verification API, path: '${TokenVerificationClient.PATH}', verb: 'POST', response: '${response}'`,
-        error.stack
+        { stack: error.stack }, `Error calling Token Verification API, path: '${TokenVerificationClient.PATH}', verb: 'POST', response: '${response}'`
       )
       return false
     }

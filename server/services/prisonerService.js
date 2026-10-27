@@ -61,7 +61,7 @@ function createPrisonerService(nomisClientBuilder, roService, signInService) {
         })
       } catch (error) {
         // @ts-ignore
-        logger.error('Error getting prisoner info', error.stack)
+        logger.error({ stack: error.stack }, 'Error getting prisoner info')
         throw error
       }
     },
@@ -92,7 +92,7 @@ function createPrisonerService(nomisClientBuilder, roService, signInService) {
         return this.getEstablishment(locationId, token)
       } catch (error) {
         // @ts-ignore
-        logger.error('Error getting prisoner establishment', error.stack)
+        logger.error({ stack: error.stack }, 'Error getting prisoner establishment')
         throw error
       }
     },
@@ -112,7 +112,7 @@ function createPrisonerService(nomisClientBuilder, roService, signInService) {
           return null
         }
         // @ts-ignore
-        logger.error('Error getting establishment', error.stack)
+        logger.error({ stack: error.stack }, 'Error getting establishment')
         throw error
       }
     },
@@ -140,7 +140,7 @@ function createPrisonerService(nomisClientBuilder, roService, signInService) {
         return formatObjectForView(prisoner)
       } catch (error) {
         // @ts-ignore
-        logger.error('Error getting prisoner personal details', error.stack)
+        logger.error({ stack: error.stack }, 'Error getting prisoner personal details')
         return null
       }
     },

@@ -31,7 +31,7 @@ module.exports = function createNotificationSender(notifyClient, audit, notifyKe
             logger.info(`Successful notify for email: ${notification.email}`)
           })
           .catch((error) => {
-            logger.error('Error sending notification email ', notification.email)
+            logger.error({ email: notification.email }, 'Error sending notification email ')
             logger.error(error.stack)
           })
       }
