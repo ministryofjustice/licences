@@ -46,7 +46,7 @@ module.exports = function createReminderService(
       return cases ? cases.length : 0
     } catch (error) {
       // @ts-ignore
-      logger.error(`Error notifying cases for notification type: ${notificationType}`, error.stack)
+      logger.error({ stack: error.stack }, `Error notifying cases for notification type: ${notificationType}`)
       return 0
     }
   }
@@ -108,7 +108,7 @@ module.exports = function createReminderService(
       return [roWithContactDetails, prison]
     } catch (error) {
       // @ts-ignore
-      logger.error('Error loading data for reminder', error.stack)
+      logger.error({ stack: error.stack }, 'Error loading data for reminder')
       // @ts-ignore
       return { code: NOTIFICATION_DATA_NOT_FOUND, message: `Error loading data for reminder: ${error.message}` }
     }

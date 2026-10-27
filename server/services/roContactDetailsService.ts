@@ -62,8 +62,7 @@ export class RoContactDetailsService {
       teamCode,
     })
     logger.info(
-      `Got functional mailbox: '${functionalMailbox}' for probation area '${probationAreaCode}', ldu ${lduCode}, team ${teamCode}'`,
-      staff
+      { staff }, `Got functional mailbox: '${functionalMailbox}' for probation area '${probationAreaCode}', ldu ${lduCode}, team ${teamCode}'`
     )
     return {
       isUnlinkedAccount: staff.username === undefined,
@@ -106,7 +105,7 @@ export class RoContactDetailsService {
     const [roOfficer, error] = unwrapResult(await this.getResponsibleOfficerWithContactDetails(bookingId, token))
 
     if (error) {
-      logger.error(`Failed to retrieve RO for booking id: '${bookingId}'`, error.message)
+      logger.error({ errorMessage: error.message }, `Failed to retrieve RO for booking id: '${bookingId}'`)
       return null
     }
     return roOfficer.functionalMailbox

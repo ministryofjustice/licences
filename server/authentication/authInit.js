@@ -25,7 +25,7 @@ module.exports = (userService, audit) => {
       return done(null, user)
     } catch (error) {
       // @ts-ignore
-      logger.error(`Sign in error for user: '${params.user_name}'`, error.stack)
+      logger.error({ stack: error.stack }, `Sign in error for user: '${params.user_name}'`)
       return done(null, false, { message: 'A system error occurred; please try again later' })
     }
   }

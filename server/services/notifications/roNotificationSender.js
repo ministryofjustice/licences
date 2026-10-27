@@ -75,15 +75,14 @@ module.exports = function createRoNotificationSender(
 
       try {
         const notifications = this.getNotifications(responsibleOfficer, personalisation, notificationConfig)
-        logger.info('Sending notifications', notifications)
+        logger.info({ notifications }, 'Sending notifications')
         await notificationSender.notify({ sendingUserName, notificationType, bookingId, notifications })
 
         return notifications
       } catch (error) {
         logger.error(
-          `Error sending notification for bookingId: ${bookingId}, transition: ${notificationType}`,
           // @ts-ignore
-          error.stack
+        { stack: error.stack }, `Error sending notification for bookingId: ${bookingId}, transition: ${notificationType}`
         )
         return []
       }
