@@ -103,7 +103,7 @@
     "@ministryofjustice/hmpps-monitoring": "1.1.0",
     "agentkeepalive": "^4.6.0",
     "applicationinsights": "^2.9.8",
-    "body-parser": "^2.3.0",
+    "body-parser": "2.4.0",
     "case": "^1.6.3",
     "compression": "1.8.2",
     "concat-stream": "^2.0.0",
@@ -183,9 +183,9 @@
     "saveLicences": "./server/saveLicences.js"
   },
   "allowScripts": {
-    "@parcel/watcher@2.5.6": true,
+    "@parcel/watcher@2.6.0": true,
     "@scarf/scarf@1.4.0": false,
     "fsevents@2.3.3": true,
-    "unrs-resolver@1.11.1": true
+    "unrs-resolver@1.12.2": true
   }
 }
