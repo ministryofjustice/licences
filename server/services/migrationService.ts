@@ -72,14 +72,14 @@ export default class MigrationService {
         return await this.deliusClient.getStaffDetailsByStaffIdentifier(staffIdentifier)
       } catch (error) {
         // @ts-ignore
-        logger.warn(`Problem retrieving staff member from delius for staff identifier: ${staffIdentifier}`, error.stack)
+        logger.warn({ stack: error.stack }, `Problem retrieving staff member from delius for staff identifier: ${staffIdentifier}`)
       }
     else if (deliusId) {
       try {
         return await this.deliusClient.getStaffDetailsByStaffCode(deliusId)
       } catch (error) {
         // @ts-ignore
-        logger.warn(`Problem retrieving staff member from delius for staff code: ${deliusId}`, error.stack)
+        logger.warn({ stack: error.stack }, `Problem retrieving staff member from delius for staff code: ${deliusId}`)
       }
     } else {
       logger.warn('Unable to retrieve staff member from delius: No staff code or identifier available')
@@ -145,7 +145,7 @@ export default class MigrationService {
       return await this.deliusClient.getStaffDetailsByStaffIdentifier(staffIdentifier)
     } catch (error) {
       // @ts-ignore
-      logger.warn(`Problem retrieving staff member from delius for identifier: ${staffIdentifier}`, error.stack)
+      logger.warn({ stack: error.stack }, `Problem retrieving staff member from delius for identifier: ${staffIdentifier}`)
       return null
     }
   }
@@ -155,7 +155,7 @@ export default class MigrationService {
       return await this.deliusClient.getUser(username)
     } catch (error) {
       // @ts-ignore
-      logger.warn(`Problem retrieving user from delius for username: ${username}`, error.stack)
+      logger.warn({ stack: error.stack }, `Problem retrieving user from delius for username: ${username}`)
       return null
     }
   }

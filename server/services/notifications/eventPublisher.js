@@ -6,8 +6,7 @@ const flattenDestination = (type, destination) =>
 class EventPublisher {
   /**
    * @param {import("../../data/audit")} audit
-   * @param {import("@ministryofjustice/hmpps-azure-telemetry").telemetry | undefined} telemetryClient
-   */
+   * @param {Pick<typeof import("@ministryofjustice/hmpps-azure-telemetry").telemetry, "trackEvent"> | undefined} telemetryClient   */
   constructor(audit, telemetryClient) {
     this.audit = audit
     this.telemetryClient = telemetryClient || null
@@ -29,7 +28,7 @@ class EventPublisher {
       transitionType,
       submissionTarget,
       source,
-      target,
+      target
     })
 
     if (this.telemetryClient) {

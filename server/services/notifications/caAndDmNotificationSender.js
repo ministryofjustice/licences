@@ -154,9 +154,8 @@ module.exports = function createCaAndDmNotificationSender(
       return notifications
     } catch (error) {
       logger.error(
-        `Error sending notification for bookingId: ${bookingId}, transition: ${notificationType}`,
         // @ts-ignore
-        error.stack
+        { stack: error.stack }, `Error sending notification for bookingId: ${bookingId}, transition: ${notificationType}`
       )
       return []
     }

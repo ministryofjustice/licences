@@ -41,14 +41,14 @@ module.exports = {
       throw new Error(`Unknown audit key: ${key}`)
     }
 
-    logger.info('AUDIT', { key })
+    logger.info({ key }, 'AUDIT')
 
     return addItem(key, user, data)
       .then(() => {
         logger.info('Audit item inserted')
       })
       .catch((error) => {
-        logger.error('Error during audit insertion ', error.stack)
+        logger.error({ stack: error.stack }, 'Error during audit insertion ')
       })
   },
 

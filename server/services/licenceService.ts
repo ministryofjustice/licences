@@ -80,7 +80,7 @@ export class LicenceService {
       await this.licenceClient.deleteAll()
     } catch (error) {
       // @ts-ignore
-      logger.error('Error during reset licences', error.stack)
+      logger.error({ stack: error.stack }, 'Error during reset licences')
       throw error
     }
   }
@@ -159,7 +159,7 @@ export class LicenceService {
       }
     } catch (error) {
       // @ts-ignore
-      logger.error('Error during getLicence', error.stack)
+      logger.error({ stack: error.stack }, 'Error during getLicence')
       throw error
     }
   }
@@ -198,7 +198,7 @@ export class LicenceService {
       return true
     } catch (error) {
       // @ts-ignore
-      logger.error('Error during updateAdditionalConditions', error.stack)
+      logger.error({ stack: error.stack }, 'Error during updateAdditionalConditions')
       throw error
     }
   }
@@ -208,7 +208,7 @@ export class LicenceService {
       await this.licenceClient.setLicenceInCvl(licenceInCvl, bookingId)
     } catch (error) {
       // @ts-ignore
-      logger.error('Error during setCompleteDestination', error.stack)
+      logger.error({ stack: error.stack }, 'Error during setCompleteDestination')
       throw error
     }
   }
@@ -222,7 +222,7 @@ export class LicenceService {
       return await this.licenceClient.updateSection('licenceConditions', bookingId, newConditions)
     } catch (error) {
       // @ts-ignore
-      logger.error('Error during updateAdditionalConditions', error.stack)
+      logger.error({ stack: error.stack }, 'Error during updateAdditionalConditions')
       throw error
     }
   }
@@ -330,7 +330,7 @@ export class LicenceService {
       await this.licenceClient.softDeleteLicence(bookingId)
     } catch (error) {
       // @ts-ignore
-      logger.error('Error during licence reset', error.stack)
+      logger.error({ stack: error.stack }, 'Error during licence reset')
       throw error
     }
   }

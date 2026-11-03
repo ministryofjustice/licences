@@ -47,12 +47,12 @@ export class HdcService {
     try {
       return await this.hdcClient.getBespokeConditions(licenceIds)
     } catch (error: any) {
-      logger.error(`Failed to get bespoke conditions for IDs: [${licenceIds?.join(', ') ?? 'none'}]`, {
+      logger.error({
         message: error?.message,
         status: error?.response?.status,
         data: error?.response?.data,
         stack: error?.stack,
-      })
+      }, `Failed to get bespoke conditions for IDs: [${licenceIds?.join(', ') ?? 'none'}]`)
       throw error
     }
   }
@@ -261,12 +261,12 @@ export class HdcService {
       try {
           return await this.hdcClient.migrateSingleLicenceToCvl(bookingId)
       } catch (error: any) {
-          logger.error(`Failed to migrate Booking ID: ${bookingId}`, {
+          logger.error({
               message: error?.userMessage ?? error?.message,
               status: error?.response?.status,
               data: error?.response?.data,
               stack: error?.stack,
-          })
+          }, `Failed to migrate Booking ID: ${bookingId}`)
           throw error
       }
   }
@@ -275,12 +275,12 @@ export class HdcService {
       try {
           return await this.hdcClient.migrateBatchToCvl()
       } catch (error: any) {
-          logger.error(`Failed to migrate bactch to CVL`, {
+          logger.error({
               message: error?.userMessage ?? error?.message,
               status: error?.response?.status,
               data: error?.response?.data,
               stack: error?.stack,
-          })
+          }, `Failed to migrate bactch to CVL`)
           throw error
       }
   }
@@ -290,12 +290,12 @@ export class HdcService {
             logger.info(`Setting migration log retry to ${retryValue} for ID: ${logId}`)
             return await this.hdcClient.setMigrationLogRetry(logId, retryValue)
         } catch (error: any) {
-            logger.error('Failed to set migration log retry', {
+            logger.error({
                 message: error?.userMessage ?? error?.message,
                 status: error?.response?.status,
                 data: error?.response?.data,
                 stack: error?.stack,
-            })
+            }, 'Failed to set migration log retry')
             throw error
         }
     }
@@ -304,12 +304,12 @@ export class HdcService {
         try {
             return await this.hdcClient.migrateSingleLicenceToCvlPreview(licenceId)
         } catch (error: any) {
-            logger.error(`Failed to preview migration for ID: ${licenceId} `, {
+            logger.error({
                 message: error?.userMessage ?? error?.message,
                 status: error?.response?.status,
                 data: error?.response?.data,
                 stack: error?.stack,
-            })
+            }, `Failed to preview migration for ID: ${licenceId} `)
             throw error
         }
     }
@@ -325,12 +325,12 @@ export class HdcService {
        try {
             return await this.hdcClient.getMigrationLogs(licenceVersionId, bookingId, errorSource, success, migrationTrigger, prisonerNumber, pageable)
         } catch (error: any) {
-            logger.error(`Failed to get migration logs`, {
+            logger.error({
                 message: error?.message,
                 status: error?.response?.status,
                 data: error?.response?.data,
                 stack: error?.stack,
-            })
+            }, `Failed to get migration logs`)
             throw error
         }
     }
@@ -368,12 +368,12 @@ export class HdcService {
     try {
       return await this.hdcClient.getFailedReport()
     } catch (error: any) {
-      logger.error(`Failed to get migration failed logs report`, {
+      logger.error({
         message: error?.message,
         status: error?.response?.status,
         data: error?.response?.data,
         stack: error?.stack,
-      })
+      }, `Failed to get migration failed logs report`)
       throw error
     }
   }
@@ -398,12 +398,12 @@ export class HdcService {
 
       return await this.hdcClient.postCvlEvent(event)
     } catch (error: any) {
-      logger.error(`Failed to post CVL event`, {
+      logger.error({
         message: error?.message,
         status: error?.response?.status,
         data: error?.response?.data,
         stack: error?.stack,
-      })
+      }, `Failed to post CVL event`)
       throw error
     }
   }

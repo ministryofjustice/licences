@@ -55,9 +55,10 @@ describe('HdcService', () => {
 
       await expect(service.postCvlEvent(event)).rejects.toThrow('API error')
 
-      expect(logger.error).toHaveBeenCalledWith('Failed to post CVL event', expect.objectContaining({
+      expect(logger.error).toHaveBeenCalledWith(expect.objectContaining({
         message: 'API error',
-      }))
+        stack: error.stack,
+      }), 'Failed to post CVL event')
     })
   })
 
