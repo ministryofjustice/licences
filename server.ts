@@ -17,14 +17,14 @@ knex({ ...knexfile })
     })
   })
   .catch((err) => {
-    logger.error({ err: err }, 'Knex migration failed')
+    logger.error({ err }, 'Knex migration failed')
   })
 
 process.on('unhandledRejection', (err) => {
-  logger.error({ err: err }, 'unhandledRejection at:')
+  logger.error({ err }, 'unhandledRejection at:')
 })
 
 process.on('uncaughtException', (err) => {
-  logger.error({ err: err }, 'uncaughtException at:')
+  logger.error({ err }, 'uncaughtException at:')
   throw err
 })
