@@ -1,3 +1,5 @@
+import './server/utils/azureAppInsights'
+
 import knex from 'knex'
 import app from './server/index'
 // logger needs to be imported after app-insights to allow instrumentation

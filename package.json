@@ -103,7 +103,7 @@
     "@ministryofjustice/hmpps-monitoring": "1.1.0",
     "agentkeepalive": "^4.6.0",
     "applicationinsights": "^2.9.8",
-    "body-parser": "2.4.0",
+    "body-parser": "^2.3.0",
     "case": "^1.6.3",
     "compression": "1.8.2",
     "concat-stream": "^2.0.0",
