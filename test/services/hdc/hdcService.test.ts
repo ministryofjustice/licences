@@ -146,4 +146,21 @@ describe('HdcService', () => {
       })
     })
   })
+
+  describe('postAddressWithdrawnEvent', () => {
+    it('should call postCvlEvent with ADDRESS_WITHDRAWN event type', async () => {
+      hdcClient.postCvlEvent.mockResolvedValue(undefined)
+
+      await service.postAddressWithdrawnEvent(123, 456, 'A1234AA', 'USER', 'USER withdrew the residential address in HDC')
+
+      expect(hdcClient.postCvlEvent).toHaveBeenCalledWith({
+        bookingId: 123,
+        licenceId: 456,
+        nomsNumber: 'A1234AA',
+        eventType: 'ADDRESS_WITHDRAWN',
+        reason: 'USER withdrew the residential address in HDC',
+        triggeredBy: 'USER',
+      })
+    })
+  })
 })
