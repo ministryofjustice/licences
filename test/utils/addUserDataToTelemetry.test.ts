@@ -24,6 +24,7 @@ describe('addUserDataToTelemetry', () => {
   it('adds CVL user data to telemetry when a user is present', () => {
     res.locals.user = {
       username: 'joebloggs',
+      uuid: 'de263104-4907-4ade-9d21-1b576a320357',
       activeCaseLoadId: 'MDI',
     }
 
@@ -31,6 +32,7 @@ describe('addUserDataToTelemetry', () => {
 
     expect(telemetry.setSpanAttributes).toHaveBeenCalledWith({
       username: 'joebloggs',
+      userUuid: 'de263104-4907-4ade-9d21-1b576a320357',
       activeCaseLoadId: 'MDI',
     })
     expect(next).toHaveBeenCalledTimes(1)

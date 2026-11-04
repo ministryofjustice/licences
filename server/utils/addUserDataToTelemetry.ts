@@ -8,6 +8,7 @@ export default function addUserDataToTelemetry(): RequestHandler {
     if (user) {
       telemetry.setSpanAttributes({
         ...(user.username && { username: user.username }),
+        ...(user.uuid && { userUuid: user.uuid }),
         ...(user.activeCaseLoadId && { activeCaseLoadId: user.activeCaseLoadId }),
       })
     }
