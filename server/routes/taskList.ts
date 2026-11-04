@@ -101,7 +101,7 @@ export = (
         const { bookingId } = req.params
         const prisonerInfo = await prisonerService.getPrisonerDetails(bookingId, res.locals.token)
         if (isEmpty(prisonerInfo)) {
-          logger.info('Prisoner not found for task list', bookingId)
+          logger.info({ bookingId }, 'Prisoner not found for task list')
           return res.redirect('/caseList')
         }
 
@@ -217,12 +217,12 @@ export = (
         audit.record('VARY_LICENCE_IN_CVL_CREATED', req.user.username, {bookingId})
         res.redirect(`/hdc/vary/varyInCvl/${bookingId}`)
       } catch (error) {
-        logger.error('Error occurred while migrating licence to CVL', {
+        logger.error({
           bookingId,
           prisonNumber,
           message: error instanceof Error ? error.message : String(error),
           stack: error instanceof Error ? error.stack : undefined,
-        })
+        }, 'Error occurred while migrating licence to CVL')
         await createLicenceInHdc(bookingId, prisonNumber, req, res);
       }
     }

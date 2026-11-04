@@ -70,7 +70,7 @@ export default class PdfService {
       return await this.prisonerService.getPrisonerImage(facialImageId, token)
     } catch (error) {
       // @ts-ignore
-      this.logger.error('Error during getPrisonerImage: ', error.stack)
+      this.logger.error({ stack: error.stack }, 'Error during getPrisonerImage: ')
       return null
     }
   }

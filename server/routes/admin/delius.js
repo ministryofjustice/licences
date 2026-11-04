@@ -21,7 +21,7 @@ module.exports = (roService) => (router) => {
     '/managedOffenders/',
     asyncMiddleware(async (req, res) => {
       const { staffIdentifier } = req.body
-      logger.info('managedOffenders for', staffIdentifier)
+      logger.info({ staffIdentifier }, 'managedOffenders for')
       const offenders = (await roService.getROPrisonersForStaffIdentifier(staffIdentifier, res.locals.token)) || []
       logger.info(offenders)
 
@@ -36,7 +36,7 @@ module.exports = (roService) => (router) => {
 
       const ro = bookingId ? await roByBookingId(bookingId, res.locals.token) : await roByOffenderNo(offenderNo)
 
-      logger.info('Found ro:', ro)
+      logger.info({ ro }, 'Found ro:')
       res.render('admin/delius/responsibleOfficer', { ro })
     })
   )
@@ -49,29 +49,29 @@ module.exports = (roService) => (router) => {
       const staffDetails =
         type === 'STAFF_IDENTIFIER' ? await getStaffByStaffIdentifier(value) : await staffByUsername(value)
 
-      logger.info('Found staff:', staffDetails)
+      logger.info({ staffDetails }, 'Found staff:')
 
       res.render('admin/delius/staffDetails', { type, value, staffDetails })
     })
   )
 
   async function roByBookingId(bookingId, token) {
-    logger.info('responsibleOfficer for bookingId', bookingId)
+    logger.info({ bookingId }, 'responsibleOfficer for bookingId')
     return roService.findResponsibleOfficer(bookingId, token)
   }
 
   async function roByOffenderNo(offenderNo) {
-    logger.info('responsibleOfficer for offenderNo', offenderNo)
+    logger.info({ offenderNo }, 'responsibleOfficer for offenderNo')
     return roService.findResponsibleOfficerByOffenderNo(offenderNo)
   }
 
   async function getStaffByStaffIdentifier(identifier) {
-    logger.info('staff for identifier', identifier)
+    logger.info({ identifier }, 'staff for identifier')
     return roService.getStaffByStaffIdentifier(identifier)
   }
 
   async function staffByUsername(username) {
-    logger.info('staff for offenderNo', username)
+    logger.info({ username }, 'staff for offenderNo')
     return roService.getStaffByUsername(username)
   }
 
