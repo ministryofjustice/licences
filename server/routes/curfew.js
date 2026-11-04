@@ -165,9 +165,22 @@ module.exports =
     function addressWithdrawalPosts(formName) {
       return async (req, res) => {
         const { action, bookingId } = req.params
-        const { licence, stage } = res.locals.licence
+        const { licence, stage, id: licenceId } = res.locals.licence
 
         await licenceService.rejectProposedAddress(licence, bookingId, formName)
+
+        if (formName === 'withdrawAddress') {
+          const { offenderNo } = res.locals.prisoner
+          const { username } = req.user
+
+          await hdcService.postAddressWithdrawnEvent(
+            parseInt(bookingId, 10),
+            licenceId,
+            offenderNo,
+            username,
+            `${username} withdrew the residential address in HDC`
+          )
+        }
 
         const modifyAction = !action && isPostApproval(stage) ? 'modify' : action
 

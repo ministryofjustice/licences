@@ -733,6 +733,7 @@ describe('/hdc/curfew', () => {
 
   describe('address withdrawal posts', () => {
     const licence = {
+      id: 2,
       licence: {
         proposedAddress: {
           curfewAddress: {},
@@ -743,7 +744,8 @@ describe('/hdc/curfew', () => {
     test('withdraw address calls rejectPropsedAddress then returns to taslist', () => {
       const licenceService = createLicenceServiceStub()
       licenceService.getLicence = jest.fn().mockReturnValue(licence)
-      const app = createApp({ licenceServiceStub: licenceService }, 'caUser')
+      const hdcService = createHdcServiceStub()
+      const app = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
       return request(app)
         .post('/hdc/curfew/withdrawAddress/1')
         .send({ withdrawAddress: 'Yes' })
@@ -751,8 +753,30 @@ describe('/hdc/curfew', () => {
         .expect((res) => {
           expect(licenceService.rejectProposedAddress).toHaveBeenCalled()
           expect(licenceService.rejectProposedAddress).toHaveBeenCalledWith(licence.licence, '1', 'withdrawAddress')
+          expect(hdcService.postAddressWithdrawnEvent).toHaveBeenCalledWith(
+            1,
+            2,
+            'A1234AA',
+            'CA_USER_TEST',
+            'CA_USER_TEST withdrew the residential address in HDC'
+          )
 
           expect(res.header.location).toBe('/hdc/taskList/1')
+        })
+    })
+
+    test('withdraw consent does not post an address withdrawn event', () => {
+      const licenceService = createLicenceServiceStub()
+      licenceService.getLicence.mockResolvedValue(licence)
+      const hdcService = createHdcServiceStub()
+      const app = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
+
+      return request(app)
+        .post('/hdc/curfew/withdrawConsent/1')
+        .send({ withdrawConsent: 'Yes' })
+        .expect(302)
+        .expect(() => {
+          expect(hdcService.postAddressWithdrawnEvent).not.toHaveBeenCalled()
         })
     })
 

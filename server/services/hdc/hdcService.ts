@@ -497,6 +497,24 @@ export class HdcService {
       reason,
     })
   }
+
+  async postAddressWithdrawnEvent(
+    bookingId: number,
+    licenceId: number,
+    nomsNumber: string,
+    username: string,
+    reason: string | null = null,
+  ): Promise<void> {
+
+    return this.postCvlEvent({
+      bookingId,
+      licenceId,
+      nomsNumber,
+      eventType: 'ADDRESS_WITHDRAWN',
+      triggeredBy: username,
+      reason,
+    })
+  }
 }
 
 export function createHdcService(
