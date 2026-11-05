@@ -291,23 +291,6 @@ export default function createApp({
   // Don't cache dynamic resources
   app.use(noCache())
 
-  const excludedPaths = /^\/public|^\/assets|^\/health|^\/ping|^\/favicon.ico/
-  app.use((req, res, next) => {
-    if (excludedPaths.test(req.path)) {
-      return next()
-    }
-
-    logger.info(
-      {
-        path: req.path,
-        username: req.user && req.user.username,
-        role: req.user && req.user.role,
-      },
-      'Request'
-    )
-    return next()
-  })
-
   app.use(flash())
 
   app.use('/logout', (req, res) => {
