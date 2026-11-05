@@ -25,6 +25,7 @@ describe('addUserDataToTelemetry', () => {
     res.locals.user = {
       username: 'joebloggs',
       uuid: 'de263104-4907-4ade-9d21-1b576a320357',
+      role: 'CA',
       activeCaseLoadId: 'MDI',
     }
 
@@ -33,6 +34,7 @@ describe('addUserDataToTelemetry', () => {
     expect(telemetry.setSpanAttributes).toHaveBeenCalledWith({
       username: 'joebloggs',
       userUuid: 'de263104-4907-4ade-9d21-1b576a320357',
+      role: 'CA',
       activeCaseLoadId: 'MDI',
     })
     expect(next).toHaveBeenCalledTimes(1)

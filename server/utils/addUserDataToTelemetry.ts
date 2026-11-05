@@ -5,10 +5,13 @@ export default function addUserDataToTelemetry(): RequestHandler {
   return (req, res, next) => {
     const { user } = res.locals
 
+    console.log(user)
+
     if (user) {
       telemetry.setSpanAttributes({
         ...(user.username && { username: user.username }),
         ...(user.uuid && { userUuid: user.uuid }),
+        ...(user.role && { role: user.role }),
         ...(user.activeCaseLoadId && { activeCaseLoadId: user.activeCaseLoadId }),
       })
     }
