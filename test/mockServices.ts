@@ -143,6 +143,7 @@ export const createHdcServiceStub = () => ({
     postOptInEvent: jest.fn(),
     postRefuseEvent: jest.fn(),
     postAddressWithdrawnEvent: jest.fn(),
+    postResidentialAddressChangedToApprovedPremisesEvent: jest.fn(),
 })
 
 export const createRoServiceStub = () => ({

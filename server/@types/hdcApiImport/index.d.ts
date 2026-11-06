@@ -433,7 +433,7 @@ export interface components {
     }
     HdcCvlEventRequest: {
       /** @enum {string} */
-      eventType: 'OPT_IN' | 'OPT_OUT' | 'POSTPONE' | 'RESUME' | 'REFUSE' | 'ADDRESS_WITHDRAWN'
+      eventType: 'OPT_IN' | 'OPT_OUT' | 'POSTPONE' | 'RESUME' | 'REFUSE' | 'ADDRESS_WITHDRAWN' | 'RESIDENTIAL_ADDRESS_CHANGED_TO_APPROVED_PREMISES'
       /** Format: int64 */
       licenceId: number
       /** Format: int64 */
