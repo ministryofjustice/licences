@@ -12,6 +12,34 @@ module.exports =
 
     router.get('/approvedPremises/:bookingId', approvedPremisesGets('approvedPremises'))
     router.get('/approvedPremises/:action/:bookingId', approvedPremisesGets('approvedPremises'))
+    router.post(
+      '/approvedPremises/:bookingId',
+      audited,
+      asyncMiddleware(standard.callbackPost('approvedPremises', approvedPremisesSaved))
+    )
+    router.post(
+      '/approvedPremises/:action/:bookingId',
+      audited,
+      asyncMiddleware(standard.callbackPost('approvedPremises', approvedPremisesSaved))
+    )
+
+    async function approvedPremisesSaved({ req, res, bookingId }) {
+      const alreadyRequired = isYes(res.locals.licence, ['licence', 'curfew', 'approvedPremises', 'required'])
+      if (req.body.required === 'Yes' && !alreadyRequired) {
+        const { id: licenceId } = res.locals.licence
+        const { offenderNo } = res.locals.prisoner
+        const { username } = req.user
+
+        await hdcService.postResidentialAddressChangedToApprovedPremisesEvent(
+          parseInt(bookingId, 10),
+          licenceId,
+          offenderNo,
+          username,
+          `${username} changed the residential address to an approved premises`
+        )
+      }
+    }
+
     function approvedPremisesGets(formName) {
       return (req, res) => {
         const { action, bookingId } = req.params

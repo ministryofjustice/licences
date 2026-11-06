@@ -498,6 +498,23 @@ export class HdcService {
     })
   }
 
+  async postResidentialAddressChangedToApprovedPremisesEvent(
+    bookingId: number,
+    licenceId: number,
+    nomsNumber: string,
+    username: string,
+    reason: string | null = null,
+  ): Promise<void> {
+    return this.postCvlEvent({
+      bookingId,
+      licenceId,
+      nomsNumber,
+      eventType: 'RESIDENTIAL_ADDRESS_CHANGED_TO_APPROVED_PREMISES',
+      triggeredBy: username,
+      reason,
+    })
+  }
+
   async postAddressWithdrawnEvent(
     bookingId: number,
     licenceId: number,

@@ -366,6 +366,8 @@ describe('/hdc/curfew', () => {
             username: 'CA_USER_TEST',
           })
           expect(hdcService.postOptOutEvent).toHaveBeenCalledWith(1, 2, 'A1234AA', 'CA_USER_TEST', 'CA_USER_TEST opted out of HDC after COM added an approved premises')
+          expect(hdcService.postAddressWithdrawnEvent).not.toHaveBeenCalled()
+          expect(hdcService.postResidentialAddressChangedToApprovedPremisesEvent).not.toHaveBeenCalled()
         })
     })
 
@@ -394,10 +396,10 @@ describe('/hdc/curfew', () => {
         })
     })
 
-    test(`should not post event if not optout`, () => {
+    test('should not post opt out, withdrawal or conversion events from the approved premises choice page', () => {
       const hdcService = createHdcServiceStub()
       const licenceService = createLicenceServiceStub()
-      licenceService.getLicence.mockResolvedValue({ licence: {}, stage: 'PROCESSING_CA' })
+      licenceService.getLicence.mockResolvedValue({ id: 1, licence: {}, stage: 'PROCESSING_CA' })
       const app = createApp(
         {
           licenceServiceStub: licenceService,
@@ -412,6 +414,8 @@ describe('/hdc/curfew', () => {
         .expect(302)
         .expect(() => {
           expect(hdcService.postOptOutEvent).not.toHaveBeenCalled()
+          expect(hdcService.postAddressWithdrawnEvent).not.toHaveBeenCalled()
+          expect(hdcService.postResidentialAddressChangedToApprovedPremisesEvent).not.toHaveBeenCalled()
         })
     })
 
@@ -453,6 +457,123 @@ describe('/hdc/curfew', () => {
         })
     })
 
+  })
+
+  describe('POST /hdc/curfew/approvedPremises', () => {
+    let licenceService
+    let hdcService
+    let app
+
+    beforeEach(() => {
+      licenceService = createLicenceServiceStub()
+      licenceService.getLicence.mockResolvedValue({
+        id: 2,
+        licence: { curfew: { approvedPremises: { required: 'No' } } },
+        stage: 'PROCESSING_RO',
+      })
+      hdcService = createHdcServiceStub()
+      app = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'roUser')
+    })
+
+    test.each([
+      ['/hdc/curfew/approvedPremises/1', '/hdc/curfew/approvedPremisesAddress/1'],
+      ['/hdc/curfew/approvedPremises/change/1', '/hdc/curfew/approvedPremisesAddress/change/1'],
+    ])('should save Yes and send the conversion event from %s', async (url, nextPath) => {
+      await request(app).post(url).send({ required: 'Yes' }).expect(302).expect('Location', nextPath)
+
+      expect(licenceService.update).toHaveBeenCalledWith(expect.objectContaining({
+        bookingId: '1',
+        licenceSection: 'curfew',
+        formName: 'approvedPremises',
+        userInput: { required: 'Yes' },
+      }))
+      expect(hdcService.postResidentialAddressChangedToApprovedPremisesEvent).toHaveBeenCalledTimes(1)
+      expect(hdcService.postResidentialAddressChangedToApprovedPremisesEvent).toHaveBeenCalledWith(
+        1, 2, 'A1234AA', 'RO_USER', 'RO_USER changed the residential address to an approved premises'
+      )
+      expect(licenceService.update.mock.invocationCallOrder[0]).toBeLessThan(
+        hdcService.postResidentialAddressChangedToApprovedPremisesEvent.mock.invocationCallOrder[0]
+      )
+      expect(hdcService.postAddressWithdrawnEvent).not.toHaveBeenCalled()
+    })
+
+    test.each([
+      ['/hdc/curfew/approvedPremises/1', '/hdc/curfew/curfewAddressReview/1'],
+      ['/hdc/curfew/approvedPremises/change/1', '/hdc/curfew/curfewAddressReview/change/1'],
+    ])('should not send the conversion event when No is saved from %s', async (url, nextPath) => {
+      await request(app).post(url).send({ required: 'No' }).expect(302).expect('Location', nextPath)
+
+      expect(licenceService.update).toHaveBeenCalled()
+      expect(hdcService.postResidentialAddressChangedToApprovedPremisesEvent).not.toHaveBeenCalled()
+    })
+
+    test.each([
+      ['/hdc/curfew/approvedPremises/1', '/hdc/curfew/approvedPremisesAddress/1'],
+      ['/hdc/curfew/approvedPremises/change/1', '/hdc/curfew/approvedPremisesAddress/change/1'],
+    ])('should save without sending another event when Yes is already selected from %s', async (url, nextPath) => {
+      licenceService.getLicence.mockResolvedValue({
+        id: 2,
+        licence: { curfew: { approvedPremises: { required: 'Yes' } } },
+        stage: 'PROCESSING_RO',
+      })
+
+      await request(app).post(url).send({ required: 'Yes' }).expect(302).expect('Location', nextPath)
+
+      expect(licenceService.update).toHaveBeenCalled()
+      expect(hdcService.postResidentialAddressChangedToApprovedPremisesEvent).not.toHaveBeenCalled()
+    })
+
+    test('should send the conversion event when Yes is selected for the first time', async () => {
+      licenceService.getLicence.mockResolvedValue({ id: 2, licence: {}, stage: 'PROCESSING_RO' })
+
+      await request(app).post('/hdc/curfew/approvedPremises/1').send({ required: 'Yes' }).expect(302)
+
+      expect(hdcService.postResidentialAddressChangedToApprovedPremisesEvent).toHaveBeenCalledTimes(1)
+    })
+
+    test.each([
+      ['/hdc/curfew/approvedPremises/1', '/hdc/curfew/curfewAddressReview/1'],
+      ['/hdc/curfew/approvedPremises/change/1', '/hdc/curfew/curfewAddressReview/change/1'],
+    ])('should not send the conversion event when changing Yes to No from %s', async (url, nextPath) => {
+      licenceService.getLicence.mockResolvedValue({
+        id: 2,
+        licence: { curfew: { approvedPremises: { required: 'Yes' } } },
+        stage: 'PROCESSING_RO',
+      })
+
+      await request(app).post(url).send({ required: 'No' }).expect(302).expect('Location', nextPath)
+
+      expect(licenceService.update).toHaveBeenCalledWith(expect.objectContaining({
+        userInput: { required: 'No' },
+      }))
+      expect(hdcService.postResidentialAddressChangedToApprovedPremisesEvent).not.toHaveBeenCalled()
+    })
+
+    test.each([
+      '/hdc/curfew/approvedPremises/1',
+      '/hdc/curfew/approvedPremises/change/1',
+    ])('should not post the conversion event if saving fails from %s', async (url) => {
+      licenceService.update.mockRejectedValue(new Error('Save failed'))
+
+      await request(app).post(url).send({ required: 'Yes' }).expect(500)
+
+      expect(hdcService.postResidentialAddressChangedToApprovedPremisesEvent).not.toHaveBeenCalled()
+    })
+
+    test.each([
+      '/hdc/curfew/approvedPremises/1',
+      '/hdc/curfew/approvedPremises/change/1',
+    ])('should return an error if posting the conversion event fails from %s', (url) => {
+      hdcService.postResidentialAddressChangedToApprovedPremisesEvent.mockRejectedValue(new Error('HDC API error'))
+
+      return request(app)
+        .post(url)
+        .send({ required: 'Yes' })
+        .expect(500)
+    })
+  })
+
+  describe('approvedPremisesChoice NOMIS status', () => {
     test(`should not push nomis if not optout`, () => {
       const nomisPushService = createNomisPushServiceStub()
       const licenceService = createLicenceServiceStub()

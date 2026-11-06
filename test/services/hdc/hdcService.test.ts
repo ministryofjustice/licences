@@ -147,6 +147,52 @@ describe('HdcService', () => {
     })
   })
 
+  describe('postResidentialAddressChangedToApprovedPremisesEvent', () => {
+    it('should default the reason to null when omitted', async () => {
+      await service.postResidentialAddressChangedToApprovedPremisesEvent(123, 456, 'A1234AA', 'USER')
+
+      expect(hdcClient.postCvlEvent).toHaveBeenCalledWith({
+        bookingId: 123,
+        licenceId: 456,
+        nomsNumber: 'A1234AA',
+        eventType: 'RESIDENTIAL_ADDRESS_CHANGED_TO_APPROVED_PREMISES',
+        reason: null,
+        triggeredBy: 'USER',
+      })
+    })
+
+    it('should propagate and log HDC API failures', async () => {
+      const error = new Error('API error')
+      hdcClient.postCvlEvent.mockRejectedValue(error)
+
+      await expect(service.postResidentialAddressChangedToApprovedPremisesEvent(
+        123, 456, 'A1234AA', 'USER'
+      )).rejects.toThrow(error)
+
+      expect(logger.error).toHaveBeenCalledWith(
+        expect.objectContaining({ message: 'API error' }),
+        'Failed to post CVL event'
+      )
+    })
+
+    it('should post the residential address conversion event with the required metadata', async () => {
+      hdcClient.postCvlEvent.mockResolvedValue(undefined)
+
+      await service.postResidentialAddressChangedToApprovedPremisesEvent(
+        123, 456, 'A1234AA', 'USER', 'USER changed the residential address to an approved premises'
+      )
+
+      expect(hdcClient.postCvlEvent).toHaveBeenCalledWith({
+        bookingId: 123,
+        licenceId: 456,
+        nomsNumber: 'A1234AA',
+        eventType: 'RESIDENTIAL_ADDRESS_CHANGED_TO_APPROVED_PREMISES',
+        reason: 'USER changed the residential address to an approved premises',
+        triggeredBy: 'USER',
+      })
+    })
+  })
+
   describe('postAddressWithdrawnEvent', () => {
     it('should call postCvlEvent with ADDRESS_WITHDRAWN event type', async () => {
       hdcClient.postCvlEvent.mockResolvedValue(undefined)
