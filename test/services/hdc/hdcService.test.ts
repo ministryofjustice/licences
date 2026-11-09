@@ -62,105 +62,41 @@ describe('HdcService', () => {
     })
   })
 
-  describe('postOptOutEvent', () => {
-    it('should call postCvlEvent with OPT_OUT event type', async () => {
-      hdcClient.postCvlEvent.mockResolvedValue(undefined)
+  it.each<HdcCvlEventRequest['eventType']>([
+    'OPT_IN',
+    'OPT_OUT',
+    'POSTPONE',
+    'RESUME',
+    'REFUSE',
+    'ADDRESS_WITHDRAWN',
+    'RESIDENTIAL_ADDRESS_CHANGED_TO_APPROVED_PREMISES',
+  ])('should publish %s with its metadata unchanged', async (eventType) => {
+    const event: HdcCvlEventRequest = {
+      eventType,
+      bookingId: 123,
+      licenceId: 456,
+      nomsNumber: 'A1234AA',
+      triggeredBy: 'USER',
+      reason: 'reason',
+    }
 
-      await service.postOptOutEvent(123, 456, 'A1234AA', 'USER', 'USER opted out of HDC at curfew address task')
+    await service.postCvlEvent(event)
 
-      expect(hdcClient.postCvlEvent).toHaveBeenCalledWith({
-        bookingId: 123,
-        licenceId: 456,
-        nomsNumber: 'A1234AA',
-        eventType: 'OPT_OUT',
-        reason: 'USER opted out of HDC at curfew address task',
-        triggeredBy: 'USER',
-      })
-    })
+    expect(hdcClient.postCvlEvent).toHaveBeenCalledTimes(1)
+    expect(hdcClient.postCvlEvent).toHaveBeenCalledWith(event)
   })
 
-  describe('postPostponeEvent', () => {
-    it('should call postCvlEvent with POSTPONE event type', async () => {
-      hdcClient.postCvlEvent.mockResolvedValue(undefined)
+  it('should accept an event without an optional reason', async () => {
+    const event: HdcCvlEventRequest = {
+      eventType: 'RESIDENTIAL_ADDRESS_CHANGED_TO_APPROVED_PREMISES',
+      bookingId: 123,
+      licenceId: 456,
+      nomsNumber: 'A1234AA',
+      triggeredBy: 'USER',
+    }
 
-      await service.postPostponeEvent(123, 456, 'A1234AA', 'USER', 'outstandingRisk')
+    await service.postCvlEvent(event)
 
-      expect(hdcClient.postCvlEvent).toHaveBeenCalledWith({
-        bookingId: 123,
-        licenceId: 456,
-        nomsNumber: 'A1234AA',
-        eventType: 'POSTPONE',
-        reason: 'outstandingRisk',
-        triggeredBy: 'USER',
-      })
-    })
-  })
-
-  describe('postResumeEvent', () => {
-    it('should call postCvlEvent with RESUME event type', async () => {
-      hdcClient.postCvlEvent.mockResolvedValue(undefined)
-
-      await service.postResumeEvent(123, 456, 'A1234AA', 'USER', 'USER resumed the HDC application')
-
-      expect(hdcClient.postCvlEvent).toHaveBeenCalledWith({
-        bookingId: 123,
-        licenceId: 456,
-        nomsNumber: 'A1234AA',
-        eventType: 'RESUME',
-        reason: 'USER resumed the HDC application',
-        triggeredBy: 'USER',
-      })
-    })
-  })
-
-  describe('postRefuseEvent', () => {
-    it('should call postCvlEvent with REFUSE event type', async () => {
-      hdcClient.postCvlEvent.mockResolvedValue(undefined)
-
-      await service.postRefuseEvent(123, 456, 'A1234AA', 'USER', 'addressUnsuitable')
-
-      expect(hdcClient.postCvlEvent).toHaveBeenCalledWith({
-        bookingId: 123,
-        licenceId: 456,
-        nomsNumber: 'A1234AA',
-        eventType: 'REFUSE',
-        reason: 'addressUnsuitable',
-        triggeredBy: 'USER',
-      })
-    })
-  })
-
-  describe('postOptInEvent', () => {
-    it('should call postCvlEvent with OPT_IN event type', async () => {
-      hdcClient.postCvlEvent.mockResolvedValue(undefined)
-
-      await service.postOptInEvent(123, 456, 'A1234AA', 'USER', 'USER opted in to HDC at curfew address task')
-
-      expect(hdcClient.postCvlEvent).toHaveBeenCalledWith({
-        bookingId: 123,
-        licenceId: 456,
-        nomsNumber: 'A1234AA',
-        eventType: 'OPT_IN',
-        reason: 'USER opted in to HDC at curfew address task',
-        triggeredBy: 'USER',
-      })
-    })
-  })
-
-  describe('postAddressWithdrawnEvent', () => {
-    it('should call postCvlEvent with ADDRESS_WITHDRAWN event type', async () => {
-      hdcClient.postCvlEvent.mockResolvedValue(undefined)
-
-      await service.postAddressWithdrawnEvent(123, 456, 'A1234AA', 'USER', 'USER withdrew the residential address in HDC')
-
-      expect(hdcClient.postCvlEvent).toHaveBeenCalledWith({
-        bookingId: 123,
-        licenceId: 456,
-        nomsNumber: 'A1234AA',
-        eventType: 'ADDRESS_WITHDRAWN',
-        reason: 'USER withdrew the residential address in HDC',
-        triggeredBy: 'USER',
-      })
-    })
+    expect(hdcClient.postCvlEvent).toHaveBeenCalledWith(event)
   })
 })

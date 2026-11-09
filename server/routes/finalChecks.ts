@@ -104,31 +104,34 @@ function postPostpone(licenceService, nomisPushService, hdcService, config) {
       await pushStatus(updatedLicence, bookingId, username)
     }
 
-    await postPostponeOrResumeEvent(res, originalLicence, updatedLicence, decision, bookingId, username)
+    await postPostponeOrResumeEvent(res, updatedLicence, decision, bookingId, username)
 
     return res.redirect(`/hdc/taskList/${bookingId}`)
   }
 
-  async function postPostponeOrResumeEvent(res, originalLicence, updatedLicence, decision, bookingId, username) {
-    const previousDecision = getIn(originalLicence, ['licence', 'finalChecks', 'postpone', 'decision'])
-    if (previousDecision === decision) {
-      return
-    }
-
+  async function postPostponeOrResumeEvent(res, updatedLicence, decision, bookingId, username) {
     const { offenderNo } = res.locals.prisoner
     const licenceId = res.locals.licence.id
 
     if (decision === 'Yes') {
       const postponeReason = getIn(updatedLicence, ['finalChecks', 'postpone', 'postponeReason'])
-      await hdcService.postPostponeEvent(parseInt(bookingId, 10), licenceId, offenderNo, username, postponeReason)
-    } else if (previousDecision === 'Yes') {
-      await hdcService.postResumeEvent(
-        parseInt(bookingId, 10),
+      await hdcService.postCvlEvent({
+        eventType: 'POSTPONE',
+        bookingId: parseInt(bookingId, 10),
         licenceId,
-        offenderNo,
-        username,
-        `${username} resumed the HDC application`
-      )
+        nomsNumber: offenderNo,
+        triggeredBy: username,
+        reason: postponeReason ?? null
+      })
+    } else if (decision === 'No') {
+      await hdcService.postCvlEvent({
+        eventType: 'RESUME',
+        bookingId: parseInt(bookingId, 10),
+        licenceId,
+        nomsNumber: offenderNo,
+        triggeredBy: username,
+        reason: `${username} resumed the HDC application`
+      })
     }
   }
 
@@ -206,14 +209,17 @@ function postRefusal(licenceService, nomisPushService, hdcService, appConfig) {
         await nomisPushService.pushStatus({ bookingId, data: { type: 'refusal', status: 'Yes', reason }, username })
       }
 
-      const previousAnswers = getIn(originalLicence, ['licence', 'finalChecks', 'refusal']) || {}
-      const hasChanged = previousAnswers.decision !== decision || previousAnswers.reason !== reason
-      if (hasChanged) {
-        const { offenderNo } = res.locals.prisoner
-        const licenceId = res.locals.licence.id
-        const eventReason = Array.isArray(reason) ? reason.join(', ') : (reason || '')
-        await hdcService.postRefuseEvent(parseInt(bookingId, 10), licenceId, offenderNo, username, eventReason)
-      }
+      const { offenderNo } = res.locals.prisoner
+      const licenceId = res.locals.licence.id
+      const eventReason = Array.isArray(reason) ? reason.join(', ') : (reason || '')
+      await hdcService.postCvlEvent({
+        eventType: 'REFUSE',
+        bookingId: parseInt(bookingId, 10),
+        licenceId,
+        nomsNumber: offenderNo,
+        triggeredBy: username,
+        reason: eventReason
+      })
     }
 
     return res.redirect(`/hdc/taskList/${bookingId}`)

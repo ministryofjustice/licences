@@ -63,7 +63,6 @@ module.exports =
 
         const isAnOptOut  =  decision === 'OptOut'
         const proposedAddress = getIn(licence, ['licence', 'proposedAddress'])
-        const hasAlreadyOptedIn = getIn(proposedAddress, ['optOut', 'decision']) === 'No'
 
         const newProposedAddress = mergeWithRight(proposedAddress, proposedAddressContents[decision])
 
@@ -82,13 +81,23 @@ module.exports =
             })
           }
 
-          await hdcService.postOptOutEvent(parseInt(bookingId,10), licenceId, offenderNo, userName,
-            `${userName} opted out of HDC after COM added an approved CAS2 premises`
-          )
-        } else if (!hasAlreadyOptedIn) {
-          await hdcService.postOptInEvent(parseInt(bookingId,10), licenceId, offenderNo, userName,
-            `${userName} opted in to HDC after COM added an approved CAS2 premises`
-          )
+          await hdcService.postCvlEvent({
+            eventType: 'OPT_OUT',
+            bookingId: parseInt(bookingId, 10),
+            licenceId,
+            nomsNumber: offenderNo,
+            triggeredBy: userName,
+            reason: `${userName} opted out of HDC after COM added an approved CAS2 premises`
+          })
+        } else {
+          await hdcService.postCvlEvent({
+            eventType: 'OPT_IN',
+            bookingId: parseInt(bookingId, 10),
+            licenceId,
+            nomsNumber: offenderNo,
+            triggeredBy: userName,
+            reason: `${userName} opted in to HDC after COM added an approved CAS2 premises`
+          })
         }
 
         const nextPath = formConfig.approvedPremisesChoice.nextPath[decision] || `/hdc/taskList/`

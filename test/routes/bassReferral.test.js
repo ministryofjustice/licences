@@ -299,7 +299,14 @@ describe('/hdc/bassReferral', () => {
             expect(licenceService.updateSection).toHaveBeenCalledWith('bassReferral', '1', {
               approvedPremises: { required: 'No' },
             })
-            expect(hdcService.postOptOutEvent).toHaveBeenCalledWith(1, 1, 'A1234AA', 'CA_USER_TEST', 'CA_USER_TEST opted out of HDC after COM added an approved CAS2 premises')
+            expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+              eventType: 'OPT_OUT',
+              bookingId: 1,
+              licenceId: 1,
+              nomsNumber: 'A1234AA',
+              triggeredBy: 'CA_USER_TEST',
+              reason: 'CA_USER_TEST opted out of HDC after COM added an approved CAS2 premises'
+            })
             expect(res.header.location).toBe('/hdc/taskList/1')
           })
       })
@@ -341,12 +348,19 @@ describe('/hdc/bassReferral', () => {
           .send({ decision: 'ApprovedPremises' })
           .expect(302)
           .expect(() => {
-            expect(hdcService.postOptInEvent).toHaveBeenCalledWith(1, 1, 'A1234AA', 'CA_USER_TEST', 'CA_USER_TEST opted in to HDC after COM added an approved CAS2 premises')
-            expect(hdcService.postOptOutEvent).not.toHaveBeenCalled()
+            expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+              eventType: 'OPT_IN',
+              bookingId: 1,
+              licenceId: 1,
+              nomsNumber: 'A1234AA',
+              triggeredBy: 'CA_USER_TEST',
+              reason: 'CA_USER_TEST opted in to HDC after COM added an approved CAS2 premises'
+            })
+            expect(hdcService.postCvlEvent).not.toHaveBeenCalledWith(expect.objectContaining({ eventType: 'OPT_OUT' }))
           })
       })
 
-      test('POST approvedPremisesChoice with ApprovedPremises does not post opt in event when already opted in', () => {
+      test('POST approvedPremisesChoice with ApprovedPremises posts opt in event when already opted in', () => {
         const licenceService = createLicenceServiceStub()
         licenceService.getLicence.mockResolvedValue({
           id: 1,
@@ -360,7 +374,7 @@ describe('/hdc/bassReferral', () => {
           .send({ decision: 'ApprovedPremises' })
           .expect(302)
           .expect(() => {
-            expect(hdcService.postOptInEvent).not.toHaveBeenCalled()
+            expect(hdcService.postCvlEvent).toHaveBeenCalledTimes(1)
           })
       })
     })

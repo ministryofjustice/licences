@@ -117,7 +117,14 @@ describe('/hdc/proposedAddress/', () => {
           .expect(302)
           .expect('Location', '/hdc/taskList/1')
           .expect(() => {
-            expect(hdcService.postOptOutEvent).toHaveBeenCalledWith(1, 1, 'A1234AA', 'CA_USER_TEST','CA_USER_TEST opted out of HDC during initial curfew address task')
+            expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+              eventType: 'OPT_OUT',
+              bookingId: 1,
+              licenceId: 1,
+              nomsNumber: 'A1234AA',
+              triggeredBy: 'CA_USER_TEST',
+              reason: 'CA_USER_TEST opted out of HDC during initial curfew address task'
+            })
             expect(nomisPushService.pushStatus).not.toHaveBeenCalled()
           })
       })
@@ -141,7 +148,14 @@ describe('/hdc/proposedAddress/', () => {
           .expect(302)
           .expect('Location', '/hdc/taskList/1')
           .expect(() => {
-            expect(hdcService.postOptOutEvent).toHaveBeenCalledWith(1, 1, 'A1234AA', 'CA_USER_TEST', 'CA_USER_TEST opted out of HDC during initial curfew address task')
+            expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+              eventType: 'OPT_OUT',
+              bookingId: 1,
+              licenceId: 1,
+              nomsNumber: 'A1234AA',
+              triggeredBy: 'CA_USER_TEST',
+              reason: 'CA_USER_TEST opted out of HDC during initial curfew address task'
+            })
             expect(nomisPushService.pushStatus).toHaveBeenCalled()
           })
       })
@@ -164,12 +178,19 @@ describe('/hdc/proposedAddress/', () => {
           .send({ decision })
           .expect(302)
           .expect(() => {
-            expect(hdcService.postOptInEvent).toHaveBeenCalledWith(1, 1, 'A1234AA', 'CA_USER_TEST', 'CA_USER_TEST opted in to HDC during initial curfew address task')
-            expect(hdcService.postOptOutEvent).not.toHaveBeenCalled()
+            expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+              eventType: 'OPT_IN',
+              bookingId: 1,
+              licenceId: 1,
+              nomsNumber: 'A1234AA',
+              triggeredBy: 'CA_USER_TEST',
+              reason: 'CA_USER_TEST opted in to HDC during initial curfew address task'
+            })
+            expect(hdcService.postCvlEvent).not.toHaveBeenCalledWith(expect.objectContaining({ eventType: 'OPT_OUT' }))
           })
       })
 
-      test.each(['Address', 'Bass'])('does not post opt in event when %s and already opted in', (decision) => {
+      test.each(['Address', 'Bass'])('posts opt in event when %s and already opted in', (decision) => {
         const hdcService = createHdcServiceStub()
         licenceService.getLicence.mockResolvedValue({
           id: 1,
@@ -182,7 +203,7 @@ describe('/hdc/proposedAddress/', () => {
           .send({ decision })
           .expect(302)
           .expect(() => {
-            expect(hdcService.postOptInEvent).not.toHaveBeenCalled()
+            expect(hdcService.postCvlEvent).toHaveBeenCalledTimes(1)
           })
       })
     })
