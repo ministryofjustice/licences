@@ -374,14 +374,15 @@ describe('/hdc/finalChecks', () => {
           .expect(302)
           .expect('Location', '/hdc/taskList/1')
           .expect(() => {
-            expect(hdcService.postPostponeEvent).toHaveBeenCalledWith(
-              1,
-              1,
-              'A1234AA',
-              'CA_USER_TEST',
-              'outstandingRisk'
-            )
-            expect(hdcService.postResumeEvent).not.toHaveBeenCalled()
+            expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+              eventType: 'POSTPONE',
+              bookingId: 1,
+              licenceId: 1,
+              nomsNumber: 'A1234AA',
+              triggeredBy: 'CA_USER_TEST',
+              reason: 'outstandingRisk'
+            })
+            expect(hdcService.postCvlEvent).not.toHaveBeenCalledWith(expect.objectContaining({ eventType: 'RESUME' }))
           })
       })
 
@@ -398,31 +399,34 @@ describe('/hdc/finalChecks', () => {
           .expect(302)
           .expect('Location', '/hdc/taskList/1')
           .expect(() => {
-            expect(hdcService.postResumeEvent).toHaveBeenCalledWith(
-              1,
-              1,
-              'A1234AA',
-              'CA_USER_TEST',
-              'CA_USER_TEST resumed the HDC application'
-            )
-            expect(hdcService.postPostponeEvent).not.toHaveBeenCalled()
+            expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+              eventType: 'RESUME',
+              bookingId: 1,
+              licenceId: 1,
+              nomsNumber: 'A1234AA',
+              triggeredBy: 'CA_USER_TEST',
+              reason: 'CA_USER_TEST resumed the HDC application'
+            })
+            expect(hdcService.postCvlEvent).not.toHaveBeenCalledWith(expect.objectContaining({ eventType: 'POSTPONE' }))
           })
       })
 
-      test('does not post an event when the decision is unchanged', () => {
+      test.each(['Yes', 'No'])('posts an event when the decision is unchanged at %s', (decision) => {
         const licenceService = createLicenceServiceStub()
-        licenceService.getLicence.mockResolvedValue({ id: 1, licence: { finalChecks: { postpone: { decision: 'Yes' } } } })
-        licenceService.update.mockResolvedValue({ finalChecks: { postpone: { decision: 'Yes' } } })
+        licenceService.getLicence.mockResolvedValue({ id: 1, licence: { finalChecks: { postpone: { decision } } } })
+        licenceService.update.mockResolvedValue({ finalChecks: { postpone: { decision } } })
         const hdcService = createHdcServiceStub()
         const app = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
 
         return request(app)
           .post('/hdc/finalChecks/postpone/1')
-          .send({ decision: 'Yes' })
+          .send({ decision })
           .expect(302)
           .expect(() => {
-            expect(hdcService.postPostponeEvent).not.toHaveBeenCalled()
-            expect(hdcService.postResumeEvent).not.toHaveBeenCalled()
+            expect(hdcService.postCvlEvent).toHaveBeenCalledTimes(1)
+            expect(hdcService.postCvlEvent).toHaveBeenCalledWith(expect.objectContaining({
+              eventType: decision === 'Yes' ? 'POSTPONE' : 'RESUME',
+            }))
           })
       })
     })
@@ -443,7 +447,14 @@ describe('/hdc/finalChecks', () => {
           .expect(302)
           .expect('Location', '/hdc/taskList/1')
           .expect(() => {
-            expect(hdcService.postRefuseEvent).toHaveBeenCalledWith(1, 1, 'A1234AA', 'CA_USER_TEST', 'addressUnsuitable')
+            expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+              eventType: 'REFUSE',
+              bookingId: 1,
+              licenceId: 1,
+              nomsNumber: 'A1234AA',
+              triggeredBy: 'CA_USER_TEST',
+              reason: 'addressUnsuitable'
+            })
           })
       })
 
@@ -462,13 +473,14 @@ describe('/hdc/finalChecks', () => {
           .send({ decision: 'Yes', reason: reasons })
           .expect(302)
           .expect(() => {
-            expect(hdcService.postRefuseEvent).toHaveBeenCalledWith(
-              1,
-              1,
-              'A1234AA',
-              'CA_USER_TEST',
-              'addressUnsuitable, insufficientTime'
-            )
+            expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+              eventType: 'REFUSE',
+              bookingId: 1,
+              licenceId: 1,
+              nomsNumber: 'A1234AA',
+              triggeredBy: 'CA_USER_TEST',
+              reason: 'addressUnsuitable, insufficientTime'
+            })
           })
       })
 
@@ -487,7 +499,14 @@ describe('/hdc/finalChecks', () => {
           .send({ decision: 'Yes', reason: reasons })
           .expect(302)
           .expect(() => {
-            expect(hdcService.postRefuseEvent).toHaveBeenCalledWith(1, 1, 'A1234AA', 'CA_USER_TEST', 'addressUnsuitable')
+            expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+              eventType: 'REFUSE',
+              bookingId: 1,
+              licenceId: 1,
+              nomsNumber: 'A1234AA',
+              triggeredBy: 'CA_USER_TEST',
+              reason: 'addressUnsuitable'
+            })
           })
       })
 
@@ -502,7 +521,7 @@ describe('/hdc/finalChecks', () => {
           .send({ decision: 'No' })
           .expect(302)
           .expect(() => {
-            expect(hdcService.postRefuseEvent).not.toHaveBeenCalled()
+            expect(hdcService.postCvlEvent).not.toHaveBeenCalledWith(expect.objectContaining({ eventType: 'REFUSE' }))
           })
       })
 
@@ -523,11 +542,18 @@ describe('/hdc/finalChecks', () => {
           .send({ decision: 'Yes', reason: 'insufficientTime', outOfTimeReasons: 'noAddress' })
           .expect(302)
           .expect(() => {
-            expect(hdcService.postRefuseEvent).toHaveBeenCalledWith(1, 1, 'A1234AA', 'CA_USER_TEST', 'insufficientTime')
+            expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+              eventType: 'REFUSE',
+              bookingId: 1,
+              licenceId: 1,
+              nomsNumber: 'A1234AA',
+              triggeredBy: 'CA_USER_TEST',
+              reason: 'insufficientTime'
+            })
           })
       })
 
-      test('does not post a refuse event when the licence was already refused and nothing changed', () => {
+      test('posts a refuse event when the licence was already refused and nothing changed', () => {
         const licenceService = createLicenceServiceStub()
         const existingLicence = { finalChecks: { refusal: { decision: 'Yes', reason: 'addressUnsuitable' } } }
         licenceService.getLicence.mockResolvedValue({ id: 1, licence: existingLicence })
@@ -540,7 +566,14 @@ describe('/hdc/finalChecks', () => {
           .send({ decision: 'Yes', reason: 'addressUnsuitable' })
           .expect(302)
           .expect(() => {
-            expect(hdcService.postRefuseEvent).not.toHaveBeenCalled()
+            expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+              eventType: 'REFUSE',
+              bookingId: 1,
+              licenceId: 1,
+              nomsNumber: 'A1234AA',
+              triggeredBy: 'CA_USER_TEST',
+              reason: 'addressUnsuitable'
+            })
           })
       })
     })

@@ -24,19 +24,19 @@ module.exports =
     )
 
     async function approvedPremisesSaved({ req, res, bookingId }) {
-      const alreadyRequired = isYes(res.locals.licence, ['licence', 'curfew', 'approvedPremises', 'required'])
-      if (req.body.required === 'Yes' && !alreadyRequired) {
+      if (req.body.required === 'Yes') {
         const { id: licenceId } = res.locals.licence
         const { offenderNo } = res.locals.prisoner
         const { username } = req.user
 
-        await hdcService.postResidentialAddressChangedToApprovedPremisesEvent(
-          parseInt(bookingId, 10),
+        await hdcService.postCvlEvent({
+          eventType: 'RESIDENTIAL_ADDRESS_CHANGED_TO_APPROVED_PREMISES',
+          bookingId: parseInt(bookingId, 10),
           licenceId,
-          offenderNo,
-          username,
-          `${username} changed the residential address to an approved premises`
-        )
+          nomsNumber: offenderNo,
+          triggeredBy: username,
+          reason: `${username} changed the residential address to an approved premises`
+        })
       }
     }
 
@@ -98,7 +98,6 @@ module.exports =
 
         const isAnOptOut  =  decision === 'OptOut'
         const proposedAddress = getIn(licence, ['licence', 'proposedAddress'])
-        const hasAlreadyOptedIn = getIn(proposedAddress, ['optOut', 'decision']) === 'No'
         const newProposedAddress = mergeWithRight(proposedAddress, proposedAddressContents[decision])
 
         await Promise.all([
@@ -116,13 +115,23 @@ module.exports =
             })
           }
 
-          await hdcService.postOptOutEvent(parseInt(bookingId,10), licenceId, offenderNo, userName,
-            `${userName} opted out of HDC after COM added an approved premises`
-          )
-        } else if (!hasAlreadyOptedIn) {
-          await hdcService.postOptInEvent(parseInt(bookingId,10), licenceId, offenderNo, userName,
-            `${userName} opted in to HDC after COM added an approved premises`
-          )
+          await hdcService.postCvlEvent({
+            eventType: 'OPT_OUT',
+            bookingId: parseInt(bookingId, 10),
+            licenceId,
+            nomsNumber: offenderNo,
+            triggeredBy: userName,
+            reason: `${userName} opted out of HDC after COM added an approved premises`
+          })
+        } else {
+          await hdcService.postCvlEvent({
+            eventType: 'OPT_IN',
+            bookingId: parseInt(bookingId, 10),
+            licenceId,
+            nomsNumber: offenderNo,
+            triggeredBy: userName,
+            reason: `${userName} opted in to HDC after COM added an approved premises`
+          })
         }
 
         const nextPath = formConfig.approvedPremisesChoice.nextPath[decision] || `/hdc/taskList/`
@@ -201,13 +210,14 @@ module.exports =
           const { offenderNo } = res.locals.prisoner
           const { username } = req.user
 
-          await hdcService.postAddressWithdrawnEvent(
-            parseInt(bookingId, 10),
+          await hdcService.postCvlEvent({
+            eventType: 'ADDRESS_WITHDRAWN',
+            bookingId: parseInt(bookingId, 10),
             licenceId,
-            offenderNo,
-            username,
-            `${username} withdrew the residential address in HDC`
-          )
+            nomsNumber: offenderNo,
+            triggeredBy: username,
+            reason: `${username} withdrew the residential address in HDC`
+          })
         }
 
         const modifyAction = !action && isPostApproval(stage) ? 'modify' : action

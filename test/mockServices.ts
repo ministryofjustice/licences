@@ -137,13 +137,6 @@ export const createHdcServiceStub = () => ({
     migrateSingleLicenceToCvlPreview: jest.fn(),
     getMigrationLogs: jest.fn(),
     postCvlEvent: jest.fn(),
-    postOptOutEvent: jest.fn(),
-    postPostponeEvent: jest.fn(),
-    postResumeEvent: jest.fn(),
-    postOptInEvent: jest.fn(),
-    postRefuseEvent: jest.fn(),
-    postAddressWithdrawnEvent: jest.fn(),
-    postResidentialAddressChangedToApprovedPremisesEvent: jest.fn(),
 })
 
 export const createRoServiceStub = () => ({

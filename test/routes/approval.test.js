@@ -244,7 +244,14 @@ describe('/hdc/approval', () => {
             .send(route.body)
             .expect(302)
             .expect(() => {
-              expect(hdcService.postRefuseEvent).toHaveBeenCalledWith(1, 1, 'A1234AA', 'DM_USER', 'addressUnsuitable')
+              expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+                eventType: 'REFUSE',
+                bookingId: 1,
+                licenceId: 1,
+                nomsNumber: 'A1234AA',
+                triggeredBy: 'DM_USER',
+                reason: 'addressUnsuitable'
+              })
             })
         })
       })
@@ -264,7 +271,14 @@ describe('/hdc/approval', () => {
             .send({ decision: 'No', reason: reasons })
             .expect(302)
             .expect(() => {
-              expect(hdcService.postRefuseEvent).toHaveBeenCalledWith(1, 1, 'A1234AA', 'DM_USER', 'addressUnsuitable')
+              expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+                eventType: 'REFUSE',
+                bookingId: 1,
+                licenceId: 1,
+                nomsNumber: 'A1234AA',
+                triggeredBy: 'DM_USER',
+                reason: 'addressUnsuitable'
+              })
             })
         })
 
@@ -282,13 +296,14 @@ describe('/hdc/approval', () => {
             .send({ decision: 'No', reason: reasons })
             .expect(302)
             .expect(() => {
-              expect(hdcService.postRefuseEvent).toHaveBeenCalledWith(
-                1,
-                1,
-                'A1234AA',
-                'DM_USER',
-                'addressUnsuitable, insufficientTime'
-              )
+              expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+                eventType: 'REFUSE',
+                bookingId: 1,
+                licenceId: 1,
+                nomsNumber: 'A1234AA',
+                triggeredBy: 'DM_USER',
+                reason: 'addressUnsuitable, insufficientTime'
+              })
             })
         })
       })
@@ -306,7 +321,14 @@ describe('/hdc/approval', () => {
           .send({ decision: 'No' })
           .expect(302)
           .expect(() => {
-            expect(hdcService.postRefuseEvent).toHaveBeenCalledWith(1, 1, 'A1234AA', 'DM_USER', '')
+            expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+              eventType: 'REFUSE',
+              bookingId: 1,
+              licenceId: 1,
+              nomsNumber: 'A1234AA',
+              triggeredBy: 'DM_USER',
+              reason: ''
+            })
           })
       })
 
@@ -320,11 +342,11 @@ describe('/hdc/approval', () => {
           .send({ decision: 'Yes' })
           .expect(302)
           .expect(() => {
-            expect(hdcService.postRefuseEvent).not.toHaveBeenCalled()
+            expect(hdcService.postCvlEvent).not.toHaveBeenCalledWith(expect.objectContaining({ eventType: 'REFUSE' }))
           })
       })
 
-      test('does not post a refuse event when nothing changed', () => {
+      test('posts a refuse event when nothing changed', () => {
         licenceServiceStub.getLicence.mockResolvedValue({
           id: 1,
           licence: { approval: { release: { decision: 'No', reason: 'addressUnsuitable' } } },
@@ -340,7 +362,14 @@ describe('/hdc/approval', () => {
           .send({ decision: 'No', reason: 'addressUnsuitable' })
           .expect(302)
           .expect(() => {
-            expect(hdcService.postRefuseEvent).not.toHaveBeenCalled()
+            expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+              eventType: 'REFUSE',
+              bookingId: 1,
+              licenceId: 1,
+              nomsNumber: 'A1234AA',
+              triggeredBy: 'DM_USER',
+              reason: 'addressUnsuitable'
+            })
           })
       })
 
@@ -360,7 +389,14 @@ describe('/hdc/approval', () => {
           .send({ decision: 'No', reason: 'insufficientTime' })
           .expect(302)
           .expect(() => {
-            expect(hdcService.postRefuseEvent).toHaveBeenCalledWith(1, 1, 'A1234AA', 'DM_USER', 'insufficientTime')
+            expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+              eventType: 'REFUSE',
+              bookingId: 1,
+              licenceId: 1,
+              nomsNumber: 'A1234AA',
+              triggeredBy: 'DM_USER',
+              reason: 'insufficientTime'
+            })
           })
       })
     })
