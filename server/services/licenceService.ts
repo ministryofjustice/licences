@@ -133,7 +133,7 @@ export class LicenceService {
 
       const approvedVersionDetails: ApprovedVersionDetails = rawVersionDetails || {}
       const migrationState = rawVersionDetails?.migration_state
-      const licenceInCvl = migrationState === 'COMPLETED'
+      const licenceInCvl = migrationState === 'COMPLETED' || rawLicence.licence_in_cvl
 
       const version = `${rawLicence.version}.${rawLicence.vary_version}`
       const versionDetails = {

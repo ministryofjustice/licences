@@ -191,6 +191,63 @@ describe('licenceService', () => {
       })
     })
 
+    test('should set licenceInCvl from approved licence version if migrationState COMPLETED', () => {
+      licenceClient.getApprovedLicenceVersion = jest.fn().mockReturnValue({ version: 2, vary_version: 4, migration_state : 'COMPLETED'})
+      return expect(service.getLicence(123)).resolves.toEqual({
+        licence: LICENCE_SAMPLE,
+        stage: undefined,
+        version: '2.5',
+        approvedVersion: '2.4',
+        approvedVersionDetails: {
+          vary_version: 4,
+          version: 2,
+          migration_state: 'COMPLETED',
+        },
+        id: 2,
+        versionDetails: {
+          vary_version: 5,
+          version: 2,
+          additional_conditions_version: 3,
+          standard_conditions_version: 1,
+        },
+        licenceInCvl: true,
+        migrationState: 'COMPLETED',
+      })
+    })
+
+    test('should set licenceInCvl from licence if migrationState not COMPLETED', () => {
+      licenceClient.getLicence = jest.fn().mockReturnValue({
+        id:2,
+        licence: LICENCE_SAMPLE,
+        booking_id: 1,
+        stage: undefined,
+        version: 2,
+        transition_date: moment('2018-05-31 15:23:39').toDate(),
+        vary_version: 5,
+        additional_conditions_version: 3 as AdditionalConditionsVersion,
+        standard_conditions_version: 1 as StandardConditionsVersion,
+        deleted_at: null,
+        licence_in_cvl: true,
+      })
+      licenceClient.getApprovedLicenceVersion = jest.fn().mockReturnValue(undefined)
+
+      return expect(service.getLicence(123)).resolves.toEqual({
+        licence: LICENCE_SAMPLE,
+        stage: undefined,
+        version: '2.5',
+        approvedVersion: '',
+        approvedVersionDetails: {},
+        id: 2,
+        versionDetails: {
+          vary_version: 5,
+          version: 2,
+          additional_conditions_version: 3,
+          standard_conditions_version: 1,
+        },
+        licenceInCvl: true,
+      })
+    })
+
     test('should return licence when no approved licence version', () => {
       ;(licenceClient.getApprovedLicenceVersion as jest.Mock<Promise<any>>).mockReturnValue(undefined)
 
