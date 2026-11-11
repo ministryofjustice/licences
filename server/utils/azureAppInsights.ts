@@ -1,4 +1,12 @@
-import { flushTelemetry, initialiseTelemetry, telemetry } from '@ministryofjustice/hmpps-azure-telemetry'
+import {
+  defaultInstrumentations,
+  flushTelemetry,
+  initialiseTelemetry,
+  telemetry
+} from '@ministryofjustice/hmpps-azure-telemetry'
+import { PgInstrumentation } from '@opentelemetry/instrumentation-pg'
+
+
 
 initialiseTelemetry({
   serviceName: 'licences',
@@ -8,6 +16,7 @@ initialiseTelemetry({
 })
   .addFilter(telemetry.processors.filterSpanWherePath(['/health', '/ping', '/info', '/assets/*', '/public/*', '/favicon.ico']))
   .addModifier(telemetry.processors.enrichSpanNameWithHttpRoute())
+  .setInstrumentations([...defaultInstrumentations, new PgInstrumentation()])
   .startRecording()
 
 const shutdown = async () => {
