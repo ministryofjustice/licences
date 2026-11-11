@@ -56,7 +56,7 @@ describe('licenceService', () => {
         deleted_at: '2024-05-02 15:00:00',
         licence_in_cvl: false,
       }),
-      createLicence: jest.fn() as jest.Mock<Promise<number>>,
+      createLicence: jest.fn() as jest.Mock<Promise<void>>,
       updateSection: jest.fn() as jest.Mock<Promise<void>>,
       updateStage: jest.fn() as jest.Mock<Promise<void>>,
       updateLicence: jest.fn() as jest.Mock<Promise<void>>,
@@ -305,14 +305,8 @@ describe('licenceService', () => {
       expect(licenceClient.createLicence).toHaveBeenCalledWith(123, 'A1234AA', LICENCE_SAMPLE, undefined, 1, 0)
     })
 
-    test('should return returned id', () => {
-      ;(licenceClient.createLicence as jest.Mock<Promise<number>>).mockResolvedValue(999)
-
-      return expect(service.createLicence({ bookingId: 123, prisonNumber: 'A1234AA' })).resolves.toBe(999)
-    })
-
     test('should throw if error getting licence', () => {
-      ;(licenceClient.createLicence as jest.Mock<Promise<number>>).mockRejectedValue(new Error('dead'))
+      ;(licenceClient.createLicence as jest.Mock<Promise<void>>).mockRejectedValue(new Error('dead'))
       return expect(service.createLicence({ bookingId: 123, prisonNumber: 'A1234AA' })).rejects.toEqual(Error('dead'))
     })
   })

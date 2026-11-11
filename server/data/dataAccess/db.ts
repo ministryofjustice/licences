@@ -23,7 +23,7 @@ pool.on('error', (error) => {
   logger.error({ stack: error.stack }, 'Unexpected error on idle client')
 })
 
-export const query = (text, params?) => pool.query(text, params)
+export const query = (text, params?) : Promise<{rows?: any[], rowCount?: number}> => pool.query(text, params)
 
 export const inTransaction = async (callback) => {
   const client = await pool.connect()

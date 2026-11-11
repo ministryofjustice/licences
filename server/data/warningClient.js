@@ -10,16 +10,16 @@ const db = require('./dataAccess/db')
  */
 const WarningClient = {
   async deleteAll() {
-    return db.query(`delete from warnings`)
+    await db.query(`delete from warnings`)
   },
 
   async raiseWarning(bookingId, code, messsage) {
     const query = {
-      text: `INSERT INTO warnings (booking_id, code, message, acknowledged) VALUES ($1, $2, $3, false) 
+      text: `INSERT INTO warnings (booking_id, code, message, acknowledged) VALUES ($1, $2, $3, false)
       ON CONFLICT (booking_id, code) where acknowledged = false DO NOTHING`,
       values: [bookingId, code, messsage],
     }
-    return db.query(query)
+    await db.query(query)
   },
 
   async acknowledgeWarnings(errorIds) {
@@ -35,10 +35,10 @@ const WarningClient = {
     const query = {
       text: `SELECT id
       ,      booking_id "bookingId"
-      ,      timestamp 
+      ,      timestamp
       ,      code
       ,      message
-      FROM warnings   
+      FROM warnings
       where acknowledged = false
       ORDER BY timestamp DESC
       LIMIT 500`,
@@ -51,10 +51,10 @@ const WarningClient = {
     const query = {
       text: `SELECT id
       ,      booking_id "bookingId"
-      ,      timestamp 
+      ,      timestamp
       ,      code
       ,      message
-      FROM warnings   
+      FROM warnings
       where acknowledged = true
       ORDER BY timestamp DESC
       LIMIT 500`,
