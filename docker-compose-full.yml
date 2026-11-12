@@ -4,7 +4,6 @@
 # Runs the containers from docker-compose.yml, a container for the licences image and an additional container
 # for the licences image that overrides the default command to run the stubs.
 #
-version: '3.8'
 services:
   licences:
     build: .
