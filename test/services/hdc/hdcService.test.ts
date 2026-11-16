@@ -87,7 +87,7 @@ describe('HdcService', () => {
 
   it('should accept an event without an optional reason', async () => {
     const event: HdcCvlEventRequest = {
-      eventType: 'COM_COMPLETES_ADDRESS_CHECKS',
+      eventType: 'RISK_CHECKS_SUBMITTED',
       bookingId: 123,
       licenceId: 456,
       nomsNumber: 'A1234AA',

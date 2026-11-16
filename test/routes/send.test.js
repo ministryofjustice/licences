@@ -219,7 +219,7 @@ describe('send', () => {
           )
 
           const expectedEvent = {
-            eventType: 'COM_COMPLETES_ADDRESS_CHECKS',
+            eventType: 'RISK_CHECKS_SUBMITTED',
             bookingId: 123,
             licenceId: 456,
             nomsNumber: prisoner.offenderNo,

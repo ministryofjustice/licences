@@ -440,7 +440,7 @@ export interface components {
         | 'RESUME'
         | 'REFUSE'
         | 'ADDRESS_WITHDRAWN'
-        | 'COM_COMPLETES_ADDRESS_CHECKS'
+        | 'RISK_CHECKS_SUBMITTED'
       /** Format: int64 */
       licenceId: number
       /** Format: int64 */

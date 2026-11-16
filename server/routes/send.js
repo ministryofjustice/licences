@@ -43,7 +43,7 @@ module.exports =
 
         if (transition.sender === 'RO' && transition.receiver === 'CA') {
           await hdcService.postCvlEvent({
-            eventType: 'COM_COMPLETES_ADDRESS_CHECKS',
+            eventType: 'RISK_CHECKS_SUBMITTED',
             bookingId: parseInt(bookingId, 10),
             licenceId: licence.id,
             nomsNumber: prisoner.offenderNo,
