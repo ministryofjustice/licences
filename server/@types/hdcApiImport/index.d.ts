@@ -440,7 +440,6 @@ export interface components {
         | 'RESUME'
         | 'REFUSE'
         | 'ADDRESS_WITHDRAWN'
-        | 'RESIDENTIAL_ADDRESS_CHANGED_TO_APPROVED_PREMISES'
         | 'COM_COMPLETES_ADDRESS_CHECKS'
       /** Format: int64 */
       licenceId: number
