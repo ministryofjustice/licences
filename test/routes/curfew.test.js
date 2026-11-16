@@ -376,9 +376,6 @@ describe('/hdc/curfew', () => {
           expect(hdcService.postCvlEvent).not.toHaveBeenCalledWith(
             expect.objectContaining({ eventType: 'ADDRESS_WITHDRAWN' })
           )
-          expect(hdcService.postCvlEvent).not.toHaveBeenCalledWith(
-            expect.objectContaining({ eventType: 'RESIDENTIAL_ADDRESS_CHANGED_TO_APPROVED_PREMISES' })
-          )
         })
     })
 
@@ -434,9 +431,6 @@ describe('/hdc/curfew', () => {
           expect(hdcService.postCvlEvent).not.toHaveBeenCalledWith(expect.objectContaining({ eventType: 'OPT_OUT' }))
           expect(hdcService.postCvlEvent).not.toHaveBeenCalledWith(
             expect.objectContaining({ eventType: 'ADDRESS_WITHDRAWN' })
-          )
-          expect(hdcService.postCvlEvent).not.toHaveBeenCalledWith(
-            expect.objectContaining({ eventType: 'RESIDENTIAL_ADDRESS_CHANGED_TO_APPROVED_PREMISES' })
           )
         })
     })
@@ -507,7 +501,7 @@ describe('/hdc/curfew', () => {
     test.each([
       ['/hdc/curfew/approvedPremises/1', '/hdc/curfew/approvedPremisesAddress/1'],
       ['/hdc/curfew/approvedPremises/change/1', '/hdc/curfew/approvedPremisesAddress/change/1'],
-    ])('should save Yes and send the conversion event from %s', async (url, nextPath) => {
+    ])('should save Yes without sending a CVL event from %s', async (url, nextPath) => {
       await request(app).post(url).send({ required: 'Yes' }).expect(302).expect('Location', nextPath)
 
       expect(licenceService.update).toHaveBeenCalledWith(expect.objectContaining({
@@ -516,47 +510,31 @@ describe('/hdc/curfew', () => {
         formName: 'approvedPremises',
         userInput: { required: 'Yes' },
       }))
-      expect(hdcService.postCvlEvent).toHaveBeenCalledTimes(1)
-      expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
-        eventType: 'RESIDENTIAL_ADDRESS_CHANGED_TO_APPROVED_PREMISES',
-        bookingId: 1,
-        licenceId: 2,
-        nomsNumber: 'A1234AA',
-        triggeredBy: 'RO_USER',
-        reason: 'RO_USER changed the residential address to an approved premises'
-      })
-      expect(licenceService.update.mock.invocationCallOrder[0]).toBeLessThan(
-        hdcService.postCvlEvent.mock.invocationCallOrder[0]
-      )
-      expect(hdcService.postCvlEvent).not.toHaveBeenCalledWith(
-        expect.objectContaining({ eventType: 'ADDRESS_WITHDRAWN' })
-      )
+      expect(hdcService.postCvlEvent).not.toHaveBeenCalled()
     })
 
     test.each([
       ['/hdc/curfew/approvedPremises/1', '/hdc/curfew/curfewAddressReview/1'],
       ['/hdc/curfew/approvedPremises/change/1', '/hdc/curfew/curfewAddressReview/change/1'],
-    ])('should not send the conversion event when No is saved from %s', async (url, nextPath) => {
+    ])('should save No without sending a CVL event from %s', async (url, nextPath) => {
       await request(app).post(url).send({ required: 'No' }).expect(302).expect('Location', nextPath)
 
       expect(licenceService.update).toHaveBeenCalled()
-      expect(hdcService.postCvlEvent).not.toHaveBeenCalledWith(
-        expect.objectContaining({ eventType: 'RESIDENTIAL_ADDRESS_CHANGED_TO_APPROVED_PREMISES' })
-      )
+      expect(hdcService.postCvlEvent).not.toHaveBeenCalled()
     })
 
-    test('should send the conversion event when Yes is selected for the first time', async () => {
+    test('should not send a CVL event when Yes is selected for the first time', async () => {
       licenceService.getLicence.mockResolvedValue({ id: 2, licence: {}, stage: 'PROCESSING_RO' })
 
       await request(app).post('/hdc/curfew/approvedPremises/1').send({ required: 'Yes' }).expect(302)
 
-      expect(hdcService.postCvlEvent).toHaveBeenCalledTimes(1)
+      expect(hdcService.postCvlEvent).not.toHaveBeenCalled()
     })
 
     test.each([
       ['/hdc/curfew/approvedPremises/1', '/hdc/curfew/curfewAddressReview/1'],
       ['/hdc/curfew/approvedPremises/change/1', '/hdc/curfew/curfewAddressReview/change/1'],
-    ])('should not send the conversion event when changing Yes to No from %s', async (url, nextPath) => {
+    ])('should save No without sending a CVL event when changing Yes to No from %s', async (url, nextPath) => {
       licenceService.getLicence.mockResolvedValue({
         id: 2,
         licence: { curfew: { approvedPremises: { required: 'Yes' } } },
@@ -568,9 +546,7 @@ describe('/hdc/curfew', () => {
       expect(licenceService.update).toHaveBeenCalledWith(expect.objectContaining({
         userInput: { required: 'No' },
       }))
-      expect(hdcService.postCvlEvent).not.toHaveBeenCalledWith(
-        expect.objectContaining({ eventType: 'RESIDENTIAL_ADDRESS_CHANGED_TO_APPROVED_PREMISES' })
-      )
+      expect(hdcService.postCvlEvent).not.toHaveBeenCalled()
     })
 
     test.each([
@@ -581,21 +557,7 @@ describe('/hdc/curfew', () => {
 
       await request(app).post(url).send({ required: 'Yes' }).expect(500)
 
-      expect(hdcService.postCvlEvent).not.toHaveBeenCalledWith(
-        expect.objectContaining({ eventType: 'RESIDENTIAL_ADDRESS_CHANGED_TO_APPROVED_PREMISES' })
-      )
-    })
-
-    test.each([
-      '/hdc/curfew/approvedPremises/1',
-      '/hdc/curfew/approvedPremises/change/1',
-    ])('should return an error if posting the conversion event fails from %s', (url) => {
-      hdcService.postCvlEvent.mockRejectedValue(new Error('HDC API error'))
-
-      return request(app)
-        .post(url)
-        .send({ required: 'Yes' })
-        .expect(500)
+      expect(hdcService.postCvlEvent).not.toHaveBeenCalled()
     })
   })
 

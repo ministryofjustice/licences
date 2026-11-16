@@ -428,7 +428,7 @@ export default function createApp({
   app.use('/hdc/contact/', secureRoute(contactRouter(userAdminService, roService, signInService)))
   app.use('/hdc/pdf/', secureRoute(pdfRouter(pdfService, prisonerService), { auditKey: 'CREATE_PDF' }))
   app.use('/hdc/forms/', secureRoute(formsRouter(formService, conditionsServiceFactory)))
-  app.use('/hdc/send/', secureRoute(sendRouter({ prisonerService, notificationService })))
+  app.use('/hdc/send/', secureRoute(sendRouter({ prisonerService, notificationService, hdcService })))
   app.use('/hdc/sent/', secureRoute(sentRouter({ prisonerService })))
   app.use('/user/', secureRoute(userRouter({ userService })))
   app.use('/hdc/people-ready-for-probation-checks', secureRoute(caReportsRouter(reportsService, audit)))

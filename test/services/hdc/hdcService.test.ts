@@ -69,7 +69,6 @@ describe('HdcService', () => {
     'RESUME',
     'REFUSE',
     'ADDRESS_WITHDRAWN',
-    'RESIDENTIAL_ADDRESS_CHANGED_TO_APPROVED_PREMISES',
   ])('should publish %s with its metadata unchanged', async (eventType) => {
     const event: HdcCvlEventRequest = {
       eventType,
@@ -88,7 +87,7 @@ describe('HdcService', () => {
 
   it('should accept an event without an optional reason', async () => {
     const event: HdcCvlEventRequest = {
-      eventType: 'RESIDENTIAL_ADDRESS_CHANGED_TO_APPROVED_PREMISES',
+      eventType: 'RISK_CHECKS_SUBMITTED',
       bookingId: 123,
       licenceId: 456,
       nomsNumber: 'A1234AA',

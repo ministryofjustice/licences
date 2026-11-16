@@ -15,30 +15,13 @@ module.exports =
     router.post(
       '/approvedPremises/:bookingId',
       audited,
-      asyncMiddleware(standard.callbackPost('approvedPremises', approvedPremisesSaved))
+      asyncMiddleware(standard.callbackPost('approvedPremises'))
     )
     router.post(
       '/approvedPremises/:action/:bookingId',
       audited,
-      asyncMiddleware(standard.callbackPost('approvedPremises', approvedPremisesSaved))
+      asyncMiddleware(standard.callbackPost('approvedPremises'))
     )
-
-    async function approvedPremisesSaved({ req, res, bookingId }) {
-      if (req.body.required === 'Yes') {
-        const { id: licenceId } = res.locals.licence
-        const { offenderNo } = res.locals.prisoner
-        const { username } = req.user
-
-        await hdcService.postCvlEvent({
-          eventType: 'RESIDENTIAL_ADDRESS_CHANGED_TO_APPROVED_PREMISES',
-          bookingId: parseInt(bookingId, 10),
-          licenceId,
-          nomsNumber: offenderNo,
-          triggeredBy: username,
-          reason: `${username} changed the residential address to an approved premises`
-        })
-      }
-    }
 
     function approvedPremisesGets(formName) {
       return (req, res) => {
