@@ -5,6 +5,6 @@ block content
   include ./mixins/sentCaMixin
 
   if submissionTarget && submissionTarget
-    +sentContent('Case sent', submissionTarget)
+    +sentContent('Case sent', submissionTarget, true)
   else
-    +sentContent('Case sent', 'No prison details found')
+    +sentContent('Case sent', 'No prison details found', true)

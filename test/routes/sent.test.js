@@ -8,6 +8,7 @@ const { createPrisonerServiceStub, createLicenceServiceStub, createSignInService
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/sent')
 const NullTokenVerifier = require('../../server/authentication/tokenverifier/NullTokenVerifier')
+const { links } = require('../../server/config').default
 
 describe('GET sent', () => {
   const prisonerService = createPrisonerServiceStub()
@@ -18,6 +19,7 @@ describe('GET sent', () => {
   let app
   beforeEach(() => {
     app = createApp({ prisonerServiceStub: prisonerService }, 'caUser')
+    app.locals.hdcCreationInCvlEnabled = true
     prisonerService.getOrganisationContactDetails.mockReset()
   })
 
@@ -48,6 +50,14 @@ describe('GET sent', () => {
   })
 
   test('renders the sent page for ROtoCA', () => {
+    prisonerService.getOrganisationContactDetails.mockResolvedValue({
+      premise: 'Moorland Prison',
+      city: 'Doncaster',
+      locality: 'Brincliffe',
+      postCode: 'LI1 5TH',
+      phones: { number: '0114 2345232' },
+    })
+
     return request(app)
       .get('/hdc/sent/CA/roToCa/123')
       .expect(200)
@@ -57,8 +67,56 @@ describe('GET sent', () => {
       })
       .expect((res) => {
         expect(res.text).toContain('Case sent')
+        expect(res.text).toContain('Moorland Prison')
+        expect(res.text).toContain('Doncaster')
+        expect(res.text).toContain('Brincliffe')
+        expect(res.text).toContain('LI1 5TH')
+        expect(res.text).toContain('0114 2345232')
+        expect(res.text).toContain(
+          `You can create this licence in the <a href="${links.createAndVaryALicenceCreateCaseloadUrl}">create and vary a licence</a> service`
+        )
+        expect(res.text).toContain('Return to case list')
+        expect(res.text.indexOf('0114 2345232')).toBeLessThan(res.text.indexOf('You can create this licence'))
+        expect(res.text.indexOf('You can create this licence')).toBeLessThan(res.text.indexOf('Return to case list'))
       })
   })
+
+  test('shows the CVL link when prison contact details are unavailable', () => {
+    return request(app)
+      .get('/hdc/sent/CA/roToCa/123')
+      .expect(200)
+      .expect((res) => {
+        expect(res.text).toContain(
+          `<a href="${links.createAndVaryALicenceCreateCaseloadUrl}">create and vary a licence</a>`
+        )
+      })
+  })
+
+  test.each([false, undefined])('hides the CVL message when the creation toggle is %s', (enabled) => {
+    app.locals.hdcCreationInCvlEnabled = enabled
+
+    return request(app)
+      .get('/hdc/sent/CA/roToCa/123')
+      .expect(200)
+      .expect((res) => {
+        expect(res.text).toContain('Case sent')
+        expect(res.text).toContain('Return to case list')
+        expect(res.text).not.toContain('You can create this licence')
+        expect(res.text).not.toContain(links.createAndVaryALicenceCreateCaseloadUrl)
+      })
+  })
+
+  test.each(['roToCaAddressRejected', 'roToCaOptedOut'])(
+    'does not show the CVL creation message for %s',
+    (transition) => {
+      return request(app)
+        .get(`/hdc/sent/CA/${transition}/123`)
+        .expect(200)
+        .expect((res) => {
+          expect(res.text).not.toContain('You can create this licence')
+        })
+    }
+  )
 
   test('renders the sent page for DMtoCA', () => {
     return request(app)
@@ -133,7 +191,9 @@ function createApp({ licenceServiceStub = null, prisonerServiceStub = null }, us
   })
   const route = baseRouter(createRoute({ prisonerService }))
 
-  return appSetup(route, user, '/hdc/sent/')
+  const app = appSetup(route, user, '/hdc/sent/')
+  app.locals.createAndVaryALicenceCreateCaseloadUrl = links.createAndVaryALicenceCreateCaseloadUrl
+  return app
 }
 
 function createAppForResubmission({ prisonerServiceStub }, user, stage, licence) {

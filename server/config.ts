@@ -328,6 +328,10 @@ export default {
       'ELECTRONIC_MONITORING_ORDER_URL',
       'https://hmpps-electronic-monitoring-create-an-order.hmpps.service.justice.gov.uk/'
     ),
+    createAndVaryALicenceCreateCaseloadUrl: get(
+      'CREATE_AND_VARY_A_LICENCE_CREATE_CASELOAD_URL',
+      'https://create-and-vary-a-licence-dev.hmpps.service.justice.gov.uk/licence/create/caseload'
+    ),
     createAndVaryALicenceVaryCaseloadUrl: get(
       'CREATE_AND_VARY_A_LICENCE_VARY_CASELOAD_URL',
       'https://create-and-vary-a-licence-dev.hmpps.service.justice.gov.uk/licence/vary/caseload'
@@ -347,6 +351,7 @@ export default {
   postponeVersion: get('LICENCE_POSTPONE_VERSION', '2'),
   comNotAllocatedBlockEnabled: get('COM_NOT_ALLOCATED_BLOCK_ENABLED', false) === 'true',
   caReportsLinkEnabled: get('CA_REPORTS_LINK_ENABLED', false) === 'true',
+  hdcCreationInCvlEnabled: get('HDC_CREATION_IN_CVL_ENABLED', false) === 'true',
   hdcInCvlEarlyAdopter: {
     enabled: get('HDC_IN_CVL_EARLY_ADOPTER_ENABLED', false) === 'true',
     providerCodes: get('HDC_IN_CVL_EARLY_ADOPTER_PROVIDER_CODES', '').split(',')
