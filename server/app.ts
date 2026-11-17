@@ -71,39 +71,40 @@ import { varyRouter } from './routes/vary'
 import { createRedisClient } from './data/redisClient'
 import { asyncMiddleware } from './utils/middleware'
 import addUserDataToTelemetry from './utils/addUserDataToTelemetry'
+import { Services } from './services'
+import { ApplicationInfo } from './applicationInfo'
 
 const version = moment.now().toString()
-const { production } = config
+const {production} = config
 
 export default function createApp({
-  tokenVerifier,
-  signInService,
-  licenceService,
-  hdcService,
-  prisonerService,
-  conditionsServiceFactory,
-  caseListService,
-  pdfService,
-  formService,
-  reportsService,
-  licenceSearchService,
-  userAdminService,
-  reportingService,
-  notificationService,
-  userService,
-  nomisPushService,
-  configClient,
-  jobSchedulerService,
-  roService,
-  audit,
-  caService,
-  warningClient,
-  lduService,
-  functionalMailboxService,
-  roNotificationHandler,
-  migrationService,
-  applicationInfo
-}): Express {
+                                    tokenVerifier,
+                                    signInService,
+                                    licenceService,
+                                    hdcService,
+                                    prisonerService,
+                                    conditionsServiceFactory,
+                                    caseListService,
+                                    pdfService,
+                                    formService,
+                                    reportsService,
+                                    licenceSearchService,
+                                    userAdminService,
+                                    reportingService,
+                                    notificationService,
+                                    userService,
+                                    nomisPushService,
+                                    configClient,
+                                    jobSchedulerService,
+                                    roService,
+                                    audit,
+                                    caService,
+                                    warningClient,
+                                    lduService,
+                                    functionalMailboxService,
+                                    roNotificationHandler,
+                                    migrationService,
+                                  }: Services, applicationInfo: ApplicationInfo): Express {
   const app = express()
 
   auth.init(userService, audit)
