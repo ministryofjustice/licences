@@ -329,6 +329,10 @@ $path: "/public/images/";
     padding: 1px 15px 15px;
     text-align: center;
     margin: 60px 0 30px 0;
+
+    a {
+        color: $white;
+    }
 }
 
 td.spacer {
