@@ -308,6 +308,8 @@ export default function createApp(services: Services, applicationInfo: Applicati
   )
 
   app.locals.feedbackAndSupportUrl = config.links.feedbackAndSupportUrl
+  app.locals.createAndVaryALicenceCreateCaseloadUrl = config.links.createAndVaryALicenceCreateCaseloadUrl
+  app.locals.hdcCreationInCvlEnabled = config.hdcCreationInCvlEnabled
   app.locals.createAndVaryALicenceVaryCaseloadUrl = config.links.createAndVaryALicenceVaryCaseloadUrl
   app.locals.createAndVaryALicenceInCvlInfoUrl = config.links.createAndVaryALicenceInCvlInfoUrl
   app.locals.createAndVaryALicenceSupportUrl = config.links.createAndVaryALicenceSupportUrl

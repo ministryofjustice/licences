@@ -37,6 +37,7 @@ generic-service:
     TOKENVERIFICATION_API_URL: 'https://token-verification-api-preprod.prison.service.justice.gov.uk'
     TOKENVERIFICATION_API_ENABLED: 'true'
     FEEDBACK_SUPPORT_URL: 'https://support-preprod.hmpps.service.justice.gov.uk/feedback-and-support'
+    CREATE_AND_VARY_A_LICENCE_CREATE_CASELOAD_URL: 'https://create-and-vary-a-licence-preprod.hmpps.service.justice.gov.uk/licence/create/caseload'
     CREATE_AND_VARY_A_LICENCE_VARY_CASELOAD_URL: 'https://create-and-vary-a-licence-preprod.hmpps.service.justice.gov.uk/licence/vary/caseload'
     CREATE_AND_VARY_A_LICENCE_SUPPORT_URL: 'https://create-and-vary-a-licence-preprod.hmpps.service.justice.gov.uk/support'
     LICENCE_RISK_MANAGEMENT_VERSION: '3'
@@ -44,6 +45,7 @@ generic-service:
     LICENCE_POSTPONE_VERSION: '2'
     COM_NOT_ALLOCATED_BLOCK_ENABLED: 'true'
     CA_REPORTS_LINK_ENABLED: 'true'
+    HDC_CREATION_IN_CVL_ENABLED: 'true'
     HDC_IN_CVL_EARLY_ADOPTER_ENABLED: 'false'
     HDC_IN_CVL_EARLY_ADOPTER_PROVIDER_CODES: 'N59'
     HDC_IN_CVL_NATIONAL_ROLE_OUT_DATE: "2026-09-12"
