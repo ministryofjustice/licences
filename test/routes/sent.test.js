@@ -75,6 +75,7 @@ describe('GET sent', () => {
         expect(res.text).toContain(
           `You can create this licence in the <a href="${links.createAndVaryALicenceCreateCaseloadUrl}">create and vary a licence</a> service`
         )
+        expect(getDivWithClass(res.text, 'confirm-banner')).toContain('You can create this licence')
         expect(res.text).toContain('Return to case list')
         expect(res.text.indexOf('0114 2345232')).toBeLessThan(res.text.indexOf('You can create this licence'))
         expect(res.text.indexOf('You can create this licence')).toBeLessThan(res.text.indexOf('Return to case list'))
@@ -174,6 +175,23 @@ describe('GET sent', () => {
     })
   })
 })
+
+function getDivWithClass(html, className) {
+  const openingTag = new RegExp(`<div class="[^"]*\\b${className}\\b[^"]*">`)
+  const match = openingTag.exec(html)
+  if (!match) return ''
+
+  const divTags = /<\/?div\b[^>]*>/gi
+  divTags.lastIndex = match.index
+  let depth = 0
+  let tag = divTags.exec(html)
+  while (tag) {
+    depth += tag[0].startsWith('</') ? -1 : 1
+    if (depth === 0) return html.slice(match.index, divTags.lastIndex)
+    tag = divTags.exec(html)
+  }
+  return ''
+}
 
 function createApp({ licenceServiceStub = null, prisonerServiceStub = null }, user) {
   const prisonerService = prisonerServiceStub || createPrisonerServiceStub()
