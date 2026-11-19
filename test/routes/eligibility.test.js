@@ -130,6 +130,10 @@ describe('/hdc/eligibility', () => {
     routes.forEach((route) => {
       test(`renders the correct path '${route.nextPath}' page`, () => {
         const licenceService = createLicenceServiceStub()
+        licenceService.getLicence.mockResolvedValue({
+            id: 1,
+            licence: {key: 'value'},
+        })
         licenceService.update.mockResolvedValue({ eligibility: { [route.section]: {} } })
         const app = createApp({ licenceServiceStub: licenceService }, route.user)
 
@@ -142,7 +146,7 @@ describe('/hdc/eligibility', () => {
             expect(licenceService.update).toHaveBeenCalled()
             expect(licenceService.update).toHaveBeenCalledWith({
               bookingId: '1',
-              originalLicence: { licence: { key: 'value' } },
+              originalLicence: { id: 1,licence: { key: 'value' } },
               config: formConfig[route.section],
               userInput: route.body,
               licenceSection: 'eligibility',
@@ -237,6 +241,10 @@ describe('/hdc/eligibility', () => {
     specs.forEach((spec) => {
       test(`should push ${spec.type} status to nomis`, () => {
         const licenceService = createLicenceServiceStub()
+        licenceService.getLicence.mockResolvedValue({
+            id: 1,
+            licence: {key: 'value'},
+        })
         licenceService.update.mockResolvedValue(spec.data)
         const nomisPushService = createNomisPushServiceStub()
         const app = createApp(
@@ -258,6 +266,8 @@ describe('/hdc/eligibility', () => {
               bookingId: '1',
               data: { type: spec.type, status: 'ABC', reason: 'XYZ' },
               username: 'CA_USER_TEST',
+              licenceId: 1,
+              offenderNo: 'A1234AA'
             })
           })
       })
@@ -394,6 +404,10 @@ describe('/hdc/eligibility', () => {
       const licence = { eligibility: { excluded: { decision: 'No' }, suitability: { decision: 'No' } } }
       const nomisPushService = createNomisPushServiceStub()
       const licenceService = createLicenceServiceStub()
+      licenceService.getLicence.mockResolvedValue({
+            id: 1,
+            licence: {key: 'value'},
+        })
       licenceService.update.mockResolvedValue(licence)
 
       const app = createApp(
@@ -415,6 +429,8 @@ describe('/hdc/eligibility', () => {
             bookingId: '1',
             passed: true,
             username: 'CA_USER_TEST',
+            licenceId: 1,
+            offenderNo: 'A1234AA'
           })
         })
     })

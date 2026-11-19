@@ -14,12 +14,18 @@ module.exports =
       config,
     })
 
-    const checksPassedCallback = async ({ req, bookingId, updatedLicence }) => {
+    const checksPassedCallback = async ({ req, res, bookingId, updatedLicence }) => {
       if (getIn(config, ['pushToNomis'])) {
         const notExcluded = getIn(updatedLicence, ['eligibility', 'excluded', 'decision']) === 'No'
         const notUnsuitable = getIn(updatedLicence, ['eligibility', 'suitability', 'decision']) === 'No'
         if (notExcluded && notUnsuitable) {
-          await nomisPushService.pushChecksPassed({ bookingId, passed: true, username: req.user.username })
+          await nomisPushService.pushChecksPassed({
+            bookingId,
+            passed: true,
+            username: req.user.username,
+            licenceId: res.locals.licence.id,
+            offenderNo: res.locals.prisoner.offenderNo
+          })
         }
       }
     }

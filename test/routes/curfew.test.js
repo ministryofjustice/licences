@@ -362,52 +362,14 @@ describe('/hdc/curfew', () => {
           expect(nomisPushService.pushStatus).toHaveBeenCalled()
           expect(nomisPushService.pushStatus).toHaveBeenCalledWith({
             bookingId: '1',
-            data: { type: 'optOut', status: 'Yes' },
+            data: { type: 'optOut', status: 'Yes', cvlEventReason: 'CA_USER_TEST opted out of HDC after COM added an approved premises' },
             username: 'CA_USER_TEST',
-          })
-          expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
-            eventType: 'OPT_OUT',
-            bookingId: 1,
             licenceId: 2,
-            nomsNumber: 'A1234AA',
-            triggeredBy: 'CA_USER_TEST',
-            reason: 'CA_USER_TEST opted out of HDC after COM added an approved premises'
+            offenderNo: 'A1234AA',
           })
           expect(hdcService.postCvlEvent).not.toHaveBeenCalledWith(
             expect.objectContaining({ eventType: 'ADDRESS_WITHDRAWN' })
           )
-        })
-    })
-
-    test(`should post event but not push nomis if optout but pushToNomis is false`, () => {
-      const nomisPushService = createNomisPushServiceStub()
-      const hdcService = createHdcServiceStub()
-      const licenceService = createLicenceServiceStub()
-      licenceService.getLicence.mockResolvedValue({ id: 1, licence: {}, stage: 'PROCESSING_CA' })
-      const app = createApp(
-        {
-          nomisPushServiceStub: nomisPushService,
-          licenceServiceStub: licenceService,
-          hdcServiceStub: hdcService,
-        },
-        'caUser',
-        { pushToNomis: false }
-      )
-
-      return request(app)
-        .post('/hdc/curfew/approvedPremisesChoice/1')
-        .send({ decision: 'OptOut' })
-        .expect(302)
-        .expect(() => {
-          expect(nomisPushService.pushStatus).not.toHaveBeenCalled()
-          expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
-            eventType: 'OPT_OUT',
-            bookingId: 1,
-            licenceId: 1,
-            nomsNumber: 'A1234AA',
-            triggeredBy: 'CA_USER_TEST',
-            reason: 'CA_USER_TEST opted out of HDC after COM added an approved premises'
-          })
         })
     })
 

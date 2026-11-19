@@ -34,6 +34,8 @@ module.exports = ({ formConfig, licenceService, sectionName, nomisPushService = 
   }
 
   async function formPost(req, res, formName, bookingId, action, processingCallback) {
+    const { id: licenceId } = res.locals.licence
+    const { offenderNo } = res.locals.prisoner
     const nextPath = getPathFor({ data: req.body, config: formConfig[formName], action })
     const { targetSection, targetForm } = getTarget(formName)
 
@@ -57,7 +59,7 @@ module.exports = ({ formConfig, licenceService, sectionName, nomisPushService = 
       }
     }
 
-    await pushStatus(updatedLicence, formName, bookingId, req.user.username)
+    await pushStatus(updatedLicence, formName, bookingId, req.user.username, licenceId, offenderNo)
 
     if (processingCallback) {
       await processingCallback({ req, res, bookingId, updatedLicence })
@@ -102,7 +104,7 @@ module.exports = ({ formConfig, licenceService, sectionName, nomisPushService = 
     return licence ? ['DECIDED', 'MODIFIED', 'MODIFIED_APPROVAL'].includes(licence.stage) : false
   }
 
-  async function pushStatus(updatedLicence, formName, bookingId, username) {
+  async function pushStatus(updatedLicence, formName, bookingId, username, licenceId, offenderNo) {
     const pushConfig = getIn(formConfig, [formName, 'nomisPush'])
 
     if (getIn(config, ['pushToNomis']) && pushConfig) {
@@ -117,10 +119,16 @@ module.exports = ({ formConfig, licenceService, sectionName, nomisPushService = 
       // No push unless status matches for pass or fail, ie not when missing.
       // Passed/failed will always be opposite of each other.
       if (failed || passed) {
-        await nomisPushService.pushChecksPassed({ bookingId, passed, username })
+        await nomisPushService.pushChecksPassed({
+          bookingId,
+          passed,
+          username,
+          licenceId,
+          offenderNo
+        })
       }
 
-      await nomisPushService.pushStatus({ bookingId, data: { type: formName, status, reason }, username })
+      await nomisPushService.pushStatus({ bookingId, data: { type: formName, status, reason }, username, licenceId, offenderNo })
     }
   }
 
