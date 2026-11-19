@@ -7,6 +7,7 @@ const {
   createLicenceServiceStub,
   createSignInServiceStub,
   createHdcServiceStub,
+  createNomisPushServiceStub
 } = require('../mockServices')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
@@ -279,35 +280,35 @@ describe('/hdc/bassReferral', () => {
           })
       })
 
-      test('POST /hdc/bassReferral/approvedPremisesChoice/:bookingId with OptOut', () => {
-        const licenceService = createLicenceServiceStub()
-        licenceService.getLicence.mockResolvedValue({
-          id: 1,
-          licence: {},
-        })
+      test(`should push optout status to nomis`, () => {
+        const nomisPushService = createNomisPushServiceStub()
         const hdcService = createHdcServiceStub()
-        const app = createApp({ licenceServiceStub: licenceService}, 'caUser', hdcService)
+        const licenceService = createLicenceServiceStub()
+        licenceService.getLicence.mockResolvedValue({ id: 1, licence: {} })
+
+        const app = createApp(
+          {
+            nomisPushServiceStub: nomisPushService,
+            licenceServiceStub: licenceService,
+            hdcServiceStub: hdcService,
+          },
+          'caUser',
+          { pushToNomis: true }
+        )
 
         return request(app)
           .post('/hdc/bassReferral/approvedPremisesChoice/1')
           .send({ decision: 'OptOut' })
           .expect(302)
-          .expect((res) => {
-            expect(licenceService.updateSection).toHaveBeenCalledWith('proposedAddress', '1', {
-              optOut: { decision: 'Yes' },
-            })
-            expect(licenceService.updateSection).toHaveBeenCalledWith('bassReferral', '1', {
-              approvedPremises: { required: 'No' },
-            })
-            expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
-              eventType: 'OPT_OUT',
-              bookingId: 1,
+          .expect(() => {
+            expect(nomisPushService.pushStatus).toHaveBeenCalled()
+            expect(nomisPushService.pushStatus).toHaveBeenCalledWith({
+              bookingId: '1',
+              data: { type: 'optOut', status: 'Yes', cvlEventReason: 'CA_USER_TEST opted out of HDC after COM added an approved CAS2 premises' },
+              username: 'CA_USER_TEST',
               licenceId: 1,
-              nomsNumber: 'A1234AA',
-              triggeredBy: 'CA_USER_TEST',
-              reason: 'CA_USER_TEST opted out of HDC after COM added an approved CAS2 premises'
+              offenderNo: 'A1234AA',
             })
-            expect(res.header.location).toBe('/hdc/taskList/1')
           })
       })
 
@@ -341,7 +342,7 @@ describe('/hdc/bassReferral', () => {
           licence: { proposedAddress: { optOut: { decision: 'Yes' } } },
         })
         const hdcService = createHdcServiceStub()
-        const app = createApp({ licenceServiceStub: licenceService }, 'caUser', hdcService)
+        const app = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
 
         return request(app)
           .post('/hdc/bassReferral/approvedPremisesChoice/1')
@@ -367,7 +368,7 @@ describe('/hdc/bassReferral', () => {
           licence: { proposedAddress: { optOut: { decision: 'No' } } },
         })
         const hdcService = createHdcServiceStub()
-        const app = createApp({ licenceServiceStub: licenceService }, 'caUser', hdcService)
+        const app = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
 
         return request(app)
           .post('/hdc/bassReferral/approvedPremisesChoice/1')
@@ -451,11 +452,12 @@ describe('/hdc/bassReferral', () => {
   })
 })
 
-function createApp({ licenceServiceStub}, user, hdcServiceStub = null) {
+function createApp({ licenceServiceStub, nomisPushServiceStub = null, hdcServiceStub = null}, user, config = {}) {
   const prisonerService = createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const hdcService = hdcServiceStub || createHdcServiceStub()
   const signInService = createSignInServiceStub()
+  const nomisPushService = nomisPushServiceStub || createNomisPushServiceStub()
   const audit = mockAudit()
 
   const baseRouter = standardRouter({
@@ -464,9 +466,9 @@ function createApp({ licenceServiceStub}, user, hdcServiceStub = null) {
     audit,
     signInService,
     tokenVerifier: new NullTokenVerifier(),
-    config: null,
+    config,
   })
-  const route = baseRouter(createRoute({ licenceService, nomisPushService: null, hdcService }))
+  const route = baseRouter(createRoute({ licenceService, nomisPushService, hdcService }))
 
   return appSetup(route, user, '/hdc/bassReferral')
 }

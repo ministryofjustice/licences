@@ -2,6 +2,7 @@ const standard = require('../../../server/routes/routeWorkers/standard')
 const { createLicenceServiceStub, createNomisPushServiceStub } = require('../../mockServices')
 
 const testLicence = {
+  id: 1,
   sectionName: { testForm: {} },
   statusProperty: 'testStatus',
   reasonProperty: 'testReason',
@@ -22,12 +23,15 @@ const res = {
   locals: {
     licence: testLicence,
     licenceStatus: { decisions: {} },
+    prisoner: { offenderNo: 'A1234AA' },
   },
   redirect: () => {},
 }
 
 const bookingId = '123'
 const username = 'testUser'
+const offenderNo = 'A1234AA'
+const licenceId = 1
 
 let licenceService
 let nomisPushService
@@ -120,6 +124,8 @@ describe('formPost', () => {
           bookingId,
           data: expectedData,
           username,
+          offenderNo,
+          licenceId,
         })
       })
 
@@ -143,6 +149,8 @@ describe('formPost', () => {
           bookingId,
           data: expectedData,
           username,
+          offenderNo,
+          licenceId,
         })
       })
 
@@ -166,6 +174,8 @@ describe('formPost', () => {
           bookingId,
           data: expectedData,
           username,
+          offenderNo,
+          licenceId,
         })
       })
 
@@ -188,6 +198,8 @@ describe('formPost', () => {
           bookingId,
           data: expectedData,
           username,
+          offenderNo,
+          licenceId,
         })
       })
     })
@@ -224,6 +236,8 @@ describe('formPost', () => {
             bookingId,
             passed: example.result,
             username,
+            offenderNo,
+            licenceId,
           })
         })
       })
