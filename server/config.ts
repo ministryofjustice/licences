@@ -1,3 +1,5 @@
+import { AuditClientConfig } from '@ministryofjustice/hmpps-audit-client'
+
 const production = process.env.NODE_ENV === 'production'
 const oneDay = 24 * 60 * 60
 
@@ -45,6 +47,19 @@ function checkDateAgainstToday(dateString: string) {
 
       return active
     }
+  }
+}
+
+const auditConfig = (): AuditClientConfig => {
+  const auditEnabled = get('AUDIT_ENABLED', 'false') === 'true'
+  return {
+    enabled: auditEnabled,
+    queueUrl: get(
+      'AUDIT_SQS_QUEUE_URL',
+      'http://localhost:4566/000000000000/mainQueue'
+    ),
+    serviceName: get('AUDIT_SERVICE_NAME', 'UNASSIGNED'),
+    region: get('AUDIT_SQS_REGION', 'eu-west-2'),
   }
 }
 
@@ -238,7 +253,9 @@ export default {
     secret: get('SESSION_SECRET', 'licences-insecure-default-session', { requireInProduction: true }),
     expiryMinutes: get('WEB_SESSION_TIMEOUT_IN_MINUTES', '120')
   },
-
+  sqs: {
+    audit: auditConfig(),
+  },
   pdf: {
     licences: {
       taggingCompanyTelephone: get('TAGGING_CO_PHONE', '0800 137 291'),
