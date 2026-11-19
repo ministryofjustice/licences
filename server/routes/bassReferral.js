@@ -24,7 +24,7 @@ module.exports =
 
     // Opened from the task list.
     router.post('/bassAreaCheck/:bookingId', audited, asyncMiddleware(saveBassAreaCheck))
-    // Opened from the license review page when still CAS2 because it was not changed from on the task list.
+    // Opened from the license review page when still CAS2 because it was not changed on the task list.
     router.post('/bassAreaCheck/:action/:bookingId', audited, asyncMiddleware(saveBassAreaCheck))
 
     router.post('/rejected/:bookingId', audited, asyncMiddleware(reject('area', 'rejected')))
