@@ -1,0 +1,88 @@
+import { telemetry } from '@ministryofjustice/hmpps-azure-telemetry'
+import { AuditEvent, AuditService as HmppsAuditService, SubjectType } from '@ministryofjustice/hmpps-audit-client'
+import { Request } from 'express'
+import logger from '../../../log'
+import getAuditPolicy, { AuditPolicy } from './routeAuditPolicy'
+import config from '../../config'
+
+export default class AuditService {
+  constructor(private readonly hmppsAuditService: HmppsAuditService) {
+  }
+
+  async logPageViewAttempt(
+    requestId: string,
+    prisoner: any,
+    policy: AuditPolicy,
+    user: any,
+  ): Promise<void> {
+    const eventType = `${policy.eventType}_ATTEMPT`
+    const auditEvent = this.createAuditEvent(eventType, prisoner.offenderNo, requestId, user)
+    await this.sendAuditEvent(auditEvent)
+  }
+
+  async logPageViewSuccess(
+    requestId: string,
+    prisoner: any,
+    policy: AuditPolicy,
+    user: any,
+  ): Promise<void> {
+    const eventType = `${policy.eventType}_SUCCESS`
+    const auditEventMessage = this.createAuditEvent(eventType, prisoner.offenderNo, requestId, user)
+    await this.sendAuditEvent(auditEventMessage)
+  }
+
+  async logPageAccessFailure(req: Request, prisoner: any, user: any): Promise<void> {
+    const path = `${req.method} ${req.baseUrl}${req.path}`
+    const routePolicy = getAuditPolicy(path)
+    if (!routePolicy?.policy) {
+      logger.error(`No audit policy found for route: ${path}`)
+      return
+    }
+
+    const eventType = `${routePolicy.policy.eventType}_FAILURE`
+    const auditEventMessage = this.createAuditEvent(eventType, prisoner.offenderNo, req.id, user)
+    await this.sendAuditEvent(auditEventMessage)
+  }
+
+  private async sendAuditEvent(auditEvent: AuditEvent): Promise<void> {
+    if (config.sqs.audit.enabled) {
+      logger.info(`sending audit event type: ${auditEvent.what}`)
+      telemetry.setSpanAttributes({audited: true})
+
+      try {
+        await this.hmppsAuditService.logAuditEvent(auditEvent)
+      } catch (error) {
+        logger.error('Could not send audit event to hmpps audit service', error)
+      }
+    }
+  }
+
+  private createAuditEvent(eventType: string, nomisId: string, requestId: string, user: any): AuditEvent {
+    const {subjectType, subjectId} = this.getSubjectFromRequest(nomisId)
+    return {
+      what: eventType,
+      subjectType,
+      subjectId,
+      correlationId: requestId,
+      who: user.username,
+      details: {
+        build: config.gitRef,
+        userRoles: user.userRoles,
+      },
+    }
+  }
+
+  private getSubjectFromRequest(nomisId: string): { subjectType: SubjectType; subjectId: string } {
+    if (nomisId) {
+      return {
+        subjectType: 'PRISONER_ID',
+        subjectId: nomisId,
+      }
+    }
+
+    return {
+      subjectType: 'NOT_APPLICABLE',
+      subjectId: '',
+    }
+  }
+}
