@@ -459,6 +459,14 @@
     "audit": true,
     "eventType": "EDIT_BASS_OFFER_REINSTATE"
   },
+  "POST /hdc/bassReferral/bassAreaCheck/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_BASS_REFERRAL_FORM"
+  },
+  "POST /hdc/bassReferral/bassAreaCheck/:action/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_BASS_REFERRAL_FORM"
+  },
   "GET /hdc/bassReferral/:formName/:action/:bookingId": {
     "audit": true,
     "eventType": "VIEW_BASS_REFERRAL_FORM"
