@@ -9,6 +9,24 @@ module.exports =
   (router, audited, pushToNomis) => {
     const standard = createStandardRoutes({ formConfig, licenceService, sectionName: 'bassReferral' })
 
+    const saveBassAreaCheck = standard.callbackPost('bassAreaCheck', async ({ req, res, bookingId, updatedLicence }) => {
+      if (isYes(updatedLicence, ['bassReferral', 'bassAreaCheck', 'approvedPremisesRequiredYesNo'])) {
+        await hdcService.postCvlEvent({
+          eventType: 'RISK_CHECKS_SUBMITTED',
+          bookingId: parseInt(bookingId, 10),
+          licenceId: res.locals.licence.id,
+          nomsNumber: res.locals.prisoner.offenderNo,
+          triggeredBy: req.user.username,
+          reason: `User selected Approved Premises (CAS1) instead of CAS2; an Approved Premises address is required`,
+        })
+      }
+    })
+
+    // Opened from the task list.
+    router.post('/bassAreaCheck/:bookingId', audited, asyncMiddleware(saveBassAreaCheck))
+    // Opened from the license review page when still CAS2 because it was not changed from on the task list.
+    router.post('/bassAreaCheck/:action/:bookingId', audited, asyncMiddleware(saveBassAreaCheck))
+
     router.post('/rejected/:bookingId', audited, asyncMiddleware(reject('area', 'rejected')))
     router.post('/unsuitable/:bookingId', audited, asyncMiddleware(reject('offender', 'unsuitable')))
 

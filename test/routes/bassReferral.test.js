@@ -381,6 +381,64 @@ describe('/hdc/bassReferral', () => {
   })
 
   describe('RO', () => {
+    describe('Given a COM is completing the CAS2 area check', () => {
+      const url = '/hdc/bassReferral/bassAreaCheck'
+      let licenceService
+      let hdcService
+      let app
+
+      beforeEach(() => {
+        licenceService = createLicenceServiceStub()
+        licenceService.getLicence.mockResolvedValue({
+          id: 12,
+          stage: 'PROCESSING_RO',
+          licence: { bassReferral: { bassAreaCheck: { approvedPremisesRequiredYesNo: 'No' } } },
+        })
+        hdcService = createHdcServiceStub()
+        app = createApp({ licenceServiceStub: licenceService }, 'roUser', hdcService)
+      })
+
+      test.each(['/1', '/change/1'])(
+        'When they save Yes at %s, then HDC raises the event before continuing to the approved premises address',
+        async (path) => {
+          const answers = { approvedPremisesRequiredYesNo: 'Yes', bassAreaCheckSeen: 'true' }
+          licenceService.update.mockResolvedValue({ bassReferral: { bassAreaCheck: answers } })
+
+          await request(app)
+            .post(`${url}${path}`)
+            .send(answers)
+            .expect(302)
+            .expect('Location', '/hdc/bassReferral/approvedPremisesAddress/1')
+
+          expect(licenceService.update).toHaveBeenCalledWith(
+            expect.objectContaining({ formName: 'bassAreaCheck', userInput: answers })
+          )
+          expect(hdcService.postCvlEvent).toHaveBeenCalledTimes(1)
+          expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+            eventType: 'RISK_CHECKS_SUBMITTED',
+            bookingId: 1,
+            licenceId: 12,
+            nomsNumber: 'A1234AA',
+            triggeredBy: 'RO_USER',
+            reason: 'User selected Approved Premises (CAS1) instead of CAS2; an Approved Premises address is required',
+          })
+          expect(licenceService.update.mock.invocationCallOrder[0]).toBeLessThan(
+            hdcService.postCvlEvent.mock.invocationCallOrder[0]
+          )
+        }
+      )
+
+      test('When they click No, then HDC continues to the task list without raising the event', async () => {
+        const answers = { approvedPremisesRequiredYesNo: 'No', bassAreaCheckSeen: 'true' }
+        licenceService.update.mockResolvedValue({ bassReferral: { bassAreaCheck: answers } })
+
+        await request(app).post(`${url}/1`).send(answers).expect(302).expect('Location', '/hdc/taskList/1')
+
+        expect(hdcService.postCvlEvent).not.toHaveBeenCalled()
+      })
+
+    })
+
     describe('bass referral routes', () => {
       const licenceService = createLicenceServiceStub()
       licenceService.getLicence = jest.fn().mockReturnValue({
