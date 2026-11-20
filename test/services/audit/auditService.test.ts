@@ -37,7 +37,7 @@ describe('AuditService', () => {
     expect(hmppsAuditService.logAuditEvent).not.toHaveBeenCalled()
   })
 
-  it('should log an event for a page view attempt by a probation user', async() => {
+  it('should log an event for a page view attempt', async() => {
     const eventType = 'VIEWED_SOMETHING'
     hmppsAuditService.logAuditEvent.mockResolvedValue(undefined)
 

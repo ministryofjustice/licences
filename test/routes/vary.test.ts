@@ -1,7 +1,7 @@
 import request from 'supertest'
 import { mockAudit } from '../mockClients'
 import { appSetup, testFormPageGets } from '../supertestSetup'
-import { createPrisonerServiceStub, createSignInServiceStub } from '../mockServices'
+import { createAuditServiceStub, createPrisonerServiceStub, createSignInServiceStub } from '../mockServices'
 import standardRouter from '../../server/routes/routeWorkers/standardRouter'
 
 import { varyRouter } from '../../server/routes/vary'
@@ -310,11 +310,13 @@ describe('POST /hdc/vary/', () => {
 })
 
 function createApp({ licenceServiceStub, audit = mockAudit() }, user) {
+  const auditService = createAuditServiceStub()
   const prisonerService = createPrisonerServiceStub()
   const licenceService = licenceServiceStub || new LicenceService(undefined)
   const signInService = createSignInServiceStub()
 
   const baseRouter = standardRouter({
+    auditService,
     licenceService,
     prisonerService,
     audit,

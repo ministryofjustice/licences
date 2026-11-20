@@ -16,7 +16,7 @@ export default class AuditService {
     user: any,
   ): Promise<void> {
     const eventType = `${policy.eventType}_ATTEMPT`
-    const auditEvent = this.createAuditEvent(eventType, prisoner.offenderNo, requestId, user)
+    const auditEvent = this.createAuditEvent(eventType, prisoner, requestId, user)
     await this.sendAuditEvent(auditEvent)
   }
 
@@ -27,7 +27,7 @@ export default class AuditService {
     user: any,
   ): Promise<void> {
     const eventType = `${policy.eventType}_SUCCESS`
-    const auditEventMessage = this.createAuditEvent(eventType, prisoner.offenderNo, requestId, user)
+    const auditEventMessage = this.createAuditEvent(eventType, prisoner, requestId, user)
     await this.sendAuditEvent(auditEventMessage)
   }
 
@@ -40,7 +40,7 @@ export default class AuditService {
     }
 
     const eventType = `${routePolicy.policy.eventType}_FAILURE`
-    const auditEventMessage = this.createAuditEvent(eventType, prisoner.offenderNo, req.id, user)
+    const auditEventMessage = this.createAuditEvent(eventType, prisoner, req.id, user)
     await this.sendAuditEvent(auditEventMessage)
   }
 
@@ -57,8 +57,8 @@ export default class AuditService {
     }
   }
 
-  private createAuditEvent(eventType: string, nomisId: string, requestId: string, user: any): AuditEvent {
-    const {subjectType, subjectId} = this.getSubjectFromRequest(nomisId)
+  private createAuditEvent(eventType: string, prisoner: any, requestId: string, user: any): AuditEvent {
+    const {subjectType, subjectId} = this.getSubjectFromRequest(prisoner)
     return {
       what: eventType,
       subjectType,
@@ -72,11 +72,11 @@ export default class AuditService {
     }
   }
 
-  private getSubjectFromRequest(nomisId: string): { subjectType: SubjectType; subjectId: string } {
-    if (nomisId) {
+  private getSubjectFromRequest(prisoner: any): { subjectType: SubjectType; subjectId: string } {
+    if (prisoner?.offenderNo) {
       return {
         subjectType: 'PRISONER_ID',
-        subjectId: nomisId,
+        subjectId: prisoner.offenderNo,
       }
     }
 

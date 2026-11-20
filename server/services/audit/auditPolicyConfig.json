@@ -5,6 +5,11 @@
   },
   "GET /hdc/taskList/:bookingId": {
     "audit": true,
+    "eventType": "VIEW_TASK_LIST_FOR_OFFENDER",
+    "noLicenceRequired": true
+  },
+  "GET /hdc/taskList": {
+    "audit": true,
     "eventType": "VIEW_TASK_LIST"
   },
   "POST /hdc/taskList/eligibilityStart": {

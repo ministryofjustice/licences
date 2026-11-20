@@ -7,6 +7,7 @@ const {
   createLicenceServiceStub,
   createSignInServiceStub,
   createHdcServiceStub,
+  createAuditServiceStub,
 } = require('../mockServices')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
@@ -452,6 +453,7 @@ describe('/hdc/bassReferral', () => {
 })
 
 function createApp({ licenceServiceStub}, user, hdcServiceStub = null) {
+  const auditService = createAuditServiceStub()
   const prisonerService = createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const hdcService = hdcServiceStub || createHdcServiceStub()
@@ -459,6 +461,7 @@ function createApp({ licenceServiceStub}, user, hdcServiceStub = null) {
   const audit = mockAudit()
 
   const baseRouter = standardRouter({
+    auditService,
     licenceService,
     prisonerService,
     audit,

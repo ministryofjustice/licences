@@ -9,7 +9,7 @@ const pdfRenderer = require('../server/utils/renderPdf')
 const { mockAudit } = require('./mockClients')
 const NullTokenVerifier = require('../server/authentication/tokenverifier/NullTokenVerifier')
 
-const { createSignInServiceStub, createPrisonerServiceStub, createLicenceServiceStub } = require('./mockServices')
+const { createSignInServiceStub, createPrisonerServiceStub, createLicenceServiceStub, createAuditServiceStub} = require('./mockServices')
 const standardRouter = require('../server/routes/routeWorkers/standardRouter')
 const { GotenbergClient } = require('../server/data/gotenbergClient')
 const { links } = require('../server/config').default
@@ -141,7 +141,9 @@ const startRoute = (
   const signInService = createSignInServiceStub()
   const prisonerService = createPrisonerServiceStub()
   const licenceService = createLicenceServiceStub()
+  const auditService = createAuditServiceStub()
   const baseRouter = standardRouter({
+    auditService,
     licenceService,
     prisonerService,
     audit,
