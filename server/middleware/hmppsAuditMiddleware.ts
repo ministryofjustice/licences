@@ -9,7 +9,6 @@ import logger from '../../log'
  */
 export function hmppsAuditMiddleware(auditService: AuditService): RequestHandler {
   return async (req, res, next) => {
-    logger.error(`auditMiddleware: ${req.method} ${req.baseUrl}${req.path}`)
     if (config.sqs.audit.enabled) {
       const path = `${req.method} ${req.baseUrl}${req.path}`
       const routePolicy = getAuditPolicy(path)

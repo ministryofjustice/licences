@@ -25,7 +25,6 @@ export type LicenceLocals = {
 
 export function checkLicenceMiddleware(licenceService: LicenceService, prisonerService: PrisonerService) {
   return async(req, res, next) => {
-    logger.error(`checkLicenceMiddleware: ${req.method} ${req.baseUrl}${req.path}`)
     const path = `${req.method} ${req.baseUrl}${req.path}`
     const routePolicy = getAuditPolicy(path)
     if (routePolicy && routePolicy.policy) {

@@ -129,7 +129,7 @@ module.exports =
       })
     )
 
-    router.get('/verify/', audited, async (req,res) => {
+    router.get('/verify/', audited, async (req, res) => {
       const { nomisUserName } = req.query
 
       try {
