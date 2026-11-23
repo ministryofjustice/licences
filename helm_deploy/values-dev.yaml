@@ -48,6 +48,10 @@ generic-service:
     HDC_IN_CVL_NATIONAL_ROLE_OUT_DATE: "2026-09-12"
     PROGRESSION_MODEL_POLICY_START_DATE: "2026-09-12"
 
+    # HMPPS audit
+    AUDIT_ENABLED: true
+    AUDIT_SQS_REGION: "eu-west-2"
+    AUDIT_SERVICE_NAME: "create-and-vary-a-licence"
 
 generic-prometheus-alerts:
   alertSeverity: cvl-alerts-non-prod
