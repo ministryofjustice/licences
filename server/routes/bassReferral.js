@@ -72,14 +72,16 @@ module.exports =
         ])
 
 
-        if (isAnOptOut && pushToNomis) {
+        if (isAnOptOut) {
+          if (pushToNomis) {
           await nomisPushService.pushStatus({
-            bookingId,
-            data: {type: 'optOut', status: 'Yes', cvlEventReason: `${userName} opted out of HDC after COM added an approved CAS2 premises`},
-            username: userName,
-            licenceId,
-            offenderNo,
-          })
+              bookingId,
+              data: {type: 'optOut', status: 'Yes', cvlEventReason: `${userName} opted out of HDC after COM added an approved CAS2 premises`},
+              username: userName,
+              licenceId,
+              offenderNo,
+            })
+          }
         } else {
           await hdcService.postCvlEvent({
             eventType: 'OPT_IN',

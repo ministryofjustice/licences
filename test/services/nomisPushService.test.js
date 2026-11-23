@@ -37,22 +37,22 @@ describe('nomisPushService', () => {
         },
         {
           example: 'Release refused - addressUnsuitable',
-          data: { type: 'release', status: 'No', reason: 'addressUnsuitable' },
+          data: { type: 'release', status: 'No', reason: ['addressUnsuitable'] },
           approvalStatus: { approvalStatus: 'REJECTED', refusedReason: 'ADDRESS' },
         },
         {
           example: 'Release refused - insufficientTime',
-          data: { type: 'release', status: 'No', reason: 'insufficientTime' },
+          data: { type: 'release', status: 'No', reason: ['insufficientTime'] },
           approvalStatus: { approvalStatus: 'REJECTED', refusedReason: 'LIMITS' },
         },
         {
           example: 'Release refused - outOfTime',
-          data: { type: 'release', status: 'No', reason: 'outOfTime' },
+          data: { type: 'release', status: 'No', reason: ['outOfTime'] },
           approvalStatus: { approvalStatus: 'REJECTED', refusedReason: 'UNDER_14DAYS' },
         },
         {
           example: 'Release refused - noAvailableAddress',
-          data: { type: 'release', status: 'No', reason: 'noAvailableAddress' },
+          data: { type: 'release', status: 'No', reason: ['noAvailableAddress'] },
           approvalStatus: { approvalStatus: 'REJECTED', refusedReason: 'ADDRESS' },
         },
         {
@@ -62,147 +62,147 @@ describe('nomisPushService', () => {
         },
         {
           example: 'Excluded - sexOffenderRegister',
-          data: { type: 'excluded', status: 'Yes', reason: 'sexOffenderRegister' },
+          data: { type: 'excluded', status: 'Yes', reason: ['sexOffenderRegister'] },
           approvalStatus: { approvalStatus: 'INELIGIBLE', refusedReason: 'SEX_OFFENCE' },
         },
         {
           example: 'Excluded - convictedSexOffences',
-          data: { type: 'excluded', status: 'Yes', reason: 'convictedSexOffences' },
+          data: { type: 'excluded', status: 'Yes', reason: ['convictedSexOffences'] },
           approvalStatus: { approvalStatus: 'INELIGIBLE', refusedReason: 'EXT_SENT' },
         },
         {
           example: 'Excluded - rotlFail',
-          data: { type: 'excluded', status: 'Yes', reason: 'rotlFail' },
+          data: { type: 'excluded', status: 'Yes', reason: ['rotlFail'] },
           approvalStatus: { approvalStatus: 'INELIGIBLE', refusedReason: 'FAIL_RTN' },
         },
         {
           example: 'Excluded - communityCurfew',
-          data: { type: 'excluded', status: 'Yes', reason: 'communityCurfew' },
+          data: { type: 'excluded', status: 'Yes', reason: ['communityCurfew'] },
           approvalStatus: { approvalStatus: 'INELIGIBLE', refusedReason: 'CURFEW' },
         },
         {
           example: 'Excluded - servingRecall',
-          data: { type: 'excluded', status: 'Yes', reason: 'servingRecall' },
+          data: { type: 'excluded', status: 'Yes', reason: ['servingRecall'] },
           approvalStatus: { approvalStatus: 'INELIGIBLE', refusedReason: 'LRCOMP' },
         },
         {
           example: 'Excluded - deportation',
-          data: { type: 'excluded', status: 'Yes', reason: 'deportation' },
+          data: { type: 'excluded', status: 'Yes', reason: ['deportation'] },
           approvalStatus: { approvalStatus: 'INELIGIBLE', refusedReason: 'FNP' },
         },
         {
           example: 'Excluded - cja2003_19ZA',
-          data: { type: 'excluded', status: 'Yes', reason: 'cja2003_19ZA' },
+          data: { type: 'excluded', status: 'Yes', reason: ['cja2003_19ZA'] },
           approvalStatus: { approvalStatus: 'INELIGIBLE', refusedReason: 'CJA2003_19ZA' },
         },
         {
           example: 'Excluded - curfewConditionsRecall',
-          data: { type: 'excluded', status: 'Yes', reason: 'curfewConditionsRecall' },
+          data: { type: 'excluded', status: 'Yes', reason: ['curfewConditionsRecall'] },
           approvalStatus: { approvalStatus: 'INELIGIBLE', refusedReason: 'RECALL_2YRS' },
         },
         {
           example: 'Excluded - twoThirdsRelease',
-          data: { type: 'excluded', status: 'Yes', reason: 'twoThirdsRelease' },
+          data: { type: 'excluded', status: 'Yes', reason: ['twoThirdsRelease'] },
           approvalStatus: { approvalStatus: 'INELIGIBLE', refusedReason: '2_THIRD_REL' },
         },
         {
           example: 'Excluded - notice_244zb',
-          data: { type: 'excluded', status: 'Yes', reason: 'notice_244zb' },
+          data: { type: 'excluded', status: 'Yes', reason: ['notice_244zb'] },
           approvalStatus: { approvalStatus: 'INELIGIBLE', refusedReason: '244ZB_NOTICE' },
         },
         {
           example: 'Excluded - schedule_20B',
-          data: { type: 'excluded', status: 'Yes', reason: 'schedule_20B' },
+          data: { type: 'excluded', status: 'Yes', reason: ['schedule_20B'] },
           approvalStatus: { approvalStatus: 'INELIGIBLE', refusedReason: 'SCHEDULE_20B' },
         },
         {
           example: 'Unsuitable - sexOffender',
-          data: { type: 'exceptionalCircumstances', status: 'No', reason: 'sexOffender' },
+          data: { type: 'exceptionalCircumstances', status: 'No', reason: ['sexOffender'] },
           approvalStatus: { approvalStatus: 'PRES UNSUIT', refusedReason: 'UNSUIT_SEX' },
         },
         {
           example: 'Unsuitable - deportationLiable',
-          data: { type: 'exceptionalCircumstances', status: 'No', reason: 'deportationLiable' },
+          data: { type: 'exceptionalCircumstances', status: 'No', reason: ['deportationLiable'] },
           approvalStatus: { approvalStatus: 'PRES UNSUIT', refusedReason: 'DEPORT' },
         },
         {
           example: 'Unsuitable - immigrationStatusUnclear',
-          data: { type: 'exceptionalCircumstances', status: 'No', reason: 'immigrationStatusUnclear' },
+          data: { type: 'exceptionalCircumstances', status: 'No', reason: ['immigrationStatusUnclear'] },
           approvalStatus: { approvalStatus: 'PRES UNSUIT', refusedReason: 'DEPORT' },
         },
         {
           example: 'Unsuitable - recalled',
-          data: { type: 'exceptionalCircumstances', status: 'No', reason: 'recalled' },
+          data: { type: 'exceptionalCircumstances', status: 'No', reason: ['recalled'] },
           approvalStatus: { approvalStatus: 'PRES UNSUIT', refusedReason: 'CUR' },
         },
         {
           example: 'Unsuitable - sentenceCategory',
-          data: { type: 'exceptionalCircumstances', status: 'No', reason: 'sentenceCategory' },
+          data: { type: 'exceptionalCircumstances', status: 'No', reason: ['sentenceCategory'] },
           approvalStatus: { approvalStatus: 'PRES UNSUIT', refusedReason: 'UNSUIT_OFF' },
         },
         {
           example: 'Unsuitable - historyOfTerrorism',
-          data: { type: 'exceptionalCircumstances', status: 'No', reason: 'historyOfTerrorism' },
+          data: { type: 'exceptionalCircumstances', status: 'No', reason: ['historyOfTerrorism'] },
           approvalStatus: { approvalStatus: 'PRES UNSUIT', refusedReason: 'HIST_TERROR' },
         },
         {
           example: 'Unsuitable - categoryA',
-          data: { type: 'exceptionalCircumstances', status: 'No', reason: 'categoryA' },
+          data: { type: 'exceptionalCircumstances', status: 'No', reason: ['categoryA'] },
           approvalStatus: { approvalStatus: 'PRES UNSUIT', refusedReason: 'CATEGORY_A' },
         },
         {
           example: 'Unsuitable - riskOfHarm',
-          data: { type: 'exceptionalCircumstances', status: 'No', reason: 'riskOfHarm' },
+          data: { type: 'exceptionalCircumstances', status: 'No', reason: ['riskOfHarm'] },
           approvalStatus: { approvalStatus: 'PRES UNSUIT', refusedReason: 'ROSH_MAPPA' },
         },
         {
           example: 'Postponed - investigation',
-          data: { type: 'postpone', status: 'Yes', reason: 'investigation' },
+          data: { type: 'postpone', status: 'Yes', reason: ['investigation'] },
           approvalStatus: { approvalStatus: 'PP INVEST', refusedReason: 'OUTSTANDING' },
         },
         {
           example: 'Postponed - outstandingRisk',
-          data: { type: 'postpone', status: 'Yes', reason: 'outstandingRisk' },
+          data: { type: 'postpone', status: 'Yes', reason: ['outstandingRisk'] },
           approvalStatus: { approvalStatus: 'PP OUT RISK', refusedReason: 'OUTSTANDING' },
         },
         {
           example: 'Postponed - awaitingInformation',
-          data: { type: 'postpone', status: 'Yes', reason: 'awaitingInformation' },
+          data: { type: 'postpone', status: 'Yes', reason: ['awaitingInformation'] },
           approvalStatus: { approvalStatus: 'PP AWAITING', refusedReason: 'OUTSTANDING' },
         },
         {
           example: 'Postponed - committedOffenceWhileInPrison',
-          data: { type: 'postpone', status: 'Yes', reason: 'committedOffenceWhileInPrison' },
+          data: { type: 'postpone', status: 'Yes', reason: ['committedOffenceWhileInPrison'] },
           approvalStatus: { approvalStatus: 'PP PROC OUT', refusedReason: 'OUTSTANDING' },
         },
         {
           example: 'Postponed - remandedInCustodyOnOtherMatters',
-          data: { type: 'postpone', status: 'Yes', reason: 'remandedInCustodyOnOtherMatters' },
+          data: { type: 'postpone', status: 'Yes', reason: ['remandedInCustodyOnOtherMatters'] },
           approvalStatus: { approvalStatus: 'PP REMANDED', refusedReason: 'OUTSTANDING' },
         },
         {
           example: 'Postponed - confiscationOrderOutstanding',
-          data: { type: 'postpone', status: 'Yes', reason: 'confiscationOrderOutstanding' },
+          data: { type: 'postpone', status: 'Yes', reason: ['confiscationOrderOutstanding'] },
           approvalStatus: { approvalStatus: 'PP CONFISC', refusedReason: 'OUTSTANDING' },
         },
         {
           example: 'Postponed - segregatedForReasonsOtherThanProtection',
-          data: { type: 'postpone', status: 'Yes', reason: 'segregatedForReasonsOtherThanProtection' },
+          data: { type: 'postpone', status: 'Yes', reason: ['segregatedForReasonsOtherThanProtection'] },
           approvalStatus: { approvalStatus: 'PP SEG', refusedReason: 'OUTSTANDING' },
         },
         {
           example: 'Postponed - sentenceReviewedUnderULSScheme',
-          data: { type: 'postpone', status: 'Yes', reason: 'sentenceReviewedUnderULSScheme' },
+          data: { type: 'postpone', status: 'Yes', reason: ['sentenceReviewedUnderULSScheme'] },
           approvalStatus: { approvalStatus: 'PP ULS', refusedReason: 'OUTSTANDING' },
         },
         {
           example: 'Refused - addressUnsuitable',
-          data: { type: 'refusal', status: 'Yes', reason: 'addressUnsuitable' },
+          data: { type: 'refusal', status: 'Yes', reason: ['addressUnsuitable'] },
           approvalStatus: { approvalStatus: 'REJECTED', refusedReason: 'ADDRESS' },
         },
         {
           example: 'Refused - insufficientTime',
-          data: { type: 'refusal', status: 'Yes', reason: 'insufficientTime' },
+          data: { type: 'refusal', status: 'Yes', reason: ['insufficientTime'] },
           approvalStatus: { approvalStatus: 'REJECTED', refusedReason: 'LIMITS' },
         },
       ]
@@ -222,7 +222,7 @@ describe('nomisPushService', () => {
     test('should not call nomisClient.putApprovalStatus if no type', async () => {
       await service.pushStatus({
         bookingId,
-        data: { type: undefined, status: 'Yes', reason: 'something' },
+        data: { type: undefined, status: 'Yes', reason: ['something'] },
         username,
       })
       expect(signInService.getClientCredentialsTokens).not.toHaveBeenCalled()
@@ -232,7 +232,7 @@ describe('nomisPushService', () => {
     test('should not call nomisClient.putApprovalStatus if no status', async () => {
       await service.pushStatus({
         bookingId,
-        data: { type: 'release', status: undefined, reason: 'something' },
+        data: { type: 'release', status: undefined, reason: ['something'] },
         username,
       })
       expect(signInService.getClientCredentialsTokens).not.toHaveBeenCalled()
@@ -242,7 +242,7 @@ describe('nomisPushService', () => {
     test('should not call nomisClient.putApprovalStatus if no matching update', async () => {
       await service.pushStatus({
         bookingId,
-        data: { type: 'release', status: 'No', reason: 'unmatched-reason' },
+        data: { type: 'release', status: 'No', reason: ['unmatched-reason'] },
         username,
       })
       expect(signInService.getClientCredentialsTokens).not.toHaveBeenCalled()
@@ -322,146 +322,147 @@ describe('nomisPushService', () => {
       },
       {
         example: 'Postpone - investigation',
-        data: { type: 'postpone', status: 'Yes', reason: 'investigation' },
+        data: { type: 'postpone', status: 'Yes', reason: ['investigation' ]},
         cvlEvent: { eventType: 'POSTPONE', reason: 'investigation' }
       },
       {
         example: 'Postpone - outstandingRisk',
-        data: { type: 'postpone', status: 'Yes', reason: 'outstandingRisk' },
+        data: { type: 'postpone', status: 'Yes', reason: ['outstandingRisk']},
         cvlEvent: { eventType: 'POSTPONE', reason: 'outstandingRisk' }
       },
       {
         example: 'Postpone - awaitingInformation',
-        data: { type: 'postpone', status: 'Yes', reason: 'awaitingInformation' },
+        data: { type: 'postpone', status: 'Yes', reason: ['awaitingInformation'] },
         cvlEvent: { eventType: 'POSTPONE', reason: 'awaitingInformation' }
       },
       {
         example: 'Postpone - committedOffenceWhileInPrison',
-        data: { type: 'postpone', status: 'Yes', reason: 'committedOffenceWhileInPrison' },
+        data: { type: 'postpone', status: 'Yes', reason: ['committedOffenceWhileInPrison'] },
         cvlEvent: { eventType: 'POSTPONE', reason: 'committedOffenceWhileInPrison' }
       },
       {
         example: 'Postpone - remandedInCustodyOnOtherMatters',
-        data: { type: 'postpone', status: 'Yes', reason: 'remandedInCustodyOnOtherMatters' },
+        data: { type: 'postpone', status: 'Yes', reason: ['remandedInCustodyOnOtherMatters'] },
         cvlEvent: { eventType: 'POSTPONE', reason: 'remandedInCustodyOnOtherMatters' }
       },
       {
         example: 'Postpone - confiscationOrderOutstanding',
-        data: { type: 'postpone', status: 'Yes', reason: 'confiscationOrderOutstanding' },
+        data: { type: 'postpone', status: 'Yes', reason: ['confiscationOrderOutstanding']},
         cvlEvent: { eventType: 'POSTPONE', reason: 'confiscationOrderOutstanding' }
       },
       {
         example: 'Postpone - segregatedForReasonsOtherThanProtection',
-        data: { type: 'postpone', status: 'Yes', reason: 'segregatedForReasonsOtherThanProtection' },
+        data: { type: 'postpone', status: 'Yes', reason: ['segregatedForReasonsOtherThanProtection'] },
         cvlEvent: { eventType: 'POSTPONE', reason: 'segregatedForReasonsOtherThanProtection' }
       },
       {
         example: 'Postpone - sentenceReviewedUnderULSScheme',
-        data: { type: 'postpone', status: 'Yes', reason: 'sentenceReviewedUnderULSScheme' },
+        data: { type: 'postpone', status: 'Yes', reason: ['sentenceReviewedUnderULSScheme'] },
         cvlEvent: { eventType: 'POSTPONE', reason: 'sentenceReviewedUnderULSScheme' }
       },
       {
         example: 'Refusal - addressUnsuitable',
-        data: { type: 'refusal', status: 'Yes', reason: 'addressUnsuitable' },
+        data: { type: 'refusal', status: 'Yes', reason: ['addressUnsuitable'] },
         cvlEvent: { eventType: 'REFUSE', reason: 'addressUnsuitable' }
       },
       {
         example: 'Refusal - insufficientTime',
-        data: { type: 'refusal', status: 'Yes', reason: 'insufficientTime' },
+        data: { type: 'refusal', status: 'Yes', reason: ['insufficientTime'] },
         cvlEvent: { eventType: 'REFUSE', reason: 'insufficientTime' }
       },
       {
         example: 'Excluded - sexOffenderRegister',
-        data: { type: 'excluded', status: 'Yes', reason: 'sexOffenderRegister' },
+        data: { type: 'excluded', status: 'Yes', reason: ['sexOffenderRegister'] },
         cvlEvent: { eventType: 'INELIGIBLE', reason: 'sexOffenderRegister' }
       },
       {
         example: 'Excluded - convictedSexOffences',
-        data: { type: 'excluded', status: 'Yes', reason: 'convictedSexOffences' },
+        data: { type: 'excluded', status: 'Yes', reason: ['convictedSexOffences'] },
         cvlEvent: { eventType: 'INELIGIBLE', reason: 'convictedSexOffences' }
       },
       {
         example: 'Excluded - rotlFail',
-        data: { type: 'excluded', status: 'Yes', reason: 'rotlFail' },
-        cvlEvent: { eventType: 'INELIGIBLE', reason: 'rotlFail' } },
+        data: { type: 'excluded', status: 'Yes', reason: ['rotlFail'] },
+        cvlEvent: { eventType: 'INELIGIBLE', reason: 'rotlFail' }
+      },
       {
         example: 'Excluded - communityCurfew',
-        data: { type: 'excluded', status: 'Yes', reason: 'communityCurfew' },
+        data: { type: 'excluded', status: 'Yes', reason: ['communityCurfew'] },
         cvlEvent: { eventType: 'INELIGIBLE', reason: 'communityCurfew' }
       },
       {
         example: 'Excluded - servingRecall',
-        data: { type: 'excluded', status: 'Yes', reason: 'servingRecall' },
+        data: { type: 'excluded', status: 'Yes', reason: ['servingRecall'] },
         cvlEvent: { eventType: 'INELIGIBLE', reason: 'servingRecall' }
       },
       {
         example: 'Excluded - deportation',
-        data: { type: 'excluded', status: 'Yes', reason: 'deportation' },
+        data: { type: 'excluded', status: 'Yes', reason: ['deportation'] },
         cvlEvent: { eventType: 'INELIGIBLE', reason: 'deportation' }
       },
       {
         example: 'Excluded - cja2003_19ZA',
-        data: { type: 'excluded', status: 'Yes', reason: 'cja2003_19ZA' },
+        data: { type: 'excluded', status: 'Yes', reason: ['cja2003_19ZA'] },
         cvlEvent: { eventType: 'INELIGIBLE', reason: 'cja2003_19ZA' }
       },
       {
         example: 'Excluded - curfewConditionsRecall',
-        data: { type: 'excluded', status: 'Yes', reason: 'curfewConditionsRecall' },
+        data: { type: 'excluded', status: 'Yes', reason: ['curfewConditionsRecall'] },
         cvlEvent: { eventType: 'INELIGIBLE', reason: 'curfewConditionsRecall' }
       },
       {
         example: 'Excluded - twoThirdsRelease',
-        data: { type: 'excluded', status: 'Yes', reason: 'twoThirdsRelease' },
+        data: { type: 'excluded', status: 'Yes', reason: ['twoThirdsRelease'] },
         cvlEvent: { eventType: 'INELIGIBLE', reason: 'twoThirdsRelease' }
       },
       {
         example: 'Excluded - notice_244zb',
-        data: { type: 'excluded', status: 'Yes', reason: 'notice_244zb' },
+        data: { type: 'excluded', status: 'Yes', reason: ['notice_244zb'] },
         cvlEvent: { eventType: 'INELIGIBLE', reason: 'notice_244zb' }
       },
       {
         example: 'Excluded - schedule_20B',
-        data: { type: 'excluded', status: 'Yes', reason: 'schedule_20B' },
+        data: { type: 'excluded', status: 'Yes', reason: ['schedule_20B'] },
         cvlEvent: { eventType: 'INELIGIBLE', reason: 'schedule_20B' }
       },
       {
         example: 'Exceptional Circumstances - sexOffender',
-        data: { type: 'exceptionalCircumstances', status: 'No', reason: 'sexOffender' },
+        data: { type: 'exceptionalCircumstances', status: 'No', reason: ['sexOffender'] },
         cvlEvent: { eventType: 'INELIGIBLE', reason: 'sexOffender' }
       },
       {
         example: 'Exceptional Circumstances - deportationLiable',
-        data: { type: 'exceptionalCircumstances', status: 'No', reason: 'deportationLiable' },
+        data: { type: 'exceptionalCircumstances', status: 'No', reason: ['deportationLiable'] },
         cvlEvent: { eventType: 'INELIGIBLE', reason: 'deportationLiable' }
       },
       {
         example: 'Exceptional Circumstances - immigrationStatusUnclear',
-        data: { type: 'exceptionalCircumstances', status: 'No', reason: 'immigrationStatusUnclear' },
+        data: { type: 'exceptionalCircumstances', status: 'No', reason: ['immigrationStatusUnclear'] },
         cvlEvent: { eventType: 'INELIGIBLE', reason: 'immigrationStatusUnclear' }
       },
       {
         example: 'Exceptional Circumstances - recalled',
-        data: { type: 'exceptionalCircumstances', status: 'No', reason: 'recalled' },
+        data: { type: 'exceptionalCircumstances', status: 'No', reason: ['recalled'] },
         cvlEvent: { eventType: 'INELIGIBLE', reason: 'recalled' }
       },
       {
         example: 'Exceptional Circumstances - sentenceCategory',
-        data: { type: 'exceptionalCircumstances', status: 'No', reason: 'sentenceCategory' },
+        data: { type: 'exceptionalCircumstances', status: 'No', reason: ['sentenceCategory'] },
         cvlEvent: { eventType: 'INELIGIBLE', reason: 'sentenceCategory' }
       },
       {
         example: 'Exceptional Circumstances - historyOfTerrorism',
-        data: { type: 'exceptionalCircumstances', status: 'No', reason: 'historyOfTerrorism' },
+        data: { type: 'exceptionalCircumstances', status: 'No', reason: ['historyOfTerrorism'] },
         cvlEvent: { eventType: 'INELIGIBLE', reason: 'historyOfTerrorism' }
       },
       {
         example: 'Exceptional Circumstances - categoryA',
-        data: { type: 'exceptionalCircumstances', status: 'No', reason: 'categoryA' },
+        data: { type: 'exceptionalCircumstances', status: 'No', reason: ['categoryA'] },
         cvlEvent: { eventType: 'INELIGIBLE', reason: 'categoryA' }
       },
       {
         example: 'Exceptional Circumstances - riskOfHarm',
-        data: { type: 'exceptionalCircumstances', status: 'No', reason: 'riskOfHarm' },
+        data: { type: 'exceptionalCircumstances', status: 'No', reason: ['riskOfHarm'] },
         cvlEvent: { eventType: 'INELIGIBLE', reason: 'riskOfHarm' }
       },
     ]

@@ -88,7 +88,8 @@ module.exports =
           licenceService.updateSection('curfew', bookingId, newCurfew),
         ])
 
-        if (isAnOptOut && pushToNomis) {
+        if (isAnOptOut) {
+          if (pushToNomis) {
           await nomisPushService.pushStatus({
             bookingId,
             data: { type: 'optOut', status: 'Yes', cvlEventReason: `${userName} opted out of HDC after COM added an approved premises`},
@@ -96,6 +97,7 @@ module.exports =
             licenceId,
             offenderNo,
           })
+          }
         } else {
           await hdcService.postCvlEvent({
             eventType: 'OPT_IN',

@@ -1,19 +1,17 @@
 const logger = require('../../log')
 const { getIn } = require('../utils/functionalHelpers')
 const { statusValues, statusReasonValues } = require('./config/approvalStatuses')
-const { cvlEventConfig } = require('./config/cvlEventConfig')
 const { nomisPushError } = require('../utils/errors')
 
 module.exports = (nomisClientBuilder, signInService, hdcService) => {
   async function pushStatus({ bookingId, data, username, licenceId, offenderNo }) {
     const approvalStatus = getApprovalStatus(data)
-    const eventType = data.type
 
     if (!approvalStatus) {
       logger.info('No approval status to push to nomis')
       return null
     }
-    const shouldPostCvlEvent = Object.keys(cvlEventConfig).some((key) => key === eventType)
+    const shouldPostCvlEvent = data.reason ? hasCvlEventType(statusReasonValues, data) : hasCvlEventType(statusValues, data)
     const systemToken = await signInService.getClientCredentialsTokens(username)
     const nomisClient = nomisClientBuilder(systemToken)
 
@@ -92,16 +90,23 @@ module.exports = (nomisClientBuilder, signInService, hdcService) => {
   }
 }
 
+function hasCvlEventType(approvalStatuses, data) {
+  const eventData = data.reason ? approvalStatuses[data.type][data.status][data.reason[0]] : approvalStatuses[data.type][data.status]
+  return eventData.some((obj) => Object.keys(obj).some((key) => key === 'cvlEventType'))
+}
+
 function getCvlEventData({ type, status, reason, cvlEventReason }) {
-  const aReason = reason ? pick(reason) : ''
+  const aReason = reason ? reason[0] : ''
   return {
-    cvlEventType: aReason? cvlEventConfig[type][status][aReason].eventType : cvlEventConfig[type][status].eventType,
+    cvlEventType: aReason? statusReasonValues[type][status][aReason][1].cvlEventType : statusValues[type][status][1].cvlEventType,
     cvlEventReason: cvlEventReason || aReason
   }
 }
 
 function getApprovalStatus({ type, status, reason }) {
-  return reason ? getIn(statusReasonValues, [type, status, pick(reason)]) : getIn(statusValues, [type, status])
+  const approvalStatus = reason ? getIn(statusReasonValues, [type, status, pick(reason)]) : getIn(statusValues, [type, status])
+  if (!approvalStatus) return null
+  return approvalStatus[0]
 }
 
 function pick(reason) {
