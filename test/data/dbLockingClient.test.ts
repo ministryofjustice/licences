@@ -1,10 +1,11 @@
 import hash from 'string-hash'
-import dbLockingClient from '../../server/data/dbLockingClient'
+import { DbLockingClient } from '../../server/data/dbLockingClient'
 import * as dbModule from '../../server/data/dataAccess/db'
 
 jest.mock('../../server/data/dataAccess/db')
 
 const db = dbModule as jest.Mocked<typeof dbModule>
+const dbLockingClient = new DbLockingClient()
 
 afterEach(() => {
   db.query.mockReset()

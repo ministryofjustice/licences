@@ -1,9 +1,11 @@
 import { Licence } from '../../server/data/licenceTypes'
-import { licenceClient } from '../../server/data/licenceClient'
+import { LicenceClient } from '../../server/data/licenceClient'
 /** @type {any} */
 const db = require('../../server/data/dataAccess/db')
 
 jest.mock('../../server/data/dataAccess/db')
+
+const licenceClient = new LicenceClient()
 
 const BOOKING_ID = 123456
 const PRISON_NUMBER = 'A1234AA'

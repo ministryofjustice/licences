@@ -1,7 +1,6 @@
 import { Moment } from 'moment'
 import logger from '../../log'
 import * as db from './dataAccess/db'
-import { AuditClient, AuditDto } from '../../types/audit'
 
 const keys = [
   'LOGIN',
@@ -26,12 +25,20 @@ const keys = [
   'CREATE_IN_CVL',
 ]
 
-const audit: AuditClient = {
+export interface AuditDto {
+  id: number
+  timestamp: Date
+  user: string
+  action: string
+  details: object
+}
+
+export class AuditClient {
   deleteAll() {
     return db.query(`delete from audit`)
-  },
+  }
 
-  record(key: string, user: string, data: object) {
+  record(key: string, user: string, data: object): Promise<void> {
     if (!keys.includes(key)) {
       throw new Error(`Unknown audit key: ${key}`)
     }
@@ -45,9 +52,9 @@ const audit: AuditClient = {
       .catch((error) => {
         logger.error({ stack: error.stack }, 'Error during audit insertion ')
       })
-  },
+  }
 
-  async getEvents(action: string, filters: object, startMoment?: Moment, endMoment?: Moment) {
+  async getEvents(action: string, filters: object, startMoment?: Moment, endMoment?: Moment): Promise<AuditDto[]> {
     const startTime = startMoment ? startMoment.toISOString() : null
     const endTime = endMoment ? endMoment.toISOString() : null
 
@@ -55,13 +62,24 @@ const audit: AuditClient = {
 
     const { rows } = await db.query(query)
     return rows
-  },
+  }
 
-  getEvent,
-  getEventsForBooking,
+  async getEvent(eventId: number): Promise<AuditDto> {
+    const { rows } = await db.query({
+      text: `select id, "timestamp", "user", action, details from audit where id = $1;`,
+      values: [eventId],
+    })
+    return rows[0]
+  }
+
+  async getEventsForBooking(bookingId: number): Promise<AuditDto[]> {
+    const { rows } = await db.query({
+      text: `select id, "timestamp", "user", action, details from audit where details::jsonb ->> 'bookingId' = $1 order by timestamp desc;`,
+      values: [bookingId],
+    })
+    return rows
+  }
 }
-
-export default audit
 
 function addItem(key: string, user: string, data: object) {
   const query = {
@@ -70,22 +88,6 @@ function addItem(key: string, user: string, data: object) {
   }
 
   return db.query(query)
-}
-
-async function getEventsForBooking(bookingId: number): Promise<AuditDto[]> {
-  const { rows } = await db.query({
-    text: `select id, "timestamp", "user", action, details from audit where details::jsonb ->> 'bookingId' = $1 order by timestamp desc;`,
-    values: [bookingId],
-  })
-  return rows
-}
-
-async function getEvent(eventId: number): Promise<AuditDto> {
-  const { rows } = await db.query({
-    text: `select id, "timestamp", "user", action, details from audit where id = $1;`,
-    values: [eventId],
-  })
-  return rows[0]
 }
 
 function getEventQuery(

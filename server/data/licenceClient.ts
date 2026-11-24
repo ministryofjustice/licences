@@ -287,5 +287,3 @@ export class LicenceClient {
     })
   }
 }
-
-export const licenceClient = new LicenceClient()
