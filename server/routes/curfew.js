@@ -90,7 +90,7 @@ module.exports =
 
         if (isAnOptOut) {
           if (pushToNomis) {
-          await nomisPushService.pushStatus({
+            await nomisPushService.pushStatus({
             bookingId,
             data: { type: 'optOut', status: 'Yes', cvlEventReason: `${userName} opted out of HDC after COM added an approved premises`},
             username: userName,
