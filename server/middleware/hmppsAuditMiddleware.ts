@@ -16,7 +16,8 @@ export function hmppsAuditMiddleware(auditService: AuditService): RequestHandler
         logger.error(`No audit policy found for route: ${path}`)
       } else {
         const { policy } = routePolicy
-        if (policy?.audit && !policy.customHandler) {
+        if (policy?.audit && !policy.customHandler && !res.locals.hmppsAuditStarted) {
+          res.locals.hmppsAuditStarted = true
           const { prisoner } = res.locals
           const { user } = req
           await auditService.logPageViewAttempt(req.id, prisoner, routePolicy.policy, user)
