@@ -1,5 +1,5 @@
 const logger = require('../../log')
-const { getIn } = require('../utils/functionalHelpers')
+const { getIn, selectFirst } = require('../utils/functionalHelpers')
 const { statusValues, statusReasonValues } = require('./config/approvalStatuses')
 const { nomisPushError } = require('../utils/errors')
 
@@ -91,24 +91,21 @@ module.exports = (nomisClientBuilder, signInService, hdcService) => {
 }
 
 function hasCvlEventType(approvalStatuses, data) {
-  const eventData = data.reason ? approvalStatuses[data.type][data.status][data.reason[0]] : approvalStatuses[data.type][data.status]
+  const eventReason = selectFirst(data.reason)
+  const eventData = eventReason ? approvalStatuses[data.type][data.status][eventReason] : approvalStatuses[data.type][data.status]
   return eventData.some((obj) => Object.keys(obj).some((key) => key === 'cvlEventType'))
 }
 
 function getCvlEventData({ type, status, reason, cvlEventReason }) {
-  const aReason = reason ? reason[0] : ''
+  const eventReason = selectFirst(reason)
   return {
-    cvlEventType: aReason? statusReasonValues[type][status][aReason][1].cvlEventType : statusValues[type][status][1].cvlEventType,
-    cvlEventReason: cvlEventReason || aReason
+    cvlEventType: eventReason ? statusReasonValues[type][status][eventReason][1].cvlEventType : statusValues[type][status][1].cvlEventType,
+    cvlEventReason: cvlEventReason || eventReason
   }
 }
 
 function getApprovalStatus({ type, status, reason }) {
-  const approvalStatus = reason ? getIn(statusReasonValues, [type, status, pick(reason)]) : getIn(statusValues, [type, status])
+  const approvalStatus = reason ? getIn(statusReasonValues, [type, status, selectFirst(reason)]) : getIn(statusValues, [type, status])
   if (!approvalStatus) return null
   return approvalStatus[0]
-}
-
-function pick(reason) {
-  return [].concat(reason)[0]
 }

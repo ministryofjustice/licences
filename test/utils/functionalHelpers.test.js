@@ -1,6 +1,7 @@
 const {
   addPaths,
   allValuesEmpty,
+  selectFirst,
   equals,
   firstKey,
   getWhereKeyLike,
@@ -19,6 +20,44 @@ describe('functionalHelpers', () => {
       const expectedOutput = true
 
       expect(allValuesEmpty(input)).toBe(expectedOutput)
+    })
+
+    test('should return true for object of empty items', () => {
+      const input = { a: '', b: [], c: {}, d: undefined }
+      const expectedOutput = true
+
+      expect(allValuesEmpty(input)).toBe(expectedOutput)
+    })
+
+    test('should return false for array with a string', () => {
+      const input = { a: '', b: 'g' }
+      const expectedOutput = false
+
+      expect(allValuesEmpty(input)).toBe(expectedOutput)
+    })
+  })
+
+  describe('selectFirst', () => {
+
+    test('should return the first item of an array', () => {
+      const input = ['a', 'b', 'c']
+      const expectedOutput = 'a'
+
+      expect(selectFirst(input)).toBe(expectedOutput)
+    })
+
+    test('should return the first item of a single value', () => {
+      const input = 'a'
+      const expectedOutput = 'a'
+
+      expect(selectFirst(input)).toBe(expectedOutput)
+    })
+
+    test('should return undefined for an empty array', () => {
+      const input = []
+      const expectedOutput = undefined
+
+      expect(selectFirst(input)).toBe(expectedOutput)
     })
 
     test('should return true for object of empty items', () => {
