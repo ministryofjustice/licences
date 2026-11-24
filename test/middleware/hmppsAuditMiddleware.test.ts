@@ -1,12 +1,17 @@
 import { Request, Response } from 'express'
-import AuditService from '../services/audit/auditService'
-import config from '../config'
-import { hmppsAuditMiddleware } from './hmppsAuditMiddleware'
+import AuditService from '../../server/services/audit/auditService'
+import config from '../../server/config'
+import { hmppsAuditMiddleware } from '../../server/middleware/hmppsAuditMiddleware'
 
-jest.mock('../services/audit/auditService')
+jest.mock('../../server/services/audit/auditService')
 
-let res = {
+const res = {
   prependOnceListener: jest.fn(),
+  locals: {
+    prisoner: {
+      offenderNo: 'A1234BC',
+    }
+  }
 } as unknown as Response
 
 const req = {
@@ -14,28 +19,17 @@ const req = {
   baseUrl: '',
   method: 'GET',
   path: '/licence/create/id/1/check-your-answers',
+  user: {
+    username: 'XX'
+  }
 } as Request
 
 const next = jest.fn()
-
-const prisonRes = {
-  locals: {
-    user: {
-      username: 'XX',
-      nomisStaffId: 123,
-      prisonCaseload: ['LEI', 'MDI'],
-    },
-    licence: undefined,
-  },
-  prependOnceListener: jest.fn(),
-} as unknown as Response
 
 const auditService = new AuditService(null) as jest.Mocked<AuditService>
 const middleware = hmppsAuditMiddleware(auditService)
 
 beforeEach(() => {
-  res = prisonRes
-  res.locals.licence = undefined
   auditService.logPageViewAttempt.mockResolvedValue(undefined)
   config.sqs.audit.enabled = true
 })
@@ -45,7 +39,7 @@ afterEach(() => {
 })
 
 describe('auditMiddleware', () => {
-  it('should not call audit service is auditing is disabled', async () => {
+  it('should not call audit service is auditing is disabled', async() => {
     config.sqs.audit.enabled = false
     req.params = {}
 
@@ -55,10 +49,10 @@ describe('auditMiddleware', () => {
     expect(next).toHaveBeenCalledTimes(1)
   })
 
-  it('should not call audit service if the route does not require auditing', async () => {
+  it('should not call audit service if the route does not require auditing', async() => {
     const noAuditNeededReq = {
       ...req,
-      path: '/contact',
+      path: '/',
     } as Request
 
     await middleware(noAuditNeededReq, res, next)
@@ -68,30 +62,29 @@ describe('auditMiddleware', () => {
     expect(next).toHaveBeenCalledTimes(1)
   })
 
-  it('should call audit service if the route requires auditing', async () => {
-    const crn = 'X123456'
+  it('should call audit service if the route requires auditing', async() => {
     const auditNeededReq = {
       ...req,
-      path: `/${crn}/restricted`,
+      path: `/admin/roUsers/verify/`,
     } as Request
 
     await middleware(auditNeededReq, res, next)
 
     expect(auditService.logPageViewAttempt).toHaveBeenCalledWith(
       req.id,
+      res.locals.prisoner,
       {
         audit: true,
-        eventType: 'VIEW_RESTRICTED_OFFENDER_DETAILS',
+        eventType: 'VIEW_VERIFY_USER',
         customHandler: false,
       },
-      res.locals.licence,
-      res.locals.user,
+      req.user,
     )
     expect(next).toHaveBeenCalledTimes(1)
     expect(res.prependOnceListener).toHaveBeenCalledWith('finish', expect.any(Function))
   })
 
-  it('should handle route not being found in policy config', async () => {
+  it('should handle route not being found in policy config', async() => {
     const missingRouteReq = {
       ...req,
       path: '/this/route/does/not/exist',
