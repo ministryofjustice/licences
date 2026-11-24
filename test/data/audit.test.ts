@@ -1,9 +1,10 @@
-jest.mock('../../server/data/dataAccess/db')
-const moment = require('moment')
+import moment from 'moment'
+import audit from '../../server/data/audit'
+import * as dbModule from '../../server/data/dataAccess/db'
 
-const audit = require('../../server/data/audit')
-/** @type {any} */
-const db = require('../../server/data/dataAccess/db')
+jest.mock('../../server/data/dataAccess/db')
+
+const db = dbModule as jest.Mocked<typeof dbModule>
 
 afterEach(() => {
   db.query.mockReset()
@@ -77,7 +78,7 @@ describe('Audit', () => {
 
   describe('getEvents', () => {
     beforeEach(() => {
-      db.query.mockReturnValue([])
+      db.query.mockResolvedValue({ rows: [] })
     })
 
     test('should call auditData.execSql', async () => {

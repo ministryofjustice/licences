@@ -7,7 +7,7 @@ export interface AuditMock extends AuditClient {
   getEvents: jest.Mock<Promise<Array<AuditDto>>, [string, object, Moment, Moment]>
   getEvent: jest.Mock<Promise<AuditDto>, [number]>
   getEventsForBooking: jest.Mock<Promise<Array<AuditDto>>, [number]>
-  delete: jest.Mock<Promise<void>, []>
+  deleteAll: jest.Mock<Promise<unknown>, []>
 }
 
 export const mockAudit: () => AuditMock = () => ({
@@ -15,5 +15,5 @@ export const mockAudit: () => AuditMock = () => ({
   getEvents: jest.fn(),
   getEvent: jest.fn(),
   getEventsForBooking: jest.fn(),
-  delete: jest.fn(),
+  deleteAll: jest.fn(),
 })

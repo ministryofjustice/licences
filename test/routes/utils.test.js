@@ -7,8 +7,8 @@ const express = require('express')
 
 const createRoute = require('../../server/routes/utils')
 
-const audit = require('../../server/data/audit')
-const warningClient = require('../../server/data/warningClient')
+const audit = require('../../server/data/audit').default
+const warningClient = require('../../server/data/warningClient').default
 const { licenceClient } = require('../../server/data/licenceClient')
 
 describe('/utils/', () => {
