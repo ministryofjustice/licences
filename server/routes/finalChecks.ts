@@ -188,8 +188,10 @@ function postRefusal(licenceService, nomisPushService, appConfig) {
     })
 
     const { decision, reason } = userInput
-    if (decision === 'Yes' && appConfig.pushToNomis) {
-      await nomisPushService.pushStatus({ bookingId, data: { type: 'refusal', status: 'Yes', reason }, username, licenceId, offenderNo })
+    if (decision === 'Yes') {
+      if (appConfig.pushToNomis) {
+        await nomisPushService.pushStatus({ bookingId, data: { type: 'refusal', status: 'Yes', reason }, username, licenceId, offenderNo })
+      }
     }
 
     return res.redirect(`/hdc/taskList/${bookingId}`)

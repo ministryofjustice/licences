@@ -89,6 +89,7 @@ module.exports =
         ])
 
         if (isAnOptOut) {
+
           if (pushToNomis) {
             await nomisPushService.pushStatus({
             bookingId,
