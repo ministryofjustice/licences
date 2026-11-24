@@ -1,8 +1,9 @@
+import warningClient from '../../server/data/warningClient'
+import * as dbModule from '../../server/data/dataAccess/db'
+
 jest.mock('../../server/data/dataAccess/db')
 
-const warningClient = require('../../server/data/warningClient')
-/** @type {any} */
-const db = require('../../server/data/dataAccess/db')
+const db = dbModule as jest.Mocked<typeof dbModule>
 
 afterEach(() => {
   db.query.mockReset()
@@ -33,7 +34,7 @@ describe('warningClient', () => {
 
   describe('acknowledgeWarnings', () => {
     test('should pass in the correct sql', async () => {
-      db.query.mockReturnValue({ rowCount: 2 })
+      db.query.mockResolvedValue({ rowCount: 2 })
       const expectedInsert = "UPDATE warnings SET acknowledged = true WHERE id in ('1','2')"
 
       await warningClient.acknowledgeWarnings([1, 2])
@@ -43,7 +44,7 @@ describe('warningClient', () => {
     })
 
     test('should return modified row count', async () => {
-      db.query.mockReturnValue({ rowCount: 2 })
+      db.query.mockResolvedValue({ rowCount: 2 })
       const result = await warningClient.acknowledgeWarnings([1, 2])
       expect(result).toBe(2)
     })
@@ -51,7 +52,7 @@ describe('warningClient', () => {
 
   describe('getAcknowledgedWarnings', () => {
     test('should pass in the correct sql', async () => {
-      db.query.mockReturnValue({ rows: [{ count: 1 }] })
+      db.query.mockResolvedValue({ rows: [{ count: 1 }] })
 
       await warningClient.getAcknowledgedWarnings()
 
@@ -71,7 +72,7 @@ describe('warningClient', () => {
 
   describe('getOutstandingWarnings', () => {
     test('should pass in the correct sql', async () => {
-      db.query.mockReturnValue({ rows: [{ count: 1 }] })
+      db.query.mockResolvedValue({ rows: [{ count: 1 }] })
 
       await warningClient.getOutstandingWarnings()
 

@@ -24,6 +24,7 @@
     "integration-test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest --runInBand --testPathPatterns=/integration_test/.*",
     "lint": "eslint .",
     "typecheck": "tsc",
+    "js:remaining": "git ls-files 'server/*.js' 'test/*.js' 'mock-server/*.js' 'seeds/*.js' 'migrations/*.js' | sed -E 's#/.*##' | sort | uniq -c",
     "clean": "rm -rf dist/* public/* .port.tmp *.log build/* uploads/* test-results.xml",
     "db:knex": "knex",
     "db:knex-migrate": "knex-migrate",
