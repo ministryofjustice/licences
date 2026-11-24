@@ -82,7 +82,7 @@ export default function Index({
     '/hdc/taskList/',
     secureRoute(taskListRouter(prisonerService, licenceService, roService, hdcService, audit, caService, signInService)))
   router.use('/caseList/', secureRoute(caseListRouter({caseListService})))
-  router.get('/admin/', secureRoute(adminRouter()))
+  router.use('/admin/', secureRoute(adminRouter()))
   router.use(
     '/admin/roUsers/',
     secureRoute(userAdminRouter({userAdminService, signInService, migrationService}), {auditKey: 'USER_MANAGEMENT'})
