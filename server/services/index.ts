@@ -18,7 +18,6 @@ import createCaseListService from "./caseListService"
 import MigrationService from './migrationService'
 import PdfService from './pdfService'
 import FormService from './formService'
-import createReportingService from './reportingService'
 import createCaseListFormatter from './utils/caseListFormatter'
 import UserAdminService from './userAdminService'
 import createUserService from './userService'
@@ -104,7 +103,6 @@ const pdfService = new PdfService(
   signInService
 )
 const formService = new FormService(pdfFormatter, prisonerService, configClient)
-const reportingService = createReportingService(audit)
 const userAdminService = new UserAdminService(nomisClientBuilder, userClient, probationTeamsClient)
 const userService = createUserService(nomisClientBuilder, signInService, manageUsersApi)
 const deadlineService = createDeadlineService(licenceClient)
@@ -171,7 +169,6 @@ export const services = {
   caseListService,
   pdfService,
   formService,
-  reportingService,
   userAdminService,
   notificationService,
   userService,
