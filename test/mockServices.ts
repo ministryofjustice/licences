@@ -1,6 +1,7 @@
 import SignInService from '../server/authentication/signInService'
 import { ConditionsServiceFactory, ConditionsService } from '../server/services/conditionsService'
 import PdfService from '../server/services/pdfService'
+import AuditService from '../server/services/audit/auditService'
 
 export const createSignInServiceStub = () =>
   ({
@@ -148,3 +149,8 @@ export const createRoServiceStub = () => ({
     findResponsibleOfficerByOffenderNo: jest.fn(),
     isEarlyAdopter: jest.fn(),
 })
+
+export const createAuditServiceStub = () =>
+  ({
+    logPageViewAttempt: jest.fn(),
+  }) as unknown as jest.Mocked<AuditService>

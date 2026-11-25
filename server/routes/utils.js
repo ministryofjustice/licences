@@ -3,10 +3,10 @@ const logger = require('../../log')
 
 const { asyncMiddleware } = require('../utils/middleware')
 const { licenceClient } = require('../data/licenceClient')
-const activeLduClient = require('../data/activeLduClient')
+const activeLduClient = require('../data/activeLduClient').default
 
-const auditClient = require('../data/audit')
-const warningClient = require('../data/warningClient')
+const auditClient = require('../data/audit').default
+const warningClient = require('../data/warningClient').default
 
 const TEST_PRISON_NUMBER = 'A1234AA'
 

@@ -9,6 +9,7 @@ const {
   createSignInServiceStub,
   createNomisPushServiceStub,
   createHdcServiceStub,
+  createAuditServiceStub,
 } = require('../mockServices')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
@@ -171,6 +172,7 @@ function createApp(
   user,
   config = {}
 ) {
+  const auditService = createAuditServiceStub()
   const prisonerService = prisonerServiceStub || createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()
@@ -179,6 +181,7 @@ function createApp(
   const audit = mockAudit()
 
   const baseRouter = standardRouter({
+    auditService,
     licenceService,
     prisonerService,
     audit,

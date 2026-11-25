@@ -8,6 +8,7 @@ const {
   createSignInServiceStub,
   createNomisPushServiceStub,
   createHdcServiceStub,
+  createAuditServiceStub,
 } = require('../mockServices')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
@@ -411,6 +412,7 @@ function createApp(
   user,
   config = {}
 ) {
+  const auditService = createAuditServiceStub()
   const prisonerService = createPrisonerServiceStub()
   prisonerService.getPrisonerDetails = jest.fn().mockReturnValue(prisonerInfoResponse)
   const licenceService = licenceServiceStub || createLicenceServiceStub()
@@ -420,6 +422,7 @@ function createApp(
   const audit = mockAudit()
 
   const baseRouter = standardRouter({
+    auditService,
     licenceService,
     prisonerService,
     audit,

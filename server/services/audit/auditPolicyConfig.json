@@ -5,6 +5,11 @@
   },
   "GET /hdc/taskList/:bookingId": {
     "audit": true,
+    "eventType": "VIEW_TASK_LIST_FOR_OFFENDER",
+    "noLicenceRequired": true
+  },
+  "GET /hdc/taskList": {
+    "audit": true,
     "eventType": "VIEW_TASK_LIST"
   },
   "POST /hdc/taskList/eligibilityStart": {
@@ -357,7 +362,7 @@
   },
   "POST /user": {
     "audit": true,
-    "eventType": "EDIT_USER"
+    "eventType": "CHANGE_USER_ROLE"
   },
   "GET /hdc/people-ready-for-probation-checks": {
     "audit": true,

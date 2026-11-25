@@ -46,6 +46,7 @@ import { varyRouter } from './vary'
 
 export default function Index({
                                 audit,
+                                auditService,
                                 caseListService,
                                 conditionsServiceFactory,
                                 configClient,
@@ -73,19 +74,13 @@ export default function Index({
                               }: Services): Router {
   const router = Router({mergeParams: true})
 
-  const secureRoute = standardRouter({licenceService, prisonerService, audit, signInService, tokenVerifier, config})
+  const secureRoute = standardRouter({auditService, licenceService, prisonerService, audit, signInService, tokenVerifier, config})
 
-  router.use('/', secureRoute(defaultRouter()))
+  router.get('/', secureRoute(defaultRouter()))
 
   router.use(
     '/hdc/taskList/',
-    secureRoute(
-      taskListRouter(prisonerService, licenceService, roService, hdcService, audit, caService, signInService),
-      {
-        licenceRequired: false
-      }
-    )
-  )
+    secureRoute(taskListRouter(prisonerService, licenceService, roService, hdcService, audit, caService, signInService)))
   router.use('/caseList/', secureRoute(caseListRouter({caseListService})))
   router.use('/admin/', secureRoute(adminRouter()))
   router.use(

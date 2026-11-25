@@ -1,14 +1,9 @@
-/**
- * @typedef {import('../../types/licences').ActiveLduClient} ActiveLduClient
- */
-const format = require('pg-format')
-const db = require('./dataAccess/db')
+import format from 'pg-format'
+import * as db from './dataAccess/db'
+import { ActiveLduClient } from '../../types/licences'
 
-/**
- * @type {ActiveLduClient}
- */
-const activeLduClient = {
-  async isLduPresent(lduCode, probationAreaCode) {
+const activeLduClient: ActiveLduClient = {
+  async isLduPresent(lduCode: string, probationAreaCode: string) {
     const query = {
       text: `SELECT count(*) FROM active_local_delivery_units WHERE ldu_code=$1 AND probation_area_code=$2`,
       values: [lduCode, probationAreaCode],
@@ -18,7 +13,7 @@ const activeLduClient = {
     return parseInt(rows[0].count, 10) > 0
   },
 
-  async allActiveLdusInArea(probationAreaCode) {
+  async allActiveLdusInArea(probationAreaCode: string) {
     const query = {
       text: `SELECT ldu_code "code" FROM active_local_delivery_units WHERE probation_area_code=$1`,
       values: [probationAreaCode],
@@ -28,7 +23,7 @@ const activeLduClient = {
     return rows
   },
 
-  async updateActiveLdu(probationAreaCode, activeLduCodes) {
+  async updateActiveLdu(probationAreaCode: string, activeLduCodes: string[]) {
     await db.inTransaction(async (client) => {
       await client.query({
         text: `DELETE FROM active_local_delivery_units WHERE probation_area_code = $1`,
@@ -46,4 +41,4 @@ const activeLduClient = {
   },
 }
 
-module.exports = activeLduClient
+export default activeLduClient
