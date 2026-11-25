@@ -3,7 +3,7 @@ const { asyncMiddleware, authorisationMiddleware } = require('../utils/middlewar
 const config = require('../config').default
 
 module.exports =
-  ({ caseListService }) =>
+  ({ auditService, caseListService }) =>
   (router) => {
     router.use(authorisationMiddleware)
     router.get('/', (req, res) => res.redirect('/caseList/active'))
@@ -21,6 +21,7 @@ module.exports =
         )
         const { links, caReportsLinkEnabled } = config
 
+        auditService.logCaseListView(req.id, hdcEligible, req.user)
         return res.render('caseList/index', {
           hdcEligible,
           message,

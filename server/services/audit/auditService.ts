@@ -31,7 +31,7 @@ export default class AuditService {
     await this.sendAuditEvent(auditEventMessage)
   }
 
-  async logPageAccessFailure(req: Request, prisoner: any, user: any): Promise<void> {
+  async logPageAccessFailure(req: Request, prisoner: any, failureReason: string, user: any): Promise<void> {
     const path = `${req.method} ${req.baseUrl}${req.path}`
     const routePolicy = getAuditPolicy(path)
     if (!routePolicy?.policy) {
@@ -40,7 +40,35 @@ export default class AuditService {
     }
 
     const eventType = `${routePolicy.policy.eventType}_FAILURE`
-    const auditEventMessage = this.createAuditEvent(eventType, prisoner, req.id, user)
+    const baseAuditEventMessage = this.createAuditEvent(eventType, prisoner, req.id, user)
+    const auditEventMessage = {
+      ...baseAuditEventMessage,
+      details: {
+        ...baseAuditEventMessage.details,
+        failureReason,
+      }
+    }
+    await this.sendAuditEvent(auditEventMessage)
+  }
+
+  async logCaseListView(
+    requestId: string,
+    caseList: any,
+    user: any,
+  ): Promise<void> {
+
+    const baseAuditEventMessage = this.createAuditEvent('VIEW_CASE_LIST_SUCCESS', null, requestId, user)
+    const auditEventMessage = {
+      ...baseAuditEventMessage,
+      details: {
+        ...baseAuditEventMessage.details,
+        results: {
+          resultCount: caseList.length,
+          returnedSubjectIds: caseList.map((c: any) => c.offenderNo),
+        },
+      }
+    }
+
     await this.sendAuditEvent(auditEventMessage)
   }
 
