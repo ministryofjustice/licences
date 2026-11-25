@@ -373,97 +373,97 @@ describe('eventService', () => {
       {
         example: 'Excluded - sexOffenderRegister',
         data: { type: 'excluded', status: 'Yes', reason: ['sexOffenderRegister'] },
-        cvlEvent: { eventType: 'INELIGIBLE', reason: 'sexOffenderRegister' }
+        cvlEvent: { eventType: 'INELIGIBLE', reason: 'ineligible for HDC' }
       },
       {
         example: 'Excluded - convictedSexOffences',
         data: { type: 'excluded', status: 'Yes', reason: ['convictedSexOffences'] },
-        cvlEvent: { eventType: 'INELIGIBLE', reason: 'convictedSexOffences' }
+        cvlEvent: { eventType: 'INELIGIBLE', reason: 'ineligible for HDC' }
       },
       {
         example: 'Excluded - rotlFail',
         data: { type: 'excluded', status: 'Yes', reason: ['rotlFail'] },
-        cvlEvent: { eventType: 'INELIGIBLE', reason: 'rotlFail' }
+        cvlEvent: { eventType: 'INELIGIBLE', reason: 'ineligible for HDC' }
       },
       {
         example: 'Excluded - communityCurfew',
         data: { type: 'excluded', status: 'Yes', reason: ['communityCurfew'] },
-        cvlEvent: { eventType: 'INELIGIBLE', reason: 'communityCurfew' }
+        cvlEvent: { eventType: 'INELIGIBLE', reason: 'ineligible for HDC' }
       },
       {
         example: 'Excluded - servingRecall',
         data: { type: 'excluded', status: 'Yes', reason: ['servingRecall'] },
-        cvlEvent: { eventType: 'INELIGIBLE', reason: 'servingRecall' }
+        cvlEvent: { eventType: 'INELIGIBLE', reason: 'ineligible for HDC' }
       },
       {
         example: 'Excluded - deportation',
         data: { type: 'excluded', status: 'Yes', reason: ['deportation'] },
-        cvlEvent: { eventType: 'INELIGIBLE', reason: 'deportation' }
+        cvlEvent: { eventType: 'INELIGIBLE', reason: 'ineligible for HDC' }
       },
       {
         example: 'Excluded - cja2003_19ZA',
         data: { type: 'excluded', status: 'Yes', reason: ['cja2003_19ZA'] },
-        cvlEvent: { eventType: 'INELIGIBLE', reason: 'cja2003_19ZA' }
+        cvlEvent: { eventType: 'INELIGIBLE', reason: 'ineligible for HDC' }
       },
       {
         example: 'Excluded - curfewConditionsRecall',
         data: { type: 'excluded', status: 'Yes', reason: ['curfewConditionsRecall'] },
-        cvlEvent: { eventType: 'INELIGIBLE', reason: 'curfewConditionsRecall' }
+        cvlEvent: { eventType: 'INELIGIBLE', reason: 'ineligible for HDC' }
       },
       {
         example: 'Excluded - twoThirdsRelease',
         data: { type: 'excluded', status: 'Yes', reason: ['twoThirdsRelease'] },
-        cvlEvent: { eventType: 'INELIGIBLE', reason: 'twoThirdsRelease' }
+        cvlEvent: { eventType: 'INELIGIBLE', reason: 'ineligible for HDC' }
       },
       {
         example: 'Excluded - notice_244zb',
         data: { type: 'excluded', status: 'Yes', reason: ['notice_244zb'] },
-        cvlEvent: { eventType: 'INELIGIBLE', reason: 'notice_244zb' }
+        cvlEvent: { eventType: 'INELIGIBLE', reason: 'ineligible for HDC' }
       },
       {
         example: 'Excluded - schedule_20B',
         data: { type: 'excluded', status: 'Yes', reason: ['schedule_20B'] },
-        cvlEvent: { eventType: 'INELIGIBLE', reason: 'schedule_20B' }
+        cvlEvent: { eventType: 'INELIGIBLE', reason: 'ineligible for HDC' }
       },
       {
         example: 'Exceptional Circumstances - sexOffender',
         data: { type: 'exceptionalCircumstances', status: 'No', reason: ['sexOffender'] },
-        cvlEvent: { eventType: 'INELIGIBLE', reason: 'sexOffender' }
+        cvlEvent: { eventType: 'INELIGIBLE', reason: 'ineligible for HDC' }
       },
       {
         example: 'Exceptional Circumstances - deportationLiable',
         data: { type: 'exceptionalCircumstances', status: 'No', reason: ['deportationLiable'] },
-        cvlEvent: { eventType: 'INELIGIBLE', reason: 'deportationLiable' }
+        cvlEvent: { eventType: 'INELIGIBLE', reason: 'ineligible for HDC' }
       },
       {
         example: 'Exceptional Circumstances - immigrationStatusUnclear',
         data: { type: 'exceptionalCircumstances', status: 'No', reason: ['immigrationStatusUnclear'] },
-        cvlEvent: { eventType: 'INELIGIBLE', reason: 'immigrationStatusUnclear' }
+        cvlEvent: { eventType: 'INELIGIBLE', reason: 'ineligible for HDC' }
       },
       {
         example: 'Exceptional Circumstances - recalled',
         data: { type: 'exceptionalCircumstances', status: 'No', reason: ['recalled'] },
-        cvlEvent: { eventType: 'INELIGIBLE', reason: 'recalled' }
+        cvlEvent: { eventType: 'INELIGIBLE', reason: 'ineligible for HDC' }
       },
       {
         example: 'Exceptional Circumstances - sentenceCategory',
         data: { type: 'exceptionalCircumstances', status: 'No', reason: ['sentenceCategory'] },
-        cvlEvent: { eventType: 'INELIGIBLE', reason: 'sentenceCategory' }
+        cvlEvent: { eventType: 'INELIGIBLE', reason: 'ineligible for HDC' }
       },
       {
         example: 'Exceptional Circumstances - historyOfTerrorism',
         data: { type: 'exceptionalCircumstances', status: 'No', reason: ['historyOfTerrorism'] },
-        cvlEvent: { eventType: 'INELIGIBLE', reason: 'historyOfTerrorism' }
+        cvlEvent: { eventType: 'INELIGIBLE', reason: 'ineligible for HDC' }
       },
       {
         example: 'Exceptional Circumstances - categoryA',
         data: { type: 'exceptionalCircumstances', status: 'No', reason: ['categoryA'] },
-        cvlEvent: { eventType: 'INELIGIBLE', reason: 'categoryA' }
+        cvlEvent: { eventType: 'INELIGIBLE', reason: 'ineligible for HDC' }
       },
       {
         example: 'Exceptional Circumstances - riskOfHarm',
         data: { type: 'exceptionalCircumstances', status: 'No', reason: ['riskOfHarm'] },
-        cvlEvent: { eventType: 'INELIGIBLE', reason: 'riskOfHarm' }
+        cvlEvent: { eventType: 'INELIGIBLE', reason: 'ineligible for HDC' }
       },
     ]
 
