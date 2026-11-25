@@ -119,12 +119,12 @@ const app = createApp('caUser')  // role-specific app instance
 request(app).get('/hdc/forms/eligible/1').expect(200)
 ```
 
-Run integration tests with Docker services up (`docker-compose up` for DB, Redis, Gotenberg, Auth).
+Run integration tests with Docker services up (`docker-compose up` for DB, Redis, Gotenberg; auth is served by `npm run start-mocks`).
 
 ## Local Development
 
 ```bash
-docker-compose up            # Start PostgreSQL, Redis, Gotenberg, HMPPS Auth, token-verification
+docker-compose up            # Start PostgreSQL, Redis, Gotenberg
 npm run db:knex-migrate up   # Apply migrations
 npm run db:seed              # Load test users
 npm run start:dev            # Start app in watch mode
