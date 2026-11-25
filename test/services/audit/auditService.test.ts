@@ -37,26 +37,7 @@ describe('AuditService', () => {
     expect(hmppsAuditService.logAuditEvent).not.toHaveBeenCalled()
   })
 
-  it('should log an event for a page view attempt by a probation user', async() => {
-    const eventType = 'VIEWED_SOMETHING'
-    hmppsAuditService.logAuditEvent.mockResolvedValue(undefined)
-
-    await auditService.logPageViewAttempt(requestId, prisoner, {eventType, audit: true}, user)
-
-    expect(hmppsAuditService.logAuditEvent).toHaveBeenCalledWith({
-      what: `${eventType}_ATTEMPT`,
-      subjectType: 'PRISONER_ID',
-      subjectId: prisoner.offenderNo,
-      correlationId: requestId,
-      who: user.username,
-      details: {
-        build: config.gitRef,
-        userRoles: user.userRoles,
-      },
-    })
-  })
-
-  it('should log an event for a page view attempt by a prison user', async() => {
+  it('should log an event for a page view attempt', async() => {
     const eventType = 'VIEWED_SOMETHING'
     hmppsAuditService.logAuditEvent.mockResolvedValue(undefined)
 

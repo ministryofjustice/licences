@@ -35,12 +35,11 @@ $ npm run start:dev
 To run locally you need:
 - database
 - redis
-- auth server
+- auth server (mocked by `mock-server` for integration tests)
 - nomis
 - delius api
 - probation teams
 - gotenberg
-- nomis-user-roles-api
 - hdc-api
 
 You can run local database, redis and configure the application to point to the T3/dev environment for other services. Or these can be run locally using `docker-compose` and starting `mock-services`.

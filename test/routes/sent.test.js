@@ -3,7 +3,7 @@ const request = require('supertest')
 const { appSetup } = require('../supertestSetup')
 const { mockAudit } = require('../mockClients')
 
-const { createPrisonerServiceStub, createLicenceServiceStub, createSignInServiceStub } = require('../mockServices')
+const { createPrisonerServiceStub, createLicenceServiceStub, createSignInServiceStub, createAuditServiceStub} = require('../mockServices')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/sent')
@@ -194,12 +194,14 @@ function getDivWithClass(html, className) {
 }
 
 function createApp({ licenceServiceStub = null, prisonerServiceStub = null }, user) {
+  const auditService = createAuditServiceStub()
   const prisonerService = prisonerServiceStub || createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()
   const audit = mockAudit()
 
   const baseRouter = standardRouter({
+    auditService,
     licenceService,
     prisonerService,
     audit,
@@ -215,6 +217,7 @@ function createApp({ licenceServiceStub = null, prisonerServiceStub = null }, us
 }
 
 function createAppForResubmission({ prisonerServiceStub }, user, stage, licence) {
+  const auditService = createAuditServiceStub()
   const prisonerService = prisonerServiceStub || createPrisonerServiceStub()
   const licenceService = createLicenceServiceStub()
   const signInService = createSignInServiceStub()
@@ -228,6 +231,7 @@ function createAppForResubmission({ prisonerServiceStub }, user, stage, licence)
   })
 
   const baseRouter = standardRouter({
+    auditService,
     licenceService,
     prisonerService,
     audit,

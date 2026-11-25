@@ -1,10 +1,10 @@
+import hash from 'string-hash'
+import dbLockingClient from '../../server/data/dbLockingClient'
+import * as dbModule from '../../server/data/dataAccess/db'
+
 jest.mock('../../server/data/dataAccess/db')
 
-const hash = require('string-hash')
-
-const dbLockingClient = require('../../server/data/dbLockingClient')
-/** @type {any} */
-const db = require('../../server/data/dataAccess/db')
+const db = dbModule as jest.Mocked<typeof dbModule>
 
 afterEach(() => {
   db.query.mockReset()
@@ -16,7 +16,7 @@ describe('dbLockingClient', () => {
   const standardResponse = { rows: [] }
 
   beforeEach(() => {
-    db.query.mockReturnValue(standardResponse)
+    db.query.mockResolvedValue(standardResponse)
   })
 
   describe('tryLock', () => {

@@ -1,11 +1,12 @@
+import configClient from '../../server/data/configClient'
+import * as dbModule from '../../server/data/dataAccess/db'
+
 jest.mock('../../server/data/dataAccess/db')
 
-const configClient = require('../../server/data/configClient')
-/** @type {any} */
-const db = require('../../server/data/dataAccess/db')
+const db = dbModule as jest.Mocked<typeof dbModule>
 
 beforeEach(() => {
-  db.query.mockReturnValue({ rows: [] })
+  db.query.mockResolvedValue({ rows: [] })
 })
 
 afterEach(() => {
@@ -45,7 +46,7 @@ describe('configClient', () => {
     })
 
     test('saaahould pass in the correct sql and params', async () => {
-      db.query.mockReturnValue(standardResponse)
+      db.query.mockResolvedValue(standardResponse)
       const expectedSelectClause = 'select id, email, establishment, role, name from'
       const expectedWhereClause = 'where id = $1'
 
@@ -119,7 +120,7 @@ describe('configClient', () => {
 
   describe('getJobSpec', () => {
     test('should pass in the correct params', async () => {
-      db.query.mockReturnValue({ rows: [{}] })
+      db.query.mockResolvedValue({ rows: [{}] })
 
       await configClient.getJobSpec('name')
 

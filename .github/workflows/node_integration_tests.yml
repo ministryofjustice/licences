@@ -1,0 +1,137 @@
+name: Integration tests
+
+on:
+  workflow_call:
+    inputs:
+      test_results_artifact_name:
+        description: 'Name of uploaded test results artifact; must be unique across pipeline'
+        required: false
+        type: string
+        default: 'npm_integration_test_artifacts'
+      node_version_file:
+        description: 'Passed to setup-node action to specify where to source the version of node from'
+        required: false
+        type: string
+        default: '.nvmrc'
+
+permissions:
+  contents: read
+
+jobs:
+  integration_test:
+    name: Run the integration tests
+    runs-on: ubuntu-latest
+    env:
+      DB_SSL_ENABLED: false
+      ENABLE_TEST_UTILS: true
+      NOMIS_API_URL: http://localhost:8080/prisonApi
+      NOMIS_AUTH_URL: http://localhost:8080/auth
+      NOMIS_AUTH_EXTERNAL_URL: http://localhost:8080/auth
+      DELIUS_API_URL: http://localhost:8080/delius
+      PROBATION_TEAMS_API_URL: http://localhost:8080/probationteams
+      MANAGE_USERS_API_URL: http://localhost:8080/manageUsersApi
+      TOKENVERIFICATION_API_ENABLED: false
+      GOTENBERG_API_URL: http://localhost:3001
+      HDC_URL: http://localhost:3000
+      COM_NOT_ALLOCATED_BLOCK_ENABLED: false
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: licences
+          POSTGRES_DB: licences
+          POSTGRES_PASSWORD: licences
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U licences"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      gotenberg:
+        image: thecodingmachine/gotenberg:7.8.2
+        ports:
+          - 3001:3000
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          persist-credentials: false
+      - name: Use Node.js ${{ inputs.node_version_file }}
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version-file: ${{ inputs.node_version_file }}
+      - name: download the artifacts
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8
+        with:
+          name: npm_build_artifacts
+      - name: restore cache
+        uses: actions/cache/restore@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        env:
+          cache-name: node-modules
+        with:
+          path: |
+            ./node_modules
+            ~/.cache/Cypress
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json', '!**/node_modules/**') }}
+      - name: Set up Java
+        uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # v5
+        with:
+          distribution: temurin
+          java-version: 21
+      - name: Cache gradle
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties', 'licences-specs/build.gradle') }}
+      - name: Link preinstalled chromedriver to the path expected by the specs
+        run: sudo ln -sf "$CHROMEWEBDRIVER/chromedriver" /usr/local/bin/chromedriver
+      - name: Start mock server and app
+        shell: bash
+        run: |
+          nohup npm run start-mocks > mock-server.log 2>&1 &
+          nohup npm start > app.log 2>&1 &
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:3000/ping && break
+            sleep 2
+          done
+          curl -sf http://localhost:3000/ping
+          curl -sf http://localhost:8080/auth/health/ping
+      - name: Seed db
+        run: npm run db:seed
+      - name: Run integration tests
+        id: integration-tests
+        run: ./gradlew mockTest --info
+      - name: upload the artifacts
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: ${{ inputs.test_results_artifact_name }}
+          path: |
+            licences-specs/build/reports
+            licences-specs/build/geb-reports
+            licences-specs/build/test-results
+            mock-server.log
+            app.log
+      - name: publish test report
+        if: ${{ !cancelled() && github.event.repository.visibility == 'public' }}
+        uses: dorny/test-reporter@a43b3a5f7366b97d083190328d2c652e1a8b6aa2 # v3.0.0
+        with:
+          artifact: ${{ inputs.test_results_artifact_name }}
+          name: Integration Test Report
+          path: 'licences-specs/build/test-results/**/*.xml'
+          reporter: java-junit
+          fail-on-empty: false
+          fail-on-error: false
+          list-suites: 'failed'
+          list-tests: 'failed'

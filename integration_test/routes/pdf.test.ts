@@ -8,6 +8,7 @@ import {
   createPrisonerServiceStub,
   createLicenceServiceStub,
   createSignInServiceStub,
+  createAuditServiceStub,
 } from '../../test/mockServices'
 
 import standardRouter from '../../server/routes/routeWorkers/standardRouter'
@@ -358,11 +359,13 @@ function createApp(
   { licenceServiceStub = null, pdfServiceStub = null, prisonerServiceStub = null, audit = mockAudit() },
   user
 ) {
+  const auditService = createAuditServiceStub()
   const prisonerService = prisonerServiceStub || createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()
 
   const baseRouter = standardRouter({
+    auditService,
     licenceService,
     prisonerService,
     audit,
