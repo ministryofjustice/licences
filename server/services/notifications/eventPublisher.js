@@ -5,7 +5,7 @@ const flattenDestination = (type, destination) =>
 
 class EventPublisher {
   /**
-   * @param {import("../../data/audit")} audit
+   * @param {import("../../../types/audit").AuditClient} audit
    * @param {Pick<typeof import("@ministryofjustice/hmpps-azure-telemetry").telemetry, "trackEvent"> | undefined} telemetryClient   */
   constructor(audit, telemetryClient) {
     this.audit = audit

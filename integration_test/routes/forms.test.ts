@@ -12,6 +12,7 @@ import NullTokenVerifier from '../../server/authentication/tokenverifier/NullTok
 import { ConditionsService } from '../../server/services/conditionsService'
 
 describe('/forms/', () => {
+  let auditService
   let licenceService
   let prisonerService
   let conditionsService: jest.Mocked<ConditionsService>
@@ -50,6 +51,9 @@ describe('/forms/', () => {
   }
 
   beforeEach(() => {
+    auditService = {
+      logPageViewAttempt: jest.fn(),
+    }
     licenceService = {
       getLicence: jest.fn().mockReturnValue(licence),
     }
@@ -375,6 +379,7 @@ describe('/forms/', () => {
   function createApp(user) {
     const signInService = createSignInServiceStub()
     const baseRouter = standardRouter({
+      auditService,
       licenceService,
       prisonerService,
       signInService,

@@ -10,8 +10,8 @@ export interface AuditDto {
 
 export interface AuditClient {
   record: (key: string, user: string, data: object) => Promise<void>
-  getEvents: (action: string, filters: object, startMoment: Moment, endMoment: Moment) => Promise<Array<AuditDto>>
+  getEvents: (action: string, filters: object, startMoment?: Moment, endMoment?: Moment) => Promise<Array<AuditDto>>
   getEvent: (eventId: number) => Promise<AuditDto>
   getEventsForBooking: (bookingId: number) => Promise<Array<AuditDto>>
-  delete: () => Promise<void>
+  deleteAll: () => Promise<unknown>
 }

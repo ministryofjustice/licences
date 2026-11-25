@@ -1,5 +1,6 @@
 import { NotifyClient } from 'notifications-node-client'
 import { telemetry } from '@ministryofjustice/hmpps-azure-telemetry'
+import { AuditServiceFactory } from '@ministryofjustice/hmpps-audit-client'
 import logger from '../../log'
 import { userClient } from '../data/userClient'
 import configClient from '../data/configClient'
@@ -52,6 +53,7 @@ import manageUsersApi from '../data/manageUsersApi'
 import probationSearchApi from '../data/probationSearchApi'
 import { HdcClient } from '../data/hdcApiClient'
 import { createHdcService } from './hdc/hdcService'
+import AuditService from './audit/auditService'
 import { licenceClient } from '../data/licenceClient'
 import config from '../config'
 
@@ -156,6 +158,9 @@ const licenceSearchService = createLicenceSearchService(licenceClient, signInSer
 const reportsService = new ReportsService(licenceClient, signInService, prisonerSearchApi, probationSearchApi)
 const tokenVerifier = tokenVerifierFactory(config.apis.tokenVerification)
 
+const hmppsAuditService = AuditServiceFactory.createInstance(config.sqs.audit, logger)
+const auditService = new AuditService(hmppsAuditService)
+
 export const services = {
   tokenVerifier,
   signInService,
@@ -183,6 +188,7 @@ export const services = {
   functionalMailboxService,
   roNotificationHandler,
   migrationService,
+  auditService,
 }
 
 export type Services = typeof services
