@@ -11,17 +11,17 @@ const logger = require('../../log')
  * @param {object} args
  * @param {any} args.licenceService
  * @param {PrisonerService} args.prisonerService
- * @param {any} args.nomisPushService
+ * @param {any} args.eventService
  * @param {any} args.hdcService
  */
 module.exports =
-  ({ licenceService, prisonerService, nomisPushService, hdcService }) =>
+  ({ licenceService, prisonerService, eventService, hdcService }) =>
   (router, audited, config) => {
     const standard = createStandardRoutes({
       formConfig,
       licenceService,
       sectionName: 'approval',
-      nomisPushService,
+      eventService,
       config,
     })
 

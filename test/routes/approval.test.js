@@ -35,14 +35,14 @@ const prisonerInfoResponse = {
 describe('/hdc/approval', () => {
   let app
   let licenceServiceStub
-  let nomisPushServiceStub
+  let eventServiceStub
   let signInServiceStub
 
   beforeEach(() => {
     licenceServiceStub = createLicenceServiceStub()
-    nomisPushServiceStub = createNomisPushServiceStub()
+    eventServiceStub = createNomisPushServiceStub()
     signInServiceStub = createSignInServiceStub()
-    app = createApp({ licenceServiceStub, nomisPushServiceStub, signInServiceStub }, 'dmUser')
+    app = createApp({ licenceServiceStub, eventServiceStub, signInServiceStub }, 'dmUser')
     licenceServiceStub.update.mockResolvedValue({ approval: { release: { decision: 'Yes' } } })
   })
 
@@ -188,7 +188,7 @@ describe('/hdc/approval', () => {
       test('should push the decision to nomis if config variable is true', () => {
         licenceServiceStub.getLicence.mockResolvedValue({ id: 1 })
         licenceServiceStub.update.mockResolvedValue({ approval: { release: { decision: 'ABC' } } })
-        app = createApp({ licenceServiceStub, nomisPushServiceStub }, 'dmUser', {
+        app = createApp({ licenceServiceStub, eventServiceStub }, 'dmUser', {
           pushToNomis: true,
         })
         return request(app)
@@ -196,8 +196,8 @@ describe('/hdc/approval', () => {
           .send({ decision: 'Yes' })
           .expect(302)
           .expect(() => {
-            expect(nomisPushServiceStub.pushStatus).toHaveBeenCalled()
-            expect(nomisPushServiceStub.pushStatus).toHaveBeenCalledWith({
+            expect(eventServiceStub.pushStatus).toHaveBeenCalled()
+            expect(eventServiceStub.pushStatus).toHaveBeenCalledWith({
               bookingId: '1',
               data: { type: route.formName, status: 'ABC', reason: undefined },
               username: 'DM_USER',
@@ -209,7 +209,7 @@ describe('/hdc/approval', () => {
 
       test('should not push the decision to nomis if config variable is false', () => {
         licenceServiceStub.update.mockResolvedValue({ approval: { release: { decision: 'ABC' } } })
-        app = createApp({ licenceServiceStub, nomisPushServiceStub }, 'dmUser', {
+        app = createApp({ licenceServiceStub, eventServiceStub }, 'dmUser', {
           pushToNomis: false,
         })
         return request(app)
@@ -217,7 +217,7 @@ describe('/hdc/approval', () => {
           .send({ decision: 'Yes' })
           .expect(302)
           .expect(() => {
-            expect(nomisPushServiceStub.pushStatus).not.toHaveBeenCalled()
+            expect(eventServiceStub.pushStatus).not.toHaveBeenCalled()
           })
       })
     })
@@ -408,7 +408,7 @@ describe('/hdc/approval', () => {
 })
 
 function createApp(
-  { licenceServiceStub = null, nomisPushServiceStub = null, signInServiceStub = null, hdcServiceStub = null },
+  { licenceServiceStub = null, eventServiceStub = null, signInServiceStub = null, hdcServiceStub = null },
   user,
   config = {}
 ) {
@@ -416,7 +416,7 @@ function createApp(
   const prisonerService = createPrisonerServiceStub()
   prisonerService.getPrisonerDetails = jest.fn().mockReturnValue(prisonerInfoResponse)
   const licenceService = licenceServiceStub || createLicenceServiceStub()
-  const nomisPushService = nomisPushServiceStub || createNomisPushServiceStub()
+  const eventService = eventServiceStub || createNomisPushServiceStub()
   const signInService = signInServiceStub || createLicenceServiceStub()
   const hdcService = hdcServiceStub || createHdcServiceStub()
   const audit = mockAudit()
@@ -430,7 +430,7 @@ function createApp(
     tokenVerifier: new NullTokenVerifier(),
     config,
   })
-  const route = baseRouter(createRoute({ licenceService, prisonerService, nomisPushService, hdcService }))
+  const route = baseRouter(createRoute({ licenceService, prisonerService, eventService, hdcService }))
 
   return appSetup(route, user, '/hdc/approval')
 }

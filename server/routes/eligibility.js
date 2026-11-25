@@ -4,13 +4,13 @@ const { getIn } = require('../utils/functionalHelpers')
 const createStandardRoutes = require('./routeWorkers/standard')
 
 module.exports =
-  ({ licenceService, nomisPushService }) =>
+  ({ licenceService, eventService }) =>
   (router, audited, config) => {
     const standard = createStandardRoutes({
       formConfig,
       licenceService,
       sectionName: 'eligibility',
-      nomisPushService,
+      eventService,
       config,
     })
 
@@ -19,7 +19,7 @@ module.exports =
         const notExcluded = getIn(updatedLicence, ['eligibility', 'excluded', 'decision']) === 'No'
         const notUnsuitable = getIn(updatedLicence, ['eligibility', 'suitability', 'decision']) === 'No'
         if (notExcluded && notUnsuitable) {
-          await nomisPushService.pushChecksPassed({
+          await eventService.pushChecksPassed({
             bookingId,
             passed: true,
             username: req.user.username,
