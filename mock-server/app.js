@@ -1,6 +1,7 @@
 const express = require('express')
 const path = require('path')
 const cookieParser = require('cookie-parser')
+const logger = require('../log')
 const indexRouter = require('./routes/index')
 const usersRouter = require('./routes/users')
 const authUserRouter = require('./routes/authuser')
@@ -25,7 +26,7 @@ app.use(cookieParser())
 app.use(express.static(path.join(__dirname, 'public')))
 
 app.use((req, res, next) => {
-  console.log(`${req.method} ${req.originalUrl}`)
+  logger.info(`${req.method} ${req.originalUrl}`)
   next()
 })
 
@@ -73,12 +74,8 @@ app.get('/manageUsersApi/ping', (req, res) => {
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
-  console.log()
-  console.log('UNMATCHED:')
-  console.log(req.method)
-  console.log(req.originalUrl)
-  console.log(req.body)
-  console.log(req.headers)
+  const lines = ["", "UNMATCHED", req.method, req.originalUrl, req.body, req.headers].join("\n")
+  logger.warn(lines)
 
   const e = Error()
   // @ts-ignore

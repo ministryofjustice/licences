@@ -2,7 +2,6 @@ import superagent from 'superagent'
 import querystring from 'querystring'
 import config from '../config'
 import { generateAdminOauthClientToken } from './oauth'
-import logger from '../../log'
 import { buildErrorHandler } from '../data/clientErrorHandler'
 import type TokenStore from '../data/tokenStore'
 

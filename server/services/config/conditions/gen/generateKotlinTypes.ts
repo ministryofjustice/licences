@@ -2,6 +2,7 @@ import fs from 'fs'
 import * as v1 from '../additionalConditions/v1/conditions'
 import * as v2 from '../additionalConditions/v2/conditions'
 import { ConditionMetadata } from '../../../../data/licenceClientTypes'
+import logger from '../../../../../log'
 
 const DESTINATION_DIR = '../hmpps-hdc-api/src/main/kotlin/uk/gov/justice/digital/hmpps/hmppshdcapi/licences/conditions'
 const WARNING =
@@ -64,22 +65,23 @@ val ${name} = listOf(${v1Text},
 function replaceFileContents(fileName: string, content: string) {
   const fullName = `${DESTINATION_DIR}/${fileName}`
   if (fs.existsSync(fullName)) {
-    console.log(`deleting: ${fullName}`)
+    logger.info(`deleting: ${fullName}`)
     fs.rmSync(fullName)
   }
-  console.log(`writing: ${fullName}\n`)
+  logger.info(`writing: ${fullName}\n`)
   fs.writeFileSync(fullName, content)
 }
 
-console.log(`generating kotlin condition classes\n`)
+logger.info(`generating kotlin condition classes\n`)
 replaceFileContents('ConditionMetadata.kt', dataClass)
 replaceFileContents('V1Conditions.kt', getAdditionalConditionsText('V1_CONDITIONS', v1.conditions))
 replaceFileContents('V2Conditions.kt', getAdditionalConditionsText('V2_CONDITIONS', v2.conditions))
 
 v2.conditions.forEach((c) => {
+  // eslint-disable-next-line no-console
   console.log(
     `${c.group_name}|${c.subgroup_name || ''}|${c.text}|${(c.field_position && Object.keys(c.field_position).join(', ')) || ''}`
   )
 })
 
-console.log(`FIN!\n`)
+logger.info(`FIN!\n`)
