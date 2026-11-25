@@ -1,9 +1,10 @@
-import configClient from '../../server/data/configClient'
+import { ConfigClient } from '../../server/data/configClient'
 import * as dbModule from '../../server/data/dataAccess/db'
 
 jest.mock('../../server/data/dataAccess/db')
 
 const db = dbModule as jest.Mocked<typeof dbModule>
+const configClient = new ConfigClient()
 
 beforeEach(() => {
   db.query.mockResolvedValue({ rows: [] })

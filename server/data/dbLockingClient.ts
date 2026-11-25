@@ -11,19 +11,12 @@ async function queryForLock(name: string, lockFunction: LockFunction): Promise<b
   return getIn(res, ['rows', [0], lockFunction])
 }
 
-export interface DbLockingClient {
-  tryLock: (name: string) => Promise<boolean>
-  unlock: (name: string) => Promise<boolean>
-}
-
-const dbLockingClient: DbLockingClient = {
-  async tryLock(name) {
+export class DbLockingClient {
+  async tryLock(name: string): Promise<boolean> {
     return queryForLock(name, 'pg_try_advisory_lock')
-  },
+  }
 
-  async unlock(name) {
+  async unlock(name: string): Promise<boolean> {
     return queryForLock(name, 'pg_advisory_unlock')
-  },
+  }
 }
-
-export default dbLockingClient

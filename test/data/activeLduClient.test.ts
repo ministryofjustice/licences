@@ -1,9 +1,10 @@
-import activeLduClient from '../../server/data/activeLduClient'
+import { ActiveLduClient } from '../../server/data/activeLduClient'
 import * as dbModule from '../../server/data/dataAccess/db'
 
 jest.mock('../../server/data/dataAccess/db')
 
 const db = dbModule as jest.Mocked<typeof dbModule>
+const activeLduClient = new ActiveLduClient()
 
 afterEach(() => {
   db.query.mockReset()

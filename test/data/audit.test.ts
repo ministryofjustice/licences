@@ -1,10 +1,11 @@
 import moment from 'moment'
-import audit from '../../server/data/audit'
+import { AuditClient } from '../../server/data/audit'
 import * as dbModule from '../../server/data/dataAccess/db'
 
 jest.mock('../../server/data/dataAccess/db')
 
 const db = dbModule as jest.Mocked<typeof dbModule>
+const audit = new AuditClient()
 
 afterEach(() => {
   db.query.mockReset()

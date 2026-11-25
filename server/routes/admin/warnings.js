@@ -1,5 +1,5 @@
 /**
- * @typedef {import("../../../types/licences").WarningClient} WarningClient
+ * @typedef {import("../../data/warningClient").WarningClient} WarningClient
  */
 const moment = require('moment')
 const { asyncMiddleware, authorisationMiddleware } = require('../../utils/middleware')

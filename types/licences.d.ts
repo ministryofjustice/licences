@@ -93,26 +93,6 @@ export interface CaService {
   getReasonForNotContinuing: (bookingId: number, token: string) => Promise<string | undefined>
 }
 
-export interface Warning {
-  id: number
-  bookingId: number
-  timestamp: Date
-  code: string
-  messsage: string
-}
-
-export interface WarningClient {
-  deleteAll: () => Promise<void>
-  raiseWarning: (bookingId: number, code: string, messsage: string) => Promise<void>
-  acknowledgeWarnings: (errorIds: number[]) => Promise<number>
-  getOutstandingWarnings: () => Promise<List<Warning>>
-  getAcknowledgedWarnings: () => Promise<List<Warning>>
-}
-
-interface ActiveLdu {
-  code: string
-}
-
 interface LicenceDetailsforCSV {
   prisonerNumber: string
   prisonId: string
@@ -140,12 +120,6 @@ export interface LduService {
 
 export interface LicenceSearchService {
   findForId: (username: string, id: string) => Promise<number | undefined>
-}
-
-export interface ActiveLduClient {
-  isLduPresent: (lduCode: string, probationAreaCode: string) => Promise<boolean>
-  allActiveLdusInArea: (probationAreaCode: string) => Promise<ActiveLdu[]>
-  updateActiveLdu: (probationAreaCode: string, activeLdus: string[]) => Promise<void>
 }
 
 export type PrisonDestination = {

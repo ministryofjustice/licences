@@ -1,19 +1,12 @@
-import { Moment } from 'moment'
+import { AuditClient } from '../server/data/audit'
 
-import { AuditClient, AuditDto } from '../types/audit'
+export type AuditMock = jest.Mocked<AuditClient>
 
-export interface AuditMock extends AuditClient {
-  record: jest.Mock<Promise<void>, [string, string, object]>
-  getEvents: jest.Mock<Promise<Array<AuditDto>>, [string, object, Moment, Moment]>
-  getEvent: jest.Mock<Promise<AuditDto>, [number]>
-  getEventsForBooking: jest.Mock<Promise<Array<AuditDto>>, [number]>
-  deleteAll: jest.Mock<Promise<unknown>, []>
-}
-
-export const mockAudit: () => AuditMock = () => ({
-  record: jest.fn(),
-  getEvents: jest.fn(),
-  getEvent: jest.fn(),
-  getEventsForBooking: jest.fn(),
-  deleteAll: jest.fn(),
-})
+export const mockAudit = (): AuditMock =>
+  ({
+    record: jest.fn(),
+    getEvents: jest.fn(),
+    getEvent: jest.fn(),
+    getEventsForBooking: jest.fn(),
+    deleteAll: jest.fn(),
+  }) as unknown as AuditMock
