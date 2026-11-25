@@ -340,14 +340,14 @@ describe('/hdc/curfew', () => {
     })
 
     test(`should push optout status to nomis`, () => {
-      const nomisPushService = createNomisPushServiceStub()
+      const eventService = createNomisPushServiceStub()
       const hdcService = createHdcServiceStub()
       const licenceService = createLicenceServiceStub()
       licenceService.getLicence.mockResolvedValue({ id: 2, licence: {}, stage: 'PROCESSING_CA' })
 
       const app = createApp(
         {
-          nomisPushServiceStub: nomisPushService,
+          eventServiceStub: eventService,
           licenceServiceStub: licenceService,
           hdcServiceStub: hdcService,
         },
@@ -360,8 +360,8 @@ describe('/hdc/curfew', () => {
         .send({ decision: 'OptOut' })
         .expect(302)
         .expect(() => {
-          expect(nomisPushService.pushStatus).toHaveBeenCalled()
-          expect(nomisPushService.pushStatus).toHaveBeenCalledWith({
+          expect(eventService.pushStatus).toHaveBeenCalled()
+          expect(eventService.pushStatus).toHaveBeenCalledWith({
             bookingId: '1',
             data: { type: 'optOut', status: 'Yes', cvlEventReason: 'CA_USER_TEST opted out of HDC after COM added an approved premises' },
             username: 'CA_USER_TEST',
@@ -526,12 +526,12 @@ describe('/hdc/curfew', () => {
 
   describe('approvedPremisesChoice NOMIS status', () => {
     test(`should not push nomis if not optout`, () => {
-      const nomisPushService = createNomisPushServiceStub()
+      const eventService = createNomisPushServiceStub()
       const licenceService = createLicenceServiceStub()
       licenceService.getLicence.mockResolvedValue({ licence: {}, stage: 'PROCESSING_CA' })
       const app = createApp(
         {
-          nomisPushServiceStub: nomisPushService,
+          eventServiceStub: eventService,
           licenceServiceStub: licenceService,
         },
         'caUser',
@@ -543,7 +543,7 @@ describe('/hdc/curfew', () => {
         .send({ decision: 'Other' })
         .expect(302)
         .expect(() => {
-          expect(nomisPushService.pushStatus).not.toHaveBeenCalled()
+          expect(eventService.pushStatus).not.toHaveBeenCalled()
         })
     })
   })
@@ -934,7 +934,7 @@ describe('/hdc/curfew', () => {
 })
 
 function createApp(
-  { licenceServiceStub = null, prisonerServiceStub = null, nomisPushServiceStub = null, hdcServiceStub = null },
+  { licenceServiceStub = null, prisonerServiceStub = null, eventServiceStub = null, hdcServiceStub = null },
   user,
   config = {}
 ) {
@@ -942,7 +942,7 @@ function createApp(
   const prisonerService = prisonerServiceStub || createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()
-  const nomisPushService = nomisPushServiceStub || createNomisPushServiceStub()
+  const eventService = eventServiceStub || createNomisPushServiceStub()
   const hdcService = hdcServiceStub || createHdcServiceStub()
   const audit = mockAudit()
 
@@ -956,6 +956,6 @@ function createApp(
     config,
   })
 
-  const route = baseRouter(createRoute({ licenceService, nomisPushService, hdcService }))
+  const route = baseRouter(createRoute({ licenceService, eventService, hdcService }))
   return appSetup(route, user, '/hdc/curfew')
 }

@@ -232,14 +232,14 @@ describe('/hdc/proposedAddress', () => {
     })
 
     test(`should push optout status to nomis`, () => {
-      const nomisPushService = createNomisPushServiceStub()
+      const eventService = createNomisPushServiceStub()
       const licenceService = createLicenceServiceStub()
       licenceService.getLicence = jest.fn().mockReturnValue({
         id: 1,
       })
       const app = createApp(
         {
-          nomisPushServiceStub: nomisPushService,
+          eventServiceStub: eventService,
           licenceServiceStub: licenceService,
         },
         'caUser',
@@ -251,8 +251,8 @@ describe('/hdc/proposedAddress', () => {
         .send({ decision: 'OptOut' })
         .expect(302)
         .expect(() => {
-          expect(nomisPushService.pushStatus).toHaveBeenCalled()
-          expect(nomisPushService.pushStatus).toHaveBeenCalledWith({
+          expect(eventService.pushStatus).toHaveBeenCalled()
+          expect(eventService.pushStatus).toHaveBeenCalledWith({
             bookingId: '1',
             data: { type: 'optOut', status: 'Yes', cvlEventReason: 'CA_USER_TEST opted out of HDC during initial curfew address task' },
             username: 'CA_USER_TEST',
@@ -263,10 +263,10 @@ describe('/hdc/proposedAddress', () => {
     })
 
     test(`should not push nomis if not optout`, () => {
-      const nomisPushService = createNomisPushServiceStub()
+      const eventService = createNomisPushServiceStub()
       const app = createApp(
         {
-          nomisPushServiceStub: nomisPushService,
+          eventServiceStub: eventService,
         },
         'caUser',
         { pushToNomis: true }
@@ -277,7 +277,7 @@ describe('/hdc/proposedAddress', () => {
         .send({ decision: 'Other' })
         .expect(302)
         .expect(() => {
-          expect(nomisPushService.pushStatus).not.toHaveBeenCalled()
+          expect(eventService.pushStatus).not.toHaveBeenCalled()
         })
     })
   })
@@ -363,12 +363,12 @@ describe('/hdc/proposedAddress', () => {
   })
 })
 
-function createApp({ licenceServiceStub = null, nomisPushServiceStub = null }, user, config = {}) {
+function createApp({ licenceServiceStub = null, eventServiceStub = null }, user, config = {}) {
   const auditService = createAuditServiceStub()
   const prisonerService = createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()
-  const nomisPushService = nomisPushServiceStub || createNomisPushServiceStub()
+  const eventService = eventServiceStub || createNomisPushServiceStub()
   const audit = mockAudit()
   const hdcService = createHdcServiceStub()
 
@@ -381,6 +381,6 @@ function createApp({ licenceServiceStub = null, nomisPushServiceStub = null }, u
     tokenVerifier: new NullTokenVerifier(),
     config,
   })
-  const route = baseRouter(createRoute({ licenceService, nomisPushService, hdcService }))
+  const route = baseRouter(createRoute({ licenceService, eventService, hdcService }))
   return appSetup(route, user, '/hdc/proposedAddress')
 }

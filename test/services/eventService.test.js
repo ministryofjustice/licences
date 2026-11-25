@@ -1,7 +1,7 @@
-const createNomisPushService = require('../../server/services/nomisPushService')
+const createNomisPushService = require('../../server/services/eventService')
 const { createHdcServiceStub } = require('../mockServices')
 
-describe('nomisPushService', () => {
+describe('eventService', () => {
   let service
   let nomisClientBuilder
   let nomisClientMock

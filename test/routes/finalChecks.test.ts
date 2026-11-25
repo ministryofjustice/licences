@@ -286,11 +286,11 @@ describe('/hdc/finalChecks', () => {
           const licenceService = createLicenceServiceStub()
           licenceService.getLicence.mockResolvedValue({ id: 1, licence: {} })
           licenceService.update.mockResolvedValue(spec.data)
-          const nomisPushService = createNomisPushServiceStub()
+          const eventService = createNomisPushServiceStub()
           const app = createApp(
             {
               licenceServiceStub: licenceService,
-              nomisPushServiceStub: nomisPushService,
+              eventServiceStub: eventService,
             },
             'caUser',
             { pushToNomis: true }
@@ -301,8 +301,8 @@ describe('/hdc/finalChecks', () => {
             .send({ decision: 'Yes', reason: 'addressUnsuitable' })
             .expect(302)
             .expect(() => {
-              expect(nomisPushService.pushStatus).toHaveBeenCalled()
-              expect(nomisPushService.pushStatus).toHaveBeenCalledWith({
+              expect(eventService.pushStatus).toHaveBeenCalled()
+              expect(eventService.pushStatus).toHaveBeenCalledWith({
                 bookingId: '1',
                 data: spec.pushStatus,
                 username: 'CA_USER_TEST',
@@ -319,11 +319,11 @@ describe('/hdc/finalChecks', () => {
       licenceService.update.mockResolvedValue({
         finalChecks: { postpone: { decision: 'ABC', postponeReason: 'XYZ' } },
       })
-      const nomisPushService = createNomisPushServiceStub()
+      const eventService = createNomisPushServiceStub()
       const app = createApp(
         {
           licenceServiceStub: licenceService,
-          nomisPushServiceStub: nomisPushService,
+          eventServiceStub: eventService,
         },
         'caUser',
         { pushToNomis: false }
@@ -334,7 +334,7 @@ describe('/hdc/finalChecks', () => {
         .send({ decision: 'Yes' })
         .expect(302)
         .expect(() => {
-          expect(nomisPushService.pushStatus).not.toHaveBeenCalled()
+          expect(eventService.pushStatus).not.toHaveBeenCalled()
         })
     })
 
@@ -343,11 +343,11 @@ describe('/hdc/finalChecks', () => {
       licenceService.update.mockResolvedValue({
         finalChecks: { refusal: { decision: 'Yes', reason: 'addressUnsuitable' } },
       })
-      const nomisPushService = createNomisPushServiceStub()
+      const eventService = createNomisPushServiceStub()
       const app = createApp(
         {
           licenceServiceStub: licenceService,
-          nomisPushServiceStub: nomisPushService,
+          eventServiceStub: eventService,
         },
         'caUser',
         { pushToNomis: false }
@@ -358,7 +358,7 @@ describe('/hdc/finalChecks', () => {
         .send({ decision: 'Yes', reason: 'addressUnsuitable' })
         .expect(302)
         .expect(() => {
-          expect(nomisPushService.pushStatus).not.toHaveBeenCalled()
+          expect(eventService.pushStatus).not.toHaveBeenCalled()
         })
     })
 
@@ -411,7 +411,7 @@ describe('/hdc/finalChecks', () => {
 })
 
 function createApp(
-  { licenceServiceStub = null, nomisPushServiceStub = null, hdcServiceStub = null },
+  { licenceServiceStub = null, eventServiceStub = null, hdcServiceStub = null },
   user = 'caUser',
   config = {}
 ) {
@@ -420,7 +420,7 @@ function createApp(
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()
   signInService.getClientCredentialsTokens.mockResolvedValue('new token')
-  const nomisPushService = nomisPushServiceStub || createNomisPushServiceStub()
+  const eventService = eventServiceStub || createNomisPushServiceStub()
   const hdcService = hdcServiceStub || createHdcServiceStub()
   const audit = mockAudit()
 
@@ -433,7 +433,7 @@ function createApp(
     tokenVerifier: new NullTokenVerifier(),
     config,
   })
-  const route = baseRouter(createRoute({ licenceService, nomisPushService, hdcService }))
+  const route = baseRouter(createRoute({ licenceService, eventService, hdcService }))
 
   return appSetup(route, user, '/hdc/finalChecks')
 }

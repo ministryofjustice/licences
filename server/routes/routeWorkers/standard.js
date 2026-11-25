@@ -1,7 +1,7 @@
 const { getIn, isEmpty, firstItem, lastItem } = require('../../utils/functionalHelpers')
 const { getPathFor } = require('../../utils/routes')
 
-module.exports = ({ formConfig, licenceService, sectionName, nomisPushService = null, config = null }) => {
+module.exports = ({ formConfig, licenceService, sectionName, eventService = null, config = null }) => {
   function get(req, res) {
     const { formName, bookingId, action } = req.params
     return formGet(req, res, formName, bookingId, action)
@@ -119,7 +119,7 @@ module.exports = ({ formConfig, licenceService, sectionName, nomisPushService = 
       // No push unless status matches for pass or fail, ie not when missing.
       // Passed/failed will always be opposite of each other.
       if (failed || passed) {
-        await nomisPushService.pushChecksPassed({
+        await eventService.pushChecksPassed({
           bookingId,
           passed,
           username,
@@ -128,7 +128,7 @@ module.exports = ({ formConfig, licenceService, sectionName, nomisPushService = 
         })
       }
 
-      await nomisPushService.pushStatus({ bookingId, data: { type: formName, status, reason }, username, licenceId, offenderNo })
+      await eventService.pushStatus({ bookingId, data: { type: formName, status, reason }, username, licenceId, offenderNo })
     }
   }
 
