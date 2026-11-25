@@ -8,6 +8,7 @@ const {
   createPrisonerServiceStub,
   createLicenceServiceStub,
   createSignInServiceStub,
+  createAuditServiceStub,
 } = require('../mockServices')
 
 const caseListResponse = require('../stubs/caseListResponse')
@@ -125,12 +126,14 @@ describe('GET /caseList', () => {
 })
 
 function createApp(user) {
+  const auditService = createAuditServiceStub()
   const prisonerService = createPrisonerServiceStub()
   const licenceService = createLicenceServiceStub()
   const signInService = createSignInServiceStub()
   const audit = mockAudit()
 
   const baseRouter = standardRouter({
+    auditService,
     licenceService,
     prisonerService,
     audit,
