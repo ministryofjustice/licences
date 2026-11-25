@@ -20,6 +20,22 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/queue-admin/retry-dlq-messages/{dlqName}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put: operations['retryDlqMessages']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/queue-admin/retry-all-dlqs': {
     parameters: {
       query?: never
@@ -45,6 +61,22 @@ export interface paths {
     }
     get?: never
     put: operations['purgeQueue']
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/queue-admin/delete-dlq-messages/{dlqName}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put: operations['deleteDlqMessages']
     post?: never
     delete?: never
     options?: never
@@ -285,6 +317,22 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/queue-admin/search-dlq-messages/{dlqName}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get: operations['searchDlqMessages']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/queue-admin/get-dlq-messages/{dlqName}': {
     parameters: {
       query?: never
@@ -389,9 +437,32 @@ export interface components {
       /** Format: int32 */
       messagesFoundCount: number
     }
+    RetryDlqMessagesBody: {
+      messageIds: string[]
+    }
+    RetryDlqMessagesResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+      /** Format: int32 */
+      messagesRetriedCount: number
+      retriedMessageIds: string[]
+      notFoundMessageIds: string[]
+    }
     PurgeQueueResult: {
       /** Format: int32 */
       messagesFoundCount: number
+    }
+    DeleteDlqMessagesBody: {
+      messageIds: string[]
+    }
+    DeleteDlqMessagesResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+      /** Format: int32 */
+      messagesDeletedCount: number
+      deletedMessageIds: string[]
+      notFoundMessageIds: string[]
+      failedMessageIds: string[]
     }
     MigrationBatchResponse: {
       /** Format: int32 */
@@ -441,6 +512,8 @@ export interface components {
         | 'REFUSE'
         | 'ADDRESS_WITHDRAWN'
         | 'RISK_CHECKS_SUBMITTED'
+        | 'ELIGIBLE'
+        | 'INELIGIBLE'
       /** Format: int64 */
       licenceId: number
       /** Format: int64 */
@@ -562,6 +635,15 @@ export interface components {
         [key: string]: unknown
       }
       messageId: string
+      /** Format: int32 */
+      approximateReceiveCount?: number | null
+    }
+    SearchDlqResult: {
+      /** Format: int32 */
+      messagesFoundCount: number
+      /** Format: int32 */
+      messagesReturnedCount: number
+      messages: components['schemas']['DlqMessage'][]
     }
     GetDlqResult: {
       /** Format: int32 */
@@ -616,7 +698,7 @@ export interface components {
        * @example RESIDENTIAL
        * @enum {string}
        */
-      addressType: 'RESIDENTIAL' | 'CAS'
+      addressType: 'RESIDENTIAL' | 'CAS_1_APPROVED_PREMISES' | 'CAS_2'
     }
     /** @description Appointment address */
     MigrateAppointmentAddress: {
@@ -1060,7 +1142,7 @@ export interface components {
        * @description The curfew address type for the person
        * @enum {string|null}
        */
-      curfewAddressType?: 'RESIDENTIAL' | 'CAS' | null
+      curfewAddressType?: 'RESIDENTIAL' | 'CAS_1_APPROVED_PREMISES' | 'CAS_2' | null
     }
     /** @description Describes the curfew times on a HDC licence */
     CurfewTimes: {
@@ -1122,6 +1204,11 @@ export interface components {
        * @enum {string}
        */
       status: 'APPROVED' | 'NOT_A_HDC_RELEASE' | 'NOT_STARTED' | 'ELIGIBILITY_CHECKS_COMPLETE' | 'RISK_CHECKS_COMPLETE'
+      /**
+       * @description The proposed address type
+       * @enum {string|null}
+       */
+      proposeAddressType?: 'RESIDENTIAL' | 'CAS_1_APPROVED_PREMISES' | 'CAS_2' | null
     }
   }
   responses: never
@@ -1150,6 +1237,32 @@ export interface operations {
         }
         content: {
           '*/*': components['schemas']['RetryDlqResult']
+        }
+      }
+    }
+  }
+  retryDlqMessages: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        dlqName: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['RetryDlqMessagesBody']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['RetryDlqMessagesResult']
         }
       }
     }
@@ -1192,6 +1305,32 @@ export interface operations {
         }
         content: {
           '*/*': components['schemas']['PurgeQueueResult']
+        }
+      }
+    }
+  }
+  deleteDlqMessages: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        dlqName: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['DeleteDlqMessagesBody']
+      }
+    }
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['DeleteDlqMessagesResult']
         }
       }
     }
@@ -1690,6 +1829,31 @@ export interface operations {
       }
     }
   }
+  searchDlqMessages: {
+    parameters: {
+      query?: {
+        filter?: string
+        maxMessages?: number
+      }
+      header?: never
+      path: {
+        dlqName: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description OK */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          '*/*': components['schemas']['SearchDlqResult']
+        }
+      }
+    }
+  }
   getDlqMessages: {
     parameters: {
       query?: {
@@ -1919,7 +2083,11 @@ export interface operations {
 
 // --- Auto-generated schema type aliases ---
 export type RetryDlqResult = components['schemas']['RetryDlqResult'];
+export type RetryDlqMessagesBody = components['schemas']['RetryDlqMessagesBody'];
+export type RetryDlqMessagesResult = components['schemas']['RetryDlqMessagesResult'];
 export type PurgeQueueResult = components['schemas']['PurgeQueueResult'];
+export type DeleteDlqMessagesBody = components['schemas']['DeleteDlqMessagesBody'];
+export type DeleteDlqMessagesResult = components['schemas']['DeleteDlqMessagesResult'];
 export type MigrationBatchResponse = components['schemas']['MigrationBatchResponse'];
 export type ErrorResponse = components['schemas']['ErrorResponse'];
 export type ResetResponse = components['schemas']['ResetResponse'];
@@ -1933,6 +2101,7 @@ export type Attachment = components['schemas']['Attachment'];
 export type AttachmentHeader = components['schemas']['AttachmentHeader'];
 export type HmppsSubjectAccessRequestContent = components['schemas']['HmppsSubjectAccessRequestContent'];
 export type DlqMessage = components['schemas']['DlqMessage'];
+export type SearchDlqResult = components['schemas']['SearchDlqResult'];
 export type GetDlqResult = components['schemas']['GetDlqResult'];
 export type MigrateAdditionalCondition = components['schemas']['MigrateAdditionalCondition'];
 export type MigrateAddress = components['schemas']['MigrateAddress'];

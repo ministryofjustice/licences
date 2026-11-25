@@ -44,6 +44,10 @@ export function notAllValuesEmpty(object) {
   return !allValuesEmpty(object)
 }
 
+export function selectFirst(item) {
+  return [].concat(item)[0]
+}
+
 export function replaceArrayItem(array, index, item) {
   return R.update(parseInt(index, 10))(item)(array)
 }

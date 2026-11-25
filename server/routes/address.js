@@ -4,7 +4,7 @@ const { getIn, mergeWithRight, omit, isEmpty, isYes } = require('../utils/functi
 const formConfig = require('./config/proposedAddress')
 
 module.exports =
-  ({ licenceService, nomisPushService, hdcService }) =>
+  ({ licenceService, eventService, hdcService }) =>
   (router, audited, { pushToNomis }) => {
     const standard = createStandardRoutes({ formConfig, licenceService, sectionName: 'proposedAddress' })
 
@@ -43,21 +43,14 @@ module.exports =
 
         if (isAnOptOut) {
           if (pushToNomis) {
-            await nomisPushService.pushStatus({
+            await eventService.pushStatus({
               bookingId,
-              data: { type: 'optOut', status: 'Yes' },
+              data: { type: 'optOut', status: 'Yes' , cvlEventReason: `${userName} opted out of HDC during initial curfew address task`},
               username: userName,
+              licenceId,
+              offenderNo,
             })
           }
-
-          await hdcService.postCvlEvent({
-            eventType: 'OPT_OUT',
-            bookingId: parseInt(bookingId, 10),
-            licenceId,
-            nomsNumber: offenderNo,
-            triggeredBy: userName,
-            reason: `${userName} opted out of HDC during initial curfew address task`
-          })
         } else {
           await hdcService.postCvlEvent({
             eventType: 'OPT_IN',

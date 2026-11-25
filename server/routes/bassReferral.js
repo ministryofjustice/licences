@@ -5,7 +5,7 @@ const { getIn, firstItem, mergeWithRight, isYes } = require('../utils/functional
 const recordList = require('../services/utils/recordList')
 
 module.exports =
-  ({ licenceService, nomisPushService, hdcService }) =>
+  ({ licenceService, eventService, hdcService }) =>
   (router, audited, pushToNomis) => {
     const standard = createStandardRoutes({ formConfig, licenceService, sectionName: 'bassReferral' })
 
@@ -74,21 +74,14 @@ module.exports =
 
         if (isAnOptOut) {
           if (pushToNomis) {
-            await nomisPushService.pushStatus({
+            await eventService.pushStatus({
               bookingId,
-              data: {type: 'optOut', status: 'Yes'},
+              data: {type: 'optOut', status: 'Yes', cvlEventReason: `${userName} opted out of HDC after COM added an approved CAS2 premises`},
               username: userName,
+              licenceId,
+              offenderNo,
             })
           }
-
-          await hdcService.postCvlEvent({
-            eventType: 'OPT_OUT',
-            bookingId: parseInt(bookingId, 10),
-            licenceId,
-            nomsNumber: offenderNo,
-            triggeredBy: userName,
-            reason: `${userName} opted out of HDC after COM added an approved CAS2 premises`
-          })
         } else {
           await hdcService.postCvlEvent({
             eventType: 'OPT_IN',

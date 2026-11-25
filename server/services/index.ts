@@ -31,7 +31,7 @@ import EventPublisher from './notifications/eventPublisher'
 import { RoContactDetailsService } from './roContactDetailsService'
 import createReminderService from './reminderService'
 
-import createNomisPushService from './nomisPushService'
+import createNomisPushService from './eventService'
 import createDeadlineService from './deadlineService'
 import createJobSchedulerService from './jobSchedulerService'
 import createNotificationJobs from './jobs/notificationJobs'
@@ -155,7 +155,7 @@ const reminderService = createReminderService(
   roNotificationSender,
   config.notifications.activeNotificationTypes
 )
-const nomisPushService = createNomisPushService(nomisClientBuilder, signInService)
+const eventService = createNomisPushService(nomisClientBuilder, signInService, hdcService)
 const notificationJobs = createNotificationJobs(reminderService, signInService)
 const jobSchedulerService = createJobSchedulerService(dbLockingClient, configClient, notificationJobs)
 const lduService = createLduService(deliusClient, activeLduClient)
@@ -180,7 +180,7 @@ export const services = {
   userAdminService,
   notificationService,
   userService,
-  nomisPushService,
+  eventService,
   configClient,
   licenceClient,
   activeLduClient,

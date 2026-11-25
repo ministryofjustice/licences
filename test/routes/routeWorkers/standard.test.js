@@ -2,6 +2,7 @@ const standard = require('../../../server/routes/routeWorkers/standard')
 const { createLicenceServiceStub, createNomisPushServiceStub } = require('../../mockServices')
 
 const testLicence = {
+  id: 1,
   sectionName: { testForm: {} },
   statusProperty: 'testStatus',
   reasonProperty: 'testReason',
@@ -22,19 +23,22 @@ const res = {
   locals: {
     licence: testLicence,
     licenceStatus: { decisions: {} },
+    prisoner: { offenderNo: 'A1234AA' },
   },
   redirect: () => {},
 }
 
 const bookingId = '123'
 const username = 'testUser'
+const offenderNo = 'A1234AA'
+const licenceId = 1
 
 let licenceService
-let nomisPushService
+let eventService
 
 beforeEach(() => {
   licenceService = createLicenceServiceStub()
-  nomisPushService = createNomisPushServiceStub()
+  eventService = createNomisPushServiceStub()
   licenceService.update.mockResolvedValue(testLicence)
 })
 
@@ -57,13 +61,13 @@ describe('formPost', () => {
         formConfig,
         licenceService,
         sectionName: 'sectionName',
-        nomisPushService,
+        eventService,
         config,
       })
     }
 
     describe('pushStatus', () => {
-      test('should not send to nomisPushService if main config off', async () => {
+      test('should not send to eventService if main config off', async () => {
         const nomisPush = {
           status: ['statusProperty'],
           reason: ['reasonProperty'],
@@ -73,11 +77,11 @@ describe('formPost', () => {
         const standardRoute = createRoute({ nomisPush, config: { pushToNomis: false } })
 
         await standardRoute.formPost(req, res, 'testForm', '123', '')
-        expect(nomisPushService.pushStatus).not.toHaveBeenCalled()
-        expect(nomisPushService.pushChecksPassed).not.toHaveBeenCalled()
+        expect(eventService.pushStatus).not.toHaveBeenCalled()
+        expect(eventService.pushChecksPassed).not.toHaveBeenCalled()
       })
 
-      test('should not send to nomisPushService when validation errors', async () => {
+      test('should not send to eventService when validation errors', async () => {
         const nomisPush = {
           status: ['statusProperty'],
           reason: ['reasonProperty'],
@@ -88,19 +92,19 @@ describe('formPost', () => {
         const standardRoute = createRoute({ nomisPush, validate: true })
 
         await standardRoute.formPost(req, res, 'testForm', '123', '')
-        expect(nomisPushService.pushStatus).not.toHaveBeenCalled()
-        expect(nomisPushService.pushChecksPassed).not.toHaveBeenCalled()
+        expect(eventService.pushStatus).not.toHaveBeenCalled()
+        expect(eventService.pushChecksPassed).not.toHaveBeenCalled()
       })
 
-      test('should not send to nomisPushService if no form config', async () => {
+      test('should not send to eventService if no form config', async () => {
         const standardRoute = createRoute({ nomisPush: null, config: null, validate: null })
 
         await standardRoute.formPost(req, res, 'testForm', '123', '')
-        expect(nomisPushService.pushStatus).not.toHaveBeenCalled()
-        expect(nomisPushService.pushChecksPassed).not.toHaveBeenCalled()
+        expect(eventService.pushStatus).not.toHaveBeenCalled()
+        expect(eventService.pushChecksPassed).not.toHaveBeenCalled()
       })
 
-      test('should send the specified licence fields to nomisPushService', async () => {
+      test('should send the specified licence fields to eventService', async () => {
         const nomisPush = {
           status: ['statusProperty'],
           reason: ['reasonProperty'],
@@ -115,15 +119,17 @@ describe('formPost', () => {
         }
 
         await standardRoute.formPost(req, res, 'testForm', '123', '')
-        expect(nomisPushService.pushStatus).toHaveBeenCalled()
-        expect(nomisPushService.pushStatus).toHaveBeenCalledWith({
+        expect(eventService.pushStatus).toHaveBeenCalled()
+        expect(eventService.pushStatus).toHaveBeenCalledWith({
           bookingId,
           data: expectedData,
           username,
+          offenderNo,
+          licenceId,
         })
       })
 
-      test('should send the specified licence fields to nomisPushService when fields are nested', async () => {
+      test('should send the specified licence fields to eventService when fields are nested', async () => {
         const nomisPush = {
           status: ['nestedStatusProperty', 'subStatus'],
           reason: ['nestedReasonProperty', 'subReason', 'subSubReason'],
@@ -138,15 +144,17 @@ describe('formPost', () => {
         }
 
         await standardRoute.formPost(req, res, 'testForm', '123', '')
-        expect(nomisPushService.pushStatus).toHaveBeenCalled()
-        expect(nomisPushService.pushStatus).toHaveBeenCalledWith({
+        expect(eventService.pushStatus).toHaveBeenCalled()
+        expect(eventService.pushStatus).toHaveBeenCalledWith({
           bookingId,
           data: expectedData,
           username,
+          offenderNo,
+          licenceId,
         })
       })
 
-      test('should send to nomisPushService even if fields are not found', async () => {
+      test('should send to eventService even if fields are not found', async () => {
         const nomisPush = {
           status: ['noSuchProperty'],
           reason: [''],
@@ -161,11 +169,13 @@ describe('formPost', () => {
         }
 
         await standardRoute.formPost(req, res, 'testForm', '123', '')
-        expect(nomisPushService.pushStatus).toHaveBeenCalled()
-        expect(nomisPushService.pushStatus).toHaveBeenCalledWith({
+        expect(eventService.pushStatus).toHaveBeenCalled()
+        expect(eventService.pushStatus).toHaveBeenCalledWith({
           bookingId,
           data: expectedData,
           username,
+          offenderNo,
+          licenceId,
         })
       })
 
@@ -183,11 +193,13 @@ describe('formPost', () => {
         }
 
         await standardRoute.formPost(req, res, 'testForm', '123', '')
-        expect(nomisPushService.pushStatus).toHaveBeenCalled()
-        expect(nomisPushService.pushStatus).toHaveBeenCalledWith({
+        expect(eventService.pushStatus).toHaveBeenCalled()
+        expect(eventService.pushStatus).toHaveBeenCalledWith({
           bookingId,
           data: expectedData,
           username,
+          offenderNo,
+          licenceId,
         })
       })
     })
@@ -219,11 +231,13 @@ describe('formPost', () => {
           const standardRoute = createRoute({ nomisPush })
 
           await standardRoute.formPost(req, res, 'testForm', '123', '')
-          expect(nomisPushService.pushChecksPassed).toHaveBeenCalled()
-          expect(nomisPushService.pushChecksPassed).toHaveBeenCalledWith({
+          expect(eventService.pushChecksPassed).toHaveBeenCalled()
+          expect(eventService.pushChecksPassed).toHaveBeenCalledWith({
             bookingId,
             passed: example.result,
             username,
+            offenderNo,
+            licenceId,
           })
         })
       })
@@ -238,7 +252,7 @@ describe('formPost', () => {
         const standardRoute = createRoute({ nomisPush })
 
         await standardRoute.formPost(req, res, 'testForm', '123', '')
-        expect(nomisPushService.pushChecksPassed).not.toHaveBeenCalled()
+        expect(eventService.pushChecksPassed).not.toHaveBeenCalled()
       })
 
       test('should not send checks passed when configured and neither status matches', async () => {
@@ -251,7 +265,7 @@ describe('formPost', () => {
         const standardRoute = createRoute({ nomisPush })
 
         await standardRoute.formPost(req, res, 'testForm', '123', '')
-        expect(nomisPushService.pushChecksPassed).not.toHaveBeenCalled()
+        expect(eventService.pushChecksPassed).not.toHaveBeenCalled()
       })
 
       test('should not send checks passed when not configured', async () => {
@@ -263,7 +277,7 @@ describe('formPost', () => {
         const standardRoute = createRoute({ nomisPush })
 
         await standardRoute.formPost(req, res, 'testForm', '123', '')
-        expect(nomisPushService.pushChecksPassed).not.toHaveBeenCalled()
+        expect(eventService.pushChecksPassed).not.toHaveBeenCalled()
       })
     })
 
@@ -286,7 +300,7 @@ describe('formPost', () => {
         formConfig,
         licenceService,
         sectionName: 'sectionName',
-        nomisPushService,
+        eventService,
       })
     }
 

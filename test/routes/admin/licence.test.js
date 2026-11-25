@@ -15,7 +15,7 @@ describe('/licences/', () => {
   let roNotificationHandler
   const licenceService = createLicenceServiceStub()
   const prisonerService = createPrisonerServiceStub()
-  const nomisPushService = createNomisPushServiceStub()
+  const eventService = createNomisPushServiceStub()
   const flash = jest.fn()
 
   beforeEach(() => {
@@ -222,7 +222,7 @@ describe('/licences/', () => {
         .expect(() => {
           expect(licenceService.resetLicence).toHaveBeenCalledWith('100')
           expect(audit.record).toHaveBeenCalledWith('RESET', 'NOMIS_BATCHLOAD', { bookingId: '100' })
-          expect(nomisPushService.resetHDC).toHaveBeenCalledWith('100', 'NOMIS_BATCHLOAD')
+          expect(eventService.resetHDC).toHaveBeenCalledWith('100', 'NOMIS_BATCHLOAD')
         })
     })
 
@@ -252,7 +252,7 @@ describe('/licences/', () => {
         prisonerService,
         audit,
         roNotificationHandler,
-        nomisPushService
+        eventService
       ),
       '/admin/licences',
       user,

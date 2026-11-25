@@ -131,6 +131,10 @@ describe('/hdc/eligibility', () => {
     routes.forEach((route) => {
       test(`renders the correct path '${route.nextPath}' page`, () => {
         const licenceService = createLicenceServiceStub()
+        licenceService.getLicence.mockResolvedValue({
+            id: 1,
+            licence: {key: 'value'},
+        })
         licenceService.update.mockResolvedValue({ eligibility: { [route.section]: {} } })
         const app = createApp({ licenceServiceStub: licenceService }, route.user)
 
@@ -143,7 +147,7 @@ describe('/hdc/eligibility', () => {
             expect(licenceService.update).toHaveBeenCalled()
             expect(licenceService.update).toHaveBeenCalledWith({
               bookingId: '1',
-              originalLicence: { licence: { key: 'value' } },
+              originalLicence: { id: 1,licence: { key: 'value' } },
               config: formConfig[route.section],
               userInput: route.body,
               licenceSection: 'eligibility',
@@ -238,12 +242,16 @@ describe('/hdc/eligibility', () => {
     specs.forEach((spec) => {
       test(`should push ${spec.type} status to nomis`, () => {
         const licenceService = createLicenceServiceStub()
+        licenceService.getLicence.mockResolvedValue({
+            id: 1,
+            licence: {key: 'value'},
+        })
         licenceService.update.mockResolvedValue(spec.data)
-        const nomisPushService = createNomisPushServiceStub()
+        const eventService = createNomisPushServiceStub()
         const app = createApp(
           {
             licenceServiceStub: licenceService,
-            nomisPushServiceStub: nomisPushService,
+            eventServiceStub: eventService,
           },
           'caUser',
           { pushToNomis: true }
@@ -254,11 +262,13 @@ describe('/hdc/eligibility', () => {
           .send({ decision: 'Yes' })
           .expect(302)
           .expect(() => {
-            expect(nomisPushService.pushStatus).toHaveBeenCalled()
-            expect(nomisPushService.pushStatus).toHaveBeenCalledWith({
+            expect(eventService.pushStatus).toHaveBeenCalled()
+            expect(eventService.pushStatus).toHaveBeenCalledWith({
               bookingId: '1',
               data: { type: spec.type, status: 'ABC', reason: 'XYZ' },
               username: 'CA_USER_TEST',
+              licenceId: 1,
+              offenderNo: 'A1234AA'
             })
           })
       })
@@ -270,11 +280,11 @@ describe('/hdc/eligibility', () => {
     licenceService.update.mockResolvedValue({
       eligibility: { excluded: { decision: 'ABC', reason: 'XYZ' } },
     })
-    const nomisPushService = createNomisPushServiceStub()
+    const eventService = createNomisPushServiceStub()
     const app = createApp(
       {
         licenceServiceStub: licenceService,
-        nomisPushServiceStub: nomisPushService,
+        eventServiceStub: eventService,
       },
       'caUser',
       { pushToNomis: false }
@@ -285,13 +295,13 @@ describe('/hdc/eligibility', () => {
       .send({ decision: 'Yes' })
       .expect(302)
       .expect(() => {
-        expect(nomisPushService.pushStatus).not.toHaveBeenCalled()
+        expect(eventService.pushStatus).not.toHaveBeenCalled()
       })
   })
 
   describe('pushChecksPassed', () => {
-    test('should not send to nomisPushService if main config off', async () => {
-      const nomisPushService = createNomisPushServiceStub()
+    test('should not send to eventService if main config off', async () => {
+      const eventService = createNomisPushServiceStub()
       const licenceService = createLicenceServiceStub()
       const licence = { eligibility: {} }
       licenceService.update.mockResolvedValue(licence)
@@ -299,7 +309,7 @@ describe('/hdc/eligibility', () => {
       const app = createApp(
         {
           licenceServiceStub: licenceService,
-          nomisPushServiceStub: nomisPushService,
+          eventServiceStub: eventService,
         },
         'caUser',
         { pushToNomis: false }
@@ -310,7 +320,7 @@ describe('/hdc/eligibility', () => {
         .send({ decision: 'Yes' })
         .expect(302)
         .expect(() => {
-          expect(nomisPushService.pushChecksPassed).not.toHaveBeenCalled()
+          expect(eventService.pushChecksPassed).not.toHaveBeenCalled()
         })
     })
 
@@ -334,15 +344,15 @@ describe('/hdc/eligibility', () => {
     ]
 
     checksFailedExamples.forEach((example) => {
-      test(`should NOT send to nomisPushService when  ${example.type}`, async () => {
-        const nomisPushService = createNomisPushServiceStub()
+      test(`should NOT send to eventService when  ${example.type}`, async () => {
+        const eventService = createNomisPushServiceStub()
         const licenceService = createLicenceServiceStub()
         licenceService.update.mockResolvedValue(example.licence)
 
         const app = createApp(
           {
             licenceServiceStub: licenceService,
-            nomisPushServiceStub: nomisPushService,
+            eventServiceStub: eventService,
           },
           'caUser',
           { pushToNomis: true }
@@ -353,12 +363,12 @@ describe('/hdc/eligibility', () => {
           .send({ decision: 'Yes' })
           .expect(302)
           .expect(() => {
-            expect(nomisPushService.pushChecksPassed).not.toHaveBeenCalled()
+            expect(eventService.pushChecksPassed).not.toHaveBeenCalled()
           })
       })
     })
 
-    test('should NOT send to nomisPushService when suitable but on different form', async () => {
+    test('should NOT send to eventService when suitable but on different form', async () => {
       const licence = {
         eligibility: {
           excluded: {
@@ -369,14 +379,14 @@ describe('/hdc/eligibility', () => {
           },
         },
       }
-      const nomisPushService = createNomisPushServiceStub()
+      const eventService = createNomisPushServiceStub()
       const licenceService = createLicenceServiceStub()
       licenceService.update.mockResolvedValue(licence)
 
       const app = createApp(
         {
           licenceServiceStub: licenceService,
-          nomisPushServiceStub: nomisPushService,
+          eventServiceStub: eventService,
         },
         'caUser',
         { pushToNomis: true }
@@ -387,20 +397,24 @@ describe('/hdc/eligibility', () => {
         .send({ decision: 'Yes' })
         .expect(302)
         .expect(() => {
-          expect(nomisPushService.pushChecksPassed).not.toHaveBeenCalled()
+          expect(eventService.pushChecksPassed).not.toHaveBeenCalled()
         })
     })
 
-    test('should send to nomisPushService when checks passed', async () => {
+    test('should send to eventService when checks passed', async () => {
       const licence = { eligibility: { excluded: { decision: 'No' }, suitability: { decision: 'No' } } }
-      const nomisPushService = createNomisPushServiceStub()
+      const eventService = createNomisPushServiceStub()
       const licenceService = createLicenceServiceStub()
+      licenceService.getLicence.mockResolvedValue({
+            id: 1,
+            licence: {key: 'value'},
+        })
       licenceService.update.mockResolvedValue(licence)
 
       const app = createApp(
         {
           licenceServiceStub: licenceService,
-          nomisPushServiceStub: nomisPushService,
+          eventServiceStub: eventService,
         },
         'caUser',
         { pushToNomis: true }
@@ -411,23 +425,25 @@ describe('/hdc/eligibility', () => {
         .send({ decision: 'Yes' })
         .expect(302)
         .expect(() => {
-          expect(nomisPushService.pushChecksPassed).toHaveBeenCalled()
-          expect(nomisPushService.pushChecksPassed).toHaveBeenCalledWith({
+          expect(eventService.pushChecksPassed).toHaveBeenCalled()
+          expect(eventService.pushChecksPassed).toHaveBeenCalledWith({
             bookingId: '1',
             passed: true,
             username: 'CA_USER_TEST',
+            licenceId: 1,
+            offenderNo: 'A1234AA'
           })
         })
     })
   })
 })
 
-function createApp({ licenceServiceStub = null, nomisPushServiceStub = null }, user, config = {}) {
+function createApp({ licenceServiceStub = null, eventServiceStub = null }, user, config = {}) {
   const auditService = createAuditServiceStub()
   const prisonerService = createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()
-  const nomisPushService = nomisPushServiceStub || createNomisPushServiceStub()
+  const eventService = eventServiceStub || createNomisPushServiceStub()
   const audit = mockAudit()
 
   const baseRouter = standardRouter({
@@ -439,7 +455,7 @@ function createApp({ licenceServiceStub = null, nomisPushServiceStub = null }, u
     tokenVerifier: new NullTokenVerifier(),
     config,
   })
-  const route = baseRouter(createRoute({ licenceService, nomisPushService }))
+  const route = baseRouter(createRoute({ licenceService, eventService }))
 
   return appSetup(route, user, '/hdc/eligibility')
 }

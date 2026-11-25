@@ -6,7 +6,7 @@ import getLicenceStatus from '../../services/licence/licenceStatus'
 
 const { asyncMiddleware, authorisationMiddleware } = require('../../utils/middleware')
 
-export = (licenceService, signInService, prisonerService, audit, roNotificationHandler, nomisPushService) => (router) => {
+export = (licenceService, signInService, prisonerService, audit, roNotificationHandler, eventService) => (router) => {
   router.use(authorisationMiddleware)
 
   const formatEvent = (event) => ({
@@ -101,7 +101,7 @@ export = (licenceService, signInService, prisonerService, audit, roNotificationH
       if (reset === 'Yes') {
         await licenceService.resetLicence(bookingId)
         await audit.record('RESET', username, { bookingId })
-        await nomisPushService.resetHDC(bookingId, username)
+        await eventService.resetHDC(bookingId, username)
       }
       return res.redirect(`/admin/licences/${bookingId}`)
     })
