@@ -36,7 +36,7 @@ const {production} = config
 export default function createApp(services: Services, applicationInfo: ApplicationInfo): Express {
   const {
     audit,
-    userService
+    userService,
     licenceClient,
     warningClient,
     activeLduClient,

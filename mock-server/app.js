@@ -45,6 +45,10 @@ app.use('/prisonApi/api/prisoners', prisonersRouter)
 app.use('/manageUsersApi', authUserRouter)
 app.use('/auth', authRouter)
 
+app.post('/hdcApi/licences/cvl-events', (req, res) => {
+  res.status(200).send()
+})
+
 app.use('/delius', deliusRouter)
 app.use('/probationteams', probationteamsRouter)
 
