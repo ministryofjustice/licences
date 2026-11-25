@@ -10,8 +10,7 @@ see http://www.gebish.org/manual/current/
 Install current versions of chromedriver
 
 ```
-npm install chromedriver --save-dev
-npm install selenium-webdriver
+./bin/install-chromedriver.sh
 ```
 
 ### Environment

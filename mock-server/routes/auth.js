@@ -50,7 +50,14 @@ const loginPage = ({ redirect_uri: redirectUri, state, error }) => `<!DOCTYPE ht
   </body>
 </html>`
 
+// Real auth redirects to /login; the Geb SigninPage asserts on that URL
 router.get('/oauth/authorize', (req, res) => {
+  // @ts-ignore
+  const query = new URLSearchParams(req.query).toString()
+  res.redirect(`/auth/login?${query}`)
+})
+
+router.get('/login', (req, res) => {
   // @ts-ignore
   res.send(loginPage(req.query))
 })
