@@ -10,8 +10,7 @@ see http://www.gebish.org/manual/current/
 Install current versions of chromedriver
 
 ```
-npm install chromedriver --save-dev
-npm install selenium-webdriver
+./bin/install-chromedriver.sh
 ```
 
 ### Environment
@@ -21,7 +20,7 @@ The following environment variables are used
 - LICENCES_URI - root URI for the Licences application. Defaults to `http://localhost:3000`
 
 The Licences application must be running at Licences_URI, and must be connected to a database, prisonApi
-and an oauth server eg ghcr.io/ministryofjustice/nomis-oauth2-server.
+and an oauth server. `npm run start-mocks` provides a mock oauth server at `/auth`.
 
 An easy way to do this is to run start-mocks and the application hence the 3 commands you require are:
 

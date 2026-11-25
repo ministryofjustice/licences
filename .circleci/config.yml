@@ -18,18 +18,6 @@ executors:
           POSTGRES_USER: licences
           POSTGRES_DB: licences
           POSTGRES_PASSWORD: licences
-      - image: ghcr.io/ministryofjustice/hmpps-auth:2026-03-02.422.c36796f
-        name: hmpps-auth
-        environment:
-          SPRING_PROFILES_ACTIVE: dev,nomis
-          SERVER_PORT: 9090
-          NOMIS_ENDPOINT_URL: http://nomis-user-roles-api:9190
-      - image: ghcr.io/ministryofjustice/nomis-user-roles-api:2025-11-25.29.b39ec25
-        name: nomis-user-roles-api
-        environment:
-          SPRING_PROFILES_ACTIVE: dev
-          SERVER_PORT: 9190
-          API_BASE_URL_OAUTH: http://hmpps-auth:9090/auth
       - image: cimg/redis:5.0
         environment: ALLOW_EMPTY_PASSWORD=yes
     working_directory: ~/app
@@ -72,9 +60,10 @@ jobs:
       DB_SSL_ENABLED: false
       ENABLE_TEST_UTILS: true
       NOMIS_API_URL: http://localhost:8080/prisonApi
-      NOMIS_AUTH_URL: http://hmpps-auth:9090/auth
+      NOMIS_AUTH_URL: http://localhost:8080/auth
       DELIUS_API_URL: http://localhost:8080/delius
       PROBATION_TEAMS_API_URL: http://localhost:8080/probationteams
+      MANAGE_USERS_API_URL: http://localhost:8080/manageUsersApi
       TOKENVERIFICATION_API_ENABLED: false
       GOTENBERG_API_URL: http://localhost:3001
       HDC_URL: http://localhost:3000
