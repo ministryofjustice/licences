@@ -1,5 +1,6 @@
 generic-service:
   replicaCount: 2
+  serviceAccountName: licences
 
   ingress:
     enabled: true
