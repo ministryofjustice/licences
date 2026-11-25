@@ -186,6 +186,7 @@ describe('/hdc/approval', () => {
       })
 
       test('should push the decision to nomis if config variable is true', () => {
+        licenceServiceStub.getLicence.mockResolvedValue({ id: 1 })
         licenceServiceStub.update.mockResolvedValue({ approval: { release: { decision: 'ABC' } } })
         app = createApp({ licenceServiceStub, nomisPushServiceStub }, 'dmUser', {
           pushToNomis: true,
@@ -200,6 +201,8 @@ describe('/hdc/approval', () => {
               bookingId: '1',
               data: { type: route.formName, status: 'ABC', reason: undefined },
               username: 'DM_USER',
+              licenceId: 1,
+              offenderNo: 'A1234AA'
             })
           })
       })

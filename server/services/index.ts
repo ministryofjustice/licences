@@ -147,7 +147,7 @@ const reminderService = createReminderService(
   roNotificationSender,
   config.notifications.activeNotificationTypes
 )
-const nomisPushService = createNomisPushService(nomisClientBuilder, signInService)
+const nomisPushService = createNomisPushService(nomisClientBuilder, signInService, hdcService)
 const notificationJobs = createNotificationJobs(reminderService, signInService)
 const jobSchedulerService = createJobSchedulerService(dbLockingClient, configClient, notificationJobs)
 const lduService = createLduService(deliusClient, activeLduClient)

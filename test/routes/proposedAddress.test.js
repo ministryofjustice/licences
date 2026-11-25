@@ -233,9 +233,14 @@ describe('/hdc/proposedAddress', () => {
 
     test(`should push optout status to nomis`, () => {
       const nomisPushService = createNomisPushServiceStub()
+      const licenceService = createLicenceServiceStub()
+      licenceService.getLicence = jest.fn().mockReturnValue({
+        id: 1,
+      })
       const app = createApp(
         {
           nomisPushServiceStub: nomisPushService,
+          licenceServiceStub: licenceService,
         },
         'caUser',
         { pushToNomis: true }
@@ -249,8 +254,10 @@ describe('/hdc/proposedAddress', () => {
           expect(nomisPushService.pushStatus).toHaveBeenCalled()
           expect(nomisPushService.pushStatus).toHaveBeenCalledWith({
             bookingId: '1',
-            data: { type: 'optOut', status: 'Yes' },
+            data: { type: 'optOut', status: 'Yes', cvlEventReason: 'CA_USER_TEST opted out of HDC during initial curfew address task' },
             username: 'CA_USER_TEST',
+            licenceId: 1,
+            offenderNo: 'A1234AA',
           })
         })
     })
