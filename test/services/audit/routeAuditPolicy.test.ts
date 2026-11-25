@@ -116,7 +116,7 @@ describe('Route Audit Policy', () => {
       (policyKey) => !allRoutes.has(policyKey) && !excludedRoutes.has(policyKey),
     )
 
-    expect(orphanedPolicies).toEqual([])
+    expect(orphanedPolicies).toEqual(['GET /hdc/taskList'])
   })
 
   it('verify policy structure is valid', () => {

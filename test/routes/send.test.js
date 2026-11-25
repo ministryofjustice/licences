@@ -2,7 +2,7 @@ const request = require('supertest')
 const { mockAudit } = require('../mockClients')
 const { appSetup, users } = require('../supertestSetup')
 
-const { createLicenceServiceStub, createPrisonerServiceStub, createSignInServiceStub } = require('../mockServices')
+const { createLicenceServiceStub, createPrisonerServiceStub, createSignInServiceStub, createAuditServiceStub} = require('../mockServices')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/send')
@@ -371,12 +371,14 @@ function createApp(
   { prisonerServiceStub = null, notificationServiceStub = null, hdcServiceStub = null, licenceServiceStub = null },
   user
 ) {
+  const auditService = createAuditServiceStub()
   const prisonerService = prisonerServiceStub || createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()
   const audit = mockAudit()
 
   const baseRouter = standardRouter({
+    auditService,
     licenceService,
     prisonerService,
     audit,
@@ -401,6 +403,7 @@ function createAppForReconsideration(
   stage,
   licence
 ) {
+  const auditService = createAuditServiceStub()
   const prisonerService = prisonerServiceStub || createPrisonerServiceStub()
   const licenceService = createLicenceServiceStub()
   const signInService = createSignInServiceStub()
@@ -414,6 +417,7 @@ function createAppForReconsideration(
   })
 
   const baseRouter = standardRouter({
+    auditService,
     licenceService,
     prisonerService,
     audit,

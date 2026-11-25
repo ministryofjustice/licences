@@ -14,6 +14,8 @@ export type AuditPolicy = {
 
   // Set to true if the route is auditable but needs custom event data so will send the audit event itself
   customHandler?: boolean
+
+  noLicenceRequired?: boolean
 }
 
 export type RouteAuditPolicy = {
