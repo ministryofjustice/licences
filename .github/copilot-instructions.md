@@ -22,6 +22,9 @@ npm run build          # Compile TypeScript, Sass, copy views → dist/
 npm run start:dev      # Watch mode (rebuilds TS/Sass/views on change)
 npm run lint           # ESLint
 npm run typecheck      # TypeScript type checking only
+npm run verify         # lint + typecheck + build + test:ci (what CI expects)
+npm run start:feature  # Run app with feature.env (used by licences-specs browser tests)
+npm run lint -- --fix  # Auto-fix lint issues
 npm run test           # Unit tests (test/**/*.test.{ts,js})
 npm run test:ci        # Unit tests, single-threaded (for CI)
 npm run integration-test  # Integration tests (integration_test/**/)
@@ -51,8 +54,8 @@ OAuth2 login (HMPPS Auth) → Passport → token verification
 
 ### Key Layers
 
-- **`server/app.js`** — Express app factory: middleware, sessions, security, Pug config
-- **`server/index.js`** — Dependency injection root: instantiates all services and wires them into route factories
+- **`server/app.ts`** — Express app factory: middleware, sessions, security, Pug config
+- **`server/index.ts`** — Dependency injection root: instantiates all services and wires them into route factories
 - **`server/routes/`** — Express routers (one file per feature area). No controllers; routes call services directly.
 - **`server/services/`** — All business logic. Services are instantiated in `index.js` and injected.
 - **`server/data/`** — Data access layer: DB clients, API clients (NOMIS, Delius, HDC API, etc.), Redis client
@@ -92,7 +95,7 @@ Always export both the class and a named factory function (`createXxxService`).
 
 ## Database Conventions
 
-- Schema managed via **42 Knex migrations** in `migrations/` (timestamped filenames).
+- Schema managed via **Knex migrations** (50+) in `migrations/` (timestamped filenames).
 - Primary table: `licences` — stores licence data as JSONB, plus `booking_id`, `stage`, `version`, `vary_version`, `deleted_at`.
 - Soft deletes: recent migrations added `deleted_at`; use views `v_licences_excluding_deleted` and `v_licence_versions_excluding_deleted` rather than querying tables directly when excluding deleted records.
 - Transactions via `inTransaction(callback)` from `server/data/dataAccess/`.
@@ -133,7 +136,7 @@ docker-compose -f docker-compose-minimal.yml up  # DB + Redis only
 npm run start-mocks                               # Start mock services for external APIs
 ```
 
-Key env vars (see `server/config.js` for full list with defaults):
+Key env vars (see `server/config.ts` for full list with defaults):
 
 | Variable | Purpose |
 |---|---|
