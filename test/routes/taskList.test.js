@@ -10,6 +10,7 @@ const {
   createCaServiceStub,
   createHdcServiceStub,
   createRoServiceStub,
+  createAuditServiceStub,
 } = require('../mockServices')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
@@ -1269,6 +1270,7 @@ describe('GET /image/:imageId', () => {
 
 function createApp({ licenceServiceStub, prisonerServiceStub, caServiceStub, audit = mockAudit() }, user,
                    roServiceStub, hdcServiceStub) {
+  const auditService = createAuditServiceStub()
   const prisonerService = prisonerServiceStub || createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()
@@ -1277,6 +1279,7 @@ function createApp({ licenceServiceStub, prisonerServiceStub, caServiceStub, aud
   const hdcService = hdcServiceStub || createHdcServiceStub()
 
   const baseRouter = standardRouter({
+    auditService,
     licenceService,
     prisonerService,
     audit,
@@ -1284,9 +1287,7 @@ function createApp({ licenceServiceStub, prisonerServiceStub, caServiceStub, aud
     tokenVerifier: new NullTokenVerifier(),
     config: null,
   })
-  const route = baseRouter(createRoute(prisonerService, licenceService, roService,  hdcService, audit, caService, signInService), {
-    licenceRequired: false,
-  })
+  const route = baseRouter(createRoute(prisonerService, licenceService, roService,  hdcService, audit, caService, signInService) )
 
   return appSetup(route, user, '/taskList/')
 }

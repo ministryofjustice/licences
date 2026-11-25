@@ -20,7 +20,7 @@ async function updateVersion(bookingId, postRelease = false): Promise<void> {
                 WHERE booking_id = $1);`,
     values: [bookingId],
   }
-  return db.query(query)
+  await db.query(query)
 }
 
 async function softDeleteVersions(bookingId): Promise<void> {
@@ -28,7 +28,7 @@ async function softDeleteVersions(bookingId): Promise<void> {
     text: 'UPDATE v_licence_versions_excluding_deleted SET deleted_at = current_timestamp where booking_id = $1 and deleted_at is null;',
     values: [bookingId],
   }
-  return db.query(query)
+  await db.query(query)
 }
 
 export class LicenceClient {
@@ -126,20 +126,20 @@ export class LicenceClient {
     return null
   }
 
-  createLicence(
+  async createLicence(
     bookingId: number,
     prisonNumber,
     licence: Licence = {},
     stage: string = LicenceStage.DEFAULT,
     version: number = 1,
     varyVersion: number = 0
-  ): Promise<number> {
+  ): Promise<void> {
     const query = {
       text: 'insert into licences (booking_id, prison_number, licence, stage, version, vary_version) values ($1, $2, $3, $4, $5, $6)',
       values: [bookingId, prisonNumber, licence, stage, version, varyVersion],
     }
 
-    return db.query(query)
+    await db.query(query)
   }
 
   async updateLicence(bookingId: number, licence: Licence = {}, postRelease: boolean = false): Promise<void> {
@@ -164,13 +164,13 @@ export class LicenceClient {
     return updateVersion(bookingId, postRelease)
   }
 
-  updateStage(bookingId: number, stage): Promise<void> {
+  async updateStage(bookingId: number, stage): Promise<void> {
     const query = {
       text: 'update v_licences_excluding_deleted set (stage, transition_date) = ($1, current_timestamp) where booking_id = $2',
       values: [stage, bookingId],
     }
 
-    return db.query(query)
+    await db.query(query)
   }
 
   async getDeliusIds(nomisUserName): Promise<DeliusIds[]> {
@@ -267,14 +267,14 @@ export class LicenceClient {
   }
 
   // eslint-disable-next-line camelcase
-  setLicenceInCvl(licence_in_cvl: boolean, bookingId: number): Promise<void> {
+  async setLicenceInCvl(licence_in_cvl: boolean, bookingId: number): Promise<void> {
     const query = {
       text: 'UPDATE v_licences_excluding_deleted SET licence_in_cvl = $1 where booking_id = $2',
       // eslint-disable-next-line camelcase
       values: [licence_in_cvl, bookingId],
     }
 
-    return db.query(query)
+    await db.query(query)
   }
 
   async softDeleteLicence(bookingId: number): Promise<void> {

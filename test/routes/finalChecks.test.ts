@@ -7,6 +7,8 @@ import {
   createLicenceServiceStub,
   createSignInServiceStub,
   createNomisPushServiceStub,
+  createHdcServiceStub,
+  createAuditServiceStub,
 } from '../mockServices'
 
 import standardRouter from '../../server/routes/routeWorkers/standardRouter'
@@ -332,18 +334,269 @@ describe('/hdc/finalChecks', () => {
           expect(nomisPushService.pushStatus).not.toHaveBeenCalled()
         })
     })
+
+    test('should not push the refusal to nomis if config variable is false', () => {
+      const licenceService = createLicenceServiceStub()
+      licenceService.update.mockResolvedValue({
+        finalChecks: { refusal: { decision: 'Yes', reason: 'addressUnsuitable' } },
+      })
+      const nomisPushService = createNomisPushServiceStub()
+      const app = createApp(
+        {
+          licenceServiceStub: licenceService,
+          nomisPushServiceStub: nomisPushService,
+        },
+        'caUser',
+        { pushToNomis: false }
+      )
+
+      return request(app)
+        .post('/hdc/finalChecks/refuse/1')
+        .send({ decision: 'Yes', reason: 'addressUnsuitable' })
+        .expect(302)
+        .expect(() => {
+          expect(nomisPushService.pushStatus).not.toHaveBeenCalled()
+        })
+    })
+
+    describe('postpone/resume CVL events', () => {
+      test('posts a postpone event with the postponeReason as the event reason', () => {
+        const licenceService = createLicenceServiceStub()
+        licenceService.getLicence.mockResolvedValue({ id: 1, licence: {} })
+        licenceService.update.mockResolvedValue({
+          finalChecks: { postpone: { decision: 'Yes', postponeReason: 'outstandingRisk' } },
+        })
+        const hdcService = createHdcServiceStub()
+        const app = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
+
+        return request(app)
+          .post('/hdc/finalChecks/postpone/1')
+          .send({ decision: 'Yes', postponeReason: 'outstandingRisk' })
+          .expect(302)
+          .expect('Location', '/hdc/taskList/1')
+          .expect(() => {
+            expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+              eventType: 'POSTPONE',
+              bookingId: 1,
+              licenceId: 1,
+              nomsNumber: 'A1234AA',
+              triggeredBy: 'CA_USER_TEST',
+              reason: 'outstandingRisk'
+            })
+            expect(hdcService.postCvlEvent).not.toHaveBeenCalledWith(expect.objectContaining({ eventType: 'RESUME' }))
+          })
+      })
+
+      test('posts a resume event when a previously postponed decision changes to No', () => {
+        const licenceService = createLicenceServiceStub()
+        licenceService.getLicence.mockResolvedValue({ id: 1, licence: { finalChecks: { postpone: { decision: 'Yes' } } } })
+        licenceService.update.mockResolvedValue({ finalChecks: { postpone: { decision: 'No' } } })
+        const hdcService = createHdcServiceStub()
+        const app = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
+
+        return request(app)
+          .post('/hdc/finalChecks/postpone/1')
+          .send({ decision: 'No' })
+          .expect(302)
+          .expect('Location', '/hdc/taskList/1')
+          .expect(() => {
+            expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+              eventType: 'RESUME',
+              bookingId: 1,
+              licenceId: 1,
+              nomsNumber: 'A1234AA',
+              triggeredBy: 'CA_USER_TEST',
+              reason: 'CA_USER_TEST resumed the HDC application'
+            })
+            expect(hdcService.postCvlEvent).not.toHaveBeenCalledWith(expect.objectContaining({ eventType: 'POSTPONE' }))
+          })
+      })
+
+      test.each(['Yes', 'No'])('posts an event when the decision is unchanged at %s', (decision) => {
+        const licenceService = createLicenceServiceStub()
+        licenceService.getLicence.mockResolvedValue({ id: 1, licence: { finalChecks: { postpone: { decision } } } })
+        licenceService.update.mockResolvedValue({ finalChecks: { postpone: { decision } } })
+        const hdcService = createHdcServiceStub()
+        const app = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
+
+        return request(app)
+          .post('/hdc/finalChecks/postpone/1')
+          .send({ decision })
+          .expect(302)
+          .expect(() => {
+            expect(hdcService.postCvlEvent).toHaveBeenCalledTimes(1)
+            expect(hdcService.postCvlEvent).toHaveBeenCalledWith(expect.objectContaining({
+              eventType: decision === 'Yes' ? 'POSTPONE' : 'RESUME',
+            }))
+          })
+      })
+    })
+
+    describe('refuse CVL events', () => {
+      test('passes a single refusal reason as the event reason', () => {
+        const licenceService = createLicenceServiceStub()
+        licenceService.getLicence.mockResolvedValue({ id: 1, licence: {} })
+        licenceService.update.mockResolvedValue({
+          finalChecks: { refusal: { decision: 'Yes', reason: 'addressUnsuitable' } },
+        })
+        const hdcService = createHdcServiceStub()
+        const app = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
+
+        return request(app)
+          .post('/hdc/finalChecks/refuse/1')
+          .send({ decision: 'Yes', reason: 'addressUnsuitable' })
+          .expect(302)
+          .expect('Location', '/hdc/taskList/1')
+          .expect(() => {
+            expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+              eventType: 'REFUSE',
+              bookingId: 1,
+              licenceId: 1,
+              nomsNumber: 'A1234AA',
+              triggeredBy: 'CA_USER_TEST',
+              reason: 'addressUnsuitable'
+            })
+          })
+      })
+
+      test('joins multiple refusal reasons for the event reason', () => {
+        const reasons = ['addressUnsuitable', 'insufficientTime']
+        const licenceService = createLicenceServiceStub()
+        licenceService.getLicence.mockResolvedValue({ id: 1, licence: {} })
+        licenceService.update.mockResolvedValue({
+          finalChecks: { refusal: { decision: 'Yes', reason: reasons } },
+        })
+        const hdcService = createHdcServiceStub()
+        const app = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
+
+        return request(app)
+          .post('/hdc/finalChecks/refuse/1')
+          .send({ decision: 'Yes', reason: reasons })
+          .expect(302)
+          .expect(() => {
+            expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+              eventType: 'REFUSE',
+              bookingId: 1,
+              licenceId: 1,
+              nomsNumber: 'A1234AA',
+              triggeredBy: 'CA_USER_TEST',
+              reason: 'addressUnsuitable, insufficientTime'
+            })
+          })
+      })
+
+      test('passes a one-item reason array as the event reason', () => {
+        const reasons = ['addressUnsuitable']
+        const licenceService = createLicenceServiceStub()
+        licenceService.getLicence.mockResolvedValue({ id: 1, licence: {} })
+        licenceService.update.mockResolvedValue({
+          finalChecks: { refusal: { decision: 'Yes', reason: reasons } },
+        })
+        const hdcService = createHdcServiceStub()
+        const app = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
+
+        return request(app)
+          .post('/hdc/finalChecks/refuse/1')
+          .send({ decision: 'Yes', reason: reasons })
+          .expect(302)
+          .expect(() => {
+            expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+              eventType: 'REFUSE',
+              bookingId: 1,
+              licenceId: 1,
+              nomsNumber: 'A1234AA',
+              triggeredBy: 'CA_USER_TEST',
+              reason: 'addressUnsuitable'
+            })
+          })
+      })
+
+      test('does not post a refuse event when the decision is not Yes', () => {
+        const licenceService = createLicenceServiceStub()
+        licenceService.update.mockResolvedValue({ finalChecks: { refusal: { decision: 'No' } } })
+        const hdcService = createHdcServiceStub()
+        const app = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
+
+        return request(app)
+          .post('/hdc/finalChecks/refuse/1')
+          .send({ decision: 'No' })
+          .expect(302)
+          .expect(() => {
+            expect(hdcService.postCvlEvent).not.toHaveBeenCalledWith(expect.objectContaining({ eventType: 'REFUSE' }))
+          })
+      })
+
+      test('posts a refuse event again when the refusal reason is updated', () => {
+        const licenceService = createLicenceServiceStub()
+        licenceService.getLicence.mockResolvedValue({
+          id: 1,
+          licence: { finalChecks: { refusal: { decision: 'Yes', reason: 'addressUnsuitable' } } },
+        })
+        licenceService.update.mockResolvedValue({
+          finalChecks: { refusal: { decision: 'Yes', reason: 'insufficientTime' } },
+        })
+        const hdcService = createHdcServiceStub()
+        const app = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
+
+        return request(app)
+          .post('/hdc/finalChecks/refuse/1')
+          .send({ decision: 'Yes', reason: 'insufficientTime', outOfTimeReasons: 'noAddress' })
+          .expect(302)
+          .expect(() => {
+            expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+              eventType: 'REFUSE',
+              bookingId: 1,
+              licenceId: 1,
+              nomsNumber: 'A1234AA',
+              triggeredBy: 'CA_USER_TEST',
+              reason: 'insufficientTime'
+            })
+          })
+      })
+
+      test('posts a refuse event when the licence was already refused and nothing changed', () => {
+        const licenceService = createLicenceServiceStub()
+        const existingLicence = { finalChecks: { refusal: { decision: 'Yes', reason: 'addressUnsuitable' } } }
+        licenceService.getLicence.mockResolvedValue({ id: 1, licence: existingLicence })
+        licenceService.update.mockResolvedValue(existingLicence)
+        const hdcService = createHdcServiceStub()
+        const app = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
+
+        return request(app)
+          .post('/hdc/finalChecks/refuse/1')
+          .send({ decision: 'Yes', reason: 'addressUnsuitable' })
+          .expect(302)
+          .expect(() => {
+            expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+              eventType: 'REFUSE',
+              bookingId: 1,
+              licenceId: 1,
+              nomsNumber: 'A1234AA',
+              triggeredBy: 'CA_USER_TEST',
+              reason: 'addressUnsuitable'
+            })
+          })
+      })
+    })
   })
 })
 
-function createApp({ licenceServiceStub = null, nomisPushServiceStub = null }, user = 'caUser', config = {}) {
+function createApp(
+  { licenceServiceStub = null, nomisPushServiceStub = null, hdcServiceStub = null },
+  user = 'caUser',
+  config = {}
+) {
+  const auditService = createAuditServiceStub()
   const prisonerService = createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()
   signInService.getClientCredentialsTokens.mockResolvedValue('new token')
   const nomisPushService = nomisPushServiceStub || createNomisPushServiceStub()
+  const hdcService = hdcServiceStub || createHdcServiceStub()
   const audit = mockAudit()
 
   const baseRouter = standardRouter({
+    auditService,
     licenceService,
     prisonerService,
     audit,
@@ -351,7 +604,7 @@ function createApp({ licenceServiceStub = null, nomisPushServiceStub = null }, u
     tokenVerifier: new NullTokenVerifier(),
     config,
   })
-  const route = baseRouter(createRoute({ licenceService, nomisPushService }))
+  const route = baseRouter(createRoute({ licenceService, nomisPushService, hdcService }))
 
   return appSetup(route, user, '/hdc/finalChecks')
 }

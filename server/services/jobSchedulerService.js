@@ -17,11 +17,11 @@ module.exports = function createJobSchedulerService(
   function jobResultCallback(name) {
     return (error, result) => {
       if (error) {
-        logger.warn(`Scheduled job: ${name}, finished with error`, error)
+        logger.warn({ err: error }, `Scheduled job: ${name}, finished with error`)
         outcomes[name] = { success: false, output: error.message }
         return
       }
-      logger.info(`Scheduled job: ${name}, finished with success`, result)
+      logger.info({ result }, `Scheduled job: ${name}, finished with success`)
       outcomes[name] = { success: true, output: JSON.stringify(result) }
     }
   }
@@ -95,7 +95,7 @@ module.exports = function createJobSchedulerService(
       try {
         return activate(job)
       } catch (error) {
-        logger.error(`Error starting ${job.name}`, error)
+        logger.error({ err: error }, `Error starting ${job.name}`)
       }
     }
     return null

@@ -55,26 +55,47 @@ describe('HdcService', () => {
 
       await expect(service.postCvlEvent(event)).rejects.toThrow('API error')
 
-      expect(logger.error).toHaveBeenCalledWith('Failed to post CVL event', expect.objectContaining({
+      expect(logger.error).toHaveBeenCalledWith(expect.objectContaining({
         message: 'API error',
-      }))
+        stack: error.stack,
+      }), 'Failed to post CVL event')
     })
   })
 
-  describe('postOptOutEvent', () => {
-    it('should call postCvlEvent with OPT_OUT event type', async () => {
-      hdcClient.postCvlEvent.mockResolvedValue(undefined)
+  it.each<HdcCvlEventRequest['eventType']>([
+    'OPT_IN',
+    'OPT_OUT',
+    'POSTPONE',
+    'RESUME',
+    'REFUSE',
+    'ADDRESS_WITHDRAWN',
+  ])('should publish %s with its metadata unchanged', async (eventType) => {
+    const event: HdcCvlEventRequest = {
+      eventType,
+      bookingId: 123,
+      licenceId: 456,
+      nomsNumber: 'A1234AA',
+      triggeredBy: 'USER',
+      reason: 'reason',
+    }
 
-      await service.postOptOutEvent(123, 456, 'A1234AA', 'USER', 'USER opted out of HDC at curfew address task')
+    await service.postCvlEvent(event)
 
-      expect(hdcClient.postCvlEvent).toHaveBeenCalledWith({
-        bookingId: 123,
-        licenceId: 456,
-        nomsNumber: 'A1234AA',
-        eventType: 'OPT_OUT',
-        reason: 'USER opted out of HDC at curfew address task',
-        triggeredBy: 'USER',
-      })
-    })
+    expect(hdcClient.postCvlEvent).toHaveBeenCalledTimes(1)
+    expect(hdcClient.postCvlEvent).toHaveBeenCalledWith(event)
+  })
+
+  it('should accept an event without an optional reason', async () => {
+    const event: HdcCvlEventRequest = {
+      eventType: 'RISK_CHECKS_SUBMITTED',
+      bookingId: 123,
+      licenceId: 456,
+      nomsNumber: 'A1234AA',
+      triggeredBy: 'USER',
+    }
+
+    await service.postCvlEvent(event)
+
+    expect(hdcClient.postCvlEvent).toHaveBeenCalledWith(event)
   })
 })

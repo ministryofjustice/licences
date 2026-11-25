@@ -1,3 +1,5 @@
+import { AuditClientConfig } from '@ministryofjustice/hmpps-audit-client'
+
 const production = process.env.NODE_ENV === 'production'
 const oneDay = 24 * 60 * 60
 
@@ -45,6 +47,19 @@ function checkDateAgainstToday(dateString: string) {
 
       return active
     }
+  }
+}
+
+const auditConfig = (): AuditClientConfig => {
+  const auditEnabled = get('AUDIT_ENABLED', 'false') === 'true'
+  return {
+    enabled: auditEnabled,
+    queueUrl: get(
+      'AUDIT_SQS_QUEUE_URL',
+      'http://localhost:4566/000000000000/mainQueue'
+    ),
+    serviceName: get('AUDIT_SERVICE_NAME', 'UNASSIGNED'),
+    region: get('AUDIT_SQS_REGION', 'eu-west-2'),
   }
 }
 
@@ -238,7 +253,9 @@ export default {
     secret: get('SESSION_SECRET', 'licences-insecure-default-session', { requireInProduction: true }),
     expiryMinutes: get('WEB_SESSION_TIMEOUT_IN_MINUTES', '120')
   },
-
+  sqs: {
+    audit: auditConfig(),
+  },
   pdf: {
     licences: {
       taggingCompanyTelephone: get('TAGGING_CO_PHONE', '0800 137 291'),
@@ -328,6 +345,10 @@ export default {
       'ELECTRONIC_MONITORING_ORDER_URL',
       'https://hmpps-electronic-monitoring-create-an-order.hmpps.service.justice.gov.uk/'
     ),
+    createAndVaryALicenceCreateCaseloadUrl: get(
+      'CREATE_AND_VARY_A_LICENCE_CREATE_CASELOAD_URL',
+      'https://create-and-vary-a-licence-dev.hmpps.service.justice.gov.uk/licence/create/caseload'
+    ),
     createAndVaryALicenceVaryCaseloadUrl: get(
       'CREATE_AND_VARY_A_LICENCE_VARY_CASELOAD_URL',
       'https://create-and-vary-a-licence-dev.hmpps.service.justice.gov.uk/licence/vary/caseload'
@@ -347,6 +368,7 @@ export default {
   postponeVersion: get('LICENCE_POSTPONE_VERSION', '2'),
   comNotAllocatedBlockEnabled: get('COM_NOT_ALLOCATED_BLOCK_ENABLED', false) === 'true',
   caReportsLinkEnabled: get('CA_REPORTS_LINK_ENABLED', false) === 'true',
+  hdcCreationInCvlEnabled: get('HDC_CREATION_IN_CVL_ENABLED', false) === 'true',
   hdcInCvlEarlyAdopter: {
     enabled: get('HDC_IN_CVL_EARLY_ADOPTER_ENABLED', false) === 'true',
     providerCodes: get('HDC_IN_CVL_EARLY_ADOPTER_PROVIDER_CODES', '').split(',')

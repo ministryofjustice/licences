@@ -2,7 +2,7 @@ const request = require('supertest')
 const { mockAudit } = require('../mockClients')
 const { appSetup } = require('../supertestSetup')
 const NullTokenVerifier = require('../../server/authentication/tokenverifier/NullTokenVerifier')
-const { createPrisonerServiceStub, createLicenceServiceStub, createSignInServiceStub } = require('../mockServices')
+const { createPrisonerServiceStub, createLicenceServiceStub, createSignInServiceStub, createAuditServiceStub} = require('../mockServices')
 const { validate } = require('../../server/services/utils/formValidation')
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/reporting')
@@ -120,7 +120,7 @@ describe('/hdc/reporting', () => {
           },
         },
       })
-  
+
       test('should validate reporting data and return errors when present', () => {
         const input = {
           name: '',
@@ -153,12 +153,14 @@ describe('/hdc/reporting', () => {
 })
 
 function createApp({ licenceServiceStub }, user) {
+  const auditService = createAuditServiceStub()
   const prisonerService = createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()
   const audit = mockAudit()
 
   const baseRouter = standardRouter({
+    auditService,
     licenceService,
     prisonerService,
     audit,

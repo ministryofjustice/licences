@@ -4,11 +4,9 @@
 # Runs the containers from docker-compose.yml, a container for the licences image and an additional container
 # for the licences image that overrides the default command to run the stubs.
 #
-version: '3.8'
 services:
   licences:
     build: .
-#    image: quay.io/hmpps/licences:latest
     deploy:
       resources:
         limits:
@@ -19,15 +17,17 @@ services:
     restart: always
     depends_on:
       - licence-db
+      - stubs
     ports:
       - '3000:3000'
     environment:
       NODE_ENV: "test"
       ENABLE_TEST_UTILS: "true"
       DB_SSL_ENABLED: "false"
-      NOMIS_AUTH_URL: "http://hmpps-auth:8080/auth"
-      NOMIS_AUTH_EXTERNAL_URL: "http://localhost:9090/auth"
-      TOKENVERIFICATION_API_URL: "http://token-verification-api:8080"
+      NOMIS_AUTH_URL: "http://stubs:3000/auth"
+      NOMIS_AUTH_EXTERNAL_URL: "http://localhost:8080/auth"
+      TOKENVERIFICATION_API_ENABLED: "false"
+      MANAGE_USERS_API_URL: "http://stubs:3000/manageUsersApi"
       NOMIS_API_URL: "http://stubs:3000/prisonApi"
       DELIUS_API_URL: "http://stubs:3000/delius"
       PROBATION_TEAMS_API_URL: "http://stubs:3000/probationteams"
@@ -50,8 +50,11 @@ services:
       - hmpps
     container_name: stubs
     restart: always
+    ports:
+      - '8080:3000'
     environment:
       NODE_ENV: "dev"
+      PORT: "3000"
 
   licence-db:
     image: postgres:15.19
@@ -83,44 +86,6 @@ services:
     healthcheck:
       test: [ 'CMD', 'curl', '-f', 'http://localhost:3001/ping' ]
 
-  hmpps-auth:
-    image: ghcr.io/ministryofjustice/hmpps-auth:latest
-    networks:
-      - hmpps
-    container_name: hmpps-auth
-    ports:
-      - '9090:8080'
-    healthcheck:
-      test: [ 'CMD', 'curl', '-f', 'http://localhost:8080/auth/health' ]
-    environment:
-      SPRING_PROFILES_ACTIVE: dev,token-verification
-      TOKENVERIFICATION_ENDPOINT_URL: "http://token-verification-api:8080"
-      DELIUS_ENABLED: "false"
-
-  token-verification-api:
-    image: ghcr.io/ministryofjustice/token-verification-api:latest
-    networks:
-      - hmpps
-      - token-backend
-    container_name: token-verification-api
-    depends_on:
-      - token-verification-api-db
-      - hmpps-auth
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:8080/health/ping" ]
-    environment:
-      SPRING_PROFILES_ACTIVE: local-redis
-      SPRING_DATA_REDIS_HOST: token-verification-api-db
-      SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI: "http://hmpps-auth:8080/auth/.well-known/jwks.json"
-
-  token-verification-api-db:
-    image: redis
-    networks:
-      - token-backend
-    container_name: token-verification-api-db
-    restart: always
 
 networks:
   hmpps:
-  token-backend:
-    internal: true

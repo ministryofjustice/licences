@@ -44,13 +44,12 @@ export const buildErrorHandler = (apiName: string) => {
   return (error: ClientError, path: string, verb: string = 'GET'): undefined => {
     if (isResponseError(error)) {
       if (error.response.status === NOT_FOUND) {
-        logger.info(`Not Found (404) calling ${apiName}, path: '${path}', verb: '${verb}'`, error.stack)
+        logger.info({ stack: error.stack }, `Not Found (404) calling ${apiName}, path: '${path}', verb: '${verb}'`)
         return undefined
       }
 
       logger.warn(
-        `Error calling ${apiName}, path: '${path}', verb: '${verb}', status: '${error.response.status}'`,
-        error.stack
+        { stack: error.stack }, `Error calling ${apiName}, path: '${path}', verb: '${verb}', status: '${error.response.status}'`
       )
       if (error.response.status === UNAUTHORISED) {
         throw unauthorisedError()
@@ -58,9 +57,9 @@ export const buildErrorHandler = (apiName: string) => {
         throw forbiddenError()
       }
     } else if (isRequestError(error)) {
-      logger.warn(`Error calling ${apiName}, path: '${path}', verb: '${verb}', code: '${error.code}'`, error.stack)
+      logger.warn({ stack: error.stack }, `Error calling ${apiName}, path: '${path}', verb: '${verb}', code: '${error.code}'`)
     } else {
-      logger.warn(`Error calling ${apiName}, path: '${path}', verb: '${verb}'`, error.stack)
+      logger.warn({ stack: error.stack }, `Error calling ${apiName}, path: '${path}', verb: '${verb}'`)
     }
     throw Error(error.message)
   }

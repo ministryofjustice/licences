@@ -1,3 +1,4 @@
+import { match, MatchFunction, MatchResult, ParamData } from 'path-to-regexp'
 import logger from '../../log'
 import authorisationConfig from '../routes/config/authorisation'
 import { getWhereKeyLike, isEmpty, merge } from './functionalHelpers'
@@ -6,6 +7,7 @@ import getLicenceStatus from '../services/licence/licenceStatus'
 import { LicenceRecord, LicenceService } from '../services/licenceService'
 import { PrisonerService } from '../services/prisonerService'
 import { LicenceStatus } from '../services/licence/licenceStatusTypes'
+import getAuditPolicy from '../services/audit/routeAuditPolicy'
 
 export function asyncMiddleware(fn) {
   return (req, res, next) => {
@@ -22,30 +24,47 @@ export type LicenceLocals = {
 }
 
 export function checkLicenceMiddleware(licenceService: LicenceService, prisonerService: PrisonerService) {
-  return async (req, res, next, bookingId) => {
-    try {
-      const [licence, prisoner] = await Promise.all([
-        licenceService.getLicence(bookingId),
-        prisonerService.getPrisonerPersonalDetails(bookingId, res.locals.token),
-      ])
+  return async(req, res, next) => {
+    const path = `${req.method} ${req.baseUrl}${req.path}`
+    const routePolicy = getAuditPolicy(path)
+    if (routePolicy && routePolicy.policy) {
+      const {policy} = routePolicy
+      if (policy) {
+        const getRouteMatch: MatchFunction<ParamData> = match(routePolicy.route, {decode: decodeURIComponent})
+        const result: MatchResult<ParamData> | false = getRouteMatch(path)
+        if (result) {
+          const {bookingId} = result.params
+          if (bookingId) {
+            try {
+              const {noLicenceRequired} = policy
+              const [licence, prisoner] = await Promise.all([
+                licenceService.getLicence(parseInt(bookingId as string, 10)),
+                prisonerService.getPrisonerPersonalDetails(parseInt(bookingId as string, 10), res.locals.token),
+              ])
 
-      if (!licence || !prisoner) {
-        logger.info('No licence or details available for prisoner, redirecting to caselist')
-        return res.redirect('/')
+              if ((!licence && !noLicenceRequired) || !prisoner) {
+                logger.info('No licence or details available for prisoner, redirecting to case list')
+                return res.redirect('/')
+              }
+
+              if (licence) {
+                const licenceStatus = getLicenceStatus(licence)
+                res.locals.licence = licence
+                res.locals.licenceStatus = licenceStatus
+              }
+              res.locals.prisoner = prisoner
+              res.locals.postRelease = prisoner.agencyLocationId ? prisoner.agencyLocationId.toUpperCase() === 'OUT' : false
+            } catch (error) {
+              logger.error(`Error collecting licence from checkLicence: ${error}`)
+              return res.redirect('/')
+            }
+          }
+        }
       }
-
-      const licenceStatus = getLicenceStatus(licence)
-
-      res.locals.licence = licence
-      res.locals.prisoner = prisoner
-      res.locals.postRelease = prisoner.agencyLocationId ? prisoner.agencyLocationId.toUpperCase() === 'OUT' : false
-      res.locals.licenceStatus = licenceStatus
-      return next()
-    } catch (error) {
-      // TODO proper error handling
-      logger.error('Error collecting licence from checkLicence')
-      return res.redirect('/')
+    } else {
+      logger.error(`No route policy found for path ${path}`)
     }
+    return next()
   }
 }
 
@@ -75,7 +94,7 @@ export function auditMiddleware(audit, key) {
     )
 
     return nonEmptyKeys.reduce((object, inputKey) => {
-      return merge(object, { [inputKey]: data[inputKey] })
+      return merge(object, {[inputKey]: data[inputKey]})
     }, {})
   }
 
@@ -87,7 +106,7 @@ export function auditMiddleware(audit, key) {
     })
   }
 
-  return async (req, res, next) => {
+  return async(req, res, next) => {
     const bookingId = req.body?.bookingId || req.params?.bookingId
     const inputs = userInputFrom(req.body)
 

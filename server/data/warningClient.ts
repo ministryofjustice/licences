@@ -1,28 +1,22 @@
-/**
- * @typedef {import('../../types/licences').WarningClient} WarningClient
- */
+import format from 'pg-format'
+import * as db from './dataAccess/db'
+import { WarningClient } from '../../types/licences'
 
-const format = require('pg-format')
-const db = require('./dataAccess/db')
-
-/**
- * @type { WarningClient }
- */
-const WarningClient = {
+const warningClient: WarningClient = {
   async deleteAll() {
-    return db.query(`delete from warnings`)
+    await db.query(`delete from warnings`)
   },
 
-  async raiseWarning(bookingId, code, messsage) {
+  async raiseWarning(bookingId: number, code: string, messsage: string) {
     const query = {
-      text: `INSERT INTO warnings (booking_id, code, message, acknowledged) VALUES ($1, $2, $3, false) 
+      text: `INSERT INTO warnings (booking_id, code, message, acknowledged) VALUES ($1, $2, $3, false)
       ON CONFLICT (booking_id, code) where acknowledged = false DO NOTHING`,
       values: [bookingId, code, messsage],
     }
-    return db.query(query)
+    await db.query(query)
   },
 
-  async acknowledgeWarnings(errorIds) {
+  async acknowledgeWarnings(errorIds: number[]) {
     const query = {
       text: format(`UPDATE warnings SET acknowledged = true WHERE id in (%L)`, errorIds),
     }
@@ -35,10 +29,10 @@ const WarningClient = {
     const query = {
       text: `SELECT id
       ,      booking_id "bookingId"
-      ,      timestamp 
+      ,      timestamp
       ,      code
       ,      message
-      FROM warnings   
+      FROM warnings
       where acknowledged = false
       ORDER BY timestamp DESC
       LIMIT 500`,
@@ -51,10 +45,10 @@ const WarningClient = {
     const query = {
       text: `SELECT id
       ,      booking_id "bookingId"
-      ,      timestamp 
+      ,      timestamp
       ,      code
       ,      message
-      FROM warnings   
+      FROM warnings
       where acknowledged = true
       ORDER BY timestamp DESC
       LIMIT 500`,
@@ -64,4 +58,4 @@ const WarningClient = {
   },
 }
 
-module.exports = WarningClient
+export default warningClient

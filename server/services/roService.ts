@@ -20,7 +20,7 @@ export class RoService {
       return await this.deliusClient.getManagedPrisonerIdsByStaffId(staffIdentifier)
     } catch (error) {
       // @ts-ignore
-      logger.error(`Problem retrieving RO prisoners for: ${staffIdentifier}`, error.stack)
+      logger.error({ stack: error.stack }, `Problem retrieving RO prisoners for: ${staffIdentifier}`)
       throw error
     }
   }
@@ -48,7 +48,7 @@ export class RoService {
       return result || { code: STAFF_NOT_PRESENT, message: `Staff does not exist in delius: ${staffIdentifier}` }
     } catch (error) {
       // @ts-ignore
-      logger.error(`Problem retrieving staff member for staff identifier: ${staffIdentifier}`, error.stack)
+      logger.error({ stack: error.stack }, `Problem retrieving staff member for staff identifier: ${staffIdentifier}`)
       throw error
     }
   }
@@ -89,7 +89,7 @@ export class RoService {
       return toResponsibleOfficer(offenderNo, communityManager)
     } catch (error) {
       // @ts-ignore
-      logger.error(`findResponsibleOfficer for: ${offenderNo}`, error.stack)
+      logger.error({ stack: error.stack }, `findResponsibleOfficer for: ${offenderNo}`)
       throw error
     }
   }
@@ -117,10 +117,10 @@ export class RoService {
         )
         return isEarlyAdopter
       } catch (error) {
-        logger.error(`isEarlyAdopter for: ${offenderNo}`, {
+        logger.error({
           message: error instanceof Error ? error.message : String(error),
           stack: error instanceof Error ? error.stack : undefined,
-        })
+        }, `isEarlyAdopter for: ${offenderNo}`)
         throw error
       }
   }

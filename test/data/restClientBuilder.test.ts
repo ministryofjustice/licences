@@ -61,8 +61,8 @@ describe('restClientBuilder', () => {
         )
         expect(warnSpy).toHaveBeenNthCalledWith(
           3,
-          "Error calling Test API, path: '/a-path', verb: 'GET', status: '500'",
-          expect.anything()
+          expect.objectContaining({ stack: expect.any(String) }),
+          "Error calling Test API, path: '/a-path', verb: 'GET', status: '500'"
         )
         expect(warnSpy).toHaveBeenCalledTimes(3)
       })
@@ -81,8 +81,8 @@ describe('restClientBuilder', () => {
         expect(scope.isDone()).toBeTruthy()
 
         expect(warnSpy).toHaveBeenCalledWith(
-          "Error calling Test API, path: '/a-path', verb: 'GET', status: '401'",
-          expect.anything()
+          expect.objectContaining({ stack: expect.any(String) }),
+          "Error calling Test API, path: '/a-path', verb: 'GET', status: '401'"
         )
 
         expect(warnSpy).toHaveBeenCalledTimes(1)
@@ -103,10 +103,9 @@ describe('restClientBuilder', () => {
         )
         expect(warnSpy).toHaveBeenNthCalledWith(
           3,
-          "Error calling Test API, path: '/a-path', verb: 'GET'",
-          expect.anything()
+          expect.objectContaining({ stack: expect.any(String) }),
+          "Error calling Test API, path: '/a-path', verb: 'GET'"
         )
-
         expect(warnSpy).toHaveBeenCalledTimes(3)
       })
     })
@@ -124,8 +123,8 @@ describe('restClientBuilder', () => {
         expect(scope.isDone()).toBeTruthy()
 
         expect(warnSpy).toHaveBeenCalledWith(
-          "Error calling Test API, path: '/a-path', verb: 'DELETE', status: '500'",
-          expect.anything()
+          expect.objectContaining({ stack: expect.any(String) }),
+          "Error calling Test API, path: '/a-path', verb: 'DELETE', status: '500'"
         )
         expect(warnSpy).toHaveBeenCalledTimes(1)
       })
@@ -143,8 +142,8 @@ describe('restClientBuilder', () => {
         expect(scope.isDone()).toBeTruthy()
 
         expect(warnSpy).toHaveBeenCalledWith(
-          "Error calling Test API, path: '/a-path', verb: 'DELETE', status: '401'",
-          expect.anything()
+          expect.objectContaining({ stack: expect.any(String) }),
+          "Error calling Test API, path: '/a-path', verb: 'DELETE', status: '401'"
         )
         expect(warnSpy).toHaveBeenCalledTimes(1)
       })
@@ -163,8 +162,8 @@ describe('restClientBuilder', () => {
         expect(scope.isDone()).toBeTruthy()
 
         expect(warnSpy).toHaveBeenCalledWith(
+          expect.objectContaining({ stack: expect.any(String) }),
           "Error calling Test API, path: '/a-path', verb: 'PUT', status: '500'",
-          expect.anything()
         )
         expect(warnSpy).toHaveBeenCalledTimes(1)
       })
@@ -184,8 +183,8 @@ describe('restClientBuilder', () => {
         expect(scope.isDone()).toBeTruthy()
 
         expect(warnSpy).toHaveBeenCalledWith(
+          expect.objectContaining({ stack: expect.any(String) }),
           "Error calling Test API, path: '/a-path', verb: 'POST', status: '500'",
-          expect.anything()
         )
         expect(warnSpy).toHaveBeenCalledTimes(1)
       })

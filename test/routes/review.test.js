@@ -10,6 +10,7 @@ const {
   createConditionsServiceStub,
   createSignInServiceStub,
   createConditionsServiceFactoryStub,
+  createAuditServiceStub,
 } = require('../mockServices')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
@@ -415,10 +416,12 @@ describe('/review/', () => {
 })
 
 function createApp(user) {
+  const auditService = createAuditServiceStub()
   const signInService = createSignInServiceStub()
   const audit = mockAudit()
 
   const baseRouter = standardRouter({
+    auditService,
     licenceService,
     prisonerService,
     audit,

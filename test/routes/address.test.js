@@ -9,6 +9,7 @@ const {
   createSignInServiceStub,
   createNomisPushServiceStub,
   createHdcServiceStub,
+  createAuditServiceStub,
 } = require('../mockServices')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
@@ -117,7 +118,14 @@ describe('/hdc/proposedAddress/', () => {
           .expect(302)
           .expect('Location', '/hdc/taskList/1')
           .expect(() => {
-            expect(hdcService.postOptOutEvent).toHaveBeenCalledWith(1, 1, 'A1234AA', 'CA_USER_TEST','CA_USER_TEST opted out of HDC during initial curfew address task')
+            expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+              eventType: 'OPT_OUT',
+              bookingId: 1,
+              licenceId: 1,
+              nomsNumber: 'A1234AA',
+              triggeredBy: 'CA_USER_TEST',
+              reason: 'CA_USER_TEST opted out of HDC during initial curfew address task'
+            })
             expect(nomisPushService.pushStatus).not.toHaveBeenCalled()
           })
       })
@@ -141,8 +149,62 @@ describe('/hdc/proposedAddress/', () => {
           .expect(302)
           .expect('Location', '/hdc/taskList/1')
           .expect(() => {
-            expect(hdcService.postOptOutEvent).toHaveBeenCalledWith(1, 1, 'A1234AA', 'CA_USER_TEST', 'CA_USER_TEST opted out of HDC during initial curfew address task')
+            expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+              eventType: 'OPT_OUT',
+              bookingId: 1,
+              licenceId: 1,
+              nomsNumber: 'A1234AA',
+              triggeredBy: 'CA_USER_TEST',
+              reason: 'CA_USER_TEST opted out of HDC during initial curfew address task'
+            })
             expect(nomisPushService.pushStatus).toHaveBeenCalled()
+          })
+      })
+
+      test.each([
+        ['Address', null],
+        ['Address', 'Yes'],
+        ['Bass', null],
+        ['Bass', 'Yes'],
+      ])('posts opt in event when %s and previous opt out decision was %s', (decision, previousOptOut) => {
+        const hdcService = createHdcServiceStub()
+        licenceService.getLicence.mockResolvedValue({
+          id: 1,
+          licence: previousOptOut ? { proposedAddress: { optOut: { decision: previousOptOut } } } : {},
+        })
+        const testApp = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
+
+        return request(testApp)
+          .post('/hdc/proposedAddress/curfewAddressChoice/1')
+          .send({ decision })
+          .expect(302)
+          .expect(() => {
+            expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+              eventType: 'OPT_IN',
+              bookingId: 1,
+              licenceId: 1,
+              nomsNumber: 'A1234AA',
+              triggeredBy: 'CA_USER_TEST',
+              reason: 'CA_USER_TEST opted in to HDC during initial curfew address task'
+            })
+            expect(hdcService.postCvlEvent).not.toHaveBeenCalledWith(expect.objectContaining({ eventType: 'OPT_OUT' }))
+          })
+      })
+
+      test.each(['Address', 'Bass'])('posts opt in event when %s and already opted in', (decision) => {
+        const hdcService = createHdcServiceStub()
+        licenceService.getLicence.mockResolvedValue({
+          id: 1,
+          licence: { proposedAddress: { optOut: { decision: 'No' } } },
+        })
+        const testApp = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
+
+        return request(testApp)
+          .post('/hdc/proposedAddress/curfewAddressChoice/1')
+          .send({ decision })
+          .expect(302)
+          .expect(() => {
+            expect(hdcService.postCvlEvent).toHaveBeenCalledTimes(1)
           })
       })
     })
@@ -154,6 +216,7 @@ function createApp(
   user,
   config = {}
 ) {
+  const auditService = createAuditServiceStub()
   const prisonerService = prisonerServiceStub || createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()
@@ -162,6 +225,7 @@ function createApp(
   const audit = mockAudit()
 
   const baseRouter = standardRouter({
+    auditService,
     licenceService,
     prisonerService,
     audit,

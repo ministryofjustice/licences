@@ -35,12 +35,11 @@ $ npm run start:dev
 To run locally you need:
 - database
 - redis
-- auth server
+- auth server (mocked by `mock-server` for integration tests)
 - nomis
 - delius api
 - probation teams
 - gotenberg
-- nomis-user-roles-api
 - hdc-api
 
 You can run local database, redis and configure the application to point to the T3/dev environment for other services. Or these can be run locally using `docker-compose` and starting `mock-services`.
@@ -68,6 +67,7 @@ Then login as NOMIS_BATCHLOAD user and go to ‘manage locations’ and then 'AB
 - `npm run build` -> cleans and regenerates assets.
 - `npm run typecheck` -> runs typescript type checking
 - `npm run start:feature` -> runs the application configured to run integration tests
+- `npm run lint -- --fix` - to run the linter and fix any issues it can automatically fix
 
 ## Docker Compose Files
 - [docker-compose.yml](./docker-compose.yml) -> used for integration tests. More information can be found in the [./licences-specs/Readme.md](./licences-specs/Readme.md).

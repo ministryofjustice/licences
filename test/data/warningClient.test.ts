@@ -1,8 +1,9 @@
+import warningClient from '../../server/data/warningClient'
+import * as dbModule from '../../server/data/dataAccess/db'
+
 jest.mock('../../server/data/dataAccess/db')
 
-const warningClient = require('../../server/data/warningClient')
-/** @type {any} */
-const db = require('../../server/data/dataAccess/db')
+const db = dbModule as jest.Mocked<typeof dbModule>
 
 afterEach(() => {
   db.query.mockReset()
@@ -20,7 +21,7 @@ describe('warningClient', () => {
 
   describe('raiseWarning', () => {
     test('should pass in the correct sql', async () => {
-      const expectedInsert = `INSERT INTO warnings (booking_id, code, message, acknowledged) VALUES ($1, $2, $3, false) 
+      const expectedInsert = `INSERT INTO warnings (booking_id, code, message, acknowledged) VALUES ($1, $2, $3, false)
       ON CONFLICT (booking_id, code) where acknowledged = false DO NOTHING`
 
       await warningClient.raiseWarning(1, 'code-1', 'messsage-1')
@@ -33,7 +34,7 @@ describe('warningClient', () => {
 
   describe('acknowledgeWarnings', () => {
     test('should pass in the correct sql', async () => {
-      db.query.mockReturnValue({ rowCount: 2 })
+      db.query.mockResolvedValue({ rowCount: 2 })
       const expectedInsert = "UPDATE warnings SET acknowledged = true WHERE id in ('1','2')"
 
       await warningClient.acknowledgeWarnings([1, 2])
@@ -43,7 +44,7 @@ describe('warningClient', () => {
     })
 
     test('should return modified row count', async () => {
-      db.query.mockReturnValue({ rowCount: 2 })
+      db.query.mockResolvedValue({ rowCount: 2 })
       const result = await warningClient.acknowledgeWarnings([1, 2])
       expect(result).toBe(2)
     })
@@ -51,17 +52,17 @@ describe('warningClient', () => {
 
   describe('getAcknowledgedWarnings', () => {
     test('should pass in the correct sql', async () => {
-      db.query.mockReturnValue({ rows: [{ count: 1 }] })
+      db.query.mockResolvedValue({ rows: [{ count: 1 }] })
 
       await warningClient.getAcknowledgedWarnings()
 
       const { text, values } = db.query.mock.calls[0][0]
       expect(text).toEqual(`SELECT id
       ,      booking_id "bookingId"
-      ,      timestamp 
+      ,      timestamp
       ,      code
       ,      message
-      FROM warnings   
+      FROM warnings
       where acknowledged = true
       ORDER BY timestamp DESC
       LIMIT 500`)
@@ -71,17 +72,17 @@ describe('warningClient', () => {
 
   describe('getOutstandingWarnings', () => {
     test('should pass in the correct sql', async () => {
-      db.query.mockReturnValue({ rows: [{ count: 1 }] })
+      db.query.mockResolvedValue({ rows: [{ count: 1 }] })
 
       await warningClient.getOutstandingWarnings()
 
       const { text, values } = db.query.mock.calls[0][0]
       expect(text).toEqual(`SELECT id
       ,      booking_id "bookingId"
-      ,      timestamp 
+      ,      timestamp
       ,      code
       ,      message
-      FROM warnings   
+      FROM warnings
       where acknowledged = false
       ORDER BY timestamp DESC
       LIMIT 500`)

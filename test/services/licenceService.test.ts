@@ -56,7 +56,7 @@ describe('licenceService', () => {
         deleted_at: '2024-05-02 15:00:00',
         licence_in_cvl: false,
       }),
-      createLicence: jest.fn() as jest.Mock<Promise<number>>,
+      createLicence: jest.fn() as jest.Mock<Promise<void>>,
       updateSection: jest.fn() as jest.Mock<Promise<void>>,
       updateStage: jest.fn() as jest.Mock<Promise<void>>,
       updateLicence: jest.fn() as jest.Mock<Promise<void>>,
@@ -191,6 +191,63 @@ describe('licenceService', () => {
       })
     })
 
+    test('should set licenceInCvl from approved licence version if migrationState COMPLETED', () => {
+      licenceClient.getApprovedLicenceVersion = jest.fn().mockReturnValue({ version: 2, vary_version: 4, migration_state : 'COMPLETED'})
+      return expect(service.getLicence(123)).resolves.toEqual({
+        licence: LICENCE_SAMPLE,
+        stage: undefined,
+        version: '2.5',
+        approvedVersion: '2.4',
+        approvedVersionDetails: {
+          vary_version: 4,
+          version: 2,
+          migration_state: 'COMPLETED',
+        },
+        id: 2,
+        versionDetails: {
+          vary_version: 5,
+          version: 2,
+          additional_conditions_version: 3,
+          standard_conditions_version: 1,
+        },
+        licenceInCvl: true,
+        migrationState: 'COMPLETED',
+      })
+    })
+
+    test('should set licenceInCvl from licence if migrationState not COMPLETED', () => {
+      licenceClient.getLicence = jest.fn().mockReturnValue({
+        id:2,
+        licence: LICENCE_SAMPLE,
+        booking_id: 1,
+        stage: undefined,
+        version: 2,
+        transition_date: moment('2018-05-31 15:23:39').toDate(),
+        vary_version: 5,
+        additional_conditions_version: 3 as AdditionalConditionsVersion,
+        standard_conditions_version: 1 as StandardConditionsVersion,
+        deleted_at: null,
+        licence_in_cvl: true,
+      })
+      licenceClient.getApprovedLicenceVersion = jest.fn().mockReturnValue(undefined)
+
+      return expect(service.getLicence(123)).resolves.toEqual({
+        licence: LICENCE_SAMPLE,
+        stage: undefined,
+        version: '2.5',
+        approvedVersion: '',
+        approvedVersionDetails: {},
+        id: 2,
+        versionDetails: {
+          vary_version: 5,
+          version: 2,
+          additional_conditions_version: 3,
+          standard_conditions_version: 1,
+        },
+        licenceInCvl: true,
+      })
+    })
+
     test('should return licence when no approved licence version', () => {
       ;(licenceClient.getApprovedLicenceVersion as jest.Mock<Promise<any>>).mockReturnValue(undefined)
 
@@ -248,14 +305,8 @@ describe('licenceService', () => {
       expect(licenceClient.createLicence).toHaveBeenCalledWith(123, 'A1234AA', LICENCE_SAMPLE, undefined, 1, 0)
     })
 
-    test('should return returned id', () => {
-      ;(licenceClient.createLicence as jest.Mock<Promise<number>>).mockResolvedValue(999)
-
-      return expect(service.createLicence({ bookingId: 123, prisonNumber: 'A1234AA' })).resolves.toBe(999)
-    })
-
     test('should throw if error getting licence', () => {
-      ;(licenceClient.createLicence as jest.Mock<Promise<number>>).mockRejectedValue(new Error('dead'))
+      ;(licenceClient.createLicence as jest.Mock<Promise<void>>).mockRejectedValue(new Error('dead'))
       return expect(service.createLicence({ bookingId: 123, prisonNumber: 'A1234AA' })).rejects.toEqual(Error('dead'))
     })
   })

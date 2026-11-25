@@ -1,3 +1,34 @@
+describe('hdcCreationInCvlEnabled Config', () => {
+  const originalEnv = process.env
+
+  beforeEach(() => {
+    jest.resetModules()
+    process.env = { ...originalEnv }
+  })
+
+  afterEach(() => {
+    process.env = originalEnv
+  })
+
+  it.each([
+    ['true', true],
+    ['false', false],
+    [undefined, false],
+  ])('sets HDC_CREATION_IN_CVL_ENABLED=%s to %s', (value, expected) => {
+    if (value === undefined) {
+      delete process.env.HDC_CREATION_IN_CVL_ENABLED
+    } else {
+      process.env.HDC_CREATION_IN_CVL_ENABLED = value
+    }
+
+    jest.isolateModules(() => {
+      // eslint-disable-next-line global-require
+      const config = require('../../server/config').default
+      expect(config.hdcCreationInCvlEnabled).toBe(expected)
+    })
+  })
+})
+
 describe('hdcInCvlNationalRoleOut Config', () => {
   const originalEnv = process.env
 

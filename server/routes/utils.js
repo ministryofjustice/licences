@@ -3,10 +3,10 @@ const logger = require('../../log')
 
 const { asyncMiddleware } = require('../utils/middleware')
 const { licenceClient } = require('../data/licenceClient')
-const activeLduClient = require('../data/activeLduClient')
+const activeLduClient = require('../data/activeLduClient').default
 
-const auditClient = require('../data/audit')
-const warningClient = require('../data/warningClient')
+const auditClient = require('../data/audit').default
+const warningClient = require('../data/warningClient').default
 
 const TEST_PRISON_NUMBER = 'A1234AA'
 
@@ -36,7 +36,7 @@ module.exports = () => {
         return res.status(200).send({})
       } catch (error) {
         // @ts-ignore
-        logger.error('Error during delete test licences', error.stack)
+        logger.error({ stack: error.stack }, 'Error during delete test licences')
         return res.status(500).send({})
       }
     })
@@ -61,7 +61,7 @@ module.exports = () => {
         return res.status(201).send({})
       } catch (error) {
         // @ts-ignore
-        logger.error('Error during create licence', error.stack)
+        logger.error({ stack: error.stack }, 'Error during create licence')
         return res.status(500).send({})
       }
     })
@@ -80,7 +80,7 @@ module.exports = () => {
         return res.status(201).send({})
       } catch (error) {
         // @ts-ignore
-        logger.error('Error during enabling LDU', error.stack)
+        logger.error({ stack: error.stack }, 'Error during enabling LDU')
         return res.status(500).send({})
       }
     })

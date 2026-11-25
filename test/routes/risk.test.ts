@@ -2,7 +2,12 @@ import request from 'supertest'
 import { mockAudit } from '../mockClients'
 import { appSetup, testFormPageGets } from '../supertestSetup'
 
-import { createPrisonerServiceStub, createLicenceServiceStub, createSignInServiceStub } from '../mockServices'
+import {
+  createPrisonerServiceStub,
+  createLicenceServiceStub,
+  createSignInServiceStub,
+  createAuditServiceStub
+} from '../mockServices'
 
 import standardRouter from '../../server/routes/routeWorkers/standardRouter'
 import createRoute from '../../server/routes/risk'
@@ -121,10 +126,12 @@ describe('/hdc/risk', () => {
 })
 
 function createApp({ licenceService = null, prisonerService = null, audit = mockAudit() }, user) {
+  const auditService = createAuditServiceStub()
   const prisonerServiceMock = prisonerService || createPrisonerServiceStub()
   const signInService = createSignInServiceStub()
 
   const baseRouter = standardRouter({
+    auditService,
     licenceService,
     prisonerService: prisonerServiceMock,
     audit,

@@ -10,7 +10,15 @@ export type ErrorObject = {
   outOfTimeReasons?: string
 }
 
-export default ({ licenceService, nomisPushService }: { licenceService: LicenceService; nomisPushService }) =>
+export default ({
+  licenceService,
+  nomisPushService,
+  hdcService,
+}: {
+  licenceService: LicenceService
+  nomisPushService
+  hdcService
+}) =>
   (router, audited, config) => {
     const standard = createStandardRoutes({
       formConfig,
@@ -24,10 +32,14 @@ export default ({ licenceService, nomisPushService }: { licenceService: LicenceS
     router.post(
       '/postpone/:bookingId',
       audited,
-      asyncMiddleware(postPostpone(licenceService, nomisPushService, config))
+      asyncMiddleware(postPostpone(licenceService, nomisPushService, hdcService, config))
     )
 
-    router.post('/refuse/:bookingId', audited, asyncMiddleware(postRefusal(licenceService, nomisPushService)))
+    router.post(
+      '/refuse/:bookingId',
+      audited,
+      asyncMiddleware(postRefusal(licenceService, nomisPushService, hdcService, config))
+    )
 
     router.get('/:formName/:bookingId', asyncMiddleware(standard.get))
     router.post('/:formName/:bookingId', audited, asyncMiddleware(standard.post))
@@ -60,7 +72,7 @@ function getPostpone(licenceService) {
   return get
 }
 
-function postPostpone(licenceService, nomisPushService, config) {
+function postPostpone(licenceService, nomisPushService, hdcService, config) {
   async function post(req, res) {
     const { bookingId } = req.params
     const { username } = req.user
@@ -92,7 +104,35 @@ function postPostpone(licenceService, nomisPushService, config) {
       await pushStatus(updatedLicence, bookingId, username)
     }
 
+    await postPostponeOrResumeEvent(res, updatedLicence, decision, bookingId, username)
+
     return res.redirect(`/hdc/taskList/${bookingId}`)
+  }
+
+  async function postPostponeOrResumeEvent(res, updatedLicence, decision, bookingId, username) {
+    const { offenderNo } = res.locals.prisoner
+    const licenceId = res.locals.licence.id
+
+    if (decision === 'Yes') {
+      const postponeReason = getIn(updatedLicence, ['finalChecks', 'postpone', 'postponeReason'])
+      await hdcService.postCvlEvent({
+        eventType: 'POSTPONE',
+        bookingId: parseInt(bookingId, 10),
+        licenceId,
+        nomsNumber: offenderNo,
+        triggeredBy: username,
+        reason: postponeReason ?? null
+      })
+    } else if (decision === 'No') {
+      await hdcService.postCvlEvent({
+        eventType: 'RESUME',
+        bookingId: parseInt(bookingId, 10),
+        licenceId,
+        nomsNumber: offenderNo,
+        triggeredBy: username,
+        reason: `${username} resumed the HDC application`
+      })
+    }
   }
 
   function validationErrors(formToValidate, res) {
@@ -135,12 +175,12 @@ function postPostpone(licenceService, nomisPushService, config) {
   return post
 }
 
-function postRefusal(licenceService, nomisPushService) {
+function postRefusal(licenceService, nomisPushService, hdcService, appConfig) {
   async function post(req, res) {
     const { bookingId } = req.params
     const { username } = req.user
     const originalLicence = res.locals.licence
-    const config = formConfig.refuse
+    const refuseConfig = formConfig.refuse
     const licenceSection = 'finalChecks'
     const { postRelease } = res.locals
 
@@ -156,7 +196,7 @@ function postRefusal(licenceService, nomisPushService) {
     await licenceService.update({
       bookingId,
       originalLicence,
-      config,
+      config: refuseConfig,
       userInput,
       licenceSection,
       formName: 'refusal',
@@ -165,7 +205,21 @@ function postRefusal(licenceService, nomisPushService) {
 
     const { decision, reason } = userInput
     if (decision === 'Yes') {
-      await nomisPushService.pushStatus({ bookingId, data: { type: 'refusal', status: 'Yes', reason }, username })
+      if (appConfig.pushToNomis) {
+        await nomisPushService.pushStatus({ bookingId, data: { type: 'refusal', status: 'Yes', reason }, username })
+      }
+
+      const { offenderNo } = res.locals.prisoner
+      const licenceId = res.locals.licence.id
+      const eventReason = Array.isArray(reason) ? reason.join(', ') : (reason || '')
+      await hdcService.postCvlEvent({
+        eventType: 'REFUSE',
+        bookingId: parseInt(bookingId, 10),
+        licenceId,
+        nomsNumber: offenderNo,
+        triggeredBy: username,
+        reason: eventReason
+      })
     }
 
     return res.redirect(`/hdc/taskList/${bookingId}`)

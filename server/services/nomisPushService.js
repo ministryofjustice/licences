@@ -15,7 +15,7 @@ module.exports = (nomisClientBuilder, signInService) => {
     const systemToken = await signInService.getClientCredentialsTokens(username)
     const nomisClient = nomisClientBuilder(systemToken)
 
-    logger.info('Pushing approval status to nomis', approvalStatus)
+    logger.info({ approvalStatus }, 'Pushing approval status to nomis')
     try {
       return await nomisClient.putApprovalStatus(bookingId, approvalStatus)
     } catch (error) {

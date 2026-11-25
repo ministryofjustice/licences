@@ -16,7 +16,10 @@ describe('clientErrorHandler', () => {
 
     expect(() => handleError(error, '/a/b')).toThrow('Message')
     expect(warnSpy).toHaveBeenCalled()
-    expect(warnSpy).toHaveBeenCalledWith(`Error calling ${API_NAME}, path: '/a/b', verb: 'GET'`, expect.anything())
+    expect(warnSpy).toHaveBeenCalledWith(
+      expect.objectContaining({ stack: expect.any(String) }),
+      `Error calling ${API_NAME}, path: '/a/b', verb: 'GET'`
+    )
   })
 
   it("handles a 'RequestError", () => {
@@ -28,8 +31,8 @@ describe('clientErrorHandler', () => {
     expect(() => handleError(error, '/a/b')).toThrow('Message')
     expect(warnSpy).toHaveBeenCalled()
     expect(warnSpy).toHaveBeenCalledWith(
-      `Error calling ${API_NAME}, path: '/a/b', verb: 'GET', code: '500'`,
-      expect.anything()
+      expect.objectContaining({ stack: expect.any(String) }),
+      `Error calling ${API_NAME}, path: '/a/b', verb: 'GET', code: '500'`
     )
   })
 
@@ -39,14 +42,14 @@ describe('clientErrorHandler', () => {
     error.request = {}
     error.code = 550
     error.response = {
-      status: 500,
+      status: 500
     }
 
     expect(() => handleError(error, '/a/b')).toThrow('Message')
     expect(warnSpy).toHaveBeenCalled()
     expect(warnSpy).toHaveBeenCalledWith(
-      `Error calling ${API_NAME}, path: '/a/b', verb: 'GET', status: '500'`,
-      expect.anything()
+      expect.objectContaining({ stack: expect.any(String) }),
+      `Error calling ${API_NAME}, path: '/a/b', verb: 'GET', status: '500'`
     )
   })
 })

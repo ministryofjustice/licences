@@ -8,6 +8,7 @@ const {
   createSignInServiceStub,
   createNomisPushServiceStub,
   createHdcServiceStub,
+  createAuditServiceStub,
 } = require('../mockServices')
 const { validate } = require('../../server/services/utils/formValidation')
 
@@ -365,7 +366,17 @@ describe('/hdc/curfew', () => {
             data: { type: 'optOut', status: 'Yes' },
             username: 'CA_USER_TEST',
           })
-          expect(hdcService.postOptOutEvent).toHaveBeenCalledWith(1, 2, 'A1234AA', 'CA_USER_TEST', 'CA_USER_TEST opted out of HDC after COM added an approved premises')
+          expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+            eventType: 'OPT_OUT',
+            bookingId: 1,
+            licenceId: 2,
+            nomsNumber: 'A1234AA',
+            triggeredBy: 'CA_USER_TEST',
+            reason: 'CA_USER_TEST opted out of HDC after COM added an approved premises'
+          })
+          expect(hdcService.postCvlEvent).not.toHaveBeenCalledWith(
+            expect.objectContaining({ eventType: 'ADDRESS_WITHDRAWN' })
+          )
         })
     })
 
@@ -390,14 +401,21 @@ describe('/hdc/curfew', () => {
         .expect(302)
         .expect(() => {
           expect(nomisPushService.pushStatus).not.toHaveBeenCalled()
-          expect(hdcService.postOptOutEvent).toHaveBeenCalledWith(1, 1, 'A1234AA', 'CA_USER_TEST', 'CA_USER_TEST opted out of HDC after COM added an approved premises')
+          expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+            eventType: 'OPT_OUT',
+            bookingId: 1,
+            licenceId: 1,
+            nomsNumber: 'A1234AA',
+            triggeredBy: 'CA_USER_TEST',
+            reason: 'CA_USER_TEST opted out of HDC after COM added an approved premises'
+          })
         })
     })
 
-    test(`should not post event if not optout`, () => {
+    test('should not post opt out, withdrawal or conversion events from the approved premises choice page', () => {
       const hdcService = createHdcServiceStub()
       const licenceService = createLicenceServiceStub()
-      licenceService.getLicence.mockResolvedValue({ licence: {}, stage: 'PROCESSING_CA' })
+      licenceService.getLicence.mockResolvedValue({ id: 1, licence: {}, stage: 'PROCESSING_CA' })
       const app = createApp(
         {
           licenceServiceStub: licenceService,
@@ -411,10 +429,140 @@ describe('/hdc/curfew', () => {
         .send({ decision: 'ApprovedPremises' })
         .expect(302)
         .expect(() => {
-          expect(hdcService.postOptOutEvent).not.toHaveBeenCalled()
+          expect(hdcService.postCvlEvent).not.toHaveBeenCalledWith(expect.objectContaining({ eventType: 'OPT_OUT' }))
+          expect(hdcService.postCvlEvent).not.toHaveBeenCalledWith(
+            expect.objectContaining({ eventType: 'ADDRESS_WITHDRAWN' })
+          )
         })
     })
 
+    test(`should post opt in event if not optout and previously opted out`, () => {
+      const hdcService = createHdcServiceStub()
+      const licenceService = createLicenceServiceStub()
+      licenceService.getLicence.mockResolvedValue({
+        id: 1,
+        licence: { proposedAddress: { optOut: { decision: 'Yes' } } },
+        stage: 'PROCESSING_CA',
+      })
+      const app = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
+
+      return request(app)
+        .post('/hdc/curfew/approvedPremisesChoice/1')
+        .send({ decision: 'ApprovedPremises' })
+        .expect(302)
+        .expect(() => {
+          expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+            eventType: 'OPT_IN',
+            bookingId: 1,
+            licenceId: 1,
+            nomsNumber: 'A1234AA',
+            triggeredBy: 'CA_USER_TEST',
+            reason: 'CA_USER_TEST opted in to HDC after COM added an approved premises'
+          })
+        })
+    })
+
+    test(`should post opt in event if already opted in`, () => {
+      const hdcService = createHdcServiceStub()
+      const licenceService = createLicenceServiceStub()
+      licenceService.getLicence.mockResolvedValue({
+        id: 1,
+        licence: { proposedAddress: { optOut: { decision: 'No' } } },
+        stage: 'PROCESSING_CA',
+      })
+      const app = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
+
+      return request(app)
+        .post('/hdc/curfew/approvedPremisesChoice/1')
+        .send({ decision: 'ApprovedPremises' })
+        .expect(302)
+        .expect(() => {
+          expect(hdcService.postCvlEvent).toHaveBeenCalledTimes(1)
+        })
+    })
+
+  })
+
+  describe('POST /hdc/curfew/approvedPremises', () => {
+    let licenceService
+    let hdcService
+    let app
+
+    beforeEach(() => {
+      licenceService = createLicenceServiceStub()
+      licenceService.getLicence.mockResolvedValue({
+        id: 2,
+        licence: { curfew: { approvedPremises: { required: 'No' } } },
+        stage: 'PROCESSING_RO',
+      })
+      hdcService = createHdcServiceStub()
+      app = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'roUser')
+    })
+
+    test.each([
+      ['/hdc/curfew/approvedPremises/1', '/hdc/curfew/approvedPremisesAddress/1'],
+      ['/hdc/curfew/approvedPremises/change/1', '/hdc/curfew/approvedPremisesAddress/change/1'],
+    ])('should save Yes without sending a CVL event from %s', async (url, nextPath) => {
+      await request(app).post(url).send({ required: 'Yes' }).expect(302).expect('Location', nextPath)
+
+      expect(licenceService.update).toHaveBeenCalledWith(expect.objectContaining({
+        bookingId: '1',
+        licenceSection: 'curfew',
+        formName: 'approvedPremises',
+        userInput: { required: 'Yes' },
+      }))
+      expect(hdcService.postCvlEvent).not.toHaveBeenCalled()
+    })
+
+    test.each([
+      ['/hdc/curfew/approvedPremises/1', '/hdc/curfew/curfewAddressReview/1'],
+      ['/hdc/curfew/approvedPremises/change/1', '/hdc/curfew/curfewAddressReview/change/1'],
+    ])('should save No without sending a CVL event from %s', async (url, nextPath) => {
+      await request(app).post(url).send({ required: 'No' }).expect(302).expect('Location', nextPath)
+
+      expect(licenceService.update).toHaveBeenCalled()
+      expect(hdcService.postCvlEvent).not.toHaveBeenCalled()
+    })
+
+    test('should not send a CVL event when Yes is selected for the first time', async () => {
+      licenceService.getLicence.mockResolvedValue({ id: 2, licence: {}, stage: 'PROCESSING_RO' })
+
+      await request(app).post('/hdc/curfew/approvedPremises/1').send({ required: 'Yes' }).expect(302)
+
+      expect(hdcService.postCvlEvent).not.toHaveBeenCalled()
+    })
+
+    test.each([
+      ['/hdc/curfew/approvedPremises/1', '/hdc/curfew/curfewAddressReview/1'],
+      ['/hdc/curfew/approvedPremises/change/1', '/hdc/curfew/curfewAddressReview/change/1'],
+    ])('should save No without sending a CVL event when changing Yes to No from %s', async (url, nextPath) => {
+      licenceService.getLicence.mockResolvedValue({
+        id: 2,
+        licence: { curfew: { approvedPremises: { required: 'Yes' } } },
+        stage: 'PROCESSING_RO',
+      })
+
+      await request(app).post(url).send({ required: 'No' }).expect(302).expect('Location', nextPath)
+
+      expect(licenceService.update).toHaveBeenCalledWith(expect.objectContaining({
+        userInput: { required: 'No' },
+      }))
+      expect(hdcService.postCvlEvent).not.toHaveBeenCalled()
+    })
+
+    test.each([
+      '/hdc/curfew/approvedPremises/1',
+      '/hdc/curfew/approvedPremises/change/1',
+    ])('should not post the conversion event if saving fails from %s', async (url) => {
+      licenceService.update.mockRejectedValue(new Error('Save failed'))
+
+      await request(app).post(url).send({ required: 'Yes' }).expect(500)
+
+      expect(hdcService.postCvlEvent).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('approvedPremisesChoice NOMIS status', () => {
     test(`should not push nomis if not optout`, () => {
       const nomisPushService = createNomisPushServiceStub()
       const licenceService = createLicenceServiceStub()
@@ -695,6 +843,7 @@ describe('/hdc/curfew', () => {
 
   describe('address withdrawal posts', () => {
     const licence = {
+      id: 2,
       licence: {
         proposedAddress: {
           curfewAddress: {},
@@ -705,7 +854,8 @@ describe('/hdc/curfew', () => {
     test('withdraw address calls rejectPropsedAddress then returns to taslist', () => {
       const licenceService = createLicenceServiceStub()
       licenceService.getLicence = jest.fn().mockReturnValue(licence)
-      const app = createApp({ licenceServiceStub: licenceService }, 'caUser')
+      const hdcService = createHdcServiceStub()
+      const app = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
       return request(app)
         .post('/hdc/curfew/withdrawAddress/1')
         .send({ withdrawAddress: 'Yes' })
@@ -713,8 +863,33 @@ describe('/hdc/curfew', () => {
         .expect((res) => {
           expect(licenceService.rejectProposedAddress).toHaveBeenCalled()
           expect(licenceService.rejectProposedAddress).toHaveBeenCalledWith(licence.licence, '1', 'withdrawAddress')
+          expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+            eventType: 'ADDRESS_WITHDRAWN',
+            bookingId: 1,
+            licenceId: 2,
+            nomsNumber: 'A1234AA',
+            triggeredBy: 'CA_USER_TEST',
+            reason: 'CA_USER_TEST withdrew the residential address in HDC'
+          })
 
           expect(res.header.location).toBe('/hdc/taskList/1')
+        })
+    })
+
+    test('withdraw consent does not post an address withdrawn event', () => {
+      const licenceService = createLicenceServiceStub()
+      licenceService.getLicence.mockResolvedValue(licence)
+      const hdcService = createHdcServiceStub()
+      const app = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
+
+      return request(app)
+        .post('/hdc/curfew/withdrawConsent/1')
+        .send({ withdrawConsent: 'Yes' })
+        .expect(302)
+        .expect(() => {
+          expect(hdcService.postCvlEvent).not.toHaveBeenCalledWith(
+            expect.objectContaining({ eventType: 'ADDRESS_WITHDRAWN' })
+          )
         })
     })
 
@@ -801,6 +976,7 @@ function createApp(
   user,
   config = {}
 ) {
+  const auditService = createAuditServiceStub()
   const prisonerService = prisonerServiceStub || createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()
@@ -809,6 +985,7 @@ function createApp(
   const audit = mockAudit()
 
   const baseRouter = standardRouter({
+    auditService,
     licenceService,
     prisonerService,
     audit,

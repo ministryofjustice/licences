@@ -2,7 +2,7 @@ const request = require('supertest')
 const { mockAudit } = require('../mockClients')
 const { appSetup, users } = require('../supertestSetup')
 
-const { createLicenceServiceStub, createPrisonerServiceStub, createSignInServiceStub } = require('../mockServices')
+const { createLicenceServiceStub, createPrisonerServiceStub, createSignInServiceStub, createAuditServiceStub} = require('../mockServices')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
 const createRoute = require('../../server/routes/send')
@@ -12,6 +12,7 @@ const NullTokenVerifier = require('../../server/authentication/tokenverifier/Nul
 describe('send', () => {
   let notificationService
   let prisonerService
+  let hdcService
 
   const prisoner = { firstName: 'first', lastName: 'last', dateOfBirth: 'off-dob', offenderNo: 'AB1234A' }
   const submissionTarget = { premise: 'HMP Test', agencyId: 'LT1', name: 'Something', deliusId: 'delius' }
@@ -29,6 +30,7 @@ describe('send', () => {
     notificationService = {
       send: jest.fn().mockReturnValue({}),
     }
+    hdcService = { postCvlEvent: jest.fn().mockResolvedValue(undefined) }
   })
 
   describe('Get send/:destination/:bookingId', () => {
@@ -158,7 +160,7 @@ describe('send', () => {
 
       test('ro user requests final checks', () => {
         const app = createApp(
-          { prisonerServiceStub: prisonerService, notificationServiceStub: notificationService },
+          { prisonerServiceStub: prisonerService, notificationServiceStub: notificationService, hdcServiceStub: hdcService },
           'roUser'
         )
 
@@ -199,6 +201,83 @@ describe('send', () => {
               user: users.dmUser,
             })
           })
+      })
+
+      test.each(['finalChecks', 'addressRejected', 'bassAreaRejected', 'optedOut'])(
+        'posts an address checks event every time the COM submits to %s',
+        async (destination) => {
+          const licenceService = createLicenceServiceStub()
+          licenceService.getLicence.mockResolvedValue({ id: 456, licence: { key: 'value' } })
+          const app = createApp(
+            {
+              prisonerServiceStub: prisonerService,
+              notificationServiceStub: notificationService,
+              hdcServiceStub: hdcService,
+              licenceServiceStub: licenceService,
+            },
+            'roUser'
+          )
+
+          const expectedEvent = {
+            eventType: 'RISK_CHECKS_SUBMITTED',
+            bookingId: 123,
+            licenceId: 456,
+            nomsNumber: prisoner.offenderNo,
+            triggeredBy: users.roUser.username,
+            reason: `${users.roUser.username} submitted address checks to prison case admin`,
+          }
+
+          await request(app)
+            .post(`/hdc/send/${destination}/123`)
+            .expect(302)
+            .expect('Location', `/hdc/sent/CA/${transitionsForDestinations[destination].type}/123`)
+
+          expect(hdcService.postCvlEvent).toHaveBeenCalledTimes(1)
+          expect(hdcService.postCvlEvent).toHaveBeenNthCalledWith(1, expectedEvent)
+
+          await request(app)
+            .post(`/hdc/send/${destination}/123`)
+            .expect(302)
+            .expect('Location', `/hdc/sent/CA/${transitionsForDestinations[destination].type}/123`)
+
+          expect(hdcService.postCvlEvent).toHaveBeenCalledTimes(2)
+          expect(hdcService.postCvlEvent).toHaveBeenNthCalledWith(2, expectedEvent)
+        }
+      )
+
+      test.each([
+        ['addressReview', 'caUser'],
+        ['return', 'dmUser'],
+        ['decided', 'dmUser'],
+      ])('does not post an address checks event for %s', async (destination, user) => {
+        const app = createApp(
+          {
+            prisonerServiceStub: prisonerService,
+            notificationServiceStub: notificationService,
+            hdcServiceStub: hdcService,
+          },
+          user
+        )
+
+        await request(app).post(`/hdc/send/${destination}/123`).expect(302)
+
+        expect(hdcService.postCvlEvent).not.toHaveBeenCalled()
+      })
+
+      test('does not post an address checks event when handover fails', async () => {
+        notificationService.send.mockRejectedValue(new Error('Handover failed'))
+        const app = createApp(
+          {
+            prisonerServiceStub: prisonerService,
+            notificationServiceStub: notificationService,
+            hdcServiceStub: hdcService,
+          },
+          'roUser'
+        )
+
+        await request(app).post('/hdc/send/finalChecks/123').expect(500)
+
+        expect(hdcService.postCvlEvent).not.toHaveBeenCalled()
       })
 
       test('should throw if post requested by wrong user', () => {
@@ -288,13 +367,18 @@ describe('send', () => {
   })
 })
 
-function createApp({ prisonerServiceStub = null, notificationServiceStub = null }, user) {
+function createApp(
+  { prisonerServiceStub = null, notificationServiceStub = null, hdcServiceStub = null, licenceServiceStub = null },
+  user
+) {
+  const auditService = createAuditServiceStub()
   const prisonerService = prisonerServiceStub || createPrisonerServiceStub()
-  const licenceService = createLicenceServiceStub()
+  const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()
   const audit = mockAudit()
 
   const baseRouter = standardRouter({
+    auditService,
     licenceService,
     prisonerService,
     audit,
@@ -306,6 +390,7 @@ function createApp({ prisonerServiceStub = null, notificationServiceStub = null 
     createRoute({
       prisonerService,
       notificationService: notificationServiceStub,
+      hdcService: hdcServiceStub,
     })
   )
 
@@ -313,11 +398,12 @@ function createApp({ prisonerServiceStub = null, notificationServiceStub = null 
 }
 
 function createAppForReconsideration(
-  { prisonerServiceStub = null, notificationServiceStub = null },
+  { prisonerServiceStub = null, notificationServiceStub = null, hdcServiceStub = null },
   user,
   stage,
   licence
 ) {
+  const auditService = createAuditServiceStub()
   const prisonerService = prisonerServiceStub || createPrisonerServiceStub()
   const licenceService = createLicenceServiceStub()
   const signInService = createSignInServiceStub()
@@ -331,6 +417,7 @@ function createAppForReconsideration(
   })
 
   const baseRouter = standardRouter({
+    auditService,
     licenceService,
     prisonerService,
     audit,
@@ -342,6 +429,7 @@ function createAppForReconsideration(
     createRoute({
       prisonerService,
       notificationService: notificationServiceStub,
+      hdcService: hdcServiceStub,
     })
   )
 

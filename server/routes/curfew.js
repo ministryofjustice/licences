@@ -12,6 +12,17 @@ module.exports =
 
     router.get('/approvedPremises/:bookingId', approvedPremisesGets('approvedPremises'))
     router.get('/approvedPremises/:action/:bookingId', approvedPremisesGets('approvedPremises'))
+    router.post(
+      '/approvedPremises/:bookingId',
+      audited,
+      asyncMiddleware(standard.callbackPost('approvedPremises'))
+    )
+    router.post(
+      '/approvedPremises/:action/:bookingId',
+      audited,
+      asyncMiddleware(standard.callbackPost('approvedPremises'))
+    )
+
     function approvedPremisesGets(formName) {
       return (req, res) => {
         const { action, bookingId } = req.params
@@ -60,12 +71,15 @@ module.exports =
       asyncMiddleware(async (req, res) => {
         const { bookingId } = req.params
         const { decision } = req.body
-        const { licence } = res.locals
-        const isAnOptOut  =  decision === 'OptOut'
+        const { licence, prisoner } = res.locals
+        const { offenderNo } = prisoner
+        const { id: licenceId } = licence
+        const { username: userName } = req.user
 
         const curfew = getIn(licence, ['licence', 'curfew'])
         const newCurfew = mergeWithRight(curfew, approvedPremisesContents[decision])
 
+        const isAnOptOut  =  decision === 'OptOut'
         const proposedAddress = getIn(licence, ['licence', 'proposedAddress'])
         const newProposedAddress = mergeWithRight(proposedAddress, proposedAddressContents[decision])
 
@@ -75,23 +89,32 @@ module.exports =
         ])
 
         if (isAnOptOut) {
-          const userName = req.user.username
-          if (pushToNomis) {
+
+         if (pushToNomis) {
             await nomisPushService.pushStatus({
               bookingId,
               data: { type: 'optOut', status: 'Yes' },
               username: userName,
             })
           }
-          const { offenderNo } = res.locals.prisoner
-          const licenceId = res.locals.licence.id
-          await hdcService.postOptOutEvent(
-            parseInt(bookingId, 10),
+
+          await hdcService.postCvlEvent({
+            eventType: 'OPT_OUT',
+            bookingId: parseInt(bookingId, 10),
             licenceId,
-            offenderNo,
-            userName,
-            `${userName} opted out of HDC after COM added an approved premises`
-          )
+            nomsNumber: offenderNo,
+            triggeredBy: userName,
+            reason: `${userName} opted out of HDC after COM added an approved premises`
+          })
+        } else {
+          await hdcService.postCvlEvent({
+            eventType: 'OPT_IN',
+            bookingId: parseInt(bookingId, 10),
+            licenceId,
+            nomsNumber: offenderNo,
+            triggeredBy: userName,
+            reason: `${userName} opted in to HDC after COM added an approved premises`
+          })
         }
 
         const nextPath = formConfig.approvedPremisesChoice.nextPath[decision] || `/hdc/taskList/`
@@ -162,9 +185,23 @@ module.exports =
     function addressWithdrawalPosts(formName) {
       return async (req, res) => {
         const { action, bookingId } = req.params
-        const { licence, stage } = res.locals.licence
+        const { licence, stage, id: licenceId } = res.locals.licence
 
         await licenceService.rejectProposedAddress(licence, bookingId, formName)
+
+        if (formName === 'withdrawAddress') {
+          const { offenderNo } = res.locals.prisoner
+          const { username } = req.user
+
+          await hdcService.postCvlEvent({
+            eventType: 'ADDRESS_WITHDRAWN',
+            bookingId: parseInt(bookingId, 10),
+            licenceId,
+            nomsNumber: offenderNo,
+            triggeredBy: username,
+            reason: `${username} withdrew the residential address in HDC`
+          })
+        }
 
         const modifyAction = !action && isPostApproval(stage) ? 'modify' : action
 

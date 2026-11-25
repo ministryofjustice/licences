@@ -1,5 +1,7 @@
-const logger = require('../../log')
-const db = require('./dataAccess/db')
+import { Moment } from 'moment'
+import logger from '../../log'
+import * as db from './dataAccess/db'
+import { AuditClient, AuditDto } from '../../types/audit'
 
 const keys = [
   'LOGIN',
@@ -24,35 +26,28 @@ const keys = [
   'CREATE_IN_CVL',
 ]
 
-/**
- * @typedef {import("../../types/audit").AuditClient} AuditClient
- */
-
-/**
- * @return {AuditClient}
- */
-module.exports = {
+const audit: AuditClient = {
   deleteAll() {
     return db.query(`delete from audit`)
   },
 
-  record(key, user, data) {
+  record(key: string, user: string, data: object) {
     if (!keys.includes(key)) {
       throw new Error(`Unknown audit key: ${key}`)
     }
 
-    logger.info('AUDIT', { key })
+    logger.info({ key }, 'AUDIT')
 
     return addItem(key, user, data)
       .then(() => {
         logger.info('Audit item inserted')
       })
       .catch((error) => {
-        logger.error('Error during audit insertion ', error.stack)
+        logger.error({ stack: error.stack }, 'Error during audit insertion ')
       })
   },
 
-  async getEvents(action, filters, startMoment, endMoment) {
+  async getEvents(action: string, filters: object, startMoment?: Moment, endMoment?: Moment) {
     const startTime = startMoment ? startMoment.toISOString() : null
     const endTime = endMoment ? endMoment.toISOString() : null
 
@@ -66,7 +61,9 @@ module.exports = {
   getEventsForBooking,
 }
 
-function addItem(key, user, data) {
+export default audit
+
+function addItem(key: string, user: string, data: object) {
   const query = {
     text: `insert into audit ("user", action, details) values ($1, $2, $3);`,
     values: [user, key, data],
@@ -75,7 +72,7 @@ function addItem(key, user, data) {
   return db.query(query)
 }
 
-async function getEventsForBooking(bookingId) {
+async function getEventsForBooking(bookingId: number): Promise<AuditDto[]> {
   const { rows } = await db.query({
     text: `select id, "timestamp", "user", action, details from audit where details::jsonb ->> 'bookingId' = $1 order by timestamp desc;`,
     values: [bookingId],
@@ -83,7 +80,7 @@ async function getEventsForBooking(bookingId) {
   return rows
 }
 
-async function getEvent(eventId) {
+async function getEvent(eventId: number): Promise<AuditDto> {
   const { rows } = await db.query({
     text: `select id, "timestamp", "user", action, details from audit where id = $1;`,
     values: [eventId],
@@ -91,9 +88,13 @@ async function getEvent(eventId) {
   return rows[0]
 }
 
-function getEventQuery(action, filters, optionalQueries) {
+function getEventQuery(
+  action: string,
+  filters: object,
+  optionalQueries: { startTime: string | null; endTime: string | null }
+) {
   const text = `select * from audit where action = $1 and details @> $2`
-  const values = [action, filters]
+  const values: unknown[] = [action, filters]
 
   const queries = {
     startTime: 'and timestamp >=',

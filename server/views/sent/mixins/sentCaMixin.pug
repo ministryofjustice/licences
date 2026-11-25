@@ -1,4 +1,4 @@
-mixin sentContent(title, submissionTarget)
+mixin sentContent(title, submissionTarget, showCreateLicenceLink = false)
   div.pure-g.largeMarginBottom
     div.pure-u-1.pure-u-lg-4-5
       div.confirm-banner
@@ -29,6 +29,10 @@ mixin sentContent(title, submissionTarget)
               else
                 div.paddingBottom No prison address found
           div.pure-u-1.pure-u-md-1-8
+
+        if showCreateLicenceLink && hdcCreationInCvlEnabled
+          p
+            | You can create this licence in the #[a(href=createAndVaryALicenceCreateCaseloadUrl) create and vary a licence] service
 
   div
     a#backBtn.requiredButton.button.button-secondary.largeMarginBottom(href='/' role="button") Return to case list

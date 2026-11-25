@@ -53,13 +53,17 @@ module.exports =
       asyncMiddleware(async (req, res) => {
         const { bookingId } = req.params
         const { decision } = req.body
-        const { licence } = res.locals
-        const isAnOptOut  =  decision === 'OptOut'
+        const { licence, prisoner } = res.locals
+        const { offenderNo } = prisoner
+        const { id: licenceId } = licence
+        const { username: userName } = req.user
 
         const bassReferral = getIn(licence, ['licence', 'bassReferral'])
         const newCurfew = mergeWithRight(bassReferral, approvedPremisesContents[decision])
 
+        const isAnOptOut  =  decision === 'OptOut'
         const proposedAddress = getIn(licence, ['licence', 'proposedAddress'])
+
         const newProposedAddress = mergeWithRight(proposedAddress, proposedAddressContents[decision])
 
         await Promise.all([
@@ -69,7 +73,6 @@ module.exports =
 
 
         if (isAnOptOut) {
-          const userName = req.user.username
           if (pushToNomis) {
             await nomisPushService.pushStatus({
               bookingId,
@@ -78,15 +81,23 @@ module.exports =
             })
           }
 
-          const {offenderNo} = res.locals.prisoner
-          const licenceId = res.locals.licence.id
-          await hdcService.postOptOutEvent(
-            parseInt(bookingId, 10),
+          await hdcService.postCvlEvent({
+            eventType: 'OPT_OUT',
+            bookingId: parseInt(bookingId, 10),
             licenceId,
-            offenderNo,
-            userName,
-            `${userName} opted out of HDC after COM added an approved CAS2 premises`
-          )
+            nomsNumber: offenderNo,
+            triggeredBy: userName,
+            reason: `${userName} opted out of HDC after COM added an approved CAS2 premises`
+          })
+        } else {
+          await hdcService.postCvlEvent({
+            eventType: 'OPT_IN',
+            bookingId: parseInt(bookingId, 10),
+            licenceId,
+            nomsNumber: offenderNo,
+            triggeredBy: userName,
+            reason: `${userName} opted in to HDC after COM added an approved CAS2 premises`
+          })
         }
 
         const nextPath = formConfig.approvedPremisesChoice.nextPath[decision] || `/hdc/taskList/`

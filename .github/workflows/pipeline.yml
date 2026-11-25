@@ -44,17 +44,18 @@ jobs:
     uses: ministryofjustice/hmpps-github-actions/.github/workflows/node_unit_tests.yml@v2 # WORKFLOW_VERSION
     needs: [node_build]
     secrets: inherit
+    with:
+      test-report-continue-on-error: true
   node_gotenberg_tests:
     name: node gotenberg tests
     uses: ./.github/workflows/node_gotenberg_tests.yml
     needs: [node_build]
     secrets: inherit
-# These still run on circle as they require quite a bit of setup to run
-#  node_integration_tests:
-#    name: node integration tests
-#    uses: ./.github/workflows/node_integration_tests.yml
-#    needs: [node_build]
-#    secrets: inherit
+  node_integration_tests:
+    name: node integration tests
+    uses: ./.github/workflows/node_integration_tests.yml
+    needs: [node_build]
+    secrets: inherit
   helm_lint:
     strategy:
       matrix:

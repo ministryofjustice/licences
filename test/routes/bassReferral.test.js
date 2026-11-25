@@ -7,6 +7,7 @@ const {
   createLicenceServiceStub,
   createSignInServiceStub,
   createHdcServiceStub,
+  createAuditServiceStub,
 } = require('../mockServices')
 
 const standardRouter = require('../../server/routes/routeWorkers/standardRouter')
@@ -299,7 +300,14 @@ describe('/hdc/bassReferral', () => {
             expect(licenceService.updateSection).toHaveBeenCalledWith('bassReferral', '1', {
               approvedPremises: { required: 'No' },
             })
-            expect(hdcService.postOptOutEvent).toHaveBeenCalledWith(1, 1, 'A1234AA', 'CA_USER_TEST', 'CA_USER_TEST opted out of HDC after COM added an approved CAS2 premises')
+            expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+              eventType: 'OPT_OUT',
+              bookingId: 1,
+              licenceId: 1,
+              nomsNumber: 'A1234AA',
+              triggeredBy: 'CA_USER_TEST',
+              reason: 'CA_USER_TEST opted out of HDC after COM added an approved CAS2 premises'
+            })
             expect(res.header.location).toBe('/hdc/taskList/1')
           })
       })
@@ -324,6 +332,50 @@ describe('/hdc/bassReferral', () => {
               approvedPremises: { required: 'Yes' },
             })
             expect(res.header.location).toBe('/hdc/bassReferral/approvedPremisesAddress/1')
+          })
+      })
+
+      test('POST approvedPremisesChoice with ApprovedPremises posts opt in event when previously opted out', () => {
+        const licenceService = createLicenceServiceStub()
+        licenceService.getLicence.mockResolvedValue({
+          id: 1,
+          licence: { proposedAddress: { optOut: { decision: 'Yes' } } },
+        })
+        const hdcService = createHdcServiceStub()
+        const app = createApp({ licenceServiceStub: licenceService }, 'caUser', hdcService)
+
+        return request(app)
+          .post('/hdc/bassReferral/approvedPremisesChoice/1')
+          .send({ decision: 'ApprovedPremises' })
+          .expect(302)
+          .expect(() => {
+            expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+              eventType: 'OPT_IN',
+              bookingId: 1,
+              licenceId: 1,
+              nomsNumber: 'A1234AA',
+              triggeredBy: 'CA_USER_TEST',
+              reason: 'CA_USER_TEST opted in to HDC after COM added an approved CAS2 premises'
+            })
+            expect(hdcService.postCvlEvent).not.toHaveBeenCalledWith(expect.objectContaining({ eventType: 'OPT_OUT' }))
+          })
+      })
+
+      test('POST approvedPremisesChoice with ApprovedPremises posts opt in event when already opted in', () => {
+        const licenceService = createLicenceServiceStub()
+        licenceService.getLicence.mockResolvedValue({
+          id: 1,
+          licence: { proposedAddress: { optOut: { decision: 'No' } } },
+        })
+        const hdcService = createHdcServiceStub()
+        const app = createApp({ licenceServiceStub: licenceService }, 'caUser', hdcService)
+
+        return request(app)
+          .post('/hdc/bassReferral/approvedPremisesChoice/1')
+          .send({ decision: 'ApprovedPremises' })
+          .expect(302)
+          .expect(() => {
+            expect(hdcService.postCvlEvent).toHaveBeenCalledTimes(1)
           })
       })
     })
@@ -401,6 +453,7 @@ describe('/hdc/bassReferral', () => {
 })
 
 function createApp({ licenceServiceStub}, user, hdcServiceStub = null) {
+  const auditService = createAuditServiceStub()
   const prisonerService = createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const hdcService = hdcServiceStub || createHdcServiceStub()
@@ -408,6 +461,7 @@ function createApp({ licenceServiceStub}, user, hdcServiceStub = null) {
   const audit = mockAudit()
 
   const baseRouter = standardRouter({
+    auditService,
     licenceService,
     prisonerService,
     audit,

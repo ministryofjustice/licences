@@ -1,0 +1,767 @@
+{
+  "GET /": {
+    "audit": false,
+    "reason": "home page, redirects to case list, not auditable action"
+  },
+  "GET /hdc/taskList/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_TASK_LIST_FOR_OFFENDER",
+    "noLicenceRequired": true
+  },
+  "GET /hdc/taskList": {
+    "audit": true,
+    "eventType": "VIEW_TASK_LIST"
+  },
+  "POST /hdc/taskList/eligibilityStart": {
+    "audit": true,
+    "eventType": "CREATE_ELIGIBILITY_TASK_LIST"
+  },
+  "POST /hdc/taskList/varyStart": {
+    "audit": true,
+    "eventType": "CREATE_VARY_TASK_LIST"
+  },
+  "GET /hdc/taskList/image/:imageId": {
+    "audit": true,
+    "eventType": "VIEW_TASK_LIST_IMAGE"
+  },
+  "GET /caseList": {
+    "audit": true,
+    "eventType": "VIEW_CASE_LIST"
+  },
+  "GET /caseList/:tab": {
+    "audit": true,
+    "eventType": "VIEW_CASE_LIST_TAB"
+  },
+  "GET /admin": {
+    "audit": true,
+    "eventType": "VIEW_ADMIN"
+  },
+  "GET /admin/roUsers": {
+    "audit": true,
+    "eventType": "VIEW_RO_USERS"
+  },
+  "POST /admin/roUsers": {
+    "audit": true,
+    "eventType": "CREATE_RO_USER"
+  },
+  "GET /admin/roUsers/edit/:nomisId": {
+    "audit": true,
+    "eventType": "EDIT_OFFENDER"
+  },
+  "GET /admin/roUsers/migrate/:nomisId": {
+    "audit": true,
+    "eventType": "VIEW_MIGRATE_OFFENDER"
+  },
+  "GET /admin/roUsers/migrate": {
+    "audit": true,
+    "eventType": "VIEW_MIGRATE_CASE_LIST"
+  },
+  "POST /admin/roUsers/assign-role/:nomisId": {
+    "audit": true,
+    "eventType": "CREATE_ASSIGN_ROLE"
+  },
+  "POST /admin/roUsers/disable-auth/:nomisId": {
+    "audit": true,
+    "eventType": "CREATE_DISABLE_AUTH"
+  },
+  "POST /admin/roUsers/enable-auth/:nomisId": {
+    "audit": true,
+    "eventType": "CREATE_ENABLE_AUTH"
+  },
+  "POST /admin/roUsers/edit/:originalNomisId": {
+    "audit": true,
+    "eventType": "EDIT_OFFENDER"
+  },
+  "GET /admin/roUsers/delete/:nomisId": {
+    "audit": true,
+    "eventType": "VIEW_DELETE_OFFENDER"
+  },
+  "GET /admin/roUsers/verify/": {
+    "audit": true,
+    "eventType": "VIEW_VERIFY_USER"
+  },
+  "GET /admin/roUsers/add": {
+    "audit": true,
+    "eventType": "VIEW_ADD_USER"
+  },
+  "POST /admin/roUsers/add": {
+    "audit": true,
+    "eventType": "CREATE_ADD_USER"
+  },
+  "GET /admin/manage-roles": {
+    "audit": true,
+    "eventType": "VIEW_MANAGE_ROLES"
+  },
+  "POST /admin/manage-roles": {
+    "audit": true,
+    "eventType": "CREATE_MANAGE_ROLES"
+  },
+  "GET /admin/manage-roles/:deliusUsername": {
+    "audit": true,
+    "eventType": "VIEW_MANAGE_ROLES_FOR_USER"
+  },
+  "POST /admin/manage-roles/:deliusUsername/roles": {
+    "audit": true,
+    "eventType": "CREATE_MANAGE_ROLES_FOR_USER"
+  },
+  "GET /admin/mailboxes": {
+    "audit": true,
+    "eventType": "VIEW_MAILBOXES"
+  },
+  "GET /admin/mailboxes/edit/:id": {
+    "audit": true,
+    "eventType": "VIEW_EDIT_MAILBOX"
+  },
+  "POST /admin/mailboxes/edit/:id": {
+    "audit": true,
+    "eventType": "EDIT_MAILBOX"
+  },
+  "GET /admin/mailboxes/delete/:id": {
+    "audit": true,
+    "eventType": "VIEW_DELETE_MAILBOX"
+  },
+  "POST /admin/mailboxes/delete/:id": {
+    "audit": true,
+    "eventType": "DELETE_MAILBOX"
+  },
+  "GET /admin/mailboxes/add": {
+    "audit": true,
+    "eventType": "VIEW_ADD_MAILBOX"
+  },
+  "POST /admin/mailboxes/add": {
+    "audit": true,
+    "eventType": "CREATE_ADD_MAILBOX"
+  },
+  "GET /admin/jobs": {
+    "audit": true,
+    "eventType": "VIEW_JOBS"
+  },
+  "POST /admin/jobs/cancel": {
+    "audit": true,
+    "eventType": "EDIT_CANCEL_JOB"
+  },
+  "POST /admin/jobs/reschedule": {
+    "audit": true,
+    "eventType": "EDIT_JOB_RESCHEDULE"
+  },
+  "POST /admin/jobs/update": {
+    "audit": true,
+    "eventType": "EDIT_JOB_UPDATE"
+  },
+  "GET /admin/delius": {
+    "audit": true,
+    "eventType": "VIEW_DELIUS"
+  },
+  "POST /admin/delius/managedOffenders/": {
+    "audit": true,
+    "eventType": "CREATE_MANAGED_OFFENDERS"
+  },
+  "POST /admin/delius/responsibleOfficer": {
+    "audit": true,
+    "eventType": "CREATE_RESPONSIBLE_OFFICER"
+  },
+  "POST /admin/delius/staffDetails": {
+    "audit": true,
+    "eventType": "CREATE_STAFF_DETAILS"
+  },
+  "GET /admin/warnings/outstanding": {
+    "audit": true,
+    "eventType": "VIEW_OUTSTANDING_WARNINGS"
+  },
+  "POST /admin/warnings/acknowledge": {
+    "audit": true,
+    "eventType": "CREATE_ACKNOWLEDGE_WARNING"
+  },
+  "GET /admin/warnings/acknowledged": {
+    "audit": true,
+    "eventType": "VIEW_ACKNOWLEDGED_WARNINGS"
+  },
+  "GET /admin/locations/probation-areas": {
+    "audit": true,
+    "eventType": "VIEW_PROBATION_AREAS"
+  },
+  "GET /admin/locations/probation-areas/:probationAreaCode/local-delivery-units": {
+    "audit": true,
+    "eventType": "VIEW_LOCAL_DELIVERY_UNITS"
+  },
+  "POST /admin/locations/probation-areas/:probationAreaCode/local-delivery-units": {
+    "audit": true,
+    "eventType": "CREATE_LOCAL_DELIVERY_UNITS"
+  },
+  "GET /admin/licenceSearch": {
+    "audit": true,
+    "eventType": "VIEW_LICENCE_SEARCH"
+  },
+  "POST /admin/licenceSearch": {
+    "audit": true,
+    "eventType": "SEARCH_LICENCE_SEARCH"
+  },
+  "GET /admin/downloadCasesWithCOM": {
+    "audit": true,
+    "eventType": "VIEW_DOWNLOAD_CASES_WITH_COM"
+  },
+  "POST /admin/downloadCasesWithCOM": {
+    "audit": true,
+    "eventType": "DOWNLOAD_CASES_WITH_COM"
+  },
+  "GET /admin/downloadCasesWithCA": {
+    "audit": true,
+    "eventType": "VIEW_DOWNLOAD_CASES_WITH_CA"
+  },
+  "POST /admin/downloadCasesWithCA": {
+    "audit": true,
+    "eventType": "DOWNLOAD_CASES_WITH_CA"
+  },
+  "GET /admin/completionDestinationSearch": {
+    "audit": true,
+    "eventType": "VIEW_COMPLETION_DESTINATION_SEARCH"
+  },
+  "POST /admin/completionDestinationSearch": {
+    "audit": true,
+    "eventType": "SEARCH_COMPLETION_DESTINATION_SEARCH"
+  },
+  "GET /admin/conditionCompareTextsSearch": {
+    "audit": true,
+    "eventType": "VIEW_CONDITION_COMPARE_TEXTS_SEARCH"
+  },
+  "POST /admin/conditionCompareTextsSearch": {
+    "audit": true,
+    "eventType": "SEARCH_CONDITION_COMPARE_TEXTS_SEARCH"
+  },
+  "GET /admin/completionDestination/:abookingId/set-complete-destination": {
+    "audit": true,
+    "eventType": "VIEW_SET_COMPLETE_DESTINATION"
+  },
+  "POST /admin/completionDestination/:abookingId/set-complete-destination": {
+    "audit": true,
+    "eventType": "CREATE_COMPLETE_DESTINATION"
+  },
+  "GET /admin/licences/:abookingId": {
+    "audit": true,
+    "eventType": "VIEW_LICENCE"
+  },
+  "GET /admin/licences/:abookingId/raw": {
+    "audit": true,
+    "eventType": "VIEW_LICENCE_RAW"
+  },
+  "GET /admin/licences/events/:eventId/raw": {
+    "audit": true,
+    "eventType": "VIEW_LICENCE_EVENTS_RAW"
+  },
+  "GET /admin/licences/:abookingId/notifyRo": {
+    "audit": true,
+    "eventType": "VIEW_NOTIFY_RO"
+  },
+  "GET /admin/licences/events/:abookingId/reset-licence": {
+    "audit": true,
+    "eventType": "VIEW_RESET_LICENCE"
+  },
+  "POST /admin/licences/events/:abookingId/reset-licence": {
+    "audit": true,
+    "eventType": "EDIT_RESET_LICENCE"
+  },
+  "POST /admin/licences/:abookingId/notifyRo": {
+    "audit": true,
+    "eventType": "CREATE_NOTIFY_RO"
+  },
+  "GET /admin/functionalMailboxes/probationAreas": {
+    "audit": true,
+    "eventType": "VIEW_FUNCTIONAL_MAILBOXES_PROBATION_AREAS"
+  },
+  "GET /admin/functionalMailboxes/probationAreas/:probationAreaCode/ldus": {
+    "audit": true,
+    "eventType": "VIEW_FUNCTIONAL_MAILBOXES_LDUS"
+  },
+  "GET /admin/functionalMailboxes/probationAreas/:probationAreaCode/ldus/:lduCode": {
+    "audit": true,
+    "eventType": "VIEW_FUNCTIONAL_MAILBOXES_LDU"
+  },
+  "POST /admin/functionalMailboxes/probationAreas/:probationAreaCode/ldus/:lduCode": {
+    "audit": true,
+    "eventType": "EDIT_FUNCTIONAL_MAILBOXES_LDU"
+  },
+  "POST /admin/functionalMailboxes/probationAreas/:probationAreaCode/ldus/:lduCode/probationTeams/:teamCode": {
+    "audit": true,
+    "eventType": "EDIT_FUNCTIONAL_MAILBOXES_PROBATION_TEAMS"
+  },
+  "GET /admin/migrateToCvl/hdcToCvlMigration": {
+    "audit": true,
+    "eventType": "VIEW_HDC_TO_CVL_MIGRATION"
+  },
+  "GET /admin/migrateToCvl/licence/:migrateBookingId/migrate": {
+    "audit": true,
+    "eventType": "VIEW_MIGRATE_LICENCE"
+  },
+  "GET /admin/migrateToCvl/batch": {
+    "audit": true,
+    "eventType": "VIEW_MIGRATE_BATCH"
+  },
+  "GET /admin/migrateToCvl/licence/:licenceId/preview": {
+    "audit": true,
+    "eventType": "VIEW_MIGRATE_LICENCE_PREVIEW"
+  },
+  "GET /admin/migrateToCvl/migration-logs": {
+    "audit": true,
+    "eventType": "VIEW_MIGRATION_LOGS"
+  },
+  "GET /admin/migrateToCvl/retry/:logId/:retryValue": {
+    "audit": true,
+    "eventType": "RETRY_MIGRATION"
+  },
+  "GET /hdc/contact/:theBookingId": {
+    "audit": true,
+    "eventType": "VIEW_HDC_CONTACT"
+  },
+  "GET /hdc/pdf/selectLicenceType/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_SELECT_LICENCE_TYPE"
+  },
+  "POST /hdc/pdf/selectLicenceType/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_LICENCE_TYPE"
+  },
+  "GET /hdc/pdf/taskList/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_PDF_TASK_LIST"
+  },
+  "GET /hdc/pdf/missing/sentenceInfo/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_PDF_MISSING_SENTENCE_INFO"
+  },
+  "GET /hdc/pdf/create/:bookingId": {
+    "audit": true,
+    "eventType": "CREATE_PDF"
+  },
+  "GET /hdc/forms/curfewAddress/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_CURFEW_ADDRESS_FORM"
+  },
+  "GET /hdc/forms/:templateName/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_FORM_TEMPLATE"
+  },
+  "GET /hdc/forms/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_FORM"
+  },
+  "GET /hdc/send/:destination/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_DESTINATION"
+  },
+  "POST /hdc/send/:destination/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_DESTINATION"
+  },
+  "GET /hdc/sent/:receiver/:type/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_SENT_DESTINATION"
+  },
+  "GET /user": {
+    "audit": true,
+    "eventType": "VIEW_USER"
+  },
+  "POST /user": {
+    "audit": true,
+    "eventType": "CHANGE_USER_ROLE"
+  },
+  "GET /hdc/people-ready-for-probation-checks": {
+    "audit": true,
+    "eventType": "VIEW_PEOPLE_READY_FOR_PROBATION_CHECKS"
+  },
+  "GET /hdc/people-ready-for-probation-checks/download-unallocated": {
+    "audit": true,
+    "eventType": "VIEW_UNALLOCATED_PEOPLE_READY_FOR_PROBATION_CHECKS"
+  },
+  "GET /hdc/people-ready-for-probation-checks/download-allocated": {
+    "audit": true,
+    "eventType": "VIEW_ALLOCATED_PEOPLE_READY_FOR_PROBATION_CHECKS"
+  },
+  "GET /hdc/proposedAddress/curfewAddressChoice/:action/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_CURFEW_ADDRESS_CHOICE"
+  },
+  "GET /hdc/proposedAddress/curfewAddressChoice/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_CURFEW_ADDRESS_CHOICE"
+  },
+  "POST /hdc/proposedAddress/curfewAddressChoice/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_CURFEW_ADDRESS_CHOICE"
+  },
+  "POST /hdc/proposedAddress/rejected/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_PROPOSED_ADDRESS_REJECTED"
+  },
+  "GET /hdc/proposedAddress/:formName/:action/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_PROPOSED_ADDRESS_FORM"
+  },
+  "GET /hdc/proposedAddress/:formName/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_PROPOSED_ADDRESS_FORM"
+  },
+  "POST /hdc/proposedAddress/:formName/:action/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_PROPOSED_ADDRESS_FORM"
+  },
+  "POST /hdc/proposedAddress/:formName/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_PROPOSED_ADDRESS_FORM"
+  },
+  "GET /hdc/approval/release/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_APPROVAL_RELEASE"
+  },
+  "GET /hdc/approval/refuseReason/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_APPROVAL_REFUSE_REASON"
+  },
+  "GET /hdc/approval/mandatoryCheck/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_APPROVAL_MANDATORY_CHECK"
+  },
+  "GET /hdc/approval/consideration/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_APPROVAL_CONSIDERATION"
+  },
+  "POST /hdc/approval/release/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_APPROVAL_RELEASE"
+  },
+  "POST /hdc/approval/refuseReason/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_APPROVAL_REFUSE_REASON"
+  },
+  "POST /hdc/approval/:formName/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_APPROVAL_FORM"
+  },
+  "POST /hdc/bassReferral/rejected/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_BASS_REFERRAL_REJECTED"
+  },
+  "POST /hdc/bassReferral/unsuitable/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_BASS_REFERRAL_UNSUITABLE"
+  },
+  "GET /hdc/bassReferral/approvedPremisesChoice/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_APPROVED_PREMISES_CHOICE"
+  },
+  "POST /hdc/bassReferral/approvedPremisesChoice/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_APPROVED_PREMISES_CHOICE"
+  },
+  "GET /hdc/bassReferral/bassOffer/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_BASS_OFFER"
+  },
+  "POST /hdc/bassReferral/bassOffer/withdraw/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_BASS_OFFER_WITHDRAW"
+  },
+  "POST /hdc/bassReferral/bassOffer/reinstate/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_BASS_OFFER_REINSTATE"
+  },
+  "GET /hdc/bassReferral/:formName/:action/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_BASS_REFERRAL_FORM"
+  },
+  "POST /hdc/bassReferral/:formName/:action/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_BASS_REFERRAL_FORM"
+  },
+  "GET /hdc/bassReferral/:formName/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_BASS_REFERRAL_FORM"
+  },
+  "POST /hdc/bassReferral/:formName/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_BASS_REFERRAL_FORM"
+  },
+  "GET /hdc/licenceConditions/standard/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_STANDARD_LICENCE_CONDITIONS"
+  },
+  "GET /hdc/licenceConditions/standard/:action/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_STANDARD_LICENCE_CONDITIONS"
+  },
+  "POST /hdc/licenceConditions/standard/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_STANDARD_LICENCE_CONDITIONS"
+  },
+  "POST /hdc/licenceConditions/standard/:action/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_STANDARD_LICENCE_CONDITIONS"
+  },
+  "GET /hdc/licenceConditions/additionalConditions/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_ADDITIONAL_LICENCE_CONDITIONS"
+  },
+  "GET /hdc/licenceConditions/additionalConditions/:action/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_ADDITIONAL_LICENCE_CONDITIONS"
+  },
+  "POST /hdc/licenceConditions/additionalConditions/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_ADDITIONAL_LICENCE_CONDITIONS"
+  },
+  "POST /hdc/licenceConditions/additionalConditions/:action/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_ADDITIONAL_LICENCE_CONDITIONS"
+  },
+  "GET /hdc/licenceConditions/conditionsSummary/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_CONDITIONS_SUMMARY"
+  },
+  "GET /hdc/licenceConditions/conditionsSummary/:action/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_CONDITIONS_SUMMARY"
+  },
+  "POST /hdc/licenceConditions/additionalConditions/:bookingId/delete/:conditionId": {
+    "audit": true,
+    "eventType": "EDIT_ADDITIONAL_LICENCE_CONDITIONS"
+  },
+  "POST /hdc/licenceConditions/additionalConditions/:action/:bookingId/delete/:conditionId": {
+    "audit": true,
+    "eventType": "EDIT_ADDITIONAL_LICENCE_CONDITIONS"
+  },
+  "GET /hdc/licenceConditions/:formName/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_LICENCE_CONDITIONS"
+  },
+  "POST /hdc/licenceConditions/:formName/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_LICENCE_CONDITIONS"
+  },
+  "POST /hdc/licenceConditions/:formName/:action/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_LICENCE_CONDITIONS_FORM"
+  },
+  "GET /hdc/curfew/approvedPremises/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_APPROVED_PREMISES"
+  },
+  "GET /hdc/curfew/approvedPremises/:action/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_APPROVED_PREMISES_ACTION"
+  },
+  "POST /hdc/curfew/approvedPremises/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_APPROVED_PREMISES"
+  },
+  "POST /hdc/curfew/approvedPremises/:action/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_APPROVED_PREMISES_ACTION"
+  },
+  "GET /hdc/curfew/approvedPremisesChoice/:action/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_APPROVED_PREMISES_CHOICE_ACTION"
+  },
+  "GET /hdc/curfew/approvedPremisesChoice/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_APPROVED_PREMISES_CHOICE"
+  },
+  "POST /hdc/curfew/approvedPremisesChoice/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_APPROVED_PREMISES_CHOICE"
+  },
+  "GET /hdc/curfew/curfewAddressReview/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_CURFEW_ADDRESS_REVIEW"
+  },
+  "GET /hdc/curfew/curfewAddressReview/:action/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_CURFEW_ADDRESS_REVIEW_ACTION"
+  },
+  "POST /hdc/curfew/curfewAddressReview/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_CURFEW_ADDRESS_REVIEW"
+  },
+  "POST /hdc/curfew/curfewAddressReview/:action/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_CURFEW_ADDRESS_REVIEW_ACTION"
+  },
+  "POST /hdc/curfew/withdrawAddress/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_WITHDRAW_ADDRESS"
+  },
+  "POST /hdc/curfew/withdrawConsent/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_WITHDRAW_CONSENT"
+  },
+  "POST /hdc/curfew/reinstateAddress/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_REINSTATE_ADDRESS"
+  },
+  "GET /hdc/curfew/curfewHours/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_CURFEW_HOURS"
+  },
+  "POST /hdc/curfew/curfewHours/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_CURFEW_HOURS"
+  },
+  "GET /hdc/curfew/:formName/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_CURFEW_FORM"
+  },
+  "POST /hdc/curfew/:formName/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_CURFEW_FORM"
+  },
+  "GET /hdc/curfew/:formName/:action/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_CURFEW_FORM_ACTION"
+  },
+  "POST /hdc/curfew/:formName/:action/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_CURFEW_FORM_ACTION"
+  },
+  "POST /hdc/eligibility/suitability/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_ELIGIBILITY_SUITABILITY"
+  },
+  "GET /hdc/eligibility/:formName/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_ELIGIBILITY_FORM"
+  },
+  "POST /hdc/eligibility/:formName/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_ELIGIBILITY_FORM"
+  },
+  "GET /hdc/finalChecks/postpone/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_FINAL_CHECKS_POSTPONE"
+  },
+  "POST /hdc/finalChecks/postpone/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_FINAL_CHECKS_POSTPONE"
+  },
+  "POST /hdc/finalChecks/refuse/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_FINAL_CHECKS_REFUSE"
+  },
+  "GET /hdc/finalChecks/:formName/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_FINAL_CHECKS_FORM"
+  },
+  "POST /hdc/finalChecks/:formName/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_FINAL_CHECKS_FORM"
+  },
+  "GET /hdc/review/:sectionName/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_REVIEW_SECTION"
+  },
+  "GET /hdc/reporting/reportingInstructions/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_REPORTING_INSTRUCTIONS"
+  },
+  "POST /hdc/reporting/reportingInstructions/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_REPORTING_INSTRUCTIONS"
+  },
+  "GET /hdc/reporting/reportingInstructions/:action/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_REPORTING_INSTRUCTIONS_ACTION"
+  },
+  "POST /hdc/reporting/reportingInstructions/:action/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_REPORTING_INSTRUCTIONS_ACTION"
+  },
+  "GET /hdc/reporting/:formName/:action/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_REPORTING_FORM_ACTION"
+  },
+  "POST /hdc/reporting/:formName/:action/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_REPORTING_FORM_ACTION"
+  },
+  "GET /hdc/reporting/:formName/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_REPORTING_FORM"
+  },
+  "POST /hdc/reporting/:formName/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_REPORTING_FORM"
+  },
+  "GET /hdc/risk/riskManagement/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_RISK_MANAGEMENT"
+  },
+  "GET /hdc/risk/riskManagement/:action/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_RISK_MANAGEMENT_ACTION"
+  },
+  "POST /hdc/risk/riskManagement/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_RISK_MANAGEMENT"
+  },
+  "POST /hdc/risk/riskManagement/:action/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_RISK_MANAGEMENT_ACTION"
+  },
+  "GET /hdc/victim/:formName/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_VICTIM_FORM"
+  },
+  "POST /hdc/victim/:formName/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_VICTIM_FORM"
+  },
+  "GET /hdc/victim/:formName/:action/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_VICTIM_FORM_ACTION"
+  },
+  "POST /hdc/victim/:formName/:action/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_VICTIM_FORM_ACTION"
+  },
+  "GET /hdc/vary/licenceDetails/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_LICENCE_DETAILS"
+  },
+  "POST /hdc/vary/licenceDetails/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_LICENCE_DETAILS"
+  },
+  "GET /hdc/vary/varyInCvl/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_VARY_IN_CVL"
+  },
+  "GET /hdc/vary/address/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_VARY_ADDRESS"
+  },
+  "GET /hdc/vary/reportingAddress/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_VARY_REPORTING_ADDRESS"
+  },
+  "POST /hdc/vary/address/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_VARY_ADDRESS"
+  },
+  "POST /hdc/vary/reportingAddress/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_VARY_REPORTING_ADDRESS"
+  },
+  "GET /hdc/vary/:formName/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_VARY_FORM"
+  },
+  "POST /hdc/vary/:formName/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_VARY_FORM"
+  },
+  "GET /hdc/vary/:formName/:action/:bookingId": {
+    "audit": true,
+    "eventType": "VIEW_VARY_FORM_ACTION"
+  },
+  "POST /hdc/vary/:formName/:action/:bookingId": {
+    "audit": true,
+    "eventType": "EDIT_VARY_FORM_ACTION"
+  }
+}
