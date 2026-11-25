@@ -149,7 +149,6 @@
     "romannumerals": "^1.1.1",
     "string-hash": "^1.1.3",
     "superagent": "^10.4.1",
-    "swagger-ui-express": "^5.0.1",
     "util": "^0.12.5",
     "winston": "^3.19.0"
   },

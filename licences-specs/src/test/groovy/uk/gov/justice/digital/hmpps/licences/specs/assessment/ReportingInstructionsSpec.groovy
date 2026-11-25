@@ -96,7 +96,7 @@ class ReportingInstructionsSpec extends GebReportingSpec {
     and: 'I return to the reporting instructions page'
     to ReportingInstructionsPage, testData.testBookingId
 
-    sleep(5)
+    waitFor { name.value() != '' }
 
     then: 'I see the previously entered values'
     name.value() == 'sample name'

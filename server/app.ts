@@ -22,7 +22,6 @@ import setUpHealthChecks from './utils/setUpHealthChecks'
 
 import logger from '../log'
 import auth from './authentication/auth'
-import apiRouter from './routes/api'
 import utilsRouter from './routes/utils'
 import { GotenbergClient } from './data/gotenbergClient'
 import { createRedisClient } from './data/redisClient'
@@ -35,11 +34,7 @@ const version = moment.now().toString()
 const {production} = config
 
 export default function createApp(services: Services, applicationInfo: ApplicationInfo): Express {
-  const {
-    audit,
-    reportingService,
-    userService,
-  } = services
+  const { audit, userService } = services
   const app = express()
 
   auth.init(userService, audit)
@@ -317,11 +312,6 @@ export default function createApp(services: Services, applicationInfo: Applicati
   app.locals.isHdcInCvlNationalRoleOut = config.hdcInCvlNationalRoleOut.isActive
 
   app.use(setupRoutes(services))
-
-  // hide functionality until authorisation strategy is established
-  if (!production) {
-    app.use('/api/', apiRouter({reportingService}))
-  }
 
   // Error Handler
   app.use((req, res) => {
