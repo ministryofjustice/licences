@@ -1,8 +1,10 @@
-import createCaService from '../../server/services/caService'
+import CaService from '../../server/services/caService'
+import { ActiveLduClient } from '../../server/data/activeLduClient'
 import { RoService } from '../../server/services/roService'
 import type { ResponsibleOfficer } from '../../types/licences'
 
 jest.mock('../../server/services/roService')
+jest.mock('../../server/data/activeLduClient')
 
 const responsibleOfficer: ResponsibleOfficer = {
   deliusId: undefined,
@@ -20,22 +22,20 @@ const responsibleOfficer: ResponsibleOfficer = {
 
 describe('caService', () => {
   const roService = new RoService(null, null) as jest.Mocked<RoService>
-  let caService
-  /** @type {any} */
-  let lduActiveClient
+  let caService: CaService
+  const lduActiveClient = new ActiveLduClient() as jest.Mocked<ActiveLduClient>
 
   beforeEach(() => {
     roService.findResponsibleOfficer.mockResolvedValue(responsibleOfficer)
-    lduActiveClient = { isLduPresent: jest.fn() }
 
-    caService = createCaService(roService, lduActiveClient)
+    caService = new CaService(roService, lduActiveClient)
   })
 
   describe('Allow CA to proceed to RO', () => {
     describe('getReasonForNotContinuing', () => {
       it('Should return null', async () => {
         lduActiveClient.isLduPresent.mockResolvedValue(true)
-        const result = await caService.getReasonForNotContinuing('bookingId-1', 'token-1')
+        const result = await caService.getReasonForNotContinuing(1, 'token-1')
         expect(result).toEqual(null)
       })
     })
@@ -46,13 +46,13 @@ describe('caService', () => {
       it('should return [] because RO is allocated, Ldu is active', async () => {
         lduActiveClient.isLduPresent.mockResolvedValue(true)
 
-        const result = await caService.getReasonForNotContinuing('bookingId-1', 'token-1')
+        const result = await caService.getReasonForNotContinuing(1, 'token-1')
         expect(result).toEqual(null)
       })
 
       it('should return LDU_INACTIVE', async () => {
         lduActiveClient.isLduPresent.mockResolvedValue(false)
-        const result = await caService.getReasonForNotContinuing('bookingId-1', 'token-1')
+        const result = await caService.getReasonForNotContinuing(1, 'token-1')
         expect(result).toEqual('LDU_INACTIVE')
       })
 
@@ -60,7 +60,7 @@ describe('caService', () => {
         lduActiveClient.isLduPresent.mockResolvedValue(true)
         responsibleOfficer.isAllocated = false
 
-        const result = await caService.getReasonForNotContinuing('bookingId-1', 'token-1')
+        const result = await caService.getReasonForNotContinuing(1, 'token-1')
         expect(result).toEqual('COM_NOT_ALLOCATED')
       })
 
@@ -69,7 +69,7 @@ describe('caService', () => {
         responsibleOfficer.isAllocated = false
         roService.findResponsibleOfficer.mockResolvedValue(responsibleOfficer)
 
-        const result = await caService.getReasonForNotContinuing('bookingId-1', 'token-1')
+        const result = await caService.getReasonForNotContinuing(1, 'token-1')
         expect(result).toEqual('LDU_INACTIVE')
       })
     })
@@ -84,13 +84,13 @@ describe('caService', () => {
       roService.findResponsibleOfficer.mockResolvedValue(error)
     })
     it('should return NO_OFFENDER_NUMBER because no offender number on nomis for bookingId', async () => {
-      const result = await caService.getReasonForNotContinuing('bookingId-1', 'token-1')
+      const result = await caService.getReasonForNotContinuing(1, 'token-1')
       expect(result).toEqual('NO_OFFENDER_NUMBER')
     })
 
     it('should return NO_COM_ASSIGNED', async () => {
       error.code = 'NO_COM_ASSIGNED'
-      const result = await caService.getReasonForNotContinuing('bookingId-1', 'token-1')
+      const result = await caService.getReasonForNotContinuing(1, 'token-1')
       expect(result).toEqual('COM_NOT_ALLOCATED')
     })
   })

@@ -1,5 +1,5 @@
 /**
- * @typedef {import("../../../types/licences").LduService} LduService
+ * @typedef {import("../../services/lduService").default} LduService
  */
 const { asyncMiddleware, authorisationMiddleware } = require('../../utils/middleware')
 

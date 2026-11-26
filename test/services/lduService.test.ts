@@ -1,22 +1,20 @@
-const createLduService = require('../../server/services/lduService')
-/** @type {any} */
-const deliusClient = {
-  getProbationArea: jest.fn(),
-  getAllProbationAreas: jest.fn(),
-}
-const activeLduClient = {
-  allActiveLdusInArea: jest.fn(),
-  updateActiveLdu: jest.fn(),
-  isLduPresent: jest.fn(),
-}
+import LduService from '../../server/services/lduService'
+import { DeliusClient } from '../../server/data/deliusClient'
+import { ActiveLduClient } from '../../server/data/activeLduClient'
+
+jest.mock('../../server/data/deliusClient')
+jest.mock('../../server/data/activeLduClient')
+
+const deliusClient = new DeliusClient(null) as jest.Mocked<DeliusClient>
+const activeLduClient = new ActiveLduClient() as jest.Mocked<ActiveLduClient>
 
 const probationAreaCode = 'Test1'
 const activeLdus = ['ABC1234', 'DEF345']
-let lduService
+let lduService: LduService
 
 describe('lduService', () => {
   beforeEach(async () => {
-    lduService = await createLduService(deliusClient, activeLduClient)
+    lduService = new LduService(deliusClient, activeLduClient)
     deliusClient.getAllProbationAreas.mockResolvedValue([
       { code: 'ABC123', description: 'desc-1' },
       { code: 'DEF345', description: 'desc-2' },
@@ -59,7 +57,7 @@ describe('lduService', () => {
         ],
       })
 
-      deliusClient.getAllProbationAreas.mockResolvedValue({ content: [{ code: 'Lon', description: 'London' }] })
+      deliusClient.getAllProbationAreas.mockResolvedValue([{ code: 'Lon', description: 'London' }])
       activeLduClient.allActiveLdusInArea.mockResolvedValue([{ code: 'ham' }, { code: 'pic' }])
 
       const result = await lduService.getProbationArea('Lon')
@@ -92,7 +90,7 @@ describe('lduService', () => {
         ],
       })
 
-      deliusClient.getAllProbationAreas.mockResolvedValue({ content: [{ code: 'Lon', description: 'London' }] })
+      deliusClient.getAllProbationAreas.mockResolvedValue([{ code: 'Lon', description: 'London' }])
       activeLduClient.allActiveLdusInArea.mockResolvedValue([{ code: 'ham' }, { code: 'pic' }])
 
       const result = await lduService.getProbationArea('Lon')

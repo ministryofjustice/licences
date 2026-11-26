@@ -1,5 +1,6 @@
 import path from 'path'
-import { PrisonerService, CaService } from '../../types/licences'
+import { PrisonerService } from '../../types/licences'
+import CaService from '../services/caService'
 import { asyncMiddleware } from '../utils/middleware'
 import getLicenceStatus from '../services/licence/licenceStatus'
 import { getStatusLabel } from '../services/licence/licenceStatusLabels'

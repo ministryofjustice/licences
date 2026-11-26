@@ -89,10 +89,6 @@ export interface PrisonerService {
   ) => Promise<{ submissionTarget: any; source: Destination; target: Destination }>
 }
 
-export interface CaService {
-  getReasonForNotContinuing: (bookingId: number, token: string) => Promise<string | undefined>
-}
-
 interface LicenceDetailsforCSV {
   prisonerNumber: string
   prisonId: string
@@ -110,16 +106,6 @@ export interface LduStatus {
   code: string
   description: string
   active: boolean
-}
-
-export interface LduService {
-  getAllProbationAreas: () => Promise<Array<KeyValue>>
-  getProbationArea: (probationAreaCode: string) => Promise<ProbationArea>
-  updateActiveLdus: (probationAreaCode: string, activeLdus: string[]) => Promise<void>
-}
-
-export interface LicenceSearchService {
-  findForId: (username: string, id: string) => Promise<number | undefined>
 }
 
 export type PrisonDestination = {
