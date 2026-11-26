@@ -59,16 +59,6 @@ type NotificationArgs = {
   sendingUserName: string
 }
 
-export interface RoNotificationSender {
-  notificationTypes: any
-  sendNotifications: (args: NotificationArgs) => Promise<Array<any>>
-  getNotifications: (
-    responsibleOfficer: ResponsibleOfficerAndContactDetails,
-    personalisation: any,
-    config: any,
-  ) => Array<any>
-}
-
 export interface PrisonerService {
   getPrisonerDetails: (bookingId: number, token: string) => Promise<any>
   getEstablishmentForPrisoner: (bookingId: number, token: string) => Promise<any>

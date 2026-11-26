@@ -1,10 +1,32 @@
-const templates = require('../config/notificationTemplates')
-const logger = require('../../../log')
-const { isEmpty } = require('../../utils/functionalHelpers')
+import templates from '../config/notificationTemplates'
+import logger from '../../../log'
+import { isEmpty } from '../../utils/functionalHelpers'
+import type { AuditClient } from '../../data/audit'
 
-module.exports = function createNotificationSender(notifyClient, audit, notifyKey) {
-  async function notify({ sendingUserName, notificationType, bookingId, notifications }) {
-    if (isEmpty(notifyKey) || notifyKey === 'NOTIFY_OFF') {
+export interface Notification {
+  personalisation: object
+  email: string
+  templateName: string
+}
+
+export interface NotifyArgs {
+  sendingUserName: string
+  notificationType: string
+  bookingId: number
+  notifications: Notification[]
+}
+
+export default class NotificationSender {
+  constructor(
+    private readonly notifyClient: {
+      sendEmail: (templateId: string, email: string, options: { personalisation: object }) => Promise<unknown>
+    },
+    private readonly audit: AuditClient,
+    private readonly notifyKey: string
+  ) {}
+
+  async notify({ sendingUserName, notificationType, bookingId, notifications }: NotifyArgs): Promise<void> {
+    if (isEmpty(this.notifyKey) || this.notifyKey === 'NOTIFY_OFF') {
       logger.warn('No notification API key - notifications disabled')
       return
     }
@@ -25,7 +47,7 @@ module.exports = function createNotificationSender(notifyClient, audit, notifyKe
       if (isEmpty(notification.email)) {
         logger.warn('Empty notification email')
       } else {
-        notifyClient
+        this.notifyClient
           .sendEmail(templateId, notification.email, { personalisation: notification.personalisation })
           .then(() => {
             logger.info(`Successful notify for email: ${notification.email}`)
@@ -36,18 +58,10 @@ module.exports = function createNotificationSender(notifyClient, audit, notifyKe
           })
       }
     })
-    auditEvent(sendingUserName, bookingId, notificationType, notifications)
-  }
-
-  function auditEvent(user, bookingId, notificationType, notifications) {
-    audit.record('NOTIFY', user, {
+    this.audit.record('NOTIFY', sendingUserName, {
       bookingId,
       notificationType,
       notifications,
     })
-  }
-
-  return {
-    notify,
   }
 }
