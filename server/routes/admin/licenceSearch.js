@@ -1,5 +1,5 @@
 /**
- * @typedef {import("../../../types/licences").LicenceSearchService} LicenceSearchService
+ * @typedef {import("../../services/licenceSearchService").default} LicenceSearchService
  */
 const { asyncMiddleware, authorisationMiddleware } = require('../../utils/middleware')
 const logger = require('../../../log')

@@ -39,10 +39,10 @@ import { buildRestClient, clientCredentialsTokenSource } from '../data/restClien
 import { DeliusClient } from '../data/deliusClient'
 import { ProbationTeamsClient } from '../data/probationTeamsClient'
 import { RoService } from './roService'
-import createCaService from './caService'
-import createLduService from './lduService'
+import CaService from './caService'
+import LduService from './lduService'
 import { FunctionalMailboxService } from './functionalMailboxService'
-import createLicenceSearchService from './licenceSearchService'
+import LicenceSearchService from './licenceSearchService'
 import ReportsService from './reportsService'
 import tokenVerifierFactory from '../authentication/tokenverifier/tokenVerifierFactory'
 import TokenStore from '../data/tokenStore'
@@ -98,7 +98,7 @@ const probationTeamsClient = new ProbationTeamsClient(
 )
 
 const roService = new RoService(deliusClient, nomisClientBuilder)
-const caService = createCaService(roService, activeLduClient)
+const caService = new CaService(roService, activeLduClient)
 const prisonerService = createPrisonerService(nomisClientBuilder, roService, signInService)
 const caseListFormatter = createCaseListFormatter(licenceClient)
 const caseListService = createCaseListService(nomisClientBuilder, roService, licenceClient, caseListFormatter)
@@ -158,9 +158,9 @@ const reminderService = createReminderService(
 const eventService = createNomisPushService(nomisClientBuilder, signInService, hdcService)
 const notificationJobs = createNotificationJobs(reminderService, signInService)
 const jobSchedulerService = createJobSchedulerService(dbLockingClient, configClient, notificationJobs)
-const lduService = createLduService(deliusClient, activeLduClient)
+const lduService = new LduService(deliusClient, activeLduClient)
 const functionalMailboxService = new FunctionalMailboxService(deliusClient, probationTeamsClient, audit)
-const licenceSearchService = createLicenceSearchService(licenceClient, signInService, nomisClientBuilder)
+const licenceSearchService = new LicenceSearchService(licenceClient, signInService, nomisClientBuilder)
 const reportsService = new ReportsService(licenceClient, signInService, prisonerSearchApi, probationSearchApi)
 const tokenVerifier = tokenVerifierFactory(config.apis.tokenVerification)
 
