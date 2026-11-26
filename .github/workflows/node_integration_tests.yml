@@ -13,6 +13,11 @@ on:
         required: false
         type: string
         default: '.nvmrc'
+      test-report-continue-on-error:
+        description: Whether a failure to publish the test report (e.g. a transient 404 downloading the artifact) should leave the job passing
+        type: boolean
+        default: false
+        required: false
 
 permissions:
   contents: read
@@ -126,6 +131,7 @@ jobs:
             app.log
       - name: publish test report
         if: ${{ !cancelled() && github.event.repository.visibility == 'public' }}
+        continue-on-error: ${{ inputs.test-report-continue-on-error }}
         uses: dorny/test-reporter@a43b3a5f7366b97d083190328d2c652e1a8b6aa2 # v3.0.0
         with:
           artifact: ${{ inputs.test_results_artifact_name }}
