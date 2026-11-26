@@ -89,9 +89,15 @@ class ReportingInstructionsSpec extends GebReportingSpec {
     town << 'sample town'
     postcode << 'AB1 1AB'
     telephone << '0123456789'
+    reportingDay << '01'
+    reportingMonth << '01'
+    reportingYear << '2099'
+    js.exec("document.getElementById('reportingTime').value = '12:30'")
 
     and: 'I save and continue'
+    def submitFrom = browser.currentUrl
     find('#continueBtn').click()
+    waitFor { browser.currentUrl != submitFrom }
 
     and: 'I return to the reporting instructions page'
     to ReportingInstructionsPage, testData.testBookingId

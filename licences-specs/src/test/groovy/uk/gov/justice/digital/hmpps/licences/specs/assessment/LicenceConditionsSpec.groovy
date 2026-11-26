@@ -135,7 +135,9 @@ class LicenceConditionsSpec extends GebReportingSpec {
     $("#groupsOrOrganisation") << 'sample input'
 
     and: 'I save and continue'
+    def submitFrom = browser.currentUrl
     find('#continueBtn').click()
+    waitFor { browser.currentUrl != submitFrom }
 
     and: 'I view the additional conditions page'
     to LicenceConditionsAdditionalPage, testData.testBookingId
@@ -158,7 +160,9 @@ class LicenceConditionsSpec extends GebReportingSpec {
     $("form").abuseAndBehaviours = ['alcohol', 'drug']
 
     and: 'I save and continue'
+    def submitFrom = browser.currentUrl
     find('#continueBtn').click()
+    waitFor { browser.currentUrl != submitFrom }
 
     and: 'I return to the additional conditions page'
     to LicenceConditionsAdditionalPage, testData.testBookingId
@@ -181,7 +185,9 @@ class LicenceConditionsSpec extends GebReportingSpec {
     bespoke.conditions[0].input << 'Bespoke 1'
 
     and: 'I save and continue'
+    def submitFrom = browser.currentUrl
     find('#continueBtn').click()
+    waitFor { browser.currentUrl != submitFrom }
 
     when: 'I view the additional conditions page'
     to LicenceConditionsAdditionalPage, testData.testBookingId
@@ -213,7 +219,9 @@ class LicenceConditionsSpec extends GebReportingSpec {
     !bespoke.conditions*.value.contains('Bespoke 2')
 
     when: 'I click to continue'
+    def submitFrom = browser.currentUrl
     find('#continueBtn').click()
+    waitFor { browser.currentUrl != submitFrom }
 
     and: 'I return to the additional conditions page'
     to LicenceConditionsAdditionalPage, testData.testBookingId

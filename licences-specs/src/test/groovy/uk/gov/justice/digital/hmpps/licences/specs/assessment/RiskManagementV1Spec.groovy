@@ -125,12 +125,12 @@ class RiskManagementV1Spec extends GebReportingSpec {
     addressSuitableRadios.checked = 'No'
 
     and: 'I save and continue'
+    def submitFrom = browser.currentUrl
     find('#continueBtn').click()
+    waitFor { browser.currentUrl != submitFrom }
 
     and: 'I return to the risk management page'
     to RiskManagementV1Page, testData.testBookingId
-
-    sleep(5)
 
     then: 'I see the previously entered values'
     riskManagementRadios.checked == 'Yes'

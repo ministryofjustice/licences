@@ -71,7 +71,9 @@ class ApprovalConsiderationSpec extends GebReportingSpec {
 
     and: 'I select Yes and continue'
     considerationRadios.checked = 'Yes'
+    def submitFrom = browser.currentUrl
     saveAndContinue.click()
+    waitFor { browser.currentUrl != submitFrom }
 
     then: 'I navigate to the tasklist'
     to TaskListPage , testData.testBookingId

@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.licences.specs.assessment
 
 import geb.spock.GebReportingSpec
+import org.openqa.selenium.StaleElementReferenceException
 import spock.lang.Shared
 import spock.lang.Stepwise
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.LicenceConditionsAdditionalPage
@@ -62,7 +63,9 @@ class LicenceConditionsSummarySpec extends GebReportingSpec {
   def 'Edit condition returns to the additional conditions screen'() {
 
     when: 'I view the conditions summary page'
+    def submitFrom = browser.currentUrl
     find('#continueBtn').click()
+    waitFor { browser.currentUrl != submitFrom }
     at LicenceConditionsSummaryPage
 
     then: 'I see an edit condition link for each condition in the sample licence we loaded'
@@ -96,7 +99,9 @@ class LicenceConditionsSummarySpec extends GebReportingSpec {
     conditions.additional[1].content.contains('sample input')
 
     when: 'I click delete'
+    def deleteButton = conditions.additional[1].deleteControl.firstElement()
     conditions.additional[1].deleteControl.click()
+    waitFor { isStale(deleteButton) }
 
     then: 'I return to the conditions summary page'
     at LicenceConditionsSummaryPage
@@ -113,7 +118,9 @@ class LicenceConditionsSummarySpec extends GebReportingSpec {
     conditions.additional[3].content.contains('bespoke text')
 
     when: 'I delete the bespoke condition'
+    def deleteButton = conditions.additional[3].deleteControl.firstElement()
     conditions.additional[3].deleteControl.click()
+    waitFor { isStale(deleteButton) }
 
     then: 'The deleted condition is no longer shown'
     at LicenceConditionsSummaryPage
@@ -125,7 +132,9 @@ class LicenceConditionsSummarySpec extends GebReportingSpec {
     at LicenceConditionsSummaryPage
 
     when: 'I try to save the additional conditions without providing justification text'
+    def clickedSubmit = submitButton.firstElement()
     submitButton.click()
+    waitFor { isStale(clickedSubmit) }
 
     then: 'error is thrown'
     at LicenceConditionsSummaryPage
@@ -168,4 +177,12 @@ class LicenceConditionsSummarySpec extends GebReportingSpec {
     conditions.additional[0].content.contains('violent behaviour')
   }
 
+  private boolean isStale(element) {
+    try {
+      element.isEnabled()
+      return false
+    } catch (StaleElementReferenceException ignored) {
+      return true
+    }
+  }
 }
