@@ -118,7 +118,9 @@ class CaTaskListSpec extends GebReportingSpec {
     when: 'I withdraw the address'
     to TaskListPage, testData.testBookingId
     taskListAction(tasks.address).click()
+    def submitFrom = browser.currentUrl
     $('#withdrawConsent').click()
+    waitFor { browser.currentUrl != submitFrom }
 
     and: 'I view the taskist'
     to TaskListPage, testData.testBookingId

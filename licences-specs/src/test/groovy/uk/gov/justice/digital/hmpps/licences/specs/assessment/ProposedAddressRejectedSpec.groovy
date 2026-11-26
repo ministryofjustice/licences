@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.licences.specs.assessment
 
 import geb.spock.GebReportingSpec
+import org.openqa.selenium.StaleElementReferenceException
 import spock.lang.Shared
 import spock.lang.Stepwise
 import uk.gov.justice.digital.hmpps.licences.pages.assessment.ProposedAddressRejectedPage
@@ -34,7 +35,9 @@ class ProposedAddressRejectedSpec extends GebReportingSpec {
         to ProposedAddressRejectedPage, testData.testBookingId
 
         when: 'I select the continue button'
+        def clickedButton = continueButton.firstElement()
         continueButton.click()
+        waitFor { isStale(clickedButton) }
 
         then: 'I am redirected to the same page and error messages are displayed'
         at ProposedAddressRejectedPage
@@ -73,5 +76,13 @@ class ProposedAddressRejectedSpec extends GebReportingSpec {
         then: 'I am taken to the curfew address page'
         at ProposedAddressCurfewAddressChoicePage
     }
-}
 
+    private boolean isStale(element) {
+        try {
+            element.isEnabled()
+            return false
+        } catch (StaleElementReferenceException ignored) {
+            return true
+        }
+    }
+}

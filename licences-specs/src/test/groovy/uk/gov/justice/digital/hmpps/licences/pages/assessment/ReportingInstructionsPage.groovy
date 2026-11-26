@@ -20,5 +20,9 @@ class ReportingInstructionsPage extends Page {
     town { $('#town') }
     postcode { $('#postcode') }
     telephone { $('#telephone') }
+    reportingDay { $('#reportingDate') }
+    reportingMonth { $('#reportingMonth') }
+    reportingYear { $('#reportingYear') }
+    reportingTime { $('#reportingTime') }
   }
 }

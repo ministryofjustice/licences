@@ -1,6 +1,7 @@
 package uk.gov.justice.digital.hmpps.licences.specs.eligibility
 
 import geb.spock.GebReportingSpec
+import org.openqa.selenium.StaleElementReferenceException
 import spock.lang.Shared
 import spock.lang.Stepwise
 import spock.lang.Unroll
@@ -68,7 +69,9 @@ class BassRequestSpec extends GebReportingSpec {
 
     when: 'I choose yes and save'
     specificAreaRadios.checked = 'Yes'
-    find('#continueBtn').click()
+    def continueButton = find('#continueBtn').firstElement()
+    continueButton.click()
+    waitFor { isStale(continueButton) }
 
     then: 'I see validation errors'
     at BassRequestPage
@@ -153,5 +156,14 @@ class BassRequestSpec extends GebReportingSpec {
     choice | page
     'No'   | CurfewAddressChoicePage
     'Yes'  | BassRequestPage
+  }
+
+  private boolean isStale(element) {
+    try {
+      element.isEnabled()
+      return false
+    } catch (StaleElementReferenceException ignored) {
+      return true
+    }
   }
 }
