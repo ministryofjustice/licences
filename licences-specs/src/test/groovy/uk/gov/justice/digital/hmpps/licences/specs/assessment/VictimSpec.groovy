@@ -67,12 +67,12 @@ class VictimSpec extends GebReportingSpec {
     victimLiaisonRadios.checked = 'Yes'
 
     and: 'I save and continue'
+    def submitFrom = browser.currentUrl
     find('#continueBtn').click()
+    waitFor { browser.currentUrl != submitFrom }
 
     and: 'I return to the victim liaison page'
     to VictimLiaisonPage, testData.testBookingId
-
-    sleep(5)
 
     then: 'I see the previously entered values'
     victimLiaisonRadios.checked == 'Yes'

@@ -82,12 +82,12 @@ class CurfewAddressReviewSpecV1 extends GebReportingSpec {
     homeVisitRadios.checked = 'No'
 
     and: 'I save and continue'
+    def submitFrom = browser.currentUrl
     find('#continueBtn').click()
+    waitFor { browser.currentUrl != submitFrom }
 
     and: 'I move to the address review page'
     to CurfewAddressReviewPageV1, testData.testBookingId
-
-    sleep(5)
 
     then: 'I see the previously entered values'
     landlordConsentRadios.checked == 'Yes'
