@@ -13,7 +13,7 @@ describe('/warnings', () => {
       bookingId: id * 10,
       timestamp: new Date(),
       code: `code-${id}`,
-      messsage: `message-${id}`,
+      message: `message-${id}`,
     })
     warningsClient = createWarningsClientStub()
     warningsClient.getOutstandingWarnings = jest.fn().mockReturnValue([createWarning(1), createWarning(2)])

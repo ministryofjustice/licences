@@ -1,12 +1,13 @@
 import nock from 'nock'
-import { RoUser, userClient } from '../../server/data/userClient'
+import { RoUser, UserClient } from '../../server/data/userClient'
 import UserAdminService from '../../server/services/userAdminService'
 import { ProbationTeamsClient } from '../../server/data/probationTeamsClient'
 
 jest.mock('../../server/data/userClient')
 jest.mock('../../server/data/probationTeamsClient')
 
-const mockUserClient = userClient as jest.Mocked<typeof userClient>
+const userClient = new UserClient() as jest.Mocked<UserClient>
+const mockUserClient = userClient
 
 describe('userAdminService', () => {
   let nomisClient

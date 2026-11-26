@@ -15,7 +15,7 @@ export interface RoUser {
   staffIdentifier: number
 }
 
-export const userClient = {
+export class UserClient {
   async getRoUsers(page?): Promise<Array<RoUser>> {
     const query = page
       ? {
@@ -29,7 +29,7 @@ export const userClient = {
     const { rows } = await db.query(query)
 
     return rows.map(convertPropertyNames)
-  },
+  }
 
   async getCasesRequiringRo(): Promise<Array<number>> {
     const query = {
@@ -43,7 +43,7 @@ export const userClient = {
     }
 
     return []
-  },
+  }
 
   async getRoUser(nomisId): Promise<RoUser | null> {
     const query = {
@@ -58,7 +58,7 @@ export const userClient = {
     }
 
     return null
-  },
+  }
 
   async getRoUserByStaffIdentifier(staffIdentifier: number): Promise<RoUser | null> {
     const query = {
@@ -73,7 +73,7 @@ export const userClient = {
     }
 
     return null
-  },
+  }
 
   async getRoUserByDeliusUsername(username): Promise<RoUser | null> {
     const query = {
@@ -88,7 +88,7 @@ export const userClient = {
     }
 
     return null
-  },
+  }
 
   async updateRoUser(originalNomisId: string, staffIdentifier: number) {
     const query = {
@@ -99,7 +99,7 @@ export const userClient = {
     }
 
     return db.query(query)
-  },
+  }
 
   async findRoUsers(searchTerm): Promise<Array<RoUser>> {
     const query = {
@@ -125,7 +125,7 @@ export const userClient = {
     }
 
     return []
-  },
+  }
 }
 
 function convertPropertyNames(user): RoUser | null {

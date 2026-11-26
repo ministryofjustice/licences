@@ -12,11 +12,11 @@ export type ErrorObject = {
 
 export default ({
   licenceService,
-  nomisPushService,
+  eventService,
   hdcService,
 }: {
   licenceService: LicenceService
-  nomisPushService
+  eventService
   hdcService
 }) =>
   (router, audited, config) => {
@@ -24,7 +24,7 @@ export default ({
       formConfig,
       licenceService,
       sectionName: 'finalChecks',
-      nomisPushService,
+      eventService,
       config,
     })
 
@@ -32,13 +32,13 @@ export default ({
     router.post(
       '/postpone/:bookingId',
       audited,
-      asyncMiddleware(postPostpone(licenceService, nomisPushService, hdcService, config))
+      asyncMiddleware(postPostpone(licenceService, eventService, hdcService, config))
     )
 
     router.post(
       '/refuse/:bookingId',
       audited,
-      asyncMiddleware(postRefusal(licenceService, nomisPushService, config))
+      asyncMiddleware(postRefusal(licenceService, eventService, config))
     )
 
     router.get('/:formName/:bookingId', asyncMiddleware(standard.get))
@@ -72,7 +72,7 @@ function getPostpone(licenceService) {
   return get
 }
 
-function postPostpone(licenceService, nomisPushService, hdcService, config) {
+function postPostpone(licenceService, eventService, hdcService, config) {
   async function post(req, res) {
     const { bookingId } = req.params
     const { username } = req.user
@@ -140,10 +140,10 @@ function postPostpone(licenceService, nomisPushService, hdcService, config) {
       // No push unless status matches for pass or fail, ie not when missing.
       // Passed/failed will always be opposite of each other.
       if (failed || passed) {
-        await nomisPushService.pushChecksPassed({ bookingId, passed, username, licenceId, offenderNo })
+        await eventService.pushChecksPassed({ bookingId, passed, username, licenceId, offenderNo })
       }
 
-      await nomisPushService.pushStatus({ bookingId, data: { type: 'postpone', status, reason }, username, licenceId, offenderNo })
+      await eventService.pushStatus({ bookingId, data: { type: 'postpone', status, reason }, username, licenceId, offenderNo })
     }
   }
 
@@ -157,7 +157,7 @@ function postPostpone(licenceService, nomisPushService, hdcService, config) {
   return post
 }
 
-function postRefusal(licenceService, nomisPushService, appConfig) {
+function postRefusal(licenceService, eventService, appConfig) {
   async function post(req, res) {
     const { bookingId } = req.params
     const { username } = req.user
@@ -190,7 +190,7 @@ function postRefusal(licenceService, nomisPushService, appConfig) {
     const { decision, reason } = userInput
     if (decision === 'Yes') {
       if (appConfig.pushToNomis) {
-        await nomisPushService.pushStatus({ bookingId, data: { type: 'refusal', status: 'Yes', reason }, username, licenceId, offenderNo })
+        await eventService.pushStatus({ bookingId, data: { type: 'refusal', status: 'Yes', reason }, username, licenceId, offenderNo })
       }
     }
 

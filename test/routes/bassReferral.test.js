@@ -282,14 +282,14 @@ describe('/hdc/bassReferral', () => {
       })
 
       test(`should push optout status to nomis`, () => {
-        const nomisPushService = createNomisPushServiceStub()
+        const eventService = createNomisPushServiceStub()
         const hdcService = createHdcServiceStub()
         const licenceService = createLicenceServiceStub()
         licenceService.getLicence.mockResolvedValue({ id: 1, licence: {} })
 
         const app = createApp(
           {
-            nomisPushServiceStub: nomisPushService,
+            eventServiceStub: eventService,
             licenceServiceStub: licenceService,
             hdcServiceStub: hdcService,
           },
@@ -302,8 +302,8 @@ describe('/hdc/bassReferral', () => {
           .send({ decision: 'OptOut' })
           .expect(302)
           .expect(() => {
-            expect(nomisPushService.pushStatus).toHaveBeenCalled()
-            expect(nomisPushService.pushStatus).toHaveBeenCalledWith({
+            expect(eventService.pushStatus).toHaveBeenCalled()
+            expect(eventService.pushStatus).toHaveBeenCalledWith({
               bookingId: '1',
               data: { type: 'optOut', status: 'Yes', cvlEventReason: 'CA_USER_TEST opted out of HDC after COM added an approved CAS2 premises' },
               username: 'CA_USER_TEST',
@@ -453,13 +453,13 @@ describe('/hdc/bassReferral', () => {
   })
 })
 
-function createApp({ licenceServiceStub, nomisPushServiceStub = null, hdcServiceStub = null}, user, config = {}) {
+function createApp({ licenceServiceStub, eventServiceStub = null, hdcServiceStub = null}, user, config = {}) {
   const auditService = createAuditServiceStub()
   const prisonerService = createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const hdcService = hdcServiceStub || createHdcServiceStub()
   const signInService = createSignInServiceStub()
-  const nomisPushService = nomisPushServiceStub || createNomisPushServiceStub()
+  const eventService = eventServiceStub || createNomisPushServiceStub()
   const audit = mockAudit()
 
   const baseRouter = standardRouter({
@@ -471,7 +471,7 @@ function createApp({ licenceServiceStub, nomisPushServiceStub = null, hdcService
     tokenVerifier: new NullTokenVerifier(),
     config,
   })
-  const route = baseRouter(createRoute({ licenceService, nomisPushService, hdcService }))
+  const route = baseRouter(createRoute({ licenceService, eventService, hdcService }))
 
   return appSetup(route, user, '/hdc/bassReferral')
 }

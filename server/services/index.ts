@@ -2,14 +2,14 @@ import { NotifyClient } from 'notifications-node-client'
 import { telemetry } from '@ministryofjustice/hmpps-azure-telemetry'
 import { AuditServiceFactory } from '@ministryofjustice/hmpps-audit-client'
 import logger from '../../log'
-import { userClient } from '../data/userClient'
-import configClient from '../data/configClient'
-import dbLockingClient from '../data/dbLockingClient'
-import audit from '../data/audit'
+import { UserClient } from '../data/userClient'
+import { ConfigClient } from '../data/configClient'
+import { DbLockingClient } from '../data/dbLockingClient'
+import { AuditClient } from '../data/audit'
 import nomisClientBuilder from '../data/nomisClientBuilder'
 import pdfFormatter from "./utils/pdfFormatter"
-import activeLduClient from '../data/activeLduClient'
-import warningClient from '../data/warningClient'
+import { ActiveLduClient } from '../data/activeLduClient'
+import { WarningClient } from '../data/warningClient'
 import SignInService from '../authentication/signInService'
 import { createLicenceService } from "./licenceService"
 import { createPrisonerService } from "./prisonerService"
@@ -31,7 +31,7 @@ import EventPublisher from './notifications/eventPublisher'
 import { RoContactDetailsService } from './roContactDetailsService'
 import createReminderService from './reminderService'
 
-import createNomisPushService from './nomisPushService'
+import createNomisPushService from './eventService'
 import createDeadlineService from './deadlineService'
 import createJobSchedulerService from './jobSchedulerService'
 import createNotificationJobs from './jobs/notificationJobs'
@@ -51,10 +51,18 @@ import prisonerSearchApi from '../data/prisonerSearchApi'
 import manageUsersApi from '../data/manageUsersApi'
 import probationSearchApi from '../data/probationSearchApi'
 import { HdcClient } from '../data/hdcApiClient'
+import { LicenceClient } from '../data/licenceClient'
 import { createHdcService } from './hdc/hdcService'
 import AuditService from './audit/auditService'
-import { licenceClient } from '../data/licenceClient'
 import config from '../config'
+
+const licenceClient = new LicenceClient()
+const userClient = new UserClient()
+const configClient = new ConfigClient()
+const dbLockingClient = new DbLockingClient()
+const audit = new AuditClient()
+const activeLduClient = new ActiveLduClient()
+const warningClient = new WarningClient()
 
 const notifyClient = new NotifyClient(config.notifications.notifyKey)
 
@@ -147,7 +155,7 @@ const reminderService = createReminderService(
   roNotificationSender,
   config.notifications.activeNotificationTypes
 )
-const nomisPushService = createNomisPushService(nomisClientBuilder, signInService, hdcService)
+const eventService = createNomisPushService(nomisClientBuilder, signInService, hdcService)
 const notificationJobs = createNotificationJobs(reminderService, signInService)
 const jobSchedulerService = createJobSchedulerService(dbLockingClient, configClient, notificationJobs)
 const lduService = createLduService(deliusClient, activeLduClient)
@@ -172,8 +180,10 @@ export const services = {
   userAdminService,
   notificationService,
   userService,
-  nomisPushService,
+  eventService,
   configClient,
+  licenceClient,
+  activeLduClient,
   jobSchedulerService,
   licenceSearchService,
   reportsService,

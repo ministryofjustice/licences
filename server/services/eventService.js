@@ -97,10 +97,11 @@ function hasCvlEventType(approvalStatuses, data) {
 }
 
 function getCvlEventData({ type, status, reason, cvlEventReason }) {
+  const ineligibleReason = type === 'excluded' || type === 'exceptionalCircumstances' ? 'ineligible for HDC' : null
   const eventReason = selectFirst(reason)
   return {
     cvlEventType: eventReason ? statusReasonValues[type][status][eventReason][1].cvlEventType : statusValues[type][status][1].cvlEventType,
-    cvlEventReason: cvlEventReason || eventReason
+    cvlEventReason: ineligibleReason || cvlEventReason || selectFirst(reason)
   }
 }
 

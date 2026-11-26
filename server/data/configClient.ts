@@ -10,7 +10,7 @@ export interface Mailbox {
 
 export type MailboxInput = Omit<Mailbox, 'id'>
 
-const configClient = {
+export class ConfigClient {
   async getAllMailboxes(): Promise<Mailbox[]> {
     const query = {
       text: 'select * from notifications_config order by establishment ASC',
@@ -19,7 +19,7 @@ const configClient = {
     const { rows } = await db.query(query)
 
     return rows
-  },
+  }
 
   async getMailboxes(establishment: string, role: string): Promise<Mailbox[]> {
     const query = {
@@ -30,7 +30,7 @@ const configClient = {
     const { rows } = await db.query(query)
 
     return rows
-  },
+  }
 
   async getMailbox(id: number | string): Promise<Mailbox | Record<string, never>> {
     const query = {
@@ -41,7 +41,7 @@ const configClient = {
     const { rows } = await db.query(query)
 
     return rows ? rows[0] : {}
-  },
+  }
 
   async updateMailbox(id: number | string, { email, establishment, role, name }: MailboxInput) {
     const query = {
@@ -52,7 +52,7 @@ const configClient = {
     }
 
     return db.query(query)
-  },
+  }
 
   async deleteMailbox(id: number | string) {
     const query = {
@@ -61,7 +61,7 @@ const configClient = {
     }
 
     return db.query(query)
-  },
+  }
 
   async addMailbox({ email, establishment, role, name }: MailboxInput) {
     const query = {
@@ -72,7 +72,7 @@ const configClient = {
     }
 
     return db.query(query)
-  },
+  }
 
   async getJobSpec(name: string) {
     const query = {
@@ -83,7 +83,7 @@ const configClient = {
     const { rows } = await db.query(query)
 
     return rows ? rows[0].spec : {}
-  },
+  }
 
   async setJobSpec(name: string, spec: unknown) {
     const query = {
@@ -92,7 +92,5 @@ const configClient = {
     }
 
     return db.query(query)
-  },
+  }
 }
-
-export default configClient

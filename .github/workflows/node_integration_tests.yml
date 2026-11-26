@@ -27,6 +27,7 @@ jobs:
       NOMIS_API_URL: http://localhost:8080/prisonApi
       NOMIS_AUTH_URL: http://localhost:8080/auth
       NOMIS_AUTH_EXTERNAL_URL: http://localhost:8080/auth
+      HDC_API_URL: http://localhost:8080/hdcApi
       DELIUS_API_URL: http://localhost:8080/delius
       PROBATION_TEAMS_API_URL: http://localhost:8080/probationteams
       MANAGE_USERS_API_URL: http://localhost:8080/manageUsersApi

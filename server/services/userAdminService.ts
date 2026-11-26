@@ -1,10 +1,10 @@
 import type { ProbationTeamsClient } from '../data/probationTeamsClient'
-import { userClient as UserClient } from '../data/userClient'
+import { UserClient } from '../data/userClient'
 
 export = class UserAdminService {
   constructor(
     readonly nomisClientBuilder,
-    readonly userClient: typeof UserClient,
+    readonly userClient: UserClient,
     readonly probationTeamsClient: ProbationTeamsClient
   ) {}
 

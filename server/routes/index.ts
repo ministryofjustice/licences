@@ -59,7 +59,7 @@ export default function Index({
                                 licenceSearchService,
                                 licenceService,
                                 migrationService,
-                                nomisPushService,
+                                eventService,
                                 notificationService,
                                 pdfService,
                                 prisonerService,
@@ -111,7 +111,7 @@ export default function Index({
   router.use(
     '/admin/licences/',
     secureRoute(
-      licenceRouter(licenceService, signInService, prisonerService, audit, roNotificationHandler, nomisPushService)
+      licenceRouter(licenceService, signInService, prisonerService, audit, roNotificationHandler, eventService)
     )
   )
   router.use('/admin/functionalMailboxes', secureRoute(functionalMailboxRouter(functionalMailboxService)))
@@ -125,18 +125,18 @@ export default function Index({
   )
   router.use('/hdc/people-ready-for-probation-checks', secureRoute(caReportsRouter(reportsService, audit)))
 
-  router.use('/hdc/proposedAddress/', secureRoute(addressRouter({licenceService, nomisPushService, hdcService})))
+  router.use('/hdc/proposedAddress/', secureRoute(addressRouter({licenceService, eventService, hdcService})))
   router.use('/hdc/approval/', secureRoute(approvalRouter({
     licenceService,
     prisonerService,
-    nomisPushService,
+    eventService,
     hdcService
   })))
-  router.use('/hdc/bassReferral/', secureRoute(bassReferralRouter({licenceService, nomisPushService, hdcService})))
+  router.use('/hdc/bassReferral/', secureRoute(bassReferralRouter({licenceService, eventService, hdcService})))
   router.use('/hdc/licenceConditions/', secureRoute(conditionsRouter({licenceService, conditionsServiceFactory})))
-  router.use('/hdc/curfew/', secureRoute(curfewRouter({licenceService, nomisPushService, hdcService})))
-  router.use('/hdc/eligibility/', secureRoute(eligibilityRouter({licenceService, nomisPushService})))
-  router.use('/hdc/finalChecks/', secureRoute(finalChecksRouter({licenceService, nomisPushService, hdcService})))
+  router.use('/hdc/curfew/', secureRoute(curfewRouter({licenceService, eventService, hdcService})))
+  router.use('/hdc/eligibility/', secureRoute(eligibilityRouter({licenceService, eventService})))
+  router.use('/hdc/finalChecks/', secureRoute(finalChecksRouter({licenceService, eventService, hdcService})))
   router.use('/hdc/review/', secureRoute(reviewRouter({licenceService, conditionsServiceFactory, prisonerService})))
   router.use('/hdc/reporting/', secureRoute(reportingRouter({licenceService})))
   router.use('/hdc/risk/', secureRoute(riskRouter({licenceService})))

@@ -6,7 +6,7 @@
  * @typedef {import("../../types/licences").Error} Error
  * @typedef {import("../../types/licences").CaService} CaService
  * @typedef {import("./roService").RoService} RoService
- *  @typedef {import("../../types/licences").ActiveLduClient} ActiveLduClient
+ *  @typedef {import("../data/activeLduClient").ActiveLduClient} ActiveLduClient
  */
 
 const logger = require('../../log')

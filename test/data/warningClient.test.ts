@@ -1,9 +1,10 @@
-import warningClient from '../../server/data/warningClient'
+import { WarningClient } from '../../server/data/warningClient'
 import * as dbModule from '../../server/data/dataAccess/db'
 
 jest.mock('../../server/data/dataAccess/db')
 
 const db = dbModule as jest.Mocked<typeof dbModule>
+const warningClient = new WarningClient()
 
 afterEach(() => {
   db.query.mockReset()

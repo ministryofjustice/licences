@@ -35,7 +35,15 @@ const version = moment.now().toString()
 const {production} = config
 
 export default function createApp(services: Services, applicationInfo: ApplicationInfo): Express {
-  const { audit, auditService, userService } = services
+  const {
+    audit,
+    auditService,
+    userService,
+    licenceClient,
+    warningClient,
+    activeLduClient,
+  } = services
+
   const app = express()
 
   auth.init(userService, audit)
@@ -135,7 +143,7 @@ export default function createApp(services: Services, applicationInfo: Applicati
   app.use(bodyParser.urlencoded({extended: true}))
 
   if (config.enableTestUtils === 'true') {
-    app.use('/utils/', utilsRouter())
+    app.use('/utils/', utilsRouter({ licenceClient, auditClient: audit, warningClient, activeLduClient }))
   }
 
   const testMode = process.env.NODE_ENV === 'test'

@@ -96,12 +96,12 @@ describe('/hdc/proposedAddress/', () => {
 
       test('pushes to NOMIS when OptOut and pushToNomis is true', () => {
         const hdcService = createHdcServiceStub()
-        const nomisPushService = createNomisPushServiceStub()
+        const eventService = createNomisPushServiceStub()
         const testApp = createApp(
           {
             licenceServiceStub: licenceService,
             hdcServiceStub: hdcService,
-            nomisPushServiceStub: nomisPushService,
+            eventServiceStub: eventService,
           },
           'caUser',
           { pushToNomis: true }
@@ -113,7 +113,7 @@ describe('/hdc/proposedAddress/', () => {
           .expect(302)
           .expect('Location', '/hdc/taskList/1')
           .expect(() => {
-            expect(nomisPushService.pushStatus).toHaveBeenCalled()
+            expect(eventService.pushStatus).toHaveBeenCalled()
           })
       })
 
@@ -168,7 +168,7 @@ describe('/hdc/proposedAddress/', () => {
 })
 
 function createApp(
-  { licenceServiceStub, prisonerServiceStub = null, nomisPushServiceStub = null, hdcServiceStub = null },
+  { licenceServiceStub, prisonerServiceStub = null, eventServiceStub = null, hdcServiceStub = null },
   user,
   config = {}
 ) {
@@ -176,7 +176,7 @@ function createApp(
   const prisonerService = prisonerServiceStub || createPrisonerServiceStub()
   const licenceService = licenceServiceStub || createLicenceServiceStub()
   const signInService = createSignInServiceStub()
-  const nomisPushService = nomisPushServiceStub || createNomisPushServiceStub()
+  const eventService = eventServiceStub || createNomisPushServiceStub()
   const hdcService = hdcServiceStub || createHdcServiceStub()
   const audit = mockAudit()
 
@@ -190,7 +190,7 @@ function createApp(
     config,
   })
 
-  const route = baseRouter(createRoute({ licenceService, nomisPushService, hdcService }))
+  const route = baseRouter(createRoute({ licenceService, eventService, hdcService }))
 
   return appSetup(route, user, '/hdc/proposedAddress')
 }

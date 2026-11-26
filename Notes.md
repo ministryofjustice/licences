@@ -316,7 +316,7 @@ server/routes/routeWorkers/standard.js contains the encodings of these two behav
 post(req, res)
 ```
 
-standard.js uses licenceService to update the licence and nomisPushService to push data back to NOMIS.
+standard.js uses licenceService to update the licence and eventService to push data back to NOMIS.
 get and post are preconfigured with a formConfig object, a sectionName and the global config object.
 
 get and post work with three values from the request url: :formName, :bookingId and :action
@@ -369,7 +369,7 @@ N.B. 'licence' is fixed (obviously)
 sectionName is configured when the 'standard' route instance is built.
 licenceSection is formConfig[formName].licenceSection
 
-pageDataMap is a way to take data from another part of the licence for rendering the get view.  
+pageDataMap is a way to take data from another part of the licence for rendering the get view.
  For example, routes/config/bassReferral.js 'bassAreaCheck' has pageDataMap: ['licence','bassReferral']
 bassAreaCheck is a RO stage task. licence.bassReferral was previously submitted by the CA before sending to the RO.
 
@@ -402,7 +402,7 @@ Post is more involved.
      /offender-sentences/booking/${bookingId}/home-detention-curfews/latest/approval-status
 ```
 
-Done using pushStatus and pushChecksPassed from server/services/nomisPushService.js
+Done using pushStatus and pushChecksPassed from server/services/eventService.js
 
 - Finally, redirect to the first of
 
@@ -854,7 +854,7 @@ For example, a licence is created, then modified twice before the offender is re
 The sequence of combined versions (version.vary_version) should be 1.0 -> 2.0 -> 3.0 (release) -> 3.1
 
 licenceClient.ts provides the functions for interacting with the licences and licence_versions tables.
-Licence PDFs are generated from pug templates. Below `template` is the name or key of a particular licence template.  
+Licence PDFs are generated from pug templates. Below `template` is the name or key of a particular licence template.
 The template names/ids are defined in server/routes/config/pdf.js, and a
 spec for the data provided to each template is in server/services/config/pdf.js
 Here are the functions that interact with the licence_versions table.
@@ -1014,4 +1014,4 @@ GET /create/:templateName/:bookingId
 
 
 ### Versions
-The occupier consent question on hdc/curfew/curfewAddressReview/change/:bookingId  was 'versioned' on 6 June 2023 following policy instruction. This means HDC applications started before that date had and will retain different question text compared to subsequent applications. 
+The occupier consent question on hdc/curfew/curfewAddressReview/change/:bookingId  was 'versioned' on 6 June 2023 following policy instruction. This means HDC applications started before that date had and will retain different question text compared to subsequent applications.
