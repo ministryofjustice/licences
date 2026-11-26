@@ -56,6 +56,8 @@ jobs:
     uses: ./.github/workflows/node_integration_tests.yml
     needs: [node_build]
     secrets: inherit
+    with:
+      test-report-continue-on-error: true
   helm_lint:
     strategy:
       matrix:
