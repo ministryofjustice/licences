@@ -36,7 +36,7 @@ describe('GET /caseList', () => {
     return request(app).get('/caselist/').expect(403)
   })
 
-  test('redirects if accesss /', () => {
+  test('redirects if access /', () => {
     return request(app).get('/caselist/').expect(302).expect('Location', '/caseList/active')
   })
 
@@ -141,7 +141,7 @@ function createApp(user) {
     tokenVerifier: new NullTokenVerifier(),
     config: null,
   })
-  const route = baseRouter(createCaseListRoute({ caseListService: caseListServiceStub }))
+  const route = baseRouter(createCaseListRoute({ auditService, caseListService: caseListServiceStub }))
 
   const app = appSetup(route, user, '/caselist/')
   app.locals.isHdcInCvlNationalRoleOut = config.hdcInCvlNationalRoleOut.isActive

@@ -82,10 +82,11 @@ describe('AuditService', () => {
       method: 'GET',
       path: '/hdc/people-ready-for-probation-checks',
     } as Request
+    const failureReason = 'Access denied'
 
     hmppsAuditService.logAuditEvent.mockResolvedValue(undefined)
 
-    await auditService.logPageAccessFailure(request, prisoner, user)
+    await auditService.logPageAccessFailure(request, prisoner, failureReason, user)
 
     expect(hmppsAuditService.logAuditEvent).toHaveBeenCalledWith({
       what: `VIEW_PEOPLE_READY_FOR_PROBATION_CHECKS_FAILURE`,
@@ -96,6 +97,39 @@ describe('AuditService', () => {
       details: {
         build: config.gitRef,
         userRoles: user.userRoles,
+        failureReason,
+      },
+    })
+  })
+
+  it('should log an event for viewing the case list', async() => {
+    const request = {
+      id: 'request-id',
+      baseUrl: '',
+      method: 'GET',
+      path: '/hdc/tasklist',
+    } as Request
+    const cases = [
+      { offenderNo: 'A1234BC' },
+      { offenderNo: 'B2345CD' },
+    ]
+    hmppsAuditService.logAuditEvent.mockResolvedValue(undefined)
+
+    await auditService.logCaseListView(request.id, cases, user)
+
+    expect(hmppsAuditService.logAuditEvent).toHaveBeenCalledWith({
+      what: `VIEW_CASE_LIST_SUCCESS`,
+      subjectType: 'NOT_APPLICABLE',
+      subjectId: '',
+      correlationId: requestId,
+      who: user.username,
+      details: {
+        build: config.gitRef,
+        userRoles: user.userRoles,
+        results: {
+          resultCount: cases.length,
+          returnedSubjectIds: cases.map((c: any) => c.offenderNo),
+        },
       },
     })
   })

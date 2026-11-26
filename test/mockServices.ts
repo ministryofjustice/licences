@@ -153,4 +153,7 @@ export const createRoServiceStub = () => ({
 export const createAuditServiceStub = () =>
   ({
     logPageViewAttempt: jest.fn(),
+    logPageViewSuccess: jest.fn(),
+    logPageViewFailure: jest.fn(),
+    logCaseListView: jest.fn(),
   }) as unknown as jest.Mocked<AuditService>

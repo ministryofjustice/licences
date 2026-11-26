@@ -3,7 +3,7 @@ import moment from 'moment'
 import { randomBytes, randomUUID } from 'crypto'
 import { IncomingMessage, ServerResponse } from 'http'
 import bodyParser from 'body-parser'
-import express, { Express, Response } from 'express'
+import express, { ErrorRequestHandler, Express, Response } from 'express'
 import path from 'path'
 import flash from 'connect-flash'
 import session from 'express-session'
@@ -29,6 +29,7 @@ import { asyncMiddleware } from './utils/middleware'
 import addUserDataToTelemetry from './utils/addUserDataToTelemetry'
 import { Services } from './services'
 import { ApplicationInfo } from './applicationInfo'
+import AuditService from './services/audit/auditService'
 
 const version = moment.now().toString()
 const {production} = config
@@ -36,6 +37,7 @@ const {production} = config
 export default function createApp(services: Services, applicationInfo: ApplicationInfo): Express {
   const {
     audit,
+    auditService,
     userService,
     licenceClient,
     warningClient,
@@ -325,28 +327,34 @@ export default function createApp(services: Services, applicationInfo: Applicati
     res.redirect('/notfound')
   })
 
-  app.use(handleKnownErrors)
+  app.use(handleKnownErrors(auditService))
   app.use(renderErrors)
 
   return app
 }
 
-function handleKnownErrors(error, req, res, next) {
-  if (error.code === 'EBADCSRFTOKEN') {
-    logger.error(`Bad csurf token: ${error.stack}`)
-  }
+function handleKnownErrors(auditService: AuditService) : ErrorRequestHandler {
+  return async (error, req, res, next) =>  {
+    if (error.code === 'EBADCSRFTOKEN') {
+      logger.error(`Bad csurf token: ${error.stack}`)
+    }
 
-  if (error.name === 'NomisPushConflict') {
-    return res.render('nomis-push-error-409', {error})
-  }
+    if (error.name === 'NomisPushConflict') {
+      await auditService.logPageAccessFailure(req, res.locals.prisoner, 'nomis push conflict', res.locals.user)
+      return res.render('nomis-push-error-409', {error})
+    }
 
-  switch (error.status) {
-    case 401:
-      return res.redirect('/logout')
-    case 403:
-      return res.redirect('/logout')
-    default:
-      return next(error)
+    switch (error.status) {
+      case 401:
+        await auditService.logPageAccessFailure(req, res.locals.prisoner, 'User is not authorized to access this page', res.locals.user)
+        return res.redirect('/logout')
+      case 403:
+        await auditService.logPageAccessFailure(req, res.locals.prisoner, 'User is forbidden from accessing this page', res.locals.user)
+        return res.redirect('/logout')
+      default:
+        await auditService.logPageAccessFailure(req, res.locals.prisoner, 'Unknown error', res.locals.user)
+        return next(error)
+    }
   }
 }
 
