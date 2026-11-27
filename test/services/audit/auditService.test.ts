@@ -12,7 +12,7 @@ describe('AuditService', () => {
 
   const user = {
     username: 'a user',
-    userRoles: ['CA'],
+    roles: ['CA'],
   }
 
   const requestId = 'request-id'
@@ -51,7 +51,7 @@ describe('AuditService', () => {
       who: user.username,
       details: {
         build: config.gitRef,
-        userRoles: user.userRoles,
+        userRoles: user.roles,
       },
     })
   })
@@ -70,7 +70,7 @@ describe('AuditService', () => {
       who: user.username,
       details: {
         build: config.gitRef,
-        userRoles: user.userRoles,
+        userRoles: user.roles,
       },
     })
   })
@@ -96,7 +96,7 @@ describe('AuditService', () => {
       who: user.username,
       details: {
         build: config.gitRef,
-        userRoles: user.userRoles,
+        userRoles: user.roles,
         failureReason,
       },
     })
@@ -125,7 +125,7 @@ describe('AuditService', () => {
       who: user.username,
       details: {
         build: config.gitRef,
-        userRoles: user.userRoles,
+        userRoles: user.roles,
         results: {
           resultCount: cases.length,
           returnedSubjectIds: cases.map((c: any) => c.offenderNo),
