@@ -85,7 +85,7 @@ export default function Index({
   router.use('/admin/', secureRoute(adminRouter()))
   router.use(
     '/admin/roUsers/',
-    secureRoute(userAdminRouter({userAdminService, signInService, migrationService}), {auditKey: 'USER_MANAGEMENT'})
+    secureRoute(userAdminRouter({auditService, userAdminService, signInService, migrationService}), {auditKey: 'USER_MANAGEMENT'})
   )
   router.use('/admin/manage-roles/', secureRoute(manageRolesRouter(migrationService), {auditKey: 'USER_MANAGEMENT'}))
   router.use('/admin/mailboxes/', secureRoute(mailboxesAdminRouter({configClient})))

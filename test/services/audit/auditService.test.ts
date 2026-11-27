@@ -2,6 +2,7 @@ import { AuditService as HmppsAuditService } from '@ministryofjustice/hmpps-audi
 import { Request } from 'express'
 import AuditService from '../../../server/services/audit/auditService'
 import config from '../../../server/config'
+import { RoUser } from '../../../server/data/userClient'
 
 jest.mock('../../../server/data/licenceClient')
 jest.mock('@ministryofjustice/hmpps-audit-client')
@@ -110,8 +111,8 @@ describe('AuditService', () => {
       path: '/hdc/tasklist',
     } as Request
     const cases = [
-      { offenderNo: 'A1234BC' },
-      { offenderNo: 'B2345CD' },
+      {offenderNo: 'A1234BC'},
+      {offenderNo: 'B2345CD'},
     ]
     hmppsAuditService.logAuditEvent.mockResolvedValue(undefined)
 
@@ -133,4 +134,39 @@ describe('AuditService', () => {
       },
     })
   })
+
+  it('should log an event for searching COM users', async() => {
+      const request = {
+        id: 'request-id',
+        baseUrl: '',
+        method: 'GET',
+        path: '/admin/roUsers',
+      } as Request
+      const cases = [
+        {deliusId: 'deliusId1'},
+        {deliusId: 'deliusId2'},
+      ] as Array<RoUser>
+      const searchTerm = 'search term'
+
+      hmppsAuditService.logAuditEvent.mockResolvedValue(undefined)
+
+      await auditService.logComUsersSearchEvent(request.id, searchTerm, cases, user)
+
+      expect(hmppsAuditService.logAuditEvent).toHaveBeenCalledWith({
+        what: `SEARCH_COM_USERS_SUCCESS`,
+        subjectType: 'SEARCH_TERM',
+        subjectId: searchTerm,
+        correlationId: requestId,
+        who: user.username,
+        details: {
+          build: config.gitRef,
+          userRoles: user.userRoles,
+          results: {
+            resultCount: cases.length,
+            returnedSubjectIds: cases.map((c: any) => c.deliusId),
+          },
+        },
+      })
+    }
+  )
 })
