@@ -2,7 +2,7 @@ const { asyncMiddleware, authorisationMiddleware } = require('../../utils/middle
 const { firstItem } = require('../../utils/functionalHelpers')
 
 module.exports =
-  ({ userAdminService, signInService, migrationService }) =>
+  ({ auditService, userAdminService, signInService, migrationService }) =>
   (router, audited) => {
     router.use(authorisationMiddleware)
 
@@ -24,6 +24,7 @@ module.exports =
         }
 
         const roUsers = await userAdminService.findRoUsers(searchTerm)
+        auditService.logComUsersSearchEvent(req.id, searchTerm, roUsers, req.user)
 
         return res.render('admin/users/list', { roUsers, heading: 'Search results' })
       })

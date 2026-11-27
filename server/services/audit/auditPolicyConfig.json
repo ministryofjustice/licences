@@ -40,11 +40,12 @@
   },
   "GET /admin/roUsers": {
     "audit": true,
-    "eventType": "VIEW_RO_USERS"
+    "eventType": "VIEW_COM_USERS"
   },
   "POST /admin/roUsers": {
     "audit": true,
-    "eventType": "CREATE_RO_USER"
+    "customHandler": true,
+    "eventType": "SEARCH_COM_USERS"
   },
   "GET /admin/roUsers/edit/:nomisId": {
     "audit": true,
