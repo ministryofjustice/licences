@@ -1,25 +1,31 @@
-import createRoNotificationHandler from '../../../server/services/notifications/roNotificationHandler'
+import RoNotificationHandler from '../../../server/services/notifications/roNotificationHandler'
+import RoNotificationSender from '../../../server/services/notifications/roNotificationSender'
+import EventPublisher from '../../../server/services/notifications/eventPublisher'
 import transitionForDestinations from '../../../server/services/notifications/transitionsForDestinations'
 import { STAFF_NOT_LINKED } from '../../../server/services/serviceErrors'
 import { RoContactDetailsService } from '../../../server/services/roContactDetailsService'
+import { LicenceService } from '../../../server/services/licenceService'
+import { WarningClient } from '../../../server/data/warningClient'
+import { DeliusClient } from '../../../server/data/deliusClient'
 import { ResponsibleOfficerAndContactDetails } from '../../../types/licences'
 
 jest.mock('../../../server/services/roContactDetailsService')
+jest.mock('../../../server/services/notifications/roNotificationSender')
+jest.mock('../../../server/services/notifications/eventPublisher')
+jest.mock('../../../server/services/licenceService')
+jest.mock('../../../server/data/warningClient')
+jest.mock('../../../server/data/deliusClient')
 
 const { createPrisonerServiceStub } = require('../../mockServices')
 
 describe('roNotificationHandler', () => {
-  /** @type {any} */
-  let roNotificationSender
-  let licenceService
+  let roNotificationSender: jest.Mocked<RoNotificationSender>
+  let licenceService: jest.Mocked<LicenceService>
   let prisonerService
-  /** @type {any} */
-  let eventPublisher
-  /** @type {any} */
-  let warningClient
-  /** @type {any} */
-  let deliusClient
-  let roNotificationHandler
+  let eventPublisher: jest.Mocked<EventPublisher>
+  let warningClient: jest.Mocked<WarningClient>
+  let deliusClient: jest.Mocked<DeliusClient>
+  let roNotificationHandler: RoNotificationHandler
   let roContactDetailsService: jest.Mocked<RoContactDetailsService>
 
   const prisoner = { firstName: 'first', lastName: 'last', dateOfBirth: 'off-dob', offenderNo: 'AB1234A' }
@@ -31,39 +37,24 @@ describe('roNotificationHandler', () => {
   const user = { username }
 
   beforeEach(() => {
-    licenceService = {
-      markForHandover: jest.fn(),
-      removeDecision: jest.fn().mockReturnValue({}),
-    }
-
+    licenceService = new LicenceService(undefined) as jest.Mocked<LicenceService>
     roContactDetailsService = new RoContactDetailsService(
       undefined,
       undefined,
       undefined
     ) as jest.Mocked<RoContactDetailsService>
-
-    warningClient = {
-      raiseWarning: jest.fn(),
-    }
-
-    deliusClient = {
-      addResponsibleOfficerRole: jest.fn(),
-    }
+    warningClient = new WarningClient() as jest.Mocked<WarningClient>
+    deliusClient = new DeliusClient(undefined) as jest.Mocked<DeliusClient>
+    roNotificationSender = new RoNotificationSender(undefined, undefined, undefined) as jest.Mocked<RoNotificationSender>
+    roNotificationSender.sendNotifications.mockResolvedValue([])
+    eventPublisher = new EventPublisher(undefined, undefined) as jest.Mocked<EventPublisher>
 
     prisonerService = createPrisonerServiceStub()
     prisonerService.getEstablishmentForPrisoner.mockReturnValue({ premise: 'HMP Test', agencyId: 'LT1' })
     prisonerService.getOrganisationContactDetails.mockReturnValue(submissionTarget)
     prisonerService.getPrisonerPersonalDetails.mockReturnValue(prisoner)
 
-    roNotificationSender = {
-      sendNotifications: jest.fn().mockReturnValue({}),
-    }
-
-    eventPublisher = {
-      raiseCaseHandover: jest.fn(),
-    }
-
-    roNotificationHandler = createRoNotificationHandler(
+    roNotificationHandler = new RoNotificationHandler(
       roNotificationSender,
       licenceService,
       prisonerService,

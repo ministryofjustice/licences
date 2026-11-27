@@ -21,11 +21,11 @@ import FormService from './formService'
 import createCaseListFormatter from './utils/caseListFormatter'
 import UserAdminService from './userAdminService'
 import createUserService from './userService'
-import createNotificationSender from './notifications/notificationSender'
-import createRoNotificationSender from './notifications/roNotificationSender'
-import createCaAndDmNotificationSender from './notifications/caAndDmNotificationSender'
-import createNotificationService from './notifications/notificationService'
-import createRoNotificationHandler from './notifications/roNotificationHandler'
+import NotificationSender from './notifications/notificationSender'
+import RoNotificationSender from './notifications/roNotificationSender'
+import CaAndDmNotificationSender from './notifications/caAndDmNotificationSender'
+import NotificationService from './notifications/notificationService'
+import RoNotificationHandler from './notifications/roNotificationHandler'
 import EventPublisher from './notifications/eventPublisher'
 
 import { RoContactDetailsService } from './roContactDetailsService'
@@ -117,20 +117,25 @@ const deadlineService = createDeadlineService(licenceClient)
 const roContactDetailsService = new RoContactDetailsService(userAdminService, roService, probationTeamsClient)
 const migrationService = new MigrationService(deliusClient, userAdminService, nomisClientBuilder)
 
-const notificationSender = createNotificationSender(notifyClient, audit, config.notifications.notifyKey)
-const roNotificationSender = createRoNotificationSender(notificationSender, config)
-const caAndDmNotificationSender = createCaAndDmNotificationSender(
+const notificationSender = new NotificationSender(notifyClient, audit, config.notifications.notifyKey)
+const roNotificationSender = new RoNotificationSender(
+  notificationSender,
+  config.notifications.activeNotificationTypes,
+  config.domain
+)
+const caAndDmNotificationSender = new CaAndDmNotificationSender(
   prisonerService,
   roContactDetailsService,
   configClient,
   notificationSender,
   nomisClientBuilder,
-  config
+  config.notifications.activeNotificationTypes,
+  config.domain
 )
 
 const eventPublisher = new EventPublisher(audit, telemetry)
 
-const roNotificationHandler = createRoNotificationHandler(
+const roNotificationHandler = new RoNotificationHandler(
   roNotificationSender,
   licenceService,
   prisonerService,
@@ -140,7 +145,7 @@ const roNotificationHandler = createRoNotificationHandler(
   eventPublisher
 )
 
-const notificationService = createNotificationService(
+const notificationService = new NotificationService(
   caAndDmNotificationSender,
   licenceService,
   prisonerService,
