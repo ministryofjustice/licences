@@ -838,7 +838,7 @@ describe('/hdc/curfew', () => {
         })
     })
 
-    test('withdraw consent does not post an address withdrawn event', () => {
+    test('withdraw consent rejects the address and posts an address withdrawn event', () => {
       const licenceService = createLicenceServiceStub()
       licenceService.getLicence.mockResolvedValue(licence)
       const hdcService = createHdcServiceStub()
@@ -846,13 +846,34 @@ describe('/hdc/curfew', () => {
 
       return request(app)
         .post('/hdc/curfew/withdrawConsent/1')
-        .send({ withdrawConsent: 'Yes' })
+        .send({ consentWithdrawn: 'Yes' })
         .expect(302)
-        .expect(() => {
-          expect(hdcService.postCvlEvent).not.toHaveBeenCalledWith(
-            expect.objectContaining({ eventType: 'ADDRESS_WITHDRAWN' })
-          )
+        .expect((res) => {
+          expect(licenceService.rejectProposedAddress).toHaveBeenCalledWith(licence.licence, '1', 'withdrawConsent')
+          expect(hdcService.postCvlEvent).toHaveBeenCalledTimes(1)
+          expect(hdcService.postCvlEvent).toHaveBeenCalledWith({
+            eventType: 'ADDRESS_WITHDRAWN',
+            bookingId: 1,
+            licenceId: 2,
+            nomsNumber: 'A1234AA',
+            triggeredBy: 'CA_USER_TEST',
+            reason: 'CA_USER_TEST withdrew the residential address in HDC'
+          })
+          expect(res.header.location).toBe('/hdc/curfew/consentWithdrawn/1')
         })
+    })
+
+    test('withdraw consent surfaces an event publication failure', async () => {
+      const licenceService = createLicenceServiceStub()
+      licenceService.getLicence.mockResolvedValue(licence)
+      const hdcService = createHdcServiceStub()
+      hdcService.postCvlEvent.mockRejectedValue(new Error('Event publication failed'))
+      const app = createApp({ licenceServiceStub: licenceService, hdcServiceStub: hdcService }, 'caUser')
+
+      await request(app)
+        .post('/hdc/curfew/withdrawConsent/1')
+        .send({ consentWithdrawn: 'Yes' })
+        .expect(500)
     })
 
     test('reinstate address calls reinstateProposedAddress then returns to taslist', () => {

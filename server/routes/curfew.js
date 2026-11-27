@@ -182,19 +182,17 @@ module.exports =
 
         await licenceService.rejectProposedAddress(licence, bookingId, formName)
 
-        if (formName === 'withdrawAddress') {
-          const { offenderNo } = res.locals.prisoner
-          const { username } = req.user
+        const { offenderNo } = res.locals.prisoner
+        const { username } = req.user
 
-          await hdcService.postCvlEvent({
-            eventType: 'ADDRESS_WITHDRAWN',
-            bookingId: parseInt(bookingId, 10),
-            licenceId,
-            nomsNumber: offenderNo,
-            triggeredBy: username,
-            reason: `${username} withdrew the residential address in HDC`
-          })
-        }
+        await hdcService.postCvlEvent({
+          eventType: 'ADDRESS_WITHDRAWN',
+          bookingId: parseInt(bookingId, 10),
+          licenceId,
+          nomsNumber: offenderNo,
+          triggeredBy: username,
+          reason: `${username} withdrew the residential address in HDC`
+        })
 
         const modifyAction = !action && isPostApproval(stage) ? 'modify' : action
 
