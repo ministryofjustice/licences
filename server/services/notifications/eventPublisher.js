@@ -16,7 +16,7 @@ class EventPublisher {
    *
    * @param {object} args
    * @param {string} args.username
-   * @param {string} args.bookingId
+   * @param {number} args.bookingId
    * @param {string} args.transitionType
    * @param {*} args.submissionTarget
    * @param {Destination} args.source

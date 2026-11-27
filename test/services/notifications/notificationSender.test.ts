@@ -1,44 +1,32 @@
-const createNotificationSender = require('../../../server/services/notifications/notificationSender')
-const templates = require('../../../server/services/config/notificationTemplates')
+import { NotifyClient } from 'notifications-node-client'
+import NotificationSender, { NotifyArgs } from '../../../server/services/notifications/notificationSender'
+import { AuditClient } from '../../../server/data/audit'
+import templates from '../../../server/services/config/notificationTemplates'
+
+jest.mock('notifications-node-client')
+jest.mock('../../../server/data/audit')
 
 describe('notificationSender', () => {
-  let service
-  let notifyClient
-  let audit
-  let config
+  let service: NotificationSender
+  let notifyClient: jest.Mocked<NotifyClient>
+  let audit: jest.Mocked<AuditClient>
 
   beforeEach(() => {
-    config = {
-      notifications: {
-        notifyKey: 'dummy-key',
-        activeNotificationTypes: [
-          'CA_RETURN',
-          'CA_DECISION',
-          'RO_NEW',
-          'RO_TWO_DAYS',
-          'RO_DUE',
-          'RO_OVERDUE',
-          'DM_NEW',
-          'DM_TO_CA_RETURN',
-        ],
-      },
-      domain: 'http://localhost:3000',
-    }
+    notifyClient = new NotifyClient('dummy-key') as jest.Mocked<NotifyClient>
+    notifyClient.sendEmail.mockResolvedValue({} as never)
+    audit = new AuditClient() as jest.Mocked<AuditClient>
+    audit.record.mockResolvedValue()
 
-    notifyClient = {
-      sendEmail: jest.fn().mockResolvedValue({}),
-    }
-    audit = {
-      record: jest.fn().mockReturnValue({}),
-    }
-
-    service = createNotificationSender(notifyClient, audit, config.notifications.notifyKey)
+    service = new NotificationSender(notifyClient, audit, 'dummy-key')
   })
+
+  // Several tests deliberately pass malformed notifications
+  const notify = (args: Record<string, unknown>) => service.notify(args as unknown as NotifyArgs)
 
   describe('notify', () => {
     test('should do nothing if template ID not in active template list', async () => {
       const notifications = [{ email: ['email@email.com'] }]
-      await service.notify({
+      await notify({
         sendingUserName: 'username',
         bookingId: 123,
         notifications,
@@ -48,7 +36,7 @@ describe('notificationSender', () => {
 
     test('should do nothing if empty data', async () => {
       const notifications = [{}]
-      await service.notify({
+      await notify({
         sendingUserName: 'username',
         notificationType: 'CA_RETURN',
         bookingId: 123,
@@ -59,7 +47,7 @@ describe('notificationSender', () => {
 
     test('should do nothing if empty emails', async () => {
       const notifications = [{ email: [] }]
-      await service.notify({
+      await notify({
         sendingUserName: 'username',
         notificationType: 'CA_RETURN',
         bookingId: 123,
@@ -70,7 +58,7 @@ describe('notificationSender', () => {
 
     test('should call sendEmail from notifyClient', async () => {
       const notifications = [{ email: 'email@email.com', templateName: 'CA_RETURN' }]
-      await service.notify({
+      await notify({
         sendingUserName: 'username',
         notificationType: 'CA_RETURN',
         bookingId: 123,
@@ -95,7 +83,7 @@ describe('notificationSender', () => {
         { email: 'email@email.com', templateName: 'DM_NEW' },
       ]
 
-      await service.notify({ user: 'username', notificationType: 'CA_RETURN', bookingId: 123, notifications })
+      await notify({ user: 'username', notificationType: 'CA_RETURN', bookingId: 123, notifications })
 
       expect(notifyClient.sendEmail).toHaveBeenCalledWith(
         templates.CA_RETURN.templateId,
@@ -161,7 +149,7 @@ describe('notificationSender', () => {
 
     test('should pass in the email address', async () => {
       const notifications = [{ email: 'email@email.com', templateName: 'CA_RETURN' }]
-      await service.notify({
+      await notify({
         sendingUserName: 'username',
         notificationType: 'CA_RETURN',
         bookingId: 123,
@@ -172,7 +160,7 @@ describe('notificationSender', () => {
 
     test('should pass in the data', async () => {
       const notifications = [{ personalisation: { a: 'a' }, email: ['email@email.com'], templateName: 'CA_RETURN' }]
-      await service.notify({
+      await notify({
         sendingUserName: 'username',
         notificationType: 'CA_RETURN',
         bookingId: 123,
@@ -185,7 +173,7 @@ describe('notificationSender', () => {
 
     test('should audit the event', async () => {
       const notifications = [{ personalisation: { a: 'a' }, email: 'email@email.com' }]
-      await service.notify({
+      await notify({
         sendingUserName: 'username',
         notificationType: 'CA_RETURN',
         bookingId: 123,
@@ -205,7 +193,7 @@ describe('notificationSender', () => {
         { email: '2@2.com', templateName: 'CA_RETURN_COPY' },
         { email: '3@3.com', templateName: 'CA_RETURN' },
       ]
-      await service.notify({
+      await notify({
         sendingUserName: 'username',
         notificationType: 'CA_RETURN',
         bookingId: 123,
@@ -219,7 +207,7 @@ describe('notificationSender', () => {
 
     test('should audit the event only once when multiple email addresses', async () => {
       const notifications = [{ email: '1@1.com' }, { email: '2@2.com' }, { email: '3@3.com' }]
-      await service.notify({
+      await notify({
         sendingUserName: 'username',
         notificationType: 'CA_RETURN',
         bookingId: 123,

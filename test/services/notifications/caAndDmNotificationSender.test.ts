@@ -1,47 +1,41 @@
-const createSendCaAndDmNotifications = require('../../../server/services/notifications/caAndDmNotificationSender')
+import CaAndDmNotificationSender from '../../../server/services/notifications/caAndDmNotificationSender'
+import NotificationSender from '../../../server/services/notifications/notificationSender'
+import { RoContactDetailsService } from '../../../server/services/roContactDetailsService'
+import { ConfigClient, Mailbox } from '../../../server/data/configClient'
+
+jest.mock('../../../server/services/notifications/notificationSender')
+jest.mock('../../../server/services/roContactDetailsService')
+jest.mock('../../../server/data/configClient')
+
 const { createPrisonerServiceStub } = require('../../mockServices')
 
 describe('sendCaAndDmNotifications', () => {
-  let service
+  let service: CaAndDmNotificationSender
   let prisonerService
-  let roContactDetailsService
-  let configClient
-  let notificationSender
+  let roContactDetailsService: jest.Mocked<RoContactDetailsService>
+  let configClient: jest.Mocked<ConfigClient>
+  let notificationSender: jest.Mocked<NotificationSender>
   let nomisClient
-  let config
+
+  // Several tests deliberately pass partial arguments
+  const getData = (args: object) => service.getNotificationData(args as Parameters<typeof service.getNotificationData>[0])
 
   beforeEach(() => {
-    config = {
-      notifications: {
-        notifyKey: 'dummy-key',
-        activeNotificationTypes: [
-          'CA_RETURN',
-          'CA_DECISION',
-          'RO_NEW',
-          'RO_TWO_DAYS',
-          'RO_DUE',
-          'RO_OVERDUE',
-          'DM_NEW',
-          'DM_TO_CA_RETURN',
-        ],
-      },
-      domain: 'http://localhost:3000',
-    }
-
     prisonerService = createPrisonerServiceStub()
     prisonerService.getEstablishmentForPrisoner.mockReturnValue({ premise: 'HMP Test', agencyId: 'LT1' })
-    roContactDetailsService = {
-      getFunctionalMailBox: jest.fn().mockReturnValue('admin@ro.email'),
-    }
-    configClient = {
-      getMailboxes: jest.fn().mockResolvedValue([
-        { email: 'test1@email.address', name: 'Name One' },
-        { email: 'test2@email.address', name: 'Name Two' },
-      ]),
-    }
-    notificationSender = {
-      notify: jest.fn().mockReturnValue({}),
-    }
+    roContactDetailsService = new RoContactDetailsService(
+      undefined,
+      undefined,
+      undefined
+    ) as jest.Mocked<RoContactDetailsService>
+    roContactDetailsService.getFunctionalMailBox.mockResolvedValue('admin@ro.email')
+    configClient = new ConfigClient() as jest.Mocked<ConfigClient>
+    configClient.getMailboxes.mockResolvedValue([
+      { email: 'test1@email.address', name: 'Name One' },
+      { email: 'test2@email.address', name: 'Name Two' },
+    ] as Mailbox[])
+    notificationSender = new NotificationSender(undefined, undefined, undefined) as jest.Mocked<NotificationSender>
+    notificationSender.notify.mockResolvedValue()
 
     nomisClient = {
       getEstablishment: jest.fn().mockReturnValue({
@@ -64,13 +58,14 @@ describe('sendCaAndDmNotifications', () => {
     }
     const nomisClientBuilder = jest.fn().mockReturnValue(nomisClient)
 
-    service = createSendCaAndDmNotifications(
+    service = new CaAndDmNotificationSender(
       prisonerService,
       roContactDetailsService,
       configClient,
       notificationSender,
       nomisClientBuilder,
-      config
+      ['CA_RETURN', 'CA_DECISION', 'RO_NEW', 'RO_TWO_DAYS', 'RO_DUE', 'RO_OVERDUE', 'DM_NEW', 'DM_TO_CA_RETURN'],
+      'http://localhost:3000'
     )
   })
 
@@ -85,7 +80,7 @@ describe('sendCaAndDmNotifications', () => {
     }
 
     test('should return empty when unknown notification type', async () => {
-      const data = await service.getNotificationData({
+      const data = await getData({
         prisoner: {},
         notificationType: 'UNKNOWN',
       })
@@ -95,8 +90,8 @@ describe('sendCaAndDmNotifications', () => {
 
     describe('CA notification data', () => {
       test('should return empty when missing CA email addresses for agency', async () => {
-        configClient.getMailboxes = jest.fn()
-        const data = await service.getNotificationData({
+        configClient.getMailboxes.mockResolvedValue(undefined)
+        const data = await getData({
           prisoner: {},
           notificationType: 'CA_RETURN',
           submissionTarget: { agencyId: 'MISSING' },
@@ -106,8 +101,8 @@ describe('sendCaAndDmNotifications', () => {
       })
 
       test('should return empty when empty CA email addresses for agency', async () => {
-        configClient.getMailboxes = jest.fn().mockReturnValue([])
-        const data = await service.getNotificationData({
+        configClient.getMailboxes.mockResolvedValue([])
+        const data = await getData({
           prisoner: {},
           notificationType: 'CA_RETURN',
           submissionTarget: { agencyId: 'MISSING' },
@@ -117,7 +112,7 @@ describe('sendCaAndDmNotifications', () => {
       })
 
       test('should generate CA notification data', async () => {
-        const data = await service.getNotificationData({
+        const data = await getData({
           prisoner,
           token: 'token',
           notificationType: 'CA_RETURN',
@@ -164,7 +159,7 @@ describe('sendCaAndDmNotifications', () => {
 
     describe('DM_TO_CA notification data', () => {
       test('should generate DM_TO_CA notification data', async () => {
-        const data = await service.getNotificationData({
+        const data = await getData({
           prisoner,
           token: 'token',
           notificationType: 'DM_TO_CA_RETURN',
@@ -200,8 +195,8 @@ describe('sendCaAndDmNotifications', () => {
 
     describe('DM notification data', () => {
       test('should return empty when missing DM email addresses for agency', async () => {
-        configClient.getMailboxes = jest.fn().mockReturnValue([])
-        const data = await service.getNotificationData({
+        configClient.getMailboxes.mockResolvedValue([])
+        const data = await getData({
           prisoner: {},
           notificationType: 'DM_NEW',
         })
@@ -210,7 +205,7 @@ describe('sendCaAndDmNotifications', () => {
       })
 
       test('should generate DM notification data', async () => {
-        const data = await service.getNotificationData({
+        const data = await getData({
           prisoner,
           token: 'token',
           notificationType: 'DM_NEW',
@@ -248,9 +243,9 @@ describe('sendCaAndDmNotifications', () => {
         prisoner: {},
         notificationType: 'CA_RETURN',
         submissionTarget: {},
-        bookingId: {},
-        sendingUserName: {},
-        token: {},
+        bookingId: 123,
+        sendingUserName: 'user',
+        token: 'token',
       }
 
       const result = await service.sendNotifications(inputs)

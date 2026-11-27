@@ -1,33 +1,20 @@
-const createSendRoNotifications = require('../../../server/services/notifications/roNotificationSender')
+import RoNotificationSender from '../../../server/services/notifications/roNotificationSender'
+import NotificationSender from '../../../server/services/notifications/notificationSender'
+
+jest.mock('../../../server/services/notifications/notificationSender')
 
 describe('sendRoNotifications', () => {
-  let service
-  let notificationSender
-  let config
+  let service: RoNotificationSender
+  let notificationSender: jest.Mocked<NotificationSender>
 
   beforeEach(() => {
-    config = {
-      notifications: {
-        notifyKey: 'dummy-key',
-        activeNotificationTypes: [
-          'CA_RETURN',
-          'CA_DECISION',
-          'RO_NEW',
-          'RO_TWO_DAYS',
-          'RO_DUE',
-          'RO_OVERDUE',
-          'DM_NEW',
-          'DM_TO_CA_RETURN',
-        ],
-      },
-      domain: 'http://localhost:3000',
-    }
+    notificationSender = new NotificationSender(undefined, undefined, undefined) as jest.Mocked<NotificationSender>
 
-    notificationSender = {
-      notify: jest.fn().mockReturnValue({}),
-    }
-
-    service = createSendRoNotifications(notificationSender, config)
+    service = new RoNotificationSender(
+      notificationSender,
+      ['CA_RETURN', 'CA_DECISION', 'RO_NEW', 'RO_TWO_DAYS', 'RO_DUE', 'RO_OVERDUE', 'DM_NEW', 'DM_TO_CA_RETURN'],
+      'http://localhost:3000'
+    )
   })
 
   describe('getNotifications', () => {
