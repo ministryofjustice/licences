@@ -160,7 +160,7 @@ describe('AuditService', () => {
         who: user.username,
         details: {
           build: config.gitRef,
-          userRoles: user.userRoles,
+          userRoles: user.roles,
           results: {
             resultCount: cases.length,
             returnedSubjectIds: cases.map((c: any) => c.deliusId),

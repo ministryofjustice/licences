@@ -102,6 +102,7 @@ describe('/admin', () => {
             .expect(302)
             .expect(() => {
               expect(userAdminService.findRoUsers).not.toHaveBeenCalled()
+              expect(auditService.logComUsersSearchEvent).not.toHaveBeenCalled()
             })
         })
       })
@@ -121,6 +122,7 @@ describe('/admin', () => {
             .expect((res) => {
               expect(userAdminService.findRoUsers).toHaveBeenCalled()
               expect(userAdminService.findRoUsers).toHaveBeenCalledWith(example)
+              expect(auditService.logComUsersSearchEvent).toHaveBeenCalled()
               expect(res.text).toContain('user1')
               expect(res.text).not.toContain('user2')
             })
