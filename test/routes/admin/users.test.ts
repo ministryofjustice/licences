@@ -1,7 +1,7 @@
 import request from 'supertest'
 import { mockAudit } from '../../mockClients'
 import { startRoute } from '../../supertestSetup'
-import { createUserAdminServiceStub, createSignInServiceStub } from '../../mockServices'
+import { createUserAdminServiceStub, createSignInServiceStub, createAuditServiceStub } from '../../mockServices'
 import createAdminRoute from '../../../server/routes/admin/users'
 
 const user1 = {
@@ -19,11 +19,13 @@ const user2 = {
 }
 
 describe('/admin', () => {
+  let auditService
   let userAdminService
   let migrationService
   let signInService
 
   beforeEach(() => {
+    auditService = createAuditServiceStub()
     userAdminService = createUserAdminServiceStub()
     migrationService = {
       getStaffDetails: jest.fn(),
@@ -50,7 +52,7 @@ describe('/admin', () => {
 
   const createApp = (user, audit = mockAudit()) =>
     startRoute(
-      createAdminRoute({ userAdminService, signInService, migrationService }),
+      createAdminRoute({auditService, userAdminService, signInService, migrationService}),
       '/admin/roUsers',
       user,
       'USER_MANAGEMENT',
@@ -96,10 +98,11 @@ describe('/admin', () => {
           const app = createApp('batchUser')
           return request(app)
             .post('/admin/roUsers')
-            .send({ searchTerm: example })
+            .send({searchTerm: example})
             .expect(302)
             .expect(() => {
               expect(userAdminService.findRoUsers).not.toHaveBeenCalled()
+              expect(auditService.logComUsersSearchEvent).not.toHaveBeenCalled()
             })
         })
       })
@@ -113,12 +116,13 @@ describe('/admin', () => {
           const app = createApp('batchUser')
           return request(app)
             .post('/admin/roUsers')
-            .send({ searchTerm: example })
+            .send({searchTerm: example})
             .expect(200)
             .expect('Content-Type', /html/)
             .expect((res) => {
               expect(userAdminService.findRoUsers).toHaveBeenCalled()
               expect(userAdminService.findRoUsers).toHaveBeenCalledWith(example)
+              expect(auditService.logComUsersSearchEvent).toHaveBeenCalled()
               expect(res.text).toContain('user1')
               expect(res.text).not.toContain('user2')
             })
@@ -149,7 +153,7 @@ describe('/admin', () => {
     describe('Invalid inputs', () => {
       const examples = [
         {
-          input: { newNomisId: '1', deliusId: '', newDeliusId: '', first: 'f', last: 'l' },
+          input: {newNomisId: '1', deliusId: '', newDeliusId: '', first: 'f', last: 'l'},
           reason: 'missing delius id',
         },
       ]
@@ -171,9 +175,9 @@ describe('/admin', () => {
 
     describe('Valid inputs', () => {
       const examples = [
-        { nomisId: '1n', originalDeliusId: 'd', deliusId: 'dn', first: 'f', last: 'l' },
-        { nomisId: '&%^%', originalDeliusId: '------', deliusId: '2222', first: '@@@@', last: 'l        %' },
-        { nomisId: 'nid', deliusId: 'did' },
+        {nomisId: '1n', originalDeliusId: 'd', deliusId: 'dn', first: 'f', last: 'l'},
+        {nomisId: '&%^%', originalDeliusId: '------', deliusId: '2222', first: '@@@@', last: 'l        %'},
+        {nomisId: 'nid', deliusId: 'did'},
       ]
 
       examples.forEach((example) => {
@@ -215,11 +219,11 @@ describe('/admin', () => {
     describe('Invalid inputs', () => {
       const examples = [
         {
-          input: { newNomisId: '   ', newDeliusId: 'delius', first: 'first', last: 'last' },
+          input: {newNomisId: '   ', newDeliusId: 'delius', first: 'first', last: 'last'},
           reason: 'missing nomis id',
         },
         {
-          input: { newNomisId: 'nomisId', newDeliusId: '  ', first: 'first', last: 'last' },
+          input: {newNomisId: 'nomisId', newDeliusId: '  ', first: 'first', last: 'last'},
           reason: 'missing delius id',
         },
         {
@@ -245,9 +249,9 @@ describe('/admin', () => {
 
     describe('Valid inputs', () => {
       const examples = [
-        { nomisId: 'nomisId', deliusId: 'deliusId', first: 'first', last: 'last' },
-        { nomisId: 'nid', deliusId: 'did' },
-        { nomisId: '&%^%', deliusId: '2222', first: '@@@@', last: 'l        %' },
+        {nomisId: 'nomisId', deliusId: 'deliusId', first: 'first', last: 'last'},
+        {nomisId: 'nid', deliusId: 'did'},
+        {nomisId: '&%^%', deliusId: '2222', first: '@@@@', last: 'l        %'},
       ]
 
       examples.forEach((example) => {
@@ -328,7 +332,7 @@ describe('/admin', () => {
 
   describe('GET /admin/roUsers/migrate/:nomisId', () => {
     test('calls migration service and renders HTML output', () => {
-      migrationService.getStaffDetails.mockResolvedValue({ licenceUser: {}, flags: [] })
+      migrationService.getStaffDetails.mockResolvedValue({licenceUser: {}, flags: []})
       const app = createApp('batchUser')
       return request(app)
         .get('/admin/roUsers/migrate/RO_USER')
@@ -355,7 +359,7 @@ describe('/admin', () => {
         .expect(200)
         .expect('Content-Type', /json/)
         .expect((res) => {
-          expect(migrationService.getAll).toHaveBeenCalledWith('system-token', { limit: 20, offset: 0 })
+          expect(migrationService.getAll).toHaveBeenCalledWith('system-token', {limit: 20, offset: 0})
           expect(res.body).toStrictEqual([])
         })
     })
@@ -368,7 +372,7 @@ describe('/admin', () => {
         .expect(200)
         .expect('Content-Type', /json/)
         .expect((res) => {
-          expect(migrationService.getAll).toHaveBeenCalledWith('system-token', { limit: 5, offset: 800 })
+          expect(migrationService.getAll).toHaveBeenCalledWith('system-token', {limit: 5, offset: 800})
           expect(res.body).toStrictEqual([])
         })
     })
@@ -381,7 +385,7 @@ describe('/admin', () => {
 
   describe('POST /admin/roUsers/assign-role/:nomisId', () => {
     test('calls assign roles and redirects', () => {
-      migrationService.getStaffDetails.mockResolvedValue({ licenceUser: {}, flags: [] })
+      migrationService.getStaffDetails.mockResolvedValue({licenceUser: {}, flags: []})
       const app = createApp('batchUser')
       return request(app)
         .post('/admin/roUsers/assign-role/RO_USER')
@@ -401,7 +405,7 @@ describe('/admin', () => {
 
   describe('POST /admin/roUsers/disable-auth/:nomisId', () => {
     test('calls disable auth account and redirects', () => {
-      migrationService.getStaffDetails.mockResolvedValue({ licenceUser: {}, flags: [] })
+      migrationService.getStaffDetails.mockResolvedValue({licenceUser: {}, flags: []})
       const app = createApp('batchUser')
       return request(app)
         .post('/admin/roUsers/disable-auth/RO_USER')
@@ -421,7 +425,7 @@ describe('/admin', () => {
 
   describe('POST /admin/roUsers/enable-auth/:nomisId', () => {
     test('calls enable auth account and redirects', () => {
-      migrationService.getStaffDetails.mockResolvedValue({ licenceUser: {}, flags: [] })
+      migrationService.getStaffDetails.mockResolvedValue({licenceUser: {}, flags: []})
       const app = createApp('batchUser')
       return request(app)
         .post('/admin/roUsers/disable-auth/RO_USER')

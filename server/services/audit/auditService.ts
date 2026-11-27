@@ -4,6 +4,7 @@ import { Request } from 'express'
 import logger from '../../../log'
 import getAuditPolicy, { AuditPolicy } from './routeAuditPolicy'
 import config from '../../config'
+import { RoUser } from '../../data/userClient'
 
 export default class AuditService {
   constructor(private readonly hmppsAuditService: HmppsAuditService) {
@@ -65,6 +66,24 @@ export default class AuditService {
         results: {
           resultCount: caseList.length,
           returnedSubjectIds: caseList.map((c: any) => c.offenderNo),
+        },
+      }
+    }
+
+    await this.sendAuditEvent(auditEventMessage)
+  }
+
+  async logComUsersSearchEvent(requestId: string, searchTerm: string, comUsers: Array<RoUser>, user: any): Promise<void> {
+    const baseAuditEventMessage = this.createAuditEvent('SEARCH_COM_USERS_SUCCESS', null, requestId, user)
+    const auditEventMessage = {
+      ...baseAuditEventMessage,
+      subjectType: 'SEARCH_TERM' as SubjectType,
+      subjectId: searchTerm,
+      details: {
+        ...baseAuditEventMessage.details,
+        results: {
+          resultCount: comUsers.length,
+          returnedSubjectIds: comUsers.map((c: RoUser) => c.deliusId),
         },
       }
     }
