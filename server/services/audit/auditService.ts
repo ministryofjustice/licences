@@ -114,7 +114,7 @@ export default class AuditService {
       who: user.username,
       details: {
         build: config.gitRef,
-        userRoles: user.userRoles,
+        userRoles: user.roles,
       },
     }
   }
