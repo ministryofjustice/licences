@@ -17,7 +17,7 @@ describe('EventPublisher', () => {
 
       await eventPublisher.raiseCaseHandover({
         username: 'TEST',
-        bookingId: '2',
+        bookingId: 2,
         transitionType: 'caToRo',
         submissionTarget,
         source: { type: 'prison', probationAreaCode: 'aa1', lduCode: '1' },
@@ -25,7 +25,7 @@ describe('EventPublisher', () => {
       })
 
       expect(audit.record).toHaveBeenCalledWith('SEND', 'TEST', {
-        bookingId: '2',
+        bookingId: 2,
         submissionTarget: { some: 'target' },
         transitionType: 'caToRo',
         source: { type: 'prison', probationAreaCode: 'aa1', lduCode: '1' },
@@ -38,7 +38,7 @@ describe('EventPublisher', () => {
 
       await eventPublisher.raiseCaseHandover({
         username: 'TEST',
-        bookingId: '2',
+        bookingId: 2,
         transitionType: 'caToRo',
         submissionTarget,
         source: { type: 'prison', probationAreaCode: 'aa1', lduCode: '1' },
@@ -48,7 +48,7 @@ describe('EventPublisher', () => {
       expect(telemetryClient.trackEvent).toHaveBeenCalledWith(
         'CaseHandover',
         {
-          bookingId: '2',
+          bookingId: 2,
           transitionType: 'caToRo',
           source_type: 'prison',
           source_probationAreaCode: 'aa1',
@@ -69,7 +69,7 @@ describe('EventPublisher', () => {
 
       await eventPublisher.raiseCaseHandover({
         username: 'TEST',
-        bookingId: '2',
+        bookingId: 2,
         transitionType: 'caToRo',
         submissionTarget,
         source: { type: 'prison', probationAreaCode: 'aa1', lduCode: '1' },
@@ -77,7 +77,7 @@ describe('EventPublisher', () => {
       })
 
       expect(audit.record).toHaveBeenCalledWith('SEND', 'TEST', {
-        bookingId: '2',
+        bookingId: 2,
         submissionTarget: { some: 'target' },
         transitionType: 'caToRo',
         source: { type: 'prison', probationAreaCode: 'aa1', lduCode: '1' },
@@ -90,7 +90,7 @@ describe('EventPublisher', () => {
 
       await eventPublisher.raiseCaseHandover({
         username: 'TEST',
-        bookingId: '2',
+        bookingId: 2,
         transitionType: 'caToRo',
         submissionTarget,
         source: { type: 'prison', probationAreaCode: 'aa1', lduCode: '1' },

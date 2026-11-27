@@ -1,15 +1,24 @@
-const createNotificationService = require('../../../server/services/notifications/notificationService')
-const transitionForDestinations = require('../../../server/services/notifications/transitionsForDestinations')
+import NotificationService from '../../../server/services/notifications/notificationService'
+import CaAndDmNotificationSender from '../../../server/services/notifications/caAndDmNotificationSender'
+import RoNotificationHandler from '../../../server/services/notifications/roNotificationHandler'
+import EventPublisher from '../../../server/services/notifications/eventPublisher'
+import { LicenceService } from '../../../server/services/licenceService'
+import transitionForDestinations from '../../../server/services/notifications/transitionsForDestinations'
+
+jest.mock('../../../server/services/notifications/caAndDmNotificationSender')
+jest.mock('../../../server/services/notifications/roNotificationHandler')
+jest.mock('../../../server/services/notifications/eventPublisher')
+jest.mock('../../../server/services/licenceService')
+
 const { createPrisonerServiceStub } = require('../../mockServices')
 
 describe('NotificationService', () => {
-  let caAndDmNotificationSender
-  /** @type {any} */
-  let eventPublisher
-  let licenceService
+  let caAndDmNotificationSender: jest.Mocked<CaAndDmNotificationSender>
+  let eventPublisher: jest.Mocked<EventPublisher>
+  let licenceService: jest.Mocked<LicenceService>
   let prisonerService
-  let notificationService
-  let roNotificationHandler
+  let notificationService: NotificationService
+  let roNotificationHandler: jest.Mocked<RoNotificationHandler>
 
   const prisoner = { firstName: 'first', lastName: 'last', dateOfBirth: 'off-dob', offenderNo: 'AB1234A' }
   const submissionTarget = { premise: 'HMP Test', agencyId: 'LT1', name: 'Something', deliusId: 'delius' }
@@ -22,14 +31,17 @@ describe('NotificationService', () => {
   const target = { type: 'prison', agencyId: 'LT1' }
 
   beforeEach(() => {
-    licenceService = {
-      markForHandover: jest.fn(),
-      removeDecision: jest.fn().mockReturnValue({}),
-    }
-
-    roNotificationHandler = {
-      sendRo: jest.fn(),
-    }
+    licenceService = new LicenceService(undefined) as jest.Mocked<LicenceService>
+    licenceService.removeDecision.mockResolvedValue({} as never)
+    roNotificationHandler = new RoNotificationHandler(
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined
+    ) as jest.Mocked<RoNotificationHandler>
 
     prisonerService = createPrisonerServiceStub()
     prisonerService.getDestinations.mockReturnValue({
@@ -41,15 +53,20 @@ describe('NotificationService', () => {
     prisonerService.getOrganisationContactDetails.mockReturnValue(submissionTarget)
     prisonerService.getPrisonerPersonalDetails.mockReturnValue(prisoner)
 
-    caAndDmNotificationSender = {
-      sendNotifications: jest.fn().mockReturnValue({}),
-    }
+    caAndDmNotificationSender = new CaAndDmNotificationSender(
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined,
+      undefined
+    ) as jest.Mocked<CaAndDmNotificationSender>
+    caAndDmNotificationSender.sendNotifications.mockResolvedValue([])
 
-    eventPublisher = {
-      raiseCaseHandover: jest.fn(),
-    }
+    eventPublisher = new EventPublisher(undefined, undefined) as jest.Mocked<EventPublisher>
 
-    notificationService = createNotificationService(
+    notificationService = new NotificationService(
       caAndDmNotificationSender,
       licenceService,
       prisonerService,

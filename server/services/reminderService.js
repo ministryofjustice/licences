@@ -6,7 +6,7 @@
  * @typedef {import("../services/prisonerService").PrisonerService} PrisonerService
  * @typedef {import("../services/roContactDetailsService").RoContactDetailsService} RoContactDetailsService
  * @typedef {import("../../types/licences").ResponsibleOfficerAndContactDetails} ResponsibleOfficerAndContactDetails
- * @typedef {import("../services/notifications/roNotificationSender").RoNotificationSender} RoNotificationSender
+ * @typedef {import("../services/notifications/roNotificationSender").default} RoNotificationSender
  */
 const logger = require('../../log')
 const { isEmpty, unwrapResult } = require('../utils/functionalHelpers')
